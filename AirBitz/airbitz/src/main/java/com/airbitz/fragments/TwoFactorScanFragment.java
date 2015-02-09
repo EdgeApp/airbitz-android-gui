@@ -32,10 +32,13 @@
 package com.airbitz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +71,20 @@ public class TwoFactorScanFragment extends BaseFragment implements
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
 
+    boolean mSuccess = false;
+    boolean mStoreSecret = false;
+    boolean mTestSecret = false;
+
+    //************** Callback for notification of two factor results
+    OnTwoFactorResult mOnTwoFactorResult;
+    public interface OnTwoFactorResult {
+        public void onTwoFactorResult(boolean result);
+    }
+    public void setOnScanResultListener(OnTwoFactorResult listener) {
+        mOnTwoFactorResult = listener;
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +97,14 @@ public class TwoFactorScanFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_twofactor_scan, container, false);
 
-//        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-//        mBackButton.setVisibility(View.VISIBLE);
-//        mBackButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                getActivity().onBackPressed();
-//            }
-//        });
+        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
+        mBackButton.setVisibility(View.VISIBLE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                exit();
+            }
+        });
 
 //        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
 //        mHelpButton.setVisibility(View.VISIBLE);
@@ -129,7 +146,75 @@ public class TwoFactorScanFragment extends BaseFragment implements
     }
 
     @Override
-    public void onScanResult(String info) {
-
+    public void onScanResult(String result) {
+        if(mOnTwoFactorResult != null) {
+            mOnTwoFactorResult.onTwoFactorResult(processResult(result));
+        }
     }
+
+    void exit() {
+        mActivity.onBackPressed();
+    }
+
+    boolean processResult(String results)
+    {
+        if (results != null && !results.isEmpty()) {
+            if (mStoreSecret) {
+                mSuccess = storeSecret(results);
+            } else {
+                mSuccess = true;
+            }
+            if (mTestSecret) {
+                testSecret();
+            } else {
+                exit();
+            }
+            return true;
+        } else {
+            // TODO: unable to parse...
+            return false;
+        }
+    }
+
+    boolean storeSecret(String secret)
+    {
+        tABC_Error Error = new tABC_Error();
+        tABC_CC cc = core.ABC_SetTwoFactorSecret(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(),
+            secret, true, Error);
+        return cc == tABC_CC.ABC_CC_Ok;
+    }
+
+    void testSecret()
+    {
+        if (true) {
+            exit();
+        } else {
+            ShowTryAgainDialog("Unable to import token", "The two factor authentication token import failed. Please ensure you have the correct token!");
+        }
+    }
+
+    public void ShowTryAgainDialog(String title, String message) {
+        if (!mActivity.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setPositiveButton("Try Again?",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            })
+                    .setNegativeButton("No thanks",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    exit();
+                                }
+                            });
+            builder.create().show();
+        }
+    }
+
 }
