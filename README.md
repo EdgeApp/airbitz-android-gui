@@ -9,6 +9,11 @@ airbitz-android-gui
     git clone https://github.com/Airbitz/airbitz-core.git
     git clone https://github.com/Airbitz/airbitz-android-gui.git
     ```
+1. Download and install the Android NDK
+https://developer.android.com/tools/sdk/ndk/index.html#download
+
+1. Download and install Java JDK7 
+https://jdk7.java.net/download.html
 
 1. Build the core. This requires swig and ndk-build to be in your path.
 
@@ -22,7 +27,11 @@ airbitz-android-gui
 
     ```bash
     cd airbitz-android-gui
-    cat <<EOF > ./airbitz/src/prod/res/values/all_keys.xml
+    mkdir ./AirBitz/airbitz/src/debug
+    mkdir ./AirBitz/airbitz/src/debug/res
+    mkdir ./AirBitz/airbitz/src/debug/res/values
+    
+    cat <<EOF > ./AirBitz/airbitz/src/prod/res/values/all_keys.xml
     <?xml version="1.0" encoding="utf-8"?>
     <resources>
         <string name="google_maps_api_key">GOOGLE_KEY_HERE</string>
@@ -30,6 +39,8 @@ airbitz-android-gui
         <string name="hockey_key">HOCKEY_APP_KEY_HERE</string>
     </resources>
     EOF
+    
+    cp ./AirBitz/airbitz/src/prod/res/values/all_keys.xml ./AirBitz/airbitz/src/debug/res/values/all_keys.xml
     ```
 
 ### Build with Android studio
