@@ -181,6 +181,22 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_bDisablePINLogin_get(swigCPtr, this);
   }
 
+  public void setBTwoFactorEnabled(boolean value) {
+    coreJNI.tABC_AccountSettings_bTwoFactorEnabled_set(swigCPtr, this, value);
+  }
+
+  public boolean getBTwoFactorEnabled() {
+    return coreJNI.tABC_AccountSettings_bTwoFactorEnabled_get(swigCPtr, this);
+  }
+
+  public void setTwoFactorResetSeconds(int value) {
+    coreJNI.tABC_AccountSettings_twoFactorResetSeconds_set(swigCPtr, this, value);
+  }
+
+  public int getTwoFactorResetSeconds() {
+    return coreJNI.tABC_AccountSettings_twoFactorResetSeconds_get(swigCPtr, this);
+  }
+
   public tABC_AccountSettings() {
     this(coreJNI.new_tABC_AccountSettings(), true);
   }
