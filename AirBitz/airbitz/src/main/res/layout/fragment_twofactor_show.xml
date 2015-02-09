@@ -13,9 +13,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_header"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="25.2dp"
+        android:layout_marginTop="10dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
@@ -60,6 +61,18 @@
             android:thumb="@drawable/btn_toggle_thumb"
             android:track="@drawable/toggle_selector" />
 
+        <com.airbitz.objects.HighlightOnPressButton
+            android:id="@+id/fragment_twofactor_button_import"
+            android:layout_below="@id/fragment_twofactor_show_toggle_enabled"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_btn_blue_stretch"
+            android:text="@string/request_button_import"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:visibility="visible" />
+
         <LinearLayout
             android:id="@+id/fragment_twofactor_show_buttons"
             android:layout_width="match_parent"
@@ -67,7 +80,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_twofactor_show_button_approve"

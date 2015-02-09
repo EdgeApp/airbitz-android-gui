@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -60,6 +61,7 @@ public class TwoFactorMenuFragment extends BaseFragment {
     private Button mScanButton;
     private Button mResetButton;
     private HighlightOnPressImageButton mHelpButton;
+    private TextView mTitleTextView;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
 
@@ -102,6 +104,10 @@ public class TwoFactorMenuFragment extends BaseFragment {
                 mResetTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
         });
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.fragment_twofactor_menu_title);
 
 //        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
 //        mHelpButton.setVisibility(View.VISIBLE);

@@ -45,6 +45,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -68,6 +69,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
     private HighlightOnPressImageButton mHelpButton, mBackButton;
     QRCamera mQRCamera;
     RelativeLayout mCameraLayout;
+    private TextView mTitleTextView;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
 
@@ -105,6 +107,10 @@ public class TwoFactorScanFragment extends BaseFragment implements
                 exit();
             }
         });
+
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.fragment_twofactor_scan_title);
 
 //        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
 //        mHelpButton.setVisibility(View.VISIBLE);

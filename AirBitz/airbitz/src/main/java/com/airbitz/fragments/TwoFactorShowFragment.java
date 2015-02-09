@@ -41,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -49,6 +50,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
@@ -60,11 +62,13 @@ public class TwoFactorShowFragment extends BaseFragment
 {
     private final String TAG = getClass().getSimpleName();
 
-    HighlightOnPressImageButton mHelpButton, mImportButton, mApproveButton, mCancelButton;
+    HighlightOnPressImageButton mHelpButton;
+    HighlightOnPressButton mImportButton, mApproveButton, mCancelButton;
     ImageButton mBackButton;
     ImageView mQRView;
     EditText mPassword;
     Switch mEnabledSwitch;
+    private TextView mTitleTextView;
     boolean _isOn;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -99,17 +103,21 @@ public class TwoFactorShowFragment extends BaseFragment
 //            }
 //        });
 
+        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.fragment_twofactor_show_title);
+
         mPassword = (EditText) mView.findViewById(R.id.fragment_twofactor_show_password_edittext);
 
-        mApproveButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_twofactor_show_button_approve);
+        mApproveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_twofactor_show_button_approve);
         mApproveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO launch menu fragment
+
             }
         });
 
-        mCancelButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_twofactor_show_button_cancel);
+        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_twofactor_show_button_cancel);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,20 +125,20 @@ public class TwoFactorShowFragment extends BaseFragment
             }
         });
 
-//        mImportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_twofactor_show_button_import);
-//        mImportButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
+        mImportButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_twofactor_button_import);
+        mImportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 //                _tfaMenuViewController = (TwoFactorMenuViewController *)[Util animateIn:@"TwoFactorMenuViewController" parentController:self];
 //                _tfaMenuViewController.delegate = self;
 //                _tfaMenuViewController.bStoreSecret = YES;
-//                initUI();
-//            }
-//        });initUI
+                mActivity.pushFragment(new TwoFactorMenuFragment());
+            }
+        });
 
         mQRView = (ImageView) mView.findViewById(R.id.fragment_twofactor_show_qr_image);
 
-        mEnabledSwitch = (Switch) mView.findViewById(R.id.settings_toggle_send_user_info);
+        mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
         mEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -143,14 +151,15 @@ public class TwoFactorShowFragment extends BaseFragment
 
     @Override
     public void onResume() {
+        super.onResume();
+
         initUI();
     }
 
     @Override
     public void onPause() {
+        super.onPause();
     }
-
-
 
     void initUI()
     {
@@ -259,7 +268,7 @@ public class TwoFactorShowFragment extends BaseFragment
             }
 
             if (mCoreAPI.TwoFactorSecret() != null) {
-//                _requestSpinner.hidden = NO;
+                mActivity.showModalProgress(false);
             }
         }
 

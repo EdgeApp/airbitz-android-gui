@@ -192,6 +192,7 @@
     <string name="settings_options_title">OPTIONS</string>
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_spending_limits">Spending Limits</string>
+    <string name="settings_button_two_factor_authentication">Two Factor Authentication</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change PIN</string>
     <string name="settings_button_recovery">Recovery Questions</string>
@@ -448,6 +449,9 @@
     <string name="user_review_support_title">Choose Email</string>
 
     <!-- Two Factor screens -->
+    <string name="fragment_twofactor_show_title">Two Factor</string>
+    <string name="fragment_twofactor_menu_title">Two Factor</string>
+    <string name="fragment_twofactor_scan_title">Scan Two Factor</string>
     <string name="fragment_twofactor_show_enabled">Enabled</string>
     <string name="fragment_twofactor_show_approve">Approve</string>
     <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>

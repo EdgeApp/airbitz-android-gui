@@ -103,6 +103,7 @@ public class SettingFragment extends BaseFragment {
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
     private RelativeLayout mSpendingLimitContainer;
+    private RelativeLayout mTwoFactorContainer;
     private View mNFCSwitchLayout;
     private View mBLESwitchLayout;
     private HighlightOnPressImageButton mHelpButton;
@@ -233,6 +234,15 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new SpendingLimitsFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+            }
+        });
+
+        mTwoFactorContainer = (RelativeLayout) mView.findViewById(R.id.settings_two_factor_container);
+        mTwoFactorContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new TwoFactorShowFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
