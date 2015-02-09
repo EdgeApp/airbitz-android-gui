@@ -124,7 +124,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:animateLayoutChanges="true"
-            android:background="@drawable/emboss_down"
             android:orientation="vertical">
 
             <TextView
@@ -259,7 +258,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:background="@drawable/rounded_edge_blue_bg"
             android:orientation="vertical"
             android:padding="12dp">
 
