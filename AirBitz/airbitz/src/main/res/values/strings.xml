@@ -455,7 +455,6 @@
     <string name="fragment_twofactor_menu_scan_message">Scan the Two Factor token from another device</string>
     <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 1 day if no action is taken by other users.</string>
     <string name="fragment_twofactor_menu_reset_requested">Reset requested</string>
-    <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
