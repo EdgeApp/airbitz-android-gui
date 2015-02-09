@@ -15,6 +15,25 @@ https://developer.android.com/tools/sdk/ndk/index.html#download
 1. Download and install Java JDK7 
 https://jdk7.java.net/download.html
 
+1. Download PCRE http://www.pcre.org
+1. Extract PCRE directory
+1. CD into PCRE directory
+
+    ```bash
+    ./configure
+    make
+    sudo make install
+    ```
+1. Download SWIG http://swig.org/download.html
+1. Extract SWIG directory
+1. CD into SWIG directory
+
+
+    ```bash
+    ./configure
+    make
+    sudo make install
+    ```
 1. Build the core. This requires swig and ndk-build to be in your path.
 
     ```bash
