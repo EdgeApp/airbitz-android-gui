@@ -2777,4 +2777,86 @@ public class CoreAPI {
         core.ABC_UploadLogs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 Error);
     }
+
+    //*********************** Two Factor Authentication
+    boolean mTwoFactorOn = false;
+    String mTwoFactorSecret;
+
+    public boolean isTwoFactorOn() {
+        return mTwoFactorOn;
+    }
+
+    // Blocking
+    public tABC_CC StatusTwoFactor() {
+        tABC_Error Error = new tABC_Error();
+        SWIGTYPE_p_long ptimeout = core.new_longp();
+        SWIGTYPE_p_int lp = core.new_intp();
+        SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+        tABC_CC cc = core.ABC_StatusTwoFactor(AirbitzApplication.getUsername(),
+            AirbitzApplication.getPassword(), pbool, ptimeout, Error);
+
+        mTwoFactorOn = core.intp_value(lp)==1;
+        return cc;
+    }
+
+    public String TwoFactorSecret() {
+        return mTwoFactorSecret;
+    }
+
+    // Blocking
+    public tABC_CC GetTwoFactorSecret() {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_GetTwoFactorSecret(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), ppChar, error);
+        mTwoFactorSecret = getStringAtPtr(core.longp_value(lp));
+        return cc;
+    }
+
+    public boolean isTwoFactorResetPending(tABC_Error error) {
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_IsTwoFactorResetPending(ppChar, error);
+        if (cc == tABC_CC.ABC_CC_Ok) {
+            String userNames = getStringAtPtr(core.longp_value(lp));
+            return userNames.contains(AirbitzApplication.getUsername());
+        }
+        return false;
+    }
+
+    // Blocking
+    public tABC_CC enableTwoFactor(boolean on) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc;
+        if(on) {
+            cc = core.ABC_EnableTwoFactor(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), error);
+            if (cc == tABC_CC.ABC_CC_Ok) {
+                mTwoFactorOn = true;
+            }
+        }
+        else {
+            cc = core.ABC_DisableTwoFactor(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), error);
+            if (cc == tABC_CC.ABC_CC_Ok) {
+                mTwoFactorOn = false;
+                mTwoFactorSecret = null;
+                resetOtpNotifications();
+            }
+        }
+        return cc;
+    }
+
+    public void resetOtpNotifications() {
+
+    }
+
+    // Blocking
+    public tABC_CC cancelTwoFactorRequest() {
+        tABC_Error error = new tABC_Error();
+        return core.ABC_CancelTwoFactorReset(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), error);
+    }
 }
