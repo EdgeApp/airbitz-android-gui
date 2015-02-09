@@ -449,7 +449,7 @@
 
     <!-- Two Factor screens -->
     <string name="fragment_twofactor_show_enabled">Enabled</string>
-    <string name="fragment_twofactor_show_approve">Approve</string>
+    <string name="fragment_twofactor_show_approve">Approved</string>
     <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
     <string name="fragment_twofactor_menu_button_request_reset">Request Reset</string>
     <string name="fragment_twofactor_menu_scan_message">Scan the Two Factor token from another device</string>
