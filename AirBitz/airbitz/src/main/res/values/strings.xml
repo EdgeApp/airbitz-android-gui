@@ -441,8 +441,12 @@
 
     <!-- User Review -->
     <string name="user_review_title">Airbitz</string>
-    <string name="user_review_message">"Do you like Airbitz?"</string>
-    <string name="user_review_ok_message">"Please write a review in the Play Store"</string>
+    <string name="user_review_message">"How are you liking Airbitz?"</string>
+    <string name="user_review_not_good">"Not so good"</string>
+    <string name="user_review_great">"It's great"</string>
+    <string name="user_review_no_thanks">"No thanks"</string>
+    <string name="user_review_ok_message">"Would you like to send us some feedback?"</string>
+    <string name="user_review_play_store">"Would you like to write a review in the Google Play Store?"</string>
     <string name="user_review_support_email_address">support@airbitz.co</string>
     <string name="user_review_support_subject">Airbitz Feedback</string>
     <string name="user_review_support_title">Choose Email</string>

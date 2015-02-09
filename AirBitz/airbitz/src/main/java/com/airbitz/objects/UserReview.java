@@ -37,7 +37,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.text.Html;
 import android.view.ContextThemeWrapper;
 
 import com.airbitz.AirbitzApplication;
@@ -75,12 +74,15 @@ public class UserReview {
     }
 
     public static boolean loginCountTriggered() {
-        boolean ret = false;
+        boolean ret = true;
         int count = mPrefs.getInt(LOGIN_COUNT, 1);
         if(count != Integer.MAX_VALUE) {
-            if(count++ > MAX_LOGINS) {
+            if(++count > MAX_LOGINS) {
                 count = Integer.MAX_VALUE;
                 ret = true;
+            }
+            else {
+                ret = false;
             }
             mEditor.putInt(LOGIN_COUNT, count);
             mEditor.apply();
@@ -109,8 +111,6 @@ public class UserReview {
         if(mPrefs.contains(FIRST_LOGIN_TIME)) {
             long appFirstLaunch = mPrefs.getLong(FIRST_LOGIN_TIME, 0);
             if(appFirstLaunch != 0 && System.currentTimeMillis() > appFirstLaunch + MAX_TIME_DIFFERENCE_MILLIS) {
-                mEditor.putLong(FIRST_LOGIN_TIME, 0);
-                mEditor.apply();
                 return true;
             }
             else {
@@ -132,36 +132,64 @@ public class UserReview {
             builder.setMessage(activity.getString(R.string.user_review_message))
                     .setTitle(activity.getString(R.string.user_review_title))
                     .setCancelable(false)
-                    .setPositiveButton(activity.getResources().getString(R.string.string_yes),
+                    .setPositiveButton(activity.getResources().getString(R.string.user_review_great),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    ShowReviewOKDialog(activity);
+                                    ShowUserLikesAirbitzDialog(activity);
                                     dialog.dismiss();
                                 }
                             })
-                    .setNegativeButton(activity.getResources().getString(R.string.string_no),
+                    .setNegativeButton(activity.getResources().getString(R.string.user_review_not_good),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                                    intent.setData(Uri.parse("mailto:"));
-                                    intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { AirbitzApplication.getContext().getString(R.string.user_review_support_email_address) });
-                                    intent.putExtra(Intent.EXTRA_SUBJECT, AirbitzApplication.getContext().getString(R.string.user_review_support_subject));
-                                    activity.startActivity(Intent.createChooser(intent, AirbitzApplication.getContext().getString(R.string.user_review_support_title)));
-                                    dialog.cancel();
+                                    ShowUserDislikeDialog(activity);
+                                    dialog.dismiss();
                                 }
                             });
             builder.create().show();
     }
 
-    public static void ShowReviewOKDialog(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-        builder.setMessage(context.getString(R.string.user_review_ok_message))
-                .setTitle(context.getString(R.string.user_review_title))
+    public static void ShowUserDislikeDialog(final NavigationActivity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        builder.setMessage(activity.getString(R.string.user_review_ok_message))
+                .setTitle(activity.getString(R.string.user_review_title))
                 .setCancelable(false)
-                .setPositiveButton(context.getResources().getString(R.string.string_ok),
+                .setPositiveButton(activity.getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+                                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                                intent.setData(Uri.parse("mailto:"));
+                                intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { AirbitzApplication.getContext().getString(R.string.user_review_support_email_address) });
+                                intent.putExtra(Intent.EXTRA_SUBJECT, AirbitzApplication.getContext().getString(R.string.user_review_support_subject));
+                                activity.startActivity(Intent.createChooser(intent, AirbitzApplication.getContext().getString(R.string.user_review_support_title)));
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(activity.getResources().getString(R.string.user_review_no_thanks),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        builder.create().show();
+    }
+
+
+    public static void ShowUserLikesAirbitzDialog(final NavigationActivity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        builder.setMessage(activity.getString(R.string.user_review_play_store))
+                .setTitle(activity.getString(R.string.user_review_title))
+                .setCancelable(false)
+                .setPositiveButton(activity.getResources().getString(R.string.string_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getPackageName())));
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(activity.getResources().getString(R.string.user_review_no_thanks),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.dismiss();
                             }
                         });
