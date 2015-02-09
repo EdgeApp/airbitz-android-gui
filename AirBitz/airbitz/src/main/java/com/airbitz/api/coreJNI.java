@@ -79,6 +79,7 @@ public class coreJNI {
   public final static native int ABC_CC_NonNumericPin_get();
   public final static native int ABC_CC_NoAvailableAddress_get();
   public final static native int ABC_CC_PinExpired_get();
+  public final static native int ABC_CC_InvalidOTP_get();
   public final static native int ABC_RequestType_AccountSignIn_get();
   public final static native int ABC_RequestType_CreateAccount_get();
   public final static native int ABC_RequestType_SetAccountRecoveryQuestions_get();
@@ -323,6 +324,10 @@ public class coreJNI {
   public final static native long tABC_AccountSettings_spendRequirePinSatoshis_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_bDisablePINLogin_set(long jarg1, tABC_AccountSettings jarg1_, boolean jarg2);
   public final static native boolean tABC_AccountSettings_bDisablePINLogin_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_bTwoFactorEnabled_set(long jarg1, tABC_AccountSettings jarg1_, boolean jarg2);
+  public final static native boolean tABC_AccountSettings_bTwoFactorEnabled_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_twoFactorResetSeconds_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);
+  public final static native int tABC_AccountSettings_twoFactorResetSeconds_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long new_tABC_AccountSettings();
   public final static native void delete_tABC_AccountSettings(long jarg1);
   public final static native int ABC_Initialize(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
@@ -350,6 +355,17 @@ public class coreJNI {
   public final static native int ABC_PinLoginDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_PinLogin(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_PinSetup(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_ListAccounts(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_EnableTwoFactor(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_DisableTwoFactor(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_StatusTwoFactor(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_TwoFactorSignIn(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_GetTwoFactorSecret(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_GetTwoFactorQrCode(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_SetTwoFactorSecret(String jarg1, String jarg2, String jarg3, boolean jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_RequestTwoFactorReset(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_IsTwoFactorResetPending(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_CancelTwoFactorReset(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);

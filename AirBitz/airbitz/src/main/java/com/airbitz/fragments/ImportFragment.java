@@ -73,6 +73,7 @@ import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.objects.QRCamera;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -90,36 +91,24 @@ import java.util.List;
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends BaseFragment
-        implements Camera.PreviewCallback,
-        Camera.AutoFocusCallback,
-        CoreAPI.OnWalletSweep
+public class ImportFragment extends BaseFragment implements
+        CoreAPI.OnWalletSweep,
+        QRCamera.OnScanResult
 {
     public static String URI = "com.airbitz.importfragment.uri";
 
-    private static int RESULT_LOAD_IMAGE = 876;
-    private final int FOCUS_MILLIS = 2000;
     private final String TAG = getClass().getSimpleName();
     private EditText mToEdittext;
     private ImageButton mBackButton;
     private ImageButton mHelpButton;
-    private ImageButton mGalleryButton;
     private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mSubmitButton;
     private TextView mFromTextView;
     private TextView mToTextView;
     private TextView mQRCodeTextView;
     private TextView mTitleTextView;
-    private ImageButton mFlashButton;
     private NfcAdapter mNfcAdapter;
-    private Camera mCamera;
-    private CameraSurfacePreview mPreview;
-    private int cameraIndex;
-    private FrameLayout mPreviewFrame;
-    private Camera.Parameters mCamParam;
-    private int BACK_CAMERA_INDEX = 0;
-    private boolean mFlashOn = false;
-    private boolean mFocused = true;
+    private QRCamera mQRCamera;
     private CoreAPI mCoreAPI;
     private View mView;
     private List<Wallet> mWallets;//Actual wallets
@@ -128,6 +117,7 @@ public class ImportFragment extends BaseFragment
     private NavigationActivity mActivity;
     private LinearLayout mImportLayout;
     private RelativeLayout mBusyLayout;
+    private RelativeLayout mCameraLayout;
     private TextView mBusyText;
 
     private String mTweet, mToken, mMessage, mZeroMessage;
@@ -135,14 +125,6 @@ public class ImportFragment extends BaseFragment
     long mSweptAmount = -1;
     private String mSweptAddress;
 
-    Runnable cameraFocusRunner = new Runnable() {
-        @Override
-        public void run() {
-            mCamera.autoFocus(ImportFragment.this);
-            mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
-            mFocused = false;
-        }
-    };
     Runnable sweepNotFoundRunner = new Runnable() {
         @Override
         public void run() {
@@ -174,7 +156,7 @@ public class ImportFragment extends BaseFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mPreviewFrame = (FrameLayout) mView.findViewById(R.id.layout_camera_preview);
+        mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_layout_camera);
 
         mImportLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout);
         mBusyLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_busy_layout);
@@ -238,34 +220,6 @@ public class ImportFragment extends BaseFragment
             }
         });
 
-        mFlashButton = (ImageButton) mView.findViewById(R.id.button_flash);
-        mFlashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mFlashOn) {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
-                    mFlashOn = true;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(parameters);
-                } else {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
-                    mFlashOn = false;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-            }
-        });
-
-        mGalleryButton = (ImageButton) mView.findViewById(R.id.button_gallery);
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PickAPicture();
-            }
-        });
-
         mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -308,26 +262,7 @@ public class ImportFragment extends BaseFragment
 
     private void scanQRCodes() {
         mSubmitButton.setVisibility(View.INVISIBLE);
-        mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.VISIBLE);
-        cameraIndex = BACK_CAMERA_INDEX;
-
-        try {
-            mCamera = Camera.open(cameraIndex);
-            mCamParam = mCamera.getParameters();
-            Log.d(TAG, "Camera Does exist");
-        } catch (Exception e) {
-            Log.d(TAG, "Camera Does Not exist");
-        }
-
-        mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        mPreviewFrame.removeView(mPreview);
-        mPreviewFrame.addView(mPreview);
-
-        mCamera.setPreviewCallback(ImportFragment.this);
-
-        if (mCamera != null) {
-            stopCamera();
-        }
+        mCameraLayout.setVisibility(View.VISIBLE);
         startCamera();
 
         final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
@@ -343,71 +278,24 @@ public class ImportFragment extends BaseFragment
 
     private void stopScanningQRCodes() {
         mSubmitButton.setVisibility(View.VISIBLE);
-        mView.findViewById(R.id.fragment_import_layout_camera).setVisibility(View.GONE);
-        if (mCamera != null) {
-            stopCamera();
-        }
+        mCameraLayout.setVisibility(View.GONE);
+        stopCamera();
     }
 
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
-        if (mCamera != null) {
-            mHandler.removeCallbacks(cameraFocusRunner);
-            mCamera.cancelAutoFocus();
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            mPreviewFrame.removeView(mPreview);
-            mCamera.release();
+        if(mQRCamera != null) {
+            mQRCamera.stopCamera();
+            mQRCamera.setOnScanResultListener(null);
         }
-        mCamera = null;
     }
 
     public void startCamera() {
-        //Get back camera unless there is none, then try the front camera - fix for Nexus 7
-        int numCameras = Camera.getNumberOfCameras();
-        if (numCameras == 0) {
-            Log.d(TAG, "No cameras!");
-            return;
+        if(mQRCamera == null) {
+            mQRCamera = new QRCamera(mActivity, mCameraLayout);
+            mQRCamera.setOnScanResultListener(this);
         }
-
-        int cameraIndex = 0;
-        while (cameraIndex < numCameras) {
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            Camera.getCameraInfo(cameraIndex, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                break;
-            }
-            cameraIndex++;
-        }
-
-        if (cameraIndex >= numCameras)
-            cameraIndex = 0; //Front facing camera if no other camera index returned
-
-        try {
-            Log.d(TAG, "Opening Camera");
-            mCamera = Camera.open(cameraIndex);
-        } catch (Exception e) {
-            Log.d(TAG, "Camera Does Not exist");
-            return;
-        }
-
-        mPreview = new CameraSurfacePreview(getActivity(), mCamera);
-        mPreviewFrame.removeView(mPreview);
-        mPreviewFrame.addView(mPreview);
-        if (mCamera != null) {
-            mCamera.setPreviewCallback(ImportFragment.this);
-            Camera.Parameters params = mCamera.getParameters();
-                List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
-                if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                    mHandler.post(cameraFocusRunner);
-                }
-                mCamera.setParameters(params);
-        }
-
-        checkCameraFlash();
+        mQRCamera.startCamera();
     }
 
     @Override
@@ -432,29 +320,6 @@ public class ImportFragment extends BaseFragment
         clearSweepAddress();
     }
 
-    private void checkCameraFlash() {
-        if(hasFlash()) {
-            mFlashButton.setVisibility(View.VISIBLE);
-        }
-        else {
-            mFlashButton.setVisibility(View.GONE);
-        }
-    }
-    public boolean hasFlash() {
-        if (mCamera == null) {
-            return false;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        if (parameters.getFlashMode() == null) {
-            return false;
-        }
-        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
-        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -471,108 +336,21 @@ public class ImportFragment extends BaseFragment
     }
 
     @Override
-    public void onPreviewFrame(byte[] bytes, Camera camera) {
-        if(!mFocused)
-            return;
-
-        String result = AttemptDecodeBytes(bytes, camera);
+    public void onScanResult(String result) {
         if (result != null) {
             Log.d(TAG, "HiddenBits found");
-            stopCamera();
             mToEdittext.setText(result);
             attemptSubmit();
         }
     }
 
     @Override
-    public void onAutoFocus(boolean b, Camera camera) {
-        mFocused = true;
-    }
-
-    // Select a picture from the Gallery
-    private void PickAPicture() {
-        mToEdittext.clearFocus();
-        Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(in, RESULT_LOAD_IMAGE);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-
-            String result = AttemptDecodePicture(thumbnail);
-            if (result != null ) {
-                stopCamera();
-                mToEdittext.setText(result);
-                attemptSubmit();
-            }
+        if (mQRCamera != null && requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+            mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private String AttemptDecodeBytes(byte[] bytes, Camera camera) {
-        Result rawResult = null;
-        Reader reader = new QRCodeReader();
-        int w = camera.getParameters().getPreviewSize().width;
-        int h = camera.getParameters().getPreviewSize().height;
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
-        if (source != null) {
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-            try {
-                rawResult = reader.decode(bitmap);
-            } catch (ReaderException re) {
-                // nothing to do here
-            } finally {
-                reader.reset();
-            }
-        }
-        if (rawResult != null) {
-            return rawResult.getText();
-        } else {
-//            Log.d(TAG, "No QR code found");
-        }
-        return null;
-    }
-
-    private String AttemptDecodePicture(Bitmap thumbnail) {
-        if (thumbnail == null) {
-            Log.d(TAG, "No picture selected");
-        } else {
-            Log.d(TAG, "Picture selected");
-            Result rawResult = null;
-            Reader reader = new QRCodeReader();
-            int w = thumbnail.getWidth();
-            int h = thumbnail.getHeight();
-            int[] pixels = new int[w * h];
-            thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
-            RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
-            if (source != null) {
-                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-                try {
-                    rawResult = reader.decode(bitmap);
-                } catch (ReaderException re) {
-                    // nothing to do here
-                } finally {
-                    reader.reset();
-                }
-            }
-            if (rawResult != null) {
-                return rawResult.getText();
-            } else {
-//            Log.d(TAG, "No QR code found");
-            }
-            return null;
-        }
-        return null;
     }
 
     private void attemptSubmit() {
