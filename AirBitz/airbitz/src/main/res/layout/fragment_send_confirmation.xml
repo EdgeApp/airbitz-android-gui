@@ -25,7 +25,6 @@
             android:id="@+id/layout_send_confirmation"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="@drawable/emboss_down"
             android:gravity="center_horizontal"
             android:paddingTop="12.6dp">
 

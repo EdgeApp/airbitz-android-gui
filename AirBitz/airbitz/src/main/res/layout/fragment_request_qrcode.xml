@@ -76,7 +76,6 @@
                     android:id="@+id/layout_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/emboss_down"
                     android:orientation="vertical"
                     android:paddingBottom="6dp">
 
@@ -89,7 +88,7 @@
                         android:gravity="center_horizontal"
                         android:text="@string/request_qr_waiting_for_payment"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/textview_bitcoin_amount"
@@ -99,7 +98,7 @@
                         android:layout_marginTop="1dp"
                         android:gravity="center_horizontal"
                         android:textColor="@android:color/white"
-                        android:textSize="19sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/textview_address"
@@ -153,17 +152,6 @@
                             android:textColor="@android:color/white" />
 
                     </LinearLayout>
-
-                    <com.airbitz.objects.HighlightOnPressButton
-                        android:id="@+id/fragment_qrcode_cancel_button"
-                        android:layout_width="245.7dp"
-                        android:layout_height="37.8dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginTop="3dp"
-                        android:background="@drawable/btn_blue"
-                        android:text="@string/string_cancel"
-                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
             </RelativeLayout>
