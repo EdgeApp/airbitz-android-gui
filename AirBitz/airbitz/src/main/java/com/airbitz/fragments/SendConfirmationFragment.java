@@ -741,7 +741,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
-        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mActivity.hideCalculator();
 
