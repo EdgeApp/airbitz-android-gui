@@ -479,6 +479,10 @@ public class RequestQRCodeFragment extends BaseFragment implements
         return false;
     }
 
+    public boolean isMerchantDonation() {
+        return (mAmountSatoshi == 0 && SettingFragment.getMerchantModePref());
+    }
+
     public long requestDifference(String walletUUID, String txId) {
         Log.d(TAG, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
