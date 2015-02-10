@@ -32,7 +32,7 @@
             <LinearLayout
                 android:id="@+id/layout_from"
                 android:layout_width="match_parent"
-                android:layout_height="19dp"
+                android:layout_height="25.2dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:weightSum="3">
@@ -51,18 +51,21 @@
                     android:textSize="15sp"
                     android:textStyle="normal" />
 
-                <TextView
-                    android:id="@+id/textview_from_name"
+                <com.airbitz.objects.HighlightOnPressSpinner
+                    android:id="@+id/from_wallet_spinner"
+                    style="@style/BlackDropShadow"
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:gravity="left|center_vertical"
-                    android:singleLine="true"
+                    android:background="@drawable/bg_btn_blue_stretch"
+                    android:dropDownHorizontalOffset="-50dp"
+                    android:dropDownVerticalOffset="0dp"
+                    android:dropDownWidth="300dp"
+                    android:gravity="center"
+                    android:popupBackground="@drawable/rounded_edge_white_bg"
+                    android:spinnerMode="dropdown"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/white"
-                    android:textSize="15sp"
-                    android:textStyle="normal" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

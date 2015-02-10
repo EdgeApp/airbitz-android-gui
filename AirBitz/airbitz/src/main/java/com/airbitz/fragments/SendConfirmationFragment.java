@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -59,12 +60,17 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
+
+import java.util.List;
 
 /**
  * Created on 2/21/14.
@@ -77,8 +83,6 @@ public class SendConfirmationFragment extends BaseFragment {
     private final int CALC_SEND_FEES_DELAY_MILLIS = 400;
     private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
-
-    private TextView mFromEdittext;
     private TextView mToEdittext;
     private EditText mAuthorizationEdittext;
 
@@ -107,6 +111,7 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
+    private HighlightOnPressSpinner mWalletSpinner;
     private ImageButton mConfirmSwipeButton;
 
     private float mSlideHalfWidth;
@@ -140,6 +145,7 @@ public class SendConfirmationFragment extends BaseFragment {
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private Wallet mSourceWallet, mWalletForConversions, mToWallet;
+    private List<Wallet> mWallets;//Actual wallets
 
     private boolean mAutoUpdatingTextFields = false;
 
@@ -165,19 +171,7 @@ public class SendConfirmationFragment extends BaseFragment {
         mActivity = (NavigationActivity) getActivity();
 
         bundle = this.getArguments();
-        if (bundle == null) {
-            Log.d(TAG, "Send confirmation bundle is null");
-        } else {
-            mUUIDorURI = bundle.getString(SendFragment.UUID);
-            mLabel = bundle.getString(SendFragment.LABEL, "");
-            mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
-            mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
-            mWalletForConversions = mSourceWallet;
-            if (mIsUUID) {
-                mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-            }
-        }
+        mWallets = mCoreAPI.getCoreActiveWallets();
 
         mAutoUpdatingTextFields = true;
     }
@@ -213,7 +207,6 @@ public class SendConfirmationFragment extends BaseFragment {
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
 
-        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
@@ -222,7 +215,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -237,17 +229,19 @@ public class SendConfirmationFragment extends BaseFragment {
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
-        String balance = mCoreAPI.formatSatoshi(mSourceWallet.getBalanceSatoshi(), true);
-        mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
-        if (mToWallet != null) {
-            mToEdittext.setText(mToWallet.getName());
-        } else {
-            String temp = mUUIDorURI;
-            if (mUUIDorURI.length() > 20) {
-                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length() - 5, mUUIDorURI.length());
+        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        mWalletSpinner.setAdapter(dataAdapter);
+
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSourceWallet = mWallets.get(i);
             }
-            mToEdittext.setText(temp);
-        }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
@@ -728,6 +722,21 @@ public class SendConfirmationFragment extends BaseFragment {
             if (mIsUUID) {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
+        }
+        for(int i=0; i<mWallets.size(); i++) {
+            if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
+                mWalletSpinner.setSelection(i);
+            }
+        }
+
+        if (mToWallet != null) {
+            mToEdittext.setText(mToWallet.getName());
+        } else {
+            String temp = mUUIDorURI;
+            if (mUUIDorURI.length() > 20) {
+                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length() - 5, mUUIDorURI.length());
+            }
+            mToEdittext.setText(temp);
         }
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
