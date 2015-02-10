@@ -31,19 +31,23 @@
 
 package com.airbitz.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.models.Wallet;
+
+import java.util.List;
 
 /**
  * Created by Thomas Baker on 4/22/14.
@@ -75,13 +79,16 @@ public class NavigationBarFragment extends BaseFragment {
     private View mView, mButtons;
     private int selectedTab = 0;
     private int mLastTab = 0;
+    private boolean mSendRequestTabsActive = false;
 
     private NavigationActivity mActivity;
+    private CoreAPI mCoreAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (NavigationActivity) getActivity();
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -127,7 +134,6 @@ public class NavigationBarFragment extends BaseFragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
-                        displayPopup(event);
                         checkTabs(event);
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -147,12 +153,33 @@ public class NavigationBarFragment extends BaseFragment {
         if (selectedTab == -1 || (selectedTab == mLastTab))
             return;
 
-        selectTab(selectedTab);
-        unselectTab(mLastTab);
-        mLastTab = selectedTab;
+        // ignore Send and Request until wallets are loaded
+        if((selectedTab == NavigationActivity.Tabs.REQUEST.ordinal() ||
+            selectedTab == NavigationActivity.Tabs.SEND.ordinal()) && walletsStillLoading()) {
+            selectedTab = NavigationActivity.Tabs.WALLET.ordinal();
+        }
+        else {
+            displayPopup(ev);
+            selectTab(selectedTab);
+            unselectTab(mLastTab);
+            mLastTab = selectedTab;
+        }
 
         if (mActivity != null)
             mActivity.onNavBarSelected(selectedTab);
+    }
+
+    private boolean walletsStillLoading() {
+        List<Wallet> wallets = mCoreAPI.getCoreActiveWallets();
+        if(!AirbitzApplication.isLoggedIn() || wallets == null) {
+            return true;
+        }
+        for(Wallet wallet : wallets) {
+            if(wallet.isLoading()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int getTabNum(MotionEvent ev) {
