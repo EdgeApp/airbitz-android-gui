@@ -296,6 +296,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingLeft="4dp"
                     android:background="@drawable/rounded_edge_edit_text_bg_30"
                     android:imeOptions="actionDone"
                     android:inputType="textCapWords|textCapSentences"
