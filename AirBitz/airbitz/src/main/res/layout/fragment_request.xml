@@ -37,7 +37,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/emboss_down"
                 android:gravity="center_horizontal"
                 android:paddingBottom="12dp"
                 android:paddingLeft="12dp"
@@ -62,7 +61,7 @@
                         android:layout_marginRight="12.6dp"
                         android:text="@string/request_wallet_title"
                         android:textColor="@android:color/white"
-                        android:textSize="12sp"
+                        android:textSize="14dp"
                         android:textStyle="normal" />
 
                     <com.airbitz.objects.HighlightOnPressSpinner
@@ -127,7 +126,7 @@
                         android:id="@+id/edittext_btc"
                         style="@style/BlackDropShadow"
                         android:layout_width="match_parent"
-                        android:layout_height="29.2dp"
+                        android:layout_height="35dp"
                         android:background="@drawable/emboss_down"
                         android:hint="@string/request_amount_hint"
                         android:inputType="numberDecimal"
@@ -169,7 +168,7 @@
                         android:id="@+id/edittext_dollar"
                         style="@style/BlackDropShadow"
                         android:layout_width="match_parent"
-                        android:layout_height="29.2dp"
+                        android:layout_height="35dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/emboss_down"
                         android:gravity="center_vertical"
