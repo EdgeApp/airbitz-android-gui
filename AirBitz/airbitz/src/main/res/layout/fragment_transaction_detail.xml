@@ -286,7 +286,6 @@
                     android:gravity="center"
                     android:layout_marginRight="20dp"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
                     android:popupBackground="@drawable/rounded_edge_white_bg"
                     android:dropDownVerticalOffset="0dp"
                     android:spinnerMode="dropdown" />

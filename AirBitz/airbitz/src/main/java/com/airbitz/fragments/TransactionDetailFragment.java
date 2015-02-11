@@ -77,6 +77,7 @@ import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
@@ -313,8 +314,8 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
         mCategorySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
-        mCategorySpinner.setAdapter(mCurrencyAdapter);;
+        CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mCategorySpinner.setAdapter(mCategoryAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -508,7 +509,7 @@ public class TransactionDetailFragment extends BaseFragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 setCurrentType(mCategories.get(i).getCategoryName());
-                setCategoryText(mCategoryAdapter.getItem(i).getCategoryName());
+                setCategoryText(TransactionDetailFragment.this.mCategoryAdapter.getItem(i).getCategoryName());
                 if (i == baseIncomePosition || i == baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition) {
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
                 }
@@ -622,6 +623,8 @@ public class TransactionDetailFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
+
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         bundle = getArguments();
         if (bundle != null) {
