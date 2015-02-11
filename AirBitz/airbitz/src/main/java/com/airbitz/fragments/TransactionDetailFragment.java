@@ -271,8 +271,15 @@ public class TransactionDetailFragment extends BaseFragment
 
         // Initialize category items
         mOriginalCategories = new ArrayList<Category>();
+        List<String> originalStrings = new ArrayList<>();
         List<String> catStrings = mCoreAPI.loadCategories();
         for(String cat : catStrings) {
+            if(!originalStrings.contains(cat)) {
+//                Log.d(TAG, "Loading category "+cat);
+                originalStrings.add(cat);
+            }
+        }
+        for(String cat : originalStrings) {
             mOriginalCategories.add(new Category(cat, ""));
         }
 
@@ -428,7 +435,7 @@ public class TransactionDetailFragment extends BaseFragment
                         highlightEditableText(mCategoryEdittext);
                     }
                     updateBlanks(mCategoryEdittext.getText().toString());
-                    goCreateCategoryList(mCategoryEdittext.getText().toString());
+                    createNewCategoryChoices(mCategoryEdittext.getText().toString());
                 }
             }
         });
@@ -476,7 +483,7 @@ public class TransactionDetailFragment extends BaseFragment
 
                     Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
                     updateBlanks(mInput);
-                    goCreateCategoryList(mInput);
+                    createNewCategoryChoices(mInput);
                 }
             }
         });
@@ -692,6 +699,7 @@ public class TransactionDetailFragment extends BaseFragment
         if(mCategorySpinner != null) {
             mCategorySpinner.setBackgroundResource(newBackground);
         }
+        currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
     }
 
     public void ShowReminderDialog(String title, String message) {
@@ -1046,6 +1054,45 @@ public class TransactionDetailFragment extends BaseFragment
                     mCategories.add(mOriginalCategories.get(i));
                 }
             }
+        }
+        mCategoryAdapter.notifyDataSetChanged();
+    }
+
+    private void addMatchesForPrefix(String strPrefix, String strMatch)
+    {
+        List<String> cumulativeStrings = new ArrayList<String>();
+
+        for (Category category : mOriginalCategories) {
+            String s = category.getCategoryName();
+
+            if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
+                    s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
+                if (!cumulativeStrings.contains(s)) {
+                    Log.d(TAG, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
+                    cumulativeStrings.add(s);
+                    mCategories.add(category);
+                }
+            }
+        }
+    }
+
+    private void createNewCategoryChoices(String match)
+    {
+        mCategories.clear();
+
+        List<String> orderedCategories = new ArrayList<>();
+
+        // Order the categories list, currentType first
+        orderedCategories.add(currentType);
+        for(String type : getResources().getStringArray(R.array.transaction_categories_list)) {
+            if(!type.contains(currentType)) {
+                orderedCategories.add(type);
+            }
+        }
+
+        for (String type : orderedCategories) {
+            Log.d(TAG, "Searching for "+type);
+            addMatchesForPrefix(type, match);
         }
         mCategoryAdapter.notifyDataSetChanged();
     }
