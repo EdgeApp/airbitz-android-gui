@@ -709,6 +709,8 @@ public class SendConfirmationFragment extends BaseFragment {
 
     @Override
     public void onResume() {
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         bundle = this.getArguments();
         if (bundle == null) {
             Log.d(TAG, "Send confirmation bundle is null");
