@@ -1083,7 +1083,7 @@ public class NavigationActivity extends Activity
         bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
         Fragment frag = new SignUpFragment();
         frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
+        pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
     }
 
