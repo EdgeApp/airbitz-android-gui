@@ -3,7 +3,8 @@
     android:id="@+id/fragment_wallet_sendrequest_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="15dp"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -11,9 +12,10 @@
         android:id="@+id/fragment_wallet_request_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
+        android:layout_marginTop="1dp"
         android:layout_marginBottom="4dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/bg_button_green" >
+        android:background="@drawable/bg_btn_green" >
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
@@ -33,17 +35,17 @@
             android:gravity="center"
             android:text="@string/fragment_wallet_request_button"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            style="@style/BlackDropShadow" />
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fragment_wallet_send_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
+        android:layout_marginTop="1dp"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/bg_button_orange" >
+        android:background="@drawable/bg_btn_orange" >
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
@@ -63,8 +65,7 @@
             android:gravity="center"
             android:text="@string/fragment_wallet_send_button"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            style="@style/BlackDropShadow" />
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
 </LinearLayout>
