@@ -586,16 +586,18 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
         @Override
         protected void onPostExecute(Boolean success) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
-            mCreateBitmapTask = null;
-            if(success) {
-                checkNFC();
-                checkBle();
-                mBitcoinAddress.setText(mAddress);
-                if (mQRBitmap != null) {
-                    mQRView.setImageBitmap(mQRBitmap);
+            if(isAdded()) {
+                ((NavigationActivity) getActivity()).showModalProgress(false);
+                mCreateBitmapTask = null;
+                if(success) {
+                    checkNFC();
+                    checkBle();
+                    mBitcoinAddress.setText(mAddress);
+                    if (mQRBitmap != null) {
+                        mQRView.setImageBitmap(mQRBitmap);
+                    }
+                    mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
                 }
-                mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
             }
         }
 
