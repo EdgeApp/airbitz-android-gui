@@ -216,6 +216,7 @@
                     android:text="@string/request_button_import"
                     android:textColor="#999999"
                     android:textSize="14sp"
+                    android:layout_marginLeft="5dp"
                     android:visibility="visible" />
 
                 <TextView
