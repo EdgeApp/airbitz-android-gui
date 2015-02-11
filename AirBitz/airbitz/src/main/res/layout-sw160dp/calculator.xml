@@ -184,7 +184,7 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             style="@style/BlackDropShadow"
-            android:background="@drawable/calc_btn_orange_bg"
+            android:background="@drawable/bg_btn_orange"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
 
