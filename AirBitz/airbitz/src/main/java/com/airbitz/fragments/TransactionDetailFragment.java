@@ -107,6 +107,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -275,10 +276,10 @@ public class TransactionDetailFragment extends BaseFragment
         List<String> catStrings = mCoreAPI.loadCategories();
         for(String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
-//                Log.d(TAG, "Loading category "+cat);
                 originalStrings.add(cat);
             }
         }
+        Collections.sort(originalStrings);
         for(String cat : originalStrings) {
             mOriginalCategories.add(new Category(cat, ""));
         }
@@ -700,6 +701,7 @@ public class TransactionDetailFragment extends BaseFragment
             mCategorySpinner.setBackgroundResource(newBackground);
         }
         currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
+        createNewCategoryChoices(mCategoryEdittext.getText().toString());
     }
 
     public void ShowReminderDialog(String title, String message) {
@@ -1040,22 +1042,6 @@ public class TransactionDetailFragment extends BaseFragment
 
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
-    }
-
-    public void goCreateCategoryList(String term) {
-        List<String> cumulativeStrings = new ArrayList<String>();
-        mCategories.clear();
-        for (int i = 0; i < mOriginalCategories.size(); i++) {
-            String s = mOriginalCategories.get(i).getCategoryName();
-
-            if (s.toLowerCase().substring(s.indexOf(':') + 1).contains(term.toLowerCase())) {
-                if (!cumulativeStrings.contains(s)) {
-                    cumulativeStrings.add(s);
-                    mCategories.add(mOriginalCategories.get(i));
-                }
-            }
-        }
-        mCategoryAdapter.notifyDataSetChanged();
     }
 
     private void addMatchesForPrefix(String strPrefix, String strMatch)
