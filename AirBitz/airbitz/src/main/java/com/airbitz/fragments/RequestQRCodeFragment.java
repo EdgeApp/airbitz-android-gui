@@ -112,7 +112,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
-    private HighlightOnPressButton mCancelButton;
     private HighlightOnPressButton mSMSButton;
     private HighlightOnPressButton mEmailButton;
     private HighlightOnPressButton mCopyButton;
@@ -211,7 +210,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
         mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
         mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);
-        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_cancel_button);
 
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,14 +233,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         });
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-                ((NavigationActivity) getActivity()).showNavBar();
-            }
-        });
-
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
