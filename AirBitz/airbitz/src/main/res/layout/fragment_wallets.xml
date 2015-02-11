@@ -115,7 +115,7 @@
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_wallets_addwallet_name_edittext"
             android:layout_width="match_parent"
-            android:layout_height="31.5dp"
+            android:layout_height="35dp"
             android:layout_margin="9.45dp"
             android:background="@drawable/emboss_down"
             android:gravity="center_vertical"
@@ -131,7 +131,7 @@
         <LinearLayout
             android:id="@+id/fragment_wallets_addwallet_currency_layout"
             android:layout_width="match_parent"
-            android:layout_height="25.2dp"
+            android:layout_height="30dp"
             android:layout_marginBottom="6dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
@@ -211,11 +211,11 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_cancel_button"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/btn_cancel"
+                android:background="@drawable/bg_btn_orange"
                 android:text="@string/string_cancel"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
@@ -223,11 +223,11 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_done_button"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/btn_green"
+                android:background="@drawable/bg_btn_green"
                 android:text="@string/string_done"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"

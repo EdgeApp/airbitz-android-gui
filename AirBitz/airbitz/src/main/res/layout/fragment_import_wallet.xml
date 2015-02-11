@@ -11,6 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
 
+    <include
+        android:id="@+id/fragment_import_layout_camera"
+        layout="@layout/fragment_camera_scan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_header"
+        android:visibility="visible" />
+
 
     <LinearLayout
         android:id="@+id/fragment_import_layout"
@@ -42,7 +50,6 @@
                     android:layout_marginLeft="15.75dp"
                     android:layout_marginRight="15.75dp"
                     android:layout_marginTop="15.75dp"
-                    android:background="@drawable/emboss_down"
                     android:gravity="center_horizontal"
                     android:paddingLeft="6.3dp"
                     android:paddingRight="6.3dp"
@@ -51,7 +58,7 @@
                     <LinearLayout
                         android:id="@+id/layout_from"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
                         android:layout_marginBottom="9.45dp"
                         android:gravity="center_vertical|center_horizontal"
                         android:orientation="horizontal">
@@ -59,13 +66,13 @@
                         <TextView
                             android:id="@+id/textview_from"
                             android:layout_width="64dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="35dp"
                             android:layout_marginRight="4dp"
                             android:gravity="center_vertical|right"
                             android:paddingRight="6.3dp"
                             android:text="@string/send_from_title"
                             android:textColor="@android:color/white"
-                            android:textSize="14sp"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <com.airbitz.objects.HighlightOnPressSpinner
@@ -89,7 +96,7 @@
                     <LinearLayout
                         android:id="@+id/layout_to"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
                         android:layout_below="@id/layout_from"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="9.45dp"
@@ -104,7 +111,7 @@
                             android:paddingRight="6.3dp"
                             android:text="@string/import_wallet_private_key_title"
                             android:textColor="@android:color/white"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <com.airbitz.objects.LimitedEditText
@@ -122,21 +129,13 @@
                             android:textColor="@android:color/white"
                             android:textColorHint="@color/text_hint"
                             android:textCursorDrawable="@drawable/bold_cursor_white"
-                            android:textSize="14sp" />
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                 </RelativeLayout>
 
 
             </LinearLayout>
-
-            <include
-                android:id="@+id/fragment_import_layout_camera"
-                layout="@layout/fragment_camera_scan"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/layout_data"
-                android:visibility="visible" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_import_enter_button"
@@ -148,6 +147,7 @@
                     android:textColor="@android:color/white"
                     android:layout_marginTop="60dp"
                     android:layout_marginBottom="60dp"
+                    android:visibility="gone"
                     android:background="@drawable/bg_button_green" />
 
         </LinearLayout>

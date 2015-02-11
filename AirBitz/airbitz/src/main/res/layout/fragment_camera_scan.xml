@@ -15,8 +15,8 @@
 
         <ImageButton
             android:id="@+id/button_flash"
-            android:layout_width="40dp"
-            android:layout_height="80dp"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"

@@ -79,7 +79,7 @@
                     android:popupBackground="@drawable/rounded_edge_white_bg"
                     android:spinnerMode="dropdown"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -142,19 +142,6 @@
         android:layout_below="@id/layout_data"
         android:textSize="14sp" />
 
-    <View
-        android:layout_below="@id/textview_scan_qrcode"
-        android:layout_width="294dp"
-        android:layout_height="215dp"
-        android:layout_margin="12.6dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/camera_frame"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-
-
-
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"
         android:layout_width="match_parent"
@@ -215,7 +202,7 @@
         android:layout_below="@id/layout_data"
         android:layout_marginTop="-38.6dp"
         android:background="@android:color/transparent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ListView
             android:id="@+id/listing_listview"

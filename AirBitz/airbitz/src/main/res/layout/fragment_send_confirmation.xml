@@ -19,7 +19,7 @@
         android:layout_below="@+id/layout_title_header"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp">
+        android:paddingTop="0dp">
 
         <RelativeLayout
             android:id="@+id/layout_send_confirmation"
