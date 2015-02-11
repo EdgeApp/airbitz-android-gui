@@ -573,12 +573,14 @@ public class SendFragment extends BaseFragment implements
         if(bluetooth) {
             mCameraLayout.setVisibility(View.GONE);
             mBluetoothLayout.setVisibility(View.VISIBLE);
+            mQRCodeTextView.setVisibility(View.GONE);
             startBluetoothSearch();
         }
         else {
             stopBluetoothSearch();
             mCameraLayout.setVisibility(View.VISIBLE);
             mBluetoothLayout.setVisibility(View.GONE);
+            mQRCodeTextView.setVisibility(View.VISIBLE);
             mHandler.postDelayed(cameraDelayRunner, 500);
         }
     }
