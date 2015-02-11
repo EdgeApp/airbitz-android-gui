@@ -237,7 +237,7 @@ public class NavigationActivity extends Activity
         mCoreAPI.setOnOnRemotePasswordChangeListener(this);
 
         setContentView(R.layout.activity_navigation);
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
+        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app_day_again));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
@@ -1083,7 +1083,7 @@ public class NavigationActivity extends Activity
         bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
         Fragment frag = new SignUpFragment();
         frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
+        pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
     }
 
