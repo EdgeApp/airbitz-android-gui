@@ -13,19 +13,6 @@
 
         </FrameLayout>
 
-        <TextView
-            android:id="@+id/textview_scan_qrcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:shadowColor="@android:color/black"
-            android:shadowDy="4"
-            android:shadowRadius="1"
-            android:text="@string/send_scan_text"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
         <ImageButton
             android:id="@+id/button_flash"
             android:layout_width="40dp"
@@ -67,14 +54,5 @@
                 android:src="@drawable/gallery_button" />
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="12.6dp"
-            android:background="@drawable/camera_frame"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
 
     </RelativeLayout>
