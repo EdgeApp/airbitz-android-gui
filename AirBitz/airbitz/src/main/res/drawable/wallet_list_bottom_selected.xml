@@ -22,9 +22,9 @@
     <item
         android:left=".5dp"
         android:right=".5dp"
-        android:top="1dp">
+        android:top=".5dp">
         <shape>
-            <solid android:color="@color/blue_highlight" />
+            <solid android:color="@color/selected_highlight" />
             <corners
                 android:bottomLeftRadius="6dp"
                 android:bottomRightRadius="6dp" />

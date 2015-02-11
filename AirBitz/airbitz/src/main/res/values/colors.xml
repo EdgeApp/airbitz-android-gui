@@ -10,8 +10,9 @@
     <color name="gray_text">#4c4c4c</color>
     <color name="dark_gray_text">#343450</color>
     <color name="light_gray">#f2f2f2</color>
-    <color name="blue_highlight">#ff59ddff</color>
-    <color name="listitem_normal">#ffaddff1</color>
+    <color name="blue_highlight">#cc59ddff</color>
+    <color name="listitem_normal">#88ffffff</color>
+    <color name="selected_highlight">#aaffffff</color>
     <color name="semi_black_text">#99000000</color>
     <color name="settings_button_text">#CC333333</color>
     <color name="settings_edit_text">#FF999999</color>

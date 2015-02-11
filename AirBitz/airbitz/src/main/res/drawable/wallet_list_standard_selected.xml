@@ -3,7 +3,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="#999999" />
+            <solid android:color="#00999999" />
         </shape>
     </item>
     <item
@@ -11,16 +11,16 @@
         android:left=".5dp"
         android:right=".5dp">
         <shape>
-            <solid android:color="#ffffff" />
+            <solid android:color="#00ffffff" />
         </shape>
     </item>
     <item
-        android:bottom="1dp"
+        android:bottom=".5dp"
         android:left=".5dp"
         android:right=".5dp"
-        android:top="1dp">
+        android:top=".5dp">
         <shape>
-            <solid android:color="@color/blue_highlight" />
+            <solid android:color="@color/selected_highlight" />
         </shape>
     </item>
 </layer-list>

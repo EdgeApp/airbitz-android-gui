@@ -3,13 +3,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="#ffffff" />
+            <solid android:color="#ccffffff" />
             <corners android:radius="6dp" />
         </shape>
     </item>
     <item android:top="6dp">
         <shape>
-            <solid android:color="#999999" />
+            <solid android:color="#ccffffff" />
             <corners
                 android:bottomLeftRadius="6dp"
                 android:bottomRightRadius="6dp" />
@@ -18,7 +18,7 @@
     <item
         android:left=".5dp"
         android:right=".5dp"
-        android:top="1dp">
+        android:top=".5dp">
         <shape>
             <solid android:color="@color/listitem_normal" />
             <corners android:radius="6dp" />

@@ -15,12 +15,12 @@
         </shape>
     </item>
     <item
-        android:bottom="1dp"
+        android:bottom=".5dp"
         android:left=".5dp"
         android:right=".5dp"
-        android:top="1dp">
+        android:top=".5dp">
         <shape>
-            <solid android:color="@color/blue_highlight" />
+            <solid android:color="@color/selected_highlight" />
             <corners
                 android:topLeftRadius="6dp"
                 android:topRightRadius="6dp" />

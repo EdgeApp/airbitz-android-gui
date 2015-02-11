@@ -902,7 +902,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/btn_blue"
+                android:background="@drawable/bg_btn_red"
                 android:padding="5dp"
                 android:text="@string/settings_button_logout"
                 android:textColor="@android:color/white"

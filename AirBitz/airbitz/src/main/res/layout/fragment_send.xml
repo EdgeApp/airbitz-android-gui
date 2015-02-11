@@ -153,7 +153,7 @@
             android:id="@+id/fragment_send_bluetooth_scanning_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" >
+            android:visibility="visible" >
 
             <TextView
                 android:id="@+id/fragment_send_scanning_text"
@@ -169,7 +169,7 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
                 android:paddingTop="6dp"
@@ -182,7 +182,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/fragment_send_scanning_button"
-                android:background="@drawable/bg_button_orange" />
+                android:background="@drawable/bg_btn_orange" />
 
         </RelativeLayout>
 
