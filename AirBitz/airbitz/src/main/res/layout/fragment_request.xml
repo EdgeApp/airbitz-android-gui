@@ -93,7 +93,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/button_expand"
-                        android:background="@drawable/bg_btn_blue_stretch" />
+                        android:background="@drawable/bg_btn_blue" />
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="32dp"
