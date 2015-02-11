@@ -4,7 +4,7 @@
     android:id="@+id/layout_balance"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/emboss_down_deep">
+    android:background="@drawable/emboss_down">
 
     <RelativeLayout
         android:id="@+id/top_switch"
@@ -73,11 +73,11 @@
             android:id="@+id/button_mover"
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
-            android:background="@drawable/bg_button_green"
+            android:background="@drawable/bg_btn_green"
             android:gravity="center"
             android:shadowColor="@android:color/black"
-            android:shadowDy="4"
-            android:shadowRadius="1"
+            android:shadowDy="0"
+            android:shadowRadius="0"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
