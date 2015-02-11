@@ -36,7 +36,7 @@
             <LinearLayout
                 android:id="@+id/layout_data"
                 android:layout_width="match_parent"
-                android:layout_height="126dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/layout_title_header"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
@@ -132,7 +132,21 @@
                             android:textSize="16dp" />
                     </LinearLayout>
 
+
                 </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textview_scan_qrcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:shadowColor="@android:color/black"
+                    android:shadowDy="4"
+                    android:shadowRadius="1"
+                    android:text="@string/send_scan_text"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
 
 
             </LinearLayout>
