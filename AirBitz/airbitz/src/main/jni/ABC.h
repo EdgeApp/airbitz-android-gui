@@ -699,7 +699,7 @@ tABC_CC ABC_SignIn(const char *szUserName,
 
 tABC_CC ABC_CreateAccount(const char *szUserName,
                           const char *szPassword,
-                          const char *szPin,
+                          const char *szPIN,
                           tABC_Request_Callback fRequestCallback,
                           void *pData,
                           tABC_Error *pError);
@@ -721,15 +721,12 @@ tABC_CC ABC_PinLoginDelete(const char *szUserName,
                            tABC_Error *pError);
 
 tABC_CC ABC_PinLogin(const char *szUserName,
-                     const char *szPin,
+                     const char *szPIN,
                      tABC_Error *pError);
 
 tABC_CC ABC_PinSetup(const char *szUserName,
                      const char *szPassword,
                      tABC_Error *pError);
-
-tABC_CC ABC_ListAccounts(char **pszUserNames,
-                         tABC_Error *pError);
 
 /* === Login data: === */
 tABC_CC ABC_ChangePassword(const char *szUserName,
@@ -775,12 +772,12 @@ void ABC_FreeAccountSettings(tABC_AccountSettings *pSettings);
 
 tABC_CC ABC_GetPIN(const char *szUserName,
                    const char *szPassword,
-                   char **pszPin,
+                   char **pszPIN,
                    tABC_Error *pError);
 
 tABC_CC ABC_SetPIN(const char *szUserName,
                    const char *szPassword,
-                   const char *szPin,
+                   const char *szPIN,
                    tABC_Error *pError);
 
 tABC_CC ABC_GetCategories(const char *szUserName,
