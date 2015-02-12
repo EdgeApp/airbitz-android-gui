@@ -85,6 +85,7 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private TextView mToEdittext;
     private EditText mAuthorizationEdittext;
+    String mDelayedMessage;
 
     private TextView mTitleTextView;
     private TextView mFromTextView;
@@ -928,9 +929,10 @@ public class SendConfirmationFragment extends BaseFragment {
             mSendOrTransferTask = null;
             if (txResult.getError() != null) {
                 Log.d(TAG, "Error during send " + txResult.getError());
-                if (mActivity != null && isAdded()) {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+                if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
+                    mDelayedMessage = mActivity.getResources().getString(R.string.fragment_send_confirmation_send_error_title) +"\n" + txResult.getError();
+                    mHandler.postDelayed(mDelayedErrorMessage, 500);
                 }
             } else {
                 if (mActivity != null) {
@@ -947,4 +949,15 @@ public class SendConfirmationFragment extends BaseFragment {
             mSendOrTransferTask = null;
         }
     }
+
+    Runnable mDelayedErrorMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (mDelayedMessage != null) {
+                mActivity.ShowFadingDialog(mDelayedMessage);
+            }
+        }
+    };
+
+
 }
