@@ -39,8 +39,11 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 
 public class BaseFragment extends Fragment {
+    public static Integer DURATION = 300;
+    NavigationActivity mActivity;
 
     // Overriding the fragment transition animations to use variable display width
     @Override
@@ -51,8 +54,10 @@ public class BaseFragment extends Fragment {
         display.getSize(size);
         float displayWidth = size.x;
         Animator animator = null;
+        if(mActivity == null) {
+            mActivity = (NavigationActivity) getActivity();
+        }
 
-        int duration = 300;
         switch(nextAnim) {
             case R.animator.slide_in_from_left:
                 animator = ObjectAnimator.ofFloat(this, "translationX", -displayWidth, 0);
@@ -67,34 +72,28 @@ public class BaseFragment extends Fragment {
                 animator = ObjectAnimator.ofFloat(this, "translationX", 0, displayWidth);
                 break;
             default:
-                animator = null; //enter ? ObjectAnimator.ofFloat(this, "alpha", 0, 1) :
-                        //ObjectAnimator.ofFloat(this, "alpha", 1, 0);
-                duration = 0;
+                animator = null;
         }
 
         if(animator != null) {
-            animator.setDuration(duration);
+            animator.setDuration(DURATION);
             animator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                     Log.d("BaseFragment", "Animation starting, setting FLAG_NOT_TOUCHABLE");
-                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     Log.d("BaseFragment", "Animation ended, clearing FLAG_NOT_TOUCHABLE");
-                    if(isAdded()) {
-                        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    }
+                    mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animator) {
-                    if(isAdded()) {
-                        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    }
+                    mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
 
                 @Override
