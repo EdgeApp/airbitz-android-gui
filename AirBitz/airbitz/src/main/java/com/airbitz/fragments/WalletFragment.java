@@ -423,6 +423,10 @@ public class WalletFragment extends BaseFragment
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(!isAdded()) {
+                    return;
+                }
+
                 mActivity.hideSoftKeyboard(mSendButton);
                 // Make sure this is not the header view and offset i by 1
                 if (i > 0) {
