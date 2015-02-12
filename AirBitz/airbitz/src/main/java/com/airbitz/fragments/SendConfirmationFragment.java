@@ -230,7 +230,7 @@ public class SendConfirmationFragment extends BaseFragment {
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
         mWalletSpinner.setAdapter(dataAdapter);
 
         mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
