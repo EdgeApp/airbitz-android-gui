@@ -78,7 +78,6 @@ import android.widget.Toast;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
-import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -269,31 +268,7 @@ public class TransactionDetailFragment extends BaseFragment
         goSearch();
 
         mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
-
-        // Initialize category items
-        mOriginalCategories = new ArrayList<Category>();
-        List<String> originalStrings = new ArrayList<>();
-        List<String> catStrings = mCoreAPI.loadCategories();
-        for(String cat : catStrings) {
-            if(!originalStrings.contains(cat)) {
-                originalStrings.add(cat);
-            }
-        }
-        Collections.sort(originalStrings);
-        for(String cat : originalStrings) {
-            mOriginalCategories.add(new Category(cat, ""));
-        }
-
-        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
-        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
-        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
-        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
-
         mCategories = new ArrayList<Category>();
-        mCategories.addAll(mOriginalCategories);
-
-        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
-        mCategoryListView.setAdapter(mCategoryAdapter);
 
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
@@ -393,10 +368,12 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                updateAutoCompleteArray(mPayeeEditText.getText().toString());
-                updateBizId();
-                updatePhoto();
-                mSearchAdapter.notifyDataSetChanged();
+                if(!doEdit && isResumed()) {
+                    updateAutoCompleteArray(mPayeeEditText.getText().toString());
+                    updateBizId();
+                    updatePhoto();
+                    mSearchAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -467,8 +444,6 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            String mInput = "";
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             }
@@ -479,12 +454,10 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!doEdit) {
-                    mInput = editable.toString();
-
-                    Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
-                    updateBlanks(mInput);
-                    createNewCategoryChoices(mInput);
+                if (!doEdit && isResumed()) {
+                    Log.d(TAG, "editable=" + editable.toString());
+                    updateBlanks(editable.toString());
+                    createNewCategoryChoices(editable.toString());
                 }
             }
         });
@@ -537,8 +510,10 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mFiatValue = mFiatValueEdittext.getText().toString(); // global save
-                mFiatValueEdittext.setSelection(mFiatValue.length());
+                if(isResumed()) {
+                    mFiatValue = mFiatValueEdittext.getText().toString(); // global save
+                    mFiatValueEdittext.setSelection(mFiatValue.length());
+                }
             }
         };
 
@@ -612,6 +587,33 @@ public class TransactionDetailFragment extends BaseFragment
         return mView;
     }
 
+    private void setupOriginalCategories() {
+        // Initialize category items
+        mCategories.clear();
+        mOriginalCategories = new ArrayList<Category>();
+        List<String> originalStrings = new ArrayList<>();
+        List<String> catStrings = mCoreAPI.loadCategories();
+        for(String cat : catStrings) {
+            if(!originalStrings.contains(cat)) {
+                originalStrings.add(cat);
+            }
+        }
+        Collections.sort(originalStrings);
+        for(String cat : originalStrings) {
+            mOriginalCategories.add(new Category(cat, ""));
+        }
+
+        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
+        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
+        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
+        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
+
+        mCategories.addAll(mOriginalCategories);
+
+        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
+        mCategoryListView.setAdapter(mCategoryAdapter);
+    }
+
     private void showUpperLayout(boolean visible) {
         if (visible) {
             mUpperLayout.setVisibility(View.VISIBLE);
@@ -664,13 +666,24 @@ public class TransactionDetailFragment extends BaseFragment
             }
         }
 
-        getContactsList();
+        if(mContactNames == null || mContactNames.isEmpty()) {
+            Log.d(TAG, "Getting Contact List");
+            getContactsList();
+        }
+
         if(mTransaction != null) {
+            Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
             UpdateView(mTransaction);
         }
 
+        if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
+            Log.d(TAG, "Getting original categories");
+            setupOriginalCategories();
+        }
+
         mCategoryAdapter.setOnNewCategoryListener(this);
+        Log.d(TAG, "OnResume finished");
     }
 
 
@@ -1001,6 +1014,7 @@ public class TransactionDetailFragment extends BaseFragment
     }
 
     private void UpdateView(Transaction transaction) {
+        doEdit = true;
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
         mDateTextView.setText(dateString);
 
@@ -1042,6 +1056,7 @@ public class TransactionDetailFragment extends BaseFragment
 
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
+        doEdit = false;
     }
 
     private void addMatchesForPrefix(String strPrefix, String strMatch)
@@ -1054,7 +1069,7 @@ public class TransactionDetailFragment extends BaseFragment
             if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
                     s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-                    Log.d(TAG, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
+//                    Log.d(TAG, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1077,7 +1092,7 @@ public class TransactionDetailFragment extends BaseFragment
         }
 
         for (String type : orderedCategories) {
-            Log.d(TAG, "Searching for "+type);
+//            Log.d(TAG, "Searching for "+type);
             addMatchesForPrefix(type, match);
         }
         mCategoryAdapter.notifyDataSetChanged();
@@ -1368,6 +1383,7 @@ public class TransactionDetailFragment extends BaseFragment
 
     private void FindBizIdThumbnail(String name, long id) {
         if (id != 0) {
+            Log.d(TAG, "Finding bizid thumbnail for "+name);
             GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
