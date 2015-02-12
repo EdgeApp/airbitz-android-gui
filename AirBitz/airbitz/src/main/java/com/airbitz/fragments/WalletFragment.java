@@ -99,13 +99,13 @@ public class WalletFragment extends BaseFragment
     private TextView mMoverType;
     private TextView mBottomType;
     private TextView mTopType;
-    private RelativeLayout exportLayout;
+    private RelativeLayout mHeaderView;
     private RelativeLayout mParentLayout;
     private Button mBitCoinBalanceButton;
     private Button mFiatBalanceButton;
     private Button mButtonMover;
     private RelativeLayout mBalanceSwitchLayout;
-    private RelativeLayout switchContainer;
+    private RelativeLayout mSwitchView;
     private SwipeRefreshLayout mSwipeLayout;
     private boolean mOnBitcoinMode = true;
     Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
@@ -147,7 +147,7 @@ public class WalletFragment extends BaseFragment
     };
     private EditText mWalletNameEditText;
     private ListView mListTransaction;
-    private ViewGroup mHeaderView;
+    private ViewGroup mListHeaderView;
     private TransactionAdapter mTransactionAdapter;
     private List<Transaction> mTransactions;
     private List<Transaction> mAllTransactions;
@@ -212,10 +212,10 @@ public class WalletFragment extends BaseFragment
 
 
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
-        exportLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
+        mHeaderView = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
 
         mBalanceSwitchLayout = (RelativeLayout) mView.findViewById(R.id.switchable);
-        switchContainer = (RelativeLayout) mView.findViewById(R.id.layout_balance);
+        mSwitchView = (RelativeLayout) mView.findViewById(R.id.layout_balance);
 
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
@@ -254,12 +254,12 @@ public class WalletFragment extends BaseFragment
         mFiatBalanceButton = (Button) mView.findViewById(R.id.back_button_bottom);
 
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
-        if (mHeaderView == null) {
-            mHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
-            mListTransaction.addHeaderView(mHeaderView, null, false);
+        if (mListHeaderView == null) {
+            mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_req_send_buttons, null, false);
+            mListTransaction.addHeaderView(mListHeaderView, null, false);
         }
-        mSendButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_send_button);
-        mRequestButton = (LinearLayout) mHeaderView.findViewById(R.id.fragment_wallet_request_button);
+        mSendButton = (LinearLayout) mListHeaderView.findViewById(R.id.fragment_wallet_send_button);
+        mRequestButton = (LinearLayout) mListHeaderView.findViewById(R.id.fragment_wallet_request_button);
         mListTransaction.setAdapter(mTransactionAdapter);
 
         mWalletNameEditText.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -459,72 +459,31 @@ public class WalletFragment extends BaseFragment
         if (visible) {
             mSearchLayout.setX(mParentLayout.getWidth());
             mSearchLayout.setVisibility(View.VISIBLE);
+            if(mSearchBarHeight == 0) {
+                mSearchBarHeight = mSearchLayout.getHeight();
+                mListViewY = mListTransaction.getY();
+            }
+            mActivity.hideSoftKeyboard(mSearchField);
+            mSwitchView.setVisibility(View.GONE);
+            mListTransaction.removeHeaderView(mListHeaderView);
+            mHeaderView.setVisibility(View.INVISIBLE);
+
             mSearchLayout.animate().translationX(0).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mSearchLayout.setVisibility(View.VISIBLE);
                 }
             });
-            switchContainer.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    switchContainer.setVisibility(View.GONE);
-                }
-            });
-            exportLayout.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    exportLayout.setVisibility(View.INVISIBLE);
-                }
-            });
-            mHeaderView.animate().alpha(0f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mHeaderView.setVisibility(View.GONE);
-                }
-            });
-            mSearchBarHeight = mActivity.getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_height);
-            mListViewY = mActivity.getResources().getDimension(R.dimen.fragment_wallet_search_scroll_animation_top);
-
-            mListTransaction.animate().translationY(-mListViewY + mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListTransaction.setVisibility(View.VISIBLE);
-                    mListTransaction.requestLayout();
-                }
-            });
             mSearchField.requestFocus();
         } else {
             mActivity.hideSoftKeyboard(mSearchField);
+            mSwitchView.setVisibility(View.VISIBLE);
+            mListTransaction.addHeaderView(mListHeaderView);
+            mHeaderView.setVisibility(View.VISIBLE);
             mSearchLayout.animate().translationX(mParentLayout.getWidth()).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mSearchLayout.setVisibility(View.GONE);
-                }
-            });
-            switchContainer.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    switchContainer.setVisibility(View.VISIBLE);
-                }
-            });
-            exportLayout.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    exportLayout.setVisibility(View.VISIBLE);
-                }
-            });
-            mHeaderView.animate().alpha(1f).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mHeaderView.setVisibility(View.VISIBLE);
-                }
-            });
-            mListTransaction.animate().translationY(mListViewY - mSearchBarHeight).setDuration(SEARCH_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListTransaction.setVisibility(View.VISIBLE);
-                    mListTransaction.requestLayout();
                 }
             });
         }

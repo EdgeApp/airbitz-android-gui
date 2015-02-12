@@ -30,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/fragment_wallet_header_separator_blue"
-        android:layout_marginBottom="12.6dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:orientation="vertical">
@@ -93,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-1dp"
+            android:layout_marginTop="12.6dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:visibility="visible" />
@@ -118,7 +118,7 @@
     <LinearLayout
         android:id="@+id/fragment_wallet_search_layout"
         android:layout_width="match_parent"
-        android:layout_height="44.1dp"
+        android:layout_height="50dp"
         android:layout_below="@id/fragment_wallet_header_separator_blue"
         android:background="@drawable/search_bar"
         android:orientation="vertical"
