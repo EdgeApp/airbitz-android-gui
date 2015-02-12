@@ -65,9 +65,8 @@
     <LinearLayout
         android:id="@+id/layout_near_you_sticky"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/fragment_business_directory_layout_search"
         android:visibility="visible">
 
         <View
