@@ -438,7 +438,7 @@ public class NavigationActivity extends Activity
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
 
-            getFragmentManager().executePendingTransactions();
+//            getFragmentManager().executePendingTransactions();
         }
     }
 
