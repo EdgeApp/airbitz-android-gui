@@ -103,7 +103,7 @@ public class PlayLocationManager implements
     }
 
     public void attemptConnection() {
-        if (locationClient == null || !locationClient.isConnected()) {
+        if (locationClient == null || !locationClient.isConnected() || !locationClient.isConnecting()) {
             Log.d(TAG, "Attempting connection");
             locationClient = new LocationClient(mContext, this, this);
             locationClient.connect();
