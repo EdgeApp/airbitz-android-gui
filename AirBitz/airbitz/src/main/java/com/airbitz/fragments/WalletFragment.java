@@ -476,7 +476,6 @@ public class WalletFragment extends BaseFragment
             });
             mSearchField.requestFocus();
         } else {
-            mActivity.hideSoftKeyboard(mSearchField);
             mSwitchView.setVisibility(View.VISIBLE);
             mListTransaction.addHeaderView(mListHeaderView);
             mHeaderView.setVisibility(View.VISIBLE);
