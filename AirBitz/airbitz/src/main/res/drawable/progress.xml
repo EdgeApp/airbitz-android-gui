@@ -16,7 +16,7 @@
             android:height="76dp" />
         <gradient
             android:angle="0"
-            android:endColor="@color/gray_border"
+            android:endColor="@color/blue_text"
             android:startColor="@android:color/transparent"
             android:type="sweep"
             android:useLevel="false" />
