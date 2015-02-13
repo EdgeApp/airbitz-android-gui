@@ -350,7 +350,6 @@ public class coreJNI {
   public final static native int ABC_PinLoginDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_PinLogin(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_PinSetup(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
-  public final static native int ABC_ListAccounts(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);

@@ -437,6 +437,8 @@ public class NavigationActivity extends Activity
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
+
+//            getFragmentManager().executePendingTransactions();
         }
     }
 
@@ -829,6 +831,7 @@ public class NavigationActivity extends Activity
             if (tx.getAmountSatoshi() > 0) {
                 AudioPlayer.play(this, R.raw.bitcoin_received);
                 showIncomingBitcoinDialog();
+                updateWalletListener();
             }
         }
     }

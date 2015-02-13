@@ -286,13 +286,12 @@ public class ImportFragment extends BaseFragment implements
         Log.d(TAG, "stopCamera");
         if(mQRCamera != null) {
             mQRCamera.stopCamera();
-            mQRCamera.setOnScanResultListener(null);
         }
     }
 
     public void startCamera() {
         if(mQRCamera == null) {
-            mQRCamera = new QRCamera(mActivity, mCameraLayout);
+            mQRCamera = new QRCamera(this, mCameraLayout);
             mQRCamera.setOnScanResultListener(this);
         }
         mQRCamera.startCamera();
@@ -342,6 +341,7 @@ public class ImportFragment extends BaseFragment implements
             mToEdittext.setText(result);
             attemptSubmit();
         }
+        mQRCamera.setOnScanResultListener(null);
     }
 
     @Override
