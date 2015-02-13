@@ -562,7 +562,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-            if (mID != null) {
+            if (mID != null && mQRBitmap == null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
