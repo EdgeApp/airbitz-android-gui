@@ -527,9 +527,23 @@ public class WalletFragment extends BaseFragment
         startTransactionTask();
 
         updateBalanceBar();
+        updateSendRequestButtons();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
+
+    }
+
+    private void updateSendRequestButtons() {
+        if(mCoreAPI.walletsStillLoading()) {
+            mRequestButton.setClickable(false);
+            mSendButton.setClickable(false);
+            mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
+        }
+        else {
+            mRequestButton.setClickable(true);
+            mSendButton.setClickable(true);
+        }
     }
 
     private void updateBalanceBar() {
@@ -603,6 +617,7 @@ public class WalletFragment extends BaseFragment
             mWalletNameEditText.setText(mWallet.getName());
 
             startTransactionTask();
+            updateSendRequestButtons();
         }
     }
 

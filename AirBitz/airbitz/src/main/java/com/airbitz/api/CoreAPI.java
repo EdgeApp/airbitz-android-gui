@@ -2148,6 +2148,20 @@ public class CoreAPI {
         return null;
     }
 
+    public boolean walletsStillLoading() {
+        List<Wallet> wallets = getCoreActiveWallets();
+        if(!AirbitzApplication.isLoggedIn() || wallets == null) {
+            return true;
+        }
+        for(Wallet wallet : wallets) {
+            if(wallet.isLoading()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public List<Wallet> getCoreActiveWallets() {
         List<Wallet> wallets = getCoreWallets(false);
         if(wallets == null) {

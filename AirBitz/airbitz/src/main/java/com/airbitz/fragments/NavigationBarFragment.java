@@ -155,8 +155,9 @@ public class NavigationBarFragment extends BaseFragment {
 
         // ignore Send and Request until wallets are loaded
         if((selectedTab == NavigationActivity.Tabs.REQUEST.ordinal() ||
-            selectedTab == NavigationActivity.Tabs.SEND.ordinal()) && walletsStillLoading()) {
+            selectedTab == NavigationActivity.Tabs.SEND.ordinal()) && mCoreAPI.walletsStillLoading()) {
             selectedTab = NavigationActivity.Tabs.WALLET.ordinal();
+            mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
         }
         else {
             displayPopup(ev);
@@ -167,19 +168,6 @@ public class NavigationBarFragment extends BaseFragment {
 
         if (mActivity != null)
             mActivity.onNavBarSelected(selectedTab);
-    }
-
-    private boolean walletsStillLoading() {
-        List<Wallet> wallets = mCoreAPI.getCoreActiveWallets();
-        if(!AirbitzApplication.isLoggedIn() || wallets == null) {
-            return true;
-        }
-        for(Wallet wallet : wallets) {
-            if(wallet.isLoading()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int getTabNum(MotionEvent ev) {
