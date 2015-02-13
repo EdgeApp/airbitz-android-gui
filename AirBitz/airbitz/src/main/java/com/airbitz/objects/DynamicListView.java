@@ -146,7 +146,8 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()) {
+                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()
+                            && !(pos==1 && mWalletList.get(2).isArchiveHeader())) { // if there's more than one active wallet
                         mTotalOffset = 0;
 
                         int position = pointToPosition(mDownX, mDownY);
