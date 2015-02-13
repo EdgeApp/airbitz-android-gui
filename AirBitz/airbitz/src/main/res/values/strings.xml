@@ -285,6 +285,8 @@
     <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
     <string name="fragment_send_confirmation_pin_remaining">Invalid PIN. Please wait %1$.0f seconds and try again…</string>
     <string name="fragment_send_confirmation_password_remaining">Incorrect Password. Please wait %1$.0f seconds and try again…</string>
+    <string name="fragment_send_confirmation_dust_alert">Amount is too small.</string>
+    <string name="fragment_send_confirmation_dust_alert_more">Please send at least %1$s (~%2$s)</string>
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>

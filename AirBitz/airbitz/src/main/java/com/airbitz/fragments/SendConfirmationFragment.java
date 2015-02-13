@@ -81,6 +81,7 @@ public class SendConfirmationFragment extends BaseFragment {
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
     private final int CALC_SEND_FEES_DELAY_MILLIS = 400;
+    private final int DUST_AMOUNT = 5340;
     private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
     private TextView mToEdittext;
@@ -627,7 +628,6 @@ public class SendConfirmationFragment extends BaseFragment {
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
              mAuthorizationEdittext.requestFocus();
-             resetSlider();
         } else if (mPasswordRequired && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mAuthorizationEdittext.getText().toString())) {
              mInvalidEntryCount += 1;
              saveInvalidEntryCount(mInvalidEntryCount);
@@ -643,11 +643,11 @@ public class SendConfirmationFragment extends BaseFragment {
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_message));
              }
              mAuthorizationEdittext.requestFocus();
-             resetSlider();
-         } else if (mAmountToSendSatoshi == 0) {
-            resetSlider();
-            mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else {
+        } else if (mAmountToSendSatoshi == 0) {
+             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
+        } else if (mAmountToSendSatoshi < DUST_AMOUNT) {
+             showDustAlert();
+         } else {
              // show the sending screen
              SuccessFragment mSuccessFragment = new SuccessFragment();
              Bundle bundle = new Bundle();
@@ -657,8 +657,18 @@ public class SendConfirmationFragment extends BaseFragment {
 
              mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
              mSendOrTransferTask.execute();
-             finishSlider();
+         }
+        resetSlider();
+    }
+
+    private void showDustAlert() {
+        double dustFiat = mCoreAPI.SatoshiToCurrency(DUST_AMOUNT, mSourceWallet.getCurrencyNum());
+        String alertMessage = getString(R.string.fragment_send_confirmation_dust_alert);
+        if(dustFiat != 0) {
+           alertMessage += " " + String.format(getString(R.string.fragment_send_confirmation_dust_alert_more),
+               mCoreAPI.formatSatoshi((long) DUST_AMOUNT), mCoreAPI.formatCurrency(dustFiat, mSourceWallet.getCurrencyNum(), true));
         }
+        mActivity.ShowFadingDialog(alertMessage);
     }
 
     final Runnable invalidEntryTimer = new Runnable() {
@@ -670,13 +680,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private void resetSlider() {
         Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), 0);
-        animator.setDuration(300);
-        animator.setStartDelay(0);
-        animator.start();
-    }
-
-    private void finishSlider() {
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), -(mRightThreshold - (mLeftThreshold)));
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
