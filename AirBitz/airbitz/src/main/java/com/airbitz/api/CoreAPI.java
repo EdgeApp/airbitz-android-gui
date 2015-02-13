@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -116,7 +116,6 @@ public class CoreAPI {
     public native void set64BitLongAtPtr(long pointer, long value);
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, boolean addSign, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
-    public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
@@ -427,16 +426,15 @@ public class CoreAPI {
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
-        String[] uuids = new String[wallets.size()-2]; // 2 extras for headers
-        int count=0;
         boolean archived=false; // non-archive
+        StringBuffer uuids = new StringBuffer("");
         for(Wallet wallet : wallets) {
             if(wallet.isArchiveHeader()) {
                 archived=true;
             } else if(wallet.isHeader()) {
                 archived=false;
             } else { // wallet is real
-                uuids[count++] = wallet.getUUID();
+                uuids.append(wallet.getUUID()).append("\n");
                 long attr = wallet.getAttributes();
                 if(archived) {
                     wallet.setAttributes(1); //attr & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT));
@@ -448,12 +446,9 @@ public class CoreAPI {
         }
 
         tABC_Error Error = new tABC_Error();
-
-        int result = setWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-            uuids, Error);
-
-        if(tABC_CC.swigToEnum(result) != tABC_CC.ABC_CC_Ok)
-        {
+        tABC_CC result = core.ABC_SetWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            uuids.toString().trim(), Error);
+        if (result != tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
         }
     }

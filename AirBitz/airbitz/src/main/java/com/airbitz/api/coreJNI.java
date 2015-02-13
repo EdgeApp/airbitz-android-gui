@@ -79,6 +79,7 @@ public class coreJNI {
   public final static native int ABC_CC_NonNumericPin_get();
   public final static native int ABC_CC_NoAvailableAddress_get();
   public final static native int ABC_CC_PinExpired_get();
+  public final static native int ABC_CC_InvalidOTP_get();
   public final static native int ABC_RequestType_AccountSignIn_get();
   public final static native int ABC_RequestType_CreateAccount_get();
   public final static native int ABC_RequestType_SetAccountRecoveryQuestions_get();
@@ -331,6 +332,7 @@ public class coreJNI {
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_GeneralInfoUpdate(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_GetCurrencies(long jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_GetQuestionChoices(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native void ABC_FreeQuestionChoices(long jarg1, tABC_QuestionChoices jarg1_);
@@ -342,6 +344,7 @@ public class coreJNI {
   public final static native int ABC_FormatAmount(long jarg1, long jarg2, long jarg3, boolean jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CheckPassword(String jarg1, long jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreePasswordRuleArray(long jarg1, long jarg2);
+  public final static native int ABC_QrEncode(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SignIn(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_CreateAccount(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetRecoveryQuestions(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
@@ -350,10 +353,20 @@ public class coreJNI {
   public final static native int ABC_PinLoginDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_PinLogin(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_PinSetup(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_ListAccounts(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ChangePassword(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_PasswordOk(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_OtpKeyGet(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_OtpKeySet(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_OtpKeyRemove(String jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_OtpAuthGet(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_OtpAuthSet(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_OtpAuthRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_OtpResetGet(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_OtpResetSet(String jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_OtpResetRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_UpdateAccountSettings(String jarg1, String jarg2, long jarg3, tABC_AccountSettings jarg3_, long jarg4, tABC_Error jarg4_);
   public final static native void ABC_FreeAccountSettings(long jarg1, tABC_AccountSettings jarg1_);
@@ -371,7 +384,7 @@ public class coreJNI {
   public final static native int ABC_GetWalletUUIDs(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GetWallets(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_FreeWalletInfoArray(long jarg1, long jarg2);
-  public final static native int ABC_SetWalletOrder(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_SetWalletOrder(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_RenameWallet(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_SetWalletArchived(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GetWalletInfo(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
