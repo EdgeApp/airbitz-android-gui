@@ -658,8 +658,12 @@ public class TransactionDetailFragment extends BaseFragment
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
                 if (mTransaction != null) {
-                    setCurrentType(mTransaction.getCategory());
-
+                    if(mFromSend || mFromRequest) {
+                        mTransaction.setCategory(currentType);
+                    }
+                    else {
+                        setCurrentType(mTransaction.getCategory());
+                    }
                     // if there is a bizId, add it as the first one of the map
                     if (mTransaction.getmBizId() != 0) {
                         mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
