@@ -3,28 +3,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="46dp"
-    android:background="@android:color/transparent"
-    android:paddingBottom="9dp"
-    android:paddingLeft="9dp"
-    android:paddingRight="9dp"
-    android:paddingTop="9dp">
+    android:background="@drawable/wallet_list_standard"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
 
     <com.airbitz.objects.LimitedEditText
         android:id="@+id/category_field"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toLeftOf="@+id/category_delete"
-        android:background="@drawable/emboss_down"
+        android:background="@drawable/emboss_white"
         android:imeOptions="actionDone"
         android:inputType="textVisiblePassword|textNoSuggestions"
         android:paddingLeft="12.6dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/settings_edit_text_field"
         android:textSize="17sp" />
 
     <com.airbitz.objects.HighlightOnPressButton
         android:id="@+id/category_delete"
-        android:layout_width="37.8dp"
-        android:layout_height="match_parent"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="12.6dp"
         android:background="@drawable/btn_delete_category" />

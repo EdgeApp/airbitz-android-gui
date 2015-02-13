@@ -266,7 +266,7 @@
                             android:inputType="textNoSuggestions|textCapWords"
                             android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_name_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -292,7 +292,7 @@
                             android:inputType="textNoSuggestions|textCapWords"
                             android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_name_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -318,7 +318,7 @@
                             android:inputType="textNoSuggestions|textCapWords"
                             android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_name_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
                             android:textSize="17sp" />
                     </LinearLayout>
