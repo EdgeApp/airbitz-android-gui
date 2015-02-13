@@ -11,11 +11,11 @@
 
     <com.airbitz.objects.HighlightOnPressButton
         android:id="@+id/fragment_request_qr_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="50dp"
         android:layout_marginEnd="50dp"
         android:background="@drawable/refresh" />
