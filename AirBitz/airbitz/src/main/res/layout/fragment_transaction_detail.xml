@@ -390,31 +390,29 @@
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_advanced"
-                    style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_btn_gray"
+                    android:background="@drawable/bg_button_gray"
                     android:gravity="center"
                     android:layout_marginRight="12dp"
                     android:text="@string/transaction_details_advanced_title"
-                    android:textColor="#777777"
-                    android:textSize="14dp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_done"
-                    style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
-                    android:background="@drawable/bg_btn_green"
+                    android:background="@drawable/bg_button_blue"
                     android:text="@string/string_done"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
             </LinearLayout>
 
         </LinearLayout>

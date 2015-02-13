@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="75.6dp"
         android:layout_below="@id/fragment_category_layout_header"
-        android:background="@drawable/bg_search_bar_new"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <com.airbitz.objects.LimitedEditText
@@ -25,7 +25,7 @@
             android:layout_marginLeft="12.6dp"
             android:layout_marginRight="12.6dp"
             android:layout_marginTop="6.3dp"
-            android:background="@drawable/rounded_edge"
+            android:background="@drawable/emboss_down"
             android:drawableLeft="@drawable/ico_search"
             android:drawablePadding="12.6dp"
             android:hint="@string/string_search"
@@ -33,9 +33,9 @@
             android:inputType="textAutoComplete|textNoSuggestions"
             android:paddingLeft="12.6dp"
             android:selectAllOnFocus="true"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textColorHint="@color/text_hint"
-            android:textCursorDrawable="@drawable/bold_cursor"
+            android:textCursorDrawable="@drawable/bold_cursor_white"
             android:textSize="16sp" />
 
         <RelativeLayout
@@ -51,14 +51,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="12.6dp"
                 android:layout_toLeftOf="@+id/settings_category_button_add"
-                android:background="@drawable/rounded_edge"
+                android:background="@drawable/emboss_down"
                 android:hint="@string/settings_categories_add_new"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:paddingLeft="12.6dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="#44000000"
-                android:textCursorDrawable="@drawable/bold_cursor"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/text_hint"
+                android:textCursorDrawable="@drawable/bold_cursor_white"
                 android:textSize="16sp" />
 
             <com.airbitz.objects.HighlightOnPressButton
@@ -76,7 +76,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/done_cancel_container"
         android:layout_below="@+id/layout_search_container"
-        android:background="#addff1">
+        android:background="@android:color/transparent">
 
         <ListView
             android:id="@+id/category_list_view"
@@ -92,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="50.4dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_tab_bar"
+        android:background="@android:color/transparent"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="6.3dp"
@@ -112,7 +112,7 @@
             android:layout_width="138.6dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="6.3dp"
-            android:background="@drawable/bg_button_green"
+            android:background="@drawable/bg_btn_green"
             android:text="@string/string_done"
             android:textColor="#FFFFFF" />
 
@@ -136,14 +136,6 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:visibility="invisible" >
-
-        <View
-            android:id="@+id/add_popup_triangle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-25dp"
-            android:background="@drawable/blue_triangle" />
 
         <LinearLayout
             android:id="@+id/add_popup_container"
@@ -233,7 +225,7 @@
             android:layout_width="match_parent"
             android:layout_height="44.1dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/listitem_normal"
+            android:background="@android:color/white"
             android:paddingBottom="9.45dp"
             android:paddingLeft="9.45dp"
             android:paddingRight="9.45dp"
@@ -244,11 +236,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/item_popup_delete"
-                android:background="@drawable/rounded_edge"
+                android:background="@drawable/emboss_down"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:paddingLeft="12.6dp"
-                android:textSize="16sp" />
+                android:textSize="17sp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/item_popup_delete"
@@ -268,8 +260,9 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/item_popup_listview_triangle"
             android:background="@drawable/category_popup"
+            android:layout_above="@+id/item_popup_edittext_container"
+            android:layout_marginBottom="0dp"
             android:paddingTop="6.3dp">
 
             <LinearLayout
@@ -337,16 +330,6 @@
 
             </LinearLayout>
         </ScrollView>
-
-        <View
-            android:id="@+id/item_popup_listview_triangle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_above="@+id/item_popup_edittext_container"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="-25dp"
-            android:background="@drawable/blue_triangle"
-            android:rotation="180" />
 
     </RelativeLayout>
 </RelativeLayout>

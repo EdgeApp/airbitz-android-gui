@@ -23,10 +23,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="25.2dp"
-                android:background="@drawable/rounded_edge_blue_bg"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="0dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:paddingLeft="14dp"
@@ -71,8 +70,8 @@
                     android:paddingLeft="6.3dp"
                     android:paddingRight="6.3dp"
                     android:text="@string/activity_signup_password_help"
-                    android:textColor="@color/disabled_hint_color"
-                    android:textSize="10sp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/activity_signup_password_edittext"
@@ -161,7 +160,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="30dp"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/btn_blue"
+                    android:background="@drawable/bg_button_blue"
                     android:text="@string/activity_recovery_complete_button"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"

@@ -167,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabbar_height"
         android:orientation="horizontal"
-        android:background="@drawable/tab_base"
+        android:background="@drawable/tab_base_frost"
         android:weightSum="5">
 
         <RelativeLayout

@@ -3,7 +3,7 @@
     android:id="@+id/fragment_landing_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_day_again"
+    android:background="@drawable/bg_landing"
     android:focusableInTouchMode="true"
     tools:context="com.airbitz.activities.LandingActivity"
     tools:ignore="MergeRootFrame">

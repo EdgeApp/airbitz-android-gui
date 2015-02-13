@@ -10,7 +10,7 @@
     <color name="gray_text">#4c4c4c</color>
     <color name="dark_gray_text">#343450</color>
     <color name="light_gray">#f2f2f2</color>
-    <color name="blue_highlight">#cc59ddff</color>
+    <color name="blue_highlight">#cc7dcaf5</color>
     <color name="listitem_normal">#88ffffff</color>
     <color name="selected_highlight">#aaffffff</color>
     <color name="semi_black_text">#99000000</color>
@@ -19,6 +19,14 @@
     <color name="settings_edit_hint">#FFDDDDDD</color>
     <color name="mostly_opaque_black">#DD000000</color>
     <color name="off_white">#FFEDEDED</color>
+    <color name="wallet_list_header">#44000000</color>
+    <color name="header_search">#2291cf</color>
+
+    <color name="green_frost">#ff228822</color>
+    <color name="red_frost">#ffaa3333</color>
+    <color name="gray_frost">#ff777777</color>
+    <color name="white_frost">#aa777777</color>
+
 
     <color name="identifier_white">#FFFFFF</color>
     <color name="identifier_off_text">#444444</color>

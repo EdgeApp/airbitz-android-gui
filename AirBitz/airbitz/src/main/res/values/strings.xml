@@ -11,7 +11,7 @@
     <string name="string_no">No</string>
     <string name="string_cancel">Cancel</string>
     <string name="string_search">Search</string>
-    <string name="string_done">Done</string>
+    <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
@@ -304,8 +304,8 @@
     <string name="fragment_wallet_unconfirmed">Pending</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
-    <string name="fragment_wallet_request_button">Request</string>
-    <string name="fragment_wallet_send_button">Send</string>
+    <string name="fragment_wallet_request_button">RECEIVE</string>
+    <string name="fragment_wallet_send_button">SEND</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
@@ -346,7 +346,7 @@
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
-    <string name="transaction_details_advanced_title">Advanced Details</string>
+    <string name="transaction_details_advanced_title">ADVANCED</string>
     <string name="transaction_details_category_title">Category</string>
     <string name="transaction_details_notes_title">Notes</string>
     <string name="transaction_details_to">"To: "</string>

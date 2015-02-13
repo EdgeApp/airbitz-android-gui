@@ -12,10 +12,10 @@
         android:id="@+id/fragment_wallet_request_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="4dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/bg_btn_green" >
+        android:background="@drawable/bg_button_green" >
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
@@ -42,10 +42,10 @@
         android:id="@+id/fragment_wallet_send_button"
         android:layout_width="138.6dp"
         android:layout_height="37.8dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/bg_btn_red" >
+        android:background="@drawable/bg_button_blue" >
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
