@@ -211,11 +211,9 @@ public class QRCamera implements
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
             String info = AttemptDecodePicture(thumbnail);
-            if (info != null) {
-                stopCamera();
-                if(mOnScanResult != null) {
-                    mOnScanResult.onScanResult(info);
-                }
+            stopCamera();
+            if(mOnScanResult != null) {
+                mOnScanResult.onScanResult(info);
             }
         }
     }

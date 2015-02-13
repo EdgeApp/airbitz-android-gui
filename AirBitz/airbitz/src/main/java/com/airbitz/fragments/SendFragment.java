@@ -626,14 +626,18 @@ public class SendFragment extends BaseFragment implements
 
     @Override
     public void onScanResult(String result) {
-        Log.d(TAG, "checking result = "+result);
-        CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
-        if (info != null && info.address != null) {
-            Log.d(TAG, "Bitcoin found");
-            GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-        } else if (info != null) {
-            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
+        Log.d(TAG, "checking result = " + result);
+        if (result != null) {
+            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
+            if (info != null && info.address != null) {
+                Log.d(TAG, "Bitcoin found");
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            } else if (info != null) {
+                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
+            }
+            mQRCamera.setOnScanResultListener(null);
+        } else {
+            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
         }
-        mQRCamera.setOnScanResultListener(null);
     }
 }
