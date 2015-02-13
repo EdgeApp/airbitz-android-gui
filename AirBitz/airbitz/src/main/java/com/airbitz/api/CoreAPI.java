@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -89,6 +89,7 @@ public class CoreAPI {
     public static double SATOSHI_PER_BTC = 1E8;
     public static double SATOSHI_PER_mBTC = 1E5;
     public static double SATOSHI_PER_uBTC = 1E2;
+    public static int OTP_RESET_DELAY_SECS = 60 * 60 * 24 * 7;
 
     static {
         System.loadLibrary("abc");
@@ -116,7 +117,6 @@ public class CoreAPI {
     public native void set64BitLongAtPtr(long pointer, long value);
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, boolean addSign, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
-    public native int setWalletOrder(String jarg1, String jarg2, String[] jarg3, tABC_Error jarg5);
     public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
@@ -427,16 +427,15 @@ public class CoreAPI {
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
-        String[] uuids = new String[wallets.size()-2]; // 2 extras for headers
-        int count=0;
         boolean archived=false; // non-archive
+        StringBuffer uuids = new StringBuffer("");
         for(Wallet wallet : wallets) {
             if(wallet.isArchiveHeader()) {
                 archived=true;
             } else if(wallet.isHeader()) {
                 archived=false;
             } else { // wallet is real
-                uuids[count++] = wallet.getUUID();
+                uuids.append(wallet.getUUID()).append("\n");
                 long attr = wallet.getAttributes();
                 if(archived) {
                     wallet.setAttributes(1); //attr & (1 << CoreAPI.WALLET_ATTRIBUTE_ARCHIVE_BIT));
@@ -448,12 +447,9 @@ public class CoreAPI {
         }
 
         tABC_Error Error = new tABC_Error();
-
-        int result = setWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-            uuids, Error);
-
-        if(tABC_CC.swigToEnum(result) != tABC_CC.ABC_CC_Ok)
-        {
+        tABC_CC result = core.ABC_SetWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            uuids.toString().trim(), Error);
+        if (result != tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
         }
     }
@@ -2787,13 +2783,13 @@ public class CoreAPI {
     }
 
     // Blocking
-    public tABC_CC StatusTwoFactor() {
+    public tABC_CC OtpAuthGet() {
         tABC_Error Error = new tABC_Error();
         SWIGTYPE_p_long ptimeout = core.new_longp();
         SWIGTYPE_p_int lp = core.new_intp();
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
-        tABC_CC cc = core.ABC_StatusTwoFactor(AirbitzApplication.getUsername(),
+        tABC_CC cc = core.ABC_OtpAuthGet(AirbitzApplication.getUsername(),
             AirbitzApplication.getPassword(), pbool, ptimeout, Error);
 
         mTwoFactorOn = core.intp_value(lp)==1;
@@ -2809,8 +2805,7 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_GetTwoFactorSecret(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), ppChar, error);
+        tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
         mTwoFactorSecret = getStringAtPtr(core.longp_value(lp));
         return cc;
     }
@@ -2818,7 +2813,7 @@ public class CoreAPI {
     public boolean isTwoFactorResetPending(tABC_Error error) {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_IsTwoFactorResetPending(ppChar, error);
+        tABC_CC cc = core.ABC_OtpResetGet(ppChar, error);
         if (cc == tABC_CC.ABC_CC_Ok) {
             String userNames = getStringAtPtr(core.longp_value(lp));
             return userNames.contains(AirbitzApplication.getUsername());
@@ -2831,14 +2826,14 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         tABC_CC cc;
         if(on) {
-            cc = core.ABC_EnableTwoFactor(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), error);
+            cc = core.ABC_OtpAuthSet(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), OTP_RESET_DELAY_SECS, error);
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = true;
             }
         }
         else {
-            cc = core.ABC_DisableTwoFactor(AirbitzApplication.getUsername(),
+            cc = core.ABC_OtpAuthRemove(AirbitzApplication.getUsername(),
                     AirbitzApplication.getPassword(), error);
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = false;
@@ -2856,7 +2851,7 @@ public class CoreAPI {
     // Blocking
     public tABC_CC cancelTwoFactorRequest() {
         tABC_Error error = new tABC_Error();
-        return core.ABC_CancelTwoFactorReset(AirbitzApplication.getUsername(),
+        return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), error);
     }
 }

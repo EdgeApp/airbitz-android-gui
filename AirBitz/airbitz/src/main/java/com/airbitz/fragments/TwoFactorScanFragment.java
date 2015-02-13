@@ -185,9 +185,8 @@ public class TwoFactorScanFragment extends BaseFragment implements
     boolean storeSecret(String secret)
     {
         tABC_Error Error = new tABC_Error();
-        tABC_CC cc = core.ABC_SetTwoFactorSecret(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(),
-            secret, true, Error);
+        tABC_CC cc = core.ABC_OtpKeySet(AirbitzApplication.getUsername(),
+            secret, Error);
         return cc == tABC_CC.ABC_CC_Ok;
     }
 
