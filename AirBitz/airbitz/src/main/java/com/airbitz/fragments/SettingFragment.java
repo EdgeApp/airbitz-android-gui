@@ -580,29 +580,23 @@ public class SettingFragment extends BaseFragment {
     private void setUserNameState(boolean on) {
         if (on) {
             mFirstEditText.setEnabled(true);
-            mFirstEditText.setTextColor(getResources().getColor(android.R.color.white));
+            mFirstEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
             mFirstEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
-            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down));
             mLastEditText.setEnabled(true);
-            mLastEditText.setTextColor(getResources().getColor(android.R.color.white));
-            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down));
+            mLastEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
             mLastEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
             mNicknameEditText.setEnabled(true);
-            mNicknameEditText.setTextColor(getResources().getColor(android.R.color.white));
-            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down));
+            mNicknameEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
         } else {
             mFirstEditText.setEnabled(false);
             mFirstEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_none));
             mFirstEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mLastEditText.setEnabled(false);
             mLastEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_none));
             mLastEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mNicknameEditText.setEnabled(false);
             mNicknameEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_none));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
         }
     }
