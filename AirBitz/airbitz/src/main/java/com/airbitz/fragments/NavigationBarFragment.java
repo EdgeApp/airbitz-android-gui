@@ -155,7 +155,8 @@ public class NavigationBarFragment extends BaseFragment {
 
         // ignore Send and Request until wallets are loaded
         if((selectedTab == NavigationActivity.Tabs.REQUEST.ordinal() ||
-            selectedTab == NavigationActivity.Tabs.SEND.ordinal()) && mCoreAPI.walletsStillLoading()) {
+                selectedTab == NavigationActivity.Tabs.SEND.ordinal()) &&
+                AirbitzApplication.isLoggedIn() && mCoreAPI.walletsStillLoading()) {
             selectedTab = NavigationActivity.Tabs.WALLET.ordinal();
             mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
         }
