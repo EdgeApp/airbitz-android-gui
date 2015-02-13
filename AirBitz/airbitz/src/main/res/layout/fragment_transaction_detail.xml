@@ -399,7 +399,7 @@
                     android:layout_marginRight="12dp"
                     android:text="@string/transaction_details_advanced_title"
                     android:textColor="@android:color/white"
-                    android:textSize="20dp" />
+                    android:textSize="16dp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_done"
@@ -412,7 +412,7 @@
                     android:background="@drawable/bg_button_blue"
                     android:text="@string/string_done"
                     android:textColor="@android:color/white"
-                    android:textSize="20dp" />
+                    android:textSize="16dp" />
             </LinearLayout>
 
         </LinearLayout>

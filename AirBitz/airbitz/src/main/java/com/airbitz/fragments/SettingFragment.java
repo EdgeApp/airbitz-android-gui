@@ -36,12 +36,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Build;
@@ -580,13 +578,13 @@ public class SettingFragment extends BaseFragment {
     private void setUserNameState(boolean on) {
         if (on) {
             mFirstEditText.setEnabled(true);
-            mFirstEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
+            mFirstEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mFirstEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
             mLastEditText.setEnabled(true);
-            mLastEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
+            mLastEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mLastEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
             mNicknameEditText.setEnabled(true);
-            mNicknameEditText.setTextColor(getResources().getColor(R.color.settings_edit_name_text));
+            mNicknameEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
         } else {
             mFirstEditText.setEnabled(false);

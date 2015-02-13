@@ -17,7 +17,7 @@
     <color name="settings_button_text">#CC333333</color>
     <color name="settings_edit_text">#FFEEEEEE</color>
     <color name="settings_edit_hint">#FF999999</color>
-    <color name="settings_edit_name_text">#FF444444</color>
+    <color name="settings_edit_text_field">#FF444444</color>
     <color name="mostly_opaque_black">#DD000000</color>
     <color name="off_white">#FFEDEDED</color>
     <color name="wallet_list_header">#44000000</color>

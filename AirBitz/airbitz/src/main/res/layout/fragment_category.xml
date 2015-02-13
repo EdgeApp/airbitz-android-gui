@@ -13,19 +13,20 @@
     <LinearLayout
         android:id="@+id/layout_search_container"
         android:layout_width="match_parent"
-        android:layout_height="75.6dp"
+        android:layout_height="78dp"
         android:layout_below="@id/fragment_category_layout_header"
-        android:background="@android:color/transparent"
+        android:background="@color/header_search"
         android:orientation="vertical">
 
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="28.35dp"
-            android:layout_marginLeft="12.6dp"
-            android:layout_marginRight="12.6dp"
-            android:layout_marginTop="6.3dp"
-            android:background="@drawable/emboss_down"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/emboss_white"
             android:drawableLeft="@drawable/ico_search"
             android:drawablePadding="12.6dp"
             android:hint="@string/string_search"
@@ -33,17 +34,17 @@
             android:inputType="textAutoComplete|textNoSuggestions"
             android:paddingLeft="12.6dp"
             android:selectAllOnFocus="true"
-            android:textColor="@android:color/white"
-            android:textColorHint="@color/text_hint"
-            android:textCursorDrawable="@drawable/bold_cursor_white"
+            android:textColor="@color/gray_text"
+            android:textColorHint="@color/enabled_hint_color"
+            android:textCursorDrawable="@drawable/bold_cursor"
             android:textSize="16sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="28.35dp"
-            android:layout_marginLeft="12.6dp"
-            android:layout_marginRight="12.6dp"
-            android:layout_marginTop="6.3dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="6dp">
 
             <com.airbitz.objects.LimitedEditText
                 android:id="@+id/add_field"
@@ -51,20 +52,20 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="12.6dp"
                 android:layout_toLeftOf="@+id/settings_category_button_add"
-                android:background="@drawable/emboss_down"
+                android:background="@drawable/emboss_white"
                 android:hint="@string/settings_categories_add_new"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:paddingLeft="12.6dp"
-                android:textColor="@android:color/white"
-                android:textColorHint="@color/text_hint"
-                android:textCursorDrawable="@drawable/bold_cursor_white"
+                android:textColor="@color/gray_text"
+                android:textColorHint="@color/enabled_hint_color"
+                android:textCursorDrawable="@drawable/bold_cursor"
                 android:textSize="16sp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_category_button_add"
-                android:layout_width="37.8dp"
-                android:layout_height="match_parent"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/btn_add_category" />
         </RelativeLayout>
