@@ -15,50 +15,31 @@ https://developer.android.com/tools/sdk/ndk/index.html#download
 1. Download and install Java JDK7 
 https://jdk7.java.net/download.html
 
-1. Download PCRE http://www.pcre.org
-1. Extract PCRE directory
-1. CD into PCRE directory
-
+1. Download and install SWIG
     ```bash
-    ./configure
-    make
-    sudo make install
+    brew install swig
+    ./mkabc
     ```
-1. Download SWIG http://swig.org/download.html
-1. Extract SWIG directory
-1. CD into SWIG directory
 
-
-    ```bash
-    ./configure
-    make
-    sudo make install
-    ```
-1. Build the core. This requires swig and ndk-build to be in your path.
+1. Build the core. This requires ndk to be in your path.
 
     ```bash
     cd airbitz-android-gui
     ./mkabc
     ```
 
-1.  In order to work with google maps and the Airbitz Business Directory, you
-    need to create a resource with your API keys in it.
+1.  In order to work with Google Maps and the Airbitz Business Directory, you
+    need to copy the sample all_keys-sample.xml file to all_keys.xml.
 
     ```bash
-    cd airbitz-android-gui
-    mkdir ./AirBitz/airbitz/src/debug
-    mkdir ./AirBitz/airbitz/src/debug/res
-    mkdir ./AirBitz/airbitz/src/debug/res/values
-    
-    cat <<EOF > ./AirBitz/airbitz/src/prod/res/values/all_keys.xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-        <string name="google_maps_api_key">GOOGLE_KEY_HERE</string>
-        <string name="airbitz_business_directory_key">AIRBITZ_BD_KEY_HERE</string>
-        <string name="hockey_key">HOCKEY_APP_KEY_HERE</string>
-    </resources>
-    EOF
-    
+    cd airbitz-android-gui/AirBitz/airbitz/src/prod/res/values
+    cp all_keys-sample.xml all_keys.xml
+    ```
+
+1. Replace the various keys in the all_keys.xml file with your Google Maps API key, Hockey App API key, and Airbitz Business Directory API key    
+
+1. Copy the XML file from prod to debug directory
+    ```bash
     cp ./AirBitz/airbitz/src/prod/res/values/all_keys.xml ./AirBitz/airbitz/src/debug/res/values/all_keys.xml
     ```
 
@@ -68,22 +49,23 @@ https://jdk7.java.net/download.html
 1. Download Github and install, or use Github from a browser.
 1. Open and sign into Github, on the left side click on Airbitz.  Click on the button 'Clone to Computer' for the repository 'Airbitz/airbitz-android-gui' and select where you want to save.
 1. Open Android Studio.  It might ask for a Java Runtime Environment which you can get here: http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
-1. Select Import Project, navigate to where you pulled the repository from Github, select 'Airbitz' and hit ok.
+1. Select Import Non-Android Studio project, navigate to where you pulled the repository from Github, select 'Airbitz' and hit ok.
 1. Click through the next pages, making sure that the Gradle Environment and wrapper is selected if it pops up. It has been built with Gradle and so shouldn't need it.
 1. Sometime during the installation/opening of Android Studio, the SDK manager should open, if it doesn't once you have Android Studio open, go to Tools->Android->SDK Manager.
 1. In the SDK manager you will select the packages you need to install
 
    Currently they are: 
-   Tools->Android SDK Tools 24.0.2
-   Tools->Android SDK Platform-tools 21
-   Tools->Android SDK Build-tools Rev  21.1.1
-   Android 5.0.1 (API 21)->SDK Platform
-   Android 5.0.1 (API 21)->Google APIs
-   Extras->Android Support Repository
-   Extras->Android Support Library
-   Extras->Google Play Services
-   Extras->Google Repository
-   Extras->Google USB Driver (if not Mac)
+   
+*   Tools->Android SDK Tools 24.0.2
+*   Tools->Android SDK Platform-tools 21
+*   Tools->Android SDK Build-tools Rev  21.1.1
+*   Android 5.0.1 (API 21)->SDK Platform
+*   Android 5.0.1 (API 21)->Google APIs
+*   Extras->Android Support Repository
+*   Extras->Android Support Library
+*   Extras->Google Play Services
+*   Extras->Google Repository
+*   Extras->Google USB Driver (if not Mac)
 
    Some of the Extras might not be available at first, install the others and they should be there.
     
