@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Copy this file to all_keys.xml and fill in key information below and uncomment the block below --->
+<!-- Copy this file to all_keys.xml and fill in key information in the first resources block below. Uncomment the second block below. -->
 
-<!---
+<!--
 <resources>
     <string name="google_maps_api_key">GOOGLE_KEY_HERE</string>
     <string name="airbitz_business_directory_key">AIRBITZ_BD_KEY_HERE</string>
     <string name="hockey_key">HOCKEY_APP_KEY_HERE</string>
 </resources>
----->
+-->
+
+<resources>
+    <string name="delete_me_please">DELETE_ME_PLEASE</string>
+</resources>
