@@ -170,12 +170,12 @@
 
             <LinearLayout
                 android:id="@+id/activity_signup_popup_layout"
-                android:layout_width="289.8dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:animateLayoutChanges="true"
-                android:background="@drawable/password_popup"
+                android:background="@color/header_search"
                 android:orientation="vertical"
                 android:padding="6.3dp"
                 android:paddingTop="9.45dp"
@@ -187,10 +187,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/activity_signup_password_requirements"
                     android:textColor="@android:color/white"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="0dp"/>
+                    android:gravity="left"
+                    android:paddingLeft="9.45dp"
+                    android:layout_marginBottom="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -205,7 +206,7 @@
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
                         android:paddingBottom="2dp"
-                        android:src="@drawable/red_x" />
+                        android:src="@drawable/white_dot" />
 
                     <TextView
                         android:id="@+id/activity_signup_switch_text_1"
@@ -213,7 +214,7 @@
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_uppercase"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -229,7 +230,7 @@
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
                         android:paddingBottom="2dp"
-                        android:src="@drawable/red_x" />
+                        android:src="@drawable/white_dot" />
 
                     <TextView
                         android:id="@+id/activity_signup_switch_text_2"
@@ -237,7 +238,7 @@
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_lowercase"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -253,7 +254,7 @@
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
                         android:paddingBottom="2dp"
-                        android:src="@drawable/red_x" />
+                        android:src="@drawable/white_dot" />
 
                     <TextView
                         android:id="@+id/activity_signup_switch_text_3"
@@ -261,7 +262,7 @@
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_number"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -277,7 +278,7 @@
                         android:paddingLeft="9.45dp"
                         android:paddingRight="9.45dp"
                         android:paddingBottom="2dp"
-                        android:src="@drawable/red_x" />
+                        android:src="@drawable/white_dot" />
 
                     <TextView
                         android:id="@+id/activity_signup_switch_text_4"
@@ -285,7 +286,7 @@
                         android:layout_height="match_parent"
                         android:text="@string/activity_signup_popup_length"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <TextView
@@ -294,8 +295,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:paddingLeft="37.8dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="1dp"
+                    android:textStyle="bold"
                     android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    android:textAllCaps="true"
+                    android:textSize="13sp" />
             </LinearLayout>
 
         </RelativeLayout>

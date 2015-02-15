@@ -146,7 +146,7 @@
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
     <string name="activity_signup_insufficient_pin">PIN must be 4 digits</string>
     <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
-    <string name="activity_signup_time_to_crack">Time to crack: </string>
+    <string name="activity_signup_time_to_crack">Time to crack:&#160;</string>
     <string name="activity_signup_seconds">seconds</string>
     <string name="activity_signup_minutes">minutes</string>
     <string name="activity_signup_hours">hours</string>
