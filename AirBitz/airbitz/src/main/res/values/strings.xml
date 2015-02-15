@@ -27,8 +27,8 @@
     <string name="nav_bar_settings_text">Settings</string>
 
     <!-- Calculator strings -->
-    <string name="calculator_back">Back</string>
-    <string name="calculator_done">Done</string>
+    <string name="calculator_back">&lt;&#160;DEL</string>
+    <string name="calculator_done">DONE</string>
 
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
