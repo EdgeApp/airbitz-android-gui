@@ -708,6 +708,10 @@ public class DynamicListView extends ListView {
         int firstVisibleIndex = getFirstVisiblePosition();
 
         if (archiveIndex > firstVisibleIndex + 1) { // show all of wallet header
+            listArchiveHeader = getViewForID(getAdapter().getItemId(archiveIndex));
+            if (listArchiveHeader != null) {
+                listArchiveHeader.setVisibility(VISIBLE);
+            }
             walletsHeader.setY(0);
             archiveHeader.setVisibility(GONE);
         } else if (archiveIndex == firstVisibleIndex + 1) { // mixed first view
@@ -717,8 +721,13 @@ public class DynamicListView extends ListView {
                 walletsHeader.setY(archiveHeader.getY() - walletsHeader.getHeight());
             }
         } else { // show all of archive header
+            listArchiveHeader = getViewForID(getAdapter().getItemId(archiveIndex));
+            if (listArchiveHeader != null) {
+                listArchiveHeader.setVisibility(INVISIBLE);
+            }
             archiveHeader.setVisibility(VISIBLE);
             archiveHeader.setY(0);
+            walletsHeader.setY(- walletsHeader.getHeight());
         }
     }
 
