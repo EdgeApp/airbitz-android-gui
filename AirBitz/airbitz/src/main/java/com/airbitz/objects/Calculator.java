@@ -120,12 +120,10 @@ public class Calculator extends LinearLayout {
     }
 
     public void hideDoneButton() {
-        mDone.setBackground(getResources().getDrawable(R.drawable.bg_btn_green));
         mDone.setText(getResources().getString(R.string.request_next));
     }
 
     public void showDoneButton() {
-        mDone.setBackground(getResources().getDrawable(R.drawable.calc_btn_blue_bg));
         mDone.setText(getResources().getString(R.string.calculator_done));
     }
 

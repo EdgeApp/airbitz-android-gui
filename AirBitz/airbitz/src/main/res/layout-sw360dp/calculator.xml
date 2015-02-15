@@ -184,7 +184,7 @@
             android:text="@string/calculator_back"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:background="@drawable/bg_btn_orange"
+            android:background="@drawable/btn_calc_back"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
 
@@ -249,7 +249,7 @@
             android:text="@string/calculator_done"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:background="@drawable/calc_btn_blue_bg"
+            android:background="@drawable/btn_calc_done"
             android:onClick="onCalculatorButtonClick"
             android:tag="done" />
     </LinearLayout>
