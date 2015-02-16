@@ -21,7 +21,7 @@
 
     <!-- Nav Bar strings -->
     <string name="nav_bar_directory_text">DIRECTORY</string>
-    <string name="nav_bar_request_text">REQUEST</string>
+    <string name="nav_bar_request_text">RECEIVE</string>
     <string name="nav_bar_send_text">SEND</string>
     <string name="nav_bar_wallets_text">WALLETS</string>
     <string name="nav_bar_settings_text">SETTINGS</string>
