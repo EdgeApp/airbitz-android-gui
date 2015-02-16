@@ -676,6 +676,13 @@ public class TransactionDetailFragment extends BaseFragment
             Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
             UpdateView(mTransaction);
+            if(mFromSend) {
+                setCurrentType(getString(R.string.fragment_category_expense));
+
+            }
+            else if(mFromRequest) {
+                setCurrentType(getString(R.string.fragment_category_income));
+            }
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
