@@ -20,11 +20,11 @@
     <string name="string_exit_app_question">"Would you like to exit Airbitz?"</string>
 
     <!-- Nav Bar strings -->
-    <string name="nav_bar_directory_text">Directory</string>
-    <string name="nav_bar_request_text">Request</string>
-    <string name="nav_bar_send_text">Send</string>
-    <string name="nav_bar_wallets_text">Wallets</string>
-    <string name="nav_bar_settings_text">Settings</string>
+    <string name="nav_bar_directory_text">DIRECTORY</string>
+    <string name="nav_bar_request_text">REQUEST</string>
+    <string name="nav_bar_send_text">SEND</string>
+    <string name="nav_bar_wallets_text">WALLETS</string>
+    <string name="nav_bar_settings_text">SETTINGS</string>
 
     <!-- Calculator strings -->
     <string name="calculator_back">&lt;&#160;DEL</string>
