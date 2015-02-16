@@ -21,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="100.8dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6.3dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="12.6dp"
+            android:layout_marginBottom="12dp"
             android:contentDescription="@string/fragment_landing_logo_description"
             android:src="@drawable/color_logo" />
 
