@@ -89,7 +89,7 @@
                     android:id="@+id/dragImageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_background_grey"
+                    android:background="#ff777777"
                     android:padding="8dp"
                     android:scaleType="center"
                     android:src="@drawable/ico_drag" />
