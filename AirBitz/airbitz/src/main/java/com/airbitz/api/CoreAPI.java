@@ -835,22 +835,42 @@ public class CoreAPI {
         return false;
     }
 
+    static final int RECOVERY_REMINDER_COUNT = 2;
+
+    public void incRecoveryReminder() {
+        incRecoveryReminder(1);
+    }
+
+    public void clearRecoveryReminder() {
+        incRecoveryReminder(RECOVERY_REMINDER_COUNT);
+    }
+
+    private void incRecoveryReminder(int val) {
+        tABC_AccountSettings settings = coreSettings();
+        int reminderCount = settings.getRecoveryReminderCount();
+        reminderCount += val;
+        settings.setRecoveryReminderCount(reminderCount);
+        saveAccountSettings(settings);
+    }
+
     public boolean needsRecoveryReminder(Wallet wallet) {
         int reminderCount = coreSettings().getRecoveryReminderCount();
-        if (reminderCount >= 2) {
+        if (reminderCount >= RECOVERY_REMINDER_COUNT) {
             // We reminded them enough
+            return false;
+        }
+
+        if (wallet.getBalanceSatoshi() < 10000000) {
+            // they do not have enough money to care
             return false;
         }
 
         if (hasRecoveryQuestionsSet()) {
             // Recovery questions already set
+            clearRecoveryReminder();
             return false;
         }
 
-        if (wallet.getBalanceSatoshi() < 10000000) {
-            // they does not have enough money to care
-            return false;
-        }
         return true;
     }
 
