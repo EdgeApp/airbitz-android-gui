@@ -21,9 +21,9 @@
             android:layout_weight="1"
             android:visibility="invisible">
             <ImageView
-                android:layout_width="32dp"
+                android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_directory_selected"
                 android:hapticFeedbackEnabled="true"
@@ -32,11 +32,10 @@
            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/BlackDropShadow"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_directory_text"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -51,9 +50,9 @@
             android:layout_weight="1"
             android:visibility="invisible">
             <ImageView
-                android:layout_width="32dp"
+                android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_request_selected"
                 android:hapticFeedbackEnabled="true"
@@ -62,11 +61,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/BlackDropShadow"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -81,9 +79,9 @@
             android:layout_weight="1"
             android:visibility="invisible">
             <ImageView
-                android:layout_width="32dp"
+                android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_send_selected"
                 android:hapticFeedbackEnabled="true"
@@ -92,11 +90,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/BlackDropShadow"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_send_text"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -111,9 +108,9 @@
             android:layout_weight="1"
             android:visibility="invisible">
             <ImageView
-                android:layout_width="32dp"
+                android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_wallets_selected"
                 android:hapticFeedbackEnabled="true"
@@ -122,11 +119,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/BlackDropShadow"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_wallets_text"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -151,11 +147,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/BlackDropShadow"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_settings_text"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -177,9 +172,9 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/nav_bar_directory_image"
-                android:layout_width="32dp"
-                android:layout_height="28dp"
-                android:layout_marginTop="6dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/ico_directory"
                 android:hapticFeedbackEnabled="true"
@@ -189,7 +184,6 @@
                 android:id="@+id/nav_bar_directory_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/WhiteDropShadow"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_directory_text"
@@ -203,7 +197,7 @@
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/navbar_border" />
 
         <RelativeLayout
             android:id="@+id/request_button"
@@ -224,11 +218,10 @@
                 android:id="@+id/nav_bar_request_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/WhiteDropShadow"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -238,7 +231,7 @@
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/navbar_border" />
 
         <RelativeLayout
             android:id="@+id/send_button"
@@ -259,7 +252,6 @@
                 android:id="@+id/nav_bar_send_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/WhiteDropShadow"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_send_text"
@@ -272,7 +264,7 @@
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/navbar_border" />
 
         <RelativeLayout
             android:id="@+id/wallet_button"
@@ -293,7 +285,6 @@
                 android:id="@+id/nav_bar_wallets_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/WhiteDropShadow"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_wallets_text"
@@ -306,7 +297,7 @@
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/navbar_border" />
 
         <RelativeLayout
             android:id="@+id/setting_button"
@@ -327,7 +318,6 @@
                 android:id="@+id/nav_bar_settings_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/WhiteDropShadow"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_settings_text"
