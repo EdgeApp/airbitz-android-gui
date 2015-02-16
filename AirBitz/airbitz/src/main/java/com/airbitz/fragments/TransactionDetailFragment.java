@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -181,6 +181,7 @@ public class TransactionDetailFragment extends BaseFragment
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+    private CheckReminderNotification mReminderTask = null;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
     private int[] mCategoryBackgrounds = {R.drawable.bg_btn_red, R.drawable.bg_btn_green,
@@ -688,18 +689,8 @@ public class TransactionDetailFragment extends BaseFragment
 
 
     private void goDone() {
-        tABC_AccountSettings settings = mCoreAPI.coreSettings();
-        int reminderCount = settings.getRecoveryReminderCount();
-        if (mFromRequest && mCoreAPI.needsRecoveryReminder(mWallet) && !mHasReminded) {
-            mHasReminded = true;
-            reminderCount++;
-            settings.setRecoveryReminderCount(reminderCount);
-            mCoreAPI.saveAccountSettings(settings);
-            ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
-                    getString(R.string.transaction_details_recovery_reminder_message));
-        } else {
-            done();
-        }
+        mReminderTask = new CheckReminderNotification(mWallet);
+        mReminderTask.execute();
     }
 
     private void done() {
@@ -1423,6 +1414,53 @@ public class TransactionDetailFragment extends BaseFragment
         @Override
         protected void onCancelled() {
             super.onCancelled();
+        }
+    }
+
+    class CheckReminderNotification extends AsyncTask<Void, Void, Boolean> {
+        private Wallet mWallet;
+
+        CheckReminderNotification(Wallet wallet) {
+            mWallet = wallet;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return mCoreAPI.needsRecoveryReminder(mWallet);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean needsReminder) {
+            if (mActivity == null) {
+                return;
+            }
+            mReminderTask = null;
+            if (mFromRequest && needsReminder && !mHasReminded) {
+                mHasReminded = true;
+                mCoreAPI.incRecoveryReminder();
+                ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
+                        getString(R.string.transaction_details_recovery_reminder_message));
+            } else {
+                done();
+            }
+            finish();
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            done();
+            finish();
+        }
+
+        private void finish() {
+            mActivity.showModalProgress(false);
+            mReminderTask = null;
         }
     }
 }
