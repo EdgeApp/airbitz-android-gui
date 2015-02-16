@@ -329,12 +329,6 @@ public class NavigationBarFragment extends BaseFragment {
         mWalletText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mSettingText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mPopupDirectoryText.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mPopupRequestText.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mPopupSendText.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mPopupWalletText.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mPopupSettingText.setTypeface(NavigationActivity.latoRegularTypeFace);
-
         for(int i=0; i<5; i++) {
             unselectTab(i);
         }
