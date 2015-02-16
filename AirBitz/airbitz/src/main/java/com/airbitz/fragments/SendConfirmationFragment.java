@@ -590,6 +590,10 @@ public class SendConfirmationFragment extends BaseFragment {
     }
 
     private void attemptInitiateSend() {
+        // If a send is currently executing, don't send again
+        if (mSendOrTransferTask != null) {
+            return;
+        }
         float remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
         // check if invalid entry timeout still active
         if(mInvalidEntryStartMillis > 0) {
