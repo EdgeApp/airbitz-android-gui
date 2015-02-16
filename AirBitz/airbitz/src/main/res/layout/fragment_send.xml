@@ -55,6 +55,7 @@
 
                 <TextView
                     android:id="@+id/textview_from"
+                    style="@style/BlackDropShadow"
                     android:layout_width="70dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="8dp"
@@ -94,6 +95,7 @@
 
                 <TextView
                     android:id="@+id/textview_to"
+                    style="@style/BlackDropShadow"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
@@ -106,11 +108,12 @@
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/edittext_to"
+                    style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/emboss_down"
                     android:fontFamily="sans-serif"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:hint="@string/fragment_send_send_to_hint"
                     android:imeOptions="actionDone"
                     android:inputType="textAutoComplete|textNoSuggestions"
@@ -130,13 +133,12 @@
 
     <TextView
         android:id="@+id/textview_scan_qrcode"
+        style="@style/BlackDropShadow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:shadowColor="@android:color/black"
         android:shadowDy="4"
-        android:shadowRadius="1"
         android:text="@string/send_scan_text"
         android:textColor="@android:color/white"
         android:layout_below="@id/layout_data"

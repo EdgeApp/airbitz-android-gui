@@ -44,6 +44,7 @@
 
                 <RelativeLayout
                     android:id="@+id/layout_send"
+                    style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -65,6 +66,7 @@
 
                         <TextView
                             android:id="@+id/textview_from"
+                            style="@style/BlackDropShadow"
                             android:layout_width="64dp"
                             android:layout_height="35dp"
                             android:layout_marginRight="4dp"
@@ -84,7 +86,7 @@
                             android:dropDownHorizontalOffset="-50dp"
                             android:dropDownVerticalOffset="0dp"
                             android:dropDownWidth="300dp"
-                            android:gravity="center"
+                            android:gravity="center_vertical"
                             android:popupBackground="@drawable/rounded_edge_white_bg"
                             android:spinnerMode="dropdown"
                             android:textColor="@android:color/white"
@@ -104,6 +106,7 @@
 
                         <TextView
                             android:id="@+id/textview_to"
+                            style="@style/BlackDropShadow"
                             android:layout_width="64dp"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="4dp"
@@ -120,7 +123,7 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/emboss_down"
                             android:fontFamily="sans-serif"
-                            android:gravity="center"
+                            android:gravity="center_vertical"
                             android:hint="@string/import_wallet_private_key_hint"
                             android:imeOptions="actionDone"
                             android:inputType="textAutoComplete|textNoSuggestions"
