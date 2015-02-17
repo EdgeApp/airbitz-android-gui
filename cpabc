@@ -6,11 +6,6 @@ WALLET_PATH="$BASE/AirBitz/airbitz"
 WALLET_MAIN="$WALLET_PATH/src/main"
 LIB_PATH="/abc/android-arm/libabc.so"
 
-if [[ ! -n $(which ndk-build) ]]; then
-    echo "ndk-build must be installed";
-    exit 1
-fi
-
 if [[ ! -n $(which swig) ]]; then
     echo "swig must be installed";
     exit 1
@@ -33,5 +28,5 @@ swig -java -package com.airbitz.api \
         -outdir src/main/java/com/airbitz/api \
         -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
 cd src/main/jni/
-ndk-build
+$BASE/$BUILD_DIR/ndk/android-ndk-r10d/ndk-build
 cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/
