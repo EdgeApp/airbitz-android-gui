@@ -152,10 +152,10 @@ public class DirectoryDetailFragment extends BaseFragment {
         Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
-        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mCategoriesTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mDiscountTextView = (TextView) mView.findViewById(R.id.textview_discount);
-        mDiscountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mDiscountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mDistanceTextView = (TextView) mView.findViewById(R.id.textview_distance);
         mDistanceTextView.setVisibility(View.GONE);
@@ -179,34 +179,34 @@ public class DirectoryDetailFragment extends BaseFragment {
         }, timeout);
 
         mAddressButton = (Button) mView.findViewById(R.id.button_address);
-        mAddressButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mAddressButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mPhoneButton = (Button) mView.findViewById(R.id.button_phone);
-        mPhoneButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mPhoneButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mWebButton = (Button) mView.findViewById(R.id.button_web);
-        mWebButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mWebButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mShareButton = (Button) mView.findViewById(R.id.button_share);
-        mShareButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mShareButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mFacebookButton = (Button) mView.findViewById(R.id.button_facebook);
-        mFacebookButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mFacebookButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mTwitterButton = (Button) mView.findViewById(R.id.button_twitter);
-        mTwitterButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mTwitterButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mYelpButton = (Button) mView.findViewById(R.id.button_yelp);
-        mYelpButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mYelpButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mFoursquareButton = (Button) mView.findViewById(R.id.button_foursquare);
-        mFoursquareButton.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mFoursquareButton.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mHourContainer = (LinearLayout) mView.findViewById(R.id.LinearLayout_hourContainer);
         mDaysTextView = (TextView) mView.findViewById(R.id.TextView_days);
-        mDaysTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mDaysTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         mHoursTextView = (TextView) mView.findViewById(R.id.TextView_hours);
-        mHoursTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mHoursTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         mImagePager = (ViewPager) mView.findViewById(R.id.imageview_business);
         final GestureDetector tapGestureDetector = new GestureDetector(getActivity(), new TapGestureListener());
@@ -218,7 +218,7 @@ public class DirectoryDetailFragment extends BaseFragment {
         });
 
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
-        mAboutField.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+        mAboutField.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         // Header
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
