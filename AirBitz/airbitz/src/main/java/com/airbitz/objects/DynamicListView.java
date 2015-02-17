@@ -585,9 +585,6 @@ public class DynamicListView extends ListView {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if(mobileView != null) {
-                        mobileView.setVisibility(VISIBLE);
-                    }
                     int pos = getPositionForID(mMobileItemId);
                     if (pos > ((WalletAdapter) getAdapter()).getArchivePos() && archiveClosed) {
                         Wallet w = mWalletList.remove(pos);
