@@ -365,7 +365,6 @@ public class WalletsFragment extends BaseFragment
         setupLatestWalletListView();
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mBalanceLabel.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
@@ -373,6 +372,9 @@ public class WalletsFragment extends BaseFragment
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(!isAdded()) {
+                    return;
+                }
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (wallet.isArchiveHeader()) {

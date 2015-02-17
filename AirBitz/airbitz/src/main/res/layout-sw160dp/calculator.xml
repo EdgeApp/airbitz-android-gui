@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="@drawable/bkg_calculator"
+    android:background="#90ffffff"
     android:orientation="vertical">
 
     <LinearLayout
@@ -184,7 +184,7 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             style="@style/BlackDropShadow"
-            android:background="@drawable/calc_btn_orange_bg"
+            android:background="@drawable/btn_calc_back"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
 
@@ -249,7 +249,7 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             style="@style/BlackDropShadow"
-            android:background="@drawable/calc_btn_blue_bg"
+            android:background="@drawable/btn_calc_done"
             android:onClick="onCalculatorButtonClick"
             android:tag="done" />
     </LinearLayout>

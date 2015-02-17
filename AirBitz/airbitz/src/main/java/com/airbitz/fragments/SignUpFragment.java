@@ -32,10 +32,8 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +41,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +69,6 @@ import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created on 2/10/14.
@@ -174,7 +170,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
-        mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
         mWidgetContainer = mView.findViewById(R.id.fragment_signup_widget_container);
@@ -393,7 +388,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 bNewPasswordFieldsAreValid = false;
             }
 
-            int resource = passed ? R.drawable.green_check : R.drawable.red_x;
+            int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
             switch (i) {
                 case 0:
                     mSwitchImage1.setImageResource(resource);

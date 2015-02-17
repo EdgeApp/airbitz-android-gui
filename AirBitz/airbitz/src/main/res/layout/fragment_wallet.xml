@@ -13,7 +13,7 @@
     <View
         android:id="@+id/fragment_wallet_header_separator_black"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="0px"
         android:layout_below="@id/layout_title_header"
         android:background="@android:color/black"
         android:orientation="vertical" />
@@ -21,7 +21,7 @@
     <View
         android:id="@+id/fragment_wallet_header_separator_blue"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="0px"
         android:layout_below="@id/fragment_wallet_header_separator_black"
         android:background="#57b7dd"
         android:orientation="vertical" />
@@ -30,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/fragment_wallet_header_separator_blue"
-        android:layout_marginBottom="12.6dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:orientation="vertical">
@@ -93,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-1dp"
+            android:layout_marginTop="12.6dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:visibility="visible" />
@@ -118,9 +118,9 @@
     <LinearLayout
         android:id="@+id/fragment_wallet_search_layout"
         android:layout_width="match_parent"
-        android:layout_height="44.1dp"
+        android:layout_height="50dp"
         android:layout_below="@id/fragment_wallet_header_separator_blue"
-        android:background="@drawable/search_bar"
+        android:background="@color/header_search"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -133,7 +133,7 @@
             android:layout_marginLeft="12.6dp"
             android:layout_marginRight="12.6dp"
             android:layout_marginTop="6dp"
-            android:background="@drawable/rounded_edge"
+            android:background="@drawable/emboss_frost"
             android:drawableLeft="@drawable/ico_search"
             android:drawablePadding="9.45dp"
             android:drawableStart="@drawable/ico_search"

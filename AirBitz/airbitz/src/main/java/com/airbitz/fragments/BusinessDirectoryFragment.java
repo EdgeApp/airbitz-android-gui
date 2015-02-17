@@ -580,12 +580,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             }
         });
 
-        if (mCategories != null) {
-            updateMoreSpinner(mCategories);
-        }
-        if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.INVISIBLE);
-        }
         mBackButton.setVisibility(View.GONE);
         mNoResultView.setVisibility(View.GONE);
 
@@ -601,6 +595,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         else if(firstVisibleItem > 0) {
             mNearYouLayout.setY(mVenueListView.getY() + mFragHeader.getMeasuredHeight() + mFragSearch.getMeasuredHeight());
         }
+        mNearYouLayout.invalidate();
     }
 
     public void queryWithoutLocation() {
@@ -672,6 +667,10 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        updateNearYouSticky();
+        if (mCategories != null) {
+            updateMoreSpinner(mCategories);
+        }
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
@@ -693,7 +692,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
                 e.printStackTrace();
             }
         }
-        updateNearYouSticky();
         super.onResume();
     }
 
@@ -722,7 +720,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             mVenuesTask.cancel(true);
         }
         mFirstLoad = true;
-
         super.onPause();
     }
 

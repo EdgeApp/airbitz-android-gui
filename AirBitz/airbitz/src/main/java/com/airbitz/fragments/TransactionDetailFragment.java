@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -77,6 +77,7 @@ import android.widget.Toast;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
@@ -95,6 +96,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 
@@ -103,6 +105,8 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -120,6 +124,7 @@ public class TransactionDetailFragment extends BaseFragment
 
     private HighlightOnPressButton mDoneButton;
     private HighlightOnPressButton mAdvanceDetailsButton;
+    private HighlightOnPressSpinner mCategorySpinner;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
     private TextView mTitleTextView;
@@ -176,8 +181,11 @@ public class TransactionDetailFragment extends BaseFragment
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
+    private CheckReminderNotification mReminderTask = null;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
+    private int[] mCategoryBackgrounds = {R.drawable.bg_btn_red, R.drawable.bg_btn_green,
+            R.drawable.bg_btn_blue_stretch, R.drawable.bg_btn_orange};
 
     private Picasso mPicasso;
 
@@ -189,48 +197,8 @@ public class TransactionDetailFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
-                Log.d(TAG, "SEND");
-                mFromSend = true;
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
-                mFromRequest = true;
-                Log.d(TAG, "REQUEST");
-            }
-
-            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-            String txId = bundle.getString(Transaction.TXID);
-            if (walletUUID.isEmpty()) {
-                Log.d(TAG, "no detail info");
-            } else {
-                mCoreAPI = CoreAPI.getApi();
-                mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
-                mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
-
-                if (mTransaction != null) {
-                    if (mTransaction.getCategory().isEmpty()) {
-                        currentType = getString(R.string.fragment_category_income);
-                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_income))) {
-                        currentType = getString(R.string.fragment_category_income);
-                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_expense))) {
-                        currentType = getString(R.string.fragment_category_expense);
-                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_transfer))) {
-                        currentType = getString(R.string.fragment_category_transfer);
-                    } else if (mTransaction.getCategory().startsWith(getString(R.string.fragment_category_exchange))) {
-                        currentType = getString(R.string.fragment_category_exchange);
-                    }
-
-                    // if there is a bizId, add it as the first one of the map
-                    if (mTransaction.getmBizId() != 0) {
-                        mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
-                        mBizId = mTransaction.getmBizId();
-                    }
-                }
-            }
-        }
-
         mActivity = (NavigationActivity) getActivity();
+        mCoreAPI = CoreAPI.getApi();
     }
 
     @Override
@@ -301,24 +269,7 @@ public class TransactionDetailFragment extends BaseFragment
         goSearch();
 
         mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
-
-        // Initialize category items
-        mOriginalCategories = new ArrayList<Category>();
-        List<String> catStrings = mCoreAPI.loadCategories();
-        for(String cat : catStrings) {
-            mOriginalCategories.add(new Category(cat, ""));
-        }
-
-        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
-        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
-        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
-        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
-
         mCategories = new ArrayList<Category>();
-        mCategories.addAll(mOriginalCategories);
-
-        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
-        mCategoryListView.setAdapter(mCategoryAdapter);
 
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
@@ -344,6 +295,20 @@ public class TransactionDetailFragment extends BaseFragment
             public void onClick(View view) {
                 ShowAdvancedDetails(true);
             }
+        });
+
+        mCategorySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.transaction_detail_button_category);
+        CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mCategorySpinner.setAdapter(mCategoryAdapter);
+        mCategorySpinner.setSelection(0);
+        mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateCategoryBackground(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         mPayeeImageViewFrame.setOnClickListener(new View.OnClickListener() {
@@ -404,10 +369,12 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                updateAutoCompleteArray(mPayeeEditText.getText().toString());
-                updateBizId();
-                updatePhoto();
-                mSearchAdapter.notifyDataSetChanged();
+                if(!doEdit && isResumed()) {
+                    updateAutoCompleteArray(mPayeeEditText.getText().toString());
+                    updateBizId();
+                    updatePhoto();
+                    mSearchAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -445,11 +412,9 @@ public class TransactionDetailFragment extends BaseFragment
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
                         highlightEditableText(mCategoryEdittext);
-                    } else {
-                        mCategoryEdittext.append(currentType);
                     }
-                    updateBlanks(mCategoryEdittext.getText().toString().substring(currentType.length()));
-                    goCreateCategoryList(mCategoryEdittext.getText().toString().substring(currentType.length()));
+                    updateBlanks(mCategoryEdittext.getText().toString());
+                    createNewCategoryChoices(mCategoryEdittext.getText().toString());
                 }
             }
         });
@@ -480,8 +445,6 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
         mCategoryEdittext.addTextChangedListener(new TextWatcher() {
-            String mInput = "";
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             }
@@ -492,30 +455,10 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!doEdit) {
-                    if ((currentType.equals(getString(R.string.fragment_category_income)) &&
-                            !editable.toString().startsWith(getString(R.string.fragment_category_income))) ||
-                            (currentType.equals(getString(R.string.fragment_category_expense)) &&
-                            !editable.toString().startsWith(getString(R.string.fragment_category_expense))) ||
-                            (currentType.equals(getString(R.string.fragment_category_transfer)) &&
-                                    !editable.toString().startsWith(getString(R.string.fragment_category_transfer))) ||
-                            (currentType.equals(getString(R.string.fragment_category_exchange)) &&
-                                    !editable.toString().startsWith(getString(R.string.fragment_category_exchange)))) {
-                        doEdit = true;
-                        editable.clear();
-                        editable.append(mInput);
-                        doEdit = false;
-                    }
-
-                    mInput = editable.toString();
-                    String strippedTerm = "";
-                    if(mInput.length() >= currentType.length()) {
-                        strippedTerm = mInput.substring(currentType.length());
-                    }
-
-                    Log.d(TAG, "mInput=" + mInput + ", editable=" + editable.toString());
-                    updateBlanks(strippedTerm);
-                    goCreateCategoryList(strippedTerm);
+                if (!doEdit && isResumed()) {
+                    Log.d(TAG, "editable=" + editable.toString());
+                    updateBlanks(editable.toString());
+                    createNewCategoryChoices(editable.toString());
                 }
             }
         });
@@ -547,19 +490,8 @@ public class TransactionDetailFragment extends BaseFragment
         mCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_income))) {
-                    currentType = getString(R.string.fragment_category_income);
-                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_expense))) {
-                    currentType = getString(R.string.fragment_category_expense);
-                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_transfer))) {
-                    currentType = getString(R.string.fragment_category_transfer);
-                } else if (mCategories.get(i).getCategoryName().startsWith(getString(R.string.fragment_category_exchange))) {
-                    currentType = getString(R.string.fragment_category_exchange);
-                }
-
-                doEdit = true;
-                mCategoryEdittext.setText(mCategoryAdapter.getItem(i).getCategoryName());
-                doEdit = false;
+                setCurrentType(mCategories.get(i).getCategoryName());
+                setCategoryText(TransactionDetailFragment.this.mCategoryAdapter.getItem(i).getCategoryName());
                 if (i == baseIncomePosition || i == baseExpensePosition || i == baseTransferPosition || i == baseExchangePosition) {
                     mCategoryEdittext.setSelection(mCategoryEdittext.getText().length());
                 }
@@ -579,8 +511,10 @@ public class TransactionDetailFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mFiatValue = mFiatValueEdittext.getText().toString(); // global save
-                mFiatValueEdittext.setSelection(mFiatValue.length());
+                if(isResumed()) {
+                    mFiatValue = mFiatValueEdittext.getText().toString(); // global save
+                    mFiatValueEdittext.setSelection(mFiatValue.length());
+                }
             }
         };
 
@@ -654,6 +588,33 @@ public class TransactionDetailFragment extends BaseFragment
         return mView;
     }
 
+    private void setupOriginalCategories() {
+        // Initialize category items
+        mCategories.clear();
+        mOriginalCategories = new ArrayList<Category>();
+        List<String> originalStrings = new ArrayList<>();
+        List<String> catStrings = mCoreAPI.loadCategories();
+        for(String cat : catStrings) {
+            if(!originalStrings.contains(cat)) {
+                originalStrings.add(cat);
+            }
+        }
+        Collections.sort(originalStrings);
+        for(String cat : originalStrings) {
+            mOriginalCategories.add(new Category(cat, ""));
+        }
+
+        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
+        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
+        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
+        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
+
+        mCategories.addAll(mOriginalCategories);
+
+        mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
+        mCategoryListView.setAdapter(mCategoryAdapter);
+    }
+
     private void showUpperLayout(boolean visible) {
         if (visible) {
             mUpperLayout.setVisibility(View.VISIBLE);
@@ -674,35 +635,84 @@ public class TransactionDetailFragment extends BaseFragment
     public void onResume() {
         super.onResume();
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        getContactsList();
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        bundle = getArguments();
+        if (bundle != null) {
+            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
+                Log.d(TAG, "SEND");
+                mFromSend = true;
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
+                mFromRequest = true;
+                Log.d(TAG, "REQUEST");
+            }
+
+            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
+            String txId = bundle.getString(Transaction.TXID);
+            if (walletUUID.isEmpty()) {
+                Log.d(TAG, "no detail info");
+            } else {
+                mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
+                mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
+
+                if (mTransaction != null) {
+                    setCurrentType(mTransaction.getCategory());
+
+                    // if there is a bizId, add it as the first one of the map
+                    if (mTransaction.getmBizId() != 0) {
+                        mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
+                        mBizId = mTransaction.getmBizId();
+                    }
+                }
+            }
+        }
+
+        if(mContactNames == null || mContactNames.isEmpty()) {
+            Log.d(TAG, "Getting Contact List");
+            getContactsList();
+        }
+
         if(mTransaction != null) {
+            Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
             UpdateView(mTransaction);
+            if(mFromSend) {
+                setCurrentType(getString(R.string.fragment_category_expense));
+
+            }
+            else if(mFromRequest) {
+                setCurrentType(getString(R.string.fragment_category_income));
+            }
+        }
+
+        if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
+            Log.d(TAG, "Getting original categories");
+            setupOriginalCategories();
         }
 
         mCategoryAdapter.setOnNewCategoryListener(this);
+        Log.d(TAG, "OnResume finished");
     }
 
 
     private void goDone() {
-        tABC_AccountSettings settings = mCoreAPI.coreSettings();
-        int reminderCount = settings.getRecoveryReminderCount();
-        if (mFromRequest && mCoreAPI.needsRecoveryReminder(mWallet) && !mHasReminded) {
-            mHasReminded = true;
-            reminderCount++;
-            settings.setRecoveryReminderCount(reminderCount);
-            mCoreAPI.saveAccountSettings(settings);
-            ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
-                    getString(R.string.transaction_details_recovery_reminder_message));
-        } else {
-            done();
-        }
+        mReminderTask = new CheckReminderNotification(mWallet);
+        mReminderTask.execute();
     }
 
     private void done() {
-        mCoreAPI.addCategory(mCategoryEdittext.getText().toString());
+        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        mCoreAPI.addCategory(category);
         mActivity.onBackPressed();
+    }
+
+    private void updateCategoryBackground(int position) {
+        int newBackground = mCategoryBackgrounds[position];
+        if(mCategorySpinner != null) {
+            mCategorySpinner.setBackgroundResource(newBackground);
+        }
+        currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
+        createNewCategoryChoices(mCategoryEdittext.getText().toString());
     }
 
     public void ShowReminderDialog(String title, String message) {
@@ -734,6 +744,23 @@ public class TransactionDetailFragment extends BaseFragment
         mMessageDialog.show();
     }
 
+    private void setCurrentType(String input) {
+        int selected = 1;
+        if (input.isEmpty() || input.startsWith(getString(R.string.fragment_category_income))) {
+            currentType = getString(R.string.fragment_category_income);
+            selected = 1;
+        } else if (input.startsWith(getString(R.string.fragment_category_expense))) {
+            currentType = getString(R.string.fragment_category_expense);
+            selected = 0;
+        } else if (input.startsWith(getString(R.string.fragment_category_transfer))) {
+            currentType = getString(R.string.fragment_category_transfer);
+            selected = 2;
+        } else if (input.startsWith(getString(R.string.fragment_category_exchange))) {
+            currentType = getString(R.string.fragment_category_exchange);
+            selected = 3;
+        }
+        mCategorySpinner.setSelection(selected);
+    }
 
     private void updateAutoCompleteArray(String strTerm) {
         // if there is anything in the payee field
@@ -973,7 +1000,19 @@ public class TransactionDetailFragment extends BaseFragment
         }
     }
 
+    private void setCategoryText(String textWithCategory) {
+        setCurrentType(textWithCategory);
+        String strippedTerm = "";
+        if(textWithCategory.length() >= currentType.length()) {
+            strippedTerm = textWithCategory.substring(currentType.length());
+        }
+        doEdit = true;
+        mCategoryEdittext.setText(strippedTerm);
+        doEdit = false;
+    }
+
     private void UpdateView(Transaction transaction) {
+        doEdit = true;
         String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
         mDateTextView.setText(dateString);
 
@@ -984,9 +1023,7 @@ public class TransactionDetailFragment extends BaseFragment
         mPayeeEditText.setText(transaction.getName());
         updatePhoto();
         mNoteEdittext.setText(transaction.getNotes());
-        doEdit = true;
-        mCategoryEdittext.setText(transaction.getCategory());
-        doEdit = false;
+        setCategoryText(transaction.getCategory());
 
         long coinValue = 0;
         String feeFormatted;
@@ -1017,20 +1054,44 @@ public class TransactionDetailFragment extends BaseFragment
 
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
+        doEdit = false;
     }
 
-    public void goCreateCategoryList(String term) {
+    private void addMatchesForPrefix(String strPrefix, String strMatch)
+    {
         List<String> cumulativeStrings = new ArrayList<String>();
-        mCategories.clear();
-        for (int i = 0; i < mOriginalCategories.size(); i++) {
-            String s = mOriginalCategories.get(i).getCategoryName();
 
-            if (s.toLowerCase().substring(s.indexOf(':') + 1).contains(term.toLowerCase())) {
+        for (Category category : mOriginalCategories) {
+            String s = category.getCategoryName();
+
+            if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
+                    s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
+//                    Log.d(TAG, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
-                    mCategories.add(mOriginalCategories.get(i));
+                    mCategories.add(category);
                 }
             }
+        }
+    }
+
+    private void createNewCategoryChoices(String match)
+    {
+        mCategories.clear();
+
+        List<String> orderedCategories = new ArrayList<>();
+
+        // Order the categories list, currentType first
+        orderedCategories.add(currentType);
+        for(String type : getResources().getStringArray(R.array.transaction_categories_list)) {
+            if(!type.contains(currentType)) {
+                orderedCategories.add(type);
+            }
+        }
+
+        for (String type : orderedCategories) {
+//            Log.d(TAG, "Searching for "+type);
+            addMatchesForPrefix(type, match);
         }
         mCategoryAdapter.notifyDataSetChanged();
     }
@@ -1049,9 +1110,7 @@ public class TransactionDetailFragment extends BaseFragment
             mCoreAPI.addCategory(categoryName);
         }
 
-        doEdit = true;
-        mCategoryEdittext.setText(categoryName);
-        doEdit = false;
+        setCategoryText(categoryName);
         mDummyFocus.requestFocus();
         showCategoryPopup(false);
     }
@@ -1145,7 +1204,8 @@ public class TransactionDetailFragment extends BaseFragment
             mNearBusinessSearchAsyncTask.cancel(true);
         }
 
-        SaveTransactionAsyncTask task = new SaveTransactionAsyncTask(mTransaction, mBizId, mPayeeEditText.getText().toString(), mCategoryEdittext.getText().toString(), mNoteEdittext.getText().toString(),
+        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        SaveTransactionAsyncTask task = new SaveTransactionAsyncTask(mTransaction, mBizId, mPayeeEditText.getText().toString(), category, mNoteEdittext.getText().toString(),
                 mFiatValueEdittext.getText().toString());
         task.execute();
 
@@ -1321,6 +1381,7 @@ public class TransactionDetailFragment extends BaseFragment
 
     private void FindBizIdThumbnail(String name, long id) {
         if (id != 0) {
+            Log.d(TAG, "Finding bizid thumbnail for "+name);
             GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1360,6 +1421,53 @@ public class TransactionDetailFragment extends BaseFragment
         @Override
         protected void onCancelled() {
             super.onCancelled();
+        }
+    }
+
+    class CheckReminderNotification extends AsyncTask<Void, Void, Boolean> {
+        private Wallet mWallet;
+
+        CheckReminderNotification(Wallet wallet) {
+            mWallet = wallet;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return mCoreAPI.needsRecoveryReminder(mWallet);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean needsReminder) {
+            if (mActivity == null) {
+                return;
+            }
+            mReminderTask = null;
+            if (mFromRequest && needsReminder && !mHasReminded) {
+                mHasReminded = true;
+                mCoreAPI.incRecoveryReminder();
+                ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
+                        getString(R.string.transaction_details_recovery_reminder_message));
+            } else {
+                done();
+            }
+            finish();
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            done();
+            finish();
+        }
+
+        private void finish() {
+            mActivity.showModalProgress(false);
+            mReminderTask = null;
         }
     }
 }

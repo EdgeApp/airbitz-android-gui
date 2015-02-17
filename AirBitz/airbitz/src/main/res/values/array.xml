@@ -135,10 +135,17 @@
     </array>
 
     <string-array name="transaction_categories_list">
-        <item>Income:</item>
         <item>Expense:</item>
+        <item>Income:</item>
         <item>Transfer:</item>
         <item>Exchange:</item>
+    </string-array>
+
+    <string-array name="transaction_categories_list_no_colon">
+        <item>Expense</item>
+        <item>Income</item>
+        <item>Transfer</item>
+        <item>Exchange</item>
     </string-array>
 
     <string-array name="distance_list">

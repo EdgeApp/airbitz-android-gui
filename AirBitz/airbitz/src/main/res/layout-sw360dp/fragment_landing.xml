@@ -3,7 +3,7 @@
     android:id="@+id/fragment_landing_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/landing_bg"
+    android:background="@drawable/bg_landing"
     android:focusableInTouchMode="true"
     tools:context="com.airbitz.activities.LandingActivity"
     tools:ignore="MergeRootFrame">
@@ -21,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="100.8dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6.3dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="12.6dp"
+            android:layout_marginBottom="12dp"
             android:contentDescription="@string/fragment_landing_logo_description"
             android:src="@drawable/color_logo" />
 
@@ -86,7 +86,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp"
-                    android:background="@drawable/bg_button_green"
+                    android:background="@drawable/bg_btn_green"
                     style="@style/BlackDropShadow"
                     android:text="@string/fragment_landing_signin_button"
                     android:textColor="@android:color/white"
@@ -249,7 +249,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="6.3dp"
             android:layout_marginTop="6.3dp"
-            android:background="@drawable/btn_red"
+            android:background="@drawable/bg_btn_red"
             style="@style/BlackDropShadow"
             android:text="@string/fragment_landing_signup_button"
             android:textColor="@android:color/white"

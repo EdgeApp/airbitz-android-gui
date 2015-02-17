@@ -65,9 +65,8 @@
     <LinearLayout
         android:id="@+id/layout_near_you_sticky"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/fragment_business_directory_layout_search"
         android:visibility="visible">
 
         <View
@@ -79,17 +78,13 @@
             android:id="@+id/textview_nearyou_sticky"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradient_background_grey"
+            android:background="#ff777777"
             android:paddingBottom="@dimen/content_padding_quarter"
             android:paddingLeft="@dimen/content_padding_1_quarter"
             android:paddingRight="@dimen/content_padding_1_quarter"
             android:paddingTop="@dimen/content_padding_quarter"
-            android:shadowColor="#FFFFFFFF"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
             android:text="@string/fragment_business_near_you"
-            android:textColor="#ff384954"
+            android:textColor="#ffffffff"
             android:textSize="@dimen/text_size_small" />
 
         <View

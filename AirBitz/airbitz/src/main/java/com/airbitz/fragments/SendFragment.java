@@ -171,7 +171,7 @@ public class SendFragment extends BaseFragment implements
         mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
         mBluetoothScanningLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_scanning_layout);
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
-        mQRCamera = new QRCamera(mActivity, mCameraLayout);
+        mQRCamera = new QRCamera(this, mCameraLayout);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -353,7 +353,6 @@ public class SendFragment extends BaseFragment implements
             }
         }
 
-
         updateWalletOtherList();
 
         return mView;
@@ -382,7 +381,6 @@ public class SendFragment extends BaseFragment implements
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
         mQRCamera.stopCamera();
-        mQRCamera.setOnScanResultListener(null);
     }
 
     public void startCamera() {
@@ -573,12 +571,14 @@ public class SendFragment extends BaseFragment implements
         if(bluetooth) {
             mCameraLayout.setVisibility(View.GONE);
             mBluetoothLayout.setVisibility(View.VISIBLE);
+            mQRCodeTextView.setVisibility(View.GONE);
             startBluetoothSearch();
         }
         else {
             stopBluetoothSearch();
             mCameraLayout.setVisibility(View.VISIBLE);
             mBluetoothLayout.setVisibility(View.GONE);
+            mQRCodeTextView.setVisibility(View.VISIBLE);
             mHandler.postDelayed(cameraDelayRunner, 500);
         }
     }
@@ -646,14 +646,14 @@ public class SendFragment extends BaseFragment implements
 
     @Override
     public void onScanResult(String result) {
+        Log.d(TAG, "checking result = "+result);
         CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
         if (info != null && info.address != null) {
             Log.d(TAG, "Bitcoin found");
-            stopCamera();
             GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
         } else if (info != null) {
-            stopCamera();
             ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
         }
+        mQRCamera.setOnScanResultListener(null);
     }
 }

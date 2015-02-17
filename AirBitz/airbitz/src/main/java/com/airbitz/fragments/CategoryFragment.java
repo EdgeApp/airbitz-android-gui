@@ -127,6 +127,7 @@ public class CategoryFragment extends BaseFragment {
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setText(R.string.settings_category_title);
 
         mAddField = (EditText) mView.findViewById(R.id.add_field);
         mSearchField = (EditText) mView.findViewById(R.id.search_field);

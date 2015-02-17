@@ -177,6 +177,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             });
             if (mWalletList.get(position).isArchiveHeader()) {
                 textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
+                textView.setBackgroundResource(R.drawable.bg_wallets_header);
                 imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
                 archivePos = position;
 
@@ -186,9 +187,9 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                     convertView.setVisibility(View.VISIBLE);
                 }
             } else {
-                textView.setText(mContext.getString(R.string.fragment_wallets_list_wallets_title));
-                imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.btn_add));
-
+                textView.setText("");
+                textView.setBackgroundResource(android.R.color.transparent);
+                imageButton.setImageResource(android.R.color.transparent);
                 if (hoverFirstHeader) {
                     convertView.setVisibility(View.INVISIBLE);
                 } else {

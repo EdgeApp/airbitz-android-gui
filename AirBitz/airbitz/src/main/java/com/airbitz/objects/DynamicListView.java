@@ -146,7 +146,8 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()) {
+                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()
+                            && !(pos==1 && mWalletList.get(2).isArchiveHeader())) { // if there's more than one active wallet
                         mTotalOffset = 0;
 
                         int position = pointToPosition(mDownX, mDownY);
@@ -707,6 +708,10 @@ public class DynamicListView extends ListView {
         int firstVisibleIndex = getFirstVisiblePosition();
 
         if (archiveIndex > firstVisibleIndex + 1) { // show all of wallet header
+            listArchiveHeader = getViewForID(getAdapter().getItemId(archiveIndex));
+            if (listArchiveHeader != null) {
+                listArchiveHeader.setVisibility(VISIBLE);
+            }
             walletsHeader.setY(0);
             archiveHeader.setVisibility(GONE);
         } else if (archiveIndex == firstVisibleIndex + 1) { // mixed first view
@@ -716,8 +721,13 @@ public class DynamicListView extends ListView {
                 walletsHeader.setY(archiveHeader.getY() - walletsHeader.getHeight());
             }
         } else { // show all of archive header
+            listArchiveHeader = getViewForID(getAdapter().getItemId(archiveIndex));
+            if (listArchiveHeader != null) {
+                listArchiveHeader.setVisibility(INVISIBLE);
+            }
             archiveHeader.setVisibility(VISIBLE);
             archiveHeader.setY(0);
+            walletsHeader.setY(- walletsHeader.getHeight());
         }
     }
 

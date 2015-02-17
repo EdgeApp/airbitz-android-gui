@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -59,12 +60,17 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
+import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
+
+import java.util.List;
 
 /**
  * Created on 2/21/14.
@@ -75,12 +81,12 @@ public class SendConfirmationFragment extends BaseFragment {
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
     private final int CALC_SEND_FEES_DELAY_MILLIS = 400;
+    private final int DUST_AMOUNT = 5340;
     private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
-
-    private TextView mFromEdittext;
     private TextView mToEdittext;
     private EditText mAuthorizationEdittext;
+    String mDelayedMessage;
 
     private TextView mTitleTextView;
     private TextView mFromTextView;
@@ -107,6 +113,7 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
+    private HighlightOnPressSpinner mWalletSpinner;
     private ImageButton mConfirmSwipeButton;
 
     private float mSlideHalfWidth;
@@ -140,6 +147,7 @@ public class SendConfirmationFragment extends BaseFragment {
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private Wallet mSourceWallet, mWalletForConversions, mToWallet;
+    private List<Wallet> mWallets;//Actual wallets
 
     private boolean mAutoUpdatingTextFields = false;
 
@@ -165,19 +173,7 @@ public class SendConfirmationFragment extends BaseFragment {
         mActivity = (NavigationActivity) getActivity();
 
         bundle = this.getArguments();
-        if (bundle == null) {
-            Log.d(TAG, "Send confirmation bundle is null");
-        } else {
-            mUUIDorURI = bundle.getString(SendFragment.UUID);
-            mLabel = bundle.getString(SendFragment.LABEL, "");
-            mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
-            mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
-            mSourceWallet = mCoreAPI.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
-            mWalletForConversions = mSourceWallet;
-            if (mIsUUID) {
-                mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-            }
-        }
+        mWallets = mCoreAPI.getCoreActiveWallets();
 
         mAutoUpdatingTextFields = true;
     }
@@ -213,7 +209,6 @@ public class SendConfirmationFragment extends BaseFragment {
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
         mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
 
-        mFromEdittext = (TextView) mView.findViewById(R.id.textview_from_name);
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
@@ -222,7 +217,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
-        mFromEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
@@ -237,17 +231,19 @@ public class SendConfirmationFragment extends BaseFragment {
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
-        String balance = mCoreAPI.formatSatoshi(mSourceWallet.getBalanceSatoshi(), true);
-        mFromEdittext.setText(mSourceWallet.getName() + " (" + balance + ")");
-        if (mToWallet != null) {
-            mToEdittext.setText(mToWallet.getName());
-        } else {
-            String temp = mUUIDorURI;
-            if (mUUIDorURI.length() > 20) {
-                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length() - 5, mUUIDorURI.length());
+        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
+        mWalletSpinner.setAdapter(dataAdapter);
+
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSourceWallet = mWallets.get(i);
             }
-            mToEdittext.setText(temp);
-        }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
@@ -594,6 +590,10 @@ public class SendConfirmationFragment extends BaseFragment {
     }
 
     private void attemptInitiateSend() {
+        // If a send is currently executing, don't send again
+        if (mSendOrTransferTask != null) {
+            return;
+        }
         float remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
         // check if invalid entry timeout still active
         if(mInvalidEntryStartMillis > 0) {
@@ -632,7 +632,6 @@ public class SendConfirmationFragment extends BaseFragment {
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
              mAuthorizationEdittext.requestFocus();
-             resetSlider();
         } else if (mPasswordRequired && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mAuthorizationEdittext.getText().toString())) {
              mInvalidEntryCount += 1;
              saveInvalidEntryCount(mInvalidEntryCount);
@@ -648,11 +647,11 @@ public class SendConfirmationFragment extends BaseFragment {
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_message));
              }
              mAuthorizationEdittext.requestFocus();
-             resetSlider();
-         } else if (mAmountToSendSatoshi == 0) {
-            resetSlider();
-            mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else {
+        } else if (mAmountToSendSatoshi == 0) {
+             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
+        } else if (mAmountToSendSatoshi < DUST_AMOUNT) {
+             showDustAlert();
+         } else {
              // show the sending screen
              SuccessFragment mSuccessFragment = new SuccessFragment();
              Bundle bundle = new Bundle();
@@ -662,8 +661,18 @@ public class SendConfirmationFragment extends BaseFragment {
 
              mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mLabel);
              mSendOrTransferTask.execute();
-             finishSlider();
+         }
+        resetSlider();
+    }
+
+    private void showDustAlert() {
+        double dustFiat = mCoreAPI.SatoshiToCurrency(DUST_AMOUNT, mSourceWallet.getCurrencyNum());
+        String alertMessage = getString(R.string.fragment_send_confirmation_dust_alert);
+        if(dustFiat != 0) {
+           alertMessage += " " + String.format(getString(R.string.fragment_send_confirmation_dust_alert_more),
+               mCoreAPI.formatSatoshi((long) DUST_AMOUNT), mCoreAPI.formatCurrency(dustFiat, mSourceWallet.getCurrencyNum(), true));
         }
+        mActivity.ShowFadingDialog(alertMessage);
     }
 
     final Runnable invalidEntryTimer = new Runnable() {
@@ -675,13 +684,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private void resetSlider() {
         Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), 0);
-        animator.setDuration(300);
-        animator.setStartDelay(0);
-        animator.start();
-    }
-
-    private void finishSlider() {
-        Animator animator = ObjectAnimator.ofFloat(mConfirmSwipeButton, "translationX", -(mRightThreshold - mConfirmSwipeButton.getX()), -(mRightThreshold - (mLeftThreshold)));
         animator.setDuration(300);
         animator.setStartDelay(0);
         animator.start();
@@ -715,6 +717,8 @@ public class SendConfirmationFragment extends BaseFragment {
 
     @Override
     public void onResume() {
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         bundle = this.getArguments();
         if (bundle == null) {
             Log.d(TAG, "Send confirmation bundle is null");
@@ -729,10 +733,24 @@ public class SendConfirmationFragment extends BaseFragment {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
             }
         }
+        for(int i=0; i<mWallets.size(); i++) {
+            if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
+                mWalletSpinner.setSelection(i);
+            }
+        }
+
+        if (mToWallet != null) {
+            mToEdittext.setText(mToWallet.getName());
+        } else {
+            String temp = mUUIDorURI;
+            if (mUUIDorURI.length() > 20) {
+                temp = mUUIDorURI.substring(0, 5) + "..." + mUUIDorURI.substring(mUUIDorURI.length() - 5, mUUIDorURI.length());
+            }
+            mToEdittext.setText(temp);
+        }
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
-        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mActivity.hideCalculator();
 
@@ -918,9 +936,10 @@ public class SendConfirmationFragment extends BaseFragment {
             mSendOrTransferTask = null;
             if (txResult.getError() != null) {
                 Log.d(TAG, "Error during send " + txResult.getError());
-                if (mActivity != null && isAdded()) {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_send_confirmation_send_error_title), txResult.getError());
+                if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
+                    mDelayedMessage = mActivity.getResources().getString(R.string.fragment_send_confirmation_send_error_title) +"\n" + txResult.getError();
+                    mHandler.postDelayed(mDelayedErrorMessage, 500);
                 }
             } else {
                 if (mActivity != null) {
@@ -937,4 +956,15 @@ public class SendConfirmationFragment extends BaseFragment {
             mSendOrTransferTask = null;
         }
     }
+
+    Runnable mDelayedErrorMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (mDelayedMessage != null) {
+                mActivity.ShowFadingDialog(mDelayedMessage);
+            }
+        }
+    };
+
+
 }
