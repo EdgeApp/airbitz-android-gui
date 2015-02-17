@@ -642,9 +642,11 @@ public class TransactionDetailFragment extends BaseFragment
             if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
                 Log.d(TAG, "SEND");
                 mFromSend = true;
+                setCurrentType(getString(R.string.fragment_category_expense));
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 Log.d(TAG, "REQUEST");
+                setCurrentType(getString(R.string.fragment_category_income));
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
@@ -676,13 +678,6 @@ public class TransactionDetailFragment extends BaseFragment
             Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
             UpdateView(mTransaction);
-            if(mFromSend) {
-                setCurrentType(getString(R.string.fragment_category_expense));
-
-            }
-            else if(mFromRequest) {
-                setCurrentType(getString(R.string.fragment_category_income));
-            }
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
