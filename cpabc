@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BASE=$(pwd)
 CORE_PATH="../airbitz-core/deps"
 WALLET_PATH="$BASE/AirBitz/airbitz"
