@@ -154,8 +154,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
-        mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
-        mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
         mActivity = (NavigationActivity) getActivity();
     }
 
@@ -253,6 +251,14 @@ public class RequestQRCodeFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+
+        bundle = this.getArguments();
+        if(bundle != null) {
+            mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
+            mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
+            mAddress = bundle.getString(RequestFragment.BITCOIN_ADDRESS);
+        }
+
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -557,8 +563,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
             if (mID != null) {
-                Log.d(TAG, "Starting Request Address at:" + System.currentTimeMillis());
-                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
