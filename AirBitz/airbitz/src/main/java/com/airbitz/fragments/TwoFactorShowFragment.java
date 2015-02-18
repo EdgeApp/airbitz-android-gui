@@ -47,7 +47,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.objects.HighlightOnPressButton;
@@ -167,7 +166,6 @@ public class TwoFactorShowFragment extends BaseFragment
 
         _isOn = false;
         updateTwoFactorUI(false);
-        mActivity.showModalProgress(true);
 
         // Check for any pending reset requests
         checkStatus(false);
@@ -205,6 +203,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
         CheckStatusTask(boolean bMsg) {
             mMsg = bMsg;
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -214,7 +213,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
         @Override
         protected tABC_CC doInBackground(Void... params) {
-            tABC_CC cc = mCoreAPI.StatusTwoFactor();
+            tABC_CC cc = mCoreAPI.OtpAuthGet();
             return cc;
         }
 
