@@ -2024,6 +2024,15 @@ public class CoreAPI {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
+    private boolean generalInfoUpdate() {
+        tABC_Error error = new tABC_Error();
+        if (hasConnectivity()) {
+            core.ABC_GeneralInfoUpdate(error);
+            return true;
+        }
+        return false;
+    }
+
     private boolean accountSync(String username, String password) {
         tABC_Error error = new tABC_Error();
         if (hasConnectivity()) {
@@ -2045,6 +2054,7 @@ public class CoreAPI {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            generalInfoUpdate();
             // Sync Account
             accountSync(AirbitzApplication.getUsername(),
                         AirbitzApplication.getPassword());
