@@ -2005,10 +2005,16 @@ public class CoreAPI {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
+    boolean mOTPError = false;
+    public boolean hasOTPError() {
+        return mOTPError;
+    }
+
     private boolean accountSync(String username, String password) {
         tABC_Error error = new tABC_Error();
         if (hasConnectivity()) {
             coreDataSyncAccount(username, password, tABC_Error.getCPtr(error));
+            mOTPError = error.getCode() == tABC_CC.ABC_CC_InvalidOTP;
             return true;
         }
         return false;
@@ -2864,16 +2870,10 @@ public class CoreAPI {
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = false;
                 mTwoFactorSecret = null;
-                resetOtpNotifications();
-
                 core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
             }
         }
         return cc;
-    }
-
-    public void resetOtpNotifications() {
-
     }
 
     // Blocking

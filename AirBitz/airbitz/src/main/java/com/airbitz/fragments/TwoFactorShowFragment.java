@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -174,11 +173,14 @@ public class TwoFactorShowFragment extends BaseFragment
     void updateTwoFactorUI(boolean enabled)
     {
         if (enabled) {
-            mQRView.setVisibility(View.VISIBLE);
+            mQRView.setVisibility(View.GONE);
             mImportButton.setVisibility(View.VISIBLE);
         } else {
             mQRView.setVisibility(View.GONE);
             mImportButton.setVisibility(View.GONE);
+        }
+        if(mCoreAPI.hasOTPError()) {
+            mImportButton.setVisibility(View.VISIBLE);
         }
         mEnabledSwitch.setChecked(enabled);
     }
@@ -191,7 +193,7 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     /**
-     * Reset Two Factor Authentication
+     * Check Two Factor Status
      */
     private CheckStatusTask mCheckStatusTask;
     public class CheckStatusTask extends AsyncTask<Void, Void, tABC_CC> {
@@ -246,11 +248,11 @@ public class TwoFactorShowFragment extends BaseFragment
             mActivity.showModalProgress(true);
             checkRequest();
             if (bMsg) {
-                mActivity.ShowFadingDialog("Two Factor Enabled");
+                mActivity.ShowFadingDialog(getString(R.string.fragment_twofactor_show_now_enabled));
             }
         } else {
             if (bMsg) {
-                mActivity.ShowFadingDialog("Two Factor Disabled");
+                mActivity.ShowFadingDialog(getString(R.string.fragment_twofactor_show_now_disabled));
             }
         }
     }
@@ -322,11 +324,13 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    void switchTwoFactor(boolean authenticated)
+    void switchTwoFactor(boolean on)
     {
-        mCoreAPI.enableTwoFactor(authenticated);
-        updateTwoFactorUI(authenticated);
-        checkSecret(true);
+        tABC_CC cc = mCoreAPI.enableTwoFactor(on);
+        if(cc==tABC_CC.ABC_CC_Ok) {
+            updateTwoFactorUI(on);
+            checkSecret(true);
+        }
     }
 
     private void confirmRequest()
@@ -337,7 +341,7 @@ public class TwoFactorShowFragment extends BaseFragment
             mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
         else {
-            mActivity.ShowFadingDialog("Incorrect password");
+            mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
         }
     }
@@ -431,7 +435,7 @@ public class TwoFactorShowFragment extends BaseFragment
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
         else {
-            mActivity.ShowFadingDialog("Incorrect password");
+            mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
         }
     }
