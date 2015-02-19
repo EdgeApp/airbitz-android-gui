@@ -2218,6 +2218,32 @@ public class CoreAPI {
      * Other utility functions
      */
 
+    public byte[] getTwoFactorQRCode() {
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_unsigned_char ppData = core.longp_to_unsigned_ppChar(lp);
+
+        SWIGTYPE_p_int pWidth = core.new_intp();
+        SWIGTYPE_p_unsigned_int pWCount = core.int_to_uint(pWidth);
+
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc = core.ABC_QrEncode(mTwoFactorSecret, ppData, pWCount, error);
+        if (cc == tABC_CC.ABC_CC_Ok) {
+            int width = core.intp_value(pWidth);
+            return getBytesAtPtr(core.longp_value(lp), width*width);
+        } else {
+            return null;
+        }
+    }
+
+    public Bitmap getTwoFactorQRCodeBitmap() {
+        byte[] array = getTwoFactorQRCode();
+        if(array != null)
+            return FromBinary(array, (int) Math.sqrt(array.length), 4);
+        else
+            return null;
+    }
+
+
     private String mStrRequestURI =null;
     public byte[] getQRCode(String uuid, String id) {
         tABC_CC result;
@@ -2839,6 +2865,8 @@ public class CoreAPI {
                 mTwoFactorOn = false;
                 mTwoFactorSecret = null;
                 resetOtpNotifications();
+
+                core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
             }
         }
         return cc;

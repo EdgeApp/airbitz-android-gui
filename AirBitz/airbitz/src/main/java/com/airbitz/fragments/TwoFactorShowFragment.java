@@ -31,6 +31,7 @@
 
 package com.airbitz.fragments;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -138,13 +139,12 @@ public class TwoFactorShowFragment extends BaseFragment
         mQRView = (ImageView) mView.findViewById(R.id.fragment_twofactor_show_qr_image);
 
         mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
-        mEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mEnabledSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switchFlipped(isChecked);
+            public void onClick(View v) {
+                switchFlipped(mEnabledSwitch.isChecked());
             }
         });
-
         return mView;
     }
 
@@ -171,20 +171,16 @@ public class TwoFactorShowFragment extends BaseFragment
         checkStatus(false);
     }
 
-    void updateTwoFactorUI(boolean on)
+    void updateTwoFactorUI(boolean enabled)
     {
-        if (on) {
-//            _requestView.hidden = YES;
-//            _requestView.hidden = YES;
+        if (enabled) {
+            mQRView.setVisibility(View.VISIBLE);
             mImportButton.setVisibility(View.VISIBLE);
         } else {
-//            _requestView.hidden = YES;
-//            _requestView.hidden = YES;
             mQRView.setVisibility(View.GONE);
             mImportButton.setVisibility(View.GONE);
         }
-        mActivity.showModalProgress(false);
-        mEnabledSwitch.setChecked(on);
+        mEnabledSwitch.setChecked(enabled);
     }
 
 
@@ -236,53 +232,13 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    /**
-     * Check Secret
-     */
-    private CheckSecretTask mCheckSecretTask;
-    public class CheckSecretTask extends AsyncTask<Void, Void, tABC_CC> {
-        boolean mMsg;
-
-        CheckSecretTask(boolean bMsg) {
-            mMsg = bMsg;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mActivity.showModalProgress(true);
-        }
-
-        @Override
-        protected tABC_CC doInBackground(Void... params) {
-            tABC_CC cc = mCoreAPI.GetTwoFactorSecret();
-            return cc;
-        }
-
-        @Override
-        protected void onPostExecute(final tABC_CC cc) {
-            onCancelled();
-
-            if (!(cc == tABC_CC.ABC_CC_Ok && mCoreAPI.TwoFactorSecret() != null)) {
-                mQRView.setVisibility(View.GONE);
-            }
-
-            if (mCoreAPI.TwoFactorSecret() != null) {
-                mActivity.showModalProgress(false);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCheckStatusTask = null;
-            mActivity.showModalProgress(false);
-        }
-    }
-
     void checkSecret(boolean bMsg)
     {
         if (mCoreAPI.isTwoFactorOn()) {
-            mCheckSecretTask = new CheckSecretTask(bMsg);
-            mCheckSecretTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            tABC_CC cc = mCoreAPI.GetTwoFactorSecret();
+            if (!(cc == tABC_CC.ABC_CC_Ok && mCoreAPI.TwoFactorSecret() != null)) {
+                mQRView.setVisibility(View.GONE);
+            }
         }
         showQrCode(mCoreAPI.isTwoFactorOn());
 
@@ -302,48 +258,40 @@ public class TwoFactorShowFragment extends BaseFragment
     void showQrCode(boolean show)
     {
         if (show) {
-//            unsigned char *pData = NULL;
-//            unsigned int width;
-//
-//            tABC_Error error;
-//            tABC_CC cc = ABC_GetTwoFactorQrCode([[User Singleton].name UTF8String],
-//            [[User Singleton].password UTF8String], &pData, &width, &error);
-//            if (cc == ABC_CC_Ok) {
-//                UIImage *qrImage = [Util dataToImage:pData withWidth:width andHeight:width];
-//                _qrCodeImageView.image = qrImage;
-//                _qrCodeImageView.layer.magnificationFilter = kCAFilterNearest;
-//                [self animateQrCode:YES];
-//            } else {
-//                _viewQRCodeFrame.hidden = YES;
-//            }
-//            if (pData) {
-//                free(pData);
-//            }
-//        } else {
-//            [self animateQrCode:NO];
+            Bitmap bitmap = mCoreAPI.getTwoFactorQRCodeBitmap();
+            if(bitmap != null) {
+                bitmap = Common.AddWhiteBorder(bitmap);
+                mQRView.setImageBitmap(bitmap);
+                animateQrCode(true);
+            }
+            else {
+                mQRView.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            animateQrCode(false);
         }
     }
 
     void animateQrCode(boolean show)
     {
         if (show) {
-//            if (_viewQRCodeFrame.hidden) {
-//                _viewQRCodeFrame.hidden = NO;
-//                _viewQRCodeFrame.alpha = 0;
-//                [UIView animateWithDuration:1 delay:0 options:UIViewAnimationOptionCurveLinear animations:^ {
-//                    _viewQRCodeFrame.alpha = 1.0;
-//                } completion:^(BOOL finished) {
-//                }];
-//            }
-//        } else {
-//            if (!_viewQRCodeFrame.hidden) {
-//                _viewQRCodeFrame.alpha = 1;
-//                [UIView animateWithDuration:1 delay:0 options:UIViewAnimationOptionCurveLinear animations:^ {
-//                    _viewQRCodeFrame.alpha = 0;
-//                } completion:^(BOOL finished) {
-//                    _viewQRCodeFrame.hidden = YES;
-//                }];
-//            }
+            if (mQRView.getVisibility() != View.VISIBLE) {
+                mQRView.setAlpha(0f);
+                mQRView.setVisibility(View.VISIBLE);
+                mQRView.animate()
+                        .alpha(1f)
+                        .setDuration(1000)
+                        .setListener(null);
+            }
+        } else {
+            if (mQRView.getVisibility() == View.VISIBLE) {
+                mQRView.setAlpha(1f);
+                mQRView.setVisibility(View.VISIBLE);
+                mQRView.animate()
+                        .alpha(1f)
+                        .setDuration(1000)
+                        .setListener(null);
+            }
         }
     }
 
@@ -352,7 +300,7 @@ public class TwoFactorShowFragment extends BaseFragment
         tABC_Error error = new tABC_Error();
         boolean pending = mCoreAPI.isTwoFactorResetPending(error);
         if (error.getCode() == tABC_CC.ABC_CC_Ok) {
-            mQRView.setVisibility(pending ? View.VISIBLE : View.GONE);
+            mQRView.setVisibility(pending ? View.GONE : View.VISIBLE);
         } else {
             mQRView.setVisibility(View.GONE);
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, error.getCode()));
@@ -361,31 +309,23 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void switchFlipped(boolean isChecked) {
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword())) {
-                switchTwoFactor(true);
-        }
-        else {
-                mPassword.requestFocus();
-                mEnabledSwitch.setChecked(false);
-            mActivity.showModalProgress(false);
-            mActivity.ShowFadingDialog("Incorrect password");
-        }
+        mSwitchFlippedTask = new SwitchFlippedTask(isChecked);
+        mSwitchFlippedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     void setText(boolean on)
     {
         if (on) {
-            mEnabledSwitch.setText("Enabled");
+            mEnabledSwitch.setText(getString(R.string.fragment_twofactor_show_enabled));
         } else {
-            mEnabledSwitch.setText("Disabled");
+            mEnabledSwitch.setText(getString(R.string.fragment_twofactor_show_disabled));
         }
     }
 
-    void switchTwoFactor(boolean on)
+    void switchTwoFactor(boolean authenticated)
     {
-        mCoreAPI.enableTwoFactor(on);
-        updateTwoFactorUI(on);
+        mCoreAPI.enableTwoFactor(authenticated);
+        updateTwoFactorUI(authenticated);
         checkSecret(true);
     }
 
@@ -398,6 +338,48 @@ public class TwoFactorShowFragment extends BaseFragment
         }
         else {
             mActivity.ShowFadingDialog("Incorrect password");
+            mActivity.showModalProgress(false);
+        }
+    }
+
+    /**
+     * Flip Enable switch task
+     */
+    private SwitchFlippedTask mSwitchFlippedTask;
+    public class SwitchFlippedTask extends AsyncTask<Void, Void, Boolean> {
+        boolean mIsChecked;
+        SwitchFlippedTask(boolean isChecked) {
+            mIsChecked = isChecked;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString());
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean authenticated) {
+            onCancelled();
+
+            if(authenticated) {
+                switchTwoFactor(mIsChecked);
+            }
+            else {
+                mPassword.requestFocus();
+                mEnabledSwitch.setChecked(!mIsChecked);
+                mActivity.ShowOkMessageDialog(getString(R.string.activity_signup_incorrect_password),
+                        getString(R.string.activity_signup_incorrect_password));
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mCheckStatusTask = null;
             mActivity.showModalProgress(false);
         }
     }
