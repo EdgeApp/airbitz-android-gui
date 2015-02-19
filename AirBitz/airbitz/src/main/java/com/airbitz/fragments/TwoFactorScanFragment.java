@@ -128,7 +128,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
     @Override
     public void onResume() {
         if(mQRCamera == null) {
-            mQRCamera = new QRCamera(mActivity, mCameraLayout);
+            mQRCamera = new QRCamera(this, mCameraLayout);
             mQRCamera.setOnScanResultListener(this);
             mQRCamera.startCamera();
         }
