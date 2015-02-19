@@ -45,10 +45,9 @@ import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.fragments.SpendingLimitsFragment;
+import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.models.Contact;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -218,12 +217,6 @@ public class CoreAPI {
             else
                 Log.d(TAG, "remote password event has no listener");
         }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
-            if(mExchangeRateSources!=null && !mExchangeRateSources.isEmpty())
-                mPeriodicTaskHandler.post(ExchangeRateUpdater);
-            else
-                Log.d(TAG, "exchange rate event has no listener");
-        }
         else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
             if (mOnWalletSweep != null) {
                 mIncomingUUID = info.getSzTxID();
@@ -351,11 +344,12 @@ public class CoreAPI {
             return false;
         }
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
         tABC_CC result = core.ABC_CreateWallet(username, password,
-                walletName, currencyNum, 0, null, pVoid, pError);
+                walletName, currencyNum, ppChar, pError);
         if (result == tABC_CC.ABC_CC_Ok) {
             startWatchers();
             return true;
@@ -474,9 +468,7 @@ public class CoreAPI {
     // Blocking call, wrap in AsyncTask
     public tABC_CC SignIn(String username, char[] password) {
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
-        tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), null, pVoid, pError);
+        tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), pError);
         return result;
     }
 
@@ -892,20 +884,11 @@ public class CoreAPI {
     public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers, String password) {
 
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         tABC_CC result = core.ABC_SetAccountRecoveryQuestions(AirbitzApplication.getUsername(),
                 password,
-                mQuestions, mAnswers, null, pVoid, pError);
+                mQuestions, mAnswers, pError);
         return result;
-    }
-
-    private class QuestionResults extends tABC_RequestResults {
-        public long getPtrPtr() {
-            QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
-            return fake.getNumChoices();
-        }
     }
 
     private class QuestionChoices extends tABC_QuestionChoices {
@@ -1948,7 +1931,7 @@ public class CoreAPI {
             tABC_Error error = new tABC_Error();
             for(Integer currency : currencies) {
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        currency, null, null, error);
+                        currency, error);
             }
         }
     }
@@ -2555,13 +2538,11 @@ public class CoreAPI {
     public tABC_CC ChangePassword(String password) {
         tABC_Error Error = new tABC_Error();
 
-        String oldPIN = GetUserPIN();
-
 //        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         tABC_CC cc = core.ABC_ChangePassword(
                         AirbitzApplication.getUsername(),
                         password,
-                        password, oldPIN, null, null, Error);
+                        password, Error);
         return cc;
     }
 
@@ -2586,7 +2567,7 @@ public class CoreAPI {
     public tABC_CC ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers, String password, String pin) {
         tABC_Error Error = new tABC_Error();
         tABC_CC cc = core.ABC_ChangePasswordWithRecoveryAnswers(
-                        username, recoveryAnswers, password, pin, null, null, Error);
+                        username, recoveryAnswers, password, Error);
         return cc;
     }
 
