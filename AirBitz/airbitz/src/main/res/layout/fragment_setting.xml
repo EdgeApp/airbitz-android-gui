@@ -254,21 +254,21 @@
                         <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_first_name"
                             android:layout_width="match_parent"
-                            android:layout_height="37.8dp"
-                            android:layout_marginBottom="3.15dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="3.15dp"
-                            android:background="@drawable/emboss_down_lighta"
+                            android:layout_height="35dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginRight="6dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/emboss_white"
                             android:enabled="false"
                             android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_first_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="9.45dp"
+                            android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="14sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -280,21 +280,21 @@
                         <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_last_name"
                             android:layout_width="match_parent"
-                            android:layout_height="37.8dp"
-                            android:layout_marginBottom="3.15dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="3.15dp"
-                            android:background="@drawable/emboss_down"
+                            android:layout_height="35dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginRight="6dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/emboss_white"
                             android:enabled="false"
                             android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_last_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="9.45dp"
+                            android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="14sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -306,26 +306,28 @@
                         <com.airbitz.objects.LimitedEditText
                             android:id="@+id/settings_edit_nick_name"
                             android:layout_width="match_parent"
-                            android:layout_height="37.8dp"
-                            android:layout_marginBottom="3.15dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="3.15dp"
-                            android:background="@drawable/emboss_down"
+                            android:layout_height="35dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginRight="6dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/emboss_white"
                             android:enabled="false"
                             android:gravity="left|center_vertical"
                             android:hint="@string/settings_edit_nick_name"
                             android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="9.45dp"
+                            android:paddingLeft="8dp"
                             android:singleLine="true"
-                            android:textColor="@color/settings_edit_text"
+                            android:textColor="@color/settings_edit_text_field"
                             android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="14sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -360,7 +362,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
+                        android:background="@drawable/wallet_list_solo"
                         android:orientation="horizontal">
 
                         <TextView
@@ -483,7 +485,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_categories"
-                            android:layout_width="wrap_content"
+                            android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:clickable="false"
@@ -526,7 +528,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_spending_limits"
-                            android:layout_width="wrap_content"
+                            android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:clickable="false"
@@ -544,49 +546,6 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_spending_limits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@drawable/arrow_right"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:id="@+id/settings_two_factor_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo_archived">
-
-                        <TextView
-                            android:id="@+id/settings_title_two_factor_authentication"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:clickable="false"
-                            android:drawablePadding="15dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:gravity="start"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_button_two_factor_authentication"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13sp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_two_factor_authentication"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -945,7 +904,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/btn_blue"
+                android:background="@drawable/bg_btn_red"
                 android:padding="5dp"
                 android:text="@string/settings_button_logout"
                 android:textColor="@android:color/white"
@@ -959,7 +918,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/btn_blue"
+                android:background="@drawable/bg_btn_blue"
                 android:padding="5dp"
                 android:text="@string/settings_button_debug"
                 android:textColor="@android:color/white"

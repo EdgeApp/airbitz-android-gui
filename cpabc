@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+BASE=$(pwd)
+CORE_PATH="../airbitz-core/deps"
+WALLET_PATH="$BASE/AirBitz/airbitz"
+WALLET_MAIN="$WALLET_PATH/src/main"
+LIB_PATH="/abc/android-arm/libabc.so"
+
+if [[ ! -n $(which swig) ]]; then
+    echo "swig must be installed";
+    exit 1
+fi
+
+BUILD_DIR="${BASE}/../airbitz-core/deps/build"
+if [[ $# -eq 1 ]]; then
+    BUILD_DIR=$1
+fi
+
+mkdir -p $WALLET_MAIN/jniLibs/armeabi/
+mkdir -p $WALLET_MAIN/jni/
+
+cp $CORE_PATH/../src/ABC.h $WALLET_MAIN/jni/
+cp $BUILD_DIR/$LIB_PATH $WALLET_MAIN/jni/
+cp $BUILD_DIR/$LIB_PATH $WALLET_MAIN/jniLibs/armeabi/
+
+cd $WALLET_PATH
+swig -java -package com.airbitz.api \
+        -outdir src/main/java/com/airbitz/api \
+        -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
+cd src/main/jni/
+$BUILD_DIR/ndk/android-ndk-r10d/ndk-build
+cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/

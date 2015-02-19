@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator_header_search"
-        android:background="@drawable/search_bar"
+        android:background="@color/header_search"
         android:orientation="vertical">
 
         <LinearLayout
@@ -53,7 +53,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="2dp"
-                    android:background="@drawable/rounded_edge"
+                    android:background="@drawable/emboss_frost"
                     android:drawableLeft="@drawable/ico_search"
                     android:drawablePadding="10dp"
                     android:hint="@string/category_or_business_name"
@@ -76,7 +76,7 @@
                     android:layout_below="@id/edittext_search"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="7dp"
-                    android:background="@drawable/rounded_edge"
+                    android:background="@drawable/emboss_frost"
                     android:drawableLeft="@drawable/ico_loc"
                     android:drawablePadding="13dp"
                     android:hint="@string/city_state_county"

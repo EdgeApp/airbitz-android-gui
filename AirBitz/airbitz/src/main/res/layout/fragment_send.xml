@@ -12,48 +12,58 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
 
+    <include
+        android:id="@+id/fragment_send_layout_camera"
+        layout="@layout/fragment_camera_scan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_header"
+        android:visibility="visible" />
+
 
     <LinearLayout
         android:id="@+id/layout_data"
         android:layout_width="match_parent"
-        android:layout_height="126dp"
+        android:layout_height="100dp"
         android:layout_below="@id/layout_title_header"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
+
+
         <RelativeLayout
             android:id="@+id/layout_send"
             android:layout_width="match_parent"
             android:layout_height="85.05dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="15.75dp"
-            android:layout_marginRight="15.75dp"
-            android:layout_marginTop="15.75dp"
-            android:background="@drawable/emboss_down"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:paddingLeft="6.3dp"
             android:paddingRight="6.3dp"
-            android:paddingTop="9.45dp">
+            android:paddingTop="0dp">
 
             <LinearLayout
                 android:id="@+id/layout_from"
                 android:layout_width="match_parent"
-                android:layout_height="25.2dp"
+                android:layout_height="35.2dp"
                 android:layout_marginBottom="9.45dp"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textview_from"
-                    android:layout_width="60dp"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="70dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="8dp"
                     android:gravity="center_vertical|right"
                     android:paddingRight="6.3dp"
                     android:text="@string/send_from_title"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <com.airbitz.objects.HighlightOnPressSpinner
@@ -65,11 +75,12 @@
                     android:dropDownHorizontalOffset="-50dp"
                     android:dropDownVerticalOffset="0dp"
                     android:dropDownWidth="300dp"
+                    android:layout_marginRight="20dp"
                     android:gravity="center"
                     android:popupBackground="@drawable/rounded_edge_white_bg"
                     android:spinnerMode="dropdown"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -77,34 +88,37 @@
             <LinearLayout
                 android:id="@+id/layout_to"
                 android:layout_width="match_parent"
-                android:layout_height="28.35dp"
+                android:layout_height="35dp"
                 android:layout_below="@id/layout_from"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textview_to"
-                    android:layout_width="60dp"
+                    style="@style/BlackDropShadow"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:gravity="right"
                     android:paddingRight="6.3dp"
                     android:text="@string/send_to_title"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/edittext_to"
+                    style="@style/BlackDropShadow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/emboss_down"
                     android:fontFamily="sans-serif"
-                    android:gravity="center"
+                    android:gravity="center_vertical|center_horizontal"
                     android:hint="@string/fragment_send_send_to_hint"
                     android:imeOptions="actionDone"
                     android:inputType="textAutoComplete|textNoSuggestions"
                     android:paddingLeft="6.3dp"
+                    android:layout_marginRight="20dp"
                     android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
@@ -117,13 +131,18 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/fragment_send_layout_camera"
-        layout="@layout/fragment_camera_scan"
+    <TextView
+        android:id="@+id/textview_scan_qrcode"
+        style="@style/BlackDropShadow"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:shadowDy="4"
+        android:text="@string/send_scan_text"
+        android:textColor="@android:color/white"
         android:layout_below="@id/layout_data"
-        android:visibility="visible" />
+        android:textSize="14sp" />
 
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"
@@ -136,7 +155,7 @@
             android:id="@+id/fragment_send_bluetooth_scanning_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" >
+            android:visibility="visible" >
 
             <TextView
                 android:id="@+id/fragment_send_scanning_text"
@@ -152,7 +171,7 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
                 android:paddingTop="6dp"
@@ -165,7 +184,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/fragment_send_scanning_button"
-                android:background="@drawable/bg_button_orange" />
+                android:background="@drawable/bg_btn_orange" />
 
         </RelativeLayout>
 
@@ -191,18 +210,9 @@
             android:id="@+id/listing_listview"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_below="@+id/fragment_send_listview_triangle"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="35dp"
             android:background="@drawable/category_popup"
             android:padding="12.6dp" />
-
-        <View
-            android:id="@+id/fragment_send_listview_triangle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-15dp"
-            android:background="@drawable/blue_triangle" />
 
     </RelativeLayout>
 

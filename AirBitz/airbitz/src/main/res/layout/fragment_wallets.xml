@@ -50,13 +50,15 @@
 
         <TextView
             android:id="@+id/fragment_wallets_balance_textview"
+            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/fragment_wallets_balance_text"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <include layout="@layout/custom_currency_switch" />
 
@@ -64,7 +66,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/fragment_wallets_data_layout"
         android:layout_marginLeft="12.6dp"
         android:layout_marginRight="12.6dp"
@@ -110,12 +112,12 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_wallets_addwallet_name_edittext"
             android:layout_width="match_parent"
-            android:layout_height="31.5dp"
+            android:layout_height="35dp"
             android:layout_margin="9.45dp"
             android:background="@drawable/emboss_down"
             android:gravity="center_vertical"
@@ -131,7 +133,7 @@
         <LinearLayout
             android:id="@+id/fragment_wallets_addwallet_currency_layout"
             android:layout_width="match_parent"
-            android:layout_height="25.2dp"
+            android:layout_height="30dp"
             android:layout_marginBottom="6dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
@@ -143,6 +145,7 @@
                 android:gravity="center"
                 android:text="@string/fragment_wallets_addwallet_currency_textview"
                 android:textColor="@android:color/white"
+                android:textStyle="bold"
                 android:textSize="15sp" />
 
             <com.airbitz.objects.HighlightOnPressSpinner
@@ -150,7 +153,8 @@
                 android:layout_width="138.6dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="6.3dp"
-                android:background="@drawable/bg_btn_blue_stretch"
+                android:background="@drawable/bg_btn_gray"
+                android:textColor="#555555"
                 android:dropDownVerticalOffset="0dp"
                 android:gravity="center"
                 android:popupBackground="@drawable/rounded_edge_white_bg"
@@ -211,11 +215,11 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_cancel_button"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/btn_cancel"
+                android:background="@drawable/bg_btn_red"
                 android:text="@string/string_cancel"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
@@ -223,11 +227,11 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/fragment_wallets_addwallet_done_button"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/btn_green"
+                android:background="@drawable/bg_btn_green"
                 android:text="@string/string_done"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"

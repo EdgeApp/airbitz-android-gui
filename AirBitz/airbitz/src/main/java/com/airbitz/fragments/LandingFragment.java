@@ -386,7 +386,6 @@ public class LandingFragment extends BaseFragment implements
         if(mActivity.networkIsAvailable()) {
             mPINLoginTask = new PINLoginTask();
             mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
-            mPinEditText.setText("");
         }
         else {
             mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
@@ -420,6 +419,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
             mPINLoginTask = null;
             tABC_CC result = (tABC_CC) success;
+            mPinEditText.setText("");
 
             if(result == tABC_CC.ABC_CC_Ok) {
                 mPinEditText.clearFocus();
@@ -437,6 +437,7 @@ public class LandingFragment extends BaseFragment implements
                 else {
                     mActivity.setFadingDialogListener(LandingFragment.this);
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
+                    mPinEditText.requestFocus();
                 }
             }
             else {
@@ -451,6 +452,7 @@ public class LandingFragment extends BaseFragment implements
         protected void onCancelled() {
             mPINLoginTask = null;
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
+            mPinEditText.setText("");
         }
     }
 

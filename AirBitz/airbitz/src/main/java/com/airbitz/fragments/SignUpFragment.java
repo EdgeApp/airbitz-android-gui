@@ -32,10 +32,8 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +41,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,17 +59,14 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_void;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
-import com.airbitz.api.tABC_RequestResults;
 import com.airbitz.utils.Common;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created on 2/10/14.
@@ -174,7 +168,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
-        mTimeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPopupContainer = (LinearLayout) mView.findViewById(R.id.activity_signup_popup_layout);
         mWidgetContainer = mView.findViewById(R.id.fragment_signup_widget_container);
@@ -393,7 +386,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 bNewPasswordFieldsAreValid = false;
             }
 
-            int resource = passed ? R.drawable.green_check : R.drawable.red_x;
+            int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
             switch (i) {
                 case 0:
                     mSwitchImage1.setImageResource(resource);
@@ -677,8 +670,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         private final char[] mPassword;
         private final String mPin;
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pData = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pData);
         private String mFailureReason;
 
         CreateAccountTask(String email, char[] password, String pin) {
@@ -691,8 +682,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         @Override
         protected Boolean doInBackground(Void... params) {
             tABC_CC code =
-                core.ABC_CreateAccount(mUsername, String.valueOf(mPassword),
-                                       mPin, null, pVoid, pError);
+                core.ABC_CreateAccount(mUsername, String.valueOf(mPassword), pError);
             mFailureReason = Common.errorMap(mActivity, code);
             return code == tABC_CC.ABC_CC_Ok;
         }

@@ -83,7 +83,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_edge_black_transparent_30"
+                android:background="@drawable/rounded_edge_edit_text_bg_30"
                 android:padding="15dp">
 
                 <ImageView

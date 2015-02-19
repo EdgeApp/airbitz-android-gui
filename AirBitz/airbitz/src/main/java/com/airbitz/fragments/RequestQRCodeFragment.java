@@ -111,7 +111,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
     private ImageView mQRView;
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressImageButton mHelpButton;
-    private HighlightOnPressButton mCancelButton;
     private HighlightOnPressButton mSMSButton;
     private HighlightOnPressButton mEmailButton;
     private HighlightOnPressButton mCopyButton;
@@ -154,8 +153,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
         bundle = this.getArguments();
         mCoreAPI = CoreAPI.getApi();
-        mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
-        mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
         mActivity = (NavigationActivity) getActivity();
     }
 
@@ -210,7 +207,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         mCopyButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_copy_button);
         mSMSButton = (HighlightOnPressButton) mView.findViewById(R.id.button_sms_address);
         mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.button_email_address);
-        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_qrcode_cancel_button);
 
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,14 +237,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
             }
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-                ((NavigationActivity) getActivity()).showNavBar();
-            }
-        });
-
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -262,6 +250,14 @@ public class RequestQRCodeFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+
+        bundle = this.getArguments();
+        if(bundle != null) {
+            mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
+            mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
+            mAddress = bundle.getString(RequestFragment.BITCOIN_ADDRESS);
+        }
+
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -467,6 +463,10 @@ public class RequestQRCodeFragment extends BaseFragment implements
         return false;
     }
 
+    public boolean isMerchantDonation() {
+        return (mAmountSatoshi == 0 && SettingFragment.getMerchantModePref());
+    }
+
     public long requestDifference(String walletUUID, String txId) {
         Log.d(TAG, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
@@ -550,9 +550,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-            if (mID != null) {
-                Log.d(TAG, "Starting Request Address at:" + System.currentTimeMillis());
-                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+            if (mID != null && mQRBitmap == null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
@@ -570,16 +568,18 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
         @Override
         protected void onPostExecute(Boolean success) {
-            ((NavigationActivity) getActivity()).showModalProgress(false);
-            mCreateBitmapTask = null;
-            if(success) {
-                checkNFC();
-                checkBle();
-                mBitcoinAddress.setText(mAddress);
-                if (mQRBitmap != null) {
-                    mQRView.setImageBitmap(mQRBitmap);
+            if(isAdded()) {
+                ((NavigationActivity) getActivity()).showModalProgress(false);
+                mCreateBitmapTask = null;
+                if(success) {
+                    checkNFC();
+                    checkBle();
+                    mBitcoinAddress.setText(mAddress);
+                    if (mQRBitmap != null) {
+                        mQRView.setImageBitmap(mQRBitmap);
+                    }
+                    mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
                 }
-                mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
             }
         }
 

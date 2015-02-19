@@ -11,7 +11,6 @@ package com.airbitz.api;
 public final class tABC_AsyncEventType {
   public final static tABC_AsyncEventType ABC_AsyncEventType_IncomingBitCoin = new tABC_AsyncEventType("ABC_AsyncEventType_IncomingBitCoin");
   public final static tABC_AsyncEventType ABC_AsyncEventType_BlockHeightChange = new tABC_AsyncEventType("ABC_AsyncEventType_BlockHeightChange");
-  public final static tABC_AsyncEventType ABC_AsyncEventType_ExchangeRateUpdate = new tABC_AsyncEventType("ABC_AsyncEventType_ExchangeRateUpdate");
   public final static tABC_AsyncEventType ABC_AsyncEventType_DataSyncUpdate = new tABC_AsyncEventType("ABC_AsyncEventType_DataSyncUpdate");
   public final static tABC_AsyncEventType ABC_AsyncEventType_RemotePasswordChange = new tABC_AsyncEventType("ABC_AsyncEventType_RemotePasswordChange");
   public final static tABC_AsyncEventType ABC_AsyncEventType_IncomingSweep = new tABC_AsyncEventType("ABC_AsyncEventType_IncomingSweep");
@@ -50,7 +49,7 @@ public final class tABC_AsyncEventType {
     swigNext = this.swigValue+1;
   }
 
-  private static tABC_AsyncEventType[] swigValues = { ABC_AsyncEventType_IncomingBitCoin, ABC_AsyncEventType_BlockHeightChange, ABC_AsyncEventType_ExchangeRateUpdate, ABC_AsyncEventType_DataSyncUpdate, ABC_AsyncEventType_RemotePasswordChange, ABC_AsyncEventType_IncomingSweep };
+  private static tABC_AsyncEventType[] swigValues = { ABC_AsyncEventType_IncomingBitCoin, ABC_AsyncEventType_BlockHeightChange, ABC_AsyncEventType_DataSyncUpdate, ABC_AsyncEventType_RemotePasswordChange, ABC_AsyncEventType_IncomingSweep };
   private static int swigNext = 0;
   private final int swigValue;
   private final String swigName;

@@ -198,8 +198,7 @@ public class VenueAdapter extends BaseAdapter {
                     distanceString = "" + intDist + " feet";
                 } else {
                     miles = Math.ceil(miles * 10) / 10;
-                    distanceString = "" + miles;
-                    distanceString = distanceString.substring(1, distanceString.length()) + " miles";
+                    distanceString = String.valueOf(miles) + " miles";
                 }
             } else if (miles >= 1000) {
                 int distanceInInt = (int) miles;

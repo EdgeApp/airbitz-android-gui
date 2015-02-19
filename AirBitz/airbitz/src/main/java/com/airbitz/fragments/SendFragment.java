@@ -34,24 +34,15 @@ package com.airbitz.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
-import android.nfc.tech.NfcA;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -63,7 +54,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -79,20 +69,10 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.BluetoothListView;
-import com.airbitz.objects.CameraSurfacePreview;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.objects.QRCamera;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.RGBLuminanceSource;
-import com.google.zxing.Reader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.Result;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +151,7 @@ public class SendFragment extends BaseFragment implements
         mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
         mBluetoothScanningLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_scanning_layout);
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
-        mQRCamera = new QRCamera(mActivity, mCameraLayout);
+        mQRCamera = new QRCamera(this, mCameraLayout);
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -353,7 +333,6 @@ public class SendFragment extends BaseFragment implements
             }
         }
 
-
         updateWalletOtherList();
 
         return mView;
@@ -382,7 +361,6 @@ public class SendFragment extends BaseFragment implements
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
         mQRCamera.stopCamera();
-        mQRCamera.setOnScanResultListener(null);
     }
 
     public void startCamera() {
@@ -573,12 +551,14 @@ public class SendFragment extends BaseFragment implements
         if(bluetooth) {
             mCameraLayout.setVisibility(View.GONE);
             mBluetoothLayout.setVisibility(View.VISIBLE);
+            mQRCodeTextView.setVisibility(View.GONE);
             startBluetoothSearch();
         }
         else {
             stopBluetoothSearch();
             mCameraLayout.setVisibility(View.VISIBLE);
             mBluetoothLayout.setVisibility(View.GONE);
+            mQRCodeTextView.setVisibility(View.VISIBLE);
             mHandler.postDelayed(cameraDelayRunner, 500);
         }
     }
@@ -646,14 +626,18 @@ public class SendFragment extends BaseFragment implements
 
     @Override
     public void onScanResult(String result) {
-        CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
-        if (info != null && info.address != null) {
-            Log.d(TAG, "Bitcoin found");
-            stopCamera();
-            GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-        } else if (info != null) {
-            stopCamera();
-            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
+        Log.d(TAG, "checking result = " + result);
+        if (result != null) {
+            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
+            if (info != null && info.address != null) {
+                Log.d(TAG, "Bitcoin found");
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+            } else if (info != null) {
+                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
+            }
+            mQRCamera.setOnScanResultListener(null);
+        } else {
+            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
         }
     }
 }

@@ -36,12 +36,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Build;
@@ -103,7 +101,6 @@ public class SettingFragment extends BaseFragment {
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
     private RelativeLayout mSpendingLimitContainer;
-    private RelativeLayout mTwoFactorContainer;
     private View mNFCSwitchLayout;
     private View mBLESwitchLayout;
     private HighlightOnPressImageButton mHelpButton;
@@ -234,15 +231,6 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new SpendingLimitsFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
-            }
-        });
-
-        mTwoFactorContainer = (RelativeLayout) mView.findViewById(R.id.settings_two_factor_container);
-        mTwoFactorContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment = new TwoFactorShowFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
             }
         });
@@ -590,29 +578,23 @@ public class SettingFragment extends BaseFragment {
     private void setUserNameState(boolean on) {
         if (on) {
             mFirstEditText.setEnabled(true);
-            mFirstEditText.setTextColor(getResources().getColor(android.R.color.black));
+            mFirstEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mFirstEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
-            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
             mLastEditText.setEnabled(true);
-            mLastEditText.setTextColor(getResources().getColor(android.R.color.black));
-            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
+            mLastEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mLastEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
             mNicknameEditText.setEnabled(true);
-            mNicknameEditText.setTextColor(getResources().getColor(android.R.color.black));
-            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_white));
+            mNicknameEditText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
         } else {
             mFirstEditText.setEnabled(false);
             mFirstEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mFirstEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
             mFirstEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mLastEditText.setEnabled(false);
             mLastEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mLastEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
             mLastEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
             mNicknameEditText.setEnabled(false);
             mNicknameEditText.setTextColor(getResources().getColor(R.color.disabled_color));
-            mNicknameEditText.setBackground(getResources().getDrawable(R.drawable.emboss_down_dark));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
         }
     }

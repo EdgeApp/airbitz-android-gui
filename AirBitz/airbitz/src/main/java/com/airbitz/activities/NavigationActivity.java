@@ -437,6 +437,8 @@ public class NavigationActivity extends Activity
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
+
+//            getFragmentManager().executePendingTransactions();
         }
     }
 
@@ -801,6 +803,14 @@ public class NavigationActivity extends Activity
         Log.d(TAG, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
         mTxId = txId;
+
+        // If in merchant donation mode, stay on QR screen and show amount
+        RequestQRCodeFragment fragment = requestMatchesDonation();
+        if(fragment != null) {
+            showIncomingDialog(walletUUID, txId, false);
+            return;
+        }
+
         /* If showing QR code, launch receiving screen*/
         RequestQRCodeFragment f = requestMatchesQR(mUUID, mTxId);
         Log.d(TAG, "RequestFragment? " + f);
@@ -821,6 +831,7 @@ public class NavigationActivity extends Activity
             if (tx.getAmountSatoshi() > 0) {
                 AudioPlayer.play(this, R.raw.bitcoin_received);
                 showIncomingBitcoinDialog();
+                updateWalletListener();
             }
         }
     }
@@ -841,10 +852,10 @@ public class NavigationActivity extends Activity
             resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
             switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
         }
-        showIncomingDialog(mUUID, mTxId);
+        showIncomingDialog(mUUID, mTxId, true);
     }
 
-    private void showIncomingDialog(String uuid, String txId) {
+    private void showIncomingDialog(String uuid, String txId, boolean withTeaching) {
         Wallet wallet = mCoreAPI.getWalletFromUUID(uuid);
         Transaction transaction = mCoreAPI.getTransaction(uuid, txId);
         String coinValue = mCoreAPI.formatSatoshi(transaction.getAmountSatoshi(), true);
@@ -859,15 +870,17 @@ public class NavigationActivity extends Activity
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         int delay = 4000;
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        int count = prefs.getInt(INCOMING_COUNT, 1);
-        if(count <= 2 && !SettingFragment.getMerchantModePref()) {
-            count++;
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(INCOMING_COUNT, count);
-            editor.apply();
-            message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
-            delay = 5000;
+        if(withTeaching) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+            int count = prefs.getInt(INCOMING_COUNT, 1);
+            if(count <= 2 && !SettingFragment.getMerchantModePref()) {
+                count++;
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(INCOMING_COUNT, count);
+                editor.apply();
+                message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
+                delay = 5000;
+            }
         }
         ShowFadingDialog(message, delay);
     }
@@ -879,6 +892,19 @@ public class NavigationActivity extends Activity
         }
         RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
         if (qr.isShowingQRCodeFor(uuid, txid)) {
+            return qr;
+        } else {
+            return null;
+        }
+    }
+
+    private RequestQRCodeFragment requestMatchesDonation() {
+        Fragment f = mNavStacks[mNavThreadId].peek();
+        if (!(f instanceof RequestQRCodeFragment)) {
+            return null;
+        }
+        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        if (qr.isMerchantDonation()) {
             return qr;
         } else {
             return null;
@@ -1060,7 +1086,7 @@ public class NavigationActivity extends Activity
         bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
         Fragment frag = new SignUpFragment();
         frag.setArguments(bundle);
-        pushFragment(frag, mNavThreadId);
+        pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
     }
 
@@ -1326,6 +1352,14 @@ public class NavigationActivity extends Activity
                             ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
                         }
                     }
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(mFadingDialog != null) {
+                                mFadingDialog.dismiss();
+                            }
+                        }
+                    });
                     mFadingDialog.setContentView(view);
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);

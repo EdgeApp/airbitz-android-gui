@@ -1,6 +1,7 @@
 package com.airbitz.objects;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
@@ -38,7 +38,7 @@ public class QRCamera implements
 
     public static final int RESULT_LOAD_IMAGE = 678;
     final int FOCUS_MILLIS = 2000;
-    NavigationActivity mActivity;
+    Fragment mFragment;
     Camera mCamera;
     CameraSurfacePreview mPreview;
     FrameLayout mPreviewFrame;
@@ -67,8 +67,8 @@ public class QRCamera implements
         }
     };
 
-    public QRCamera(NavigationActivity activity, View cameraLayout) {
-        mActivity = activity;
+    public QRCamera(Fragment activity, View cameraLayout) {
+        mFragment = activity;
         mCoreAPI = CoreAPI.getApi();
         mCameraLayout = cameraLayout;
 
@@ -141,7 +141,7 @@ public class QRCamera implements
             return;
         }
 
-        mPreview = new CameraSurfacePreview(mActivity, mCamera);
+        mPreview = new CameraSurfacePreview(mFragment.getActivity(), mCamera);
         mPreviewFrame.removeView(mPreview);
         mPreviewFrame.addView(mPreview);
         if (mCamera != null) {
@@ -203,7 +203,7 @@ public class QRCamera implements
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = mActivity.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            Cursor cursor = mFragment.getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
@@ -211,11 +211,9 @@ public class QRCamera implements
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
             String info = AttemptDecodePicture(thumbnail);
-            if (info != null) {
-                stopCamera();
-                if(mOnScanResult != null) {
-                    mOnScanResult.onScanResult(info);
-                }
+            stopCamera();
+            if(mOnScanResult != null) {
+                mOnScanResult.onScanResult(info);
             }
         }
     }
@@ -223,7 +221,7 @@ public class QRCamera implements
     // Select a picture from the Gallery
     private void PickAPicture() {
         Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        mActivity.startActivityForResult(in, RESULT_LOAD_IMAGE);
+        mFragment.startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
     private String AttemptDecodeBytes(byte[] bytes, Camera camera) {

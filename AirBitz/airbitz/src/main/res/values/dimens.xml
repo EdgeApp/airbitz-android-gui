@@ -26,7 +26,7 @@
     <dimen name="nine_mm">56.7dp</dimen>
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
     <dimen name="activity_signup_popup_height">119.7dp</dimen>
-    <dimen name="fragment_wallet_addwallet_height">135.45dp</dimen>
+    <dimen name="fragment_wallet_addwallet_height">150dp</dimen>
     <dimen name="currency_switch_height">37.8dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_height">138.6dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>

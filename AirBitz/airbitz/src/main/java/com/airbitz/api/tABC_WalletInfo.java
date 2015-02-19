@@ -51,14 +51,6 @@ public class tABC_WalletInfo {
     return coreJNI.tABC_WalletInfo_szName_get(swigCPtr, this);
   }
 
-  public void setSzUserName(String value) {
-    coreJNI.tABC_WalletInfo_szUserName_set(swigCPtr, this, value);
-  }
-
-  public String getSzUserName() {
-    return coreJNI.tABC_WalletInfo_szUserName_get(swigCPtr, this);
-  }
-
   public void setCurrencyNum(int value) {
     coreJNI.tABC_WalletInfo_currencyNum_set(swigCPtr, this, value);
   }
