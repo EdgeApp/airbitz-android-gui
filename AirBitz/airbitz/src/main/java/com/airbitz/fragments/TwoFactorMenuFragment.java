@@ -58,6 +58,14 @@ import com.airbitz.utils.Common;
 public class TwoFactorMenuFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
+    public static String STORE_SECRET = "com.airbitz.twofactormenu.storesecret";
+    public static String TEST_SECRET = "com.airbitz.twofactormenu.testsecret";
+    public static String USERNAME = "com.airbitz.twofactormenu.username";
+
+    String mUsername;
+    boolean mStoreSecret = false;
+    boolean mTestSecret = false;
+
     private Button mScanButton;
     private Button mResetButton;
     private HighlightOnPressImageButton mHelpButton;
@@ -120,6 +128,16 @@ public class TwoFactorMenuFragment extends BaseFragment {
 
         return mView;
     }
+
+    @Override
+    public void onResume() {
+        Bundle bundle = getArguments();
+        mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
+        mTestSecret = bundle.getBoolean(TEST_SECRET, false);
+        mUsername = bundle.getString(USERNAME);
+    }
+
+
 
     /**
      * Reset Two Factor Authentication

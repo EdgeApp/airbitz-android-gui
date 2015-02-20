@@ -468,6 +468,11 @@
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
 
+    <string name="twofactor_required_title">Two Factor Authentication On</string>
+    <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
+    <string name="twofactor_remind_later">Remind Me Later</string>
+    <string name="twofactor_enable">Enable</string>
+
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>

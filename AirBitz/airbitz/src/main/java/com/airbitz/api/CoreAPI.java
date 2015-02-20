@@ -467,10 +467,10 @@ public class CoreAPI {
     //************ Account Recovery
 
     // Blocking call, wrap in AsyncTask
-    public tABC_CC SignIn(String username, char[] password) {
+    public tABC_Error SignIn(String username, char[] password) {
         tABC_Error pError = new tABC_Error();
         tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), pError);
-        return result;
+        return pError;
     }
 
     //************ Settings handling
@@ -2011,6 +2011,12 @@ public class CoreAPI {
     boolean mOTPError = false;
     public boolean hasOTPError() {
         return mOTPError;
+    }
+    public void otpSetError(tABC_CC cc) {
+        mOTPError = tABC_CC.ABC_CC_InvalidOTP == cc;
+    }
+    public void otpClearError() {
+        mOTPError = false;
     }
 
     private boolean generalInfoUpdate() {

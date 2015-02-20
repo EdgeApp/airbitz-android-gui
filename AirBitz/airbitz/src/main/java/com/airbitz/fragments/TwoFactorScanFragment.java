@@ -66,6 +66,9 @@ public class TwoFactorScanFragment extends BaseFragment implements
         QRCamera.OnScanResult {
     private final String TAG = getClass().getSimpleName();
 
+    public static String STORE_SECRET = "com.airbitz.twofactorscan.storesecret";
+    public static String TEST_SECRET = "com.airbitz.twofactorscan.testsecret";
+
     private HighlightOnPressImageButton mHelpButton, mBackButton;
     QRCamera mQRCamera;
     RelativeLayout mCameraLayout;
@@ -127,6 +130,10 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        Bundle bundle = getArguments();
+        mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
+        mTestSecret = bundle.getBoolean(TEST_SECRET, false);
+
         if(mQRCamera == null) {
             mQRCamera = new QRCamera(this, mCameraLayout);
             mQRCamera.setOnScanResultListener(this);

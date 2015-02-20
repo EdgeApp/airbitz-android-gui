@@ -96,6 +96,8 @@ import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
+import com.airbitz.fragments.TwoFactorMenuFragment;
+import com.airbitz.fragments.TwoFactorScanFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
@@ -124,7 +126,8 @@ public class NavigationActivity extends Activity
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
-        CoreAPI.OnRemotePasswordChange {
+        CoreAPI.OnRemotePasswordChange,
+        TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
@@ -1578,17 +1581,14 @@ public class NavigationActivity extends Activity
             PackageInfo pInfo;
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                mMessageId = String.valueOf(getMessageIDPref());
+                mBuildNumber = String.valueOf(pInfo.versionCode);
+                return api.getMessages(mMessageId, mBuildNumber);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 return null;
             }
 
-            mMessageId = String.valueOf(getMessageIDPref());
-
-//            mBuildNumber = "2014111801"; // TESTING
-            mBuildNumber = String.valueOf(pInfo.versionCode);
-
-            return api.getMessages(mMessageId, mBuildNumber);
         }
 
         @Override
@@ -1703,5 +1703,43 @@ public class NavigationActivity extends Activity
             editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
         }
+    }
+
+    //********************  OTP support
+    public void ShowOTPRequiredDialog() {
+        if (!this.isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            builder.setMessage(getString(R.string.twofactor_required_message))
+                    .setTitle(getString(R.string.twofactor_required_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    launchTwoFactorScan();
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            builder.create().show();
+        }
+    }
+
+    private void launchTwoFactorScan() {
+        Fragment fragment = new TwoFactorScanFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorScanFragment.STORE_SECRET, true);
+        bundle.putBoolean(TwoFactorScanFragment.TEST_SECRET, true);
+        fragment.setArguments(bundle);
+        pushFragment(fragment);
+    }
+
+    @Override
+    public void onTwoFactorQRScanResult(boolean result) {
+        //TODO ?
     }
 }

@@ -63,6 +63,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -482,23 +483,17 @@ public class LandingFragment extends BaseFragment implements
         }
 
         @Override
-        protected tABC_CC doInBackground(Object... params) {
+        protected tABC_Error doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPassword = (char[]) params[1];
             return mCoreAPI.SignIn(mUsername, mPassword);
         }
 
         @Override
-        protected void onPostExecute(final Object success) {
+        protected void onPostExecute(final Object error) {
             mActivity.showModalProgress(false);
             mPasswordLoginTask = null;
-            tABC_CC result = (tABC_CC) success;
-
-            if (result == tABC_CC.ABC_CC_Ok) {
-                mActivity.LoginNow(mUsername, mPassword);
-            } else {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, result));
-            }
+            signInComplete((tABC_Error) error);
         }
 
         @Override
@@ -507,6 +502,37 @@ public class LandingFragment extends BaseFragment implements
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
     }
+
+    private void signInComplete(tABC_Error error) {
+        tABC_CC resultCode = error.getCode();
+        mCoreAPI.otpSetError(resultCode);
+
+        if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+            Editable pass = mPasswordEditText.getText();
+            char[] password = new char[pass.length()];
+            pass.getChars(0, pass.length(), password, 0);
+            mActivity.LoginNow(mUsername, password);
+        } else if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
+            launchTwoFactorMenu();
+        } else {
+            if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
+                launchTwoFactorMenu();
+            } else {
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
+            }
+        }
+    }
+
+    private void launchTwoFactorMenu() {
+        Fragment fragment = new TwoFactorMenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, true);
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, true);
+        bundle.putString(TwoFactorMenuFragment.USERNAME, mUsername);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+    }
+
 
     private void abortPermanently() {
         mCoreAPI.PINLoginDelete(mUsername);
