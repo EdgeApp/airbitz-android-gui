@@ -78,12 +78,12 @@ public class TwoFactorScanFragment extends BaseFragment implements
     boolean mTestSecret = false;
 
     //************** Callback for notification of two factor results
-    OnTwoFactorResult mOnTwoFactorResult;
-    public interface OnTwoFactorResult {
-        public void onTwoFactorResult(boolean result);
+    OnTwoFactorQRScanResult mOnTwoFactorQRScanResult;
+    public interface OnTwoFactorQRScanResult {
+        public void onTwoFactorQRScanResult(boolean result);
     }
-    public void setOnScanResultListener(OnTwoFactorResult listener) {
-        mOnTwoFactorResult = listener;
+    public void setOnTwoFactorQRScanResult(OnTwoFactorQRScanResult listener) {
+        mOnTwoFactorQRScanResult = listener;
     }
 
 
@@ -153,8 +153,8 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     @Override
     public void onScanResult(String result) {
-        if(mOnTwoFactorResult != null) {
-            mOnTwoFactorResult.onTwoFactorResult(processResult(result));
+        if(mOnTwoFactorQRScanResult != null) {
+            mOnTwoFactorQRScanResult.onTwoFactorQRScanResult(processResult(result));
         }
     }
 
