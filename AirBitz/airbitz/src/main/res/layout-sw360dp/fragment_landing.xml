@@ -35,7 +35,7 @@
             style="@style/BlackDropShadow"
             android:text="@string/fragment_landing_detail_text"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
+            android:textSize="15dp"
             android:visibility="visible"/>
 
             <LinearLayout
@@ -58,7 +58,7 @@
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
-                    android:textSize="14sp" 
+                    android:textSize="14dp" 
                     style="@style/LandingEditText"
                     />
 
@@ -75,7 +75,7 @@
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
-                    android:textSize="14sp" 
+                    android:textSize="14dp" 
                     style="@style/LandingEditText"
                     />
 
@@ -90,7 +90,7 @@
                     style="@style/BlackDropShadow"
                     android:text="@string/fragment_landing_signin_button"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:textStyle="bold"/>
 
 
@@ -114,7 +114,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:visibility="visible"/>
 
             <LinearLayout
@@ -232,7 +232,7 @@
                 style="@style/BlackDropShadow"
                 android:text="@string/fragment_landing_swipe_text"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14dp" />
 
             <ImageView
                 android:id="@+id/fragment_landing_arrowright_imageview"
@@ -253,7 +253,7 @@
             style="@style/BlackDropShadow"
             android:text="@string/fragment_landing_signup_button"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
+            android:textSize="15dp"
             android:textStyle="bold"/>
 
         <LinearLayout
@@ -274,7 +274,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="16dp"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:textStyle="bold"/>
 
             <com.airbitz.objects.HighlightOnPressButton

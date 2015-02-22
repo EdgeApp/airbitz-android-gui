@@ -34,6 +34,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ico_restaurant"
+                    android:paddingLeft="16dp"
+                    android:textSize="14dp"
                     android:text="@string/restaurant_and_food_trucks" />
 
                 <TextView
@@ -43,7 +45,8 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ico_bar"
                     android:drawablePadding="28dp"
-                    android:paddingLeft="28dp"
+                    android:paddingLeft="20dp"
+                    android:textSize="14dp"
                     android:text="@string/bars_and_nightclubs" />
 
                 <TextView
@@ -53,6 +56,8 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ico_coffee"
                     android:drawablePadding="28dp"
+                    android:paddingLeft="16dp"
+                    android:textSize="14dp"
                     android:text="@string/coffee_and_tea" />
 
                 <TextView
@@ -61,6 +66,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ico_more"
+                    android:paddingLeft="16dp"
+                    android:textSize="14dp"
                     android:text="@string/more_categories" />
             </LinearLayout>
 

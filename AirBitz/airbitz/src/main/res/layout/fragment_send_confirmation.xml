@@ -47,7 +47,7 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/send_confirmation_from_title"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:textStyle="normal" />
 
                 <com.airbitz.objects.HighlightOnPressSpinner
@@ -64,7 +64,7 @@
                     android:popupBackground="@drawable/rounded_edge_white_bg"
                     android:spinnerMode="dropdown"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14dp" />
 
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/send_confirmation_to_title"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -104,7 +104,7 @@
                     android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -129,7 +129,7 @@
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp"
+                    android:textSize="17dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -140,7 +140,7 @@
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
                     android:textColor="@android:color/white"
-                    android:textSize="13sp"
+                    android:textSize="13dp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -157,7 +157,7 @@
                     android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
@@ -181,7 +181,7 @@
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp"
+                    android:textSize="17dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -192,7 +192,7 @@
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
                     android:textColor="@android:color/white"
-                    android:textSize="13sp"
+                    android:textSize="13dp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -209,7 +209,7 @@
                     android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
             </RelativeLayout>
 
             <TextView
@@ -222,7 +222,7 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="15sp" />
+                android:textSize="15dp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_max"
@@ -235,7 +235,7 @@
                 android:background="@drawable/bg_btn_green"
                 android:text="@string/send_confirmation_max_button_title"
                 android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:textSize="12dp" />
 
 
         </RelativeLayout>
@@ -261,7 +261,7 @@
                 android:paddingRight="20dp"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
 
             <EditText
                 android:id="@+id/edittext_pin"
@@ -297,7 +297,7 @@
                 android:gravity="center"
                 android:text="@string/send_confirmation_slide_to_confirm"
                 android:textColor="@android:color/white"
-                android:textSize="15sp" />
+                android:textSize="15dp" />
 
             <ImageButton
                 android:id="@+id/button_confirm_swipe"

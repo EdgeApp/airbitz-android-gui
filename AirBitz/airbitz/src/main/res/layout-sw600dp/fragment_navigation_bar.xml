@@ -37,7 +37,7 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_directory_text"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -67,7 +67,7 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -97,7 +97,7 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_send_text"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -127,7 +127,7 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_wallets_text"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -156,7 +156,7 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_settings_text"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -194,7 +194,7 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_directory_text"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -229,7 +229,7 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -264,7 +264,7 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_send_text"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -298,7 +298,7 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_wallets_text"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -332,7 +332,7 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_settings_text"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>

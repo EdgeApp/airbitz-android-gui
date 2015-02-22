@@ -40,7 +40,7 @@
         android:ellipsize="none"
         android:singleLine="false"
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="15sp" />
+        android:textSize="15dp" />
 
 
 </RelativeLayout>

@@ -19,7 +19,7 @@
         android:inputType="textVisiblePassword|textNoSuggestions"
         android:paddingLeft="12.6dp"
         android:textColor="@color/settings_edit_text_field"
-        android:textSize="17sp" />
+        android:textSize="17dp" />
 
     <com.airbitz.objects.HighlightOnPressButton
         android:id="@+id/category_delete"

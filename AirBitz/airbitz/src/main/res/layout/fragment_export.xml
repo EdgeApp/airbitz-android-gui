@@ -31,7 +31,7 @@
             android:gravity="right|center_vertical"
             android:text="@string/export_saving_wallet_label"
             android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
         <com.airbitz.objects.HighlightOnPressSpinner
             android:id="@+id/fragment_export_account_spinner"
@@ -42,7 +42,7 @@
             android:background="@drawable/bg_btn_blue_stretch"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 

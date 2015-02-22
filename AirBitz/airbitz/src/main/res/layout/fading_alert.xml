@@ -45,7 +45,7 @@
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             style="@style/BlackDropShadow"
-            android:textSize="24sp"
+            android:textSize="24dp"
             android:textColor="@android:color/white"/>
 
     </LinearLayout>

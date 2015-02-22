@@ -37,7 +37,7 @@
             android:textColor="@color/gray_text"
             android:textColorHint="@color/enabled_hint_color"
             android:textCursorDrawable="@drawable/bold_cursor"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                 android:textColor="@color/gray_text"
                 android:textColorHint="@color/enabled_hint_color"
                 android:textCursorDrawable="@drawable/bold_cursor"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_category_button_add"
@@ -241,7 +241,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
                 android:paddingLeft="12.6dp"
-                android:textSize="17sp" />
+                android:textSize="17dp" />
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/item_popup_delete"
@@ -282,7 +282,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/settings_categories_expense"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -297,7 +297,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/settings_categories_income"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -312,7 +312,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/settings_categories_transfer"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -327,7 +327,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/settings_categories_exchange"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
             </LinearLayout>
         </ScrollView>

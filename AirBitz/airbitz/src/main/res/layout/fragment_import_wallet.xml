@@ -74,7 +74,7 @@
                             android:paddingRight="6.3dp"
                             android:text="@string/send_from_title"
                             android:textColor="@android:color/white"
-                            android:textSize="18sp"
+                            android:textSize="18dp"
                             android:textStyle="bold" />
 
                         <com.airbitz.objects.HighlightOnPressSpinner
@@ -90,7 +90,7 @@
                             android:popupBackground="@drawable/rounded_edge_white_bg"
                             android:spinnerMode="dropdown"
                             android:textColor="@android:color/white"
-                            android:textSize="14sp" />
+                            android:textSize="14dp" />
 
                     </LinearLayout>
 
@@ -114,7 +114,7 @@
                             android:paddingRight="6.3dp"
                             android:text="@string/import_wallet_private_key_title"
                             android:textColor="@android:color/white"
-                            android:textSize="13sp"
+                            android:textSize="13dp"
                             android:textStyle="bold" />
 
                         <com.airbitz.objects.LimitedEditText
@@ -149,7 +149,7 @@
                     android:shadowRadius="1"
                     android:text="@string/send_scan_text"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14dp" />
 
 
             </LinearLayout>
@@ -160,7 +160,7 @@
                     android:layout_height="60dp"
                     android:layout_margin="20dp"
                     android:text="@string/import_wallet_hidden_bits_submit"
-                    android:textSize="24sp"
+                    android:textSize="24dp"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="60dp"
                     android:layout_marginBottom="60dp"
@@ -189,7 +189,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="18dp"
             android:background="@drawable/blue_triangle" />
 
     </RelativeLayout>
