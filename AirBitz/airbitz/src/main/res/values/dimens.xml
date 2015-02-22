@@ -34,5 +34,9 @@
     <dimen name="map_padding">120dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="calc_button_size">50dp</dimen>
+    <dimen name="calc_button_size_big">60dp</dimen>
+    <dimen name="calc_button_margin">3dp</dimen>
+    <dimen name="calc_button_textsize">14dp</dimen>
 
 </resources>

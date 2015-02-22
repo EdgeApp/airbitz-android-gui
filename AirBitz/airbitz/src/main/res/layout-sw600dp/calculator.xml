@@ -2,31 +2,25 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
-    android:background="#90ffffff"
+    android:layout_height="wrap_content"
+    android:background="#aaffffff"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/row1"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginTop="2dp"
-        android:orientation="horizontal"
-        android:weightSum="9">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButton1"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_1"
             android:onClick="onCalculatorButtonClick"
@@ -34,12 +28,9 @@
 
         <ImageButton
             android:id="@+id/imageButton2"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_2"
             android:onClick="onCalculatorButtonClick"
@@ -47,12 +38,9 @@
 
         <ImageButton
             android:id="@+id/imageButton3"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_3"
             android:onClick="onCalculatorButtonClick"
@@ -60,12 +48,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonPlus"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_plus"
             android:onClick="onCalculatorButtonClick"
@@ -73,45 +58,30 @@
 
         <ImageButton
             android:id="@+id/imageButtonPercent"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_percent"
             android:onClick="onCalculatorButtonClick"
             android:tag="%" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row2"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/row1"
-        android:orientation="horizontal"
-        android:weightSum="9">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButton4"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_4"
             android:onClick="onCalculatorButtonClick"
@@ -119,12 +89,9 @@
 
         <ImageButton
             android:id="@+id/imageButton5"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_5"
             android:onClick="onCalculatorButtonClick"
@@ -132,12 +99,9 @@
 
         <ImageButton
             android:id="@+id/imageButton6"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_6"
             android:onClick="onCalculatorButtonClick"
@@ -145,12 +109,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonMinus"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_minus"
             android:onClick="onCalculatorButtonClick"
@@ -158,45 +119,30 @@
 
         <ImageButton
             android:id="@+id/imageButtonMultiply"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_multi"
             android:onClick="onCalculatorButtonClick"
             android:tag="*" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row3"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/row2"
-        android:orientation="horizontal"
-        android:weightSum="9">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButton7"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_7"
             android:onClick="onCalculatorButtonClick"
@@ -204,12 +150,9 @@
 
         <ImageButton
             android:id="@+id/imageButton8"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_8"
             android:onClick="onCalculatorButtonClick"
@@ -217,12 +160,9 @@
 
         <ImageButton
             android:id="@+id/imageButton9"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_9"
             android:onClick="onCalculatorButtonClick"
@@ -230,12 +170,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonDivide"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_division"
             android:onClick="onCalculatorButtonClick"
@@ -243,48 +180,36 @@
 
         <Button
             android:id="@+id/imageButtonBack"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:text="@string/calculator_back"
-            android:textSize="20dp"
             android:textColor="@android:color/white"
+            android:textSize="@dimen/calc_button_textsize"
             android:textStyle="bold"
-            style="@style/BlackDropShadow"
             android:background="@drawable/btn_calc_back"
             android:onClick="onCalculatorButtonClick"
             android:tag="back" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row4"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/row3"
-        android:layout_marginBottom="2dp"
-        android:orientation="horizontal"
-        android:weightSum="9">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButtonClear"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_c"
             android:onClick="onCalculatorButtonClick"
@@ -292,12 +217,9 @@
 
         <ImageButton
             android:id="@+id/imageButton0"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_0"
             android:onClick="onCalculatorButtonClick"
@@ -305,12 +227,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonDot"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_dot"
             android:onClick="onCalculatorButtonClick"
@@ -318,12 +237,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonEquals"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:background="@drawable/btn_calc_equals"
             android:onClick="onCalculatorButtonClick"
@@ -331,24 +247,17 @@
 
         <Button
             android:id="@+id/imageButtonDone"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
+            android:layout_width="@dimen/calc_button_size_big"
+            android:layout_height="@dimen/calc_button_size_big"
+            android:layout_margin="@dimen/calc_button_margin"
             android:layout_weight="1"
             android:text="@string/calculator_done"
-            android:textSize="20dp"
             android:textColor="@android:color/white"
+            android:textSize="@dimen/calc_button_textsize"
             android:textStyle="bold"
-            style="@style/BlackDropShadow"
             android:background="@drawable/btn_calc_done"
             android:onClick="onCalculatorButtonClick"
             android:tag="done" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-
     </LinearLayout>
 
 </RelativeLayout>
