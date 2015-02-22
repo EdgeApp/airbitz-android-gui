@@ -24,14 +24,14 @@
         <RelativeLayout
             android:id="@+id/layout_send_confirmation"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:paddingTop="12.6dp">
 
             <LinearLayout
                 android:id="@+id/layout_from"
                 android:layout_width="match_parent"
-                android:layout_height="25.2dp"
+                android:layout_height="35.2dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:weightSum="3">
@@ -47,7 +47,7 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/send_confirmation_from_title"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="18dp"
                     android:textStyle="normal" />
 
                 <com.airbitz.objects.HighlightOnPressSpinner
@@ -72,7 +72,7 @@
             <LinearLayout
                 android:id="@+id/layout_to"
                 android:layout_width="match_parent"
-                android:layout_height="18.9dp"
+                android:layout_height="35.9dp"
                 android:layout_below="@+id/layout_from"
                 android:layout_marginBottom="11dp"
                 android:layout_marginTop="5dp"
@@ -91,7 +91,7 @@
                     android:gravity="right|center_vertical"
                     android:text="@string/send_confirmation_to_title"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="18dp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -104,7 +104,7 @@
                     android:singleLine="true"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
-                    android:textSize="15dp"
+                    android:textSize="18dp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -112,7 +112,7 @@
             <RelativeLayout
                 android:id="@+id/layout_btc_fields"
                 android:layout_width="wrap_content"
-                android:layout_height="34.65dp"
+                android:layout_height="40dp"
                 android:layout_below="@+id/button_max"
                 android:layout_marginBottom="6.0dp"
                 android:layout_marginLeft="12.6dp"
@@ -125,11 +125,11 @@
                 <TextView
                     android:id="@+id/send_confirmation_btc_sign"
                     android:layout_width="42dp"
-                    android:layout_height="34.65dp"
+                    android:layout_height="35dp"
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="17dp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -140,7 +140,7 @@
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
                     android:textColor="@android:color/white"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -164,7 +164,7 @@
             <RelativeLayout
                 android:id="@+id/layout_fiat_fields"
                 android:layout_width="wrap_content"
-                android:layout_height="34.65dp"
+                android:layout_height="40dp"
                 android:layout_below="@id/layout_btc_fields"
                 android:layout_marginBottom="6.3dp"
                 android:layout_marginLeft="12.6dp"
@@ -181,7 +181,7 @@
                     android:gravity="center_vertical|left"
                     android:paddingLeft="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="17dp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -192,7 +192,7 @@
                     android:gravity="center_vertical|right"
                     android:paddingRight="8dp"
                     android:textColor="@android:color/white"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -226,8 +226,8 @@
 
             <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/button_max"
-                android:layout_width="55.1dp"
-                android:layout_height="18.9dp"
+                android:layout_width="55dp"
+                android:layout_height="22dp"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/layout_to"
                 android:layout_marginBottom="2dp"
@@ -246,7 +246,7 @@
             android:layout_height="31.5dp"
             android:layout_below="@id/layout_send_confirmation"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="31.5dp"
             android:layout_marginTop="12.6dp"
             android:gravity="center"
             android:orientation="horizontal"
@@ -294,8 +294,7 @@
                 android:id="@+id/textview_slide"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="left|center"
-                android:paddingLeft="15dp"
+                android:gravity="center"
                 android:text="@string/send_confirmation_slide_to_confirm"
                 android:textColor="@android:color/white"
                 android:textSize="15dp" />
