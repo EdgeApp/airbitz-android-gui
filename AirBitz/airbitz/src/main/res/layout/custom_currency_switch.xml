@@ -25,10 +25,11 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="#ccf2efef"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/top_type"
+            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"
@@ -51,10 +52,11 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="#ccf2efef"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/bottom_type"
+            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"
@@ -88,6 +90,7 @@
 
         <TextView
             android:id="@+id/button_mover_type"
+            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"

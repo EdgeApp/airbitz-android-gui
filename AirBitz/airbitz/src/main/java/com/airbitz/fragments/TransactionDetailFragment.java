@@ -642,9 +642,11 @@ public class TransactionDetailFragment extends BaseFragment
             if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
                 Log.d(TAG, "SEND");
                 mFromSend = true;
+                setCurrentType(getString(R.string.fragment_category_expense));
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 Log.d(TAG, "REQUEST");
+                setCurrentType(getString(R.string.fragment_category_income));
             }
 
             String walletUUID = bundle.getString(Wallet.WALLET_UUID);
@@ -656,8 +658,12 @@ public class TransactionDetailFragment extends BaseFragment
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
                 if (mTransaction != null) {
-                    setCurrentType(mTransaction.getCategory());
-
+                    if(mFromSend || mFromRequest) {
+                        mTransaction.setCategory(currentType);
+                    }
+                    else {
+                        setCurrentType(mTransaction.getCategory());
+                    }
                     // if there is a bizId, add it as the first one of the map
                     if (mTransaction.getmBizId() != 0) {
                         mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());

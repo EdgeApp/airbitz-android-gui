@@ -388,14 +388,10 @@ public class CategoryFragment extends BaseFragment {
 
         mItemPopUpEdittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -405,6 +401,9 @@ public class CategoryFragment extends BaseFragment {
                         editable.clear();
                         editable.append(mPopUpCategoryOld);
                         popupDoEdit = false;
+                    }
+                    if(editable.toString().isEmpty()) {
+                        editable.append(mPopUpCurrentType);
                     }
                     updateItemBlanks(editable.toString().substring(editable.toString().indexOf(':') + 1));
                     mPopUpCategoryOld = mAddField.getText().toString();

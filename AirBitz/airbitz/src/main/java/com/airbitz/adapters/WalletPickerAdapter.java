@@ -55,7 +55,7 @@ public class WalletPickerAdapter extends ArrayAdapter {
     private boolean mWithBalance;
 
     public WalletPickerAdapter(Context context, List<Wallet> walletList, WalletPickerEnum source) {
-        this(context, walletList, source, false);
+        this(context, walletList, source, true);
     }
 
     public WalletPickerAdapter(Context context, List<Wallet> walletList, WalletPickerEnum source, boolean withBalance) {

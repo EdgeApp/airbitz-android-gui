@@ -487,11 +487,13 @@ public class WalletsFragment extends BaseFragment
             mCoreAPI.stopAllAsyncUpdates();
         }
         else {
-            mCoreAPI.setWalletOrder(mLatestWalletList);
-            updateWalletList(mArchiveClosed);
-            UpdateBalances();
             mCoreAPI.startAllAsyncUpdates();
         }
+        mCoreAPI.setWalletOrder(mLatestWalletList);
+        updateWalletList(!mArchiveClosed);
+        updateWalletList(mArchiveClosed);
+        mLatestWalletAdapter.notifyDataSetChanged();
+        UpdateBalances();
     }
 
     @Override
@@ -602,13 +604,13 @@ public class WalletsFragment extends BaseFragment
         if(walletList != null && !walletList.isEmpty()) {
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
-            mLatestWalletAdapter.swapWallets();
-            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-            mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-            mLatestWalletListView.setArchiveClosed(archiveClosed);
-            mLatestWalletAdapter.notifyDataSetChanged();
-            mParentLayout.invalidate();
         }
+        mLatestWalletAdapter.swapWallets();
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mLatestWalletAdapter.notifyDataSetChanged();
+        mParentLayout.invalidate();
     }
 
     public List<Wallet> getWallets(boolean archiveClosed) {

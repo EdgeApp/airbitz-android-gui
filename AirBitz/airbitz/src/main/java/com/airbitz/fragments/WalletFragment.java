@@ -427,10 +427,14 @@ public class WalletFragment extends BaseFragment
                     return;
                 }
 
+                int newIdx = i - 1;
+                if(mSearchLayout.getVisibility() == View.VISIBLE) {
+                    newIdx = i;
+                }
+
                 mActivity.hideSoftKeyboard(mSendButton);
                 // Make sure this is not the header view and offset i by 1
-                if (i > 0) {
-                    int newIdx = i - 1;
+                if (i >= 0) {
                     Transaction trans = mTransactions.get(newIdx);
                     mTransactionAdapter.selectItem(view, newIdx);
 

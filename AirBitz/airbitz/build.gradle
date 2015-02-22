@@ -41,6 +41,12 @@ android {
         dev {
             applicationId 'com.airbitz.dev'
         }
+        develop {
+            applicationId 'com.airbitz.develop'
+        }
+        testnet {
+            applicationId 'com.airbitz.testnet'
+        }
         prod {
             applicationId 'com.airbitz'
         }
@@ -73,9 +79,7 @@ android {
             applicationVariants.all { variant ->
                 def versionCode = getVersionCode()
                 variant.outputs.each { output ->
-                    println "variant.buildType.name: " + variant.buildType.name
                     if(variant.buildType.name.equals('release')) {
-                        println "APK Version: " + versionCode
                         output.outputFile = new File(output.outputFile.parent, "airbitz-prod-" + variant.buildType.name +"-" + versionCode + ".apk")
                     }
                 }

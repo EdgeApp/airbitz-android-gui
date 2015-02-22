@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Airbitz</string>
     <string name="loading">Loading…</string>
     <string name="synchronizing">Synchronizing…</string>
 
@@ -21,7 +20,7 @@
 
     <!-- Nav Bar strings -->
     <string name="nav_bar_directory_text">DIRECTORY</string>
-    <string name="nav_bar_request_text">REQUEST</string>
+    <string name="nav_bar_request_text">RECEIVE</string>
     <string name="nav_bar_send_text">SEND</string>
     <string name="nav_bar_wallets_text">WALLETS</string>
     <string name="nav_bar_settings_text">SETTINGS</string>
@@ -267,6 +266,7 @@
     <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
+    <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
     <string name="fragment_send_first_usage">Scan the QR code of payee to send payment</string>
     <string name="fragment_send_first_usage_ble">Bluetooth payment requests are listed here. Tap on a user to send them a payment</string>
 
