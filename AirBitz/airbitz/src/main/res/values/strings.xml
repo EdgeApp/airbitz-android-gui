@@ -473,6 +473,11 @@
     <string name="twofactor_remind_later">Remind Me Later</string>
     <string name="twofactor_enable">Enable</string>
 
+    <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>
+    <string name="fragment_two_factor_scan_unable_import_message">The two factor authentication token import failed. Please ensure you have the correct token!</string>
+    <string name="fragment_two_factor_scan_try_again">Try Again</string>
+    <string name="fragment_two_factor_scan_no_thanks">No Thanks</string>
+
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>

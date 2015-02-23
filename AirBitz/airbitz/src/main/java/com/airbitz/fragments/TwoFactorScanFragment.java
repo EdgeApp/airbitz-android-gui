@@ -204,7 +204,8 @@ public class TwoFactorScanFragment extends BaseFragment implements
         if (true) {
             exit();
         } else {
-            ShowTryAgainDialog("Unable to import token", "The two factor authentication token import failed. Please ensure you have the correct token!");
+            ShowTryAgainDialog(getString(R.string.fragment_two_factor_scan_unable_import_title),
+                    getString(R.string.fragment_two_factor_scan_unable_import_message));
         }
     }
 
@@ -214,13 +215,13 @@ public class TwoFactorScanFragment extends BaseFragment implements
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(false)
-                    .setPositiveButton("Try Again?",
+                    .setPositiveButton(getString(R.string.fragment_two_factor_scan_try_again),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
                                 }
                             })
-                    .setNegativeButton("No thanks",
+                    .setNegativeButton(getString(R.string.fragment_two_factor_scan_no_thanks),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
