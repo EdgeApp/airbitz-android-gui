@@ -55,7 +55,8 @@ import com.airbitz.utils.Common;
  * Two Factor Authentication Menu
  * Created 2/5/15
  */
-public class TwoFactorMenuFragment extends BaseFragment {
+public class TwoFactorMenuFragment extends BaseFragment implements
+    TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final String TAG = getClass().getSimpleName();
 
     public static String STORE_SECRET = "com.airbitz.twofactormenu.storesecret";
@@ -72,6 +73,15 @@ public class TwoFactorMenuFragment extends BaseFragment {
     private TextView mTitleTextView;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
+
+    OnTwoFactorMenuResult mOnTwoFactorMenuResult;
+
+    public interface OnTwoFactorMenuResult {
+        public void onTwoFactorMenuResult(boolean result);
+    }
+    public void setOnTwoFactorMenuResult(OnTwoFactorMenuResult listener) {
+        mOnTwoFactorMenuResult = listener;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +109,7 @@ public class TwoFactorMenuFragment extends BaseFragment {
         mScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.pushFragment(new TwoFactorScanFragment(), NavigationActivity.Tabs.SETTING.ordinal());
+                launchTwoFactorScan();
             }
         });
 
@@ -137,7 +147,23 @@ public class TwoFactorMenuFragment extends BaseFragment {
         mUsername = bundle.getString(USERNAME);
     }
 
+    @Override
+    public void onTwoFactorQRScanResult(boolean result) {
+        if(mOnTwoFactorMenuResult != null) {
+            mOnTwoFactorMenuResult.onTwoFactorMenuResult(result);
+        }
+        mActivity.onBackPressed();
+    }
 
+    private void launchTwoFactorScan() {
+        TwoFactorScanFragment fragment = new TwoFactorScanFragment();
+        fragment.setOnTwoFactorQRScanResult(this);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+    }
 
     /**
      * Reset Two Factor Authentication

@@ -31,6 +31,7 @@
 
 package com.airbitz.fragments;
 
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -131,10 +132,7 @@ public class TwoFactorShowFragment extends BaseFragment
         mImportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                _tfaMenuViewController = (TwoFactorMenuViewController *)[Util animateIn:@"TwoFactorMenuViewController" parentController:self];
-//                _tfaMenuViewController.delegate = self;
-//                _tfaMenuViewController.bStoreSecret = YES;
-                mActivity.pushFragment(new TwoFactorMenuFragment());
+                launchTwoFactorMenu();
             }
         });
 
@@ -182,6 +180,13 @@ public class TwoFactorShowFragment extends BaseFragment
         mQRView.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
+    private void launchTwoFactorMenu() {
+        Fragment fragment = new TwoFactorMenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, true);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+    }
 
     void checkStatus(boolean bMsg)
     {
@@ -327,19 +332,6 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    private void confirmRequest()
-    {
-        resetOtpNotifications();
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), AirbitzApplication.getPassword())) {
-            mConfirmRequestTask = new ConfirmRequestTask();
-            mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
-        else {
-            mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
-            mActivity.showModalProgress(false);
-        }
-    }
-
     /**
      * Flip Enable switch task
      */
@@ -378,6 +370,19 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onCancelled() {
             mCheckStatusTask = null;
+            mActivity.showModalProgress(false);
+        }
+    }
+
+    private void confirmRequest()
+    {
+        resetOtpNotifications();
+        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), AirbitzApplication.getPassword())) {
+            mConfirmRequestTask = new ConfirmRequestTask();
+            mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        }
+        else {
+            mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
         }
     }

@@ -2591,6 +2591,11 @@ public class CoreAPI {
         return cc;
     }
 
+    private tABC_Error mRecoveryAnswersError;
+    public tABC_Error getRecoveryAnswersError() {
+        return mRecoveryAnswersError;
+    }
+
     public boolean recoveryAnswers(String strAnswers, String strUserName)
     {
         SWIGTYPE_p_int lp = core.new_intp();
@@ -2600,10 +2605,12 @@ public class CoreAPI {
         tABC_CC result = core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
         if (tABC_CC.ABC_CC_Ok == result)
         {
+            mRecoveryAnswersError = null;
             return core.intp_value(lp)==1;
         }
         else
         {
+            mRecoveryAnswersError = error;
             Log.d(TAG, error.getSzDescription());
             return false;
         }
@@ -2856,16 +2863,22 @@ public class CoreAPI {
 
     // Blocking
     public tABC_CC OtpAuthGet() {
-        tABC_Error Error = new tABC_Error();
+        tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long ptimeout = core.new_longp();
         SWIGTYPE_p_int lp = core.new_intp();
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
         tABC_CC cc = core.ABC_OtpAuthGet(AirbitzApplication.getUsername(),
-            AirbitzApplication.getPassword(), pbool, ptimeout, Error);
+            AirbitzApplication.getPassword(), pbool, ptimeout, error);
 
         mTwoFactorOn = core.intp_value(lp)==1;
         return cc;
+    }
+
+    //Blocking
+    public tABC_CC OtpKeySet(String username) {
+        tABC_Error error = new tABC_Error();
+        return core.ABC_OtpKeySet(username, mTwoFactorSecret, error);
     }
 
     public String TwoFactorSecret() {
@@ -2878,7 +2891,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
         tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
-        mTwoFactorSecret = getStringAtPtr(core.longp_value(lp));
+        mTwoFactorSecret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
         return cc;
     }
 
