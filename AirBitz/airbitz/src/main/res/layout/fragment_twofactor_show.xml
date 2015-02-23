@@ -91,7 +91,7 @@
             android:layout_below="@id/fragment_twofactor_button_import" />
 
         <LinearLayout
-            android:id="@+id/fragment_twofactor_show_buttons"
+            android:id="@+id/fragment_twofactor_request_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

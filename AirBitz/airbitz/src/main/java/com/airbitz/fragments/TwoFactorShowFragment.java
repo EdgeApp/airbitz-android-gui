@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -68,6 +69,7 @@ public class TwoFactorShowFragment extends BaseFragment
     EditText mPassword;
     Switch mEnabledSwitch;
     private TextView mTitleTextView;
+    LinearLayout mRequestView;
     boolean _isOn;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -108,11 +110,12 @@ public class TwoFactorShowFragment extends BaseFragment
 
         mPassword = (EditText) mView.findViewById(R.id.fragment_twofactor_show_password_edittext);
 
+        mRequestView = (LinearLayout) mView.findViewById(R.id.fragment_twofactor_request_view);
         mApproveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_twofactor_show_button_approve);
         mApproveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                confirmRequest();
             }
         });
 
@@ -120,7 +123,7 @@ public class TwoFactorShowFragment extends BaseFragment
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                cancelRequest();
             }
         });
 
@@ -172,17 +175,11 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void updateTwoFactorUI(boolean enabled)
     {
-        if (enabled) {
-            mQRView.setVisibility(View.GONE);
-            mImportButton.setVisibility(View.VISIBLE);
-        } else {
-            mQRView.setVisibility(View.GONE);
-            mImportButton.setVisibility(View.GONE);
-        }
-        if(mCoreAPI.hasOTPError()) {
-            mImportButton.setVisibility(View.VISIBLE);
-        }
+        mRequestView.setVisibility(View.GONE);
+        mImportButton.setVisibility(mCoreAPI.hasOTPError() ? View.VISIBLE : View.GONE);
         mEnabledSwitch.setChecked(enabled);
+        mEnabledSwitch.setText(getString(enabled ? R.string.fragment_twofactor_show_enabled : R.string.fragment_twofactor_show_disabled));
+        mQRView.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
 
@@ -304,11 +301,14 @@ public class TwoFactorShowFragment extends BaseFragment
     {
         tABC_Error error = new tABC_Error();
         boolean pending = mCoreAPI.isTwoFactorResetPending(error);
-        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
-            mQRView.setVisibility(pending ? View.GONE : View.VISIBLE);
+        boolean okay = error.getCode() == tABC_CC.ABC_CC_Ok;
+        if (okay && pending) {
+            mRequestView.setVisibility(View.VISIBLE);
         } else {
-            mQRView.setVisibility(View.GONE);
-            mActivity.ShowFadingDialog(Common.errorMap(mActivity, error.getCode()));
+            mRequestView.setVisibility(View.GONE);
+            if(!okay) {
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, error.getCode()));
+            }
         }
         mActivity.showModalProgress(false);
     }
@@ -316,15 +316,6 @@ public class TwoFactorShowFragment extends BaseFragment
     void switchFlipped(boolean isChecked) {
         mSwitchFlippedTask = new SwitchFlippedTask(isChecked);
         mSwitchFlippedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-    }
-
-    void setText(boolean on)
-    {
-        if (on) {
-            mEnabledSwitch.setText(getString(R.string.fragment_twofactor_show_enabled));
-        } else {
-            mEnabledSwitch.setText(getString(R.string.fragment_twofactor_show_disabled));
-        }
     }
 
     void switchTwoFactor(boolean on)
@@ -468,7 +459,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mActivity.ShowFadingDialog("Reset Cancelled.");
-                updateTwoFactorUI(false);
+                mRequestView.setVisibility(View.GONE);
             }
             else {
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, cc));
