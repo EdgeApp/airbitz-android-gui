@@ -658,7 +658,7 @@ public class TransactionDetailFragment extends BaseFragment
                 mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
 
                 if (mTransaction != null) {
-                    if(mFromSend || mFromRequest) {
+                    if((mFromSend || mFromRequest) && !mTransaction.getCategory().contains(getString(R.string.fragment_category_transfer))) {
                         mTransaction.setCategory(currentType);
                     }
                     else {
