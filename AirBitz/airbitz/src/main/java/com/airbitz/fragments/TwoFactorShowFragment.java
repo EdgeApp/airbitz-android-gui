@@ -241,6 +241,9 @@ public class TwoFactorShowFragment extends BaseFragment
             if (!(cc == tABC_CC.ABC_CC_Ok && mCoreAPI.TwoFactorSecret() != null)) {
                 mQRView.setVisibility(View.GONE);
             }
+            else {
+                mQRView.setVisibility(View.VISIBLE);
+            }
         }
         showQrCode(mCoreAPI.isTwoFactorOn());
 

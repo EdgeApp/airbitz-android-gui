@@ -130,6 +130,8 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        super.onResume();
+
         Bundle bundle = getArguments();
         mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
@@ -143,6 +145,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     @Override
     public void onPause() {
+        super.onPause();
         if(mQRCamera != null) {
             mQRCamera.stopCamera();
             mQRCamera.setOnScanResultListener(null);
@@ -184,7 +187,6 @@ public class TwoFactorScanFragment extends BaseFragment implements
             }
             return true;
         } else {
-            // TODO: unable to parse...
             return false;
         }
     }
@@ -228,5 +230,4 @@ public class TwoFactorScanFragment extends BaseFragment implements
             builder.create().show();
         }
     }
-
 }

@@ -2028,14 +2028,11 @@ public class CoreAPI {
         return false;
     }
 
-    private boolean accountSync(String username, String password) {
-        tABC_Error error = new tABC_Error();
-        if (hasConnectivity()) {
-            coreDataSyncAccount(username, password, tABC_Error.getCPtr(error));
-            mOTPError = error.getCode() == tABC_CC.ABC_CC_InvalidOTP;
-            return true;
-        }
-        return false;
+
+    public interface OnOTPError { public void onOTPError(); }
+    private OnOTPError mOnOTPError;
+    public void setOnOTPErrorListener(OnOTPError listener) {
+        mOnOTPError = listener;
     }
 
     private SyncDataTask mSyncDataTask;
@@ -2052,10 +2049,19 @@ public class CoreAPI {
         protected Void doInBackground(Void... voids) {
             generalInfoUpdate();
             // Sync Account
-            accountSync(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword());
-
             tABC_Error error = new tABC_Error();
+            int ccInt;
+            if (hasConnectivity()) {
+                ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
+
+                mOTPError = tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP;
+            }
+
+            if (mOTPError && mOnOTPError != null) {
+                mOnOTPError.onOTPError();
+            }
+
             List<String> uuids = loadWalletUUIDs();
             for (String uuid : uuids) {
                 if (hasConnectivity()) {

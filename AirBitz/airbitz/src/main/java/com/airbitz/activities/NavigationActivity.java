@@ -96,7 +96,6 @@ import com.airbitz.fragments.SettingFragment;
 import com.airbitz.fragments.SignUpFragment;
 import com.airbitz.fragments.SuccessFragment;
 import com.airbitz.fragments.TransparentFragment;
-import com.airbitz.fragments.TwoFactorMenuFragment;
 import com.airbitz.fragments.TwoFactorScanFragment;
 import com.airbitz.fragments.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
@@ -127,6 +126,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange,
+        CoreAPI.OnOTPError,
         TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
@@ -289,6 +289,7 @@ public class NavigationActivity extends Activity
         mCoreAPI = CoreAPI.getApi();
         String seed = CoreAPI.getSeedData();
         mCoreAPI.Initialize(this, seed, seed.length());
+        mCoreAPI.setOnOTPErrorListener(this);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -1172,7 +1173,6 @@ public class NavigationActivity extends Activity
         }
     }
 
-
     public enum Tabs {BD, REQUEST, SEND, WALLET, SETTING}
 
     //************************ Connectivity support
@@ -1632,15 +1632,12 @@ public class NavigationActivity extends Activity
                 JSONArray notifications = json.getJSONArray("results");
                 for(int i=0; i<count; i++) {
                     JSONObject notification = notifications.getJSONObject(i);
-//                    String build = notification.getString("android_build");
 
                     int id = Integer.valueOf(notification.getString("id"));
                     String title = notification.getString("title");
                     String message = notification.getString("message");
 
-//                    if(!build.equals("null")) {
-                        map.put(id, new AirbitzNotification(title, message));
-//                    }
+                    map.put(id, new AirbitzNotification(title, message));
                 }
             }
         } catch (JSONException e) {
@@ -1706,31 +1703,43 @@ public class NavigationActivity extends Activity
     }
 
     //********************  OTP support
-    public void ShowOTPRequiredDialog() {
-        if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
-            builder.setMessage(getString(R.string.twofactor_required_message))
-                    .setTitle(getString(R.string.twofactor_required_title))
-                    .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.twofactor_enable),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    launchTwoFactorScan();
-                                }
-                            })
-                    .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-            builder.create().show();
-        }
+    AlertDialog mOTPAlertDialog;
+    @Override
+    public void onOTPError() {
+        mHandler.post(showOTPErrorDialog);
     }
+
+    final Runnable showOTPErrorDialog = new Runnable() {
+        @Override
+        public void run() {
+            if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                builder.setMessage(getString(R.string.twofactor_required_message))
+                        .setTitle(getString(R.string.twofactor_required_title))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        launchTwoFactorScan();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        mOTPAlertDialog = null;
+                                    }
+                                });
+                mOTPAlertDialog = builder.create();
+                mOTPAlertDialog.show();
+            }
+        }
+    };
 
     private void launchTwoFactorScan() {
         Fragment fragment = new TwoFactorScanFragment();
+        ((TwoFactorScanFragment)fragment).setOnTwoFactorQRScanResult(this);
         Bundle bundle = new Bundle();
         bundle.putBoolean(TwoFactorScanFragment.STORE_SECRET, true);
         bundle.putBoolean(TwoFactorScanFragment.TEST_SECRET, true);
@@ -1740,6 +1749,6 @@ public class NavigationActivity extends Activity
 
     @Override
     public void onTwoFactorQRScanResult(boolean result) {
-        //TODO ?
+        mOTPAlertDialog = null;
     }
 }
