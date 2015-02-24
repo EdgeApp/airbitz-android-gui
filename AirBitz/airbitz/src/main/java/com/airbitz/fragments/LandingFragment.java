@@ -72,11 +72,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandingFragment extends BaseFragment implements
-    NavigationActivity.OnFadingDialogFinished {
+    NavigationActivity.OnFadingDialogFinished,
+    TwoFactorMenuFragment.OnTwoFactorMenuResult {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private static final String INVALID_ENTRY_PREF = "fragment_landing_invalid_entries";
+
+    String mUsername;
+    char[] mPassword;
 
     private TextView mDetailTextView;
     private ImageView mRightArrow;
@@ -95,7 +99,6 @@ public class LandingFragment extends BaseFragment implements
     private LinearLayout mSwipeLayout;
     private LinearLayout mForgotPasswordButton;
 
-    private String mUsername;
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
     
@@ -474,9 +477,6 @@ public class LandingFragment extends BaseFragment implements
 
 
     public class PasswordLoginTask extends AsyncTask {
-        String mUsername;
-        char[] mPassword;
-
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
@@ -524,15 +524,30 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void launchTwoFactorMenu() {
-        Fragment fragment = new TwoFactorMenuFragment();
+        TwoFactorMenuFragment fragment = new TwoFactorMenuFragment();
+        fragment.setOnTwoFactorMenuResult(this);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, true);
-        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, true);
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
         bundle.putString(TwoFactorMenuFragment.USERNAME, mUsername);
         fragment.setArguments(bundle);
         mActivity.pushFragment(fragment);
+        mActivity.DisplayLoginOverlay(false);
     }
 
+    @Override
+    public void onTwoFactorMenuResult(boolean success, String secret) {
+        mActivity.DisplayLoginOverlay(true);
+        if(success) {
+            twoFactorSignIn(secret);
+        }
+    }
+
+    private void twoFactorSignIn(String secret) {
+        mCoreAPI.OtpKeySet(mUsername, secret);
+        tABC_Error error = mCoreAPI.SignIn(mUsername, mPassword);
+        signInComplete(error);
+    }
 
     private void abortPermanently() {
         mCoreAPI.PINLoginDelete(mUsername);

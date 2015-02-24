@@ -68,6 +68,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     public static String STORE_SECRET = "com.airbitz.twofactorscan.storesecret";
     public static String TEST_SECRET = "com.airbitz.twofactorscan.testsecret";
+    public static String USERNAME = "com.airbitz.twofactorscan.username";
 
     private HighlightOnPressImageButton mHelpButton, mBackButton;
     QRCamera mQRCamera;
@@ -79,11 +80,12 @@ public class TwoFactorScanFragment extends BaseFragment implements
     boolean mSuccess = false;
     boolean mStoreSecret = false;
     boolean mTestSecret = false;
+    String mUsername;
 
     //************** Callback for notification of two factor results
     OnTwoFactorQRScanResult mOnTwoFactorQRScanResult;
     public interface OnTwoFactorQRScanResult {
-        public void onTwoFactorQRScanResult(boolean result);
+        public void onTwoFactorQRScanResult(boolean success, String result);
     }
     public void setOnTwoFactorQRScanResult(OnTwoFactorQRScanResult listener) {
         mOnTwoFactorQRScanResult = listener;
@@ -135,6 +137,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
         Bundle bundle = getArguments();
         mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
+        mUsername = bundle.getString(USERNAME);
 
         if(mQRCamera == null) {
             mQRCamera = new QRCamera(this, mCameraLayout);
@@ -164,7 +167,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
     @Override
     public void onScanResult(String result) {
         if(mOnTwoFactorQRScanResult != null) {
-            mOnTwoFactorQRScanResult.onTwoFactorQRScanResult(processResult(result));
+            mOnTwoFactorQRScanResult.onTwoFactorQRScanResult(processResult(result), result);
         }
     }
 
@@ -194,8 +197,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
     boolean storeSecret(String secret)
     {
         tABC_Error Error = new tABC_Error();
-        tABC_CC cc = core.ABC_OtpKeySet(AirbitzApplication.getUsername(),
-            secret, Error);
+        tABC_CC cc = core.ABC_OtpKeySet(mUsername, secret, Error);
         return cc == tABC_CC.ABC_CC_Ok;
     }
 

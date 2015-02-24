@@ -2876,9 +2876,9 @@ public class CoreAPI {
     }
 
     //Blocking
-    public tABC_CC OtpKeySet(String username) {
+    public tABC_CC OtpKeySet(String username, String secret) {
         tABC_Error error = new tABC_Error();
-        return core.ABC_OtpKeySet(username, mTwoFactorSecret, error);
+        return core.ABC_OtpKeySet(username, secret, error);
     }
 
     public String TwoFactorSecret() {
@@ -2886,11 +2886,11 @@ public class CoreAPI {
     }
 
     // Blocking
-    public tABC_CC GetTwoFactorSecret() {
+    public tABC_CC GetTwoFactorSecret(String username) {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
+        tABC_CC cc = core.ABC_OtpKeyGet(username, ppChar, error);
         mTwoFactorSecret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
         return cc;
     }

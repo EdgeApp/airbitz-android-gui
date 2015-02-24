@@ -1748,7 +1748,7 @@ public class NavigationActivity extends Activity
     }
 
     @Override
-    public void onTwoFactorQRScanResult(boolean result) {
+    public void onTwoFactorQRScanResult(boolean success, String result) {
         mOTPAlertDialog = null;
     }
 }

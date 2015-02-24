@@ -459,7 +459,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
             // If we have otp enabled, persist the token
             if (mCoreAPI.TwoFactorSecret() != null) {
-                mCoreAPI.OtpKeySet(username);
+                mCoreAPI.OtpKeySet(username, mCoreAPI.TwoFactorSecret());
             }
             return result;
         }
@@ -504,9 +504,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     @Override
-    public void onTwoFactorMenuResult(boolean success) {
+    public void onTwoFactorMenuResult(boolean success, String secret) {
         if (success) {
-            if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME)) == tABC_CC.ABC_CC_Ok) {
+            if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), secret) == tABC_CC.ABC_CC_Ok) {
                 // Try again with OTP
                 AttemptSignupOrChange();
             }

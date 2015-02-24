@@ -77,7 +77,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     OnTwoFactorMenuResult mOnTwoFactorMenuResult;
 
     public interface OnTwoFactorMenuResult {
-        public void onTwoFactorMenuResult(boolean result);
+        public void onTwoFactorMenuResult(boolean success, String result);
     }
     public void setOnTwoFactorMenuResult(OnTwoFactorMenuResult listener) {
         mOnTwoFactorMenuResult = listener;
@@ -141,6 +141,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        super.onResume();
         Bundle bundle = getArguments();
         mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
@@ -148,9 +149,9 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     }
 
     @Override
-    public void onTwoFactorQRScanResult(boolean result) {
+    public void onTwoFactorQRScanResult(boolean success, String result) {
         if(mOnTwoFactorMenuResult != null) {
-            mOnTwoFactorMenuResult.onTwoFactorMenuResult(result);
+            mOnTwoFactorMenuResult.onTwoFactorMenuResult(success, result);
         }
         mActivity.onBackPressed();
     }
@@ -159,8 +160,9 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         TwoFactorScanFragment fragment = new TwoFactorScanFragment();
         fragment.setOnTwoFactorQRScanResult(this);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
-        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        bundle.putBoolean(TwoFactorScanFragment.TEST_SECRET, mStoreSecret);
+        bundle.putBoolean(TwoFactorScanFragment.STORE_SECRET, mTestSecret);
+        bundle.putString(TwoFactorScanFragment.USERNAME, mUsername);
         fragment.setArguments(bundle);
         mActivity.pushFragment(fragment);
     }

@@ -239,7 +239,7 @@ public class TwoFactorShowFragment extends BaseFragment
     void checkSecret(boolean bMsg)
     {
         if (mCoreAPI.isTwoFactorOn()) {
-            tABC_CC cc = mCoreAPI.GetTwoFactorSecret();
+            tABC_CC cc = mCoreAPI.GetTwoFactorSecret(AirbitzApplication.getUsername());
             if (!(cc == tABC_CC.ABC_CC_Ok && mCoreAPI.TwoFactorSecret() != null)) {
                 mQRView.setVisibility(View.GONE);
             }
