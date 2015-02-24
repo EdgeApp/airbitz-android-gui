@@ -70,7 +70,9 @@ import java.util.Map;
 /**
  * Created on 2/10/14.
  */
-public class PasswordRecoveryFragment extends BaseFragment implements NavigationActivity.OnBackPress {
+public class PasswordRecoveryFragment extends BaseFragment implements
+        NavigationActivity.OnBackPress,
+        TwoFactorMenuFragment.OnTwoFactorMenuResult {
     public static final String MODE = "com.airbitz.passwordrecovery.type";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
@@ -83,6 +85,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
     String mAnswers = "";
     boolean ignoreSelected = false;
     private int mMode;
+    private boolean mReturnFromTwoFactorScan = false;
+    private boolean mTwoFactorSuccess = false;
+    private String mTwoFactorSecret;
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
     private TextView mTitleTextView;
@@ -201,6 +206,21 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
                 InitializeRecoveryViews(questions, answers);
             }
         }
+        if(mReturnFromTwoFactorScan) {
+            mReturnFromTwoFactorScan = false;
+            mActivity.hideSoftKeyboard(mQuestionViews.get(0));
+            mActivity.showModalProgress(true);
+            if (mTwoFactorSuccess) {
+                if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret) == tABC_CC.ABC_CC_Ok) {
+                    // Try again with OTP
+                    AttemptSignupOrChange();
+                }
+            }
+            else {
+                mActivity.ShowOkMessageDialog(getString(R.string.fragment_two_factor_scan_unable_import_title),
+                        getString(R.string.twofactor_unable_import_token));
+            }
+        }
     }
 
     @Override
@@ -303,7 +323,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
             }
             count++;
         }
-        if (allQuestionsSelected || mMode == FORGOT_PASSWORD) {
+        if (allQuestionsSelected) {
             if (allAnswersValid) {
                 if (mMode == SIGN_UP) {
                     signIn();
@@ -454,6 +474,12 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
             answers = params[0];
             username = params[1];
             boolean result = mCoreAPI.recoveryAnswers(answers, username);
+
+            // If we have otp enabled, persist the token
+            mCoreAPI.GetTwoFactorSecret(username);
+            if (mCoreAPI.TwoFactorSecret() != null) {
+                mCoreAPI.OtpKeySet(username, mCoreAPI.TwoFactorSecret());
+            }
             return result;
         }
 
@@ -470,7 +496,12 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
+                mCoreAPI.otpSetError(mCoreAPI.getRecoveryAnswersError().getCode());
+                if (tABC_CC.ABC_CC_InvalidOTP  == mCoreAPI.getRecoveryAnswersError().getCode()) {
+                    launchTwoFactorMenu();
+                } else {
+                    mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
+                }
             }
         }
 
@@ -478,6 +509,26 @@ public class PasswordRecoveryFragment extends BaseFragment implements Navigation
         protected void onCancelled() {
             mActivity.showModalProgress(false);
         }
+    }
+
+    private void launchTwoFactorMenu() {
+        TwoFactorMenuFragment fragment = new TwoFactorMenuFragment();
+        fragment.setOnTwoFactorMenuResult(this);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
+        bundle.putString(TwoFactorMenuFragment.USERNAME, getArguments().getString(USERNAME));
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+        mActivity.DisplayLoginOverlay(false);
+    }
+
+    @Override
+    public void onTwoFactorMenuResult(boolean success, String secret) {
+        // This occurs before view is shown, so pickup in onResume
+        mReturnFromTwoFactorScan = true;
+        mTwoFactorSecret = secret;
+        mTwoFactorSuccess = success;
     }
 
     /**

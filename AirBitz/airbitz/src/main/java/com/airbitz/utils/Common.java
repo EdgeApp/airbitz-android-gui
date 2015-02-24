@@ -38,6 +38,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -63,6 +67,8 @@ import java.util.LinkedHashMap;
 public class Common {
 
     public static final String TAG = Common.class.getSimpleName();
+
+    private static final double BORDER_THICKNESS = 0.03;
 
     public static double metersToMiles(double meters) {
         return meters * (1.0 / 1609.344);
@@ -290,5 +296,16 @@ public class Common {
         else {
             return context.getString(R.string.server_error_other);
         }
+    }
+
+    public static Bitmap AddWhiteBorder(Bitmap inBitmap) {
+        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth() * (1 + BORDER_THICKNESS * 2)),
+                (int) (inBitmap.getHeight() * (1 + BORDER_THICKNESS * 2)), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(imageBitmap);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawPaint(p);
+        canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
+        return imageBitmap;
     }
 }

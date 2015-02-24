@@ -63,6 +63,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -71,11 +72,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandingFragment extends BaseFragment implements
-    NavigationActivity.OnFadingDialogFinished {
+    NavigationActivity.OnFadingDialogFinished,
+    TwoFactorMenuFragment.OnTwoFactorMenuResult {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private static final String INVALID_ENTRY_PREF = "fragment_landing_invalid_entries";
+
+    String mUsername;
+    char[] mPassword;
 
     private TextView mDetailTextView;
     private ImageView mRightArrow;
@@ -94,7 +99,6 @@ public class LandingFragment extends BaseFragment implements
     private LinearLayout mSwipeLayout;
     private LinearLayout mForgotPasswordButton;
 
-    private String mUsername;
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
     
@@ -473,32 +477,23 @@ public class LandingFragment extends BaseFragment implements
 
 
     public class PasswordLoginTask extends AsyncTask {
-        String mUsername;
-        char[] mPassword;
-
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected tABC_CC doInBackground(Object... params) {
+        protected tABC_Error doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPassword = (char[]) params[1];
             return mCoreAPI.SignIn(mUsername, mPassword);
         }
 
         @Override
-        protected void onPostExecute(final Object success) {
+        protected void onPostExecute(final Object error) {
             mActivity.showModalProgress(false);
             mPasswordLoginTask = null;
-            tABC_CC result = (tABC_CC) success;
-
-            if (result == tABC_CC.ABC_CC_Ok) {
-                mActivity.LoginNow(mUsername, mPassword);
-            } else {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, result));
-            }
+            signInComplete((tABC_Error) error);
         }
 
         @Override
@@ -506,6 +501,52 @@ public class LandingFragment extends BaseFragment implements
             mPasswordLoginTask = null;
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_navigation_signin_failed_unexpected));
         }
+    }
+
+    private void signInComplete(tABC_Error error) {
+        tABC_CC resultCode = error.getCode();
+        mCoreAPI.otpSetError(resultCode);
+
+        if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+            Editable pass = mPasswordEditText.getText();
+            char[] password = new char[pass.length()];
+            pass.getChars(0, pass.length(), password, 0);
+            mActivity.LoginNow(mUsername, password);
+        } else if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
+            launchTwoFactorMenu();
+        } else {
+            if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
+                launchTwoFactorMenu();
+            } else {
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
+            }
+        }
+    }
+
+    private void launchTwoFactorMenu() {
+        TwoFactorMenuFragment fragment = new TwoFactorMenuFragment();
+        fragment.setOnTwoFactorMenuResult(this);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
+        bundle.putString(TwoFactorMenuFragment.USERNAME, mUsername);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+        mActivity.DisplayLoginOverlay(false);
+    }
+
+    @Override
+    public void onTwoFactorMenuResult(boolean success, String secret) {
+        mActivity.DisplayLoginOverlay(true);
+        if(success) {
+            twoFactorSignIn(secret);
+        }
+    }
+
+    private void twoFactorSignIn(String secret) {
+        mCoreAPI.OtpKeySet(mUsername, secret);
+        mPasswordLoginTask = new PasswordLoginTask();
+        mPasswordLoginTask.execute(mUsername, mPassword);
     }
 
     private void abortPermanently() {

@@ -192,6 +192,7 @@
     <string name="settings_options_title">OPTIONS</string>
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_spending_limits">Spending Limits</string>
+    <string name="settings_button_two_factor_authentication">2 Factor (Enhanced Security)</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change PIN</string>
     <string name="settings_button_recovery">Recovery Questions</string>
@@ -449,6 +450,34 @@
     <string name="user_review_support_email_address">support@airbitz.co</string>
     <string name="user_review_support_subject">Airbitz Feedback</string>
     <string name="user_review_support_title">Choose Email</string>
+
+    <!-- Two Factor screens -->
+    <string name="fragment_twofactor_show_title">Two Factor</string>
+    <string name="fragment_twofactor_menu_title">Two Factor</string>
+    <string name="fragment_twofactor_scan_title">Scan Two Factor</string>
+    <string name="fragment_twofactor_show_enabled">Enabled</string>
+    <string name="fragment_twofactor_show_disabled">Disabled</string>
+    <string name="fragment_twofactor_show_approve">Approve</string>
+    <string name="fragment_twofactor_show_now_enabled">Two Factor Enabled</string>
+    <string name="fragment_twofactor_show_now_disabled">Two Factor Disabled</string>
+    <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
+    <string name="fragment_twofactor_menu_button_request_reset">Request Reset</string>
+    <string name="fragment_twofactor_menu_scan_message">This account has 2 Factor Authentication (2FA) enabled. Scan the 2FA token from the device that enabled 2FA to give access to this device.</string>
+    <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 7 days if no action is taken by the account user on authenticated devices.</string>
+    <string name="fragment_twofactor_menu_reset_requested">Reset requested</string>
+    <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
+    <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
+
+    <string name="twofactor_required_title">Two Factor Authentication On</string>
+    <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
+    <string name="twofactor_remind_later">Remind Me Later</string>
+    <string name="twofactor_enable">Enable</string>
+    <string name="twofactor_unable_import_token">We are sorry we are unable to import the token at this time.</string>
+
+    <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>
+    <string name="fragment_two_factor_scan_unable_import_message">The two factor authentication token import failed. Please ensure you have the correct token!</string>
+    <string name="fragment_two_factor_scan_try_again">Try Again</string>
+    <string name="fragment_two_factor_scan_no_thanks">No Thanks</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>

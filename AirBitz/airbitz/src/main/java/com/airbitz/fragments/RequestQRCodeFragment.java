@@ -106,7 +106,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.firstusagecount";
 
-    private final double BORDER_THICKNESS = 0.03;
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
     public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
     private ImageView mQRView;
@@ -303,17 +302,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         } else {
             finishSMS(contact);
         }
-    }
-
-    private Bitmap addWhiteBorder(Bitmap inBitmap) {
-        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth() * (1 + BORDER_THICKNESS * 2)),
-                (int) (inBitmap.getHeight() * (1 + BORDER_THICKNESS * 2)), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(imageBitmap);
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        canvas.drawPaint(p);
-        canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
-        return imageBitmap;
     }
 
     private void copyToClipboard() {
@@ -567,7 +555,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
                     mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
-                    mQRBitmap = addWhiteBorder(mQRBitmap);
+                    mQRBitmap = Common.AddWhiteBorder(mQRBitmap);
                     Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
                     return true;
