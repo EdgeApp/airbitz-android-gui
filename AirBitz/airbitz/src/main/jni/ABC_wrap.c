@@ -772,28 +772,6 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1GET_1TX_1ALL_1TIMES_1g
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_gbIsTestNet_1set(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
-  bool arg1 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = jarg1 ? true : false; 
-  gbIsTestNet = arg1;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_airbitz_api_coreJNI_gbIsTestNet_1get(JNIEnv *jenv, jclass jcls) {
-  jboolean jresult = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (bool)gbIsTestNet;
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1Ok_1get(JNIEnv *jenv, jclass jcls) {
   jint jresult = 0 ;
   enum eABC_CC result;

@@ -97,14 +97,6 @@ public class core implements coreConstants {
     return coreJNI.doublep_value(SWIGTYPE_p_double.getCPtr(obj));
   }
 
-  public static void setGbIsTestNet(boolean value) {
-    coreJNI.gbIsTestNet_set(value);
-  }
-
-  public static boolean getGbIsTestNet() {
-    return coreJNI.gbIsTestNet_get();
-  }
-
   public static tABC_CC ABC_Initialize(String szRootDir, String szCaCertPath, String pSeedData, long seedLength, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Initialize(szRootDir, szCaCertPath, pSeedData, seedLength, tABC_Error.getCPtr(pError), pError));
   }

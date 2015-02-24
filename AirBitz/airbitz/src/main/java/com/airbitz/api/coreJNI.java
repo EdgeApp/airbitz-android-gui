@@ -40,8 +40,6 @@ public class coreJNI {
   public final static native int ABC_MIN_PASS_LENGTH_get();
   public final static native int ABC_MIN_PIN_LENGTH_get();
   public final static native int ABC_GET_TX_ALL_TIMES_get();
-  public final static native void gbIsTestNet_set(boolean jarg1);
-  public final static native boolean gbIsTestNet_get();
   public final static native int ABC_CC_Ok_get();
   public final static native int ABC_CC_Error_get();
   public final static native int ABC_CC_NULLPtr_get();
