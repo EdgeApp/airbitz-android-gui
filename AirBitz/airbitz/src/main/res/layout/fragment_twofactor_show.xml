@@ -17,6 +17,7 @@
         android:layout_margin="10dp"
         android:layout_below="@id/layout_title_header"
         android:textColor="@android:color/white"
+        style="@style/BlackDropShadow"
         android:text="@string/fragment_twofactor_show_instruction"/>
 
     <RelativeLayout
@@ -46,6 +47,7 @@
             android:paddingRight="12.6dp"
             android:selectAllOnFocus="true"
             android:textColor="@android:color/white"
+            style="@style/BlackDropShadow"
             android:textColorHint="@color/text_hint"
             android:textCursorDrawable="@drawable/bold_cursor_white"
             android:textSize="14sp" />
@@ -64,6 +66,7 @@
             android:switchMinWidth="0dp"
             android:text="@string/fragment_twofactor_show_enabled"
             android:textColor="@android:color/white"
+            style="@style/BlackDropShadow"
             android:textOff=""
             android:textOn=""
             android:textSize="18sp"
@@ -79,6 +82,7 @@
             android:background="@drawable/rounded_edge_blue_bg"
             android:text="@string/request_button_import"
             android:textColor="@android:color/white"
+            style="@style/BlackDropShadow"
             android:textSize="13sp"
             android:visibility="visible" />
 
