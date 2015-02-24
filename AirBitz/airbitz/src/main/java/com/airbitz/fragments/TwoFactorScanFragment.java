@@ -175,11 +175,11 @@ public class TwoFactorScanFragment extends BaseFragment implements
         mActivity.onBackPressed();
     }
 
-    boolean processResult(String results)
+    boolean processResult(String secret)
     {
-        if (results != null && !results.isEmpty()) {
+        if (secret != null && !secret.isEmpty()) {
             if (mStoreSecret) {
-                mSuccess = storeSecret(results);
+                mSuccess = storeSecret(secret);
             } else {
                 mSuccess = true;
             }

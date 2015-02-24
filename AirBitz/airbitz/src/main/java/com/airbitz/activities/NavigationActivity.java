@@ -1743,6 +1743,7 @@ public class NavigationActivity extends Activity
         Bundle bundle = new Bundle();
         bundle.putBoolean(TwoFactorScanFragment.STORE_SECRET, true);
         bundle.putBoolean(TwoFactorScanFragment.TEST_SECRET, true);
+        bundle.putString(TwoFactorScanFragment.USERNAME, AirbitzApplication.getUsername());
         fragment.setArguments(bundle);
         pushFragment(fragment);
     }
