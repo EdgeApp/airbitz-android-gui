@@ -597,20 +597,13 @@ public class NavigationActivity extends Activity
                 return;
         }
 
-
-        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
-
         if (!mCalcLocked) {
             hideCalculator();
         }
 
         showModalProgress(false);
 
-        if (mNavStacks[mNavThreadId].size() == 1) {
-            if (!calcVisible || mCalcLocked) {
-                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
-            }
-        } else {
+        if (mNavStacks[mNavThreadId].size() != 1) {
             if (fragment instanceof RequestQRCodeFragment) {
                 popFragment();
                 showNavBar();
