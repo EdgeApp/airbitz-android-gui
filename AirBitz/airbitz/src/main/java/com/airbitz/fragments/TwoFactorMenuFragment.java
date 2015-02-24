@@ -183,7 +183,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         @Override
         protected String doInBackground(Void... params) {
             tABC_Error error = new tABC_Error();
-            tABC_CC cc = core.ABC_OtpResetSet(AirbitzApplication.getUsername(), error);
+            tABC_CC cc = core.ABC_OtpResetSet(mUsername, error);
             String message = cc == tABC_CC.ABC_CC_Ok ?
                     getString(R.string.fragment_twofactor_menu_reset_requested) : Common.errorMap(mActivity, cc);
 
