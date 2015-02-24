@@ -48,6 +48,14 @@
             android:textSize="24dp"
             android:textColor="@android:color/white"/>
 
+        <ProgressBar
+            android:id="@+id/fading_alert_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_light"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </RelativeLayout>

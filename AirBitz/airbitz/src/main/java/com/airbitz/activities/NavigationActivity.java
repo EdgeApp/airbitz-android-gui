@@ -73,6 +73,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -1355,6 +1356,10 @@ public class NavigationActivity extends Activity
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
                     tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                    ProgressBar progress = ((ProgressBar)view.findViewById(R.id.fading_alert_progress));
+                    if(!cancelable) {
+                        progress.setVisibility(View.VISIBLE);
+                    }
                     if(thumbnail != null) {
                         view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
                         if(!thumbnail.isEmpty()) {
