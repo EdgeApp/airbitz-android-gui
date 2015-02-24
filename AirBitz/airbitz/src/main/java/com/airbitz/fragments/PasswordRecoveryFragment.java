@@ -85,6 +85,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     String mAnswers = "";
     boolean ignoreSelected = false;
     private int mMode;
+    private boolean mReturnFromTwoFactorScan = false;
+    private boolean mTwoFactorSuccess = false;
+    private String mTwoFactorSecret;
     private ImageButton mBackButton;
     private EditText mPasswordEditText;
     private TextView mTitleTextView;
@@ -201,6 +204,21 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (questionString != null) {
                 String[] questions = questionString.split("\n");
                 InitializeRecoveryViews(questions, answers);
+            }
+        }
+        if(mReturnFromTwoFactorScan) {
+            mReturnFromTwoFactorScan = false;
+            mActivity.hideSoftKeyboard(mQuestionViews.get(0));
+            mActivity.showModalProgress(true);
+            if (mTwoFactorSuccess) {
+                if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret) == tABC_CC.ABC_CC_Ok) {
+                    // Try again with OTP
+                    AttemptSignupOrChange();
+                }
+            }
+            else {
+                mActivity.ShowOkMessageDialog(getString(R.string.fragment_two_factor_scan_unable_import_title),
+                        getString(R.string.twofactor_unable_import_token));
             }
         }
     }
@@ -458,6 +476,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             boolean result = mCoreAPI.recoveryAnswers(answers, username);
 
             // If we have otp enabled, persist the token
+            mCoreAPI.GetTwoFactorSecret(username);
             if (mCoreAPI.TwoFactorSecret() != null) {
                 mCoreAPI.OtpKeySet(username, mCoreAPI.TwoFactorSecret());
             }
@@ -496,25 +515,20 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         TwoFactorMenuFragment fragment = new TwoFactorMenuFragment();
         fragment.setOnTwoFactorMenuResult(this);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
         bundle.putBoolean(TwoFactorMenuFragment.STORE_SECRET, false);
+        bundle.putBoolean(TwoFactorMenuFragment.TEST_SECRET, false);
         bundle.putString(TwoFactorMenuFragment.USERNAME, getArguments().getString(USERNAME));
         fragment.setArguments(bundle);
         mActivity.pushFragment(fragment);
+        mActivity.DisplayLoginOverlay(false);
     }
 
     @Override
     public void onTwoFactorMenuResult(boolean success, String secret) {
-        if (success) {
-            if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), secret) == tABC_CC.ABC_CC_Ok) {
-                // Try again with OTP
-                AttemptSignupOrChange();
-            }
-        }
-        else {
-            mActivity.ShowOkMessageDialog(getString(R.string.fragment_two_factor_scan_unable_import_title),
-                    getString(R.string.twofactor_unable_import_token));
-        }
+        // This occurs before view is shown, so pickup in onResume
+        mReturnFromTwoFactorScan = true;
+        mTwoFactorSecret = secret;
+        mTwoFactorSuccess = success;
     }
 
     /**
