@@ -462,8 +462,8 @@
     <string name="fragment_twofactor_show_now_disabled">Two Factor Disabled</string>
     <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
     <string name="fragment_twofactor_menu_button_request_reset">Request Reset</string>
-    <string name="fragment_twofactor_menu_scan_message">Scan the Two Factor token from another device</string>
-    <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 1 day if no action is taken by other users.</string>
+    <string name="fragment_twofactor_menu_scan_message">This account has 2 Factor Authentication (2FA) enabled. Scan the 2FA token from the device that enabled 2FA to give access to this device.</string>
+    <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 7 days if no action is taken by the account user on authenticated devices.</string>
     <string name="fragment_twofactor_menu_reset_requested">Reset requested</string>
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
