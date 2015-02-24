@@ -200,9 +200,8 @@
     <RelativeLayout
         android:id="@+id/listview_container"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/layout_data"
-        android:layout_marginTop="-38.6dp"
         android:background="@android:color/transparent"
         android:visibility="gone">
 
@@ -210,7 +209,6 @@
             android:id="@+id/listing_listview"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_marginTop="35dp"
             android:background="@drawable/category_popup"
             android:padding="12.6dp" />
 
