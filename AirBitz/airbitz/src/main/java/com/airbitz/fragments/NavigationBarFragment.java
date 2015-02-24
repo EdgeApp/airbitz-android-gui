@@ -179,7 +179,9 @@ public class NavigationBarFragment extends BaseFragment {
         }
         else if(selectedTab == mLastTab) {
             displayPopup(ev);
-            mActivity.onBackPressed();
+            if(!mActivity.isAtNavStackEntry()) {
+                mActivity.onBackPressed();
+            }
             return;
         }
         else {
