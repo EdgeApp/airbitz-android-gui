@@ -1470,7 +1470,7 @@ public class CoreAPI {
                 pretext += "-";
             }
             if(withSymbol) {
-                pretext += " "+ getUserBTCSymbol();
+                pretext += getUserBTCSymbol();
             }
 
             BigDecimal bd = new BigDecimal(amount);
