@@ -457,7 +457,7 @@
     <string name="fragment_twofactor_scan_title">Scan Two Factor</string>
     <string name="fragment_twofactor_show_enabled">Enabled</string>
     <string name="fragment_twofactor_show_disabled">Disabled</string>
-    <string name="fragment_twofactor_show_approve">Approve</string>
+    <string name="fragment_twofactor_show_approve">RESET</string>
     <string name="fragment_twofactor_show_now_enabled">Two Factor Enabled</string>
     <string name="fragment_twofactor_show_now_disabled">Two Factor Disabled</string>
     <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
