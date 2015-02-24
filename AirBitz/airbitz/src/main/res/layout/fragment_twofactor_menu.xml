@@ -23,6 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:textColor="@android:color/white"
+            style="@style/BlackDropShadow"
             android:text="@string/fragment_twofactor_menu_scan_message"/>
 
         <com.airbitz.objects.HighlightOnPressButton
@@ -44,6 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="10dp"
+            android:textColor="@android:color/white"
+            style="@style/BlackDropShadow"
             android:text="@string/fragment_twofactor_menu_request_message"/>
 
         <com.airbitz.objects.HighlightOnPressButton
