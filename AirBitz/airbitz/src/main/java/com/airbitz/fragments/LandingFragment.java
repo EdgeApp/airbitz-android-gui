@@ -545,8 +545,8 @@ public class LandingFragment extends BaseFragment implements
 
     private void twoFactorSignIn(String secret) {
         mCoreAPI.OtpKeySet(mUsername, secret);
-        tABC_Error error = mCoreAPI.SignIn(mUsername, mPassword);
-        signInComplete(error);
+        mPasswordLoginTask = new PasswordLoginTask();
+        mPasswordLoginTask.execute(mUsername, mPassword);
     }
 
     private void abortPermanently() {
