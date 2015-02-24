@@ -1255,8 +1255,9 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    private AlertDialog mExitDialog;
     public void ShowExitMessageDialog(String title, String message) {
-        if (!this.isFinishing()) {
+        if (!this.isFinishing() && mExitDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
             builder.setMessage(message)
                     .setTitle(title)
@@ -1271,10 +1272,12 @@ public class NavigationActivity extends Activity
                     .setNegativeButton(getResources().getString(R.string.string_no),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    mExitDialog = null;
                                     dialog.cancel();
                                 }
                             });
-            builder.create().show();
+            mExitDialog = builder.create();
+            mExitDialog.show();
         }
     }
 
