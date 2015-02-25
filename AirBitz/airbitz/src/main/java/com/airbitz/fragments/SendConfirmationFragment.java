@@ -70,6 +70,7 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -303,7 +304,8 @@ public class SendConfirmationFragment extends BaseFragment {
             public void onFocusChange(View view, boolean hasFocus) {
                 Log.d(TAG, "Bitcoin field focus changed");
                 if (hasFocus) {
-                    resetFiatAndBitcoinFields();
+                    mBitcoinField.selectAll();
+
                     mCalculator.setEditText(mBitcoinField);
                     mActivity.showCalculator();
                 } else {
@@ -315,6 +317,7 @@ public class SendConfirmationFragment extends BaseFragment {
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
                 mActivity.showCalculator();
             }
@@ -377,19 +380,35 @@ public class SendConfirmationFragment extends BaseFragment {
             }
         };
 
-        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
+        View.OnTouchListener setCursorAtEnd = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
+                Log.d(TAG, "Prevent OS keyboard");
+                final EditText edittext = (EditText) v;
                 edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true; // the listener has consumed the event, no keyboard popup
+                edittext.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        edittext.setSelection(edittext.getText().length()); // set cursor at end
+                    }
+                });
+                return true;
             }
         };
 
-        mBitcoinField.setOnTouchListener(preventOSKeyboard);
-        mFiatField.setOnTouchListener(preventOSKeyboard);
+        // Prevent OS keyboard from showing
+        try {
+            final Method method = EditText.class.getMethod(
+                    "setShowSoftInputOnFocus"
+                    , new Class[] { boolean.class });
+            method.setAccessible(true);
+            method.invoke(mBitcoinField, false);
+            method.invoke(mFiatField, false);
+        } catch (Exception e) {
+            // ignore
+        }
+
+        mBitcoinField.setOnTouchListener(setCursorAtEnd);
+        mFiatField.setOnTouchListener(setCursorAtEnd);
         mBitcoinField.setOnEditorActionListener(tvListener);
         mFiatField.setOnEditorActionListener(tvListener);
 
@@ -775,6 +794,13 @@ public class SendConfirmationFragment extends BaseFragment {
 
             if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
                 mAuthorizationEdittext.requestFocus();
+            }
+            else {
+                mBitcoinField.postDelayed(new Runnable() {
+                    public void run() {
+                        mBitcoinField.requestFocus();
+                    }
+                }, 200);
             }
         } else {
             mFiatField.setText("");
