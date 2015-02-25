@@ -82,6 +82,7 @@ import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.AddressRequestFragment;
 import com.airbitz.fragments.BusinessDirectoryFragment;
 import com.airbitz.fragments.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -129,6 +130,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange,
         CoreAPI.OnOTPError,
         CoreAPI.OnOTPResetRequest,
+        AddressRequestFragment.OnAddressRequest,
         TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
@@ -672,8 +674,8 @@ public class NavigationActivity extends Activity
         Intent intent = getIntent();
         if(intent != null) {
             Uri data = intent.getData();
-            if(data != null && data.getScheme().equals("bitcoin")) {
-                onBitcoinUri(data);
+            if(data != null) {
+                processUri(data);
             }
         }
         super.onResume();
@@ -727,20 +729,7 @@ public class NavigationActivity extends Activity
 
         if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
-            if ("bitcoin".equals(scheme)) {
-                onBitcoinUri(intentUri);
-            }
-            else if (!AirbitzApplication.isLoggedIn()) {
-                mDataUri = intentUri;
-                return;
-            }
-            else {
-                // Handle FINALHASH NFC input
-                Log.d(TAG, intentUri.toString());
-                if (ImportFragment.getHiddenBitsToken(intentUri.toString()) != null) {
-                    gotoImportNow(intentUri);
-                }
-            }
+            processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
             Log.d(TAG, "Notification type found");
                 mNotificationTask = new NotificationTask();
@@ -776,15 +765,53 @@ public class NavigationActivity extends Activity
         }
     }
 
+    private void processUri(Uri uri) {
+        if(uri == null || uri.getScheme() == null) {
+            Log.d(TAG, "Null uri or uri.scheme");
+            return;
+        }
+
+        if (!AirbitzApplication.isLoggedIn()) {
+            mDataUri = uri;
+            return;
+        }
+
+        String scheme =uri.getScheme();
+        if ("bitcoin".equals(scheme)) {
+            handleBitcoinUri(uri);
+        }
+        else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
+            handleRequestForPaymentUri(uri);
+        }
+        else if (ImportFragment.getHiddenBitsToken(uri.toString()) != null) {
+            gotoImportNow(uri);
+        }
+    }
+
+    /*
+     * Handle bitcoin-ret or x-callback-url Uri's coming from OS
+     */
+    private void handleRequestForPaymentUri(Uri uri) {
+        AddressRequestFragment fragment = new AddressRequestFragment();
+        fragment.setOnAddressRequestListener(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(AddressRequestFragment.URI, uri.toString());
+        fragment.setArguments(bundle);
+        pushFragment(fragment);
+
+    }
+
+    @Override
+    public void onAddressRequest() {
+        mDataUri = null;
+    }
+
     /*
      * Handle bitcoin:<address> Uri's coming from OS
      */
-    private void onBitcoinUri(Uri dataUri) {
+    private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
-        if (!AirbitzApplication.isLoggedIn()) {
-            mDataUri = dataUri;
-            return;
-        }
+
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         if (mNavThreadId != Tabs.SEND.ordinal()) {
@@ -1054,12 +1081,7 @@ public class NavigationActivity extends Activity
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            if(ImportFragment.getHiddenBitsToken(mDataUri.toString()) != null) {
-                gotoImportNow(mDataUri);
-            }
-            else {
-                onBitcoinUri(mDataUri);
-            }
+            processUri(mDataUri);
             mDataUri = null;
         } else {
             resetFragmentThreadToBaseFragment(mNavThreadId);
