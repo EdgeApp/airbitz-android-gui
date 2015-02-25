@@ -1637,10 +1637,13 @@ public class CoreAPI {
     }
 
     private tABC_TxDetails mReceiveRequestDetails;
-
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, long satoshi) {
-        //first need to create a transaction details struct
         double value = SatoshiToCurrency(satoshi, wallet.getCurrencyNum());
+        return createReceiveRequestFor(wallet, name, notes, "", value, satoshi);
+    }
+
+    public String createReceiveRequestFor(Wallet wallet, String name, String notes, String category, double value, long satoshi) {
+        //first need to create a transaction details struct
 
         //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
         tABC_TxDetails details = new tABC_TxDetails();
@@ -1656,7 +1659,7 @@ public class CoreAPI {
         details.setAmountCurrency(value);
         details.setSzName(name);
         details.setSzNotes(notes);
-        details.setSzCategory("");
+        details.setSzCategory(category);
         details.setAttributes(0x0); //for our own use (not used by the core)
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -2947,5 +2950,15 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), error);
+    }
+
+    private boolean finalizeRequest(String uuid, String requestId)
+    {
+        tABC_Error error = new tABC_Error();
+        // Finalize this request so it isn't used elsewhere
+        core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), uuid, requestId, error);
+        Log.d(TAG, error.getSzDescription() + " " + error.getSzSourceFunc() + " " + error.getNSourceLine());
+        return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 }

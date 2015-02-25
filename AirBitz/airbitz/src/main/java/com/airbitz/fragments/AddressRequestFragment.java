@@ -31,18 +31,14 @@
 
 package com.airbitz.fragments;
 
-import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -51,12 +47,14 @@ import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
-import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.utils.Common;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 
 
 public class AddressRequestFragment extends BaseFragment {
@@ -68,11 +66,20 @@ public class AddressRequestFragment extends BaseFragment {
     private HighlightOnPressButton mOKButton;
     private HighlightOnPressButton mCancelButton;
     private List<Wallet> mWallets;
-    private Wallet mSelectedWallet;
+    private Wallet mWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
     private TextView mTitleTextView;
+    private TextView mInstruction;
     private CoreAPI mCoreAPI;
     private View mView;
+
+    private Uri mUri;
+    private String strName;
+    private String strCategory;
+    private String strNotes;
+    private String _successUrl;
+    private String _errorUrl;
+    private String _cancelUrl;
 
     // Callback when finished
     private OnAddressRequest mOnAddressRequest;
@@ -87,7 +94,6 @@ public class AddressRequestFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
-
         loadNonArchivedWallets();
     }
 
@@ -99,12 +105,14 @@ public class AddressRequestFragment extends BaseFragment {
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mTitleTextView.setText(R.string.address_request_title);
 
+        mInstruction = (TextView) mView.findViewById(R.id.textview_instruction);
+
         mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_address_request_button_cancel);
         mCancelButton.setVisibility(View.VISIBLE);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                goCancel();
             }
         });
 
@@ -113,7 +121,7 @@ public class AddressRequestFragment extends BaseFragment {
         mOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                goOkay();
             }
         });
 
@@ -124,7 +132,7 @@ public class AddressRequestFragment extends BaseFragment {
         pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSelectedWallet = mWallets.get(i);
+                mWallet = mWallets.get(i);
             }
 
             @Override
@@ -137,6 +145,9 @@ public class AddressRequestFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        mUri = Uri.parse(getArguments().getString(URI));
+        parseUri(mUri);
+        mInstruction.setText(String.format(getString(R.string.address_request_message), strName));
     }
 
     @Override
@@ -150,4 +161,159 @@ public class AddressRequestFragment extends BaseFragment {
             ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
         }
     }
+
+    private void parseUri(Uri uri)
+    {
+        if (uri != null) {
+            Map<String, String> map;
+            try {
+                map = Common.splitQuery(uri);
+                strName = map.get("x-source");
+                strNotes = map.get("notes");
+                strCategory = map.get("category");
+                _successUrl = map.get("x-success");
+                _errorUrl = map.get("x-error");
+                _cancelUrl = map.get("x-cancel");
+            } catch (UnsupportedEncodingException e) {
+                Log.d(TAG, "Unsupported uri exception");
+            }
+        } else {
+            strName = "An app ";
+            strCategory = "";
+            strNotes = "";
+        }
+    }
+
+    private void goOkay()
+    {
+        createRequest(0);
+
+        if (_successUrl != null) {
+            String query;
+            if (!_successUrl.contains("?")) {
+                query = String.format("%1?addr=%2", _successUrl, mRequestURI);
+            } else {
+                query = String.format("%1&addr=%2", _successUrl, mRequestURI);
+            }
+
+            query += String.format("&x-source=%1", "Airbitz");
+            Uri uri = Uri.parse(query);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+//                finalizeRequest();
+            }
+            else {
+                Uri errorUri = Uri.parse(_errorUrl);
+                Intent errorIntent = new Intent(Intent.ACTION_VIEW, errorUri);
+                if (errorIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(errorIntent);
+                }
+            }
+        }
+        // finish
+        if(mOnAddressRequest != null) {
+            mOnAddressRequest.onAddressRequest();
+        }
+    }
+
+    private void goCancel()
+    {
+        if (_cancelUrl == null) {
+            _cancelUrl = _errorUrl;
+        }
+        if (_cancelUrl != null) {
+            String cancelMessage = Uri.encode("User cancelled the request.");
+            String query;
+            if (!_cancelUrl.contains("?")) {
+                query = String.format("%1?addr=&cancelMessage=%2", _cancelUrl, cancelMessage);
+            } else {
+                query = String.format("%1&addr=&cancelMessage=%2", _cancelUrl, cancelMessage);
+            }
+            Uri cancelUri = Uri.parse(query);
+            Intent errorIntent = new Intent(Intent.ACTION_VIEW, cancelUri);
+            if (errorIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(errorIntent);
+            }
+        }
+        // finish
+        if(mOnAddressRequest != null) {
+            mOnAddressRequest.onAddressRequest();
+        }
+    }
+
+
+    String mRequestID;
+    String mRequestAddress;
+    String mRequestURI;
+    private void createRequest(long amountSatoshi)
+    {
+        mRequestID = "";
+        mRequestAddress = "";
+        mRequestURI = "";
+
+//        unsigned int width = 0;
+//        unsigned char *pData = NULL;
+//        char *pszURI = NULL;
+//        tABC_Error error;
+//
+//        char *szRequestID = [self createReceiveRequestFor:amountSatoshi withRequestState:state];
+//        if (szRequestID) {
+//            ABC_GenerateRequestQRCode([[User Singleton].name UTF8String],
+//            [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
+//            szRequestID, &pszURI, &pData, &width, &error);
+//            if (error.code == ABC_CC_Ok) {
+//                if (pszURI && strRequestURI) {
+//                    [strRequestURI appendFormat:@"%s", pszURI];
+//                    free(pszURI);
+//                }
+//            } else {
+//                [Util printABC_Error:&error];
+//            }
+//        }
+//        if (szRequestID) {
+//            if (strRequestID) {
+//                [strRequestID appendFormat:@"%s", szRequestID];
+//            }
+//            char *szRequestAddress = NULL;
+//            tABC_CC result = ABC_GetRequestAddress([[User Singleton].name UTF8String],
+//            [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
+//            szRequestID, &szRequestAddress, &error);
+//            [Util printABC_Error:&error];
+//            if (result == ABC_CC_Ok) {
+//                if (szRequestAddress && strRequestAddress) {
+//                    [strRequestAddress appendFormat:@"%s", szRequestAddress];
+//                }
+//            }
+//        }
+    }
+
+//    String createReceiveRequestFor: (SInt64)amountSatoshi withRequestState:(RequestState)state
+//    {
+//        tABC_Error error;
+//        tABC_TxDetails details;
+//
+//        memset(&details, 0, sizeof(tABC_TxDetails));
+//        details.amountSatoshi = 0;
+//        details.amountFeesAirbitzSatoshi = 0;
+//        details.amountFeesMinersSatoshi = 0;
+//        details.amountCurrency = 0;
+//        details.szName = (char *) [strName UTF8String];
+//        details.szNotes = (char *) [strNotes UTF8String];
+//        details.szCategory = (char *) [strCategory UTF8String];
+//        details.attributes = 0x0; //for our own use (not used by the core)
+//        details.bizId = 0;
+//
+//        char *pRequestID;
+//        // create the request
+//        ABC_CreateReceiveRequest([[User Singleton].name UTF8String],
+//        [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
+//        &details, &pRequestID, &error);
+//        if (error.code == ABC_CC_Ok) {
+//            return pRequestID;
+//        } else {
+//            return 0;
+//        }
+//    }
+
 }
