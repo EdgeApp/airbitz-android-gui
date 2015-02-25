@@ -376,8 +376,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     private void confirmRequest()
     {
-        resetOtpNotifications();
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), AirbitzApplication.getPassword())) {
+        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
             mConfirmRequestTask = new ConfirmRequestTask();
             mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
@@ -428,8 +427,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     private void cancelRequest()
     {
-        resetOtpNotifications();
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), AirbitzApplication.getPassword())) {
+        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
             mCancelRequestTask = new CancelRequestTask();
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
@@ -477,23 +475,4 @@ public class TwoFactorShowFragment extends BaseFragment
             mActivity.showModalProgress(false);
         }
     }
-
-    void resetOtpNotifications() {
-
-    }
-
-//    #pragma mark - TwoFactorMenuViewControllerDelegate
-//
-//    - (void)twoFactorMenuViewControllerDone:(TwoFactorMenuViewController *)controller withBackButton:(BOOL)bBack
-//    {
-//        BOOL success = controller.bSuccess;
-//        [Util animateOut:controller parentController:self complete:^(void) {
-//            _tfaMenuViewController = nil;
-//        }];
-//        if (!bBack && !success) {
-//            [self showFadingAlert:NSLocalizedString(@("Unable to import secret"), nil)];
-//        }
-//        [self checkStatus:success];
-//    }
-
 }
