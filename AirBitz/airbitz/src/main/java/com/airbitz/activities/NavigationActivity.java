@@ -690,6 +690,7 @@ public class NavigationActivity extends Activity
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
+        mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
     /*
@@ -1779,7 +1780,6 @@ public class NavigationActivity extends Activity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
-                                    mOTPResetRequestDialog = null;
                                 }
                             });
             mOTPResetRequestDialog = builder.create();
