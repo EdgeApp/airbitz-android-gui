@@ -588,7 +588,7 @@
                             android:paddingTop="13dp"
                             android:text="@string/settings_button_two_factor_authentication"
                             android:textColor="@color/settings_button_text"
-                            android:textSize="13sp" />
+                            android:textSize="13dp" />
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_two_factor_authentication"
