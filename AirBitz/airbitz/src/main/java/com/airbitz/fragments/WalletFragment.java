@@ -80,7 +80,8 @@ import java.util.concurrent.Executors;
 public class WalletFragment extends BaseFragment
         implements CoreAPI.OnExchangeRatesChange,
         NavigationActivity.OnWalletUpdated,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
     private EditText mSearchField;
     private LinearLayout mSearchLayout;
@@ -227,13 +228,7 @@ public class WalletFragment extends BaseFragment
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (searchPage) {
-                    SetSearchVisibility(false);
-                    mTransactionAdapter.setSearch(false);
-                    startTransactionTask();
-                } else {
-                    mActivity.onBackPressed();
-                }
+                mActivity.onBackPressed();
             }
         });
 
@@ -452,6 +447,17 @@ public class WalletFragment extends BaseFragment
         return mView;
     }
 
+    @Override
+    public boolean onBackPress() {
+        if (searchPage) {
+            SetSearchVisibility(false);
+            mTransactionAdapter.setSearch(false);
+            startTransactionTask();
+            return true;
+        }
+        return false;
+    }
+
     private void SetSearchVisibility(boolean visible) {
         if (visible) {
             mSearchLayout.setX(mParentLayout.getWidth());
@@ -482,6 +488,7 @@ public class WalletFragment extends BaseFragment
                     mSearchLayout.setVisibility(View.GONE);
                 }
             });
+            mActivity.hideSoftKeyboard(mSearchField);
         }
         searchPage = visible;
         mTransactionAdapter.setSearch(visible);
