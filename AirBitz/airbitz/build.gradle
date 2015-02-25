@@ -114,7 +114,7 @@ if (hasProperty('storeFile')) {
 
 dependencies {
     compile 'com.android.support:support-v4:21.0.+'
-    compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'commons-io:commons-io:2.4'
