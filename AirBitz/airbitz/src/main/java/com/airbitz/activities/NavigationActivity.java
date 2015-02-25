@@ -128,6 +128,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange,
         CoreAPI.OnOTPError,
+        CoreAPI.OnOTPResetRequest,
         TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
     public static final int ALERT_PAYMENT_TIMEOUT = 20000;
@@ -291,6 +292,7 @@ public class NavigationActivity extends Activity
         String seed = CoreAPI.getSeedData();
         mCoreAPI.Initialize(this, seed, seed.length());
         mCoreAPI.setOnOTPErrorListener(this);
+        mCoreAPI.setOTPResetRequestListener(this);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -1714,12 +1716,12 @@ public class NavigationActivity extends Activity
     }
 
     //********************  OTP support
-    AlertDialog mOTPAlertDialog;
     @Override
     public void onOTPError() {
         mHandler.post(showOTPErrorDialog);
     }
 
+    AlertDialog mOTPAlertDialog;
     final Runnable showOTPErrorDialog = new Runnable() {
         @Override
         public void run() {
@@ -1762,5 +1764,26 @@ public class NavigationActivity extends Activity
     @Override
     public void onTwoFactorQRScanResult(boolean success, String result) {
         mOTPAlertDialog = null;
+    }
+
+    AlertDialog mOTPResetRequestDialog;
+    @Override
+    public void onOTPResetRequest() {
+        if (!NavigationActivity.this.isFinishing() && mOTPResetRequestDialog == null) {
+            String message = String.format(getString(R.string.twofactor_reset_message), AirbitzApplication.getUsername());
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(getString(R.string.twofactor_reset_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    mOTPResetRequestDialog = null;
+                                }
+                            });
+            mOTPResetRequestDialog = builder.create();
+            mOTPResetRequestDialog.show();
+        }
     }
 }

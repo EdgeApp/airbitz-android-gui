@@ -2035,6 +2035,12 @@ public class CoreAPI {
         mOnOTPError = listener;
     }
 
+    public interface OnOTPResetRequest { public void onOTPResetRequest(); }
+    private OnOTPResetRequest mOTPResetRequest;
+    public void setOTPResetRequestListener(OnOTPResetRequest listener) {
+        mOTPResetRequest = listener;
+    }
+
     private SyncDataTask mSyncDataTask;
     private boolean mDataFetched = false;
     public class SyncDataTask extends AsyncTask<Void, String, Void> {
@@ -2090,6 +2096,11 @@ public class CoreAPI {
             mSyncDataTask = null;
             if (!mDataFetched) {
                 mDataFetched = true;
+            }
+
+            tABC_Error error = new tABC_Error();
+            if(isTwoFactorResetPending(error) && mOTPResetRequest != null) {
+                mOTPResetRequest.onOTPResetRequest();
             }
         }
 

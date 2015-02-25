@@ -479,6 +479,9 @@
     <string name="fragment_two_factor_scan_try_again">Try Again</string>
     <string name="fragment_two_factor_scan_no_thanks">No Thanks</string>
 
+    <string name="twofactor_reset_message">A two factor reset has been requested. Please login as %1$s and approve or cancel the request.</string>
+    <string name="twofactor_reset_title">Two Factor Reset Request</string>
+
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
