@@ -115,7 +115,7 @@
                     android:layout_margin="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_btn_red"
-                    android:text="@string/fragment_twofactor_show_approve"
+                    android:text="@string/fragment_twofactor_show_disable_twofa"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="normal" />
@@ -128,7 +128,7 @@
                     android:layout_margin="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_btn_blue"
-                    android:text="@string/string_cancel"
+                    android:text="@string/fragment_twofactor_show_keep_twofa"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="normal" />
