@@ -2912,7 +2912,9 @@ public class CoreAPI {
         tABC_CC cc = core.ABC_OtpResetGet(ppChar, error);
         if (cc == tABC_CC.ABC_CC_Ok) {
             String userNames = getStringAtPtr(core.longp_value(lp));
-            return userNames.contains(AirbitzApplication.getUsername());
+            if(userNames != null && AirbitzApplication.getUsername() != null) {
+                return userNames.contains(AirbitzApplication.getUsername());
+            }
         }
         return false;
     }
