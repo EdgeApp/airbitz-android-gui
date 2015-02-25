@@ -101,7 +101,7 @@
             <LinearLayout
                 android:id="@+id/fragment_twofactor_request_view"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
                 android:background="@color/blue_text"
