@@ -489,6 +489,7 @@ public class WalletFragment extends BaseFragment
                 }
             });
             mActivity.hideSoftKeyboard(mSearchField);
+            mSearchField.clearFocus();
         }
         searchPage = visible;
         mTransactionAdapter.setSearch(visible);
