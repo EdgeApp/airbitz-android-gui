@@ -124,7 +124,7 @@ public class PlayLocationManager implements
         mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME_MILLIS);
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         if(locationClient.isConnected()) {
-//            locationClient.requestLocationUpdates(mLocationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
             LocationServices.FusedLocationApi.getLastLocation(locationClient);
         } else {
             onConnectionSuspended(0);
