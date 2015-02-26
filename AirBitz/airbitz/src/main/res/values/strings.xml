@@ -14,6 +14,7 @@
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
+    <string name="string_finish">FINISH</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>

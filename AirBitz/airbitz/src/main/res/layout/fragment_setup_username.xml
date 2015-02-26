@@ -46,14 +46,14 @@
                     android:layout_height="match_parent">
 
                     <com.airbitz.objects.LimitedEditText
-                        android:id="@+id/activity_signup_username_edittext"
+                        android:id="@+id/fragment_setup_username_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="37.8dp"
                         android:layout_marginTop="25.4dp"
                         android:background="@drawable/emboss_down"
                         android:ems="10"
                         android:hint="@string/activity_signup_username_hint"
-                        android:inputType="textVisiblePassword"
+                        android:inputType="text"
                         android:imeOptions="actionNext"
                         android:paddingLeft="12.6dp"
                         android:paddingRight="12.6dp"
@@ -63,7 +63,7 @@
                         android:textSize="14dp" />
 
                     <View
-                        android:id="@+id/activity_signup_username_redring"
+                        android:id="@+id/fragment_setup_username_redring"
                         android:layout_width="match_parent"
                         android:layout_height="37.8dp"
                         android:layout_marginBottom="12.6dp"

@@ -91,9 +91,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        mUserNameRedRingCover = mView.findViewById(R.id.activity_signup_username_redring);
-        mUserNameEditText = (EditText) mView.findViewById(R.id.activity_signup_username_edittext);
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mUserNameRedRingCover = mView.findViewById(R.id.fragment_setup_username_redring);
+        mUserNameRedRingCover.setVisibility(View.GONE);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -115,11 +114,11 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             }
         });
 
+        mUserNameEditText = (EditText) mView.findViewById(R.id.fragment_setup_username_edittext);
+        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -127,13 +126,12 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
                     mUserNameRedRingCover.setVisibility(View.VISIBLE);
                 } else {
                     mUserNameRedRingCover.setVisibility(View.GONE);
+                    enableNextButton(true);
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
         mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -148,17 +146,17 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         return mView;
     }
 
-    private void setupUI(Bundle bundle) {
-        if (bundle == null)
-            return;
-        mUserNameRedRingCover.setVisibility(View.GONE);
-
-        mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
-        mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mUserNameEditText.setText(bundle.getString(USERNAME));
-        mUserNameEditText.setSelection(mUserNameEditText.getText().length());
-        mUserNameEditText.requestFocus();
+    private void enableNextButton(boolean enable) {
+        if(enable) {
+            mNextButton.setBackgroundResource(R.drawable.setup_button_green);
+            mNextButton.setClickable(true);
+        }
+        else {
+            mNextButton.setBackgroundResource(R.drawable.setup_button_dark_gray);
+            mNextButton.setClickable(false);
+        }
     }
+
 
     private void goNext() {
         mActivity.hideSoftKeyboard(mUserNameEditText);
@@ -170,21 +168,37 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         // Reset errors.
         mUserNameEditText.setError(null);
 
-        mCheckUsernameTask = new CheckUsernameTask(mUserNameEditText.getText().toString());
-        mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+
+//        mCheckUsernameTask = new CheckUsernameTask(mUserNameEditText.getText().toString());
+//        mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        launchSetupPassword(); // TODO remove and uncomment two lines above when core ready
+    }
+
+    private void launchSetupPassword() {
+        SetupPasswordFragment fragment = new SetupPasswordFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SetupPasswordFragment.USERNAME, mUserNameEditText.getText().toString());
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
     }
 
     @Override
     public boolean onBackPress() {
         mActivity.hideSoftKeyboard(getView());
-        mActivity.popFragment();
+        mActivity.noSignup();
         return true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        setupUI(getArguments());
+        Bundle bundle = getArguments();
+        enableNextButton(false);
+        if(bundle.containsKey(USERNAME)) {
+            mUserNameEditText.setText(bundle.getString(USERNAME));
+        }
+        mUserNameEditText.setSelection(mUserNameEditText.getText().length());
+        mUserNameEditText.requestFocus();
     }
 
     /**
@@ -213,7 +227,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         protected void onPostExecute(final Boolean success) {
             onCancelled();
             if (success) {
-                //TODO goto setup password
+                launchSetupPassword();
             } else {
                 mActivity.ShowFadingDialog(mFailureReason);
             }

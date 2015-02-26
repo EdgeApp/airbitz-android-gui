@@ -82,6 +82,7 @@ import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.settings.CategoryFragment;
@@ -1116,8 +1117,8 @@ public class NavigationActivity extends Activity
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
         Bundle bundle = new Bundle();
-        bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
-        Fragment frag = new SignUpFragment();
+        bundle.putString(SetupUsernameFragment.USERNAME, userName);
+        Fragment frag = new SetupUsernameFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);

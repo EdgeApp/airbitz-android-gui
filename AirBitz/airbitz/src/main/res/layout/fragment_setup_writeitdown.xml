@@ -94,7 +94,7 @@
                                 android:paddingRight="6.3dp"
                                 android:layout_centerVertical="true"
                                 android:text="@string/fragment_setup_writeitdown_text_warning"
-                                android:textColor="@android:color/white"
+                                android:textColor="@color/text_yellow"
                                 android:textSize="16dp" />
 
                             </RelativeLayout>
@@ -250,7 +250,7 @@
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/setup_button_dark_gray"
-                    android:text="@string/string_next"
+                    android:text="@string/string_finish"
                     android:textColor="@android:color/white"
                     android:layout_alignParentRight="true"
                     android:textSize="16dp"

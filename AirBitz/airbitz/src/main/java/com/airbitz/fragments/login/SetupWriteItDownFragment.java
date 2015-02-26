@@ -74,7 +74,7 @@ import java.util.List;
 /**
  * Created on 2/26/15.
  */
-public class WriteItDownFragment extends BaseFragment implements NavigationActivity.OnBackPress {
+public class SetupWriteItDownFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
     public static final String USERNAME = "com.airbitz.setupwriteitdown.username";
@@ -106,12 +106,7 @@ public class WriteItDownFragment extends BaseFragment implements NavigationActiv
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_setup_writeitdown, container, false);
-        } else {
-
-            return mView;
-        }
+        mView = inflater.inflate(R.layout.fragment_setup_writeitdown, container, false);
 
         mActivity = (NavigationActivity) getActivity();
 

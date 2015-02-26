@@ -31,45 +31,22 @@
 
 package com.airbitz.fragments.login;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.utils.Common;
-
-import java.util.List;
 
 /**
  * Created on 2/10/14.
@@ -130,12 +107,10 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
         mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -165,14 +140,16 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
         mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
         // if they entered a valid mUsername or old mPassword
         if (pinFieldIsValid()) {
-            String username = getArguments().getString(USERNAME);
-            char[] password = getArguments().getString(PASSWORD).toCharArray();
-            String pin = mWithdrawalPinEditText.getText().toString();
-
             // Reset errors.
             mWithdrawalPinEditText.setError(null);
 
-            // TODO launch WriteItDown screen
+            SetupWriteItDownFragment fragment = new SetupWriteItDownFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(SetupWriteItDownFragment.USERNAME, getArguments().getString(USERNAME));
+            bundle.putString(SetupWriteItDownFragment.PASSWORD, getArguments().getString(PASSWORD));
+            bundle.putString(SetupWriteItDownFragment.PIN, mWithdrawalPinEditText.getText().toString());
+            fragment.setArguments(bundle);
+            mActivity.pushFragment(fragment);
         }
     }
 

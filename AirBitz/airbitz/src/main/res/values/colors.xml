@@ -23,6 +23,7 @@
     <color name="off_white">#FFEDEDED</color>
     <color name="wallet_list_header">#44000000</color>
     <color name="header_search">#2291cf</color>
+    <color name="text_yellow">#FFFFFF34</color>
 
     <color name="green_frost">#ff228822</color>
     <color name="red_frost">#ffaa3333</color>
