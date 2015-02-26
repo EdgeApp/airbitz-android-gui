@@ -184,6 +184,7 @@ public class LandingFragment extends BaseFragment implements
             public void onClick(View view) {
                 if(mPinLayout.getVisibility() == View.VISIBLE) {
                     refreshView(false, false);
+                    abortPermanently();
                 } else {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.startSignUp(mUserNameEditText.getText().toString());
