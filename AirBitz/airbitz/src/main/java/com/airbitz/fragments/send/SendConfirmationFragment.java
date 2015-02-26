@@ -240,6 +240,7 @@ public class SendConfirmationFragment extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSourceWallet = mWallets.get(i);
+                updateTextFieldContents(true);
             }
 
             @Override
