@@ -136,6 +136,7 @@ public class SettingFragment extends BaseFragment {
     private HighlightOnPressButton mPesoButton;
     private HighlightOnPressButton mYuanButton;
     private HighlightOnPressButton mLogoutButton;
+    private HighlightOnPressButton mFullLogoutButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private String[] mCurrencyItems;
     private String[] mDistanceItems;
@@ -211,7 +212,22 @@ public class SettingFragment extends BaseFragment {
         mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
 
         mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveCurrentSettings();
+                ((NavigationActivity) getActivity()).Logout(false);
+            }
+        });
 
+        mFullLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_full_logout);
+        mFullLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveCurrentSettings();
+                ((NavigationActivity) getActivity()).Logout();
+            }
+        });
 
         mDebugButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_debug);
         mDebugButton.setOnClickListener(new View.OnClickListener() {
@@ -409,14 +425,6 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 showExchangeDialog(mYuanButton, mYuanExchangeItems);
-            }
-        });
-
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCurrentSettings();
-                ((NavigationActivity) getActivity()).Logout();
             }
         });
 
