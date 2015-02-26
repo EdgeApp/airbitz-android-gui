@@ -62,7 +62,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.twofactor.TwoFactorMenuFragment;
+import com.airbitz.fragments.login.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;

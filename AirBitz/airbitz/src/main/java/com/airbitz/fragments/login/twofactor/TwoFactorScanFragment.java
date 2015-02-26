@@ -29,25 +29,21 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments.twofactor;
+package com.airbitz.fragments.login.twofactor;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
@@ -57,7 +53,6 @@ import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.QRCamera;
-import com.airbitz.utils.Common;
 
 /**
  * Two Factor Authentication Scan

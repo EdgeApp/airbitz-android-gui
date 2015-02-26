@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.request;
 
 import android.app.Fragment;
 import android.content.ContentResolver;
@@ -55,6 +55,8 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.HelpFragment;
 import com.airbitz.models.Contact;
 import com.airbitz.objects.HighlightOnPressImageButton;
 

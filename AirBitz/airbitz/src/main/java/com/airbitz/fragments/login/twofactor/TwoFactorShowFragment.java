@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments.twofactor;
+package com.airbitz.fragments.login.twofactor;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;

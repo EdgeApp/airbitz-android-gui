@@ -82,7 +82,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.ContactPickerFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Contact;

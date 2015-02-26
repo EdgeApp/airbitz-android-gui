@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -60,6 +60,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
 import java.util.ArrayList;

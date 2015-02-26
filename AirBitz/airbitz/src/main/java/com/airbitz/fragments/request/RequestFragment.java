@@ -56,7 +56,6 @@ import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.ImportFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.Calculator;
