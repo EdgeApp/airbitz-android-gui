@@ -251,6 +251,7 @@ public class AddressRequestFragment extends BaseFragment {
         if(mRequestID != null) {
             mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mRequestID);
             mRequestURI = mCoreAPI.getRequestURI();
+            mRequestURI = mRequestURI.replace("?", "&");
             mRequestAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mRequestID);
         }
     }
