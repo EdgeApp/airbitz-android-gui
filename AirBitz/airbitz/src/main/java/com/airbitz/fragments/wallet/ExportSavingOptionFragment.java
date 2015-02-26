@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.wallet;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -59,6 +59,9 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.FileSaveLocationDialog;
 import com.airbitz.objects.HighlightOnPressButton;

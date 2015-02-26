@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.login;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -64,6 +64,8 @@ import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.utils.Common;
 
 import java.util.List;

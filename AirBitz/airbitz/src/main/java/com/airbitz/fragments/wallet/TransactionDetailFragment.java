@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.wallet;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -82,8 +82,12 @@ import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.directory.DirectoryDetailFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.settings.SettingFragment;
+import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;

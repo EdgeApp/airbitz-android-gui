@@ -29,9 +29,8 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.send;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -45,6 +44,9 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.wallet.WalletsFragment;
+
 /**
  * Created on 2/22/14.
  */

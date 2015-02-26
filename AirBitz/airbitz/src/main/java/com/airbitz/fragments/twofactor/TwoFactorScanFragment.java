@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.twofactor;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -54,6 +54,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.QRCamera;
 import com.airbitz.utils.Common;

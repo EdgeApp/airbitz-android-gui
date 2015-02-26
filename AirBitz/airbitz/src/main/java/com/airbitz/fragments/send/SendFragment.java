@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.send;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -64,6 +64,10 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.settings.SettingFragment;
+import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.BleDevice;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;

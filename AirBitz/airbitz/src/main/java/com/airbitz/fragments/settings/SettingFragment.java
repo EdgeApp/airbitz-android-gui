@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.settings;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -71,6 +71,11 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.CategoryFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.twofactor.TwoFactorShowFragment;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;

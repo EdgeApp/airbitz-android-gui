@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.directory;
 
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +58,8 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.login.ViewPagerFragment;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
 import com.airbitz.models.Hour;

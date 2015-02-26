@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.request;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -53,9 +53,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -84,6 +81,10 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.ContactPickerFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;

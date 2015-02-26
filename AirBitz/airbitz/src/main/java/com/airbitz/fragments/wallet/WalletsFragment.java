@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.wallet;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -65,6 +65,10 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.OfflineWalletFragment;
+import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressButton;

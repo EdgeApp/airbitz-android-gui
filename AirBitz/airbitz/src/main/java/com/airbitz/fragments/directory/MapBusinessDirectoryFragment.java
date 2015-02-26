@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments;
+package com.airbitz.fragments.directory;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -70,6 +70,7 @@ import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
