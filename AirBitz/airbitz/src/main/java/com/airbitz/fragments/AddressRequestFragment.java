@@ -184,7 +184,7 @@ public class AddressRequestFragment extends BaseFragment {
     }
 
     private void goOkay() {
-        createRequest(0);
+        createRequest();
 
         if (_successUrl != null) {
             String query;
@@ -242,7 +242,7 @@ public class AddressRequestFragment extends BaseFragment {
     String mRequestID;
     String mRequestAddress;
     String mRequestURI;
-    private void createRequest(long amountSatoshi) {
+    private void createRequest() {
         mRequestID = "";
         mRequestAddress = "";
         mRequestURI = "";
