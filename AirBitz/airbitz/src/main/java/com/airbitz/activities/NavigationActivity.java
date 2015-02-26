@@ -798,11 +798,11 @@ public class NavigationActivity extends Activity
         bundle.putString(AddressRequestFragment.URI, uri.toString());
         fragment.setArguments(bundle);
         pushFragment(fragment);
-
     }
 
     @Override
     public void onAddressRequest() {
+        popFragment();
         mDataUri = null;
     }
 

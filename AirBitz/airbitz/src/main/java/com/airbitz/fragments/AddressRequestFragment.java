@@ -162,15 +162,14 @@ public class AddressRequestFragment extends BaseFragment {
         }
     }
 
-    private void parseUri(Uri uri)
-    {
+    private void parseUri(Uri uri) {
         if (uri != null) {
             Map<String, String> map;
             try {
                 map = Common.splitQuery(uri);
-                strName = map.get("x-source");
-                strNotes = map.get("notes");
-                strCategory = map.get("category");
+                strName = map.containsKey("x-source") ? map.get("x-source") : "";
+                strNotes = map.containsKey("notes") ? map.get("notes") : "";
+                strCategory = map.containsKey("category") ? map.get("category") : "";
                 _successUrl = map.get("x-success");
                 _errorUrl = map.get("x-error");
                 _cancelUrl = map.get("x-cancel");
@@ -184,24 +183,23 @@ public class AddressRequestFragment extends BaseFragment {
         }
     }
 
-    private void goOkay()
-    {
+    private void goOkay() {
         createRequest(0);
 
         if (_successUrl != null) {
             String query;
             if (!_successUrl.contains("?")) {
-                query = String.format("%1?addr=%2", _successUrl, mRequestURI);
+                query = _successUrl + "?addr=" + mRequestURI;
             } else {
-                query = String.format("%1&addr=%2", _successUrl, mRequestURI);
+                query = _successUrl + "&addr=" + mRequestURI;
             }
 
-            query += String.format("&x-source=%1", "Airbitz");
+            query += "&x-source=Airbitz";
             Uri uri = Uri.parse(query);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
-//                finalizeRequest();
+                mCoreAPI.finalizeRequest(mWallet.getUUID(), mRequestID);
             }
             else {
                 Uri errorUri = Uri.parse(_errorUrl);
@@ -217,8 +215,7 @@ public class AddressRequestFragment extends BaseFragment {
         }
     }
 
-    private void goCancel()
-    {
+    private void goCancel() {
         if (_cancelUrl == null) {
             _cancelUrl = _errorUrl;
         }
@@ -226,9 +223,9 @@ public class AddressRequestFragment extends BaseFragment {
             String cancelMessage = Uri.encode("User cancelled the request.");
             String query;
             if (!_cancelUrl.contains("?")) {
-                query = String.format("%1?addr=&cancelMessage=%2", _cancelUrl, cancelMessage);
+                query = _cancelUrl + "?addr=&cancelMessage=" + cancelMessage;
             } else {
-                query = String.format("%1&addr=&cancelMessage=%2", _cancelUrl, cancelMessage);
+                query = _cancelUrl + "&addr=&cancelMessage=" + cancelMessage;
             }
             Uri cancelUri = Uri.parse(query);
             Intent errorIntent = new Intent(Intent.ACTION_VIEW, cancelUri);
@@ -242,78 +239,19 @@ public class AddressRequestFragment extends BaseFragment {
         }
     }
 
-
     String mRequestID;
     String mRequestAddress;
     String mRequestURI;
-    private void createRequest(long amountSatoshi)
-    {
+    private void createRequest(long amountSatoshi) {
         mRequestID = "";
         mRequestAddress = "";
         mRequestURI = "";
 
-//        unsigned int width = 0;
-//        unsigned char *pData = NULL;
-//        char *pszURI = NULL;
-//        tABC_Error error;
-//
-//        char *szRequestID = [self createReceiveRequestFor:amountSatoshi withRequestState:state];
-//        if (szRequestID) {
-//            ABC_GenerateRequestQRCode([[User Singleton].name UTF8String],
-//            [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
-//            szRequestID, &pszURI, &pData, &width, &error);
-//            if (error.code == ABC_CC_Ok) {
-//                if (pszURI && strRequestURI) {
-//                    [strRequestURI appendFormat:@"%s", pszURI];
-//                    free(pszURI);
-//                }
-//            } else {
-//                [Util printABC_Error:&error];
-//            }
-//        }
-//        if (szRequestID) {
-//            if (strRequestID) {
-//                [strRequestID appendFormat:@"%s", szRequestID];
-//            }
-//            char *szRequestAddress = NULL;
-//            tABC_CC result = ABC_GetRequestAddress([[User Singleton].name UTF8String],
-//            [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
-//            szRequestID, &szRequestAddress, &error);
-//            [Util printABC_Error:&error];
-//            if (result == ABC_CC_Ok) {
-//                if (szRequestAddress && strRequestAddress) {
-//                    [strRequestAddress appendFormat:@"%s", szRequestAddress];
-//                }
-//            }
-//        }
+        mRequestID = mCoreAPI.createReceiveRequestFor(mWallet, strName, strNotes, strCategory, 0, 0);
+        if(mRequestID != null) {
+            mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mRequestID);
+            mRequestURI = mCoreAPI.getRequestURI();
+            mRequestAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mRequestID);
+        }
     }
-
-//    String createReceiveRequestFor: (SInt64)amountSatoshi withRequestState:(RequestState)state
-//    {
-//        tABC_Error error;
-//        tABC_TxDetails details;
-//
-//        memset(&details, 0, sizeof(tABC_TxDetails));
-//        details.amountSatoshi = 0;
-//        details.amountFeesAirbitzSatoshi = 0;
-//        details.amountFeesMinersSatoshi = 0;
-//        details.amountCurrency = 0;
-//        details.szName = (char *) [strName UTF8String];
-//        details.szNotes = (char *) [strNotes UTF8String];
-//        details.szCategory = (char *) [strCategory UTF8String];
-//        details.attributes = 0x0; //for our own use (not used by the core)
-//        details.bizId = 0;
-//
-//        char *pRequestID;
-//        // create the request
-//        ABC_CreateReceiveRequest([[User Singleton].name UTF8String],
-//        [[User Singleton].password UTF8String], [wallet.strUUID UTF8String],
-//        &details, &pRequestID, &error);
-//        if (error.code == ABC_CC_Ok) {
-//            return pRequestID;
-//        } else {
-//            return 0;
-//        }
-//    }
-
 }

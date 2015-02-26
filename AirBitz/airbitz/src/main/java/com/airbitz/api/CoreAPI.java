@@ -1683,6 +1683,17 @@ public class CoreAPI {
         }
     }
 
+
+    public boolean finalizeRequest(String uuid, String requestId)
+    {
+        tABC_Error error = new tABC_Error();
+        // Finalize this request so it isn't used elsewhere
+        core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), uuid, requestId, error);
+        Log.d(TAG, error.getSzDescription() + " " + error.getSzSourceFunc() + " " + error.getNSourceLine());
+        return error.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
     public void finalizeRequest(Contact contact, String type, String requestId, Wallet wallet)
     {
         if(mReceiveRequestDetails != null) {
@@ -2950,15 +2961,5 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), error);
-    }
-
-    private boolean finalizeRequest(String uuid, String requestId)
-    {
-        tABC_Error error = new tABC_Error();
-        // Finalize this request so it isn't used elsewhere
-        core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), uuid, requestId, error);
-        Log.d(TAG, error.getSzDescription() + " " + error.getSzSourceFunc() + " " + error.getNSourceLine());
-        return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 }
