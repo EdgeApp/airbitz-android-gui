@@ -17,9 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_below="@+id/layout_title_header"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:layout_below="@+id/layout_title_header">
 
             <LinearLayout
                 android:id="@+id/fragment_setup_writeitdown_top"
@@ -27,6 +25,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:focusable="true"
+                android:background="@color/lightly_opaque_black"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:focusableInTouchMode="true">
 
                 <TextView
@@ -44,22 +45,22 @@
 
                     <ImageView
                         android:id="@+id/fragment_setup_writeitdown_edittext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_btn_red" />
+                        android:background="@drawable/write_down_pencil" />
 
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="200dp">
+                    android:layout_height="120dp">
 
                     <LinearLayout
                         android:id="@+id/fragment_setup_writeitdown_show_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <TextView
                             android:id="@+id/fragment_setup_writeitdown_text"
@@ -73,16 +74,31 @@
                             android:textColor="@android:color/white"
                             android:textSize="16dp" />
 
-                        <TextView
-                            android:id="@+id/fragment_setup_writeitdown_text_warning"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:paddingLeft="6.3dp"
-                            android:paddingRight="6.3dp"
-                            android:text="@string/fragment_setup_writeitdown_text_warning"
-                            android:textColor="@android:color/white"
-                            android:textSize="16dp" />
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/fragment_setup_writeitdown_warning_image"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/warning" />
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_text_warning"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/fragment_setup_writeitdown_warning_image"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:layout_centerVertical="true"
+                                android:text="@string/fragment_setup_writeitdown_text_warning"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                            </RelativeLayout>
+
 
                     </LinearLayout>
 
@@ -92,14 +108,15 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_button_white_outline"
                         android:layout_centerInParent="true"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:id="@+id/fragment_setup_writeitdown_username_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
                             android:orientation="horizontal"
                             android:visibility="visible">
 
@@ -134,8 +151,8 @@
                             android:id="@+id/fragment_setup_writeitdown_password_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
                             android:orientation="horizontal"
                             android:visibility="visible">
 
@@ -169,8 +186,8 @@
                             android:id="@+id/fragment_setup_writeitdown_pin_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
                             android:orientation="horizontal"
                             android:visibility="visible">
 
@@ -209,7 +226,8 @@
                     android:id="@+id/fragment_setup_writeitdown_show"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/bg_button_white_outline"
                     android:textColor="@android:color/white"
                     android:layout_alignParentLeft="true"
