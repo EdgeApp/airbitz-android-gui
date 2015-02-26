@@ -138,7 +138,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mUserNameRedRingCover = mView.findViewById(R.id.activity_signup_username_redring);
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.activity_signup_username_edittext);
-        mPasswordEditText = (EditText) mView.findViewById(R.id.activity_signup_password_edittext);
+        mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_edittext);
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.activity_signup_repassword_edittext);
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
         mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
