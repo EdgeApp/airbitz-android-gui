@@ -121,7 +121,6 @@ public class SendConfirmationFragment extends BaseFragment {
     private ImageButton mConfirmSwipeButton;
 
     private float mSlideHalfWidth;
-    private float downX = 0;
     private float moveX = 0;
 
     private Calculator mCalculator;
@@ -132,8 +131,6 @@ public class SendConfirmationFragment extends BaseFragment {
 
     private int mRightThreshold;
     private int mLeftThreshold;
-
-    private boolean mSuccess = false;
 
     private String mUUIDorURI;
     private String mLabel;
@@ -420,7 +417,6 @@ public class SendConfirmationFragment extends BaseFragment {
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        downX = (int) event.getX();
                         mSlideHalfWidth = mConfirmSwipeButton.getWidth() / 2;
                         mLeftThreshold = (int) (mSlideLayout.getX());
                         mRightThreshold = (int) (mSlideLayout.getX() + mSlideLayout.getWidth() - mConfirmSwipeButton.getWidth() - mLeftThreshold);
