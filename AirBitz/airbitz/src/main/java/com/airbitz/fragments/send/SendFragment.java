@@ -238,6 +238,7 @@ public class SendFragment extends BaseFragment implements
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                mActivity.showSoftKeyboard(mToEdittext);
             }
 
             @Override
