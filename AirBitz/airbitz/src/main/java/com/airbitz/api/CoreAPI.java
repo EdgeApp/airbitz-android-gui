@@ -1754,14 +1754,22 @@ public class CoreAPI {
         public void setError(String error) { this.error = error; }
     }
 
-    //this is a blocking call
     public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi, String label) {
+        return InitiateTransferOrSend(sourceWallet, destinationAddress, satoshi, 0.0, label, "", "");
+    }
+
+    //this is a blocking call
+    public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi,
+                                          double amountFiat, String label, String category, String notes) {
         TxResult txResult = new TxResult();
 
         tABC_Error error = new tABC_Error();
         Wallet destinationWallet = getWalletFromUUID(destinationAddress);
         if (satoshi > 0) {
-            double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
+            double value = amountFiat;
+            if (value == 0.0) {
+                value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
+            }
 
             //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
             tABC_TxDetails details = new tABC_TxDetails();
@@ -1783,8 +1791,8 @@ public class CoreAPI {
             } else {
                 details.setSzName(label);
             }
-            details.setSzNotes("");
-            details.setSzCategory("");
+            details.setSzCategory(category == null ? "" : category);
+            details.setSzNotes(notes == null ? "" : notes);
             details.setAttributes(0x2); //for our own use (not used by the core)
 
             SWIGTYPE_p_long txid = core.new_longp();
@@ -3037,5 +3045,53 @@ public class CoreAPI {
             }
         }
         return Common.errorMap(mContext, error.getCode());
+    }
+
+    public String pluginDataGet(String pluginId, String key) {
+        tABC_Error pError = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        core.ABC_PluginDataGet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            pluginId, key, ppChar, pError);
+        if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp));
+        } else {
+            return null;
+        }
+    }
+
+    public boolean pluginDataSet(String pluginId, String key, String value) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataSet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            pluginId, key, value, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public boolean pluginDataRemove(String pluginId, String key) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataRemove(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, key, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public boolean pluginDataClear(String pluginId) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataClear(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public String getRawTransaction(String walletUUID, String txid) {
+        tABC_Error pError = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        core.ABC_GetRawTransaction(
+            AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            walletUUID, txid, ppChar, pError);
+        if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp));
+        } else {
+            return null;
+        }
     }
 }

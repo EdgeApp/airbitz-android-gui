@@ -2,11 +2,11 @@
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms are permitted provided that 
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -115,6 +115,7 @@ import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.UserReview;
+import com.airbitz.plugins.PluginFragment;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -1902,9 +1903,19 @@ public class NavigationActivity extends Activity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Buy/Sell pressed");
+                if (!(mNavStacks[Tabs.MORE.ordinal()].peek() instanceof PluginFragment)) {
+                    mNavStacks[Tabs.MORE.ordinal()].clear();
+                    pushFragment(new PluginFragment(), NavigationActivity.Tabs.MORE.ordinal());
+                }
+                switchFragmentThread(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
+        if (mCoreAPI.isTestNet()) {
+            mDrawerBuySell.setVisibility(View.VISIBLE);
+        } else {
+            mDrawerBuySell.setVisibility(View.GONE);
+        }
 
         mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
@@ -1919,8 +1930,12 @@ public class NavigationActivity extends Activity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.closeDrawer(mDrawerView);
+                if (!(mNavStacks[Tabs.MORE.ordinal()].peek() instanceof SettingFragment)) {
+                    mNavStacks[Tabs.MORE.ordinal()].clear();
+                    pushFragment(new SettingFragment(), NavigationActivity.Tabs.MORE.ordinal());
+                }
                 switchFragmentThread(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
 

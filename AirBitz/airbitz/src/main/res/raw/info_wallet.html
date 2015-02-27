@@ -16,14 +16,36 @@
     <center><strong>Transactions List</strong></center>
     <BR/>
 
-    <b>Rename the wallet</b> by simply tapping in the wallet name field (e.g. "My Wallet").<br>
+    <b>Rename the wallet</b> by simply tapping in the wallet name field (e.g. "My Wallet").<br />
     <BR/>
     <b>Search your transactions</b> by tapping the top right magnifying glass. Enter a Payee,
-    Category, or text from a Notes field to search.<br>
-    <br>
+    Category, or text from a Notes field to search.<br />
+    <br />
     Each transaction shows a grey value which is the running balance of your account at the time of
-    that transaction.<br>
-    <br>
+    that transaction.<br />
+    <br />
+    <div id="content">
+    </div>
+    <div id="wallets">
+    </div>
+    <script type="text/javascript">
+        window.onload = function() {
+            var uuid = "A53BF359-7A1A-4540-B321-65714DDA2423";
+            var e = document.getElementById('content');
+            e.innerHTML += 'Wallets: ' + Airbitz.wallets() + '<br />';
+            e.innerHTML += 'Satoshi To Currency: ' + Airbitz.satoshiToCurrency(10000, 840) + '<br />';
+            e.innerHTML += 'Currency To Satoshi: ' + Airbitz.currencyToSatoshi(200, 840)  + '<br />';
+            e.innerHTML += 'Exchange Rate: ' + Airbitz.exchangeRate(840)  + '<br />';
+            e.innerHTML += 'Receive Request: ' + Airbitz.createReceiveRequest("A53BF359-7A1A-4540-B321-65714DDA2423")  + '<br />';
+
+            console.log('Wallets: ' + Airbitz.wallets());
+            console.log('Satoshi To Currency: ' + Airbitz.satoshiToCurrency(10000, 840));
+            console.log('Currency To Satoshi: ' + Airbitz.currencyToSatoshi(200, 840));
+            console.log('Exchange Rate: ' + Airbitz.exchangeRate(840));
+            var r = Airbitz.createReceiveRequest(uuid);
+            console.log('Receive Request: ' + r);
+        }
+    </script>
 </div>
 </body>
 </html>

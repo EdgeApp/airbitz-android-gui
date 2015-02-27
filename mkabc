@@ -17,15 +17,24 @@ if [[ ! -n $(which swig) ]]; then
     exit 1
 fi
 
-make abc.clean abc.build-android-arm  abc.build-android-x86
+echo $1
+BUILD_DIR=build
+if [[ "$1" == "testnet" ]]; then
+    BUILD_DIR=build-testnet
+    make BUILD_DIR=$BUILD_DIR ENABLE_TESTNET=1 \
+        abc.clean abc.build-android-arm  abc.build-android-x86;
+else
+    make abc.clean abc.build-android-arm  abc.build-android-x86
+fi
 
 mkdir -p $WALLET_MAIN/jni/
 mkdir -p $WALLET_MAIN/jniLibs/armeabi/
 mkdir -p $WALLET_MAIN/jniLibs/x86/
 
+echo $(pwd)
 cp ../src/ABC.h $WALLET_MAIN/jni/
-cp build/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
-cp build/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
+cp $BUILD_DIR/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
+cp $BUILD_DIR/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
 
 cd $WALLET_PATH
 swig -java -package com.airbitz.api \

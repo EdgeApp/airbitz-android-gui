@@ -120,5 +120,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+
 }
 
