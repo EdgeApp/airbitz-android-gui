@@ -91,6 +91,9 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     private LinearLayout mShowContainer;
     private LinearLayout mHideContainer;
     private TextView mTitleTextView;
+    private TextView mUsernameTextView;
+    private TextView mPasswordTextView;
+    private TextView mPinTextView;
     private CreateAccountTask mCreateAccountTask;
     private CoreAPI mCoreAPI;
     private View mView;
@@ -136,6 +139,10 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
 
         mShowContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_show_container);
         mHideContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_hide_container);
+
+        mUsernameTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_username_text);
+        mPasswordTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_password_text);
+        mPinTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_pin_text);
 
         return mView;
     }
@@ -194,6 +201,10 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         mUsername = bundle.getString(USERNAME);
         mPassword = bundle.getString(PASSWORD).toCharArray();
         mPin = bundle.getString(PIN);
+
+        mUsernameTextView.setText(mUsername);
+        mPasswordTextView.setText(String.valueOf(mPassword));
+        mPinTextView.setText(mPin);
 
         mCreateAccountTask = new CreateAccountTask();
         mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
