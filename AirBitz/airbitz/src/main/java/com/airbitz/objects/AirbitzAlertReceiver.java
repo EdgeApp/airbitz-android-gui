@@ -194,6 +194,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         builder.setContentTitle("Airbitz notification")
                 .setSmallIcon(R.drawable.ic_launcher)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setLargeIcon(bitmap);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
@@ -360,17 +361,10 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         @Override
         protected List<String> doInBackground(Void... params) {
             List<String> pendings = new ArrayList<String>();
-            List<String> accounts = new ArrayList<String>();
 
-            //TODO Get list of all device accounts instead of last logged in
-            SharedPreferences prefs = mContext.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-            String lastUser = prefs.getString(AirbitzApplication.LOGIN_NAME, null);
-            if(lastUser != null) {
-                accounts.add(lastUser);
-            }
-
+            List<String> accounts = mCoreAPI.listAccounts();
             for(String name : accounts) {
-                if(mCoreAPI.isTwoFactorResetPending(name)) {
+                if(!name.isEmpty() && mCoreAPI.isTwoFactorResetPending(name)) {
                     pendings.add(name);
                 }
             }
@@ -382,7 +376,6 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         protected void onPostExecute(final List<String> pendings) {
             for(String name : pendings) {
                 String message = String.format(mContext.getString(R.string.twofactor_reset_message), name);
-                Log.d(TAG, "OTPResetCheck message: " + message);
                 issueOSNotification(mContext, message, ALERT_OTPRESET_CODE);
             }
             mHandler.removeCallbacks(murderPendingTasks);
