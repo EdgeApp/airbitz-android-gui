@@ -39,12 +39,8 @@ import android.content.Intent;
  * Start Airbitz specific code on boot
  */
 public class BootReceiver extends BroadcastReceiver {
-    final private String TAG = getClass().getSimpleName();
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+        AirbitzAlertReceiver.SetAllRepeatingAlerts(context);
     }
 }
