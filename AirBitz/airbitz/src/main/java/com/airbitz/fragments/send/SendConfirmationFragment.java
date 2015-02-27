@@ -571,10 +571,10 @@ public class SendConfirmationFragment extends BaseFragment {
         int color = Color.WHITE;
         if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
             color = getResources().getColor(R.color.max_orange);
-            mMaxButton.setBackgroundResource(R.drawable.bg_btn_orange);
+            mMaxButton.setBackgroundResource(R.drawable.bg_button_orange);
         } else {
             color = Color.WHITE;
-            mMaxButton.setBackgroundResource(R.drawable.bg_btn_green);
+            mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
         }
         if (fees < 0) {
             mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));

@@ -114,7 +114,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_btn_red"
+                    android:background="@drawable/bg_button_red"
                     android:text="@string/fragment_twofactor_show_disable_twofa"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"

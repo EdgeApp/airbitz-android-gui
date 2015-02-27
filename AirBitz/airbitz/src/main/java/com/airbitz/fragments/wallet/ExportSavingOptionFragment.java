@@ -706,7 +706,7 @@ public class ExportSavingOptionFragment extends BaseFragment
     private void HighlightTimeButton(int pos) {
         for (int i = 0; i < mTimeButtons.size(); i++) {
             if (i == pos) {
-                mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.btn_cancel));
+                mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.bg_button_orange));
             } else {
                 mTimeButtons.get(i).setBackground(getResources().getDrawable(R.drawable.emboss_down));
             }

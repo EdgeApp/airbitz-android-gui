@@ -92,7 +92,7 @@
                     android:id="@+id/fragment_address_request_button_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_orange"
+                    android:background="@drawable/bg_button_orange"
                     android:text="@string/string_cancel"
                     android:textColor="@android:color/white"
                     android:textSize="16dp"
