@@ -1137,7 +1137,6 @@ public class NavigationActivity extends Activity
 
     public void Logout() {
         Logout(true);
-        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     public void Logout(boolean pinDelete) {
@@ -1147,6 +1146,7 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         finish();
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     private Fragment getNewBaseFragement(int id) {
