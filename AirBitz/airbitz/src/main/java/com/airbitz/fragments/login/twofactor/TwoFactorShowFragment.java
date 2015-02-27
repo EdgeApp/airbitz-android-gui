@@ -306,7 +306,7 @@ public class TwoFactorShowFragment extends BaseFragment
     void checkRequest()
     {
         tABC_Error error = new tABC_Error();
-        boolean pending = mCoreAPI.isTwoFactorResetPending(error);
+        boolean pending = mCoreAPI.isTwoFactorResetPending(AirbitzApplication.getUsername());
         boolean okay = error.getCode() == tABC_CC.ABC_CC_Ok;
         if (okay && pending) {
             mRequestView.setVisibility(View.VISIBLE);
