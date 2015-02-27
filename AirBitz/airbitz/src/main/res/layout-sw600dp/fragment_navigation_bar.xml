@@ -26,7 +26,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_directory_selected"
+                android:background="@drawable/ico_nav_directory_selected"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -56,7 +56,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_request_selected"
+                android:background="@drawable/ico_nav_request_selected"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -86,7 +86,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_send_selected"
+                android:background="@drawable/ico_nav_send_selected"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -116,7 +116,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_wallets_selected"
+                android:background="@drawable/ico_nav_wallets_selected"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -145,7 +145,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_settings_selected"
+                android:background="@drawable/ico_nav_settings_selected"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -182,7 +182,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_directory"
+                android:background="@drawable/ico_nav_directory"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -217,7 +217,7 @@
                 android:layout_height="42dp"
                 android:layout_marginTop="14dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_request"
+                android:background="@drawable/ico_nav_request"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -252,7 +252,7 @@
                 android:layout_height="42dp"
                 android:layout_marginTop="14dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_send"
+                android:background="@drawable/ico_nav_send"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -286,7 +286,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_wallets"
+                android:background="@drawable/ico_nav_wallets"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -320,7 +320,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_settings"
+                android:background="@drawable/ico_nav_settings"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />

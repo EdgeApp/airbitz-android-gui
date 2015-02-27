@@ -184,8 +184,8 @@ public class TransactionDetailFragment extends BaseFragment
     private CheckReminderNotification mReminderTask = null;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
-    private int[] mCategoryBackgrounds = {R.drawable.bg_btn_red, R.drawable.bg_btn_green,
-            R.drawable.bg_btn_blue_stretch, R.drawable.bg_btn_orange};
+    private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_btn_green,
+            R.drawable.bg_btn_blue_stretch, R.drawable.bg_button_orange};
 
     private Picasso mPicasso;
 

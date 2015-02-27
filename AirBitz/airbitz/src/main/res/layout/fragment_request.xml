@@ -214,7 +214,7 @@
                     android:id="@+id/button_import_wallet"
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_gray"
+                    android:background="@drawable/bg_button_gray"
                     android:text="@string/request_button_import"
                     android:textColor="#999999"
                     android:textSize="14dp"

@@ -294,7 +294,7 @@
                     android:layout_weight="5.5"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:background="@drawable/bg_btn_red"
+                    android:background="@drawable/bg_button_red"
                     android:gravity="center"
                     android:layout_marginRight="20dp"
                     android:textColor="@android:color/white"

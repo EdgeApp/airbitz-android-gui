@@ -184,7 +184,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/fragment_send_scanning_button"
-                android:background="@drawable/bg_btn_orange" />
+                android:background="@drawable/bg_button_orange" />
 
         </RelativeLayout>
 
