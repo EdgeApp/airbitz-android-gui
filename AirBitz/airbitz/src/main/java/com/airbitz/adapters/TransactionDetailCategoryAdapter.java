@@ -40,7 +40,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Category;
 
 import java.util.List;

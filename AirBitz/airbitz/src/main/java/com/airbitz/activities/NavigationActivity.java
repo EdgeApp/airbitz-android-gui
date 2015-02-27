@@ -82,24 +82,25 @@ import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.AddressRequestFragment;
-import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.fragments.CategoryFragment;
+import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.request.AddressRequestFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.fragments.settings.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.ImportFragment;
-import com.airbitz.fragments.LandingFragment;
+import com.airbitz.fragments.request.ImportFragment;
+import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.PasswordRecoveryFragment;
-import com.airbitz.fragments.RequestFragment;
-import com.airbitz.fragments.RequestQRCodeFragment;
-import com.airbitz.fragments.SendConfirmationFragment;
-import com.airbitz.fragments.SendFragment;
-import com.airbitz.fragments.SettingFragment;
-import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.fragments.SuccessFragment;
-import com.airbitz.fragments.TransparentFragment;
-import com.airbitz.fragments.TwoFactorScanFragment;
-import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.request.RequestFragment;
+import com.airbitz.fragments.request.RequestQRCodeFragment;
+import com.airbitz.fragments.send.SendConfirmationFragment;
+import com.airbitz.fragments.send.SendFragment;
+import com.airbitz.fragments.settings.SettingFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.send.SuccessFragment;
+import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.login.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -1116,8 +1117,8 @@ public class NavigationActivity extends Activity
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
         Bundle bundle = new Bundle();
-        bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
-        Fragment frag = new SignUpFragment();
+        bundle.putString(SetupUsernameFragment.USERNAME, userName);
+        Fragment frag = new SetupUsernameFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
@@ -1136,6 +1137,7 @@ public class NavigationActivity extends Activity
 
     public void Logout() {
         Logout(true);
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     public void Logout(boolean pinDelete) {
@@ -1145,7 +1147,6 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         finish();
-        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     private Fragment getNewBaseFragement(int id) {

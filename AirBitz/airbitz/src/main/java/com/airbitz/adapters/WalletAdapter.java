@@ -33,22 +33,17 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.HashMap;
 import java.util.List;

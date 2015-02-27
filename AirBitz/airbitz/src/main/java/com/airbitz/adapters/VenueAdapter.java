@@ -33,7 +33,6 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +43,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.fragments.SettingFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;

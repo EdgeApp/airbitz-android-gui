@@ -41,7 +41,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.MapBusinessDirectoryFragment;
 import com.airbitz.utils.ImageHelper;
 import com.airbitz.fragments.maps.GoogleMapLayer;
 import com.google.android.gms.maps.GoogleMap;

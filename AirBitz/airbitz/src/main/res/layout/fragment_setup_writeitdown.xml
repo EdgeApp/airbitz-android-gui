@@ -1,0 +1,263 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_signup_container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:ignore="MergeRootFrame">
+
+    <include
+        android:id="@+id/layout_title_header"
+        layout="@layout/layout_title_header"
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp" />
+
+        <RelativeLayout
+            android:id="@+id/fragment_setup_writeitdown_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/layout_title_header">
+
+            <LinearLayout
+                android:id="@+id/fragment_setup_writeitdown_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:focusable="true"
+                android:background="@color/lightly_opaque_black"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:focusableInTouchMode="true">
+
+                <TextView
+                    android:id="@+id/fragment_setup_writeitdown_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="6.3dp"
+                    android:paddingRight="6.3dp"
+                    android:text="@string/fragment_setup_writeitdown_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp" />
+
+
+                    <ImageView
+                        android:id="@+id/fragment_setup_writeitdown_edittext"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/write_down_pencil" />
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp">
+
+                    <LinearLayout
+                        android:id="@+id/fragment_setup_writeitdown_show_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/fragment_setup_writeitdown_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginTop="10dp"
+                            android:paddingLeft="6.3dp"
+                            android:paddingRight="6.3dp"
+                            android:text="@string/fragment_setup_writeitdown_text"
+                            android:textColor="@android:color/white"
+                            android:textSize="16dp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/fragment_setup_writeitdown_warning_image"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/warning" />
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_text_warning"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/fragment_setup_writeitdown_warning_image"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:layout_centerVertical="true"
+                                android:text="@string/fragment_setup_writeitdown_text_warning"
+                                android:textColor="@color/text_yellow"
+                                android:textSize="16dp" />
+
+                            </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/fragment_setup_writeitdown_hide_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_button_white_outline"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/fragment_setup_writeitdown_username_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_username_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:layout_weight="2"
+                                android:text="@string/fragment_setup_writeitdown_username_title"
+                                android:gravity="right"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_username_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:text="username test"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:layout_weight="1"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/fragment_setup_writeitdown_password_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_password_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:layout_weight="2"
+                                android:text="@string/fragment_setup_writeitdown_password_title"
+                                android:gravity="right"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_password_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:text="password test"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:layout_weight="1"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/fragment_setup_writeitdown_pin_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_pin_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:layout_weight="2"
+                                android:text="@string/fragment_setup_writeitdown_pin_title"
+                                android:gravity="right"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                            <TextView
+                                android:id="@+id/fragment_setup_writeitdown_pin_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="6.3dp"
+                                android:paddingRight="6.3dp"
+                                android:text="pin test"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:layout_weight="1"
+                                android:textColor="@android:color/white"
+                                android:textSize="16dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_setup_writeitdown_show"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_button_white_outline"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentLeft="true"
+                    android:text="SHOW"
+                    android:textSize="18dp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_decide"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_setup_next"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/setup_button_dark_gray"
+                    android:text="@string/string_finish"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentRight="true"
+                    android:textSize="16dp"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+</RelativeLayout>

@@ -12,6 +12,9 @@
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
+    <string name="string_back">BACK</string>
+    <string name="string_next">NEXT</string>
+    <string name="string_finish">FINISH</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -154,6 +157,22 @@
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
 
+    <string name="fragment_setup_titles">Wallet Setup</string>
+    <string name="fragment_setup_username_title">Choose a Username</string>
+    <string name="fragment_setup_username_text">Your username is used to login to your Airbitz account on this and other devices.\n\nThis is not your email or real name.</string>
+    <string name="fragment_setup_password_title">Set a Password</string>
+    <string name="fragment_setup_password_text">The Password is used to authenticate your account and change sensitive settings.</string>
+    <string name="fragment_setup_pin_title">Choose a PIN</string>
+    <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins to your account.</string>
+    <string name="fragment_setup_writeitdown_title">Write it Down!</string>
+    <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>
+    <string name="fragment_setup_writeitdown_text_warning">Write down and store securely.</string>
+    <string name="fragment_setup_writeitdown_username_title">Username</string>
+    <string name="fragment_setup_writeitdown_password_title">Password</string>
+    <string name="fragment_setup_writeitdown_pin_title">PIN</string>
+    <string name="fragment_setup_writeitdown_show">Show</string>
+    <string name="fragment_setup_writeitdown_hide">Hide</string>
+
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_setup_title">Password Recovery Setup</string>
     <string name="activity_recovery_title">Password Recovery</string>
@@ -215,7 +234,8 @@
     <string name="settings_title_euro">Euro</string>
     <string name="settings_title_peso">Mexican Peso</string>
     <string name="settings_title_yuan">Yuan</string>
-    <string name="settings_button_logout">Log Out</string>
+    <string name="settings_button_logout">Logout</string>
+    <string name="settings_button_full_logout">Full Logout (require password)</string>
     <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>
