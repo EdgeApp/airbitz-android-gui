@@ -2112,8 +2112,7 @@ public class CoreAPI {
                 mDataFetched = true;
             }
 
-            tABC_Error error = new tABC_Error();
-            if(isTwoFactorResetPending(error) && mOTPResetRequest != null) {
+            if(isTwoFactorResetPending(AirbitzApplication.getUsername()) && mOTPResetRequest != null) {
                 mOTPResetRequest.onOTPResetRequest();
             }
         }
@@ -2920,14 +2919,15 @@ public class CoreAPI {
         return cc;
     }
 
-    public boolean isTwoFactorResetPending(tABC_Error error) {
+    public boolean isTwoFactorResetPending(String username) {
+        tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
         tABC_CC cc = core.ABC_OtpResetGet(ppChar, error);
         if (cc == tABC_CC.ABC_CC_Ok) {
             String userNames = getStringAtPtr(core.longp_value(lp));
-            if(userNames != null && AirbitzApplication.getUsername() != null) {
-                return userNames.contains(AirbitzApplication.getUsername());
+            if(userNames != null && username != null) {
+                return userNames.contains(username);
             }
         }
         return false;
@@ -2961,5 +2961,17 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), error);
+    }
+
+    public List<String> listAccounts() {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc;
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        cc = core.ABC_ListAccounts(ppChar, error);
+        if(cc == tABC_CC.ABC_CC_Ok) {
+            return Arrays.asList(getStringAtPtr(core.longp_value(lp)).split("\\n"));
+        }
+        return null;
     }
 }

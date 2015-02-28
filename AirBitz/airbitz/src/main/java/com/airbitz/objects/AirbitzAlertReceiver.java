@@ -40,6 +40,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -51,14 +54,17 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.CoreAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /*
@@ -80,8 +86,14 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     final private static int REPEAT_NEW_BUSINESS_MILLIS = 1000 * 60 * 60 * 24 * 7; // 1 week intervals
     public static final String NEW_BUSINESS_LAST_TIME = "com.airbit.airbitzalert.NewBusinessTime";
 
+    public static final int ALERT_OTPRESET_CODE = 3;
+    public static final String ALERT_OTPRESET_TYPE = "com.airbitz.airbitalert.OTPResetType";
+    final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60; // FIXME test, replace with  1000 * 60 * 60 * 24; // 1 Day intervals
+
     NotificationTask mNotificationTask;
     NewBusinessTask mNewBusinessTask;
+    OTPResetCheckTask mOTPResetCheckTask;
+
     PowerManager.WakeLock mWakeLock;
     Handler mHandler = new Handler();
 
@@ -107,6 +119,10 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             mNewBusinessTask = new NewBusinessTask(context);
             mNewBusinessTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+        else if(type.equals(ALERT_OTPRESET_TYPE)) {
+            mOTPResetCheckTask = new OTPResetCheckTask(context);
+            mOTPResetCheckTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     final Runnable murderPendingTasks = new Runnable() {
@@ -118,13 +134,20 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             if(mNewBusinessTask != null && !mNewBusinessTask.isCancelled()) {
                 mNewBusinessTask.cancel(true);
             }
-            //Release the lock
+            if(mOTPResetCheckTask != null && !mOTPResetCheckTask.isCancelled()) {
+                mOTPResetCheckTask.cancel(true);
+            }            //Release the lock
             if(mWakeLock != null && mWakeLock.isHeld()) {
                 mWakeLock.release();
             }
         }
     };
 
+    public static void SetAllRepeatingAlerts(Context context) {
+        SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
+        SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+        SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_OTPRESET_CODE);
+    }
 
     public static void SetRepeatingAlertAlarm(Context context, int code)
     {
@@ -143,11 +166,17 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_NEW_BUSINESS_MILLIS,
                     REPEAT_NEW_BUSINESS_MILLIS, pi);
         }
+        else if(code==ALERT_OTPRESET_CODE) {
+            intent.putExtra(TYPE, ALERT_OTPRESET_TYPE);
+            pi = PendingIntent.getBroadcast(context, ALERT_OTPRESET_CODE, intent, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_OTPRESET_MILLIS,
+                    REPEAT_OTPRESET_MILLIS, pi);
+        }
     }
 
     public static void CancelNextAlertAlarm(Context context, int code)
     {
-        if(code != ALERT_NOTIFICATION_CODE && code != ALERT_NEW_BUSINESS_CODE) {
+        if(code != ALERT_NOTIFICATION_CODE && code != ALERT_NEW_BUSINESS_CODE && code != ALERT_OTPRESET_CODE) {
             return;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -156,24 +185,21 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         alarmManager.cancel(sender);
     }
 
-    private void issueOSNotification(Context context, String type) {
+    private void issueOSNotification(Context context, String message, int code) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.color_logo);
+        Resources res = context.getResources();
+        int height = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
+        int width = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
+        bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         builder.setContentTitle("Airbitz notification")
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setLargeIcon(bitmap);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
-        int code = 0;
-        String message = "no setting";
-        if(type.equals(ALERT_NOTIFICATION_TYPE)) {
-            message = context.getString(R.string.alert_notification_message);
-            code = ALERT_NOTIFICATION_CODE;
-        }
-        else if(type.equals(ALERT_NEW_BUSINESS_TYPE)) {
-            message = context.getString(R.string.alert_new_business_message);
-            code = ALERT_NEW_BUSINESS_CODE;
-        }
         builder.setContentText(message);
-        resultIntent.setType(type);
+        resultIntent.setType(message);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context,
                         code, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -209,8 +235,6 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             }
 
             mMessageId = String.valueOf(getMessageIDPref(mContext));
-
-//            mBuildNumber = "2014111801"; // TESTING
             mBuildNumber = String.valueOf(pInfo.versionCode);
 
             return api.getMessages(mMessageId, mBuildNumber);
@@ -221,7 +245,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             Log.d(TAG, "Notification response of " + mMessageId + "," + mBuildNumber + ": " + response);
             if(response != null && response.length() != 0) {
                 if(hasAlerts(response)) {
-                    issueOSNotification(mContext, ALERT_NOTIFICATION_TYPE);
+                    issueOSNotification(mContext, mContext.getString(R.string.alert_notification_message), ALERT_NOTIFICATION_CODE);
                 }
             }
             mHandler.removeCallbacks(murderPendingTasks);
@@ -302,7 +326,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             Log.d(TAG, "New Business response: "+response);
             if(response != null && response.length() != 0) {
                 if(hasAlerts(response)) {
-                    issueOSNotification(mContext, ALERT_NEW_BUSINESS_TYPE);
+                    issueOSNotification(mContext, mContext.getString(R.string.alert_new_business_message), ALERT_NEW_BUSINESS_CODE);
                 }
                 // save last time = now
                 String now = formatUTC(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -318,5 +342,44 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(tz);
         return df.format(date);
+    }
+
+    public class OTPResetCheckTask extends AsyncTask<Void, Void, List<String>> {
+        Context mContext;
+        CoreAPI mCoreAPI;
+
+        OTPResetCheckTask(Context context) {
+            mContext = context;
+            mCoreAPI = NavigationActivity.initiateCore(context);
+            Log.d(TAG, "OTPResetCheck started");
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected List<String> doInBackground(Void... params) {
+            List<String> pendings = new ArrayList<String>();
+
+            List<String> accounts = mCoreAPI.listAccounts();
+            for(String name : accounts) {
+                if(!name.isEmpty() && mCoreAPI.isTwoFactorResetPending(name)) {
+                    pendings.add(name);
+                }
+            }
+
+            return pendings;
+        }
+
+        @Override
+        protected void onPostExecute(final List<String> pendings) {
+            for(String name : pendings) {
+                String message = String.format(mContext.getString(R.string.twofactor_reset_message), name);
+                issueOSNotification(mContext, message, ALERT_OTPRESET_CODE);
+            }
+            mHandler.removeCallbacks(murderPendingTasks);
+            mHandler.post(murderPendingTasks);
+        }
     }
 }

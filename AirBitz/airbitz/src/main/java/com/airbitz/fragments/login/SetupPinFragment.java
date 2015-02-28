@@ -32,13 +32,16 @@
 package com.airbitz.fragments.login;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -65,6 +68,8 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +126,16 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
             }
         };
         mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
+
+        mWithdrawalPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mActivity.showSoftKeyboard(mWithdrawalPinEditText);
+                } else {
+                }
+            }
+        });
 
         return mView;
     }
@@ -180,5 +195,11 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
     public void onResume() {
         super.onResume();
         enableNextButton(false);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mWithdrawalPinEditText.requestFocus();
+            }
+        });
     }
 }

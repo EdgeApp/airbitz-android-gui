@@ -134,7 +134,6 @@ public class NavigationActivity extends Activity
         AddressRequestFragment.OnAddressRequest,
         TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
-    public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
     public final String INCOMING_COUNT = "com.airbitz.navigation.incomingcount";
 
@@ -237,8 +236,10 @@ public class NavigationActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initiateCore();
+        mCoreAPI = initiateCore(this);
 
+        mCoreAPI.setOnOTPErrorListener(this);
+        mCoreAPI.setOTPResetRequestListener(this);
         mCoreAPI.setOnIncomingBitcoinListener(this);
         mCoreAPI.setOnDataSyncListener(this);
         mCoreAPI.setOnBlockHeightChangeListener(this);
@@ -290,12 +291,11 @@ public class NavigationActivity extends Activity
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
     }
 
-    public void initiateCore() {
-        mCoreAPI = CoreAPI.getApi();
+    public static CoreAPI initiateCore(Context context) {
+        CoreAPI api = CoreAPI.getApi();
         String seed = CoreAPI.getSeedData();
-        mCoreAPI.Initialize(this, seed, seed.length());
-        mCoreAPI.setOnOTPErrorListener(this);
-        mCoreAPI.setOTPResetRequestListener(this);
+        api.Initialize(context, seed, seed.length());
+        return api;
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -688,8 +688,7 @@ public class NavigationActivity extends Activity
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+        AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
@@ -1137,7 +1136,6 @@ public class NavigationActivity extends Activity
 
     public void Logout() {
         Logout(true);
-        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     public void Logout(boolean pinDelete) {
@@ -1147,6 +1145,7 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
         finish();
+        startActivity(new Intent(this, NavigationActivity.class));
     }
 
     private Fragment getNewBaseFragement(int id) {

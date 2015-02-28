@@ -17,14 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_below="@+id/layout_title_header"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:layout_below="@+id/layout_title_header">
 
             <LinearLayout
                 android:id="@+id/fragment_setup_pin_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:background="@color/lightly_opaque_black"
                 android:orientation="vertical"
                 android:focusable="true"
                 android:focusableInTouchMode="true">
@@ -82,6 +83,8 @@
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:orientation="horizontal">
 
                 <com.airbitz.objects.HighlightOnPressButton

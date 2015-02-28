@@ -463,7 +463,7 @@
     <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
     <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
 
-    <!-- Notifications -->
+    <!-- OS Notifications -->
     <string name="alert_notification_message">Touch to read critical messages</string>
     <string name="alert_new_business_message">Touch to see new businesses</string>
 

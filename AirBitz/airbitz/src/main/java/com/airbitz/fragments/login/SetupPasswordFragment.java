@@ -42,6 +42,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,7 +125,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mNextButton.setClickable(false);
                 goNext();
             }
         });
@@ -166,9 +166,23 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mHandler.post(animatePopupDown);
+                    mActivity.showSoftKeyboard(mPasswordEditText);
                 } else {
                     mHandler.post(animatePopupUp);
                 }
+            }
+        });
+
+        mPasswordConfirmationEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(newPasswordFieldsAreValid()) {
+                        goNext();
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -302,11 +316,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // checks the mPassword against the mPassword rules
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
-    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean newPasswordFieldsAreValid() {
         boolean bNewPasswordFieldsAreValid = true;
-
-        // if we are signing up for a new account
             if (!mGoodPassword) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
@@ -388,6 +399,13 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     public void onResume() {
         super.onResume();
         setupUI(getArguments());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mPasswordEditText.setSelection(mPasswordEditText.getText().length());
+                mPasswordEditText.requestFocus();
+            }
+        });
     }
 
     CreatePasswordTask mCreatePasswordTask;

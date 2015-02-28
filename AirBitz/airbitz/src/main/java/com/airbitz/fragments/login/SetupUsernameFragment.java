@@ -40,10 +40,12 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -76,6 +78,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,6 +146,18 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             }
         });
 
+        mUserNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if(mUserNameRedRingCover.getVisibility() != View.VISIBLE) {
+                        goNext();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
         return mView;
     }
 
@@ -197,8 +212,13 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         if(bundle.containsKey(USERNAME)) {
             mUserNameEditText.setText(bundle.getString(USERNAME));
         }
-        mUserNameEditText.setSelection(mUserNameEditText.getText().length());
-        mUserNameEditText.requestFocus();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mUserNameEditText.setSelection(mUserNameEditText.getText().length());
+                mUserNameEditText.requestFocus();
+            }
+        });
     }
 
     /**
