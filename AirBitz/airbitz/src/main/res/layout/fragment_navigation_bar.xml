@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/fragment_navigation_bar_popup_container"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/tabbar_top_height"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -36,7 +36,7 @@
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_directory_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -66,7 +66,7 @@
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -96,7 +96,7 @@
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_send_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -126,7 +126,7 @@
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_wallets_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -155,7 +155,7 @@
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
                 android:text="@string/nav_bar_settings_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
         </RelativeLayout>
@@ -192,7 +192,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_directory_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -226,7 +226,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_request_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -260,7 +260,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_send_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -293,7 +293,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_wallets_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
@@ -326,7 +326,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
                 android:text="@string/nav_bar_settings_text"
-                android:textSize="11dp"
+                android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
