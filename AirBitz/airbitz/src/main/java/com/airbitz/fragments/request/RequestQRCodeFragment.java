@@ -195,7 +195,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
         mTitleTextView.setText(R.string.request_qr_title);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);
-        mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
 
         mBitcoinAddress = (TextView) mView.findViewById(R.id.textview_address);
 
@@ -575,6 +574,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
                     checkNFC();
                     checkBle();
                     mBitcoinAddress.setText(mAddress);
+                    mBitcoinAmount.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, true));
                     if (mQRBitmap != null) {
                         mQRView.setImageBitmap(mQRBitmap);
                     }
