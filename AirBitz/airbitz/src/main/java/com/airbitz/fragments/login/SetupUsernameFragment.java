@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_CC;
@@ -59,6 +60,9 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.utils.Common;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created on 2/26/15.
@@ -183,10 +187,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         // Reset errors.
         mUserNameEditText.setError(null);
 
-
-//        mCheckUsernameTask = new CheckUsernameTask(mUserNameEditText.getText().toString());
-//        mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        launchSetupPassword(); // TODO remove and uncomment two lines above when core ready
+        mCheckUsernameTask = new CheckUsernameTask();
+        mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUserNameEditText.getText().toString());
     }
 
     private void launchSetupPassword() {
@@ -222,34 +224,37 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     }
 
     /**
-     * Represents an asynchronous account creation task
+     * Determine if username available
      */
-    public class CheckUsernameTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        tABC_Error pError = new tABC_Error();
-        private String mFailureReason;
-
-        CheckUsernameTask(String username) {
-            mUsername = username;
+    public class CheckUsernameTask extends AsyncTask<String, Void, String> {
+        CheckUsernameTask() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO
-            tABC_CC code = core.ABC_CreateAccount(mUsername, "", pError);
-            mFailureReason = Common.errorMap(mActivity, code);
-            return code == tABC_CC.ABC_CC_Ok;
+        protected String doInBackground(String... params) {
+            AirbitzAPI api = AirbitzAPI.getApi();
+            String username = params[0];
+            return api.getAccountAvailable(username);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final String result) {
             onCancelled();
-            if (success) {
-                launchSetupPassword();
-            } else {
-                mActivity.ShowFadingDialog(mFailureReason);
+            JSONObject jsonObject;
+            try {
+                jsonObject = new JSONObject(result);
+                Integer status_code = jsonObject.getInt("status_code");
+                String message = jsonObject.getString("message");
+
+//                if(status_code == 0) {
+                    launchSetupPassword();
+//                }
+//                else {
+//                    mActivity.ShowFadingDialog(message);
+//                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 
