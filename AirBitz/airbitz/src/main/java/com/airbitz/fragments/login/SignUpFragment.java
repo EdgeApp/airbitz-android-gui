@@ -562,20 +562,25 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
+    private AlertDialog mAlertSuccess = null;
     public void ShowMessageDialogChangeSuccess(String title, String reason) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(reason)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                mActivity.popFragment();
+        if(mAlertSuccess == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            builder.setMessage(reason)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setNeutralButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    mAlertSuccess.dismiss();
+                                    mActivity.popFragment();
+                                    mAlertSuccess = null;
+                                }
                             }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
+                    );
+            mAlertSuccess = builder.create();
+            mAlertSuccess.show();
+        }
     }
 
     @Override
