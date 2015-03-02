@@ -33,7 +33,10 @@ package com.airbitz.fragments.login;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,19 +48,23 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.UsernamesAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -84,6 +91,8 @@ public class LandingFragment extends BaseFragment implements
     private TextView mDetailTextView;
     private ImageView mRightArrow;
     private EditText mUserNameEditText;
+    private ListView mUsernameListView;
+    List<String> mOtherAccounts;
     private View mPasswordLayout;
     private EditText mPasswordEditText;
     private EditText mPinEditText;
@@ -92,7 +101,7 @@ public class LandingFragment extends BaseFragment implements
 
     private HighlightOnPressImageButton mBackButton;
     private HighlightOnPressButton mCreateAccountButton;
-    private TextView mCurrentUserTextView;
+    private TextView mCurrentUserText;
     private TextView mForgotTextView;
     private TextView mLandingSubtextView;
     private LinearLayout mSwipeLayout;
@@ -100,6 +109,9 @@ public class LandingFragment extends BaseFragment implements
 
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
+
+    private UsernamesAdapter mUsernameAdapter;
+    private Dialog mOthersListDialog;
     
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -116,6 +128,8 @@ public class LandingFragment extends BaseFragment implements
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
         saveInvalidEntryCount(0);
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
     }
 
     @Override
@@ -195,7 +209,17 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        mCurrentUserTextView = (TextView) view.findViewById(R.id.fragment_landing_current_user);
+        mCurrentUserText = (TextView) view.findViewById(R.id.fragment_landing_current_user);
+
+//        mUsernameListView = (ListView) view.findViewById(R.id.fragment_landing_user_listview);
+//        mUsernameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                abortPermanently();
+//                mUserNameEditText.setText(mOtherAccounts.get(position));
+//            }
+//        });
+
         mPinLayout = view.findViewById(R.id.fragment_landing_pin_entry_layout);
 
         mPinEditText = (EditText) view.findViewById(R.id.fragment_landing_pin_edittext);
@@ -259,10 +283,6 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-        mUserNameEditText.setText(mUsername);
-
         ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
         rightBounce.setRepeatCount(3);
         rightBounce.setDuration(500);
@@ -279,6 +299,53 @@ public class LandingFragment extends BaseFragment implements
         return view;
     }
 
+    private List<String> otherUsernames(String username) {
+        List<String> accounts = mCoreAPI.listAccounts();
+        mOtherAccounts = new ArrayList<String>();
+        for(int i=0; i< accounts.size(); i++) {
+            if(!accounts.get(i).equals(username)) {
+                mOtherAccounts.add(accounts.get(i));
+            }
+        }
+        return mOtherAccounts;
+    }
+
+    private void showOthersList()
+    {
+        LayoutInflater li = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = li.inflate(R.layout.listview_other_usernames , null, false);
+
+        ListView list1 = (ListView) v.findViewById(R.id.listview_other_usernames_list);
+        list1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                abortPermanently();
+                mUserNameEditText.setText(mOtherAccounts.get(position));
+                mPasswordEditText.requestFocus();
+                mOthersListDialog.dismiss();
+                mOthersListDialog = null;
+            }
+        });
+        mUsernameAdapter = new UsernamesAdapter(getActivity(), otherUsernames(mUsername));
+        list1.setAdapter(mUsernameAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+                .setTitle("Other Accounts on this device")
+                .setView(v)
+                .setNegativeButton(R.string.string_cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                mOthersListDialog.dismiss();
+                                mOthersListDialog = null;
+                            }
+                        }
+                );
+
+        mOthersListDialog = builder.create();
+        mOthersListDialog.show();
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -291,6 +358,15 @@ public class LandingFragment extends BaseFragment implements
             if(!AirbitzApplication.isLoggedIn()) {
                 mPinEditText.setText("");
                 if (mCoreAPI.PinLoginExists(mUsername)) {
+                    List<String> others = otherUsernames(mUsername);
+                    if(others.size() > 0) {
+                        mCurrentUserText.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showOthersList();
+                            }
+                        });
+                    }
                     refreshView(true, true);
                     mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 }
@@ -336,7 +412,8 @@ public class LandingFragment extends BaseFragment implements
             SpannableStringBuilder s = new SpannableStringBuilder();
             s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue_highlight)), start, start + mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            mCurrentUserTextView.setText(s);
+            mCurrentUserText.setText(s);
+
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
 
             if(isKeyboardUp) {
