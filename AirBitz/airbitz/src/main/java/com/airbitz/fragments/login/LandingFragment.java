@@ -148,8 +148,10 @@ public class LandingFragment extends BaseFragment implements
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     refreshView(false, true);
+                    mUsernameListView.setVisibility(View.VISIBLE);
                 } else {
                     refreshView(false, false);
+                    mUsernameListView.setVisibility(View.GONE);
                 }
             }
         });
@@ -211,14 +213,12 @@ public class LandingFragment extends BaseFragment implements
 
         mCurrentUserText = (TextView) view.findViewById(R.id.fragment_landing_current_user);
 
-//        mUsernameListView = (ListView) view.findViewById(R.id.fragment_landing_user_listview);
-//        mUsernameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                abortPermanently();
-//                mUserNameEditText.setText(mOtherAccounts.get(position));
-//            }
-//        });
+        mUsernameListView = (ListView) view.findViewById(R.id.fragment_landing_user_listview);
+        mUsernameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
 
         mPinLayout = view.findViewById(R.id.fragment_landing_pin_entry_layout);
 

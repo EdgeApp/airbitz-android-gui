@@ -37,16 +37,17 @@
             android:textColor="@android:color/white"
             android:textSize="15dp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/fragment_landing_password_layout"
-                android:layout_width="match_parent"
+                android:layout_width="245.7dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible">
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_username_edittext"
-                    android:layout_width="245.7dp"
+                    android:layout_width="match_parent"
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
@@ -62,8 +63,9 @@
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_password_edittext"
-                    android:layout_width="245.7dp"
+                    android:layout_width="match_parent"
                     android:layout_height="37.8dp"
+                    android:layout_below="@id/fragment_landing_username_edittext"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
                     android:gravity="center_vertical"
@@ -78,8 +80,9 @@
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_signin_button"
-                    android:layout_width="245.7dp"
+                    android:layout_width="match_parent"
                     android:layout_height="44.1dp"
+                    android:layout_below="@id/fragment_landing_password_edittext"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp"
@@ -90,8 +93,15 @@
                     android:textSize="15dp"
                     />
 
+                <ListView
+                    android:id="@+id/fragment_landing_user_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_below="@id/fragment_landing_username_edittext"
+                    android:background="@drawable/category_popup"
+                    android:visibility="gone"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/fragment_landing_pin_entry_layout"
@@ -209,16 +219,6 @@
                 android:background="@android:color/transparent"
                 android:textColor="@android:color/transparent"
                 android:visibility="visible" />
-
-            <ListView
-                android:id="@+id/fragment_landing_user_listview"
-                android:layout_width="wrap_content"
-                android:layout_height="160dp"
-                android:layout_below="@id/fragment_landing_current_user"
-                android:background="@drawable/category_popup"
-                android:layout_marginRight="40dp"
-                android:layout_marginLeft="40dp"
-                android:visibility="gone"/>
 
         </RelativeLayout>
 
