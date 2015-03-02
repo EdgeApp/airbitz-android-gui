@@ -366,9 +366,13 @@ public class NavigationActivity extends Activity
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
+
         if (AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if (position != mNavThreadId) {
+                if(findViewById(R.id.modal_indefinite_progress).getVisibility() == View.VISIBLE) {
+                    showModalProgress(false);
+                }
                 AirbitzApplication.setLastNavTab(position);
                 switchFragmentThread(position);
             }
