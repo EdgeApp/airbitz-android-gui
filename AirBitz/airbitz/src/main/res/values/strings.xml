@@ -235,7 +235,6 @@
     <string name="settings_title_peso">Mexican Peso</string>
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Logout</string>
-    <string name="settings_button_full_logout">Full Logout (require password)</string>
     <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>

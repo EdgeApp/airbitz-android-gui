@@ -963,20 +963,6 @@
                 android:textStyle="normal" />
 
             <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/settings_button_full_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_button_orange"
-                android:padding="5dp"
-                android:text="@string/settings_button_full_logout"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
-
-            <com.airbitz.objects.HighlightOnPressButton
                 android:id="@+id/settings_button_debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

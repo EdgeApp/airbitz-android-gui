@@ -136,7 +136,6 @@ public class SettingFragment extends BaseFragment {
     private HighlightOnPressButton mPesoButton;
     private HighlightOnPressButton mYuanButton;
     private HighlightOnPressButton mLogoutButton;
-    private HighlightOnPressButton mFullLogoutButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private String[] mCurrencyItems;
     private String[] mDistanceItems;
@@ -217,15 +216,6 @@ public class SettingFragment extends BaseFragment {
             public void onClick(View view) {
                 saveCurrentSettings();
                 ((NavigationActivity) getActivity()).Logout(false);
-            }
-        });
-
-        mFullLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_full_logout);
-        mFullLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCurrentSettings();
-                ((NavigationActivity) getActivity()).Logout();
             }
         });
 
