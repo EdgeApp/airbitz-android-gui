@@ -193,7 +193,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         int width = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
         bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         builder.setContentTitle("Airbitz notification")
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ico_sending_3)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setLargeIcon(bitmap);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
