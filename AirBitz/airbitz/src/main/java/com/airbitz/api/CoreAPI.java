@@ -1916,7 +1916,8 @@ public class CoreAPI {
             return null;
         }
 
-        protected void onPostExecute() {
+        @Override
+        protected void onPostExecute(Void result) {
             onExchangeRatesUpdated();
         }
     }
