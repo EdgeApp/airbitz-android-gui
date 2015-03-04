@@ -242,17 +242,25 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         protected void onPostExecute(final String result) {
             onCancelled();
             JSONObject jsonObject;
+
+            // FIXME - when accountAvailable works, remove this test section
+            if(result.isEmpty()) {
+                launchSetupPassword();
+                return;
+            }
+
+
             try {
                 jsonObject = new JSONObject(result);
                 Integer status_code = jsonObject.getInt("status_code");
                 String message = jsonObject.getString("message");
 
-//                if(status_code == 0) {
+                if(status_code == 0) {
                     launchSetupPassword();
-//                }
-//                else {
-//                    mActivity.ShowFadingDialog(message);
-//                }
+                }
+                else {
+                    mActivity.ShowFadingDialog(message);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
