@@ -46,12 +46,12 @@ import java.util.List;
 /**
  * Created 2/28/15.
  */
-public class UsernamesAdapter extends BaseAdapter {
+public class AccountsAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<String> mUsernames;
 
-    public UsernamesAdapter(Context context, List<String> usernames) {
+    public AccountsAdapter(Context context, List<String> usernames) {
         mContext = context;
         mUsernames = usernames;
     }

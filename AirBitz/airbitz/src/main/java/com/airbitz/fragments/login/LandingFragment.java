@@ -54,6 +54,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,7 +65,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.UsernamesAdapter;
+import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
@@ -91,8 +92,12 @@ public class LandingFragment extends BaseFragment implements
     private TextView mDetailTextView;
     private ImageView mRightArrow;
     private EditText mUserNameEditText;
-    private ListView mUsernameListView;
-    List<String> mOtherAccounts;
+    private ListView mAccountsListView;
+    private ListView mOtherAccountsListView;
+    private List<String> mAccounts;
+    private List<String> mOtherAccounts;
+    private AccountsAdapter mAccountsAdapter;
+    private AccountsAdapter mOtherAccountsAdapter;
     private View mPasswordLayout;
     private EditText mPasswordEditText;
     private EditText mPinEditText;
@@ -109,9 +114,6 @@ public class LandingFragment extends BaseFragment implements
 
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
-
-    private UsernamesAdapter mUsernameAdapter;
-    private Dialog mOthersListDialog;
     
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
@@ -147,11 +149,9 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    refreshView(false, true);
-                    mUsernameListView.setVisibility(View.VISIBLE);
+                    showAccountsList(true);
                 } else {
-                    refreshView(false, false);
-                    mUsernameListView.setVisibility(View.GONE);
+                    showAccountsList(false);
                 }
             }
         });
@@ -199,8 +199,8 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if(mPinLayout.getVisibility() == View.VISIBLE) {
+                    mUserNameEditText.setText(mUsername);
                     refreshView(false, false);
-                    abortPermanently();
                 } else {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.startSignUp(mUserNameEditText.getText().toString());
@@ -212,11 +212,48 @@ public class LandingFragment extends BaseFragment implements
         });
 
         mCurrentUserText = (TextView) view.findViewById(R.id.fragment_landing_current_user);
+        mCurrentUserText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(otherAccounts(mUsername).size() > 0) {
+                    if(mOtherAccountsListView.getVisibility() == View.VISIBLE) {
+                        showOthersList(mUsername, false);
+                    }
+                    else {
+                        showOthersList(mUsername, true);
+                    }
+                }
+            }
+        });
 
-        mUsernameListView = (ListView) view.findViewById(R.id.fragment_landing_user_listview);
-        mUsernameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAccountsListView = (ListView) view.findViewById(R.id.fragment_landing_account_listview);
+        mAccounts = new ArrayList<String>();
+        mAccountsAdapter = new AccountsAdapter(getActivity(), mAccounts);
+        mAccountsListView.setAdapter(mAccountsAdapter);
+        mAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String account = mAccounts.get(position);
+                if (mCoreAPI.PinLoginExists(account)) {
+                    saveCachedLoginName(account);
+                    refreshView(true, true);
+                } else {
+                    mUserNameEditText.setText(mAccounts.get(position));
+                    mPasswordEditText.requestFocus();
+                }
+            }
+        });
+
+        mOtherAccountsListView = (ListView) view.findViewById(R.id.fragment_landing_other_account_listview);
+        mOtherAccounts = new ArrayList<String>();
+        mOtherAccountsAdapter = new AccountsAdapter(getActivity(), mOtherAccounts);
+        mOtherAccountsListView.setAdapter(mOtherAccountsAdapter);
+        mOtherAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                refreshView(false, false);
+                mUserNameEditText.setText(mOtherAccounts.get(position));
+                mPasswordEditText.requestFocus();
             }
         });
 
@@ -299,7 +336,7 @@ public class LandingFragment extends BaseFragment implements
         return view;
     }
 
-    private List<String> otherUsernames(String username) {
+    private List<String> otherAccounts(String username) {
         List<String> accounts = mCoreAPI.listAccounts();
         mOtherAccounts = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
@@ -310,39 +347,29 @@ public class LandingFragment extends BaseFragment implements
         return mOtherAccounts;
     }
 
-    private void showOthersList()
+    private void showOthersList(String username, boolean show)
     {
-        LayoutInflater li = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = li.inflate(R.layout.listview_other_usernames , null, false);
+        mOtherAccounts.clear();
+        mOtherAccounts.addAll(otherAccounts(username));
+        mOtherAccountsAdapter.notifyDataSetChanged();
+        if(show) {
+            mOtherAccountsListView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mOtherAccountsListView.setVisibility(View.GONE);
+        }
+    }
 
-        ListView list1 = (ListView) v.findViewById(R.id.listview_other_usernames_list);
-        list1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                abortPermanently();
-                mUserNameEditText.setText(mOtherAccounts.get(position));
-                mPasswordEditText.requestFocus();
-                mOthersListDialog.dismiss();
-                mOthersListDialog = null;
-            }
-        });
-        mUsernameAdapter = new UsernamesAdapter(getActivity(), otherUsernames(mUsername));
-        list1.setAdapter(mUsernameAdapter);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
-                .setTitle("Other Accounts on this device")
-                .setView(v)
-                .setNegativeButton(R.string.string_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                mOthersListDialog.dismiss();
-                                mOthersListDialog = null;
-                            }
-                        }
-                );
-
-        mOthersListDialog = builder.create();
-        mOthersListDialog.show();
+    private void showAccountsList(boolean show) {
+        mAccounts.clear();
+        mAccounts.addAll(mCoreAPI.listAccounts());
+        mAccountsAdapter.notifyDataSetChanged();
+        if(show) {
+            mAccountsListView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mAccountsListView.setVisibility(View.GONE);
+        }
     }
 
 
@@ -358,26 +385,17 @@ public class LandingFragment extends BaseFragment implements
             if(!AirbitzApplication.isLoggedIn()) {
                 mPinEditText.setText("");
                 if (mCoreAPI.PinLoginExists(mUsername)) {
-                    List<String> others = otherUsernames(mUsername);
-                    if(others.size() > 0) {
-                        mCurrentUserText.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showOthersList();
-                            }
-                        });
-                    }
                     refreshView(true, true);
                     mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 }
                 else {
-                    abortPermanently();
+                    refreshView(false, false);
                 }
             }
         }
         else {
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
-            abortPermanently();
+            refreshView(false, false);
         }
     }
 
@@ -629,6 +647,12 @@ public class LandingFragment extends BaseFragment implements
     private void abortPermanently() {
         mCoreAPI.PINLoginDelete(mUsername);
         refreshView(false, false); // reset to password view
+    }
+
+    private void saveCachedLoginName(String name) {
+        SharedPreferences.Editor editor = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putString(AirbitzApplication.LOGIN_NAME, name);
+        editor.apply();
     }
 
     private void saveInvalidEntryCount(int entries) {
