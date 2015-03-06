@@ -2983,4 +2983,16 @@ public class CoreAPI {
         tABC_CC cc = core.ABC_AccountDelete(account, error);
         return cc == tABC_CC.ABC_CC_Ok;
     }
+
+    public String accountAvailable(String account) {
+        tABC_Error error = new tABC_Error();
+
+        tABC_CC cc = core.ABC_AccountAvailable(account, error);
+        if(cc == tABC_CC.ABC_CC_Ok) {
+            return null;
+        }
+        else {
+            return Common.errorMap(mContext, error.getCode());
+        }
+    }
 }
