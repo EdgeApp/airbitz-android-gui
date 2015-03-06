@@ -31,45 +31,22 @@
 
 package com.airbitz.fragments.login;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.utils.Common;
-
-import java.util.List;
 
 /**
  * Created on 2/26/15.
@@ -94,11 +71,9 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     private TextView mUsernameTextView;
     private TextView mPasswordTextView;
     private TextView mPinTextView;
-    private CreateAccountTask mCreateAccountTask;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
-    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +170,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     @Override
     public void onResume() {
         super.onResume();
-        enableNextButton(false);
+        enableNextButton(true);
         enableShow(mShow);
         Bundle bundle = getArguments();
         mUsername = bundle.getString(USERNAME);
@@ -205,44 +180,5 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         mUsernameTextView.setText(mUsername);
         mPasswordTextView.setText(String.valueOf(mPassword));
         mPinTextView.setText(mPin);
-
-        mCreateAccountTask = new CreateAccountTask();
-        mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-    }
-
-    /**
-     * Create Account
-     */
-    public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
-        tABC_Error pError = new tABC_Error();
-        private String mFailureReason;
-
-        CreateAccountTask() {
-            enableNextButton(false);
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), 2000000, false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            tABC_CC code = core.ABC_CreateAccount(mUsername, String.valueOf(mPassword), pError);
-            mFailureReason = Common.errorMap(mActivity, code);
-            return code == tABC_CC.ABC_CC_Ok;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            onCancelled();
-            if (success) {
-                enableNextButton(true);
-            } else {
-                mActivity.ShowFadingDialog(mFailureReason);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCreateAccountTask = null;
-            mActivity.DismissFadingDialog();
-        }
     }
 }

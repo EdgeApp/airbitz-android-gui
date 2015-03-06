@@ -2995,4 +2995,17 @@ public class CoreAPI {
             return Common.errorMap(mContext, error.getCode());
         }
     }
+
+    public String createAccountAndPin(String account, String password, String pin) {
+        tABC_Error error = new tABC_Error();
+
+        core.ABC_CreateAccount(account, password, error);
+        if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+            core.ABC_SetPIN(account, password, pin, error);
+            if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+                return null;
+            }
+        }
+        return Common.errorMap(mContext, error.getCode());
+    }
 }

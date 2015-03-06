@@ -252,7 +252,7 @@
                     android:id="@+id/fragment_setup_next"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/setup_button_dark_gray"
+                    android:background="@drawable/setup_button_green"
                     android:text="@string/string_finish"
                     android:textColor="@android:color/white"
                     android:layout_alignParentRight="true"

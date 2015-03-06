@@ -33,15 +33,12 @@ package com.airbitz.fragments.login;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,18 +50,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.utils.Common;
 
 import java.util.List;
 
@@ -74,9 +65,11 @@ import java.util.List;
 public class SetupPasswordFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
+    public static final int MIN_PIN_LENGTH = 4;
     public static String USERNAME = "com.airbitz.setuppassword.username";
 
     private EditText mPasswordEditText;
+    private EditText mWithdrawalPinEditText;
     private EditText mPasswordConfirmationEditText;
     private HighlightOnPressButton mNextButton;
     private HighlightOnPressButton mBackButton;
@@ -177,15 +170,44 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if(newPasswordFieldsAreValid()) {
-                        goNext();
-                    }
+                    mWithdrawalPinEditText.requestFocus();
                     return true;
                 }
                 return false;
             }
         });
 
+        mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.fragment_password_pin_edittext);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+
+        mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() >= 4) {
+                    mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
+                    enableNextButton(true);
+                    goNext();
+                }
+            }
+        };
+        mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
+
+        mWithdrawalPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mActivity.showSoftKeyboard(mWithdrawalPinEditText);
+                } else {
+                }
+            }
+        });
         return mView;
     }
 
@@ -307,10 +329,26 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private void goNext() {
         mActivity.hideSoftKeyboard(mPasswordEditText);
         // if they entered a valid mUsername or old mPassword
-        if (newPasswordFieldsAreValid()) {
+        if (newPasswordFieldsAreValid() && pinFieldIsValid()) {
             attemptSignUp();
         }
         mNextButton.setClickable(true);
+    }
+
+    // checks the pin field
+    // returns YES if field is good
+    // if the field is bad, an appropriate message box is displayed
+    // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
+    private boolean pinFieldIsValid() {
+        boolean bpinNameFieldIsValid = true;
+
+        // if the pin isn't long enough
+        if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
+            bpinNameFieldIsValid = false;
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_signup_insufficient_pin));
+        }
+
+        return bpinNameFieldIsValid;
     }
 
     // checks the mPassword against the mPassword rules
@@ -369,7 +407,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
      * errors are presented and no actual login attempt is made.
      */
     public void attemptSignUp() {
-        if (mCreatePasswordTask != null) {
+        if (mCreateAccountTask != null) {
             return;
         }
 
@@ -381,18 +419,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         mPasswordEditText.setError(null);
         mPasswordConfirmationEditText.setError(null);
 
-//        mCreatePasswordTask = new CreatePasswordTask(password);
-//        mCreatePasswordTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        launchSetupPin(); //TODO remove and uncomment above two lines when core ready
-    }
-
-    private void launchSetupPin() {
-        SetupPinFragment fragment = new SetupPinFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(SetupPinFragment.USERNAME, getArguments().getString(USERNAME));
-        bundle.putString(SetupPinFragment.PASSWORD, mPasswordEditText.getText().toString());
-        fragment.setArguments(bundle);
-        mActivity.pushFragment(fragment);
+        mCreateAccountTask = new CreateAccountTask(password);
+        mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     @Override
@@ -408,39 +436,41 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         });
     }
 
-    CreatePasswordTask mCreatePasswordTask;
-    public class CreatePasswordTask extends AsyncTask<Void, Void, Boolean> {
+    CreateAccountTask mCreateAccountTask;
+    public class CreateAccountTask extends AsyncTask<Void, Void, String> {
 
         private final char[] mPassword;
-        tABC_Error pError = new tABC_Error();
-        private String mFailureReason;
 
-        CreatePasswordTask(char[] password) {
+        CreateAccountTask(char[] password) {
             mPassword = password;
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), 2000000, false);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO fix for creating username and password? Or pass to PIN?
-            tABC_CC code =
-                core.ABC_CreateAccount("", String.valueOf(mPassword), pError);
-            mFailureReason = Common.errorMap(mActivity, code);
-            return code == tABC_CC.ABC_CC_Ok;
+        protected String doInBackground(Void... params) {
+            return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
+                    String.valueOf(mPassword), mWithdrawalPinEditText.getText().toString());
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mCreatePasswordTask = null;
-            if (success) {
-                launchSetupPin();
+        protected void onPostExecute(String errorMessage) {
+            onCancelled();
+            if (errorMessage == null) {
+                    SetupWriteItDownFragment fragment = new SetupWriteItDownFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(SetupWriteItDownFragment.USERNAME, getArguments().getString(USERNAME));
+                    bundle.putString(SetupWriteItDownFragment.PASSWORD, String.valueOf(mPassword));
+                    bundle.putString(SetupWriteItDownFragment.PIN, mWithdrawalPinEditText.getText().toString());
+                    fragment.setArguments(bundle);
+                    mActivity.pushFragment(fragment);
             } else {
-                mActivity.ShowFadingDialog(mFailureReason);
+                mActivity.ShowFadingDialog(errorMessage);
             }
         }
 
         @Override
         protected void onCancelled() {
-            mCreatePasswordTask = null;
+            mCreateAccountTask = null;
             mActivity.DismissFadingDialog();
         }
     }
