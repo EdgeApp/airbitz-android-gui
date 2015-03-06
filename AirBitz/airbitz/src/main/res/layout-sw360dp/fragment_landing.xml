@@ -132,6 +132,7 @@
                     android:layout_marginBottom="10dp"
                     android:textColor="@android:color/white"
                     android:textSize="14dp"
+                    android:clickable="true"
                     android:visibility="visible"/>
 
                 <LinearLayout
@@ -223,9 +224,10 @@
                     android:layout_below="@id/fragment_landing_current_user"
                     android:imeOptions="actionDone"
                     android:inputType="numberPassword"
+                    android:clickable="true"
                     android:background="@android:color/transparent"
                     android:textColor="@android:color/transparent"
-                    android:visibility="invisible" />
+                    android:visibility="visible" />
 
                 <ListView
                     android:id="@+id/fragment_landing_other_account_listview"

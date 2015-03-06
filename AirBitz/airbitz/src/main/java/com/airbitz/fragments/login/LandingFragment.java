@@ -234,11 +234,12 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String account = mAccounts.get(position);
-                if (mCoreAPI.PinLoginExists(account)) {
-                    saveCachedLoginName(account);
+                mUsername = account;
+                if (mCoreAPI.PinLoginExists(mUsername)) {
+                    saveCachedLoginName(mUsername);
                     refreshView(true, true);
                 } else {
-                    mUserNameEditText.setText(mAccounts.get(position));
+                    mUserNameEditText.setText(mUsername);
                     mPasswordEditText.requestFocus();
                 }
             }
@@ -251,9 +252,16 @@ public class LandingFragment extends BaseFragment implements
         mOtherAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                refreshView(false, false);
-                mUserNameEditText.setText(mOtherAccounts.get(position));
-                mPasswordEditText.requestFocus();
+                String account = mOtherAccounts.get(position);
+                mUsername = account;
+                if (mCoreAPI.PinLoginExists(mUsername)) {
+                    saveCachedLoginName(mUsername);
+                    refreshView(true, true);
+                } else {
+                    mUserNameEditText.setText(mUsername);
+                    refreshView(false, false);
+                    mPasswordEditText.requestFocus();
+                }
             }
         });
 
@@ -338,13 +346,13 @@ public class LandingFragment extends BaseFragment implements
 
     private List<String> otherAccounts(String username) {
         List<String> accounts = mCoreAPI.listAccounts();
-        mOtherAccounts = new ArrayList<String>();
+        List<String> others = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
             if(!accounts.get(i).equals(username)) {
-                mOtherAccounts.add(accounts.get(i));
+                others.add(accounts.get(i));
             }
         }
-        return mOtherAccounts;
+        return others;
     }
 
     private void showOthersList(String username, boolean show)
@@ -420,6 +428,7 @@ public class LandingFragment extends BaseFragment implements
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
         if(isPinLogin) {
+            showOthersList(mUsername, false);
             mPasswordLayout.setVisibility(View.GONE);
             mPinLayout.setVisibility(View.VISIBLE);
             mForgotPasswordButton.setVisibility(View.GONE);
@@ -460,6 +469,8 @@ public class LandingFragment extends BaseFragment implements
                 mLandingSubtextView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
+            showAccountsList(false);
+            mUserNameEditText.setText(mUsername);
         }
     }
 
