@@ -195,9 +195,6 @@ public class AddressRequestFragment extends BaseFragment {
                 query = "?addr=";
             }
             query += mRequestURI + "&x-source=Airbitz";
-            final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
-            query = Uri.encode(query, ALLOWED_URI_CHARS);
-
             query = _successUrl + query;
             Uri uri = Uri.parse(query);
 
