@@ -189,14 +189,18 @@ public class AddressRequestFragment extends BaseFragment {
 
         if (_successUrl != null) {
             String query;
-            if (!_successUrl.contains("?")) {
-                query = _successUrl + "?addr=" + mRequestURI;
+            if (_successUrl.contains("?")) {
+                query = "&addr=";
             } else {
-                query = _successUrl + "&addr=" + mRequestURI;
+                query = "?addr=";
             }
+            query += mRequestURI + "&x-source=Airbitz";
+            final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
+            query = Uri.encode(query, ALLOWED_URI_CHARS);
 
-            query += "&x-source=Airbitz";
+            query = _successUrl + query;
             Uri uri = Uri.parse(query);
+
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
