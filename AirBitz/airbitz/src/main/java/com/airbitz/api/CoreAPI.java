@@ -1939,15 +1939,17 @@ public class CoreAPI {
         {
             List<Wallet> walletList = getCoreWallets(false);
             Set<Integer> currencies = new HashSet();
-            for(Wallet wallet : walletList) {
-                if(wallet.getCurrencyNum() != -1) {
-                    currencies.add(wallet.getCurrencyNum());
+            if(walletList != null) {
+                for (Wallet wallet : walletList) {
+                    if (wallet.getCurrencyNum() != -1) {
+                        currencies.add(wallet.getCurrencyNum());
+                    }
                 }
-            }
-            tABC_Error error = new tABC_Error();
-            for(Integer currency : currencies) {
-                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        currency, error);
+                tABC_Error error = new tABC_Error();
+                for (Integer currency : currencies) {
+                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                            currency, error);
+                }
             }
         }
     }
