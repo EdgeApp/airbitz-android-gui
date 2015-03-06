@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -50,6 +51,19 @@ public class AccountsAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<String> mUsernames;
+
+    private OnButtonTouched mOnButtonTouchedListener;
+    public interface OnButtonTouched {
+        public void onButtonTouched(String account);
+    }
+    public void setButtonTouchedListener(OnButtonTouched listener) {
+        mOnButtonTouchedListener = listener;
+    }
+    private void buttonTouched(String account) {
+        if (mOnButtonTouchedListener != null)
+            mOnButtonTouchedListener.onButtonTouched(account);
+    }
+
 
     public AccountsAdapter(Context context, List<String> usernames) {
         mContext = context;
@@ -72,14 +86,28 @@ public class AccountsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.item_usernames, parent, false);
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_username);
+        TextView textView = (TextView) convertView.findViewById(R.id.item_usernames_text);
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         textView.setText(mUsernames.get(position));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         textView.setSingleLine(false);
+
+        // Show delete button if there is a listener
+        if(mOnButtonTouchedListener != null) {
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.item_usernames_button);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mOnButtonTouchedListener != null) {
+                        mOnButtonTouchedListener.onButtonTouched(mUsernames.get(position));
+                    }
+                }
+            });
+        }
         return convertView;
     }
 }

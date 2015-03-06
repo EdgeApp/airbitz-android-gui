@@ -107,6 +107,8 @@
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_text">This user does not have any recovery questions set!</string>
+    <string name="fragment_landing_account_delete_title">Delete Account</string>
+    <string name="fragment_landing_account_delete_message">Delete %1$s on this device only?</string>
 
     <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>

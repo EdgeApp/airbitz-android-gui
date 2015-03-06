@@ -34,10 +34,11 @@ package com.airbitz.fragments.login;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,7 +55,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -80,7 +80,8 @@ import java.util.List;
 
 public class LandingFragment extends BaseFragment implements
     NavigationActivity.OnFadingDialogFinished,
-    TwoFactorMenuFragment.OnTwoFactorMenuResult {
+    TwoFactorMenuFragment.OnTwoFactorMenuResult,
+    AccountsAdapter.OnButtonTouched {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
@@ -366,15 +367,45 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
+    @Override
+    public void onButtonTouched(final String account) {
+        String message = String.format(getString(R.string.fragment_landing_account_delete_message), account);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(getString(R.string.fragment_landing_account_delete_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mUserNameEditText.clearFocus();
+                                if (!mCoreAPI.deleteAccount(account)) {
+                                    mActivity.ShowFadingDialog("Account could not be deleted.");
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                showAccountsList(false);
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog confirmDialog = builder.create();
+        confirmDialog.show();
+    }
+
     private void showAccountsList(boolean show) {
         mAccounts.clear();
         mAccounts.addAll(mCoreAPI.listAccounts());
         mAccountsAdapter.notifyDataSetChanged();
         if(show) {
             mAccountsListView.setVisibility(View.VISIBLE);
+            mAccountsAdapter.setButtonTouchedListener(this);
         }
         else {
             mAccountsListView.setVisibility(View.GONE);
+            mAccountsAdapter.setButtonTouchedListener(null);
         }
     }
 
