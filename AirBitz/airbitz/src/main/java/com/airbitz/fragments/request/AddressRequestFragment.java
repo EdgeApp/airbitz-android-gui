@@ -54,6 +54,7 @@ import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -194,7 +195,11 @@ public class AddressRequestFragment extends BaseFragment {
             } else {
                 query = "?addr=";
             }
-            query += mRequestURI + "&x-source=Airbitz";
+            try {
+                query += URLEncoder.encode(mRequestURI, "utf-8") + "&x-source=Airbitz";
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             query = _successUrl + query;
             Uri uri = Uri.parse(query);
 
