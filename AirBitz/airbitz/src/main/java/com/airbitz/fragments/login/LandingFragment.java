@@ -233,8 +233,7 @@ public class LandingFragment extends BaseFragment implements
         mAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String account = mAccounts.get(position);
-                mUsername = account;
+                mUsername = mAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
                     saveCachedLoginName(mUsername);
                     refreshView(true, true);
@@ -252,8 +251,7 @@ public class LandingFragment extends BaseFragment implements
         mOtherAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String account = mOtherAccounts.get(position);
-                mUsername = account;
+                mUsername = mOtherAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
                     saveCachedLoginName(mUsername);
                     refreshView(true, true);
@@ -470,7 +468,6 @@ public class LandingFragment extends BaseFragment implements
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
             showAccountsList(false);
-            mUserNameEditText.setText(mUsername);
         }
     }
 
