@@ -169,8 +169,16 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_SignIn(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_AccountAvailable(String szUserName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_AccountAvailable(szUserName, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_CreateAccount(String szUserName, String szPassword, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_CreateAccount(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_AccountDelete(String szUserName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_AccountDelete(szUserName, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_GetRecoveryQuestions(String szUserName, SWIGTYPE_p_p_char pszQuestions, tABC_Error pError) {

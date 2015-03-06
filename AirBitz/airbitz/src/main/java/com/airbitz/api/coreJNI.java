@@ -320,7 +320,9 @@ public class coreJNI {
   public final static native void ABC_FreePasswordRuleArray(long jarg1, long jarg2);
   public final static native int ABC_QrEncode(String jarg1, long jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SignIn(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_AccountAvailable(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_CreateAccount(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_AccountDelete(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_GetRecoveryQuestions(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_CheckRecoveryAnswers(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_PinLoginExists(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);

@@ -2977,4 +2977,10 @@ public class CoreAPI {
         }
         return null;
     }
+
+    public boolean deleteAccount(String account) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc = core.ABC_AccountDelete(account, error);
+        return cc == tABC_CC.ABC_CC_Ok;
+    }
 }
