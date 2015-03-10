@@ -123,7 +123,7 @@
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change PIN</string>
     <string name="activity_signup_username_hint">User Name</string>
-    <string name="activity_signup_password_hint">Password</string>
+    <string name="activity_signup_password_hint">Choose a Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
     <string name="activity_signup_current_password">Current Password</string>
     <string name="activity_signup_old_password">Old Password</string>
@@ -162,7 +162,7 @@
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>
     <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your Airbitz account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
-    <string name="fragment_setup_password_title">Set a Password and Pin</string>
+    <string name="fragment_setup_password_title">Set a Password and PIN</string>
     <string name="fragment_setup_password_text">The Password is used to authenticate your account and to change sensitive settings.</string>
     <string name="fragment_setup_pin_title">Choose a PIN</string>
     <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
