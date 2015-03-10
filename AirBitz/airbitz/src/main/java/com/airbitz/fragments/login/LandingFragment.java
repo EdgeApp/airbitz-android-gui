@@ -55,11 +55,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -398,6 +400,12 @@ public class LandingFragment extends BaseFragment implements
         mAccounts.addAll(mCoreAPI.listAccounts());
         mAccountsAdapter.notifyDataSetChanged();
         if(show && !mAccounts.isEmpty()) {
+            if(mAccountsAdapter.getCount() > 4) {
+                View item = mAccountsAdapter.getView(0, null, mAccountsListView);
+                item.measure(0, 0);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (4 * item.getMeasuredHeight()));
+                mAccountsListView.setLayoutParams(params);
+            }
             mAccountsListView.setVisibility(View.VISIBLE);
             mAccountsAdapter.setButtonTouchedListener(this);
         }
@@ -454,11 +462,10 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
-        mPasswordLayout.setVisibility(View.GONE);
-        mPinLayout.setVisibility(View.GONE);
         if(isPinLogin) {
             showOthersList(mUsername, false);
             mPinLayout.setVisibility(View.VISIBLE);
+            mPasswordLayout.setVisibility(View.GONE);
             mForgotPasswordButton.setVisibility(View.GONE);
 
             String out = String.format(getString(R.string.fragment_landing_please_enter_pin), mUsername);
@@ -480,6 +487,7 @@ public class LandingFragment extends BaseFragment implements
             }
             mPinEditText.requestFocus();
         } else {
+            mPinLayout.setVisibility(View.GONE);
             mPasswordLayout.setVisibility(View.VISIBLE);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));
             mForgotPasswordButton.setVisibility(View.VISIBLE);
