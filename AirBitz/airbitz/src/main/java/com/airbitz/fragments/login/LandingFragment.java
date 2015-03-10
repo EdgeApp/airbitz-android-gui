@@ -424,15 +424,14 @@ public class LandingFragment extends BaseFragment implements
             return;
         }
 
+        mUserNameEditText.setText(mUsername);
+        refreshView(false, false);
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn()) {
                 mPinEditText.setText("");
                 if (mCoreAPI.PinLoginExists(mUsername)) {
                     refreshView(true, true);
                     mHandler.postDelayed(delayedShowPinKeyboard, 100);
-                }
-                else {
-                    refreshView(false, false);
                 }
             }
         }
