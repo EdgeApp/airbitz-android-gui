@@ -159,13 +159,13 @@
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
 
-    <string name="fragment_setup_titles">Wallet Setup</string>
-    <string name="fragment_setup_username_title">Choose a Username</string>
-    <string name="fragment_setup_username_text">Your username is used to login to your Airbitz account on this and other devices.\n\nThis is not your email or real name.</string>
-    <string name="fragment_setup_password_title">Set a Password</string>
-    <string name="fragment_setup_password_text">The Password is used to authenticate your account and change sensitive settings.</string>
+    <string name="fragment_setup_titles">Sign Up</string>
+    <string name="fragment_setup_username_label">Choose a Username</string>
+    <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your Airbitz account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
+    <string name="fragment_setup_password_title">Set a Password and Pin</string>
+    <string name="fragment_setup_password_text">The Password is used to authenticate your account and to change sensitive settings.</string>
     <string name="fragment_setup_pin_title">Choose a PIN</string>
-    <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins to your account.</string>
+    <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
     <string name="fragment_setup_writeitdown_title">Write it Down!</string>
     <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>
     <string name="fragment_setup_writeitdown_text_warning">Write down and store securely.</string>
