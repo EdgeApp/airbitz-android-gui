@@ -2973,7 +2973,14 @@ public class CoreAPI {
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
         cc = core.ABC_ListAccounts(ppChar, error);
         if(cc == tABC_CC.ABC_CC_Ok) {
-            return Arrays.asList(getStringAtPtr(core.longp_value(lp)).split("\\n"));
+            List<String> array = Arrays.asList(getStringAtPtr(core.longp_value(lp)).split("\\n"));
+            List<String> list = new ArrayList<String>();
+            for(int i=0; i< array.size(); i++) {
+                if(!array.get(i).isEmpty()) {
+                    list.add(array.get(i));
+                }
+            }
+            return list;
         }
         return null;
     }

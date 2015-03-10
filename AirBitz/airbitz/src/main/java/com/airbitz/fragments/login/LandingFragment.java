@@ -216,13 +216,11 @@ public class LandingFragment extends BaseFragment implements
         mCurrentUserText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(otherAccounts(mUsername).size() > 0) {
-                    if(mOtherAccountsListView.getVisibility() == View.VISIBLE) {
-                        showOthersList(mUsername, false);
-                    }
-                    else {
-                        showOthersList(mUsername, true);
-                    }
+                if(mOtherAccountsListView.getVisibility() == View.VISIBLE) {
+                    showOthersList(mUsername, false);
+                }
+                else {
+                    showOthersList(mUsername, true);
                 }
             }
         });
@@ -359,7 +357,7 @@ public class LandingFragment extends BaseFragment implements
         mOtherAccounts.clear();
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
-        if(show) {
+        if(show && !mOtherAccounts.isEmpty()) {
             mOtherAccountsListView.setVisibility(View.VISIBLE);
         }
         else {
@@ -399,7 +397,7 @@ public class LandingFragment extends BaseFragment implements
         mAccounts.clear();
         mAccounts.addAll(mCoreAPI.listAccounts());
         mAccountsAdapter.notifyDataSetChanged();
-        if(show) {
+        if(show && !mAccounts.isEmpty()) {
             mAccountsListView.setVisibility(View.VISIBLE);
             mAccountsAdapter.setButtonTouchedListener(this);
         }
