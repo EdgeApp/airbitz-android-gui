@@ -454,9 +454,10 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
+        mPasswordLayout.setVisibility(View.GONE);
+        mPinLayout.setVisibility(View.GONE);
         if(isPinLogin) {
             showOthersList(mUsername, false);
-            mPasswordLayout.setVisibility(View.GONE);
             mPinLayout.setVisibility(View.VISIBLE);
             mForgotPasswordButton.setVisibility(View.GONE);
 
@@ -480,7 +481,6 @@ public class LandingFragment extends BaseFragment implements
             mPinEditText.requestFocus();
         } else {
             mPasswordLayout.setVisibility(View.VISIBLE);
-            mPinLayout.setVisibility(View.GONE);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));
             mForgotPasswordButton.setVisibility(View.VISIBLE);
             mForgotTextView.setText(getString(R.string.fragment_landing_forgot_password));
