@@ -254,16 +254,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         }
     };
 
-    private void setupUI(Bundle bundle) {
-        if (bundle == null)
-            return;
-        mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
-        mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
-        mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mPasswordConfirmationEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-    }
-
     private void checkNext() {
         mGoodPassword = checkPasswordRules(mPasswordEditText.getText().toString());
         if(mGoodPassword && mPasswordEditText.getText().toString().equals(mPasswordConfirmationEditText.getText().toString())) {
@@ -426,7 +416,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     @Override
     public void onResume() {
         super.onResume();
-        setupUI(getArguments());
         mHandler.post(new Runnable() {
             @Override
             public void run() {
