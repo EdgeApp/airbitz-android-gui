@@ -161,6 +161,9 @@ public class RequestQRCodeFragment extends BaseFragment implements
         mCoreAPI.prioritizeAddress(null, mWallet.getUUID());
         stopAirbitzAdvertise();
         mHandler.removeCallbacks(mContinuousReAdvertiseRunnable);
+        if(mCreateBitmapTask != null) {
+            mCreateBitmapTask.cancel(true);
+        }
         super.onPause();
     }
 
@@ -172,7 +175,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
             return mView;
         }
 
-        ((NavigationActivity) getActivity()).hideNavBar();
+        mActivity.hideNavBar();
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
         mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
@@ -232,14 +235,14 @@ public class RequestQRCodeFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-                ((NavigationActivity) getActivity()).showNavBar();
+                mActivity.showNavBar();
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
+                mActivity.pushFragment(new HelpFragment(HelpFragment.REQUEST_QR), NavigationActivity.Tabs.REQUEST.ordinal());
             }
         });
 
@@ -317,7 +320,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.SMS);
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        mActivity.pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
     private void finishSMS(Contact contact) {
@@ -354,7 +357,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.EMAIL);
         fragment.setArguments(bundle);
-        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        mActivity.pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
     }
 
     private void finishEmail(Contact contact, Uri uri) {
@@ -542,7 +545,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -568,8 +571,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         @Override
         protected void onPostExecute(Boolean success) {
             if(isAdded()) {
-                ((NavigationActivity) getActivity()).showModalProgress(false);
-                mCreateBitmapTask = null;
+                onCancelled();
                 if(success) {
                     checkNFC();
                     checkBle();
@@ -586,7 +588,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
-            ((NavigationActivity) getActivity()).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
     }
 
