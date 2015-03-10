@@ -59,11 +59,6 @@ public class AccountsAdapter extends BaseAdapter {
     public void setButtonTouchedListener(OnButtonTouched listener) {
         mOnButtonTouchedListener = listener;
     }
-    private void buttonTouched(String account) {
-        if (mOnButtonTouchedListener != null)
-            mOnButtonTouchedListener.onButtonTouched(account);
-    }
-
 
     public AccountsAdapter(Context context, List<String> usernames) {
         mContext = context;
@@ -93,7 +88,6 @@ public class AccountsAdapter extends BaseAdapter {
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         textView.setText(mUsernames.get(position));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        textView.setSingleLine(false);
 
         // Show delete button if there is a listener
         if(mOnButtonTouchedListener != null) {

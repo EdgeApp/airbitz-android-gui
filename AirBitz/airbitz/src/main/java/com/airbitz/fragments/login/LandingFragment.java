@@ -360,6 +360,13 @@ public class LandingFragment extends BaseFragment implements
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
+            if(mOtherAccountsAdapter.getCount() > 4) {
+                View item = mOtherAccountsAdapter.getView(0, null, mOtherAccountsListView);
+                item.measure(0, 0);
+                ViewGroup.LayoutParams params = mOtherAccountsListView.getLayoutParams();
+                params.height = 4 * item.getMeasuredHeight();
+                mOtherAccountsListView.setLayoutParams(params);
+            }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
         }
         else {
@@ -403,7 +410,8 @@ public class LandingFragment extends BaseFragment implements
             if(mAccountsAdapter.getCount() > 4) {
                 View item = mAccountsAdapter.getView(0, null, mAccountsListView);
                 item.measure(0, 0);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (4 * item.getMeasuredHeight()));
+                ViewGroup.LayoutParams params = mAccountsListView.getLayoutParams();
+                params.height = 4 * item.getMeasuredHeight();
                 mAccountsListView.setLayoutParams(params);
             }
             mAccountsListView.setVisibility(View.VISIBLE);
