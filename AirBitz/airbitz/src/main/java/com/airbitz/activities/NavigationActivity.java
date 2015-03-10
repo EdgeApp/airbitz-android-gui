@@ -57,6 +57,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -70,15 +71,18 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.adapters.DrawerAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
@@ -107,6 +111,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
+import com.airbitz.objects.DrawerItem;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.UserReview;
 
@@ -232,6 +237,15 @@ public class NavigationActivity extends Activity
         }
     };
 
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerListView;
+//    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private DrawerAdapter adapter;
+    List<DrawerItem> mDrawerItems;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -289,6 +303,25 @@ public class NavigationActivity extends Activity
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+
+        mDrawerItems = new ArrayList<DrawerItem>();
+        mTitle = mDrawerTitle = getTitle();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.activityDrawer);
+        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+
+        mDrawerItems.add(new DrawerItem("Buy", R.drawable.ico_bitcoin_loc));
+        mDrawerItems.add(new DrawerItem("Sell", R.drawable.ico_bitcoin_loc));
+        adapter = new DrawerAdapter(this, R.layout.item_drawer, mDrawerItems);
+
+        mDrawerListView.setAdapter(adapter);
+
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                mDrawerLayout.closeDrawer(mDrawerListView);
+            }
+        });
     }
 
     public static CoreAPI initiateCore(Context context) {
