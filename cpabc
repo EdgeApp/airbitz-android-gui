@@ -19,11 +19,11 @@ fi
 
 mkdir -p $WALLET_MAIN/jni/
 mkdir -p $WALLET_MAIN/jniLibs/armeabi/
-mkdir -p $WALLET_MAIN/jniLibs/x86/
+# mkdir -p $WALLET_MAIN/jniLibs/x86/
 
 cp $CORE_PATH/../src/ABC.h $WALLET_MAIN/jni/
 cp $BUILD_DIR/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
-cp $BUILD_DIR/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
+# cp $BUILD_DIR/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
 
 cd $WALLET_PATH
 swig -java -package com.airbitz.api \
@@ -33,4 +33,4 @@ cd src/main/jni/
 $BUILD_DIR/ndk/android-ndk-r10d/ndk-build
 
 cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/
-cp ../libs/x86/libairbitz.so ../jniLibs/x86/
+# cp ../libs/x86/libairbitz.so ../jniLibs/x86/
