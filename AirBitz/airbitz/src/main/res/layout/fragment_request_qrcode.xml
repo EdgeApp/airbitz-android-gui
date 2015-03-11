@@ -88,7 +88,7 @@
                         android:gravity="center_horizontal"
                         android:text="@string/request_qr_waiting_for_payment"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18dp" />
 
                     <TextView
                         android:id="@+id/textview_bitcoin_amount"
@@ -98,7 +98,7 @@
                         android:layout_marginTop="1dp"
                         android:gravity="center_horizontal"
                         android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/textview_address"
@@ -112,7 +112,7 @@
                         android:gravity="center_horizontal"
                         android:singleLine="true"
                         android:textColor="@android:color/white"
-                        android:textSize="13sp" />
+                        android:textSize="13dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -38,8 +38,9 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.Iterator;
 import java.util.List;
@@ -49,15 +50,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by matt on 6/30/14.
  */
 public class PlayLocationManager implements
-        GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
     static String TAG = PlayLocationManager.class.getSimpleName();
 
     private static PlayLocationManager mInstance = null;
     private LocationRequest mLocationRequest;
-    private LocationClient locationClient;
+    private GoogleApiClient locationClient;
     private Location mCurrentLocation;
     private Context mContext;
     // Callback interface for adding and removing location change listeners
@@ -97,7 +98,7 @@ public class PlayLocationManager implements
 
     public Location getLocation() {
         if (null == mCurrentLocation && locationClient != null && locationClient.isConnected()) {
-            mCurrentLocation = locationClient.getLastLocation();
+            LocationServices.FusedLocationApi.getLastLocation(locationClient);
         }
         return mCurrentLocation;
     }
@@ -105,7 +106,11 @@ public class PlayLocationManager implements
     public void attemptConnection() {
         if (locationClient == null || !locationClient.isConnected() || !locationClient.isConnecting()) {
             Log.d(TAG, "Attempting connection");
-            locationClient = new LocationClient(mContext, this, this);
+            locationClient = new GoogleApiClient.Builder(mContext)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
             locationClient.connect();
         }
     }
@@ -119,10 +124,10 @@ public class PlayLocationManager implements
         mLocationRequest.setFastestInterval(AndroidLocationManager.MIN_TIME_MILLIS);
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         if(locationClient.isConnected()) {
-            locationClient.requestLocationUpdates(mLocationRequest, this);
-            mCurrentLocation = locationClient.getLastLocation();
+            LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
+            LocationServices.FusedLocationApi.getLastLocation(locationClient);
         } else {
-            onDisconnected();
+            onConnectionSuspended(0);
         }
 
         if (mCurrentLocation != null) {
@@ -131,8 +136,8 @@ public class PlayLocationManager implements
     }
 
     @Override
-    public void onDisconnected() {
-        Log.d(TAG, "Disconnected. Please re-connect.");
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "Suspended. Please re-connect.");
         if (mObservers.size() != 0) {
             attemptConnection();
         }

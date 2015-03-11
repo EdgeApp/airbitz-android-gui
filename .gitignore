@@ -17,6 +17,9 @@ TODO
 *.keystore
 usercontext.properties
 keys.xml
+AirBitz/airbitz/src/main/java/com/airbitz/api/*.java
+AirBitz/airbitz/src/main/java/com/airbitz/api/SWIGTYPE*.java
+AirBitz/airbitz/src/main/java/com/airbitz/api/core*.java
 
 .gradle
 /local.properties

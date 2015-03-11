@@ -73,6 +73,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,22 +82,25 @@ import com.airbitz.R;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BusinessDirectoryFragment;
-import com.airbitz.fragments.CategoryFragment;
+import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.request.AddressRequestFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.fragments.settings.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.ImportFragment;
-import com.airbitz.fragments.LandingFragment;
+import com.airbitz.fragments.request.ImportFragment;
+import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.PasswordRecoveryFragment;
-import com.airbitz.fragments.RequestFragment;
-import com.airbitz.fragments.RequestQRCodeFragment;
-import com.airbitz.fragments.SendConfirmationFragment;
-import com.airbitz.fragments.SendFragment;
-import com.airbitz.fragments.SettingFragment;
-import com.airbitz.fragments.SignUpFragment;
-import com.airbitz.fragments.SuccessFragment;
-import com.airbitz.fragments.TransparentFragment;
-import com.airbitz.fragments.WalletsFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.request.RequestFragment;
+import com.airbitz.fragments.request.RequestQRCodeFragment;
+import com.airbitz.fragments.send.SendConfirmationFragment;
+import com.airbitz.fragments.send.SendFragment;
+import com.airbitz.fragments.settings.SettingFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.send.SuccessFragment;
+import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.login.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -124,9 +128,12 @@ public class NavigationActivity extends Activity
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
-        CoreAPI.OnRemotePasswordChange {
+        CoreAPI.OnRemotePasswordChange,
+        CoreAPI.OnOTPError,
+        CoreAPI.OnOTPResetRequest,
+        AddressRequestFragment.OnAddressRequest,
+        TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
-    public static final int ALERT_PAYMENT_TIMEOUT = 20000;
 
     public final String INCOMING_COUNT = "com.airbitz.navigation.incomingcount";
 
@@ -229,8 +236,10 @@ public class NavigationActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initiateCore();
+        mCoreAPI = initiateCore(this);
 
+        mCoreAPI.setOnOTPErrorListener(this);
+        mCoreAPI.setOTPResetRequestListener(this);
         mCoreAPI.setOnIncomingBitcoinListener(this);
         mCoreAPI.setOnDataSyncListener(this);
         mCoreAPI.setOnBlockHeightChangeListener(this);
@@ -282,10 +291,11 @@ public class NavigationActivity extends Activity
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
     }
 
-    public void initiateCore() {
-        mCoreAPI = CoreAPI.getApi();
+    public static CoreAPI initiateCore(Context context) {
+        CoreAPI api = CoreAPI.getApi();
         String seed = CoreAPI.getSeedData();
-        mCoreAPI.Initialize(this, seed, seed.length());
+        api.Initialize(context, seed, seed.length());
+        return api;
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -356,9 +366,13 @@ public class NavigationActivity extends Activity
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
+
         if (AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if (position != mNavThreadId) {
+                if(findViewById(R.id.modal_indefinite_progress).getVisibility() == View.VISIBLE) {
+                    showModalProgress(false);
+                }
                 AirbitzApplication.setLastNavTab(position);
                 switchFragmentThread(position);
             }
@@ -593,16 +607,15 @@ public class NavigationActivity extends Activity
                 return;
         }
 
-
-        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
-
         if (!mCalcLocked) {
             hideCalculator();
         }
 
         showModalProgress(false);
 
-        if (mNavStacks[mNavThreadId].size() == 1) {
+        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
+
+        if (isAtNavStackEntry()) {
             if (!calcVisible || mCalcLocked) {
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
             }
@@ -614,6 +627,10 @@ public class NavigationActivity extends Activity
                 popFragment();
             }
         }
+    }
+
+    public boolean isAtNavStackEntry() {
+        return mNavStacks[mNavThreadId].size() == 1;
     }
 
     @Override
@@ -662,8 +679,8 @@ public class NavigationActivity extends Activity
         Intent intent = getIntent();
         if(intent != null) {
             Uri data = intent.getData();
-            if(data != null && data.getScheme().equals("bitcoin")) {
-                onBitcoinUri(data);
+            if(data != null) {
+                processUri(data);
             }
         }
         super.onResume();
@@ -675,11 +692,11 @@ public class NavigationActivity extends Activity
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
-        AirbitzAlertReceiver.SetRepeatingAlertAlarm(this, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
+        AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
+        mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
     /*
@@ -716,20 +733,7 @@ public class NavigationActivity extends Activity
 
         if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
-            if ("bitcoin".equals(scheme)) {
-                onBitcoinUri(intentUri);
-            }
-            else if (!AirbitzApplication.isLoggedIn()) {
-                mDataUri = intentUri;
-                return;
-            }
-            else {
-                // Handle FINALHASH NFC input
-                Log.d(TAG, intentUri.toString());
-                if (ImportFragment.getHiddenBitsToken(intentUri.toString()) != null) {
-                    gotoImportNow(intentUri);
-                }
-            }
+            processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
             Log.d(TAG, "Notification type found");
                 mNotificationTask = new NotificationTask();
@@ -765,15 +769,53 @@ public class NavigationActivity extends Activity
         }
     }
 
+    private void processUri(Uri uri) {
+        if(uri == null || uri.getScheme() == null) {
+            Log.d(TAG, "Null uri or uri.scheme");
+            return;
+        }
+
+        if (!AirbitzApplication.isLoggedIn()) {
+            mDataUri = uri;
+            return;
+        }
+
+        String scheme =uri.getScheme();
+        if ("bitcoin".equals(scheme)) {
+            handleBitcoinUri(uri);
+        }
+        else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
+            handleRequestForPaymentUri(uri);
+        }
+        else if (ImportFragment.getHiddenBitsToken(uri.toString()) != null) {
+            gotoImportNow(uri);
+        }
+    }
+
+    /*
+     * Handle bitcoin-ret or x-callback-url Uri's coming from OS
+     */
+    private void handleRequestForPaymentUri(Uri uri) {
+        AddressRequestFragment fragment = new AddressRequestFragment();
+        fragment.setOnAddressRequestListener(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(AddressRequestFragment.URI, uri.toString());
+        fragment.setArguments(bundle);
+        pushFragment(fragment);
+    }
+
+    @Override
+    public void onAddressRequest() {
+        popFragment();
+        mDataUri = null;
+    }
+
     /*
      * Handle bitcoin:<address> Uri's coming from OS
      */
-    private void onBitcoinUri(Uri dataUri) {
+    private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
-        if (!AirbitzApplication.isLoggedIn()) {
-            mDataUri = dataUri;
-            return;
-        }
+
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         if (mNavThreadId != Tabs.SEND.ordinal()) {
@@ -1043,12 +1085,7 @@ public class NavigationActivity extends Activity
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
         if (mDataUri != null) {
-            if(ImportFragment.getHiddenBitsToken(mDataUri.toString()) != null) {
-                gotoImportNow(mDataUri);
-            }
-            else {
-                onBitcoinUri(mDataUri);
-            }
+            processUri(mDataUri);
             mDataUri = null;
         } else {
             resetFragmentThreadToBaseFragment(mNavThreadId);
@@ -1083,8 +1120,8 @@ public class NavigationActivity extends Activity
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
         Bundle bundle = new Bundle();
-        bundle.putString(PasswordRecoveryFragment.USERNAME, userName);
-        Fragment frag = new SignUpFragment();
+        bundle.putString(SetupUsernameFragment.USERNAME, userName);
+        Fragment frag = new SetupUsernameFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
@@ -1169,7 +1206,6 @@ public class NavigationActivity extends Activity
         }
     }
 
-
     public enum Tabs {BD, REQUEST, SEND, WALLET, SETTING}
 
     //************************ Connectivity support
@@ -1252,8 +1288,9 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
+    private AlertDialog mExitDialog;
     public void ShowExitMessageDialog(String title, String message) {
-        if (!this.isFinishing()) {
+        if (!this.isFinishing() && mExitDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
             builder.setMessage(message)
                     .setTitle(title)
@@ -1268,10 +1305,12 @@ public class NavigationActivity extends Activity
                     .setNegativeButton(getResources().getString(R.string.string_no),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    mExitDialog = null;
                                     dialog.cancel();
                                 }
                             });
-            builder.create().show();
+            mExitDialog = builder.create();
+            mExitDialog.show();
         }
     }
 
@@ -1346,6 +1385,10 @@ public class NavigationActivity extends Activity
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
                     tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                    ProgressBar progress = ((ProgressBar)view.findViewById(R.id.fading_alert_progress));
+                    if(!cancelable) {
+                        progress.setVisibility(View.VISIBLE);
+                    }
                     if(thumbnail != null) {
                         view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
                         if(!thumbnail.isEmpty()) {
@@ -1578,17 +1621,14 @@ public class NavigationActivity extends Activity
             PackageInfo pInfo;
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                mMessageId = String.valueOf(getMessageIDPref());
+                mBuildNumber = String.valueOf(pInfo.versionCode);
+                return api.getMessages(mMessageId, mBuildNumber);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 return null;
             }
 
-            mMessageId = String.valueOf(getMessageIDPref());
-
-//            mBuildNumber = "2014111801"; // TESTING
-            mBuildNumber = String.valueOf(pInfo.versionCode);
-
-            return api.getMessages(mMessageId, mBuildNumber);
         }
 
         @Override
@@ -1632,15 +1672,12 @@ public class NavigationActivity extends Activity
                 JSONArray notifications = json.getJSONArray("results");
                 for(int i=0; i<count; i++) {
                     JSONObject notification = notifications.getJSONObject(i);
-//                    String build = notification.getString("android_build");
 
                     int id = Integer.valueOf(notification.getString("id"));
                     String title = notification.getString("title");
                     String message = notification.getString("message");
 
-//                    if(!build.equals("null")) {
-                        map.put(id, new AirbitzNotification(title, message));
-//                    }
+                    map.put(id, new AirbitzNotification(title, message));
                 }
             }
         } catch (JSONException e) {
@@ -1702,6 +1739,77 @@ public class NavigationActivity extends Activity
             editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
             editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
+        }
+    }
+
+    //********************  OTP support
+    @Override
+    public void onOTPError() {
+        mHandler.post(showOTPErrorDialog);
+    }
+
+    AlertDialog mOTPAlertDialog;
+    final Runnable showOTPErrorDialog = new Runnable() {
+        @Override
+        public void run() {
+            if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                builder.setMessage(getString(R.string.twofactor_required_message))
+                        .setTitle(getString(R.string.twofactor_required_title))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        launchTwoFactorScan();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        mOTPAlertDialog = null;
+                                    }
+                                });
+                mOTPAlertDialog = builder.create();
+                mOTPAlertDialog.show();
+            }
+        }
+    };
+
+    private void launchTwoFactorScan() {
+        Fragment fragment = new TwoFactorScanFragment();
+        ((TwoFactorScanFragment)fragment).setOnTwoFactorQRScanResult(this);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TwoFactorScanFragment.STORE_SECRET, true);
+        bundle.putBoolean(TwoFactorScanFragment.TEST_SECRET, true);
+        bundle.putString(TwoFactorScanFragment.USERNAME, AirbitzApplication.getUsername());
+        fragment.setArguments(bundle);
+        pushFragment(fragment);
+    }
+
+    @Override
+    public void onTwoFactorQRScanResult(boolean success, String result) {
+        mOTPAlertDialog = null;
+    }
+
+    AlertDialog mOTPResetRequestDialog;
+    @Override
+    public void onOTPResetRequest() {
+        if (!NavigationActivity.this.isFinishing() && mOTPResetRequestDialog == null) {
+            String message = String.format(getString(R.string.twofactor_reset_message), AirbitzApplication.getUsername());
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+            builder.setMessage(message)
+                    .setTitle(getString(R.string.twofactor_reset_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            mOTPResetRequestDialog = builder.create();
+            mOTPResetRequestDialog.show();
         }
     }
 }

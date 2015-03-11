@@ -39,7 +39,7 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/text_hint"
             android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:textSize="17sp" />
+            android:textSize="17dp" />
 
         <ListView
             android:id="@+id/fragment_contact_picker_listview_search"

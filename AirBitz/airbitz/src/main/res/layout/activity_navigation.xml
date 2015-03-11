@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_navigation_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/activityLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/tabbar_height"
+        android:orientation="vertical" />
+
+    <com.airbitz.objects.Calculator
+        android:id="@+id/navigation_calculator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <com.airbitz.objects.Numberpad
+        android:id="@+id/navigation_numberpad_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/navigationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <fragment
+            android:id="@+id/navigationFragment"
+            android:name="com.airbitz.fragments.NavigationBarFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_navigation_bar" />
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/navigation_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
+    <include
+        android:id="@+id/modal_indefinite_progress"
+        layout="@layout/layout_modal_indefinite_progress"
+        android:visibility="gone" />
+</RelativeLayout>

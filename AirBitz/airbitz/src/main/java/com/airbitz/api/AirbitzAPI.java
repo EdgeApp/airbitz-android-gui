@@ -210,7 +210,6 @@ public class AirbitzAPI {
         return getRequest(API_HIDDENBITZ + token);
     }
 
-
     public String getSearchByTerm(String term, String page_size, String page, String sort){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("term", term));

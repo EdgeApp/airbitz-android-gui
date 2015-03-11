@@ -38,6 +38,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -54,8 +58,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2/13/14.
@@ -63,6 +73,8 @@ import java.util.LinkedHashMap;
 public class Common {
 
     public static final String TAG = Common.class.getSimpleName();
+
+    private static final double BORDER_THICKNESS = 0.03;
 
     public static double metersToMiles(double meters) {
         return meters * (1.0 / 1609.344);
@@ -290,5 +302,27 @@ public class Common {
         else {
             return context.getString(R.string.server_error_other);
         }
+    }
+
+    public static Bitmap AddWhiteBorder(Bitmap inBitmap) {
+        Bitmap imageBitmap = Bitmap.createBitmap((int) (inBitmap.getWidth() * (1 + BORDER_THICKNESS * 2)),
+                (int) (inBitmap.getHeight() * (1 + BORDER_THICKNESS * 2)), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(imageBitmap);
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        canvas.drawPaint(p);
+        canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
+        return imageBitmap;
+    }
+
+    public static Map<String, String> splitQuery(Uri uri) throws UnsupportedEncodingException {
+        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+        String query = uri.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+        return query_pairs;
     }
 }

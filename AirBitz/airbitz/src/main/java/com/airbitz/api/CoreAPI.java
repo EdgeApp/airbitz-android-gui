@@ -45,10 +45,9 @@ import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.fragments.SpendingLimitsFragment;
+import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.models.Contact;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -89,6 +88,7 @@ public class CoreAPI {
     public static double SATOSHI_PER_BTC = 1E8;
     public static double SATOSHI_PER_mBTC = 1E5;
     public static double SATOSHI_PER_uBTC = 1E2;
+    public static int OTP_RESET_DELAY_SECS = 60 * 60 * 24 * 7;
 
     static {
         System.loadLibrary("abc");
@@ -218,12 +218,6 @@ public class CoreAPI {
             else
                 Log.d(TAG, "remote password event has no listener");
         }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_ExchangeRateUpdate) {
-            if(mExchangeRateSources!=null && !mExchangeRateSources.isEmpty())
-                mPeriodicTaskHandler.post(ExchangeRateUpdater);
-            else
-                Log.d(TAG, "exchange rate event has no listener");
-        }
         else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
             if (mOnWalletSweep != null) {
                 mIncomingUUID = info.getSzTxID();
@@ -351,11 +345,12 @@ public class CoreAPI {
             return false;
         }
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
         tABC_CC result = core.ABC_CreateWallet(username, password,
-                walletName, currencyNum, 0, null, pVoid, pError);
+                walletName, currencyNum, ppChar, pError);
         if (result == tABC_CC.ABC_CC_Ok) {
             startWatchers();
             return true;
@@ -472,12 +467,10 @@ public class CoreAPI {
     //************ Account Recovery
 
     // Blocking call, wrap in AsyncTask
-    public tABC_CC SignIn(String username, char[] password) {
+    public tABC_Error SignIn(String username, char[] password) {
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
-        tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), null, pVoid, pError);
-        return result;
+        tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), pError);
+        return pError;
     }
 
     //************ Settings handling
@@ -892,20 +885,11 @@ public class CoreAPI {
     public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers, String password) {
 
         tABC_Error pError = new tABC_Error();
-        tABC_RequestResults pResults = new tABC_RequestResults();
-        SWIGTYPE_p_void pVoid = core.requestResultsp_to_voidp(pResults);
 
         tABC_CC result = core.ABC_SetAccountRecoveryQuestions(AirbitzApplication.getUsername(),
                 password,
-                mQuestions, mAnswers, null, pVoid, pError);
+                mQuestions, mAnswers, pError);
         return result;
-    }
-
-    private class QuestionResults extends tABC_RequestResults {
-        public long getPtrPtr() {
-            QuestionChoices fake = new QuestionChoices(getCPtr(this)); // A fake to get *ptr
-            return fake.getNumChoices();
-        }
     }
 
     private class QuestionChoices extends tABC_QuestionChoices {
@@ -1486,7 +1470,7 @@ public class CoreAPI {
                 pretext += "-";
             }
             if(withSymbol) {
-                pretext += " "+ getUserBTCSymbol();
+                pretext += getUserBTCSymbol();
             }
 
             BigDecimal bd = new BigDecimal(amount);
@@ -1653,10 +1637,13 @@ public class CoreAPI {
     }
 
     private tABC_TxDetails mReceiveRequestDetails;
-
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, long satoshi) {
-        //first need to create a transaction details struct
         double value = SatoshiToCurrency(satoshi, wallet.getCurrencyNum());
+        return createReceiveRequestFor(wallet, name, notes, "", value, satoshi);
+    }
+
+    public String createReceiveRequestFor(Wallet wallet, String name, String notes, String category, double value, long satoshi) {
+        //first need to create a transaction details struct
 
         //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
         tABC_TxDetails details = new tABC_TxDetails();
@@ -1672,7 +1659,7 @@ public class CoreAPI {
         details.setAmountCurrency(value);
         details.setSzName(name);
         details.setSzNotes(notes);
-        details.setSzCategory("");
+        details.setSzCategory(category);
         details.setAttributes(0x0); //for our own use (not used by the core)
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -1694,6 +1681,17 @@ public class CoreAPI {
             Log.d(TAG, message);
             return null;
         }
+    }
+
+
+    public boolean finalizeRequest(String uuid, String requestId)
+    {
+        tABC_Error error = new tABC_Error();
+        // Finalize this request so it isn't used elsewhere
+        core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), uuid, requestId, error);
+        Log.d(TAG, error.getSzDescription() + " " + error.getSzSourceFunc() + " " + error.getNSourceLine());
+        return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
     public void finalizeRequest(Contact contact, String type, String requestId, Wallet wallet)
@@ -1918,7 +1916,8 @@ public class CoreAPI {
             return null;
         }
 
-        protected void onPostExecute() {
+        @Override
+        protected void onPostExecute(Void result) {
             onExchangeRatesUpdated();
         }
     }
@@ -1940,15 +1939,17 @@ public class CoreAPI {
         {
             List<Wallet> walletList = getCoreWallets(false);
             Set<Integer> currencies = new HashSet();
-            for(Wallet wallet : walletList) {
-                if(wallet.getCurrencyNum() != -1) {
-                    currencies.add(wallet.getCurrencyNum());
+            if(walletList != null) {
+                for (Wallet wallet : walletList) {
+                    if (wallet.getCurrencyNum() != -1) {
+                        currencies.add(wallet.getCurrencyNum());
+                    }
                 }
-            }
-            tABC_Error error = new tABC_Error();
-            for(Integer currency : currencies) {
-                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        currency, null, null, error);
+                tABC_Error error = new tABC_Error();
+                for (Integer currency : currencies) {
+                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                            currency, error);
+                }
             }
         }
     }
@@ -2024,6 +2025,17 @@ public class CoreAPI {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
+    boolean mOTPError = false;
+    public boolean hasOTPError() {
+        return mOTPError;
+    }
+    public void otpSetError(tABC_CC cc) {
+        mOTPError = tABC_CC.ABC_CC_InvalidOTP == cc;
+    }
+    public void otpClearError() {
+        mOTPError = false;
+    }
+
     private boolean generalInfoUpdate() {
         tABC_Error error = new tABC_Error();
         if (hasConnectivity()) {
@@ -2033,18 +2045,22 @@ public class CoreAPI {
         return false;
     }
 
-    private boolean accountSync(String username, String password) {
-        tABC_Error error = new tABC_Error();
-        if (hasConnectivity()) {
-            coreDataSyncAccount(username, password, tABC_Error.getCPtr(error));
-            return true;
-        }
-        return false;
+
+    public interface OnOTPError { public void onOTPError(); }
+    private OnOTPError mOnOTPError;
+    public void setOnOTPErrorListener(OnOTPError listener) {
+        mOnOTPError = listener;
+    }
+
+    public interface OnOTPResetRequest { public void onOTPResetRequest(); }
+    private OnOTPResetRequest mOTPResetRequest;
+    public void setOTPResetRequestListener(OnOTPResetRequest listener) {
+        mOTPResetRequest = listener;
     }
 
     private SyncDataTask mSyncDataTask;
     private boolean mDataFetched = false;
-    public class SyncDataTask extends AsyncTask<Void, String, Void> {
+    public class SyncDataTask extends AsyncTask<Void, String, Boolean> {
         SyncDataTask() { }
 
         @Override
@@ -2053,13 +2069,22 @@ public class CoreAPI {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             generalInfoUpdate();
             // Sync Account
-            accountSync(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword());
-
             tABC_Error error = new tABC_Error();
+            int ccInt;
+            if (hasConnectivity()) {
+                ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
+
+                mOTPError = tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP;
+            }
+
+            if (mOTPError && mOnOTPError != null) {
+                mOnOTPError.onOTPError();
+            }
+
             List<String> uuids = loadWalletUUIDs();
             for (String uuid : uuids) {
                 if (hasConnectivity()) {
@@ -2070,7 +2095,8 @@ public class CoreAPI {
                 }
                 publishProgress(uuid);
             }
-            return null;
+
+            return (isTwoFactorResetPending(AirbitzApplication.getUsername()));
         }
 
         @Override
@@ -2083,11 +2109,15 @@ public class CoreAPI {
         }
 
         @Override
-        protected void onPostExecute(Void v) {
+        protected void onPostExecute(Boolean resetRequested) {
             Log.d(TAG, "coreDataSyncAll returned");
             mSyncDataTask = null;
             if (!mDataFetched) {
                 mDataFetched = true;
+            }
+
+            if(resetRequested && mOTPResetRequest != null) {
+                mOTPResetRequest.onOTPResetRequest();
             }
         }
 
@@ -2263,6 +2293,32 @@ public class CoreAPI {
     /*
      * Other utility functions
      */
+
+    public byte[] getTwoFactorQRCode() {
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_unsigned_char ppData = core.longp_to_unsigned_ppChar(lp);
+
+        SWIGTYPE_p_int pWidth = core.new_intp();
+        SWIGTYPE_p_unsigned_int pWCount = core.int_to_uint(pWidth);
+
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc = core.ABC_QrEncode(mTwoFactorSecret, ppData, pWCount, error);
+        if (cc == tABC_CC.ABC_CC_Ok) {
+            int width = core.intp_value(pWidth);
+            return getBytesAtPtr(core.longp_value(lp), width*width);
+        } else {
+            return null;
+        }
+    }
+
+    public Bitmap getTwoFactorQRCodeBitmap() {
+        byte[] array = getTwoFactorQRCode();
+        if(array != null)
+            return FromBinary(array, (int) Math.sqrt(array.length), 4);
+        else
+            return null;
+    }
+
 
     private String mStrRequestURI =null;
     public byte[] getQRCode(String uuid, String id) {
@@ -2555,14 +2611,17 @@ public class CoreAPI {
     public tABC_CC ChangePassword(String password) {
         tABC_Error Error = new tABC_Error();
 
-        String oldPIN = GetUserPIN();
-
 //        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
         tABC_CC cc = core.ABC_ChangePassword(
                         AirbitzApplication.getUsername(),
                         password,
-                        password, oldPIN, null, null, Error);
+                        password, Error);
         return cc;
+    }
+
+    private tABC_Error mRecoveryAnswersError;
+    public tABC_Error getRecoveryAnswersError() {
+        return mRecoveryAnswersError;
     }
 
     public boolean recoveryAnswers(String strAnswers, String strUserName)
@@ -2574,10 +2633,12 @@ public class CoreAPI {
         tABC_CC result = core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
         if (tABC_CC.ABC_CC_Ok == result)
         {
+            mRecoveryAnswersError = null;
             return core.intp_value(lp)==1;
         }
         else
         {
+            mRecoveryAnswersError = error;
             Log.d(TAG, error.getSzDescription());
             return false;
         }
@@ -2586,7 +2647,7 @@ public class CoreAPI {
     public tABC_CC ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers, String password, String pin) {
         tABC_Error Error = new tABC_Error();
         tABC_CC cc = core.ABC_ChangePasswordWithRecoveryAnswers(
-                        username, recoveryAnswers, password, pin, null, null, Error);
+                        username, recoveryAnswers, password, Error);
         return cc;
     }
 
@@ -2818,5 +2879,141 @@ public class CoreAPI {
         tABC_Error Error = new tABC_Error();
         core.ABC_UploadLogs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 Error);
+    }
+
+    //*********************** Two Factor Authentication
+    boolean mTwoFactorOn = false;
+    String mTwoFactorSecret;
+
+    public boolean isTwoFactorOn() {
+        return mTwoFactorOn;
+    }
+
+    // Blocking
+    public tABC_CC OtpAuthGet() {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long ptimeout = core.new_longp();
+        SWIGTYPE_p_int lp = core.new_intp();
+        SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+        tABC_CC cc = core.ABC_OtpAuthGet(AirbitzApplication.getUsername(),
+            AirbitzApplication.getPassword(), pbool, ptimeout, error);
+
+        mTwoFactorOn = core.intp_value(lp)==1;
+        return cc;
+    }
+
+    //Blocking
+    public tABC_CC OtpKeySet(String username, String secret) {
+        tABC_Error error = new tABC_Error();
+        return core.ABC_OtpKeySet(username, secret, error);
+    }
+
+    public String TwoFactorSecret() {
+        return mTwoFactorSecret;
+    }
+
+    // Blocking
+    public tABC_CC GetTwoFactorSecret(String username) {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_OtpKeyGet(username, ppChar, error);
+        mTwoFactorSecret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        return cc;
+    }
+
+    public boolean isTwoFactorResetPending(String username) {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_OtpResetGet(ppChar, error);
+        if (cc == tABC_CC.ABC_CC_Ok) {
+            String userNames = getStringAtPtr(core.longp_value(lp));
+            if(userNames != null && username != null) {
+                return userNames.contains(username);
+            }
+        }
+        return false;
+    }
+
+    // Blocking
+    public tABC_CC enableTwoFactor(boolean on) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc;
+        if(on) {
+            cc = core.ABC_OtpAuthSet(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), OTP_RESET_DELAY_SECS, error);
+            if (cc == tABC_CC.ABC_CC_Ok) {
+                mTwoFactorOn = true;
+            }
+        }
+        else {
+            cc = core.ABC_OtpAuthRemove(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), error);
+            if (cc == tABC_CC.ABC_CC_Ok) {
+                mTwoFactorOn = false;
+                mTwoFactorSecret = null;
+                core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
+            }
+        }
+        return cc;
+    }
+
+    // Blocking
+    public tABC_CC cancelTwoFactorRequest() {
+        tABC_Error error = new tABC_Error();
+        return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), error);
+    }
+
+    public List<String> listAccounts() {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc;
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        cc = core.ABC_ListAccounts(ppChar, error);
+        if(cc == tABC_CC.ABC_CC_Ok) {
+            List<String> array = Arrays.asList(getStringAtPtr(core.longp_value(lp)).split("\\n"));
+            List<String> list = new ArrayList<String>();
+            for(int i=0; i< array.size(); i++) {
+                if(!array.get(i).isEmpty()) {
+                    list.add(array.get(i));
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+
+    public boolean deleteAccount(String account) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc = core.ABC_AccountDelete(account, error);
+        return cc == tABC_CC.ABC_CC_Ok;
+    }
+
+    public String accountAvailable(String account) {
+        tABC_Error error = new tABC_Error();
+
+        tABC_CC cc = core.ABC_AccountAvailable(account, error);
+        if(cc == tABC_CC.ABC_CC_Ok) {
+            return null;
+        }
+        else {
+            return Common.errorMap(mContext, error.getCode());
+        }
+    }
+
+    public String createAccountAndPin(String account, String password, String pin) {
+        tABC_Error error = new tABC_Error();
+
+        core.ABC_CreateAccount(account, password, error);
+        if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+            core.ABC_SetPIN(account, password, pin, error);
+            if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+                return null;
+            }
+        }
+        return Common.errorMap(mContext, error.getCode());
     }
 }

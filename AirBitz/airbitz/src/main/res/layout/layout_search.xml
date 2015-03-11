@@ -67,7 +67,7 @@
                     android:textColor="#000000"
                     android:textColorHint="#44000000"
                     android:textCursorDrawable="@drawable/bold_cursor"
-                    android:textSize="16sp" />
+                    android:textSize="16dp" />
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/edittext_location"
@@ -90,7 +90,7 @@
                     android:textColor="#000000"
                     android:textColorHint="#44000000"
                     android:textCursorDrawable="@drawable/bold_cursor"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     android:visibility="gone" />
 
             </RelativeLayout>

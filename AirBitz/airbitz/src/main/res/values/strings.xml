@@ -12,6 +12,9 @@
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
+    <string name="string_back">BACK</string>
+    <string name="string_next">NEXT</string>
+    <string name="string_finish">FINISH</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -98,12 +101,14 @@
     <string name="fragment_landing_forgot_password">Forgot Password</string>
     <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
-    <string name="fragment_landing_switch_user">Switch User</string>
+    <string name="fragment_landing_switch_user">Login With Password</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_text">This user does not have any recovery questions set!</string>
+    <string name="fragment_landing_account_delete_title">Delete Account</string>
+    <string name="fragment_landing_account_delete_message">Delete %1$s on this device only?</string>
 
     <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>
@@ -118,7 +123,7 @@
     <string name="activity_signup_title_change_password_via_questions">Change Password</string>
     <string name="activity_signup_title_change_pin">Change PIN</string>
     <string name="activity_signup_username_hint">User Name</string>
-    <string name="activity_signup_password_hint">Password</string>
+    <string name="activity_signup_password_hint">Choose a Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
     <string name="activity_signup_current_password">Current Password</string>
     <string name="activity_signup_old_password">Old Password</string>
@@ -153,6 +158,22 @@
     <string name="activity_signup_weeks">weeks</string>
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
+
+    <string name="fragment_setup_titles">Sign Up</string>
+    <string name="fragment_setup_username_label">Choose a Username</string>
+    <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your Airbitz account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
+    <string name="fragment_setup_password_title">Set a Password and PIN</string>
+    <string name="fragment_setup_password_text">The Password is used to authenticate your account and to change sensitive settings.</string>
+    <string name="fragment_setup_pin_title">Choose a PIN</string>
+    <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
+    <string name="fragment_setup_writeitdown_title">Write it Down!</string>
+    <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>
+    <string name="fragment_setup_writeitdown_text_warning">Write down and store securely.</string>
+    <string name="fragment_setup_writeitdown_username_title">Username</string>
+    <string name="fragment_setup_writeitdown_password_title">Password</string>
+    <string name="fragment_setup_writeitdown_pin_title">PIN</string>
+    <string name="fragment_setup_writeitdown_show">Show</string>
+    <string name="fragment_setup_writeitdown_hide">Hide</string>
 
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_setup_title">Password Recovery Setup</string>
@@ -192,6 +213,7 @@
     <string name="settings_options_title">OPTIONS</string>
     <string name="settings_button_change_categories">Change Categories</string>
     <string name="settings_button_change_spending_limits">Spending Limits</string>
+    <string name="settings_button_two_factor_authentication">2 Factor (Enhanced Security)</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change PIN</string>
     <string name="settings_button_recovery">Recovery Questions</string>
@@ -214,7 +236,7 @@
     <string name="settings_title_euro">Euro</string>
     <string name="settings_title_peso">Mexican Peso</string>
     <string name="settings_title_yuan">Yuan</string>
-    <string name="settings_button_logout">Log Out</string>
+    <string name="settings_button_logout">Logout</string>
     <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>
@@ -309,6 +331,10 @@
     <string name="fragment_wallet_confirmations">" confirmations"</string>
     <string name="fragment_wallet_request_button">RECEIVE</string>
     <string name="fragment_wallet_send_button">SEND</string>
+
+    <!-- Strings for Request fragment -->
+    <string name="address_request_title">Address Request</string>
+    <string name="address_request_message">%1$s has requested a bitcoin address to send money to. Please choose a wallet to receive funds.</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
@@ -438,7 +464,7 @@
     <string name="error_invalid_wallet_name_title">Invalid Wallet Name</string>
     <string name="error_invalid_wallet_name_description">You must provide a wallet name</string>
 
-    <!-- Notifications -->
+    <!-- OS Notifications -->
     <string name="alert_notification_message">Touch to read critical messages</string>
     <string name="alert_new_business_message">Touch to see new businesses</string>
 
@@ -453,6 +479,38 @@
     <string name="user_review_support_email_address">support@airbitz.co</string>
     <string name="user_review_support_subject">Airbitz Feedback</string>
     <string name="user_review_support_title">Choose Email</string>
+
+    <!-- Two Factor screens -->
+    <string name="fragment_twofactor_show_title">Two Factor</string>
+    <string name="fragment_twofactor_menu_title">Two Factor</string>
+    <string name="fragment_twofactor_scan_title">Scan Two Factor</string>
+    <string name="fragment_twofactor_show_enabled">Enabled</string>
+    <string name="fragment_twofactor_show_disabled">Disabled</string>
+    <string name="fragment_twofactor_show_disable_twofa">DISABLE 2FA</string>
+    <string name="fragment_twofactor_show_keep_twofa">KEEP 2FA</string>
+    <string name="fragment_twofactor_show_now_enabled">Two Factor Enabled</string>
+    <string name="fragment_twofactor_show_now_disabled">Two Factor Disabled</string>
+    <string name="fragment_twofactor_menu_button_scan_token">Scan Token</string>
+    <string name="fragment_twofactor_menu_button_request_reset">Request Reset</string>
+    <string name="fragment_twofactor_menu_scan_message">This account has 2 Factor Authentication (2FA) enabled. Scan the 2FA token from the device that enabled 2FA to give access to this device.</string>
+    <string name="fragment_twofactor_menu_request_message">Request that the Two Factor authentication be turned off. The request will automatically reset in 7 days if no action is taken by the account user on authenticated devices.</string>
+    <string name="fragment_twofactor_menu_reset_requested">Reset requested</string>
+    <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
+    <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
+
+    <string name="twofactor_required_title">Two Factor Authentication On</string>
+    <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
+    <string name="twofactor_remind_later">Remind Me Later</string>
+    <string name="twofactor_enable">Enable</string>
+    <string name="twofactor_unable_import_token">We are sorry we are unable to import the token at this time.</string>
+
+    <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>
+    <string name="fragment_two_factor_scan_unable_import_message">The two factor authentication token import failed. Please ensure you have the correct token!</string>
+    <string name="fragment_two_factor_scan_try_again">Try Again</string>
+    <string name="fragment_two_factor_scan_no_thanks">No Thanks</string>
+
+    <string name="twofactor_reset_message">A two factor reset has been requested. Please login as %1$s and approve or cancel the request.</string>
+    <string name="twofactor_reset_title">Two Factor Reset Request</string>
 
     <!-- Other -->
     <string name="remote_password_change_title">Password Changed Remotely</string>

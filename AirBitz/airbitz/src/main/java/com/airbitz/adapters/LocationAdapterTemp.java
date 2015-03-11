@@ -42,7 +42,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 
 import java.util.List;
 

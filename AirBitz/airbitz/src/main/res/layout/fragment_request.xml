@@ -79,7 +79,7 @@
                         android:popupBackground="@drawable/rounded_edge_white_bg"
                         android:spinnerMode="dropdown"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18dp" />
 
                 </LinearLayout>
 
@@ -109,6 +109,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="4dp"
                         android:text="@string/request_next"
+                        android:textSize="16dp"
                         android:textColor="#ffffff" />
 
                     </RelativeLayout>
@@ -137,7 +138,7 @@
                         android:textColor="@android:color/white"
                         android:textColorHint="@color/text_hint"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:textStyle="normal" />
 
                     <TextView
@@ -150,7 +151,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="6dp"
                         android:textColor="@android:color/white"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:textStyle="normal" />
                 </RelativeLayout>
 
@@ -181,7 +182,7 @@
                         android:textColor="@android:color/white"
                         android:textColorHint="@color/text_hint"
                         android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:textStyle="normal" />
 
                     <TextView
@@ -194,7 +195,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="6dp"
                         android:textColor="@android:color/white"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:textStyle="normal" />
                 </RelativeLayout>
 
@@ -213,10 +214,10 @@
                     android:id="@+id/button_import_wallet"
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_gray"
+                    android:background="@drawable/bg_button_gray"
                     android:text="@string/request_button_import"
                     android:textColor="#999999"
-                    android:textSize="14sp"
+                    android:textSize="14dp"
                     android:layout_marginLeft="5dp"
                     android:visibility="visible" />
 
@@ -229,7 +230,7 @@
                     android:gravity="right"
                     android:text="1 uBTC = $ 000.000 USD"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     android:singleLine="true" />
 
             </LinearLayout>

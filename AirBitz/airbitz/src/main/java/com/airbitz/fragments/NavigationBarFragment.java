@@ -166,7 +166,7 @@ public class NavigationBarFragment extends BaseFragment {
 
     private void checkTabs(MotionEvent ev) {
         selectedTab = getTabNum(ev);
-        if (selectedTab == -1 || (selectedTab == mLastTab))
+        if (selectedTab == -1)
             return;
 
         // ignore Send and Request until wallets are loaded
@@ -175,6 +175,14 @@ public class NavigationBarFragment extends BaseFragment {
                 AirbitzApplication.isLoggedIn() && mCoreAPI.walletsStillLoading()) {
             selectedTab = NavigationActivity.Tabs.WALLET.ordinal();
             mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
+            return;
+        }
+        else if(selectedTab == mLastTab) {
+            displayPopup(ev);
+            if(!mActivity.isAtNavStackEntry()) {
+                mActivity.onBackPressed();
+            }
+            return;
         }
         else {
             displayPopup(ev);

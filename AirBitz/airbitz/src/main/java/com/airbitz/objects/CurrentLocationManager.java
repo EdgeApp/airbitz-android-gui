@@ -117,7 +117,7 @@ public class CurrentLocationManager {
 
     public void onDisconnected() {
         if (mPlay != null) {
-            mPlay.onDisconnected();
+            mPlay.onConnectionSuspended(0);
         } else {
             mAndroid.onDisconnected();
         }

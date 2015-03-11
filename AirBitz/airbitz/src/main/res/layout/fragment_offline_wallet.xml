@@ -35,7 +35,7 @@
             android:layout_margin="10dp"
             android:text="@string/offline_wallet_title"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
 
         <ImageButton
@@ -72,7 +72,7 @@
                 android:layout_margin="5dp"
                 android:text="@string/offline_wallet_public_address_title"
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="18dp" />
 
             <RelativeLayout
                 android:id="@+id/layout_privatekey"
@@ -115,7 +115,7 @@
                     android:shadowRadius="1"
                     android:text="SdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpfSdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf"
                     android:textColor="#ffffff"
-                    android:textSize="14sp" />
+                    android:textSize="14dp" />
 
             </RelativeLayout>
 
@@ -129,7 +129,7 @@
                 android:layout_margin="5dp"
                 android:text="@string/offline_wallet_private_key_title"
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="18dp" />
 
             <com.airbitz.objects.LimitedEditText
                 android:id="@+id/edittext_privatekey"
@@ -153,7 +153,7 @@
                 android:shadowRadius="1"
                 android:text="Sdfnsdjsdnfdsnofmsdfwemfyweorwekrewojfewmfoewmfwdpsajdfewormewjwpqodenwnfiwefjweofjewofnewnfoeiwjfewnfoiewfnewiofnewofewinfewpf"
                 android:textColor="#ffffff"
-                android:textSize="14sp" />
+                android:textSize="14dp" />
 
             <LinearLayout
                 android:id="@+id/layout_functional_button"
@@ -216,7 +216,7 @@
                 android:padding="15dp"
                 android:text="@string/string_done"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
 
         </RelativeLayout>

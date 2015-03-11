@@ -41,7 +41,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Business;
 
 import java.util.List;

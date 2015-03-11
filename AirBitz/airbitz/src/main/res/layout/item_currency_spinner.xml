@@ -9,6 +9,6 @@
     android:paddingLeft="15.75dp"
     android:paddingRight="15.75dp"
     android:textColor="#FFFFFF"
-    android:textSize="18sp">
+    android:textSize="18dp">
 
 </TextView>

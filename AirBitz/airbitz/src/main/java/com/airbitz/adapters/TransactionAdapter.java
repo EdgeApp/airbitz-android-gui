@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BusinessDirectoryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.squareup.picasso.Picasso;

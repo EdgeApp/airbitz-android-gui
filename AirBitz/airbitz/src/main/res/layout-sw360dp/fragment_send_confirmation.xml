@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/layout_title_header"
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title_header"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="0dp">
+
+        <RelativeLayout
+            android:id="@+id/layout_send_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="12.6dp">
+
+            <LinearLayout
+                android:id="@+id/layout_from"
+                android:layout_width="match_parent"
+                android:layout_height="35.2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/textview_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/send_confirmation_from_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"
+                    android:textStyle="normal" />
+
+                <com.airbitz.objects.HighlightOnPressSpinner
+                    android:id="@+id/from_wallet_spinner"
+                    style="@style/BlackDropShadow"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_btn_blue_stretch"
+                    android:dropDownHorizontalOffset="-50dp"
+                    android:dropDownVerticalOffset="0dp"
+                    android:dropDownWidth="300dp"
+                    android:gravity="center"
+                    android:popupBackground="@drawable/rounded_edge_white_bg"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@android:color/white"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_to"
+                android:layout_width="match_parent"
+                android:layout_height="35.9dp"
+                android:layout_below="@+id/layout_from"
+                android:layout_marginBottom="11dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/textview_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:gravity="right|center_vertical"
+                    android:text="@string/send_confirmation_to_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textview_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="left|center_vertical"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textSize="18dp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_btc_fields"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/button_max"
+                android:layout_marginBottom="6.0dp"
+                android:layout_marginLeft="12.6dp"
+                android:layout_marginRight="12.6dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/emboss_down"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/send_confirmation_btc_sign"
+                    android:layout_width="42dp"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/send_confirmation_btc_denomination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34.65dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/button_bitcoin_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="34.65dp"
+                    android:layout_toLeftOf="@id/send_confirmation_btc_denomination"
+                    android:layout_toRightOf="@id/send_confirmation_btc_sign"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical|left"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="6.3dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="20dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_fiat_fields"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@id/layout_btc_fields"
+                android:layout_marginBottom="6.3dp"
+                android:layout_marginLeft="12.6dp"
+                android:layout_marginRight="12.6dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/emboss_down"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/send_confirmation_fiat_sign"
+                    android:layout_width="42dp"
+                    android:layout_height="34.65dp"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/send_confirmation_fiat_denomination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34.65dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/button_dollar_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="34.65dp"
+                    android:layout_toLeftOf="@id/send_confirmation_fiat_denomination"
+                    android:layout_toRightOf="@id/send_confirmation_fiat_sign"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical|left"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="6.3dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:textSize="20dp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textview_conversion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_to"
+                android:layout_marginLeft="25.4dp"
+                android:layout_marginTop="0dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
+
+            <com.airbitz.objects.HighlightOnPressButton
+                android:id="@+id/button_max"
+                android:layout_width="55dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/layout_to"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_btn_green"
+                android:text="@string/send_confirmation_max_button_title"
+                android:textColor="@android:color/white"
+                android:textSize="12dp" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_send_confirmation_layout_authorization"
+            android:layout_width="match_parent"
+            android:layout_height="31.5dp"
+            android:layout_below="@id/layout_send_confirmation"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="31.5dp"
+            android:layout_marginTop="12.6dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/textview_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|end"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/edittext_pin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="25.2dp"
+                android:layout_weight="1"
+                android:background="@drawable/emboss_down"
+                android:gravity="center"
+                android:hint=""
+                android:inputType="numberPassword"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:textCursorDrawable="@drawable/bold_cursor_white" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_slide"
+            android:layout_width="match_parent"
+            android:layout_height="44.1dp"
+            android:layout_below="@+id/fragment_send_confirmation_layout_authorization"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="40dp"
+            android:background="@drawable/emboss_down"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/textview_slide"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/send_confirmation_slide_to_confirm"
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
+
+            <ImageButton
+                android:id="@+id/button_confirm_swipe"
+                android:layout_width="63dp"
+                android:layout_height="44.1dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/left_arrow" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/fragment_sendconfirmation_dummy_focus"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</RelativeLayout>

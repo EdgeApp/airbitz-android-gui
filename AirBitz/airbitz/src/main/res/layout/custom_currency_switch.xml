@@ -25,7 +25,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="#ccf2efef"
-            android:textSize="18sp" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/top_type"
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:padding="9.45dp"
             android:textColor="#ccf2efef"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -52,7 +52,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="#ccf2efef"
-            android:textSize="18sp" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/bottom_type"
@@ -62,7 +62,7 @@
             android:layout_alignParentRight="true"
             android:padding="9.45dp"
             android:textColor="#ccf2efef"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -78,7 +78,7 @@
             android:background="@drawable/bg_btn_green"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="18dp"
             android:textStyle="bold" />
 
         <ImageView
@@ -96,7 +96,7 @@
             android:layout_alignParentRight="true"
             android:padding="9.45dp"
             android:textColor="@android:color/white"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 
 </RelativeLayout>

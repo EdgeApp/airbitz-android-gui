@@ -82,9 +82,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <data android:scheme="bitcoin" />
-
+                <data android:scheme="bitcoin-ret" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>

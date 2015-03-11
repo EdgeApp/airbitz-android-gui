@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/fragment_address_request_header"
+        layout="@layout/layout_title_header"
+        android:layout_width="match_parent"
+        android:layout_height="44.1dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_address_request_header"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_instruction"
+                style="@style/GrayDropShadow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:text="@string/address_request_message"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                    android:id="@+id/layout_wallet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textview_wallet"
+                        style="@style/GrayDropShadow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="12.6dp"
+                        android:text="@string/request_wallet_title"
+                        android:textColor="@android:color/white"
+                        android:textSize="18dp"
+                        android:textStyle="normal" />
+
+                    <com.airbitz.objects.HighlightOnPressSpinner
+                        android:id="@+id/new_wallet_spinner"
+                        style="@style/GrayDropShadow"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_btn_blue_stretch"
+                        android:dropDownHorizontalOffset="-50dp"
+                        android:dropDownVerticalOffset="0dp"
+                        android:dropDownWidth="300dp"
+                        android:gravity="center"
+                        android:popupBackground="@drawable/rounded_edge_white_bg"
+                        android:spinnerMode="dropdown"
+                        android:textColor="@android:color/white"
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_decide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_address_request_button_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_btn_green"
+                    android:text="@string/string_ok"
+                    android:textColor="@android:color/white"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:visibility="visible" />
+
+                <com.airbitz.objects.HighlightOnPressButton
+                    android:id="@+id/fragment_address_request_button_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_orange"
+                    android:text="@string/string_cancel"
+                    android:textColor="@android:color/white"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+</RelativeLayout>

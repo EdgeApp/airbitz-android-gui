@@ -4,17 +4,7 @@
         <shape>
             <padding android:top="1dp" android:right="1dp"
                      android:bottom="1dp" android:left="1dp" />
-            <solid android:color="#30000000" />
-            <corners android:radius="6dp" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <gradient
-                android:angle="90"
-                android:startColor="#ff7a08"
-                android:endColor="#ffa937"
-                android:type="linear" />
+            <solid android:color="#ffff7a08" />
             <corners android:radius="6dp" />
         </shape>
     </item>

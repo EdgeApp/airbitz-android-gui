@@ -63,7 +63,7 @@
                     android:paddingRight="6.3dp"
                     android:text="@string/send_from_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <com.airbitz.objects.HighlightOnPressSpinner
@@ -80,7 +80,7 @@
                     android:popupBackground="@drawable/rounded_edge_white_bg"
                     android:spinnerMode="dropdown"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp" />
+                    android:textSize="16dp" />
 
             </LinearLayout>
 
@@ -103,7 +103,7 @@
                     android:paddingRight="6.3dp"
                     android:text="@string/send_to_title"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <com.airbitz.objects.LimitedEditText
@@ -123,7 +123,7 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/text_hint"
                     android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="14sp" />
+                    android:textSize="14dp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -142,7 +142,7 @@
         android:text="@string/send_scan_text"
         android:textColor="@android:color/white"
         android:layout_below="@id/layout_data"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"
@@ -164,7 +164,7 @@
                 android:layout_centerInParent="true"
                 android:layout_margin="60dp"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:text="Scanning for Bluetooth devices..."
                 android:textColor="@android:color/white"
                 style="@style/BlackDropShadow"/>
@@ -184,7 +184,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/fragment_send_scanning_button"
-                android:background="@drawable/bg_btn_orange" />
+                android:background="@drawable/bg_button_orange" />
 
         </RelativeLayout>
 
@@ -200,9 +200,8 @@
     <RelativeLayout
         android:id="@+id/listview_container"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/layout_data"
-        android:layout_marginTop="-38.6dp"
         android:background="@android:color/transparent"
         android:visibility="gone">
 
@@ -210,7 +209,6 @@
             android:id="@+id/listing_listview"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_marginTop="35dp"
             android:background="@drawable/category_popup"
             android:padding="12.6dp" />
 

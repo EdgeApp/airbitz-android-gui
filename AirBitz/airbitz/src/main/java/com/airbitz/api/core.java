@@ -97,14 +97,6 @@ public class core implements coreConstants {
     return coreJNI.doublep_value(SWIGTYPE_p_double.getCPtr(obj));
   }
 
-  public static void setGbIsTestNet(boolean value) {
-    coreJNI.gbIsTestNet_set(value);
-  }
-
-  public static boolean getGbIsTestNet() {
-    return coreJNI.gbIsTestNet_get();
-  }
-
   public static tABC_CC ABC_Initialize(String szRootDir, String szCaCertPath, String pSeedData, long seedLength, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Initialize(szRootDir, szCaCertPath, pSeedData, seedLength, tABC_Error.getCPtr(pError), pError));
   }
@@ -153,14 +145,6 @@ public class core implements coreConstants {
     coreJNI.ABC_FreeURIInfo(tABC_BitcoinURIInfo.getCPtr(pInfo), pInfo);
   }
 
-  public static double ABC_SatoshiToBitcoin(SWIGTYPE_p_int64_t satoshi) {
-    return coreJNI.ABC_SatoshiToBitcoin(SWIGTYPE_p_int64_t.getCPtr(satoshi));
-  }
-
-  public static SWIGTYPE_p_int64_t ABC_BitcoinToSatoshi(double bitcoin) {
-    return new SWIGTYPE_p_int64_t(coreJNI.ABC_BitcoinToSatoshi(bitcoin), true);
-  }
-
   public static tABC_CC ABC_ParseAmount(String szAmount, SWIGTYPE_p_uint64_t pAmountOut, long decimalPlaces) {
     return tABC_CC.swigToEnum(coreJNI.ABC_ParseAmount(szAmount, SWIGTYPE_p_uint64_t.getCPtr(pAmountOut), decimalPlaces));
   }
@@ -181,12 +165,20 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_QrEncode(szText, SWIGTYPE_p_p_unsigned_char.getCPtr(paData), SWIGTYPE_p_unsigned_int.getCPtr(pWidth), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_SignIn(String szUserName, String szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SignIn(szUserName, szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_SignIn(String szUserName, String szPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SignIn(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_CreateAccount(String szUserName, String szPassword, String szPin, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_CreateAccount(szUserName, szPassword, szPin, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_AccountAvailable(String szUserName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_AccountAvailable(szUserName, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_CreateAccount(String szUserName, String szPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_CreateAccount(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_AccountDelete(String szUserName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_AccountDelete(szUserName, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_GetRecoveryQuestions(String szUserName, SWIGTYPE_p_p_char pszQuestions, tABC_Error pError) {
@@ -217,16 +209,16 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_ListAccounts(SWIGTYPE_p_p_char.getCPtr(pszUserNames), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_ChangePassword(String szUserName, String szPassword, String szNewPassword, String szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_ChangePassword(szUserName, szPassword, szNewPassword, szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_ChangePassword(String szUserName, String szPassword, String szNewPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_ChangePassword(szUserName, szPassword, szNewPassword, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_ChangePasswordWithRecoveryAnswers(String szUserName, String szRecoveryAnswers, String szNewPassword, String szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_ChangePasswordWithRecoveryAnswers(szUserName, szRecoveryAnswers, szNewPassword, szDeprecated, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_ChangePasswordWithRecoveryAnswers(String szUserName, String szRecoveryAnswers, String szNewPassword, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_ChangePasswordWithRecoveryAnswers(szUserName, szRecoveryAnswers, szNewPassword, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_SetAccountRecoveryQuestions(String szUserName, String szPassword, String szRecoveryQuestions, String szRecoveryAnswers, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SetAccountRecoveryQuestions(szUserName, szPassword, szRecoveryQuestions, szRecoveryAnswers, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_SetAccountRecoveryQuestions(String szUserName, String szPassword, String szRecoveryQuestions, String szRecoveryAnswers, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SetAccountRecoveryQuestions(szUserName, szPassword, szRecoveryQuestions, szRecoveryAnswers, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_PasswordOk(String szUserName, String szPassword, SWIGTYPE_p_bool pOk, tABC_Error pError) {
@@ -309,8 +301,24 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_UploadLogs(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_RequestExchangeRateUpdate(String szUserName, String szPassword, int currencyNum, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_RequestExchangeRateUpdate(szUserName, szPassword, currencyNum, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_PluginDataGet(String szUserName, String szPassword, String szPlugin, String szKey, SWIGTYPE_p_p_char pszData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataGet(szUserName, szPassword, szPlugin, szKey, SWIGTYPE_p_p_char.getCPtr(pszData), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataSet(String szUserName, String szPassword, String szPlugin, String szKey, String szData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataSet(szUserName, szPassword, szPlugin, szKey, szData, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataRemove(String szUserName, String szPassword, String szPlugin, String szKey, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataRemove(szUserName, szPassword, szPlugin, szKey, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataClear(String szUserName, String szPassword, String szPlugin, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataClear(szUserName, szPassword, szPlugin, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_RequestExchangeRateUpdate(String szUserName, String szPassword, int currencyNum, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_RequestExchangeRateUpdate(szUserName, szPassword, currencyNum, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_SatoshiToCurrency(String szUserName, String szPassword, SWIGTYPE_p_int64_t satoshi, SWIGTYPE_p_double pCurrency, int currencyNum, tABC_Error pError) {
@@ -321,8 +329,8 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CurrencyToSatoshi(szUserName, szPassword, currency, currencyNum, SWIGTYPE_p_int64_t.getCPtr(pSatoshi), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_CreateWallet(String szUserName, String szPassword, String szWalletName, int currencyNum, long attributes, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void fRequestCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_CreateWallet(szUserName, szPassword, szWalletName, currencyNum, attributes, SWIGTYPE_p_f_p_q_const__struct_sABC_RequestResults__void.getCPtr(fRequestCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_CreateWallet(String szUserName, String szPassword, String szWalletName, int currencyNum, SWIGTYPE_p_p_char pszUuid, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_CreateWallet(szUserName, szPassword, szWalletName, currencyNum, SWIGTYPE_p_p_char.getCPtr(pszUuid), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_GetWalletUUIDs(String szUserName, String szPassword, SWIGTYPE_p_p_p_char paWalletUUID, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
@@ -585,11 +593,6 @@ public class core implements coreConstants {
   public static SWIGTYPE_p_p_sABC_BitcoinURIInfo longPtr_to_ppBitcoinURIInfo(SWIGTYPE_p_long x) {
     long cPtr = coreJNI.longPtr_to_ppBitcoinURIInfo(SWIGTYPE_p_long.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_BitcoinURIInfo(cPtr, false);
-  }
-
-  public static SWIGTYPE_p_void requestResultsp_to_voidp(tABC_RequestResults x) {
-    long cPtr = coreJNI.requestResultsp_to_voidp(tABC_RequestResults.getCPtr(x), x);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
 }
