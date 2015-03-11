@@ -68,9 +68,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 /*
- * Airbitz alerts are notifications of critical bug fixes or new businesses nearby
+ * Airbitz alerts are notifications of critical bug fixes, new businesses nearby, or OTP resets
  * They are intended to be checked daily or weekly with a quick request to a server
- * If server not responsive in 3 seconds, the alarm is skipped
+ * If server not responsive in TTL seconds, the alarm is skipped
  */
 public class AirbitzAlertReceiver extends BroadcastReceiver {
     final private String TAG = getClass().getSimpleName();
@@ -89,6 +89,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public static final int ALERT_OTPRESET_CODE = 3;
     public static final String ALERT_OTPRESET_TYPE = "com.airbitz.airbitalert.OTPResetType";
     final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60; // FIXME test, replace with  1000 * 60 * 60 * 24; // 1 Day intervals
+
+    private static int ALERT_TIME_TO_LIVE_MILLIS = 10 * 1000;
 
     NotificationTask mNotificationTask;
     NewBusinessTask mNewBusinessTask;
@@ -109,7 +111,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         //Acquire the lock
         mWakeLock.acquire();
 
-        mHandler.postDelayed(murderPendingTasks, 3000); // 3 second TTL
+        mHandler.postDelayed(murderPendingTasks, ALERT_TIME_TO_LIVE_MILLIS);
 
         if(type.equals(ALERT_NOTIFICATION_TYPE)) {
             mNotificationTask = new NotificationTask(context);
