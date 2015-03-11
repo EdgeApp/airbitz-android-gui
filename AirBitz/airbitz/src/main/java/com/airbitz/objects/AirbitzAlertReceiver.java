@@ -90,7 +90,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public static final String ALERT_OTPRESET_TYPE = "com.airbitz.airbitalert.OTPResetType";
     final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60; // FIXME test, replace with  1000 * 60 * 60 * 24; // 1 Day intervals
 
-    private static int ALERT_TIME_TO_LIVE_MILLIS = 10 * 1000;
+    private static int ALERT_TIME_TO_LIVE_MILLIS = 30 * 1000;
 
     NotificationTask mNotificationTask;
     NewBusinessTask mNewBusinessTask;
@@ -377,6 +377,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(final List<String> pendings) {
             for(String name : pendings) {
+                Log.d(TAG, "OTP reset requested for: " + name);
                 String message = String.format(mContext.getString(R.string.twofactor_reset_message), name);
                 issueOSNotification(mContext, message, ALERT_OTPRESET_CODE);
             }
