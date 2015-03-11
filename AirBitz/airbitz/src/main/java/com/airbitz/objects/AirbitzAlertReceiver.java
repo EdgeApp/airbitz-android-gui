@@ -88,7 +88,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
     public static final int ALERT_OTPRESET_CODE = 3;
     public static final String ALERT_OTPRESET_TYPE = "com.airbitz.airbitalert.OTPResetType";
-    final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60; // FIXME test, replace with  1000 * 60 * 60 * 24; // 1 Day intervals
+    final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60 * 60 * 24;
 
     private static int ALERT_TIME_TO_LIVE_MILLIS = 30 * 1000;
 
