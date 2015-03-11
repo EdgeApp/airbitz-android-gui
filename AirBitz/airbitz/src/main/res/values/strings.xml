@@ -26,7 +26,7 @@
     <string name="nav_bar_request_text">RECEIVE</string>
     <string name="nav_bar_send_text">SEND</string>
     <string name="nav_bar_wallets_text">WALLETS</string>
-    <string name="nav_bar_settings_text">SETTINGS</string>
+    <string name="nav_bar_more_text">MORE</string>
 
     <!-- Calculator strings -->
     <string name="calculator_back">&lt;&#160;DEL</string>

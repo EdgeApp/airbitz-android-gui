@@ -71,18 +71,15 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.adapters.DrawerAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
@@ -111,7 +108,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
-import com.airbitz.objects.DrawerItem;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.UserReview;
 
@@ -237,13 +233,11 @@ public class NavigationActivity extends Activity
         }
     };
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
-//    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private DrawerAdapter adapter;
-    List<DrawerItem> mDrawerItems;
+    private DrawerLayout mDrawer;
+    private RelativeLayout mDrawerView;
+    private TextView mDrawerBuySell;
+    private TextView mDrawerSettings;
+    private TextView mDrawerLogout;
 
 
     @Override
@@ -304,22 +298,47 @@ public class NavigationActivity extends Activity
 
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
 
-        mDrawerItems = new ArrayList<DrawerItem>();
-        mTitle = mDrawerTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.activityDrawer);
-        mDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
+//        mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+//            @Override
+//            public void onDrawerSlide(View drawerView, float slideOffset) {}
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {}
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                // if on settings, go back to Wallets
+//            }
+//
+//            @Override
+//            public void onDrawerStateChanged(int newState) {}
+//        });
 
-        mDrawerItems.add(new DrawerItem("Buy", R.drawable.ico_bitcoin_loc));
-        mDrawerItems.add(new DrawerItem("Sell", R.drawable.ico_bitcoin_loc));
-        adapter = new DrawerAdapter(this, R.layout.item_drawer, mDrawerItems);
+        mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
 
-        mDrawerListView.setAdapter(adapter);
-
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
+        mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
+                Log.d(TAG, "Buy/Sell pressed");
+            }
+        });
 
-                mDrawerLayout.closeDrawer(mDrawerListView);
+        mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
+        mDrawerLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Logout(false);
+            }
+        });
+
+        mDrawerSettings = (TextView) findViewById(R.id.item_drawer_settings);
+        mDrawerSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
+                switchFragmentThread(Tabs.MORE.ordinal());
             }
         });
     }
@@ -407,7 +426,12 @@ public class NavigationActivity extends Activity
                     showModalProgress(false);
                 }
                 AirbitzApplication.setLastNavTab(position);
-                switchFragmentThread(position);
+                if(position != Tabs.MORE.ordinal()) {
+                    switchFragmentThread(position);
+                }
+                else {
+                    mDrawer.openDrawer(mDrawerView);
+                }
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
@@ -1239,7 +1263,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, SETTING}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, MORE}
 
     //************************ Connectivity support
 

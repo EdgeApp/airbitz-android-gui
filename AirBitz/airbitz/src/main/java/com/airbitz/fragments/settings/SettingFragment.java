@@ -224,7 +224,7 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new DebugFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -233,7 +233,7 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CategoryFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -242,7 +242,7 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new SpendingLimitsFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -251,14 +251,14 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new TwoFactorShowFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -269,7 +269,7 @@ public class SettingFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD);
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -280,7 +280,7 @@ public class SettingFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PIN);
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -291,7 +291,7 @@ public class SettingFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.CHANGE_QUESTIONS);
                 fragment.setArguments(bundle);
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SETTING.ordinal());
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 

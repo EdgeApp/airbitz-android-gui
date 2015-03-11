@@ -73,8 +73,8 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
             drawerHolder = new DrawerItemHolder();
 
             view = inflater.inflate(layoutResID, parent, false);
-            drawerHolder.name = (TextView) view.findViewById(R.id.drawer_name);
-            drawerHolder.image = (ImageView) view.findViewById(R.id.drawer_image);
+            drawerHolder.name = (TextView) view.findViewById(R.id.item_drawer_text);
+            drawerHolder.image = (ImageView) view.findViewById(R.id.item_drawer_image);
 
             view.setTag(drawerHolder);
 

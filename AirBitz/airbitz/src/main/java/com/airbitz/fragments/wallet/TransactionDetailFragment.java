@@ -732,7 +732,7 @@ public class TransactionDetailFragment extends BaseFragment
                                 done();
                                 Bundle bundle = new Bundle();
                                 bundle.putBoolean(SettingFragment.START_RECOVERY_PASSWORD, true);
-                                mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
+                                mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal(), bundle);
                             }
                         }
                 ).setNegativeButton(getResources().getString(R.string.string_no),
