@@ -353,6 +353,10 @@ public class coreJNI {
   public final static native int ABC_RemoveCategory(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_DataSyncAccount(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_UploadLogs(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_PluginDataGet(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
+  public final static native int ABC_PluginDataSet(String jarg1, String jarg2, String jarg3, String jarg4, String jarg5, long jarg6, tABC_Error jarg6_);
+  public final static native int ABC_PluginDataRemove(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
+  public final static native int ABC_PluginDataClear(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SatoshiToCurrency(String jarg1, String jarg2, long jarg3, long jarg4, int jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_CurrencyToSatoshi(String jarg1, String jarg2, double jarg3, int jarg4, long jarg5, long jarg6, tABC_Error jarg6_);

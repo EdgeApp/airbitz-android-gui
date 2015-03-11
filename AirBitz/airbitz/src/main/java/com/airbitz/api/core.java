@@ -301,6 +301,22 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_UploadLogs(szUserName, szPassword, tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_PluginDataGet(String szUserName, String szPassword, String szPlugin, String szKey, SWIGTYPE_p_p_char pszData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataGet(szUserName, szPassword, szPlugin, szKey, SWIGTYPE_p_p_char.getCPtr(pszData), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataSet(String szUserName, String szPassword, String szPlugin, String szKey, String szData, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataSet(szUserName, szPassword, szPlugin, szKey, szData, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataRemove(String szUserName, String szPassword, String szPlugin, String szKey, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataRemove(szUserName, szPassword, szPlugin, szKey, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_PluginDataClear(String szUserName, String szPassword, String szPlugin, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataClear(szUserName, szPassword, szPlugin, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_RequestExchangeRateUpdate(String szUserName, String szPassword, int currencyNum, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_RequestExchangeRateUpdate(szUserName, szPassword, currencyNum, tABC_Error.getCPtr(pError), pError));
   }
