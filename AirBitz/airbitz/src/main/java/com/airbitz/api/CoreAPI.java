@@ -2060,7 +2060,7 @@ public class CoreAPI {
 
     private SyncDataTask mSyncDataTask;
     private boolean mDataFetched = false;
-    public class SyncDataTask extends AsyncTask<Void, String, Void> {
+    public class SyncDataTask extends AsyncTask<Void, String, Boolean> {
         SyncDataTask() { }
 
         @Override
@@ -2069,7 +2069,7 @@ public class CoreAPI {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             generalInfoUpdate();
             // Sync Account
             tABC_Error error = new tABC_Error();
@@ -2095,7 +2095,8 @@ public class CoreAPI {
                 }
                 publishProgress(uuid);
             }
-            return null;
+
+            return (isTwoFactorResetPending(AirbitzApplication.getUsername()));
         }
 
         @Override
@@ -2108,14 +2109,14 @@ public class CoreAPI {
         }
 
         @Override
-        protected void onPostExecute(Void v) {
+        protected void onPostExecute(Boolean resetRequested) {
             Log.d(TAG, "coreDataSyncAll returned");
             mSyncDataTask = null;
             if (!mDataFetched) {
                 mDataFetched = true;
             }
 
-            if(isTwoFactorResetPending(AirbitzApplication.getUsername()) && mOTPResetRequest != null) {
+            if(resetRequested && mOTPResetRequest != null) {
                 mOTPResetRequest.onOTPResetRequest();
             }
         }
