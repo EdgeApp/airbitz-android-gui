@@ -127,6 +127,7 @@ import java.util.Stack;
 public class NavigationActivity extends Activity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
+        CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange,
@@ -235,6 +236,8 @@ public class NavigationActivity extends Activity
 
     private DrawerLayout mDrawer;
     private RelativeLayout mDrawerView;
+    private TextView mDrawerAccount;
+    private TextView mDrawerExchange;
     private TextView mDrawerBuySell;
     private TextView mDrawerSettings;
     private TextView mDrawerLogout;
@@ -316,6 +319,8 @@ public class NavigationActivity extends Activity
 //        });
 
         mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
+        mDrawerAccount = (TextView) findViewById(R.id.item_drawer_account);
+        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
 
         mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
@@ -1263,6 +1268,11 @@ public class NavigationActivity extends Activity
         }
     }
 
+    @Override
+    public void OnExchangeRatesChange() {
+        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
+    }
+
     public enum Tabs {BD, REQUEST, SEND, WALLET, MORE}
 
     //************************ Connectivity support
@@ -1280,6 +1290,8 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
         setViewPager();
+        mDrawerAccount.setText(username);
+        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
     Runnable mProgressDialogKiller = new Runnable() {

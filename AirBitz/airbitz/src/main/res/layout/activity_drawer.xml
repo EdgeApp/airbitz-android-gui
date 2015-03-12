@@ -20,8 +20,6 @@
         android:background="@color/drawer_dark_blue_gray"
         android:drawableLeft="@drawable/icon_bitcoin_symbol"
         android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:drawablePadding="20dp"
         android:gravity="center_vertical"
         android:textSize="20dp"
