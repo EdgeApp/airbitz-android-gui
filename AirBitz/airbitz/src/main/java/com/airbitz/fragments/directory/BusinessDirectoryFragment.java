@@ -584,6 +584,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mBackButton.setVisibility(View.GONE);
         mNoResultView.setVisibility(View.GONE);
 
+
+        checkLocationManager();
+
         return view;
     }
 
@@ -675,6 +678,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
+        mCurrentLocation = mLocationManager.getLocation();
         checkLocationManager();
         mLocationManager.addLocationChangeListener(this);
         if (!locationEnabled) {
