@@ -325,6 +325,19 @@ public class NavigationBarFragment extends BaseFragment {
         }
     }
 
+    public void disableSendRecieveButtons(boolean disable) {
+        if(disable) {
+            mRequestText.setTextColor(getResources().getColor(R.color.navbar_text_disabled));
+            mRequestImage.setBackgroundResource(R.drawable.ico_nav_request_disabled);
+            mSendText.setTextColor(getResources().getColor(R.color.navbar_text_disabled));
+            mSendImage.setBackgroundResource(R.drawable.ico_nav_send_disabled);
+        }
+        else {
+            unselectTab(1);
+            unselectTab(2);
+        }
+    }
+
     /**
      * Determines if given points are inside view
      *

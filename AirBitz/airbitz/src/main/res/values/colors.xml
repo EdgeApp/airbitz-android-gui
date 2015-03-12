@@ -49,6 +49,6 @@
     <color name="navbar_background">#ccffffff</color>
     <color name="navbar_border">#ffbbbbbb</color>
     <color name="navbar_text">#ff444444</color>
-
+    <color name="navbar_text_disabled">#ffaaaaaa</color>
 
 </resources>
