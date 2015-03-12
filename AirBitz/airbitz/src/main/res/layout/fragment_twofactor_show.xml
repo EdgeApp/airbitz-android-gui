@@ -91,12 +91,25 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/fragment_twofactor_button_import">
 
-            <ImageView
-                android:id="@+id/fragment_twofactor_show_qr_image"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_marginTop="20dp"
-                android:layout_centerHorizontal="true" />
+            <RelativeLayout
+                android:id="@+id/fragment_twofactor_show_qr_layout"
+                android:layout_width="166dp"
+                android:layout_height="166dp"
+                android:layout_margin="10dp"
+                android:layout_centerHorizontal="true" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_edge_white_bg"/>
+
+                <ImageView
+                    android:id="@+id/fragment_twofactor_show_qr_image"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/fragment_twofactor_request_view"

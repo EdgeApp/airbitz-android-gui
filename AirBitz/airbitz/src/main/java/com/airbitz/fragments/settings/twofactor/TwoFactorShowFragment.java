@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -68,6 +69,7 @@ public class TwoFactorShowFragment extends BaseFragment
     HighlightOnPressButton mImportButton, mApproveButton, mCancelButton;
     ImageButton mBackButton;
     ImageView mQRView;
+    RelativeLayout mQRViewLayout;
     EditText mPassword;
     Switch mEnabledSwitch;
     private TextView mTitleTextView;
@@ -137,6 +139,7 @@ public class TwoFactorShowFragment extends BaseFragment
             }
         });
 
+        mQRViewLayout = (RelativeLayout) mView.findViewById(R.id.fragment_twofactor_show_qr_layout);
         mQRView = (ImageView) mView.findViewById(R.id.fragment_twofactor_show_qr_image);
 
         mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
@@ -178,7 +181,7 @@ public class TwoFactorShowFragment extends BaseFragment
         mImportButton.setVisibility(mCoreAPI.hasOTPError() ? View.VISIBLE : View.GONE);
         mEnabledSwitch.setChecked(enabled);
         mEnabledSwitch.setText(getString(enabled ? R.string.fragment_twofactor_show_enabled : R.string.fragment_twofactor_show_disabled));
-        mQRView.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        mQRViewLayout.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
     private void launchTwoFactorMenu() {
@@ -242,10 +245,10 @@ public class TwoFactorShowFragment extends BaseFragment
         if (mCoreAPI.isTwoFactorOn()) {
             tABC_CC cc = mCoreAPI.GetTwoFactorSecret(AirbitzApplication.getUsername());
             if (!(cc == tABC_CC.ABC_CC_Ok && mCoreAPI.TwoFactorSecret() != null)) {
-                mQRView.setVisibility(View.GONE);
+                mQRViewLayout.setVisibility(View.GONE);
             }
             else {
-                mQRView.setVisibility(View.VISIBLE);
+                mQRViewLayout.setVisibility(View.VISIBLE);
             }
         }
         showQrCode(mCoreAPI.isTwoFactorOn());
@@ -273,7 +276,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 animateQrCode(true);
             }
             else {
-                mQRView.setVisibility(View.INVISIBLE);
+                mQRViewLayout.setVisibility(View.INVISIBLE);
             }
         } else {
             animateQrCode(false);
@@ -283,19 +286,19 @@ public class TwoFactorShowFragment extends BaseFragment
     void animateQrCode(boolean show)
     {
         if (show) {
-            if (mQRView.getVisibility() != View.VISIBLE) {
-                mQRView.setAlpha(0f);
-                mQRView.setVisibility(View.VISIBLE);
-                mQRView.animate()
+            if (mQRViewLayout.getVisibility() != View.VISIBLE) {
+                mQRViewLayout.setAlpha(0f);
+                mQRViewLayout.setVisibility(View.VISIBLE);
+                mQRViewLayout.animate()
                         .alpha(1f)
                         .setDuration(1000)
                         .setListener(null);
             }
         } else {
-            if (mQRView.getVisibility() == View.VISIBLE) {
-                mQRView.setAlpha(1f);
-                mQRView.setVisibility(View.VISIBLE);
-                mQRView.animate()
+            if (mQRViewLayout.getVisibility() == View.VISIBLE) {
+                mQRViewLayout.setAlpha(1f);
+                mQRViewLayout.setVisibility(View.VISIBLE);
+                mQRViewLayout.animate()
                         .alpha(1f)
                         .setDuration(1000)
                         .setListener(null);
