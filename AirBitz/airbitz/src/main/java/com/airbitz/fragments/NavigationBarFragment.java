@@ -31,8 +31,10 @@
 
 package com.airbitz.fragments;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -86,7 +88,9 @@ public class NavigationBarFragment extends BaseFragment {
     private View mView, mButtons;
     private int selectedTab = 0;
     private int mLastTab = 0;
-    private boolean mSendRequestTabsActive = false;
+    private long mLastTouchTime = 0;
+    private float mLastDistance = 0;
+    private float mDistanceThreshold = 0;
 
     private NavigationActivity mActivity;
     private CoreAPI mCoreAPI;
@@ -96,6 +100,10 @@ public class NavigationBarFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mActivity = (NavigationActivity) getActivity();
         mCoreAPI = CoreAPI.getApi();
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        mDistanceThreshold = size.x / 20;
     }
 
     @Override
@@ -145,19 +153,30 @@ public class NavigationBarFragment extends BaseFragment {
 
         mButtons.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getPointerCount() > 1)
-                    return false;
+                long time = event.getEventTime();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_MOVE:
+                        mLastDistance = event.getX() + event.getY();
                         checkTabs(event);
-                        return true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float dist = event.getX() + event.getY();
+                        if (event.getPointerCount() > 1 || // (time - mLastTouchTime < 150) ||
+                                (Math.abs(dist - mLastDistance) < mDistanceThreshold)) {
+                            return false;
+                        }
+                        else {
+                            checkTabs(event);
+                        }
+                        break;
                     case MotionEvent.ACTION_UP:
                         clearPopups();
-                        return true;
+                        break;
                     default:
                         return false;
                 }
+                mLastTouchTime = time;
+                return true;
             }
         });
 
@@ -178,7 +197,6 @@ public class NavigationBarFragment extends BaseFragment {
             return;
         }
         else if(selectedTab == mLastTab) {
-            displayPopup(ev);
             if(!mActivity.isAtNavStackEntry()) {
                 mActivity.onBackPressed();
             }
