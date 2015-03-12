@@ -602,7 +602,6 @@ public class SendFragment extends BaseFragment implements
         mToEdittext.post(new Runnable() {
             @Override
             public void run() {
-                mToEdittext.setText(bitcoinAddress);
                 checkAndSendAddress(bitcoinAddress);
             }
         });
