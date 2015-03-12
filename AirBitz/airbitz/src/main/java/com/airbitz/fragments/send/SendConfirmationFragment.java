@@ -566,7 +566,12 @@ public class SendConfirmationFragment extends BaseFragment {
             mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
         }
         if (fees < 0) {
-            mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            if(mAmountToSendSatoshi > DUST_AMOUNT) {
+                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            }
+            else {
+                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_amount));
+            }
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);

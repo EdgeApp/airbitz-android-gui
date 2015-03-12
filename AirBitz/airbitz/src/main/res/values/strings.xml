@@ -303,6 +303,7 @@
     <string name="fragment_send_confirmation_send_error_title">Error during send</string>
     <string name="fragment_send_confirmation_insufficient_funds_message">You do not have enough funds to send this transaction.</string>
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
+    <string name="fragment_send_confirmation_insufficient_amount">Amount too small</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_confirmation_no_pin">No PIN</string>
     <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
