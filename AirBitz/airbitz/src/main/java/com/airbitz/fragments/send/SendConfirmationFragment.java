@@ -236,17 +236,6 @@ public class SendConfirmationFragment extends BaseFragment {
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
         mWalletSpinner.setAdapter(dataAdapter);
 
-        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSourceWallet = mWallets.get(i);
-                updateTextFieldContents(true);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -754,9 +743,20 @@ public class SendConfirmationFragment extends BaseFragment {
         }
         for(int i=0; i<mWallets.size(); i++) {
             if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
-                mWalletSpinner.setSelection(i);
+                mWalletSpinner.setSelection(i, false);
             }
         }
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSourceWallet = mWallets.get(i);
+                updateTextFieldContents(true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
 
         if (mToWallet != null) {
             mToEdittext.setText(mToWallet.getName());
