@@ -96,12 +96,8 @@
                 android:layout_width="166dp"
                 android:layout_height="166dp"
                 android:layout_margin="10dp"
-                android:layout_centerHorizontal="true" >
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_edge_white_bg"/>
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/rounded_edge_white_bg" >
 
                 <ImageView
                     android:id="@+id/fragment_twofactor_show_qr_image"
