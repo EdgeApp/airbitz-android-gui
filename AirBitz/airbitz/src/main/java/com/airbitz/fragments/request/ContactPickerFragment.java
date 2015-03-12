@@ -260,6 +260,7 @@ public class ContactPickerFragment extends BaseFragment {
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, email, null, thumbnail));
                 }
+                people.close();
             }
         } else {
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -280,6 +281,7 @@ public class ContactPickerFragment extends BaseFragment {
                     String thumbnail = people.getString(indexThumbnail);
                     contacts.add(new Contact(name, null, number, thumbnail));
                 }
+                people.close();
             }
         }
         return contacts;
