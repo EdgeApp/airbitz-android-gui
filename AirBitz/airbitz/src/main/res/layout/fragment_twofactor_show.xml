@@ -112,41 +112,56 @@
                 </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/fragment_twofactor_request_view"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_centerInParent="true"
-                android:orientation="horizontal"
-                android:background="@color/blue_text"
-                android:visibility="visible" >
+                android:background="@color/blue_text">
 
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_twofactor_show_button_approve"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_button_red"
-                    android:text="@string/fragment_twofactor_show_disable_twofa"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="normal" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_twofactor_show_reset_requested"
+                    android:layout_margin="4dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"/>
 
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_twofactor_show_button_cancel"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_btn_blue"
-                    android:text="@string/fragment_twofactor_show_keep_twofa"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="normal" />
+                <LinearLayout
+                    android:id="@+id/fragment_twofactor_request_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible" >
 
-            </LinearLayout>
+                    <com.airbitz.objects.HighlightOnPressButton
+                        android:id="@+id/fragment_twofactor_show_button_approve"
+                        style="@style/BlackDropShadow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_red"
+                        android:text="@string/fragment_twofactor_show_disable_twofa"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="normal" />
+
+                    <com.airbitz.objects.HighlightOnPressButton
+                        android:id="@+id/fragment_twofactor_show_button_cancel"
+                        style="@style/BlackDropShadow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_button_orange"
+                        android:text="@string/fragment_twofactor_show_keep_twofa"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
+
+                </LinearLayout>
 
 
         </RelativeLayout>
