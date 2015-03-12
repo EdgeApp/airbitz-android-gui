@@ -99,7 +99,7 @@ import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.fragments.login.TransparentFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;

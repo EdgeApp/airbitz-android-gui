@@ -63,7 +63,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorMenuFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
