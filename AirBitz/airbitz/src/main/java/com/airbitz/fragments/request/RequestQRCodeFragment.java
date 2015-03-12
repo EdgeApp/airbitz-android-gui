@@ -258,6 +258,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
             mWallet = mCoreAPI.getWalletFromUUID(bundle.getString(Wallet.WALLET_UUID));
             mAmountSatoshi = bundle.getLong(RequestFragment.SATOSHI_VALUE, 0L);
             mAddress = bundle.getString(RequestFragment.BITCOIN_ADDRESS);
+            mID = bundle.getString(RequestFragment.BITCOIN_ID);
         }
 
         mCreateBitmapTask = new CreateBitmapTask();
@@ -490,6 +491,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
             mCreateBitmapTask.cancel(true);
         }
         // Create a new request and qr code
+        mID = null;
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -498,21 +500,23 @@ public class RequestQRCodeFragment extends BaseFragment implements
     }
 
     private void alertPartialPayment() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(getResources().getString(R.string.received_partial_bitcoin_message))
-                .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
-                .setCancelable(true)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                mPartialDialog.cancel();
-                                mPartialDialog = null;
+        if(mPartialDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            builder.setMessage(getResources().getString(R.string.received_partial_bitcoin_message))
+                    .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
+                    .setCancelable(true)
+                    .setNeutralButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    mPartialDialog.cancel();
+                                    mPartialDialog = null;
+                                }
                             }
-                        }
-                );
-        mPartialDialog = builder.create();
-        mPartialDialog.show();
-        mHandler.postDelayed(dialogKiller, PARTIAL_PAYMENT_TIMEOUT);
+                    );
+            mPartialDialog = builder.create();
+            mPartialDialog.show();
+            mHandler.postDelayed(dialogKiller, PARTIAL_PAYMENT_TIMEOUT);
+        }
     }
 
     /*
@@ -551,8 +555,11 @@ public class RequestQRCodeFragment extends BaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
-            mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-            if (mID != null && mQRBitmap == null) {
+            if(mID == null) {
+                mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
+                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+            }
+            if (mID != null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
@@ -597,12 +604,12 @@ public class RequestQRCodeFragment extends BaseFragment implements
     private BluetoothLeAdvertiser mBleAdvertiser;
     private BluetoothGattServer mGattServer;
     private AdvertiseCallback mAdvCallback;
-    private String mData;
 
     private void checkBle() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
             mBLEImageView.setVisibility(View.VISIBLE);
+            stopAirbitzAdvertise();
             startAirbitzAdvertise(mRequestURI);
             mHandler.postDelayed(mContinuousReAdvertiseRunnable, READVERTISE_REPEAT_PERIOD);
         }
