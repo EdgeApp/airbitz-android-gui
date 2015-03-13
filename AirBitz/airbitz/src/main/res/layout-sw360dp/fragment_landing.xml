@@ -115,9 +115,10 @@
 
             <RelativeLayout
                 android:id="@+id/fragment_landing_pin_entry_layout"
-                android:layout_width="match_parent"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_centerHorizontal="true"
                 android:visibility="gone">
 
                 <TextView
@@ -131,13 +132,14 @@
                     android:gravity="center"
                     android:layout_marginBottom="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="14dp"
+                    android:textSize="20dp"
                     android:clickable="true"
                     android:visibility="visible"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_below="@id/fragment_landing_current_user"
                     android:layout_marginBottom="20dp">
 
