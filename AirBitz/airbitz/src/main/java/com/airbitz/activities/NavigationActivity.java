@@ -177,16 +177,10 @@ public class NavigationActivity extends Activity
         }
     };
 
-    final Runnable delayedEnableReceiveSendButtons = new Runnable() {
+    final Runnable checkWalletsLoading = new Runnable() {
         @Override
         public void run() {
-            if(mCoreAPI.walletsStillLoading()) {
-                mNavBarFragment.disableSendRecieveButtons(true);
-                mHandler.postDelayed(delayedEnableReceiveSendButtons, 200);
-            }
-            else {
-                mNavBarFragment.disableSendRecieveButtons(false);
-            }
+            checkWalletsLoading();
         }
     };
 
@@ -697,7 +691,7 @@ public class NavigationActivity extends Activity
             }
         }
 
-        mHandler.post(delayedEnableReceiveSendButtons);
+        mHandler.post(checkWalletsLoading);
 
         super.onResume();
     }
@@ -712,7 +706,7 @@ public class NavigationActivity extends Activity
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
-        mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
+        mHandler.removeCallbacks(checkWalletsLoading);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
@@ -1405,20 +1399,20 @@ public class NavigationActivity extends Activity
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
                     tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-                    ProgressBar progress = ((ProgressBar)view.findViewById(R.id.fading_alert_progress));
-                    if(!cancelable) {
+                    ProgressBar progress = ((ProgressBar) view.findViewById(R.id.fading_alert_progress));
+                    if (!cancelable) {
                         progress.setVisibility(View.VISIBLE);
                     }
-                    if(thumbnail != null) {
+                    if (thumbnail != null) {
                         view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
-                        if(!thumbnail.isEmpty()) {
+                        if (!thumbnail.isEmpty()) {
                             ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
                         }
                     }
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(mFadingDialog != null) {
+                            if (mFadingDialog != null) {
                                 mFadingDialog.dismiss();
                             }
                         }
@@ -1844,6 +1838,47 @@ public class NavigationActivity extends Activity
                             });
             mOTPResetRequestDialog = builder.create();
             mOTPResetRequestDialog.show();
+        }
+    }
+
+    // Checking for wallets still loading, prevent Send and Receive
+    private void checkWalletsLoading() {
+        if(mWalletsLoadingTask == null) {
+            mWalletsLoadingTask = new WalletsLoadingTask();
+            mWalletsLoadingTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private WalletsLoadingTask mWalletsLoadingTask;
+    public class WalletsLoadingTask extends AsyncTask<Void, Void, Boolean> {
+
+        WalletsLoadingTask() { }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreAPI.walletsStillLoading();
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean stillLoading) {
+            mWalletsLoadingTask = null;
+
+            if(stillLoading) {
+                mNavBarFragment.disableSendRecieveButtons(true);
+                mHandler.postDelayed(checkWalletsLoading, 500);
+            }
+            else {
+                mNavBarFragment.disableSendRecieveButtons(false);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mWalletsLoadingTask = null;
         }
     }
 }

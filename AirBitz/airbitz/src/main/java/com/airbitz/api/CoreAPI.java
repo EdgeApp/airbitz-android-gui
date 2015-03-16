@@ -369,11 +369,13 @@ public class CoreAPI {
 
     public void reloadWallet(Wallet wallet) {
         Wallet info = getWalletFromUUID(wallet.getUUID());
-        wallet.setName(info.getName());
-        wallet.setUUID(info.getUUID());
-        wallet.setAttributes(info.getAttributes());
-        wallet.setBalanceSatoshi(info.getBalanceSatoshi());
-        wallet.setCurrencyNum(info.getCurrencyNum());
+        if(info != null) {
+            wallet.setName(info.getName());
+            wallet.setUUID(info.getUUID());
+            wallet.setAttributes(info.getAttributes());
+            wallet.setBalanceSatoshi(info.getBalanceSatoshi());
+            wallet.setCurrencyNum(info.getCurrencyNum());
+        }
     }
 
     public Wallet getWalletFromName(String walletName) {
@@ -2207,12 +2209,20 @@ public class CoreAPI {
         if(!AirbitzApplication.isLoggedIn()) {
             return true;
         }
+
         List<Wallet> wallets = getCoreActiveWallets();
         if(wallets == null) {
             return true;
         }
         for(Wallet wallet : wallets) {
-            if(wallet.isLoading()) {
+            if(wallet != null) {
+                reloadWallet(wallet);
+                if(wallet.isLoading()) {
+                    return true;
+                }
+            }
+            else {
+                Log.d(TAG, "wallet null");
                 return true;
             }
         }
