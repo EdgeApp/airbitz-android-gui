@@ -375,7 +375,8 @@
 
     <!-- Strings for Transaction Details fragment -->
     <string name="transaction_details_title">Transaction Details</string>
-    <string name="transaction_details_advanced_title">ADVANCED</string>
+    <string name="transaction_details_advanced_title">Advanced</string>
+    <string name="transaction_details_done_title">Done</string>
     <string name="transaction_details_category_title">Category</string>
     <string name="transaction_details_notes_title">Notes</string>
     <string name="transaction_details_to">"To: "</string>

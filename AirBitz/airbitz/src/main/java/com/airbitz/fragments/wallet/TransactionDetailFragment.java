@@ -57,6 +57,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -102,6 +103,7 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -136,7 +138,7 @@ public class TransactionDetailFragment extends BaseFragment
     private TextView mToFromName;
     private EditText mPayeeEditText;
     private ImageView mPayeeImageView;
-    private FrameLayout mPayeeImageViewFrame;
+    private RelativeLayout mPayeeImageViewFrame;
     private TextView mBitcoinValueTextview;
     private TextView mBTCFeeTextView;
     private TextView mBitcoinSignTextview;
@@ -238,7 +240,7 @@ public class TransactionDetailFragment extends BaseFragment
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
         mPayeeImageView = (ImageView) mView.findViewById(R.id.transaction_detail_contact_pic);
-        mPayeeImageViewFrame = (FrameLayout) mView.findViewById(R.id.transaction_detail_contact_pic_frame);
+        mPayeeImageViewFrame = (RelativeLayout) mView.findViewById(R.id.transaction_detail_contact_pic_frame);
         mToFromName = (TextView) mView.findViewById(R.id.transaction_detail_textview_to_wallet);
         mBitcoinValueTextview = (TextView) mView.findViewById(R.id.transaction_detail_textview_bitcoin_value);
         mBTCFeeTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_btc_fee_value);
@@ -278,9 +280,9 @@ public class TransactionDetailFragment extends BaseFragment
         mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.BOLD);
+        mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.NORMAL);
 
-        mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.NORMAL);
 
         mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -405,6 +407,12 @@ public class TransactionDetailFragment extends BaseFragment
                 return false;
             }
         });
+        if(mActivity.isLargeDpi()) {
+            ViewGroup vg = (ViewGroup) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
+            ViewGroup.LayoutParams lp = vg.getLayoutParams();
+            lp.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+            vg.setLayoutParams(lp);
+        }
 
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -826,9 +834,14 @@ public class TransactionDetailFragment extends BaseFragment
 
             if (payeeImage.getScheme().contains("content")) {
                 mPayeeImageView.setImageURI(payeeImage);
+                mPayeeImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             } else {
                 Log.d(TAG, "loading remote " + payeeImage.toString());
-                mPicasso.load(payeeImage).noFade().into(mPayeeImageView);
+                int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+                mPicasso.with(getActivity())
+                        .load(payeeImage)
+                        .transform(new RoundedTransformation(round, 0))
+                        .into(mPayeeImageView);
             }
         } else {
             mPayeeImageViewFrame.setVisibility(View.INVISIBLE);
