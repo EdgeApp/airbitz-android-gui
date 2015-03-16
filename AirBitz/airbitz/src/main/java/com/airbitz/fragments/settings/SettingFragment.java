@@ -154,7 +154,7 @@ public class SettingFragment extends BaseFragment {
     Runnable mPinSetupRunnable = new Runnable() {
         @Override
         public void run() {
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
+            mCoreAPI.PinSetup();
             mCoreSettings.setBDisablePINLogin(false);
             mCoreAPI.saveAccountSettings(mCoreSettings);
         }

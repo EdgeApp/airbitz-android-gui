@@ -1110,9 +1110,12 @@ public class NavigationActivity extends Activity
             resetFragmentThreadToBaseFragment(Tabs.WALLET.ordinal());
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
-        checkFirstWalletSetup();
+
+        CheckFirstWalletTask task = new CheckFirstWalletTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+
         if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+            mCoreAPI.PinSetup();
         }
         DisplayLoginOverlay(false, true);
 
@@ -1537,11 +1540,25 @@ public class NavigationActivity extends Activity
         imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private void checkFirstWalletSetup() {
-        List<String> wallets = mCoreAPI.loadWalletUUIDs();
-        if (wallets.size() <= 0) {
-            mWalletSetup = new SetupFirstWalletTask();
-            mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+    /**
+     * Check for any wallets
+     */
+    public class CheckFirstWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        CheckFirstWalletTask() { }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            List<String> wallets = mCoreAPI.loadWalletUUIDs();
+            return (wallets.size() <= 0);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean noWallets) {
+            if (noWallets) {
+                mWalletSetup = new SetupFirstWalletTask();
+                mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            }
         }
     }
 
