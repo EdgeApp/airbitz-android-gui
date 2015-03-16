@@ -2204,8 +2204,11 @@ public class CoreAPI {
     }
 
     public boolean walletsStillLoading() {
+        if(!AirbitzApplication.isLoggedIn()) {
+            return true;
+        }
         List<Wallet> wallets = getCoreActiveWallets();
-        if(!AirbitzApplication.isLoggedIn() || wallets == null) {
+        if(wallets == null) {
             return true;
         }
         for(Wallet wallet : wallets) {
