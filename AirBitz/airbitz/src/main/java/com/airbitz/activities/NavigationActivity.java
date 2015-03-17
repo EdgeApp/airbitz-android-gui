@@ -402,6 +402,12 @@ public class NavigationActivity extends Activity
                     mDrawer.openDrawer(mDrawerView);
                 }
             }
+            else if(position == Tabs.MORE.ordinal()) {
+                mDrawer.openDrawer(mDrawerView);
+            }
+            else if(!isAtNavStackEntry()) {
+                onBackPressed();
+            }
         } else {
             if (position != Tabs.BD.ordinal()) {
                 AirbitzApplication.setLastNavTab(position);
