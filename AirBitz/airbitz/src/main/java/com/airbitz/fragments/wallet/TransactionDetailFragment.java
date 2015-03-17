@@ -866,8 +866,8 @@ public class TransactionDetailFragment extends BaseFragment
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
-
             mSearchListView.setVisibility(View.VISIBLE);
+            mToFromName.setVisibility(View.GONE);
 
             updateAutoCompleteArray(mPayeeEditText.getText().toString());
             updateBizId();
@@ -875,6 +875,7 @@ public class TransactionDetailFragment extends BaseFragment
             mSearchAdapter.notifyDataSetChanged();
         } else {
             mSearchListView.setVisibility(View.GONE);
+            mToFromName.setVisibility(View.VISIBLE);
         }
     }
 
