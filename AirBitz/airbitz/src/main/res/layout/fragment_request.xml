@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_button_gray"
                     android:text="@string/request_button_import"
-                    android:textColor="#999999"
+                    android:textColor="@android:color/white"
                     android:textSize="14dp"
                     android:layout_marginLeft="5dp"
                     android:visibility="visible" />

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:layout_marginBottom="@dimen/tabbar_height"
+    android:layout_marginTop="44.1dp"
+    android:background="@color/light_gray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_drawer_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_until_pressed"
+            android:clickable="true"
+            android:drawableLeft="@drawable/icon_logout"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:singleLine="true"
+            android:text="LOGOUT"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp" />
+
+        <include layout="@layout/divider_horizontal_dark_gray" />
+
+        <TextView
+            android:id="@+id/item_drawer_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_until_pressed"
+            android:clickable="true"
+            android:drawableLeft="@drawable/icon_settings"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:singleLine="true"
+            android:text="SETTINGS"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/drawer_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_drawer_exchange_rate"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/drawer_dark_blue_gray"
+            android:drawableLeft="@drawable/icon_bitcoin_symbol"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:text="1BTC = $340"
+            android:textColor="@color/light_gray_text"
+            android:textSize="20dp" />
+
+        <include layout="@layout/divider_horizontal_dark_gray" />
+
+        <TextView
+            android:id="@+id/item_drawer_buy_sell"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_until_pressed"
+            android:clickable="true"
+            android:drawableLeft="@drawable/icon_exchange"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:singleLine="true"
+            android:text="BUY/SELL BITCOIN"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp"
+            android:visibility="gone"/>
+
+        <include layout="@layout/divider_horizontal_dark_gray" />
+
+        <TextView
+            android:id="@+id/item_drawer_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_until_pressed"
+            android:clickable="true"
+            android:drawableLeft="@drawable/user_account_secure"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="14dp"
+            android:paddingTop="20dp"
+            android:singleLine="true"
+            android:text="Account"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp" />
+
+        <include layout="@layout/divider_horizontal_dark_gray" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/drawer_account_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/category_popup"
+        android:layout_below="@id/drawer_top_layout"
+        android:visibility="gone"/>
+
+</RelativeLayout>

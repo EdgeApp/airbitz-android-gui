@@ -641,7 +641,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.showModalProgress(false);
-                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal());
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal());
                 } else {
                     mActivity.showModalProgress(false);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));

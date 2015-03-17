@@ -38,14 +38,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -109,6 +115,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -740,7 +747,7 @@ public class TransactionDetailFragment extends BaseFragment
                                 done();
                                 Bundle bundle = new Bundle();
                                 bundle.putBoolean(SettingFragment.START_RECOVERY_PASSWORD, true);
-                                mActivity.switchFragmentThread(NavigationActivity.Tabs.SETTING.ordinal(), bundle);
+                                mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal(), bundle);
                             }
                         }
                 ).setNegativeButton(getResources().getString(R.string.string_no),
@@ -832,15 +839,24 @@ public class TransactionDetailFragment extends BaseFragment
         if (mCombinedPhotos != null && payeeImage != null) {
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 
+            mPayeeImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+            int dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
             if (payeeImage.getScheme().contains("content")) {
-                mPayeeImageView.setImageURI(payeeImage);
-                mPayeeImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), payeeImage);
+                    Bitmap bmap2 = ThumbnailUtils.extractThumbnail(bitmap, dimen, dimen);
+                    RoundedTransformation rt = new RoundedTransformation(round, round);
+                    bitmap = rt.transform(bmap2);
+                    mPayeeImageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 Log.d(TAG, "loading remote " + payeeImage.toString());
-                int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
                 mPicasso.with(getActivity())
                         .load(payeeImage)
-                        .transform(new RoundedTransformation(round, 0))
+                        .transform(new RoundedTransformation(round, round))
                         .into(mPayeeImageView);
             }
         } else {
@@ -905,12 +921,13 @@ public class TransactionDetailFragment extends BaseFragment
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
-            String finalBaseUrl;
+            String baseUrl;
             if (mCoreAPI.isTestNet()) {
-                finalBaseUrl = "https://www.biteasy.com/testnet/";
+                baseUrl = "https://www.biteasy.com/testnet/";
             } else { // LIVE
-                finalBaseUrl = "https://insight.bitpay.com/";
+                baseUrl = "https://www.biteasy.com/blockchain/";
             }
+            final String finalBaseUrl = baseUrl;
 
             int start;
             int end;
@@ -919,17 +936,12 @@ public class TransactionDetailFragment extends BaseFragment
                 SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
-                final String txUrl;
-                if (mCoreAPI.isTestNet()) {
-                    txUrl = finalBaseUrl + "addresses/" + output.getAddress();
-                } else {
-                    txUrl = finalBaseUrl + "address/" + output.getAddress();
-                }
+                final String url = finalBaseUrl + "addresses/" + output.getAddress();
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse(txUrl));
+                            i.setData(Uri.parse(url));
                             mActivity.startActivity(i);
                     }
                 };
@@ -963,17 +975,11 @@ public class TransactionDetailFragment extends BaseFragment
             start = s.length();
             s.append(mTransaction.getmMalleableID());
             end = s.length();
-            final String txIdLink;
-            if(mCoreAPI.isTestNet()) {
-                txIdLink = finalBaseUrl + "transactions/" + mTransaction.getmMalleableID();
-             } else {
-                txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
-            }
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(txIdLink));
+                    i.setData(Uri.parse(finalBaseUrl + "transactions/" + mTransaction.getmMalleableID()));
                     mActivity.startActivity(i);
                 }
             };

@@ -154,7 +154,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="15dp"
                 android:textColor="@android:color/white"
-                android:text="@string/nav_bar_settings_text"
+                android:text="@string/nav_bar_more_text"
                 android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:gravity="center_horizontal|bottom" />
@@ -311,11 +311,11 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/nav_bar_settings_image"
-                android:layout_width="22dp"
+                android:layout_width="4dp"
                 android:layout_height="22dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_nav_settings"
+                android:background="@drawable/ico_nav_more"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
@@ -325,7 +325,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/dark_gray_text"
-                android:text="@string/nav_bar_settings_text"
+                android:text="@string/nav_bar_more_text"
                 android:textSize="@dimen/tabbar_textsize"
                 android:singleLine="true"
                 android:layout_alignParentBottom="true"

@@ -132,7 +132,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 //        mHelpButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                mActivity.pushFragment(new HelpFragment(HelpFragment.SPEND_LIMITS), NavigationActivity.Tabs.SETTING.ordinal());
+//                mActivity.pushFragment(new HelpFragment(HelpFragment.SPEND_LIMITS), NavigationActivity.Tabs.MORE.ordinal());
 //            }
 //        });
 

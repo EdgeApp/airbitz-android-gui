@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent" >
+
+        <ImageView
+            android:id="@+id/item_drawer_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_bitcoin_symbol"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/item_drawer_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/item_drawer_image"
+            android:paddingLeft="8dp"
+            android:textSize="20dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="@color/gray_text"
+            android:text="drawer text"/>
+
+</RelativeLayout>
