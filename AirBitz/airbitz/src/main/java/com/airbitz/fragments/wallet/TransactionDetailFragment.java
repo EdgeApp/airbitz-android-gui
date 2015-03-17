@@ -840,8 +840,8 @@ public class TransactionDetailFragment extends BaseFragment
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 
             mPayeeImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-            int dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
+            int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, mActivity.getResources().getDisplayMetrics());
+            int dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, mActivity.getResources().getDisplayMetrics());
             if (payeeImage.getScheme().contains("content")) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), payeeImage);
