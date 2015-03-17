@@ -1127,7 +1127,7 @@ public class NavigationActivity extends Activity
         }
         checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+            mCoreAPI.PinSetup();
         }
         DisplayLoginOverlay(false, true);
 
