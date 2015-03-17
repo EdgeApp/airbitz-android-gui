@@ -232,7 +232,7 @@ public class NavigationBarFragment extends BaseFragment {
                 mWalletButton.setBackgroundResource(R.drawable.tab_selected);
                 break;
             case 4:
-                mSettingImage.setBackgroundResource(R.drawable.ico_nav_settings_selected);
+                mSettingImage.setBackgroundResource(R.drawable.ico_nav_more_selected);
                 mSettingText.setTypeface(NavigationActivity.latoRegularTypeFace);
                 mSettingText.setTextColor(getResources().getColor(android.R.color.white));
                 mSettingButton.setBackgroundResource(R.drawable.tab_selected);
@@ -266,7 +266,7 @@ public class NavigationBarFragment extends BaseFragment {
                 mWalletButton.setBackgroundResource(android.R.color.transparent);
                 break;
             case 4:
-                mSettingImage.setBackgroundResource(R.drawable.ico_nav_settings);
+                mSettingImage.setBackgroundResource(R.drawable.ico_nav_more);
                 mSettingText.setTextColor(getResources().getColor(R.color.navbar_text));
                 mSettingButton.setBackgroundResource(android.R.color.transparent);
                 break;

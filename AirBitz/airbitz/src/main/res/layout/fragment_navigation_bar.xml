@@ -311,11 +311,11 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/nav_bar_settings_image"
-                android:layout_width="22dp"
+                android:layout_width="4dp"
                 android:layout_height="22dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ico_nav_settings"
+                android:background="@drawable/ico_nav_more"
                 android:hapticFeedbackEnabled="true"
                 android:scaleType="centerCrop"
                 android:soundEffectsEnabled="true" />
