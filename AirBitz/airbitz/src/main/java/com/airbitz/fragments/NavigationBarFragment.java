@@ -103,7 +103,7 @@ public class NavigationBarFragment extends BaseFragment {
         Display display = mActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        mDistanceThreshold = size.x / 20;
+        mDistanceThreshold = size.x / 10;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class NavigationBarFragment extends BaseFragment {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float dist = event.getX() + event.getY();
-                        if (event.getPointerCount() > 1 || // (time - mLastTouchTime < 150) ||
+                        if (event.getPointerCount() > 1 ||
                                 (Math.abs(dist - mLastDistance) < mDistanceThreshold)) {
                             return false;
                         }
