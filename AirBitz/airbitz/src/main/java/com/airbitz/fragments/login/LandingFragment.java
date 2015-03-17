@@ -428,6 +428,8 @@ public class LandingFragment extends BaseFragment implements
             return;
         }
 
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mUserNameEditText.setText(mUsername);
         refreshView(false, false);
         if(mActivity.networkIsAvailable()) {
@@ -652,6 +654,7 @@ public class LandingFragment extends BaseFragment implements
 
         if(error.getCode() == tABC_CC.ABC_CC_Ok) {
             Editable pass = mPasswordEditText.getText();
+            mPasswordEditText.setText("");
             char[] password = new char[pass.length()];
             pass.getChars(0, pass.length(), password, 0);
             mActivity.LoginNow(mUsername, password);

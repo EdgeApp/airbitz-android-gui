@@ -1180,7 +1180,6 @@ public class NavigationActivity extends Activity
         }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
-        finish();
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
@@ -1232,9 +1231,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            AirbitzApplication.Logout();
-            finish();
-            startActivity(new Intent(this, NavigationActivity.class));
+            Logout(false);
         }
     }
 
@@ -1870,6 +1867,7 @@ public class NavigationActivity extends Activity
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
                 Logout(false);
             }
         });
@@ -1906,6 +1904,7 @@ public class NavigationActivity extends Activity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = mOtherAccounts.get(position);
                 saveCachedLoginName(username);
+                mDrawer.closeDrawer(mDrawerView);
                 Logout(false);
             }
         });
