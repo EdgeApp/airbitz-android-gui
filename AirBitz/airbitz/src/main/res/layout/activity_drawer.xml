@@ -93,7 +93,8 @@
             android:singleLine="true"
             android:text="BUY/SELL BITCOIN"
             android:textColor="@color/gray_text"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:visibility="gone"/>
 
         <include layout="@layout/divider_horizontal_dark_gray" />
 
