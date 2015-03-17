@@ -57,6 +57,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -70,15 +71,18 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
@@ -126,13 +130,15 @@ import java.util.Stack;
 public class NavigationActivity extends Activity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
+        CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnDataSync,
         CoreAPI.OnBlockHeightChange,
         CoreAPI.OnRemotePasswordChange,
         CoreAPI.OnOTPError,
         CoreAPI.OnOTPResetRequest,
         AddressRequestFragment.OnAddressRequest,
-        TwoFactorScanFragment.OnTwoFactorQRScanResult {
+        TwoFactorScanFragment.OnTwoFactorQRScanResult,
+        AccountsAdapter.OnButtonTouched {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
 
     public final String INCOMING_COUNT = "com.airbitz.navigation.incomingcount";
@@ -232,6 +238,18 @@ public class NavigationActivity extends Activity
         }
     };
 
+    private DrawerLayout mDrawer;
+    private RelativeLayout mDrawerView;
+    private TextView mDrawerAccount;
+    private TextView mDrawerExchange;
+    private TextView mDrawerBuySell;
+    private TextView mDrawerSettings;
+    private TextView mDrawerLogout;
+    private ListView mOtherAccountsListView;
+    private AccountsAdapter mOtherAccountsAdapter;
+    private List<String> mOtherAccounts;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -289,6 +307,9 @@ public class NavigationActivity extends Activity
         setViewPager();
 
         mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+
+        // Navigation Drawer slideout
+        setupDrawer();
     }
 
     public static CoreAPI initiateCore(Context context) {
@@ -374,7 +395,12 @@ public class NavigationActivity extends Activity
                     showModalProgress(false);
                 }
                 AirbitzApplication.setLastNavTab(position);
-                switchFragmentThread(position);
+                if(position != Tabs.MORE.ordinal()) {
+                    switchFragmentThread(position);
+                }
+                else {
+                    mDrawer.openDrawer(mDrawerView);
+                }
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
@@ -1206,7 +1232,12 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, SETTING}
+    @Override
+    public void OnExchangeRatesChange() {
+        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
+    }
+
+    public enum Tabs {BD, REQUEST, SEND, WALLET, MORE}
 
     //************************ Connectivity support
 
@@ -1223,6 +1254,8 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
         setViewPager();
+        mDrawerAccount.setText(username);
+        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
@@ -1811,5 +1844,146 @@ public class NavigationActivity extends Activity
             mOTPResetRequestDialog = builder.create();
             mOTPResetRequestDialog.show();
         }
+    }
+
+    // Navigation Drawer (right slideout)
+    private void setupDrawer() {
+        mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
+        mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
+        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
+
+        mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
+        mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Buy/Sell pressed");
+            }
+        });
+
+        mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
+        mDrawerLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Logout(false);
+            }
+        });
+
+        mDrawerSettings = (TextView) findViewById(R.id.item_drawer_settings);
+        mDrawerSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
+                switchFragmentThread(Tabs.MORE.ordinal());
+            }
+        });
+
+        mDrawerAccount = (TextView) findViewById(R.id.item_drawer_account);
+        mDrawerAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mOtherAccountsListView.getVisibility() != View.VISIBLE) {
+                    showOthersList(AirbitzApplication.getUsername(), true);
+                }
+                else {
+                    showOthersList(AirbitzApplication.getUsername(), false);
+                }
+            }
+        });
+
+        mOtherAccounts = new ArrayList<String>();
+        mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts);
+        mOtherAccountsAdapter.setButtonTouchedListener(this); // for close account button
+        mOtherAccountsListView = (ListView) findViewById(R.id.drawer_account_list);
+        mOtherAccountsListView.setAdapter(mOtherAccountsAdapter);
+        mOtherAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String username = mOtherAccounts.get(position);
+                saveCachedLoginName(username);
+                Logout(false);
+            }
+        });
+
+        mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                mOtherAccountsListView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {}
+
+            @Override
+            public void onDrawerOpened(View drawerView) {}
+
+            @Override
+            public void onDrawerStateChanged(int newState) {}
+        });
+    }
+
+    private void showOthersList(String username, boolean show)
+    {
+        mOtherAccounts.clear();
+        mOtherAccounts.addAll(otherAccounts(username));
+        mOtherAccountsAdapter.notifyDataSetChanged();
+        if(show && !mOtherAccounts.isEmpty()) {
+            if(mOtherAccountsAdapter.getCount() > 4) {
+                View item = mOtherAccountsAdapter.getView(0, null, mOtherAccountsListView);
+                item.measure(0, 0);
+                ViewGroup.LayoutParams params = mOtherAccountsListView.getLayoutParams();
+                params.height = 4 * item.getMeasuredHeight();
+                mOtherAccountsListView.setLayoutParams(params);
+            }
+            mOtherAccountsListView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mOtherAccountsListView.setVisibility(View.GONE);
+        }
+    }
+
+    private List<String> otherAccounts(String username) {
+        List<String> accounts = mCoreAPI.listAccounts();
+        List<String> others = new ArrayList<String>();
+        for(int i=0; i< accounts.size(); i++) {
+            if(!accounts.get(i).equals(username)) {
+                others.add(accounts.get(i));
+            }
+        }
+        return others;
+    }
+
+    private void saveCachedLoginName(String name) {
+        SharedPreferences.Editor editor = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putString(AirbitzApplication.LOGIN_NAME, name);
+        editor.apply();
+    }
+
+    @Override
+    public void onButtonTouched(final String account) {
+        String message = String.format(getString(R.string.fragment_landing_account_delete_message), account);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setMessage(message)
+                .setTitle(getString(R.string.fragment_landing_account_delete_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (!mCoreAPI.deleteAccount(account)) {
+                                    ShowFadingDialog("Account could not be deleted.");
+                                }
+                                showOthersList("", false);
+                                showOthersList(AirbitzApplication.getUsername(), true);
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.string_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                showOthersList("", false);
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog confirmDialog = builder.create();
+        confirmDialog.show();
     }
 }

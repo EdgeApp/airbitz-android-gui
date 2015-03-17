@@ -43,7 +43,7 @@
     <string name="nav_bar_request_text">Solicitud</string>
     <string name="nav_bar_send_text">Enviar</string>
     <string name="nav_bar_wallets_text">Monederos</string>
-    <string name="nav_bar_settings_text">Ajustes</string>
+    <string name="nav_bar_more_text">Ajustes</string>
 
     <string name="calculator_back">Atrás</string>
     <string name="calculator_done">Hecho</string>

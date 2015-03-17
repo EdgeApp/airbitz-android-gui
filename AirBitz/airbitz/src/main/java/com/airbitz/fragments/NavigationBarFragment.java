@@ -86,7 +86,6 @@ public class NavigationBarFragment extends BaseFragment {
     private View mView, mButtons;
     private int selectedTab = 0;
     private int mLastTab = 0;
-    private boolean mSendRequestTabsActive = false;
 
     private NavigationActivity mActivity;
     private CoreAPI mCoreAPI;
@@ -184,7 +183,7 @@ public class NavigationBarFragment extends BaseFragment {
             }
             return;
         }
-        else {
+        else if(selectedTab != NavigationActivity.Tabs.MORE.ordinal()) {
             displayPopup(ev);
             selectTab(selectedTab);
             unselectTab(mLastTab);
