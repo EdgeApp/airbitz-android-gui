@@ -3,6 +3,7 @@ package com.airbitz.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -10,7 +11,7 @@ import android.graphics.Shader;
 /**
  * Created on 3/16/15.
  */
-// enables hardware accelerated rounded corners
+// enables hardware accelerated rounded corners with drop shadow
 // original idea here : http://www.curious-creature.org/2012/12/11/android-recipe-1-image-with-rounded-corners/
 public class RoundedTransformation implements com.squareup.picasso.Transformation {
     private final int radius;
@@ -25,14 +26,18 @@ public class RoundedTransformation implements com.squareup.picasso.Transformatio
 
     @Override
     public Bitmap transform(final Bitmap source) {
-        final Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-        paint.setShadowLayer(20.0f, 0.0f, 2.0f, 0xFF000000);
+        final Paint shadowPaint = new Paint();
+        shadowPaint.setAntiAlias(true);
+        shadowPaint.setShadowLayer(margin / 2, radius / 2, radius / 2, 0x30000000);
 
         Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, paint);
+        canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, shadowPaint);
+
+        final Paint picPaint = new Paint();
+        picPaint.setAntiAlias(true);
+        picPaint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, picPaint);
 
         if (source != output) {
             source.recycle();
