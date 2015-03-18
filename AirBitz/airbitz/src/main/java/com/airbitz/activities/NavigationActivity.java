@@ -1895,7 +1895,7 @@ public class NavigationActivity extends Activity
         });
 
         mOtherAccounts = new ArrayList<String>();
-        mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts);
+        mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts, true);
         mOtherAccountsAdapter.setButtonTouchedListener(this); // for close account button
         mOtherAccountsListView = (ListView) findViewById(R.id.drawer_account_list);
         mOtherAccountsListView.setAdapter(mOtherAccountsAdapter);

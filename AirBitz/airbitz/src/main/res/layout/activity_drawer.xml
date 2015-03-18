@@ -126,7 +126,7 @@
         android:id="@+id/drawer_account_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/category_popup"
+        android:background="@color/light_gray"
         android:layout_below="@id/drawer_top_layout"
         android:visibility="gone"/>
 
