@@ -49,16 +49,15 @@
 
             <RelativeLayout
                 android:id="@+id/fragment_landing_password_layout"
-                android:layout_width="match_parent"
+                android:layout_width="245.7dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:visibility="gone">
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_username_edittext"
-                    android:layout_width="320dp"
-                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
@@ -74,8 +73,7 @@
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_password_edittext"
-                    android:layout_width="320dp"
-                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
                     android:layout_height="37.8dp"
                     android:layout_below="@id/fragment_landing_username_edittext"
                     android:layout_gravity="center_horizontal"
@@ -92,8 +90,7 @@
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_signin_button"
-                    android:layout_width="320dp"
-                    android:layout_centerHorizontal="true"
+                    android:layout_width="match_parent"
                     android:layout_height="44.1dp"
                     android:layout_below="@id/fragment_landing_password_edittext"
                     android:layout_gravity="center_horizontal"
@@ -108,7 +105,7 @@
 
                 <ListView
                     android:id="@+id/fragment_landing_account_listview"
-                    android:layout_width="320dp"
+                    android:layout_width="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/fragment_landing_username_edittext"
