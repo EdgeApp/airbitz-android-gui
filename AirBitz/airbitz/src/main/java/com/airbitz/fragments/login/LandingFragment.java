@@ -234,7 +234,7 @@ public class LandingFragment extends BaseFragment implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
-                    saveCachedLoginName(mUsername);
+                    saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
                     mUserNameEditText.setText(mUsername);
@@ -252,7 +252,7 @@ public class LandingFragment extends BaseFragment implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mOtherAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
-                    saveCachedLoginName(mUsername);
+                    saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
                     mUserNameEditText.setText(mUsername);
@@ -676,6 +676,7 @@ public class LandingFragment extends BaseFragment implements
         tABC_CC resultCode = error.getCode();
         mCoreAPI.otpSetError(resultCode);
 
+        saveUsername(mUsername);
         if(error.getCode() == tABC_CC.ABC_CC_Ok) {
             Editable pass = mPasswordEditText.getText();
             mPasswordEditText.setText("");
@@ -724,7 +725,7 @@ public class LandingFragment extends BaseFragment implements
         refreshView(false, false); // reset to password view
     }
 
-    private void saveCachedLoginName(String name) {
+    private void saveUsername(String name) {
         SharedPreferences.Editor editor = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
         editor.putString(AirbitzApplication.LOGIN_NAME, name);
         editor.apply();
