@@ -30,7 +30,7 @@
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
             android:singleLine="true"
-            android:text="LOGOUT"
+            android:text="@string/drawer_logout"
             android:textColor="@color/gray_text"
             android:textSize="20dp" />
 
@@ -50,7 +50,7 @@
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
             android:singleLine="true"
-            android:text="SETTINGS"
+            android:text="@string/drawer_settings"
             android:textColor="@color/gray_text"
             android:textSize="20dp" />
 

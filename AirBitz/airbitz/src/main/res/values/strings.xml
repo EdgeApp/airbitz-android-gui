@@ -534,4 +534,8 @@
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
+    <!-- Navigation Drawer -->
+    <string name="drawer_logout">LOGOUT</string>
+    <string name="drawer_settings">SETTINGS</string>
+
 </resources>
