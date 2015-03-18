@@ -175,8 +175,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
             return mView;
         }
 
-        mActivity.hideNavBar();
-
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
         mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
         mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
@@ -235,7 +233,6 @@ public class RequestQRCodeFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
-                mActivity.showNavBar();
             }
         });
 

@@ -650,13 +650,10 @@ public class NavigationActivity extends Activity
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
             }
         } else {
-            if (fragment instanceof RequestQRCodeFragment) {
-                popFragment();
-                showNavBar();
-            } else {//needed or show nav before switching fragments
-                popFragment();
-            }
+            popFragment();
         }
+
+        showNavBar();
     }
 
     public boolean isAtNavStackEntry() {
