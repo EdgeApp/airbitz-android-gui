@@ -1131,8 +1131,23 @@ public class NavigationActivity extends Activity
         }
         DisplayLoginOverlay(false, true);
 
-        if(UserReview.offerUserReview()) {
-            UserReview.ShowUserReviewDialog(this);
+        new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
+
+        UserReviewTask() { }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return UserReview.offerUserReview();
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean offerReview) {
+            if(offerReview) {
+                UserReview.ShowUserReviewDialog(NavigationActivity.this);
+            }
         }
     }
 
