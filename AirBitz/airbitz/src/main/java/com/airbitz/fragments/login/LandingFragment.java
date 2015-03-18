@@ -430,21 +430,23 @@ public class LandingFragment extends BaseFragment implements
 
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-        mUserNameEditText.setText(mUsername);
-        refreshView(false, false);
         if(mActivity.networkIsAvailable()) {
-            if(!AirbitzApplication.isLoggedIn()) {
+            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
                 mPinEditText.setText("");
-                if (mCoreAPI.PinLoginExists(mUsername)) {
-                    refreshView(true, true);
-                    mHandler.postDelayed(delayedShowPinKeyboard, 100);
-                }
+                Log.d(TAG, "showing pin login for " + mUsername);
+                refreshView(true, true);
+                mHandler.postDelayed(delayedShowPinKeyboard, 100);
+                return;
             }
         }
         else {
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
-            refreshView(false, false);
         }
+
+        Log.d(TAG, "showing password login for " + mUsername);
+        mUserNameEditText.setText(mUsername);
+        refreshView(false, false);
+        mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
     }
 
     @Override
@@ -510,6 +512,7 @@ public class LandingFragment extends BaseFragment implements
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
             showAccountsList(false);
+            mPasswordEditText.requestFocus();
         }
     }
 
@@ -616,7 +619,15 @@ public class LandingFragment extends BaseFragment implements
         @Override
         public void run() {
             mPinEditText.setText("");
-            mPinEditText.performClick();
+            mActivity.showSoftKeyboard(mPinEditText);
+        }
+    };
+
+    final Runnable delayedShowPasswordKeyboard = new Runnable() {
+        @Override
+        public void run() {
+            mPasswordEditText.setText("");
+            mActivity.showSoftKeyboard(mPasswordEditText);
         }
     };
 
