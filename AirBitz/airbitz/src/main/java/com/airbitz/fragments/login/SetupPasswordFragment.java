@@ -192,7 +192,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                 checkNextButton();
                 if (editable.length() >= 4) {
                     mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
-                    goNext();
                 }
             }
         };
@@ -318,12 +317,11 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     }
 
     private void goNext() {
-        mActivity.hideSoftKeyboard(mPasswordEditText);
+        mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
         // if they entered a valid mUsername or old mPassword
         if (newPasswordFieldsAreValid() && pinFieldIsValid()) {
             attemptSignUp();
         }
-        mNextButton.setClickable(true);
     }
 
     // checks the pin field
