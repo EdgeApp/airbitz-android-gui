@@ -388,6 +388,7 @@ public class coreJNI {
   public final static native int ABC_GetTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_GetTransactions(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_SearchTransactions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
+  public final static native int ABC_GetRawTransaction(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native void ABC_FreeTransaction(long jarg1, tABC_TxInfo jarg1_);
   public final static native void ABC_FreeTransactions(long jarg1, long jarg2);
   public final static native int ABC_SetTransactionDetails(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_TxDetails jarg5_, long jarg6, tABC_Error jarg6_);
