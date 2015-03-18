@@ -93,18 +93,18 @@ public class UserReview {
     public static boolean transactionCountTriggered() {
         if(AirbitzApplication.isLoggedIn()) {
             List<Wallet> walletList = CoreAPI.getApi().getCoreWallets(true);
-            int transactionCount = 0;
-            for(Wallet wallet : walletList) {
-                if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
-                    List<Transaction> transactions = wallet.getTransactions();
-                    transactionCount += transactions.size();
+            if(walletList != null) {
+                int transactionCount = 0;
+                for(Wallet wallet : walletList) {
+                    if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
+                        List<Transaction> transactions = wallet.getTransactions();
+                        transactionCount += transactions.size();
+                    }
                 }
+                return transactionCount > MAX_TRANSACTIONS;
             }
-            return transactionCount > MAX_TRANSACTIONS;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public static boolean timeUseTriggered() {
