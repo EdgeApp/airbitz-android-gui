@@ -1899,8 +1899,7 @@ public class CoreAPI {
 
     public void updateExchangeRates()
     {
-        if (AirbitzApplication.isLoggedIn())
-        {
+        if (AirbitzApplication.isLoggedIn() && coreSettings() != null) {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Log.d(TAG, "Exchange Rate Update initiated.");
@@ -1920,9 +1919,7 @@ public class CoreAPI {
 
         @Override
         protected void onPostExecute(Void result) {
-            if(coreSettings() != null) {
-                onExchangeRatesUpdated();
-            }
+            onExchangeRatesUpdated();
         }
     }
 
