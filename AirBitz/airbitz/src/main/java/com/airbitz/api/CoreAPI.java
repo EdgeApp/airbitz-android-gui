@@ -1920,7 +1920,9 @@ public class CoreAPI {
 
         @Override
         protected void onPostExecute(Void result) {
-            onExchangeRatesUpdated();
+            if(coreSettings() != null) {
+                onExchangeRatesUpdated();
+            }
         }
     }
 
@@ -1930,7 +1932,7 @@ public class CoreAPI {
 
     public void startExchangeRateUpdates() {
         if(AirbitzApplication.isLoggedIn()) {
-            mPeriodicTaskHandler.post(ExchangeRateUpdater);
+            mPeriodicTaskHandler.postDelayed(ExchangeRateUpdater, 100);
         }
     }
 
