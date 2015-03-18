@@ -200,6 +200,8 @@ public class LandingFragment extends BaseFragment implements
                 if(mPinLayout.getVisibility() == View.VISIBLE) {
                     mUserNameEditText.setText(mUsername);
                     refreshView(false, false);
+                    mPasswordEditText.requestFocus();
+                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.startSignUp(mUserNameEditText.getText().toString());
