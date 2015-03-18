@@ -144,7 +144,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.onBackPressed();
+                onBackPress();
             }
         });
 
@@ -267,6 +267,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                                     if (mMode == CHANGE_QUESTIONS) {
                                         mActivity.popFragment();
                                     } else if (mMode == FORGOT_PASSWORD) {
+                                        mActivity.popFragment();
+                                        mActivity.showNavBar();
                                         mActivity.Logout();
                                     }
                                 }
@@ -286,6 +288,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (mMode == CHANGE_QUESTIONS) {
                 mActivity.popFragment();
             } else if (mMode == FORGOT_PASSWORD) {
+                mActivity.popFragment();
+                mActivity.showNavBar();
                 mActivity.Logout();
             }
         }

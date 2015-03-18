@@ -86,6 +86,8 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.directory.DirectoryDetailFragment;
+import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
@@ -280,24 +282,38 @@ public class NavigationActivity extends Activity
         // for keyboard hide and show
         final View activityRootView = findViewById(R.id.activity_navigation_root);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean mLastKeyBoardUp = false;
             @Override
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     keyBoardUp = true;
-                    hideNavBar();
-                    if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                        ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
+                    if(keyBoardUp != mLastKeyBoardUp) {
+                        hideNavBar();
+                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
+                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
+                        }
                     }
                 } else {
                     keyBoardUp = false;
-                    if (AirbitzApplication.isLoggedIn()) {
-                        showNavBar();
-                    }
-                    if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                        ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
+                    if(keyBoardUp != mLastKeyBoardUp) {
+                        if (AirbitzApplication.isLoggedIn()) {
+                            showNavBar();
+                        }
+                        else {
+                            if(mNavStacks[mNavThreadId].peek() instanceof BusinessDirectoryFragment ||
+                                    mNavStacks[mNavThreadId].peek() instanceof MapBusinessDirectoryFragment ||
+                                    mNavStacks[mNavThreadId].peek() instanceof DirectoryDetailFragment ) {
+                                Log.d(TAG, "Keyboard down, not logged in, in directory");
+                                showNavBar();
+                            }
+                        }
+                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
+                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
+                        }
                     }
                 }
+                mLastKeyBoardUp = keyBoardUp;
             }
         });
 
