@@ -444,9 +444,14 @@ public class LandingFragment extends BaseFragment implements
         }
 
         Log.d(TAG, "showing password login for " + mUsername);
-        mUserNameEditText.setText(mUsername);
+        if(mUsername.isEmpty()) {
+            mHandler.postDelayed(delayedShowUsernameKeyboard, 100);
+        }
+        else {
+            mUserNameEditText.setText(mUsername);
+            mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
+        }
         refreshView(false, false);
-        mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
     }
 
     @Override
@@ -512,7 +517,6 @@ public class LandingFragment extends BaseFragment implements
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
             showAccountsList(false);
-            mPasswordEditText.requestFocus();
         }
     }
 
@@ -631,6 +635,13 @@ public class LandingFragment extends BaseFragment implements
         }
     };
 
+    final Runnable delayedShowUsernameKeyboard = new Runnable() {
+        @Override
+        public void run() {
+            mUserNameEditText.setText("");
+            mActivity.showSoftKeyboard(mUserNameEditText);
+        }
+    };
 
     public class PasswordLoginTask extends AsyncTask {
         @Override
