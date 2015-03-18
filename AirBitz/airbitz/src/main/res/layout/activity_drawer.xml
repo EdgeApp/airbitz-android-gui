@@ -125,7 +125,7 @@
     <ListView
         android:id="@+id/drawer_account_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/category_popup"
         android:layout_below="@id/drawer_top_layout"
         android:visibility="gone"/>
