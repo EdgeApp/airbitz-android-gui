@@ -179,10 +179,16 @@ public class SettingFragment extends BaseFragment {
 
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
-        mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
         mBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_bitcoin);
         mmBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_mbitcoin);
         muBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_ubitcoin);
+        mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
+        mDenominationGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                saveCurrentSettings();
+            }
+        });
 
         mChangePasswordButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_change_password);
         mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
