@@ -2750,11 +2750,11 @@ public class CoreAPI {
         }
     }
 
-    public void PinSetupImmediate() {
-        if(mPinSetup == null && AirbitzApplication.isLoggedIn()) {
-            // Delay PinSetup after getting transactions
-            mPeriodicTaskHandler.post(delayedPinSetup);
-        }
+    public tABC_CC PinSetupBlocking() {
+        String username = AirbitzApplication.getUsername();
+        String pin = coreSettings().getSzPIN();
+        tABC_Error pError = new tABC_Error();
+        return core.ABC_PinSetup(username, pin, pError);
     }
 
     final Runnable delayedPinSetup = new Runnable() {
@@ -2768,11 +2768,7 @@ public class CoreAPI {
     public class PinSetupTask extends AsyncTask {
         @Override
         protected tABC_CC doInBackground(Object... params) {
-            String username = AirbitzApplication.getUsername();
-            String pin = coreSettings().getSzPIN();
-            tABC_Error pError = new tABC_Error();
-            tABC_CC result = core.ABC_PinSetup(username, pin, pError);
-            return result;
+            return PinSetupBlocking();
         }
 
         @Override
