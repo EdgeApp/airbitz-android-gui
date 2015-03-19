@@ -86,6 +86,7 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
@@ -1304,7 +1305,6 @@ public class NavigationActivity extends Activity
         UserJustLoggedIn(password != null);
         setViewPager();
         mDrawerAccount.setText(username);
-        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
@@ -1895,6 +1895,7 @@ public class NavigationActivity extends Activity
         }
     }
 
+    boolean mDrawerExchangeUpdated = false;
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
@@ -1959,10 +1960,19 @@ public class NavigationActivity extends Activity
             @Override
             public void onDrawerClosed(View drawerView) {
                 mOtherAccountsListView.setVisibility(View.GONE);
+                mDrawerExchangeUpdated = false;
             }
 
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {}
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(!mDrawerExchangeUpdated) {
+                    tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                    if (settings != null) {
+                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
+                        mDrawerExchangeUpdated = true;
+                    }
+                }
+            }
 
             @Override
             public void onDrawerOpened(View drawerView) {}
