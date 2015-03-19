@@ -742,6 +742,8 @@ public class NavigationActivity extends Activity
 
         mHandler.post(delayedEnableReceiveSendButtons);
 
+        mCoreAPI.addExchangeRateChangeListener(this);
+
         super.onResume();
     }
 
@@ -756,6 +758,7 @@ public class NavigationActivity extends Activity
             disableNFCForegrounding();
         }
         mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
+        mCoreAPI.removeExchangeRateChangeListener(this);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
