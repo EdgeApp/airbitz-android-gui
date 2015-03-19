@@ -256,7 +256,7 @@ public class CoreAPI {
     }
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() {
-            mCoreSettings = null;
+//            mCoreSettings = null;
             mOnBlockHeightChange.onBlockHeightChange();
         }
     };
@@ -271,7 +271,7 @@ public class CoreAPI {
     }
     final Runnable DataSyncUpdater = new Runnable() {
         public void run() {
-            mCoreSettings = null;
+//            mCoreSettings = null;
             startWatchers();
             mOnDataSync.OnDataSync();
         }
@@ -303,7 +303,7 @@ public class CoreAPI {
 
     final Runnable ExchangeRateUpdater = new Runnable() {
         public void run() {
-            mCoreSettings = null;
+//            mCoreSettings = null;
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
             updateExchangeRates();
         }
