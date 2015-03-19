@@ -2750,6 +2750,13 @@ public class CoreAPI {
         }
     }
 
+    public void PinSetupImmediate() {
+        if(mPinSetup == null && AirbitzApplication.isLoggedIn()) {
+            // Delay PinSetup after getting transactions
+            mPeriodicTaskHandler.post(delayedPinSetup);
+        }
+    }
+
     final Runnable delayedPinSetup = new Runnable() {
         public void run() {
             mPinSetup = new PinSetupTask();

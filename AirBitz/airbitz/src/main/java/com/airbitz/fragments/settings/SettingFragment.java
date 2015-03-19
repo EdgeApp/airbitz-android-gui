@@ -154,7 +154,7 @@ public class SettingFragment extends BaseFragment {
     Runnable mPinSetupRunnable = new Runnable() {
         @Override
         public void run() {
-            mCoreAPI.PinSetup();
+            mCoreAPI.PinSetupImmediate();
             mCoreSettings.setBDisablePINLogin(false);
             mCoreAPI.saveAccountSettings(mCoreSettings);
         }
