@@ -1501,6 +1501,7 @@ public class CoreAPI {
         }
         else {
             currencyNum = settings.getCurrencyNum();
+            mCurrencyIndex = currencyNum;
         }
         int[] currencyNumbers = getCurrencyNumbers();
 
