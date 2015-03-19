@@ -53,5 +53,6 @@
 
     <!-- For drawer -->
     <color name="drawer_dark_blue_gray">#333344</color>
+    <color name="navbar_text_disabled">#ffaaaaaa</color>
 
 </resources>

@@ -840,8 +840,8 @@ public class TransactionDetailFragment extends BaseFragment
             mPayeeImageViewFrame.setVisibility(View.VISIBLE);
 
             mPayeeImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-            int dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, getResources().getDisplayMetrics());
+            int round = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mActivity.getResources().getDisplayMetrics());
+            int dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mActivity.getResources().getDisplayMetrics());
             if (payeeImage.getScheme().contains("content")) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), payeeImage);
@@ -866,8 +866,8 @@ public class TransactionDetailFragment extends BaseFragment
 
     private void showPayeeSearch(boolean hasFocus) {
         if (hasFocus) {
-
             mSearchListView.setVisibility(View.VISIBLE);
+            mToFromName.setVisibility(View.GONE);
 
             updateAutoCompleteArray(mPayeeEditText.getText().toString());
             updateBizId();
@@ -875,6 +875,7 @@ public class TransactionDetailFragment extends BaseFragment
             mSearchAdapter.notifyDataSetChanged();
         } else {
             mSearchListView.setVisibility(View.GONE);
+            mToFromName.setVisibility(View.VISIBLE);
         }
     }
 

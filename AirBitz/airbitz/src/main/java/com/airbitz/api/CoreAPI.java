@@ -369,11 +369,13 @@ public class CoreAPI {
 
     public void reloadWallet(Wallet wallet) {
         Wallet info = getWalletFromUUID(wallet.getUUID());
-        wallet.setName(info.getName());
-        wallet.setUUID(info.getUUID());
-        wallet.setAttributes(info.getAttributes());
-        wallet.setBalanceSatoshi(info.getBalanceSatoshi());
-        wallet.setCurrencyNum(info.getCurrencyNum());
+        if(info != null) {
+            wallet.setName(info.getName());
+            wallet.setUUID(info.getUUID());
+            wallet.setAttributes(info.getAttributes());
+            wallet.setBalanceSatoshi(info.getBalanceSatoshi());
+            wallet.setCurrencyNum(info.getCurrencyNum());
+        }
     }
 
     public Wallet getWalletFromName(String walletName) {
@@ -1897,8 +1899,7 @@ public class CoreAPI {
 
     public void updateExchangeRates()
     {
-        if (AirbitzApplication.isLoggedIn())
-        {
+        if (AirbitzApplication.isLoggedIn() && coreSettings() != null) {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Log.d(TAG, "Exchange Rate Update initiated.");
@@ -1928,7 +1929,7 @@ public class CoreAPI {
 
     public void startExchangeRateUpdates() {
         if(AirbitzApplication.isLoggedIn()) {
-            mPeriodicTaskHandler.post(ExchangeRateUpdater);
+            mPeriodicTaskHandler.postDelayed(ExchangeRateUpdater, 100);
         }
     }
 
@@ -2204,12 +2205,23 @@ public class CoreAPI {
     }
 
     public boolean walletsStillLoading() {
+        if(!AirbitzApplication.isLoggedIn()) {
+            return true;
+        }
+
         List<Wallet> wallets = getCoreActiveWallets();
-        if(!AirbitzApplication.isLoggedIn() || wallets == null) {
+        if(wallets == null) {
             return true;
         }
         for(Wallet wallet : wallets) {
-            if(wallet.isLoading()) {
+            if(wallet != null) {
+                reloadWallet(wallet);
+                if(wallet.isLoading()) {
+                    return true;
+                }
+            }
+            else {
+                Log.d(TAG, "wallet null");
                 return true;
             }
         }
@@ -2731,22 +2743,32 @@ public class CoreAPI {
         return result;
     }
 
-    public void PinSetup(String username, String pin) {
-        if(mPinSetup == null) {
-            mPinSetup = new PinSetupTask();
-            mPinSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, username, pin);
+    public void PinSetup() {
+        if(mPinSetup == null && AirbitzApplication.isLoggedIn()) {
+            // Delay PinSetup after getting transactions
+            mPeriodicTaskHandler.postDelayed(delayedPinSetup, 1000);
         }
     }
+
+    public tABC_CC PinSetupBlocking() {
+        String username = AirbitzApplication.getUsername();
+        String pin = coreSettings().getSzPIN();
+        tABC_Error pError = new tABC_Error();
+        return core.ABC_PinSetup(username, pin, pError);
+    }
+
+    final Runnable delayedPinSetup = new Runnable() {
+        public void run() {
+            mPinSetup = new PinSetupTask();
+            mPinSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    };
 
     private PinSetupTask mPinSetup;
     public class PinSetupTask extends AsyncTask {
         @Override
         protected tABC_CC doInBackground(Object... params) {
-            String username = (String) params[0];
-            String pin = (String) params[1];
-            tABC_Error pError = new tABC_Error();
-            tABC_CC result = core.ABC_PinSetup(username, pin, pError);
-            return result;
+            return PinSetupBlocking();
         }
 
         @Override

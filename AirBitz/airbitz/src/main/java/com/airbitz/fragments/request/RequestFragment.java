@@ -75,6 +75,7 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
+    public static final String BITCOIN_ID = "com.airbitz.request.bitcoinid";
     public static final String BITCOIN_ADDRESS = "com.airbitz.request.bitcoinaddress";
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
@@ -338,8 +339,8 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
             mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
 
             Wallet wallet = (Wallet) pickWalletSpinner.getSelectedItem();
-            String mID = mCoreAPI.createReceiveRequestFor(wallet, "", "", mSavedSatoshi);
-            String requestAddress = mCoreAPI.getRequestAddress(wallet.getUUID(), mID);
+            String id = mCoreAPI.createReceiveRequestFor(wallet, "", "", mSavedSatoshi);
+            String requestAddress = mCoreAPI.getRequestAddress(wallet.getUUID(), id);
 
             Fragment frag = new RequestQRCodeFragment();
             Bundle bundle = new Bundle();
@@ -347,6 +348,7 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
             bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
             bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
             bundle.putString(FIAT_VALUE, mFiatField.getText().toString());
+            bundle.putString(BITCOIN_ID, id);
             bundle.putString(BITCOIN_ADDRESS, requestAddress);
             frag.setArguments(bundle);
             ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());

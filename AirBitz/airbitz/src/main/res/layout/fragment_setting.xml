@@ -783,7 +783,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_usd"
-                            android:layout_width="160dp"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
@@ -799,7 +799,7 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_usd"
-                            android:layout_width="100dp"
+                            android:layout_width="120dp"
                             android:layout_height="25.2dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
@@ -817,7 +817,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_canadian"
-                            android:layout_width="160dp"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
@@ -833,7 +833,7 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_canadian"
-                            android:layout_width="100dp"
+                            android:layout_width="120dp"
                             android:layout_height="25.2dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
@@ -851,7 +851,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_euro"
-                            android:layout_width="160dp"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
@@ -867,7 +867,7 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_euro"
-                            android:layout_width="100dp"
+                            android:layout_width="120dp"
                             android:layout_height="25.2dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
@@ -885,7 +885,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_peso"
-                            android:layout_width="160dp"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
@@ -893,7 +893,6 @@
                             android:gravity="start"
                             android:paddingBottom="13dp"
                             android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
                             android:paddingTop="13dp"
                             android:text="@string/settings_title_peso"
                             android:textColor="@color/settings_button_text"
@@ -901,7 +900,7 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_peso"
-                            android:layout_width="100dp"
+                            android:layout_width="120dp"
                             android:layout_height="25.2dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
@@ -919,7 +918,7 @@
 
                         <TextView
                             android:id="@+id/settings_title_yuan"
-                            android:layout_width="160dp"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
@@ -935,7 +934,7 @@
 
                         <com.airbitz.objects.HighlightOnPressButton
                             android:id="@+id/settings_button_yuan"
-                            android:layout_width="100dp"
+                            android:layout_width="120dp"
                             android:layout_height="25.2dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"

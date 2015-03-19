@@ -73,7 +73,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private EditText mPasswordConfirmationEditText;
     private HighlightOnPressButton mNextButton;
     private HighlightOnPressButton mBackButton;
-    private boolean mGoodPassword = false;
     private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
     private LinearLayout mPopupBlank;
@@ -144,7 +143,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                checkNext();
+                checkNextButton();
             }
 
             @Override
@@ -190,10 +189,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void afterTextChanged(Editable editable) {
+                checkNextButton();
                 if (editable.length() >= 4) {
                     mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
-                    enableNextButton(true);
-                    goNext();
                 }
             }
         };
@@ -254,9 +252,11 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         }
     };
 
-    private void checkNext() {
-        mGoodPassword = checkPasswordRules(mPasswordEditText.getText().toString());
-        if(mGoodPassword && mPasswordEditText.getText().toString().equals(mPasswordConfirmationEditText.getText().toString())) {
+    private void checkNextButton() {
+        boolean goodPasswords = checkPasswordRules(mPasswordEditText.getText().toString())
+                && mPasswordEditText.getText().toString().equals(mPasswordConfirmationEditText.getText().toString());
+        boolean goodPin = mWithdrawalPinEditText.getText().toString().length() >= MIN_PIN_LENGTH;
+        if(goodPin && goodPasswords) {
             enableNextButton(true);
         }
         else {
@@ -317,12 +317,11 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     }
 
     private void goNext() {
-        mActivity.hideSoftKeyboard(mPasswordEditText);
+        mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
         // if they entered a valid mUsername or old mPassword
         if (newPasswordFieldsAreValid() && pinFieldIsValid()) {
             attemptSignUp();
         }
-        mNextButton.setClickable(true);
     }
 
     // checks the pin field
@@ -346,7 +345,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
         boolean bNewPasswordFieldsAreValid = true;
-            if (!mGoodPassword) {
+            if (!checkPasswordRules(mPasswordEditText.getText().toString())) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
             } else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString())) {

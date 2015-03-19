@@ -38,6 +38,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
                     android:text="Feb 01, 1000"
                     android:gravity="left"
                     android:textColor="@android:color/white"
@@ -47,14 +48,14 @@
                     android:id="@+id/transactiondetail_payee_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:layout_below="@id/transaction_detail_textview_date">
 
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/transaction_detail_edittext_name"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:layout_marginTop="22dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginRight="40dp"
                         android:layout_marginEnd="40dp"
                         android:background="@drawable/emboss_down"
@@ -79,28 +80,14 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:layout_below="@+id/transaction_detail_edittext_name"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:paddingLeft="4dp"
                         android:text="testing"
                         android:gravity="start|center_vertical"
                         android:textColor="@android:color/white"
                         android:textSize="14dp"
                         android:textStyle="bold" />
-
-                        <RelativeLayout
-                            android:id="@+id/transaction_detail_contact_pic_frame"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_alignParentRight="true">
-
-                            <ImageView
-                                android:id="@+id/transaction_detail_contact_pic"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:layout_centerInParent="true"/>
-
-                        </RelativeLayout>
 
                     <ListView
                         android:id="@+id/listview_search"
@@ -113,6 +100,22 @@
                         android:visibility="gone" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/transaction_detail_contact_pic_frame"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_alignRight="@id/transaction_detail_textview_date"
+                    android:layout_alignParentRight="true">
+
+                    <ImageView
+                        android:id="@+id/transaction_detail_contact_pic"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -128,13 +131,14 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="2dp"
                 android:background="#33ffffff"/>
 
             <LinearLayout
                 android:id="@+id/transaction_detail_btc_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="100" >

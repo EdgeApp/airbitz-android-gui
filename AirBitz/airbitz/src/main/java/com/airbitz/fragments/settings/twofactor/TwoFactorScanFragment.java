@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments.login.twofactor;
+package com.airbitz.fragments.settings.twofactor;
 
 import android.app.Activity;
 import android.app.AlertDialog;

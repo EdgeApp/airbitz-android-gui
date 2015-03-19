@@ -441,6 +441,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_SearchTransactions(szUserName, szPassword, szWalletUUID, szQuery, SWIGTYPE_p_p_p_sABC_TxInfo.getCPtr(paTransactions), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_GetRawTransaction(String szUserName, String szPassword, String szWalletUUID, String szID, SWIGTYPE_p_p_char pszHex, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_GetRawTransaction(szUserName, szPassword, szWalletUUID, szID, SWIGTYPE_p_p_char.getCPtr(pszHex), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static void ABC_FreeTransaction(tABC_TxInfo pTransaction) {
     coreJNI.ABC_FreeTransaction(tABC_TxInfo.getCPtr(pTransaction), pTransaction);
   }

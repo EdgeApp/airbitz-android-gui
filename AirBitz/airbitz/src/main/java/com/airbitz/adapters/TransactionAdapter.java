@@ -32,8 +32,12 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,8 +51,10 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,6 +74,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private List<Transaction> mListTransaction;
     private LinkedHashMap<String, Uri> mContactList;
     private long[] mRunningSatoshi;
+    private int mRound, mDimen;
 
     private final Picasso mPicasso;
     private SimpleDateFormat mFormatter;
@@ -83,6 +90,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mCoreAPI = CoreAPI.getApi();
         mPicasso = Picasso.with(context);
         mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
+        mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mContext.getResources().getDisplayMetrics());
+        mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
     }
 
     public void createRunningSatoshi() {
@@ -150,10 +159,20 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         if (mContactList != null && payeeImage != null && !name.isEmpty()) {
             viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
             if (payeeImage.getScheme().contains("content")) {
-                viewHolder.contactImageView.setImageURI(null);
-                viewHolder.contactImageView.setImageURI(payeeImage);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), payeeImage);
+                    Bitmap bmap2 = ThumbnailUtils.extractThumbnail(bitmap, mDimen, mDimen);
+                    RoundedTransformation rt = new RoundedTransformation(mRound, mRound);
+                    bitmap = rt.transform(bmap2);
+                    viewHolder.contactImageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                mPicasso.load(payeeImage).noFade().into(viewHolder.contactImageView);
+                mPicasso.load(payeeImage)
+                        .noFade()
+                        .transform(new RoundedTransformation(mRound, mRound))
+                        .into(viewHolder.contactImageView);
                 Log.d(TAG, "loading remote " + payeeImage.toString());
             }
         } else {

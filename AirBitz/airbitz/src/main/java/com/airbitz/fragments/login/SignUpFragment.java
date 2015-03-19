@@ -619,7 +619,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             } else {
                 success = mCoreAPI.SetPin(mPin);
                 if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
-                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
+                    mCoreAPI.PinSetup();
                 }
             }
 
@@ -631,13 +631,13 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             if (success) {
                 if (mMode == CHANGE_PASSWORD) {
                     AirbitzApplication.Login(mUsername, mPassword);
-                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+                    mCoreAPI.PinSetup();
                     mActivity.showModalProgress(false);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     mCoreAPI.SetPin(mPin);
-                    mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mPin);
+                    mCoreAPI.PinSetup();
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.showModalProgress(false);

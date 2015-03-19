@@ -63,7 +63,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorMenuFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,7 +144,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.onBackPressed();
+                onBackPress();
             }
         });
 
@@ -267,6 +267,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                                     if (mMode == CHANGE_QUESTIONS) {
                                         mActivity.popFragment();
                                     } else if (mMode == FORGOT_PASSWORD) {
+                                        mActivity.popFragment();
+                                        mActivity.showNavBar();
                                         mActivity.Logout();
                                     }
                                 }
@@ -286,6 +288,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (mMode == CHANGE_QUESTIONS) {
                 mActivity.popFragment();
             } else if (mMode == FORGOT_PASSWORD) {
+                mActivity.popFragment();
+                mActivity.showNavBar();
                 mActivity.Logout();
             }
         }

@@ -42,6 +42,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,10 +72,11 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorShowFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -149,24 +151,14 @@ public class SettingFragment extends BaseFragment {
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
-
-    private Handler mHandler = new Handler();
-    Runnable mPinSetupRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreSettings.getSzPIN());
-            mCoreSettings.setBDisablePINLogin(false);
-            mCoreAPI.saveAccountSettings(mCoreSettings);
-        }
-    };
-
-
+    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
+        mActivity = ((NavigationActivity)getActivity());
     }
 
     @Override
@@ -320,7 +312,7 @@ public class SettingFragment extends BaseFragment {
                 // Save the state here
                 if(isChecked && mCoreSettings.getBDisablePINLogin()) {
                     Log.d(TAG, "Enabling PIN");
-                    mHandler.post(mPinSetupRunnable);
+                    new mPinSetupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 } else if(!isChecked) {
                     Log.d(TAG, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
@@ -868,6 +860,38 @@ public class SettingFragment extends BaseFragment {
             mDialog.show();
         }
     }
+
+    /**
+     * Save Questions if Signing up or Changing questions
+     */
+    public class mPinSetupTask extends AsyncTask<Void, Void, Void> {
+
+        mPinSetupTask() { }
+
+        @Override
+        public void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mCoreAPI.PinSetupBlocking();
+            mCoreSettings.setBDisablePINLogin(false);
+            mCoreAPI.saveAccountSettings(mCoreSettings);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void success) {
+            onCancelled();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mActivity.showModalProgress(false);
+        }
+    }
+
 
     private boolean isNFCcapable() {
         final NfcManager nfcManager = (NfcManager) getActivity().getSystemService(Context.NFC_SERVICE);

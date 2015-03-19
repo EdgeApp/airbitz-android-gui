@@ -86,6 +86,8 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.directory.DirectoryDetailFragment;
+import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
@@ -103,7 +105,7 @@ import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.fragments.login.TransparentFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
@@ -180,6 +182,19 @@ public class NavigationActivity extends Activity
         public void run() {
             mNumberpadView.setVisibility(View.VISIBLE);
             mNumberpadView.setEnabled(true);
+        }
+    };
+
+    final Runnable delayedEnableReceiveSendButtons = new Runnable() {
+        @Override
+        public void run() {
+            if(mCoreAPI.walletsStillLoading()) {
+                mNavBarFragment.disableSendRecieveButtons(true);
+                mHandler.postDelayed(delayedEnableReceiveSendButtons, 200);
+            }
+            else {
+                mNavBarFragment.disableSendRecieveButtons(false);
+            }
         }
     };
 
@@ -280,24 +295,38 @@ public class NavigationActivity extends Activity
         // for keyboard hide and show
         final View activityRootView = findViewById(R.id.activity_navigation_root);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean mLastKeyBoardUp = false;
             @Override
             public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
                 if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
                     keyBoardUp = true;
-                    hideNavBar();
-                    if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                        ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
+                    if(keyBoardUp != mLastKeyBoardUp) {
+                        hideNavBar();
+                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
+                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
+                        }
                     }
                 } else {
                     keyBoardUp = false;
-                    if (AirbitzApplication.isLoggedIn()) {
-                        showNavBar();
-                    }
-                    if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                        ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
+                    if(keyBoardUp != mLastKeyBoardUp) {
+                        if (AirbitzApplication.isLoggedIn()) {
+                            showNavBar();
+                        }
+                        else {
+                            if(mNavStacks[mNavThreadId].peek() instanceof BusinessDirectoryFragment ||
+                                    mNavStacks[mNavThreadId].peek() instanceof MapBusinessDirectoryFragment ||
+                                    mNavStacks[mNavThreadId].peek() instanceof DirectoryDetailFragment ) {
+                                Log.d(TAG, "Keyboard down, not logged in, in directory");
+                                showNavBar();
+                            }
+                        }
+                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
+                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
+                        }
                     }
                 }
+                mLastKeyBoardUp = keyBoardUp;
             }
         });
 
@@ -483,8 +512,6 @@ public class NavigationActivity extends Activity
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
-
-//            getFragmentManager().executePendingTransactions();
         }
     }
 
@@ -652,13 +679,10 @@ public class NavigationActivity extends Activity
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
             }
         } else {
-            if (fragment instanceof RequestQRCodeFragment) {
-                popFragment();
-                showNavBar();
-            } else {//needed or show nav before switching fragments
-                popFragment();
-            }
+            popFragment();
         }
+
+        showNavBar();
     }
 
     public boolean isAtNavStackEntry() {
@@ -715,6 +739,9 @@ public class NavigationActivity extends Activity
                 processUri(data);
             }
         }
+
+        mHandler.post(delayedEnableReceiveSendButtons);
+
         super.onResume();
     }
 
@@ -728,6 +755,7 @@ public class NavigationActivity extends Activity
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
+        mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
@@ -1127,12 +1155,27 @@ public class NavigationActivity extends Activity
         }
         checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
-            mCoreAPI.PinSetup(AirbitzApplication.getUsername(), mCoreAPI.coreSettings().getSzPIN());
+            mCoreAPI.PinSetup();
         }
         DisplayLoginOverlay(false, true);
 
-        if(UserReview.offerUserReview()) {
-            UserReview.ShowUserReviewDialog(this);
+        new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
+
+        UserReviewTask() { }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return UserReview.offerUserReview();
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean offerReview) {
+            if(offerReview) {
+                UserReview.ShowUserReviewDialog(NavigationActivity.this);
+            }
         }
     }
 
@@ -1180,7 +1223,6 @@ public class NavigationActivity extends Activity
         }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
-        finish();
         startActivity(new Intent(this, NavigationActivity.class));
     }
 
@@ -1232,9 +1274,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            AirbitzApplication.Logout();
-            finish();
-            startActivity(new Intent(this, NavigationActivity.class));
+            Logout(false);
         }
     }
 
@@ -1870,6 +1910,7 @@ public class NavigationActivity extends Activity
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
                 Logout(false);
             }
         });
@@ -1897,7 +1938,7 @@ public class NavigationActivity extends Activity
         });
 
         mOtherAccounts = new ArrayList<String>();
-        mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts);
+        mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts, true);
         mOtherAccountsAdapter.setButtonTouchedListener(this); // for close account button
         mOtherAccountsListView = (ListView) findViewById(R.id.drawer_account_list);
         mOtherAccountsListView.setAdapter(mOtherAccountsAdapter);
@@ -1906,6 +1947,7 @@ public class NavigationActivity extends Activity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = mOtherAccounts.get(position);
                 saveCachedLoginName(username);
+                mDrawer.closeDrawer(mDrawerView);
                 Logout(false);
             }
         });

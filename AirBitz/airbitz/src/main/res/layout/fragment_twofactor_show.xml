@@ -29,9 +29,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_below="@id/fragment_twofactor_instruction_text"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:orientation="vertical">
 
 
         <com.airbitz.objects.LimitedEditText
@@ -39,6 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/emboss_down"
             android:ems="10"
             android:hint="@string/fragment_landing_password_hint"
@@ -57,9 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/fragment_twofactor_show_password_edittext"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_gravity="center_vertical"
             android:padding="6dp"
-            android:background="@drawable/rounded_edge_blue_bg"
             android:checked="false"
             android:singleLine="true"
             android:switchMinWidth="0dp"
@@ -76,6 +77,8 @@
             android:id="@+id/fragment_twofactor_button_import"
             android:layout_below="@id/fragment_twofactor_show_toggle_enabled"
             android:layout_width="95dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_edge_blue_bg"
@@ -91,20 +94,45 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/fragment_twofactor_button_import">
 
-            <ImageView
-                android:id="@+id/fragment_twofactor_show_qr_image"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_marginTop="20dp"
-                android:layout_centerHorizontal="true" />
+            <RelativeLayout
+                android:id="@+id/fragment_twofactor_show_qr_layout"
+                android:layout_width="166dp"
+                android:layout_height="166dp"
+                android:layout_margin="10dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/rounded_edge_white_bg" >
+
+                <ImageView
+                    android:id="@+id/fragment_twofactor_show_qr_image"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_twofactor_request_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/fragment_twofactor_button_import"
+            android:layout_marginTop="50dp"
+            android:background="@color/blue_text">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_twofactor_show_reset_requested"
+                android:layout_margin="4dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"/>
 
             <LinearLayout
-                android:id="@+id/fragment_twofactor_request_view"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_centerInParent="true"
+                android:layout_height="60dp"
                 android:orientation="horizontal"
-                android:background="@color/blue_text"
                 android:visibility="visible" >
 
                 <com.airbitz.objects.HighlightOnPressButton
@@ -127,7 +155,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_btn_blue"
+                    android:background="@drawable/bg_button_orange"
                     android:text="@string/fragment_twofactor_show_keep_twofa"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
@@ -135,9 +163,7 @@
 
             </LinearLayout>
 
-
-        </RelativeLayout>
-
+        </LinearLayout>
 
     </RelativeLayout>
 

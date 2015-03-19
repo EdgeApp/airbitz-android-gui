@@ -36,9 +36,7 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,13 +53,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -72,7 +68,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.login.twofactor.TwoFactorMenuFragment;
+import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -204,6 +200,8 @@ public class LandingFragment extends BaseFragment implements
                 if(mPinLayout.getVisibility() == View.VISIBLE) {
                     mUserNameEditText.setText(mUsername);
                     refreshView(false, false);
+                    mPasswordEditText.requestFocus();
+                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.startSignUp(mUserNameEditText.getText().toString());
@@ -236,7 +234,7 @@ public class LandingFragment extends BaseFragment implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
-                    saveCachedLoginName(mUsername);
+                    saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
                     mUserNameEditText.setText(mUsername);
@@ -254,7 +252,7 @@ public class LandingFragment extends BaseFragment implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mOtherAccounts.get(position);
                 if (mCoreAPI.PinLoginExists(mUsername)) {
-                    saveCachedLoginName(mUsername);
+                    saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
                     mUserNameEditText.setText(mUsername);
@@ -432,21 +430,30 @@ public class LandingFragment extends BaseFragment implements
             return;
         }
 
-        mUserNameEditText.setText(mUsername);
-        refreshView(false, false);
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         if(mActivity.networkIsAvailable()) {
-            if(!AirbitzApplication.isLoggedIn()) {
+            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
                 mPinEditText.setText("");
-                if (mCoreAPI.PinLoginExists(mUsername)) {
-                    refreshView(true, true);
-                    mHandler.postDelayed(delayedShowPinKeyboard, 100);
-                }
+                Log.d(TAG, "showing pin login for " + mUsername);
+                refreshView(true, true);
+                mHandler.postDelayed(delayedShowPinKeyboard, 100);
+                return;
             }
         }
         else {
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
-            refreshView(false, false);
         }
+
+        Log.d(TAG, "showing password login for " + mUsername);
+        if(mUsername.isEmpty()) {
+            mHandler.postDelayed(delayedShowUsernameKeyboard, 100);
+        }
+        else {
+            mUserNameEditText.setText(mUsername);
+            mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
+        }
+        refreshView(false, false);
     }
 
     @Override
@@ -618,10 +625,25 @@ public class LandingFragment extends BaseFragment implements
         @Override
         public void run() {
             mPinEditText.setText("");
-            mPinEditText.performClick();
+            mActivity.showSoftKeyboard(mPinEditText);
         }
     };
 
+    final Runnable delayedShowPasswordKeyboard = new Runnable() {
+        @Override
+        public void run() {
+            mPasswordEditText.setText("");
+            mActivity.showSoftKeyboard(mPasswordEditText);
+        }
+    };
+
+    final Runnable delayedShowUsernameKeyboard = new Runnable() {
+        @Override
+        public void run() {
+            mUserNameEditText.setText("");
+            mActivity.showSoftKeyboard(mUserNameEditText);
+        }
+    };
 
     public class PasswordLoginTask extends AsyncTask {
         @Override
@@ -654,8 +676,10 @@ public class LandingFragment extends BaseFragment implements
         tABC_CC resultCode = error.getCode();
         mCoreAPI.otpSetError(resultCode);
 
+        saveUsername(mUsername);
         if(error.getCode() == tABC_CC.ABC_CC_Ok) {
             Editable pass = mPasswordEditText.getText();
+            mPasswordEditText.setText("");
             char[] password = new char[pass.length()];
             pass.getChars(0, pass.length(), password, 0);
             mActivity.LoginNow(mUsername, password);
@@ -701,7 +725,7 @@ public class LandingFragment extends BaseFragment implements
         refreshView(false, false); // reset to password view
     }
 
-    private void saveCachedLoginName(String name) {
+    private void saveUsername(String name) {
         SharedPreferences.Editor editor = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
         editor.putString(AirbitzApplication.LOGIN_NAME, name);
         editor.apply();

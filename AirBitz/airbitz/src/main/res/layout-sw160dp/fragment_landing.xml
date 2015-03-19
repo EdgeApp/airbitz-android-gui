@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center_horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_landing_username_edittext"
@@ -91,7 +91,7 @@
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_signin_button"
                     android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
+                    android:layout_height="37.8dp"
                     android:layout_below="@id/fragment_landing_password_edittext"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
@@ -106,6 +106,7 @@
                 <ListView
                     android:id="@+id/fragment_landing_account_listview"
                     android:layout_width="match_parent"
+                    android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/fragment_landing_username_edittext"
                     android:background="@drawable/category_popup"
@@ -118,6 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_centerHorizontal="true"
             android:visibility="gone">
 
             <TextView
@@ -131,13 +133,14 @@
                 android:gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
-                android:textSize="14dp"
+                android:textSize="20dp"
                 android:clickable="true"
                 android:visibility="visible"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="220dp"
+                android:layout_height="36dp"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@id/fragment_landing_current_user"
                 android:layout_marginBottom="20dp">
 
@@ -289,7 +292,7 @@
         <LinearLayout
             android:id="@+id/fragment_landing_forgot_password_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_below="@id/fragment_landing_create_account"
             android:orientation="horizontal"
             android:layout_marginTop="12dp"

@@ -236,17 +236,6 @@ public class SendConfirmationFragment extends BaseFragment {
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
         mWalletSpinner.setAdapter(dataAdapter);
 
-        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSourceWallet = mWallets.get(i);
-                updateTextFieldContents(true);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -519,7 +508,7 @@ public class SendConfirmationFragment extends BaseFragment {
     }
 
     public void touchEventsEnded() {
-        int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);
+        int successThreshold = (mSlideLayout.getWidth() / 8);
         if (mConfirmSwipeButton.getX() <= successThreshold) {
             attemptInitiateSend();
         } else {
@@ -577,7 +566,12 @@ public class SendConfirmationFragment extends BaseFragment {
             mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
         }
         if (fees < 0) {
-            mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            if(mAmountToSendSatoshi > DUST_AMOUNT) {
+                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
+            }
+            else {
+                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_amount));
+            }
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
@@ -754,9 +748,20 @@ public class SendConfirmationFragment extends BaseFragment {
         }
         for(int i=0; i<mWallets.size(); i++) {
             if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
-                mWalletSpinner.setSelection(i);
+                mWalletSpinner.setSelection(i, false);
             }
         }
+        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSourceWallet = mWallets.get(i);
+                updateTextFieldContents(true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
 
         if (mToWallet != null) {
             mToEdittext.setText(mToWallet.getName());

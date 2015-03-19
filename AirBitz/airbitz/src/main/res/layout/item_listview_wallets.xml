@@ -41,18 +41,8 @@
         android:paddingBottom="9.45dp"
         android:paddingLeft="5.45dp"
         android:paddingTop="9.45dp"
+        android:layout_marginRight="10dp"
         android:scaleType="centerCrop"
         android:src="@drawable/arrow_right" />
-
-    <ImageView
-        android:id="@+id/imageview_dots"
-        android:layout_width="30.8dp"
-        android:layout_height="37.8dp"
-        android:layout_gravity="center_vertical"
-        android:adjustViewBounds="true"
-        android:padding="12.6dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ico_dots" />
-
 
 </LinearLayout>

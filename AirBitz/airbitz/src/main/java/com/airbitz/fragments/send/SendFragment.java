@@ -409,7 +409,7 @@ public class SendFragment extends BaseFragment implements
             if (mCoreAPI == null) {
                 mCoreAPI = CoreAPI.getApi();
             }
-            mFromWallet = mCoreAPI.getCoreWallets(false).get(0);
+            mFromWallet = mWallets.get(0);
         }
         bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
@@ -602,7 +602,6 @@ public class SendFragment extends BaseFragment implements
         mToEdittext.post(new Runnable() {
             @Override
             public void run() {
-                mToEdittext.setText(bitcoinAddress);
                 checkAndSendAddress(bitcoinAddress);
             }
         });

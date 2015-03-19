@@ -35,13 +35,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/qr_code_view"
+                <RelativeLayout
+                    android:id="@+id/qr_code_layout"
                     android:layout_width="630dp"
                     android:layout_height="630dp"
+                    android:layout_margin="10dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="9.45dp"
-                    android:background="@drawable/bg_white_corners" />
+                    android:background="@drawable/rounded_edge_white_bg" >
+
+                    <ImageView
+                        android:id="@+id/qr_code_view"
+                        android:layout_width="615dp"
+                        android:layout_height="615dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/bg_white_corners" />
+
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -51,7 +60,7 @@
                     android:layout_marginRight="12.6dp"
                     android:layout_marginTop="9.45dp"
                     android:paddingBottom="6dp"
-                    android:layout_below="@id/qr_code_view" >
+                    android:layout_below="@id/qr_code_layout" >
 
                     <ImageView
                         android:id="@+id/fragment_request_qrcode_ble_image"

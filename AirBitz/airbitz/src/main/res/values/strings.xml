@@ -124,6 +124,7 @@
     <string name="activity_signup_title_change_pin">Change PIN</string>
     <string name="activity_signup_username_hint">User Name</string>
     <string name="activity_signup_password_hint">Choose a Password</string>
+    <string name="activity_signup_password">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
     <string name="activity_signup_current_password">Current Password</string>
     <string name="activity_signup_old_password">Old Password</string>
@@ -303,6 +304,7 @@
     <string name="fragment_send_confirmation_send_error_title">Error during send</string>
     <string name="fragment_send_confirmation_insufficient_funds_message">You do not have enough funds to send this transaction.</string>
     <string name="fragment_send_confirmation_insufficient_funds">Insufficient funds</string>
+    <string name="fragment_send_confirmation_insufficient_amount">Amount too small</string>
     <string name="fragment_send_confirmation_invalid_bitcoin_address">Invalid Bitcoin Address</string>
     <string name="fragment_send_confirmation_no_pin">No PIN</string>
     <string name="fragment_send_confirmation_please_enter_pin">Please enter your 4 Digit PIN</string>
@@ -471,8 +473,12 @@
 
     <!-- User Review -->
     <string name="user_review_title">Airbitz</string>
-    <string name="user_review_message">"Do you like Airbitz?"</string>
-    <string name="user_review_ok_message">"Please write a review in the Play Store"</string>
+    <string name="user_review_message">"How are you liking Airbitz?"</string>
+    <string name="user_review_not_good">"Not so good"</string>
+    <string name="user_review_great">"It's great"</string>
+    <string name="user_review_no_thanks">"No thanks"</string>
+    <string name="user_review_ok_message">"Would you like to send us some feedback?"</string>
+    <string name="user_review_play_store">"Would you like to write a review in the Google Play Store?"</string>
     <string name="user_review_support_email_address">support@airbitz.co</string>
     <string name="user_review_support_subject">Airbitz Feedback</string>
     <string name="user_review_support_title">Choose Email</string>
@@ -494,7 +500,7 @@
     <string name="fragment_twofactor_menu_reset_requested">Reset requested</string>
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
-
+    <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
     <string name="twofactor_required_title">Two Factor Authentication On</string>
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
     <string name="twofactor_remind_later">Remind Me Later</string>
@@ -528,5 +534,9 @@
 
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
+
+    <!-- Navigation Drawer -->
+    <string name="drawer_logout">LOGOUT</string>
+    <string name="drawer_settings">SETTINGS</string>
 
 </resources>
