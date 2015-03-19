@@ -293,7 +293,7 @@
         <LinearLayout
             android:id="@+id/fragment_landing_forgot_password_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_below="@id/fragment_landing_create_account"
             android:orientation="horizontal"
             android:layout_marginTop="12dp"
