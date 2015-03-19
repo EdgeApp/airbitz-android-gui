@@ -185,6 +185,19 @@ public class NavigationActivity extends Activity
         }
     };
 
+    final Runnable delayedEnableReceiveSendButtons = new Runnable() {
+        @Override
+        public void run() {
+            if(mCoreAPI.walletsStillLoading()) {
+                mNavBarFragment.disableSendRecieveButtons(true);
+                mHandler.postDelayed(delayedEnableReceiveSendButtons, 200);
+            }
+            else {
+                mNavBarFragment.disableSendRecieveButtons(false);
+            }
+        }
+    };
+
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
         @Override
@@ -726,6 +739,9 @@ public class NavigationActivity extends Activity
                 processUri(data);
             }
         }
+
+        mHandler.post(delayedEnableReceiveSendButtons);
+
         super.onResume();
     }
 
@@ -739,6 +755,7 @@ public class NavigationActivity extends Activity
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
+        mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 

@@ -192,7 +192,7 @@ public class NavigationBarFragment extends BaseFragment {
         if((selectedTab == NavigationActivity.Tabs.REQUEST.ordinal() ||
                 selectedTab == NavigationActivity.Tabs.SEND.ordinal()) &&
                 AirbitzApplication.isLoggedIn() && mCoreAPI.walletsStillLoading()) {
-            selectedTab = NavigationActivity.Tabs.WALLET.ordinal();
+            selectedTab = mLastTab;
             mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
             return;
         }
