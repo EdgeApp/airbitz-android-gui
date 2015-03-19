@@ -124,6 +124,7 @@
     <string name="activity_signup_title_change_pin">Change PIN</string>
     <string name="activity_signup_username_hint">User Name</string>
     <string name="activity_signup_password_hint">Choose a Password</string>
+    <string name="activity_signup_password">Password</string>
     <string name="activity_signup_password_confirm_hint">Re-enter Password</string>
     <string name="activity_signup_current_password">Current Password</string>
     <string name="activity_signup_old_password">Old Password</string>

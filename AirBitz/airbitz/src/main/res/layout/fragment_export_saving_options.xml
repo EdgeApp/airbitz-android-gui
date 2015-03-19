@@ -167,7 +167,7 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/emboss_down"
                 android:ems="10"
-                android:hint="@string/activity_signup_password_hint"
+                android:hint="@string/activity_signup_password"
                 android:inputType="textPassword"
                 android:paddingLeft="12.6dp"
                 android:paddingRight="12.6dp"
