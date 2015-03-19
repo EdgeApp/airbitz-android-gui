@@ -508,7 +508,7 @@ public class SendConfirmationFragment extends BaseFragment {
     }
 
     public void touchEventsEnded() {
-        int successThreshold = mLeftThreshold + (mSlideLayout.getWidth() / 4);
+        int successThreshold = (mSlideLayout.getWidth() / 8);
         if (mConfirmSwipeButton.getX() <= successThreshold) {
             attemptInitiateSend();
         } else {
