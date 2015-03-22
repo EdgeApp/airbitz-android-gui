@@ -231,7 +231,7 @@
     <string name="settings_title_ble_send_only">Bluetooth (Send only)</string>
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_title_distance">Default Distance</string>
-    <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
+    <string name="settings_exchange_title">DEFAULT EXCHANGE RATE</string>
     <string name="settings_title_usd">US dollar</string>
     <string name="settings_title_canadian">Canadian dollar</string>
     <string name="settings_title_euro">Euro</string>
