@@ -254,6 +254,8 @@ public class NavigationActivity extends Activity
         }
     };
 
+    public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
+
     private DrawerLayout mDrawer;
     private RelativeLayout mDrawerView;
     private TextView mDrawerAccount;
@@ -354,6 +356,7 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
+        setViewPager();
         if (overlay) {
             mViewPager.setCurrentItem(1, false);
             if (animate) {
@@ -362,23 +365,18 @@ public class NavigationActivity extends Activity
                 mViewPager.startAnimation(anim);
             }
             mViewPager.setVisibility(View.VISIBLE);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(true);
-            }
         } else {
             mViewPager.setCurrentItem(0, animate);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(false);
-            }
             mViewPager.setVisibility(View.GONE);
         }
     }
 
     private void setViewPager() {
-        if(mOverlayFragments.size() == 0) {
+        mOverlayFragments.clear();
+//        if(mOverlayFragments.size() == 0) {
             mOverlayFragments.add(new TransparentFragment());
             mOverlayFragments.add(new LandingFragment());
-        }
+//        }
 
         NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
         mViewPager.setAdapter(pageAdapter);
@@ -1225,11 +1223,33 @@ public class NavigationActivity extends Activity
         if ((AirbitzApplication.getUsername() != null) && pinDelete) {
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
-        AirbitzApplication.Logout();
-        mCoreAPI.logout();
-        resetApp();
-        startActivity(new Intent(this, NavigationActivity.class));
+        if(mNavStacks[mNavThreadId].size()>1) { // ensure onPause called
+            Fragment fragment = mNavStacks[mNavThreadId].peek();
+            getFragmentManager().executePendingTransactions();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitAllowingStateLoss();
+        }
+        mHandler.postDelayed(mAttemptLogout, 100);
+        DisplayLoginOverlay(true);
     }
+
+    Runnable mAttemptLogout = new Runnable() {
+        @Override
+        public void run() {
+            if(mAsyncTasks.isEmpty()) {
+                AirbitzApplication.Logout();
+                mCoreAPI.logout();
+                resetApp();
+                startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
+            }
+            else {
+                mHandler.postDelayed(this, 100);
+            }
+        }
+    };
+
+
 
     private void resetApp() {
         for(int i=0; i<mNavFragments.length; i++) {

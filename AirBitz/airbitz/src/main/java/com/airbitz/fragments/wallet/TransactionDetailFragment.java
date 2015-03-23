@@ -1255,7 +1255,7 @@ public class TransactionDetailFragment extends BaseFragment
         }
     }
 
-    class SaveTransactionAsyncTask extends AsyncTask<Void, Void, tABC_CC> {
+    class SaveTransactionAsyncTask extends BaseAsyncTask<Void, Void, tABC_CC> {
         Transaction transaction;
         long Bizid;
         String Payee, Category, Note, Fiat;
@@ -1292,6 +1292,7 @@ public class TransactionDetailFragment extends BaseFragment
             {
                 mActivity.ShowFadingDialog(getString(R.string.transaction_details_transaction_save_failed));
             }
+            onCancelled();
         }
 
         @Override

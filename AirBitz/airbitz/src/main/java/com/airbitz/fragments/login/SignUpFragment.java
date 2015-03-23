@@ -589,7 +589,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         setupUI(getArguments());
     }
 
-    public class ChangeTask extends AsyncTask<String, Void, Boolean> {
+    public class ChangeTask extends BaseAsyncTask<String, Void, Boolean> {
         tABC_CC success;
 
         String mUsername;
@@ -601,6 +601,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mActivity.showModalProgress(true);
             mCoreAPI.stopAllAsyncUpdates();
             mPin = mWithdrawalPinEditText.getText().toString();
+            super.onPreExecute();
         }
 
         @Override
@@ -632,7 +633,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 if (mMode == CHANGE_PASSWORD) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     mCoreAPI.PinSetup();
-                    mActivity.showModalProgress(false);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
@@ -640,14 +640,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     mCoreAPI.PinSetup();
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
-                    mActivity.showModalProgress(false);
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal());
                 } else {
-                    mActivity.showModalProgress(false);
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
-                mActivity.showModalProgress(false);
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
                 } else {
@@ -655,8 +652,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 }
                 mNextButton.setClickable(true);
             }
+            mActivity.showModalProgress(false);
             mCoreAPI.startAllAsyncUpdates();
             mChangeTask = null;
+            super.onPostExecute(success);
         }
 
         @Override
