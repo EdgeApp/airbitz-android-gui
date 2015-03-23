@@ -1227,7 +1227,14 @@ public class NavigationActivity extends Activity
         }
         AirbitzApplication.Logout();
         mCoreAPI.logout();
+        resetApp();
         startActivity(new Intent(this, NavigationActivity.class));
+    }
+
+    private void resetApp() {
+        for(int i=0; i<mNavFragments.length; i++) {
+            resetFragmentThreadToBaseFragment(i);
+        }
     }
 
     private Fragment getNewBaseFragement(int id) {
