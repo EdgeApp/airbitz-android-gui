@@ -114,6 +114,7 @@ import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
+import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.PluginFragment;
 
@@ -264,6 +265,8 @@ public class NavigationActivity extends Activity
     private ListView mOtherAccountsListView;
     private AccountsAdapter mOtherAccountsAdapter;
     private List<String> mOtherAccounts;
+
+    private RememberPasswordCheck mPasswordCheck;
 
 
     @Override
@@ -741,6 +744,10 @@ public class NavigationActivity extends Activity
             }
         }
 
+        if (null != mPasswordCheck) {
+            mPasswordCheck.onResume();
+        }
+
         mHandler.post(delayedEnableReceiveSendButtons);
 
         super.onResume();
@@ -755,6 +762,9 @@ public class NavigationActivity extends Activity
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
+        }
+        if (null != mPasswordCheck) {
+            mPasswordCheck.onPause();
         }
         mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
@@ -1160,7 +1170,12 @@ public class NavigationActivity extends Activity
         }
         DisplayLoginOverlay(false, true);
 
-        new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (!fullLogin && mCoreAPI.needsPasswordCheck()) {
+            mPasswordCheck = new RememberPasswordCheck(this);
+            mPasswordCheck.showPasswordCheckAlert();
+        } else {
+            new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {

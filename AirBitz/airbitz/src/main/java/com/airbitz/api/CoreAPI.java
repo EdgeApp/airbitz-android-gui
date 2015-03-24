@@ -799,6 +799,21 @@ public class CoreAPI {
 //        sources.setASources();
     }
 
+    public boolean needsPasswordCheck() {
+        tABC_AccountSettings settings = coreSettings();
+        int pinLoginCount = settings.getPinLoginCount();
+        pinLoginCount++;
+        settings.setPinLoginCount(pinLoginCount);
+        saveAccountSettings(settings);
+        if (pinLoginCount == 3
+                || pinLoginCount == 10
+                || pinLoginCount == 40
+                || pinLoginCount == 100) {
+            return true;
+        }
+        return false;
+    }
+
     //***************** Questions
 
     public QuestionChoice[] GetQuestionChoices() {

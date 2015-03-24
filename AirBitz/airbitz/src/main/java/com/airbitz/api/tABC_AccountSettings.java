@@ -181,6 +181,14 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_bDisablePINLogin_get(swigCPtr, this);
   }
 
+  public void setPinLoginCount(int value) {
+    coreJNI.tABC_AccountSettings_pinLoginCount_set(swigCPtr, this, value);
+  }
+
+  public int getPinLoginCount() {
+    return coreJNI.tABC_AccountSettings_pinLoginCount_get(swigCPtr, this);
+  }
+
   public tABC_AccountSettings() {
     this(coreJNI.new_tABC_AccountSettings(), true);
   }

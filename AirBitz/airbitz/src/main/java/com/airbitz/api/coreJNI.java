@@ -300,6 +300,8 @@ public class coreJNI {
   public final static native long tABC_AccountSettings_spendRequirePinSatoshis_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_bDisablePINLogin_set(long jarg1, tABC_AccountSettings jarg1_, boolean jarg2);
   public final static native boolean tABC_AccountSettings_bDisablePINLogin_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_pinLoginCount_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);
+  public final static native int tABC_AccountSettings_pinLoginCount_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native long new_tABC_AccountSettings();
   public final static native void delete_tABC_AccountSettings(long jarg1);
   public final static native int ABC_Initialize(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);

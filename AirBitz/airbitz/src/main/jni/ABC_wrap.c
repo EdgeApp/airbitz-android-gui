@@ -4929,6 +4929,34 @@ SWIGEXPORT jboolean JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1pinLoginCount_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->pinLoginCount = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1pinLoginCount_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  result = (int) ((arg1)->pinLoginCount);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1AccountSettings(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   struct sABC_AccountSettings *result = 0 ;
