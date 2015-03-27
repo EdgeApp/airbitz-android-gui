@@ -76,12 +76,12 @@ public class PlayLocationManager implements
     }
 
     public void addLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
-        if (mObservers.isEmpty()) {
-            attemptConnection();
-        }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
             Log.d(TAG, "Listener added: " + listener);
+        }
+        if (locationClient == null) {
+            attemptConnection();
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -125,7 +125,7 @@ public class PlayLocationManager implements
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         if(locationClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
-            LocationServices.FusedLocationApi.getLastLocation(locationClient);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
         } else {
             onConnectionSuspended(0);
         }
