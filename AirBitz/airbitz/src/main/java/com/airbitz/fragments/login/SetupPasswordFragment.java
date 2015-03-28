@@ -143,7 +143,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                checkNextButton();
+//                checkNextButton();
             }
 
             @Override
@@ -189,7 +189,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void afterTextChanged(Editable editable) {
-                checkNextButton();
+//                checkNextButton();
                 if (editable.length() >= 4) {
                     mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
                 }
@@ -422,6 +422,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                 mPasswordEditText.requestFocus();
             }
         });
+        enableNextButton(true);
     }
 
     CreateAccountTask mCreateAccountTask;
