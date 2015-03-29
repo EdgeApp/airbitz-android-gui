@@ -143,7 +143,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-//                checkNextButton();
+                checkPasswordRules(mPasswordEditText.getText().toString());
             }
 
             @Override
@@ -189,7 +189,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void afterTextChanged(Editable editable) {
-//                checkNextButton();
                 if (editable.length() >= 4) {
                     mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
                 }
@@ -251,18 +250,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             }
         }
     };
-
-    private void checkNextButton() {
-        boolean goodPasswords = checkPasswordRules(mPasswordEditText.getText().toString())
-                && mPasswordEditText.getText().toString().equals(mPasswordConfirmationEditText.getText().toString());
-        boolean goodPin = mWithdrawalPinEditText.getText().toString().length() >= MIN_PIN_LENGTH;
-        if(goodPin && goodPasswords) {
-            enableNextButton(true);
-        }
-        else {
-            enableNextButton(false);
-        }
-    }
 
     private void enableNextButton(boolean enable) {
         if(enable) {
