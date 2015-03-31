@@ -341,4 +341,10 @@
         android:src="@drawable/btn_back"
         android:visibility="visible" />
 
+    <FrameLayout
+        android:id="@+id/fragment_landing_black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone"/>
 </RelativeLayout>

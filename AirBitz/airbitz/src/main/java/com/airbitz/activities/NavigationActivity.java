@@ -255,6 +255,8 @@ public class NavigationActivity extends Activity
         }
     };
 
+    public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
+
     private DrawerLayout mDrawer;
     private RelativeLayout mDrawerView;
     private TextView mDrawerAccount;
@@ -267,7 +269,6 @@ public class NavigationActivity extends Activity
     private List<String> mOtherAccounts;
 
     private RememberPasswordCheck mPasswordCheck;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -343,6 +344,7 @@ public class NavigationActivity extends Activity
 
         // Navigation Drawer slideout
         setupDrawer();
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     public static CoreAPI initiateCore(Context context) {
@@ -357,6 +359,7 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
+        setViewPager();
         if (overlay) {
             mViewPager.setCurrentItem(1, false);
             if (animate) {
@@ -378,10 +381,11 @@ public class NavigationActivity extends Activity
     }
 
     private void setViewPager() {
-        if(mOverlayFragments.size() == 0) {
+        mOverlayFragments.clear();
+//        if(mOverlayFragments.size() == 0) {
             mOverlayFragments.add(new TransparentFragment());
             mOverlayFragments.add(new LandingFragment());
-        }
+//        }
 
         NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
         mViewPager.setAdapter(pageAdapter);
@@ -750,6 +754,8 @@ public class NavigationActivity extends Activity
 
         mHandler.post(delayedEnableReceiveSendButtons);
 
+        mCoreAPI.addExchangeRateChangeListener(this);
+
         super.onResume();
     }
 
@@ -767,6 +773,7 @@ public class NavigationActivity extends Activity
             mPasswordCheck.onPause();
         }
         mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
+        mCoreAPI.removeExchangeRateChangeListener(this);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
@@ -1176,6 +1183,8 @@ public class NavigationActivity extends Activity
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1237,9 +1246,40 @@ public class NavigationActivity extends Activity
         if ((AirbitzApplication.getUsername() != null) && pinDelete) {
             mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
         }
-        AirbitzApplication.Logout();
-        mCoreAPI.logout();
-        startActivity(new Intent(this, NavigationActivity.class));
+        if(mNavStacks[mNavThreadId].size()>1) { // ensure onPause called
+            Fragment fragment = mNavStacks[mNavThreadId].peek();
+            getFragmentManager().executePendingTransactions();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+            transaction.commitAllowingStateLoss();
+        }
+        mHandler.postDelayed(mAttemptLogout, 100);
+        DisplayLoginOverlay(true);
+
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    Runnable mAttemptLogout = new Runnable() {
+        @Override
+        public void run() {
+            if(mAsyncTasks.isEmpty()) {
+                AirbitzApplication.Logout();
+                mCoreAPI.logout();
+                resetApp();
+                startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
+            }
+            else {
+                mHandler.postDelayed(this, 100);
+            }
+        }
+    };
+
+
+
+    private void resetApp() {
+        for(int i=0; i<mNavFragments.length; i++) {
+            resetFragmentThreadToBaseFragment(i);
+        }
     }
 
     private Fragment getNewBaseFragement(int id) {
@@ -1317,7 +1357,6 @@ public class NavigationActivity extends Activity
         UserJustLoggedIn(password != null);
         setViewPager();
         mDrawerAccount.setText(username);
-        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
@@ -1908,6 +1947,7 @@ public class NavigationActivity extends Activity
         }
     }
 
+    boolean mDrawerExchangeUpdated = false;
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
@@ -1945,12 +1985,8 @@ public class NavigationActivity extends Activity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(mNavStacks[Tabs.MORE.ordinal()].peek() instanceof SettingFragment)) {
-                    mNavStacks[Tabs.MORE.ordinal()].clear();
-                    pushFragment(new SettingFragment(), NavigationActivity.Tabs.MORE.ordinal());
-                }
-                switchFragmentThread(Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
+                switchFragmentThread(Tabs.MORE.ordinal());
             }
         });
 
@@ -1986,10 +2022,19 @@ public class NavigationActivity extends Activity
             @Override
             public void onDrawerClosed(View drawerView) {
                 mOtherAccountsListView.setVisibility(View.GONE);
+                mDrawerExchangeUpdated = false;
             }
 
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {}
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(!mDrawerExchangeUpdated) {
+                    tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                    if (settings != null) {
+                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
+                        mDrawerExchangeUpdated = true;
+                    }
+                }
+            }
 
             @Override
             public void onDrawerOpened(View drawerView) {}

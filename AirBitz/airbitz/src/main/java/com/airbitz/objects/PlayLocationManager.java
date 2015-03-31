@@ -76,12 +76,12 @@ public class PlayLocationManager implements
     }
 
     public void addLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
+        if (mObservers.isEmpty()) {
+            attemptConnection();
+        }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
             Log.d(TAG, "Listener added: " + listener);
-        }
-        if (locationClient == null) {
-            attemptConnection();
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -98,7 +98,9 @@ public class PlayLocationManager implements
 
     public Location getLocation() {
         if (null == mCurrentLocation && locationClient != null && locationClient.isConnected()) {
-            LocationServices.FusedLocationApi.getLastLocation(locationClient);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
+            Log.d(TAG, "getloc: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
+                    + mCurrentLocation.getLongitude() + ", " + mCurrentLocation.getAccuracy());
         }
         return mCurrentLocation;
     }
@@ -126,8 +128,8 @@ public class PlayLocationManager implements
         if(locationClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
-        } else {
-            onConnectionSuspended(0);
+            Log.d(TAG, "onconnected: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
+                    + mCurrentLocation.getLongitude() + ", " + mCurrentLocation.getAccuracy());
         }
 
         if (mCurrentLocation != null) {
@@ -138,9 +140,7 @@ public class PlayLocationManager implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "Suspended. Please re-connect.");
-        if (mObservers.size() != 0) {
-            attemptConnection();
-        }
+        attemptConnection();
     }
 
     @Override
@@ -148,8 +148,8 @@ public class PlayLocationManager implements
         Log.d(TAG, "onLocationChanged");
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
-            Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
-                                   + mCurrentLocation.getLongitude());
+            Log.d(TAG, "onlocationchange: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
+                + mCurrentLocation.getLongitude() + ", " + location.getAccuracy());
 
             Iterator<CurrentLocationManager.OnCurrentLocationChange> i = mObservers.iterator();
             while (i.hasNext()) {
@@ -161,5 +161,6 @@ public class PlayLocationManager implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "Connection to LocationClient failed");
+        attemptConnection();
     }
 }

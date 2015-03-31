@@ -179,10 +179,16 @@ public class SettingFragment extends BaseFragment {
 
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
-        mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
         mBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_bitcoin);
         mmBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_mbitcoin);
         muBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_ubitcoin);
+        mDenominationGroup = (RadioGroup) mView.findViewById(R.id.settings_denomination_denomination_group);
+        mDenominationGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                saveDenomination();
+            }
+        });
 
         mChangePasswordButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_change_password);
         mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
@@ -332,6 +338,7 @@ public class SettingFragment extends BaseFragment {
                     if (isChecked && !NfcAdapter.getDefaultAdapter(getActivity()).isEnabled()) {
                         ShowNFCMessageDialog();
                     }
+                    saveNFCPref(isChecked);
                 }
             });
         }
@@ -349,6 +356,7 @@ public class SettingFragment extends BaseFragment {
                     if (isChecked && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                         ShowBLEMessageDialog();
                     }
+                    saveBLEPref(isChecked);
                 }
             });
         }
@@ -490,10 +498,9 @@ public class SettingFragment extends BaseFragment {
         return szRetVal;
     }
 
-    private void saveCurrentSettings() {
-        mCoreSettings = mCoreAPI.newCoreSettings();
+    private void saveDenomination() {
         if(mCoreSettings == null) {
-            return;
+            mCoreSettings = mCoreAPI.newCoreSettings();
         }
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
@@ -515,6 +522,15 @@ public class SettingFragment extends BaseFragment {
                 denomination.setSatoshi(amt);
             }
         }
+    }
+
+    private void saveCurrentSettings() {
+        mCoreSettings = mCoreAPI.newCoreSettings();
+        if(mCoreSettings == null) {
+            return;
+        }
+
+        saveDenomination();
 
         //Credentials - N/A
 

@@ -34,6 +34,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -102,5 +103,25 @@ public class BaseFragment extends Fragment {
             });
         }
         return animator;
+    }
+
+    public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
+        @Override
+        protected void onPreExecute() {
+            if(mActivity == null) {
+                mActivity = (NavigationActivity) getActivity();
+            }
+            mActivity.mAsyncTasks.push(this);
+        }
+
+        @Override
+        protected void onPostExecute(Result result) {
+            onCancelled();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mActivity.mAsyncTasks.pop();
+        }
     }
 }

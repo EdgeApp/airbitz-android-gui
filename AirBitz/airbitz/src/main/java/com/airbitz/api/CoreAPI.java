@@ -1506,10 +1506,18 @@ public class CoreAPI {
         }
     }
 
+    private int mCurrencyIndex = 0;
     public int SettingsCurrencyIndex() {
         int index = -1;
+        int currencyNum;
         tABC_AccountSettings settings = coreSettings();
-        int currencyNum = settings.getCurrencyNum();
+        if(settings == null && mCurrencyIndex != 0) {
+            currencyNum = mCurrencyIndex;
+        }
+        else {
+            currencyNum = settings.getCurrencyNum();
+            mCurrencyIndex = currencyNum;
+        }
         int[] currencyNumbers = getCurrencyNumbers();
 
         for(int i=0; i<currencyNumbers.length; i++) {
