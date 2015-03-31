@@ -342,6 +342,7 @@ public class NavigationActivity extends Activity
 
         // Navigation Drawer slideout
         setupDrawer();
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     public static CoreAPI initiateCore(Context context) {
@@ -1162,6 +1163,8 @@ public class NavigationActivity extends Activity
         DisplayLoginOverlay(false, true);
 
         new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1232,6 +1235,8 @@ public class NavigationActivity extends Activity
         }
         mHandler.postDelayed(mAttemptLogout, 100);
         DisplayLoginOverlay(true);
+
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     Runnable mAttemptLogout = new Runnable() {
