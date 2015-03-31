@@ -125,9 +125,7 @@ public class PlayLocationManager implements
         mLocationRequest.setSmallestDisplacement(AndroidLocationManager.MIN_DIST_METERS);
         if(locationClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
-            LocationServices.FusedLocationApi.getLastLocation(locationClient);
-        } else {
-            onConnectionSuspended(0);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
         }
 
         if (mCurrentLocation != null) {
@@ -138,9 +136,7 @@ public class PlayLocationManager implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "Suspended. Please re-connect.");
-        if (mObservers.size() != 0) {
-            attemptConnection();
-        }
+        attemptConnection();
     }
 
     @Override
@@ -161,5 +157,6 @@ public class PlayLocationManager implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "Connection to LocationClient failed");
+        attemptConnection();
     }
 }

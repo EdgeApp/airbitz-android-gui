@@ -57,6 +57,7 @@ public class CurrentLocationManager {
         } else {
             mAndroid = new AndroidLocationManager(mContext);
         }
+        attemptConnection();
     }
 
     public static boolean locationEnabled(Context context) {
