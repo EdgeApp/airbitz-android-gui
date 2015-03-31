@@ -589,7 +589,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         setupUI(getArguments());
     }
 
-    public class ChangeTask extends BaseAsyncTask<String, Void, Boolean> {
+    public class ChangeTask extends AsyncTask<String, Void, Boolean> {
         tABC_CC success;
 
         String mUsername;
