@@ -1987,6 +1987,7 @@ public class NavigationActivity extends Activity
             @Override
             public void onClick(View v) {
                 mDrawer.closeDrawer(mDrawerView);
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 switchFragmentThread(Tabs.MORE.ordinal());
             }
         });
