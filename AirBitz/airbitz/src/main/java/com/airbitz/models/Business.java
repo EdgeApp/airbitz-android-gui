@@ -70,7 +70,9 @@ public class Business {
 
             if (mType.equalsIgnoreCase("business")) {
                 mId = jsonResponse.getString("bizId");
-                mSquareLink = AirbitzAPI.getServerRoot() + jsonResponse.getString("square_image");
+                if (jsonResponse.has("square_image")) {
+                    mSquareLink = AirbitzAPI.getServerRoot() + jsonResponse.getString("square_image");
+                }
             } else if (mType.equalsIgnoreCase("category")) {
                 mId = "";
             }
