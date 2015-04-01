@@ -389,7 +389,8 @@ public class LandingFragment extends BaseFragment implements
                 .setPositiveButton(getResources().getString(R.string.string_yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                mUserNameEditText.clearFocus();
+                                showAccountsList(false);
+                                mUserNameEditText.setText("");
                                 if (!mCoreAPI.deleteAccount(account)) {
                                     mActivity.ShowFadingDialog("Account could not be deleted.");
                                 }
