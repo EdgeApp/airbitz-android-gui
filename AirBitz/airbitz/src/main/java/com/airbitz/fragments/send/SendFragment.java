@@ -31,6 +31,8 @@
 
 package com.airbitz.fragments.send;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -104,14 +106,6 @@ public class SendFragment extends BaseFragment implements
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
-    Runnable cameraDelayRunner = new Runnable() {
-        @Override
-        public void run() {
-            if(isAdded()) {
-                startCamera();
-            }
-        }
-    };
 
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
@@ -432,6 +426,8 @@ public class SendFragment extends BaseFragment implements
             mHandler = new Handler();
         }
 
+        startCamera();
+
         if(mBluetoothButton.getVisibility() == View.VISIBLE) {
             ViewBluetoothPeripherals(true);
             mBluetoothListView.setOnOneScanEndedListener(this);
@@ -459,7 +455,7 @@ public class SendFragment extends BaseFragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            mHandler.postDelayed(cameraDelayRunner, 500);
+            mQRCamera.startCamera();
         } else {
             if (mQRCamera != null) {
                 mQRCamera.stopCamera();
@@ -503,8 +499,6 @@ public class SendFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        if (mHandler != null)
-            mHandler.removeCallbacks(cameraDelayRunner);
         stopCamera();
         if(mBluetoothListView != null) {
             mBluetoothListView.close();
@@ -566,9 +560,18 @@ public class SendFragment extends BaseFragment implements
         else {
             stopBluetoothSearch();
             mCameraLayout.setVisibility(View.VISIBLE);
-            mBluetoothLayout.setVisibility(View.GONE);
+            if(mBluetoothLayout.getVisibility() != View.GONE  &&  mBluetoothLayout.getAnimation() == null) {
+                mBluetoothLayout.animate()
+                        .alpha(0f)
+                        .setDuration(200)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mBluetoothLayout.setVisibility(View.GONE);
+                            }
+                        });
+            }
             mQRCodeTextView.setVisibility(View.VISIBLE);
-            mHandler.postDelayed(cameraDelayRunner, 500);
         }
     }
 
@@ -578,7 +581,6 @@ public class SendFragment extends BaseFragment implements
             mBluetoothScanningLayout.setVisibility(View.VISIBLE);
             mBluetoothListView.setOnPeripheralSelectedListener(this);
             mBluetoothListView.scanForBleDevices(true);
-            stopCamera();
         }
     }
 

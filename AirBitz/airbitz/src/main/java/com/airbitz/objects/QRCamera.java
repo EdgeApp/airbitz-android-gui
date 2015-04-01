@@ -1,5 +1,7 @@
 package com.airbitz.objects;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -41,7 +44,7 @@ public class QRCamera implements
     Fragment mFragment;
     Camera mCamera;
     CameraSurfacePreview mPreview;
-    FrameLayout mPreviewFrame;
+    FrameLayout mPreviewFrame, mPreviewObscura;
     View mCameraLayout;
     ImageButton mFlashButton, mGalleryButton, mBluetoothButton;
     Handler mHandler = new Handler();
@@ -73,6 +76,7 @@ public class QRCamera implements
         mCameraLayout = cameraLayout;
 
         mPreviewFrame = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_preview);
+        mPreviewObscura = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_obscura);
 
         mFlashButton = (ImageButton) mCameraLayout.findViewById(R.id.button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
@@ -296,6 +300,17 @@ public class QRCamera implements
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        if(mPreviewObscura.getVisibility() != View.GONE  &&  mPreviewObscura.getAnimation() == null) {
+            mPreviewObscura.animate()
+                    .alpha(0f)
+                    .setDuration(200)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mPreviewObscura.setVisibility(View.GONE);
+                        }
+                    });
+        }
         String info = AttemptDecodeBytes(bytes, camera);
         if (info != null) {
             stopCamera();
