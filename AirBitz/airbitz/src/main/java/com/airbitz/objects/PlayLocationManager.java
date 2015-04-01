@@ -99,8 +99,6 @@ public class PlayLocationManager implements
     public Location getLocation() {
         if (null == mCurrentLocation && locationClient != null && locationClient.isConnected()) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
-            Log.d(TAG, "getloc: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
-                    + mCurrentLocation.getLongitude() + ", " + mCurrentLocation.getAccuracy());
         }
         return mCurrentLocation;
     }
@@ -128,8 +126,6 @@ public class PlayLocationManager implements
         if(locationClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, mLocationRequest, this);
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(locationClient);
-            Log.d(TAG, "onconnected: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
-                    + mCurrentLocation.getLongitude() + ", " + mCurrentLocation.getAccuracy());
         }
 
         if (mCurrentLocation != null) {
@@ -148,8 +144,6 @@ public class PlayLocationManager implements
         Log.d(TAG, "onLocationChanged");
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
-            Log.d(TAG, "onlocationchange: CUR LOC, accuracy(m): " + mCurrentLocation.getLatitude() + "; "
-                + mCurrentLocation.getLongitude() + ", " + location.getAccuracy());
 
             Iterator<CurrentLocationManager.OnCurrentLocationChange> i = mObservers.iterator();
             while (i.hasNext()) {
