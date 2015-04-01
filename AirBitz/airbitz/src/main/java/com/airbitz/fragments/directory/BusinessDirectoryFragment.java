@@ -146,8 +146,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
     private VenuesTask mVenuesTask;
     private boolean mFirstLoad = true;
-    private boolean mLoadFlag = false;
-    private boolean isFirstLoad = true;
     private ProgressDialog mMoreCategoriesProgressDialog;
     private Handler mVenueHandler = new Handler();
     private Location mCurrentLocation = null;
