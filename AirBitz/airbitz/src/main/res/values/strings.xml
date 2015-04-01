@@ -248,9 +248,9 @@
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
     <string name="settings_nfc_turn_on_title">Activate NFC</string>
-    <string name="settings_nfc_turn_on_message">The Android NFC setting is off. It needs to be on to use NFC. Would you like to turn it on now?</string>
+    <string name="settings_nfc_turn_on_message">NFC is used to enable tap-to-pay with supported merchants. Would you like to turn it on now?</string>
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
-    <string name="settings_ble_turn_on_message">The Android Bluetooth setting is off. It needs to be on to use Bluetooth. Would you like to turn it on now?</string>
+    <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
