@@ -295,8 +295,8 @@
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
-    <string name="send_confirmation_from_title">Send From:</string>
-    <string name="send_confirmation_to_title">Send To:</string>
+    <string name="send_confirmation_from_title">From:</string>
+    <string name="send_confirmation_to_title">To:</string>
     <string name="send_confirmation_max_button_title">Max</string>
     <string name="send_confirmation_enter_send_pin">Enter 4 Digit PIN</string>
     <string name="send_confirmation_enter_send_password">Password</string>
