@@ -57,6 +57,7 @@ import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,10 +77,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
     private LinearLayout mPopupBlank;
-    private ImageView mSwitchImage1;
-    private ImageView mSwitchImage2;
-    private ImageView mSwitchImage3;
-    private ImageView mSwitchImage4;
+    private ImageView mRule1Image, mRule2Image, mRule3Image, mRule4Image;
+    private TextView mRule1Text, mRule2Text, mRule3Text, mRule4Text;
     private TextView mTimeTextView;
     private CoreAPI mCoreAPI;
     private View mView;
@@ -127,10 +126,15 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_repassword_edittext);
         mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
-        mSwitchImage1 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
-        mSwitchImage2 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
-        mSwitchImage3 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_3);
-        mSwitchImage4 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_4);
+        mRule1Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
+        mRule2Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
+        mRule3Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_3);
+        mRule4Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_4);
+
+        mRule1Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_1);
+        mRule2Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_2);
+        mRule3Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_3);
+        mRule4Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.fragment_setup_password_time_textview);
 
@@ -266,41 +270,45 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
-    private boolean checkPasswordRules(String password) {
+    private List<String> checkPasswordRules(String password) {
         List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<String> ruleFails = new ArrayList<>();
 
         if (rules.isEmpty()) {
-            return false;
+            return ruleFails;
         }
 
-        boolean bNewPasswordFieldsAreValid = true;
         for (int i = 0; i < rules.size(); i++) {
             tABC_PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
             if (!passed) {
-                bNewPasswordFieldsAreValid = false;
+                ruleFails.add(pRule.getSzDescription());
             }
 
             int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
             switch (i) {
                 case 0:
-                    mSwitchImage1.setImageResource(resource);
+                    mRule1Image.setImageResource(resource);
+                    mRule1Text.setText(pRule.getSzDescription());
                     break;
                 case 1:
-                    mSwitchImage2.setImageResource(resource);
+                    mRule2Image.setImageResource(resource);
+                    mRule2Text.setText(pRule.getSzDescription());
                     break;
                 case 2:
-                    mSwitchImage3.setImageResource(resource);
+                    mRule3Image.setImageResource(resource);
+                    mRule3Text.setText(pRule.getSzDescription());
                     break;
                 case 3:
-                    mSwitchImage4.setImageResource(resource);
+                    mRule4Image.setImageResource(resource);
+                    mRule4Text.setText(pRule.getSzDescription());
                     break;
                 default:
                     break;
             }
         }
         mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
-        return bNewPasswordFieldsAreValid;
+        return ruleFails;
     }
 
     private void goNext() {
@@ -332,9 +340,14 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
         boolean bNewPasswordFieldsAreValid = true;
-            if (!checkPasswordRules(mPasswordEditText.getText().toString())) {
+            List<String> fails = checkPasswordRules(mPasswordEditText.getText().toString());
+            if (!fails.isEmpty()) {
                 bNewPasswordFieldsAreValid = false;
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
+                String message = getResources().getString(R.string.activity_signup_password_fails);
+                for(String fail : fails) {
+                    message += "\n" + fail + ".";
+                }
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_password), message);
             } else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString())) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));

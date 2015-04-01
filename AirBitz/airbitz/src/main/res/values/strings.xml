@@ -147,6 +147,7 @@
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
     <string name="activity_signup_enter_username">You must enter a user name</string>
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
+    <string name="activity_signup_password_fails">Your password…</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
     <string name="activity_signup_insufficient_pin">PIN must be 4 digits</string>
