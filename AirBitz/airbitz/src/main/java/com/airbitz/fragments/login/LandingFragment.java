@@ -223,12 +223,7 @@ public class LandingFragment extends BaseFragment implements
         mCurrentUserText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOtherAccountsListView.getVisibility() == View.VISIBLE) {
-                    showOthersList(mUsername, false);
-                }
-                else {
-                    showOthersList(mUsername, true);
-                }
+                showOthersList(mOtherAccountsListView.getVisibility() != View.VISIBLE);
             }
         });
 
@@ -358,10 +353,10 @@ public class LandingFragment extends BaseFragment implements
         return others;
     }
 
-    private void showOthersList(String username, boolean show)
+    private void showOthersList(boolean show)
     {
         mOtherAccounts.clear();
-        mOtherAccounts.addAll(otherAccounts(username));
+        mOtherAccounts.addAll(mCoreAPI.listAccounts());
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
             if(mOtherAccountsAdapter.getCount() > 4) {
@@ -372,9 +367,11 @@ public class LandingFragment extends BaseFragment implements
                 mOtherAccountsListView.setLayoutParams(params);
             }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
+            mOtherAccountsAdapter.setButtonTouchedListener(this);
         }
         else {
             mOtherAccountsListView.setVisibility(View.GONE);
+            mOtherAccountsAdapter.setButtonTouchedListener(null);
         }
     }
 
@@ -388,8 +385,11 @@ public class LandingFragment extends BaseFragment implements
                 .setPositiveButton(getResources().getString(R.string.string_yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                showAccountsList(false);
                                 mUserNameEditText.setText("");
+                                mUsername = "";
+                                refreshView(false, false);
+                                showAccountsList(false);
+                                showOthersList(false);
                                 if (!mCoreAPI.deleteAccount(account)) {
                                     mActivity.ShowFadingDialog("Account could not be deleted.");
                                 }
@@ -487,7 +487,7 @@ public class LandingFragment extends BaseFragment implements
                     });
         }
         if (isPinLogin) {
-            showOthersList(mUsername, false);
+            showOthersList(false);
             mPinLayout.setVisibility(View.VISIBLE);
             mPasswordLayout.setVisibility(View.GONE);
             mForgotPasswordButton.setVisibility(View.GONE);
