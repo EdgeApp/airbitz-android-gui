@@ -325,6 +325,7 @@
     <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
     <string name="fragment_wallets_created_wallet">%1$s created</string>
     <string name="fragment_wallets_created_wallet_failed">Failed to create wallet</string>
+    <string name="fragment_wallets_archive_help">To archive a wallet, tap and hold a wallet and drag it below the [ARCHIVE] header</string>
 
     <!-- Strings for Wallet fragment -->
     <string name="fragment_wallet_title">Transactions</string>

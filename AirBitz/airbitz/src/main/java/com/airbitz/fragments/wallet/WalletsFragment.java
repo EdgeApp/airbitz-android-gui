@@ -382,9 +382,7 @@ public class WalletsFragment extends BaseFragment
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (wallet.isArchiveHeader()) {
-                    mArchiveClosed = !mArchiveClosed;
-                    updateWalletList(mArchiveClosed);
-                    mLatestWalletAdapter.notifyDataSetChanged();
+                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 3);
                 }
                 else {
                     mParentLayout.requestFocus();
