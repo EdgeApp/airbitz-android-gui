@@ -52,8 +52,7 @@
             android:id="@+id/fading_alert_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:indeterminate="true"
-            android:indeterminateDrawable="@drawable/progress_light"
+            style="@android:style/Widget.Holo.ProgressBar.Large"
             android:visibility="gone"/>
 
     </LinearLayout>
