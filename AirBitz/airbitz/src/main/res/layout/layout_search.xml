@@ -57,7 +57,7 @@
                     android:drawableLeft="@drawable/ico_search"
                     android:drawablePadding="10dp"
                     android:hint="@string/category_or_business_name"
-                    android:imeOptions="actionSearch"
+                    android:imeOptions="actionNext"
                     android:inputType="text|textNoSuggestions"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
