@@ -213,7 +213,7 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 saveCurrentSettings();
-                ((NavigationActivity) getActivity()).Logout(false);
+                ((NavigationActivity) getActivity()).Logout();
             }
         });
 
