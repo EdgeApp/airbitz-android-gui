@@ -382,7 +382,7 @@ public class WalletsFragment extends BaseFragment
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (wallet.isArchiveHeader()) {
-                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 3);
+                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
                 }
                 else {
                     mParentLayout.requestFocus();
