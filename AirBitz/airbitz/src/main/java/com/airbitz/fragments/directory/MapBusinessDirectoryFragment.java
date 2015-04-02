@@ -145,6 +145,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         }
         if (mLocationName == null) {
             mLocationName = mVenueBundle.getString(BusinessDirectoryFragment.LOCATION);
+            mLocationWords = mLocationName;
         }
         if (mBusinessType == null) {
             mBusinessType = mVenueBundle.getString(BusinessDirectoryFragment.BUSINESSTYPE);
