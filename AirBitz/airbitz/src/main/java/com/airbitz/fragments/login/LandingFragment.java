@@ -288,7 +288,6 @@ public class LandingFragment extends BaseFragment implements
                 if (mPinEditText.length() >= 4) {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.hideSoftKeyboard(mPinEditText);
-//                        refreshView(true, false);
                         attemptPinLogin();
                     } else {
                         mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
@@ -440,7 +439,7 @@ public class LandingFragment extends BaseFragment implements
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
                 mPinEditText.setText("");
                 Log.d(TAG, "showing pin login for " + mUsername);
-                refreshView(true, true);
+                refreshView(true, true, true);
                 mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 return;
             }
@@ -457,8 +456,7 @@ public class LandingFragment extends BaseFragment implements
             mUserNameEditText.setText(mUsername);
             mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
         }
-        refreshView(false, false);
-
+        refreshView(false, false, true);
     }
 
     @Override
@@ -469,10 +467,26 @@ public class LandingFragment extends BaseFragment implements
         mActivity.hideSoftKeyboard(mPasswordEditText);
     }
 
+
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
-        mBlackoutView.setVisibility(View.VISIBLE);
-        mBlackoutView.setAlpha(1f);
-        if(isPinLogin) {
+        refreshView(isPinLogin, isKeyboardUp, false);
+    }
+
+    private void refreshView(boolean isPinLogin, boolean isKeyboardUp, boolean isTransition) {
+        if (isTransition) {
+            mBlackoutView.setVisibility(View.VISIBLE);
+            mBlackoutView.setAlpha(1f);
+            mBlackoutView.animate()
+                    .alpha(0f)
+                    .setDuration(400)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mBlackoutView.setVisibility(View.GONE);
+                        }
+                    });
+        }
+        if (isPinLogin) {
             showOthersList(mUsername, false);
             mPinLayout.setVisibility(View.VISIBLE);
             mPasswordLayout.setVisibility(View.GONE);
@@ -488,7 +502,7 @@ public class LandingFragment extends BaseFragment implements
 
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
 
-            if(isKeyboardUp) {
+            if (isKeyboardUp) {
                 mLandingSubtextView.setVisibility(View.GONE);
                 mSwipeLayout.setVisibility(View.GONE);
             } else {
@@ -504,28 +518,17 @@ public class LandingFragment extends BaseFragment implements
             mForgotTextView.setText(getString(R.string.fragment_landing_forgot_password));
             mLandingSubtextView.setVisibility(View.VISIBLE);
             mSwipeLayout.setVisibility(View.VISIBLE);
-            if(isKeyboardUp) {
+            if (isKeyboardUp) {
                 mDetailTextView.setVisibility(View.GONE);
                 mLandingSubtextView.setVisibility(View.GONE);
                 mSwipeLayout.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 mDetailTextView.setVisibility(View.VISIBLE);
                 mLandingSubtextView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
             }
             showAccountsList(false);
         }
-
-        mBlackoutView.animate()
-                .alpha(0f)
-                .setDuration(400)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mBlackoutView.setVisibility(View.GONE);
-                    }
-                });
     }
 
     private void setPinViews(int length) {
