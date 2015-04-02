@@ -922,13 +922,12 @@ public class TransactionDetailFragment extends BaseFragment
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
-            String baseUrl;
+            String finalBaseUrl;
             if (mCoreAPI.isTestNet()) {
-                baseUrl = "https://www.biteasy.com/testnet/";
+                finalBaseUrl = "https://www.biteasy.com/testnet/";
             } else { // LIVE
-                baseUrl = "https://www.biteasy.com/blockchain/";
+                finalBaseUrl = "https://insight.bitpay.com/";
             }
-            final String finalBaseUrl = baseUrl;
 
             int start;
             int end;
@@ -937,13 +936,18 @@ public class TransactionDetailFragment extends BaseFragment
                 SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
-                final String url = finalBaseUrl + "addresses/" + output.getAddress();
+                final String txUrl;
+                if (mCoreAPI.isTestNet()) {
+                    txUrl = finalBaseUrl + "addresses/" + output.getAddress();
+                } else {
+                    txUrl = finalBaseUrl + "address/" + output.getAddress();
+                }
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse(url));
-                            mActivity.startActivity(i);
+                        i.setData(Uri.parse(txUrl));
+                        mActivity.startActivity(i);
                     }
                 };
                 address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -976,11 +980,17 @@ public class TransactionDetailFragment extends BaseFragment
             start = s.length();
             s.append(mTransaction.getmMalleableID());
             end = s.length();
+            final String txIdLink;
+            if(mCoreAPI.isTestNet()) {
+                txIdLink = finalBaseUrl + "transactions/" + mTransaction.getmMalleableID();
+            } else {
+                txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
+            }
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(finalBaseUrl + "transactions/" + mTransaction.getmMalleableID()));
+                    i.setData(Uri.parse(txIdLink));
                     mActivity.startActivity(i);
                 }
             };
