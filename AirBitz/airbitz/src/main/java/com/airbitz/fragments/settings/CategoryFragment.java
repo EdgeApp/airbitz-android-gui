@@ -165,7 +165,7 @@ public class CategoryFragment extends BaseFragment {
         mCategories = new ArrayList<String>();
         mCurrentCategories = new ArrayList<String>();
         goAddCategories();
-        mCategoryAdapter = new SettingsCategoryAdapter(getActivity(), mCurrentCategories, mCategories, popUpViews, mItemPopUpContainer, currentPosPopUp);
+        mCategoryAdapter = new SettingsCategoryAdapter((NavigationActivity) getActivity(), mCurrentCategories, mCategories, popUpViews, mItemPopUpContainer, currentPosPopUp);
         mCategoryListView.setAdapter(mCategoryAdapter);
 
         mDoneCancelContainer = (LinearLayout) mView.findViewById(R.id.done_cancel_container);

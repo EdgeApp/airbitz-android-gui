@@ -41,6 +41,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.objects.HighlightOnPressButton;
 
 import java.util.List;
@@ -55,9 +56,9 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
     private List<TextView> mPopUpViews; //0-edittext, 1-Expense, 2-Income, 3-Transfer, 4-currentItemEdittext
     private List<Integer> mCurrentPosPopUp; //0- currentPos in currentCategories, 1- currentPos in Categories
     private RelativeLayout mPopUpContainer;
-    private Context mContext;
+    private NavigationActivity mContext;
 
-    public SettingsCategoryAdapter(Context context, List<String> currentCategories, List<String> categories, List<TextView> popUpViews, RelativeLayout popUpContainer, List<Integer> currentPosPopUp) {
+    public SettingsCategoryAdapter(NavigationActivity context, List<String> currentCategories, List<String> categories, List<TextView> popUpViews, RelativeLayout popUpContainer, List<Integer> currentPosPopUp) {
         super(context, R.layout.item_listview_settings_categories, currentCategories);
         mCurrentCategories = currentCategories;
         mCategories = categories;
@@ -99,6 +100,7 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mContext.ShowFadingDialog(String.format(mContext.getString(R.string.fragment_category_deleted), mCurrentCategories.get(position)));
                 mCurrentCategories.remove(pos);
                 mCategories.remove(pos);
                 notifyDataSetChanged();
