@@ -1219,13 +1219,6 @@ public class NavigationActivity extends Activity
     }
 
     public void Logout() {
-        Logout(true);
-    }
-
-    public void Logout(boolean pinDelete) {
-        if ((AirbitzApplication.getUsername() != null) && pinDelete) {
-            mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
-        }
         if(mNavStacks[mNavThreadId].size()>1) { // ensure onPause called
             Fragment fragment = mNavStacks[mNavThreadId].peek();
             getFragmentManager().executePendingTransactions();
@@ -1310,7 +1303,7 @@ public class NavigationActivity extends Activity
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            Logout(false);
+            Logout();
         }
     }
 
@@ -1947,7 +1940,7 @@ public class NavigationActivity extends Activity
             @Override
             public void onClick(View v) {
                 mDrawer.closeDrawer(mDrawerView);
-                Logout(false);
+                Logout();
             }
         });
 
@@ -1984,7 +1977,7 @@ public class NavigationActivity extends Activity
                 String username = mOtherAccounts.get(position);
                 saveCachedLoginName(username);
                 mDrawer.closeDrawer(mDrawerView);
-                Logout(false);
+                Logout();
             }
         });
 

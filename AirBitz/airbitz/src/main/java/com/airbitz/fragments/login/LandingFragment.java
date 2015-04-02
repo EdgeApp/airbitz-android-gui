@@ -590,18 +590,9 @@ public class LandingFragment extends BaseFragment implements
                 return;
             }
             else if(result == tABC_CC.ABC_CC_BadPassword) {
-                saveInvalidEntryCount(getInvalidEntryCount() + 1);
-                if(getInvalidEntryCount() >= INVALID_ENTRY_COUNT_MAX) {
-                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin_login));
-                    saveInvalidEntryCount(0);
-                    abortPermanently();
-                    return;
-                }
-                else {
                     mActivity.setFadingDialogListener(LandingFragment.this);
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     mPinEditText.requestFocus();
-                }
             }
             else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
@@ -726,7 +717,6 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void abortPermanently() {
-        mCoreAPI.PINLoginDelete(mUsername);
         refreshView(false, false); // reset to password view
     }
 
