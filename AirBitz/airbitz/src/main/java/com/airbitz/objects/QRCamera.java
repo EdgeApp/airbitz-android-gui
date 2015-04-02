@@ -165,17 +165,25 @@ public class QRCamera implements
         checkCameraFlash();
     }
 
+    Thread mStopThread;
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
-        if (mCamera != null) {
-            mHandler.removeCallbacks(cameraFocusRunner);
-            mCamera.cancelAutoFocus();
-            mCamera.stopPreview();
+
+        if(mCamera != null) {
             mCamera.setPreviewCallback(null);
+            mHandler.removeCallbacks(cameraFocusRunner);
             mPreviewFrame.removeView(mPreview);
-            mCamera.release();
+            if(mStopThread == null) {
+                mStopThread = new Thread(new Runnable() {
+                    public void run() {
+                        mCamera.stopPreview();
+                        mCamera.release();
+                        mCamera = null;
+                    }
+                });
+                mStopThread.start();
+            }
         }
-        mCamera = null;
     }
 
     private void checkCameraFlash() {
