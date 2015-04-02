@@ -514,6 +514,9 @@ public class CoreAPI {
 
     public void SetDailySpendLimitSetting(boolean set) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setBDailySpendLimit(set);
         saveAccountSettings(settings);
 
@@ -538,6 +541,9 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setDailySpendLimitSatoshis(limit);
         saveAccountSettings(settings);
 
@@ -553,6 +559,9 @@ public class CoreAPI {
 
     public void SetPINSpendLimitSetting(boolean set) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setBSpendRequirePin(set);
         saveAccountSettings(settings);
     }
@@ -566,6 +575,9 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setSpendRequirePinSatoshis(limit);
         saveAccountSettings(settings);
     }
@@ -590,6 +602,9 @@ public class CoreAPI {
 
     public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return "";
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
@@ -600,6 +615,9 @@ public class CoreAPI {
 
     public String getUserBTCSymbol() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return "";
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
@@ -801,6 +819,9 @@ public class CoreAPI {
 
     public boolean needsPasswordCheck() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return false;
+        }
         int pinLoginCount = settings.getPinLoginCount();
         pinLoginCount++;
         settings.setPinLoginCount(pinLoginCount);
@@ -857,6 +878,9 @@ public class CoreAPI {
 
     private void incRecoveryReminder(int val) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         int reminderCount = settings.getRecoveryReminderCount();
         reminderCount += val;
         settings.setRecoveryReminderCount(reminderCount);
@@ -1446,6 +1470,9 @@ public class CoreAPI {
     public int userDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return 2;
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination != null) {
             int label = bitcoinDenomination.getDenominationType();
@@ -2834,6 +2861,9 @@ public class CoreAPI {
 
     public void SetupDefaultCurrency() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setCurrencyNum(getLocaleDefaultCurrencyNum());
         saveAccountSettings(settings);
     }
