@@ -337,7 +337,7 @@
         android:contentDescription="@string/string_back_button"
         android:padding="12.6dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/btn_back"
+        android:src="@drawable/ico_nav_directory_white"
         android:visibility="visible" />
 
     <FrameLayout
