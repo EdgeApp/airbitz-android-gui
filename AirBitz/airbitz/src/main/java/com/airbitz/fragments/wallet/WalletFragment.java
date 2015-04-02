@@ -541,6 +541,12 @@ public class WalletFragment extends BaseFragment
         mRequestButton.setPressed(false);
         mSendButton.setPressed(false);
 
+        if(mWallet.isArchived()) {
+            mRequestButton.setEnabled(false);
+            mRequestButton.setAlpha(0.5f);
+            mSendButton.setEnabled(false);
+            mSendButton.setAlpha(0.5f);
+        }
     }
 
     private void updateSendRequestButtons() {
