@@ -144,6 +144,7 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
     private long mFees;
     private int mInvalidEntryCount = 0;
     private long mInvalidEntryStartMillis = 0;
+    private boolean mFundsSent = false;
 
     private boolean mPasswordRequired = false;
     private boolean mPinRequired = false;
@@ -758,6 +759,10 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
 
     @Override
     public void onResume() {
+        super.onResume();
+        if(mFundsSent) {
+            return;
+        }
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         bundle = this.getArguments();
@@ -877,7 +882,6 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
 
         mInvalidEntryCount = getInvalidEntryCount();
 
-        super.onResume();
     }
 
     @Override
@@ -1026,9 +1030,9 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
                 }
             } else {
                 if (mActivity != null) {
-                    mActivity.popFragment(); // stop sending screen
                     saveInvalidEntryCount(0);
                     AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
+                    mActivity.popFragment(); // stop sending screen
                     if (null != exitHandler) {
                         exitHandler.success(txResult.getTxId());
                         mHandler.postDelayed(new Runnable() {
@@ -1037,6 +1041,7 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
                             }
                         }, 500);
                     } else {
+                        mFundsSent = true;
                         mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
                     }
                 }
