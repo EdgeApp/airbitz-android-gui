@@ -860,25 +860,18 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     public void setVenueListView(List<BusinessSearchResult> venues) {
+        if (venues != null) {
+            mVenueListView.setVisibility(View.VISIBLE);
+            mNoResultView.setVisibility(View.GONE);
+        } else {
+            mVenueListView.setVisibility(View.GONE);
+            mNoResultView.setVisibility(View.VISIBLE);
+        }
         if (!venues.isEmpty()) {
             mVenuesLoaded.addAll(venues);
             if (venues.size() <= PAGE_SIZE) {
                 mVenueAdapter.warmupCache(venues);
             }
-
-            // remove duplicates
-            HashSet hs = new HashSet();
-            hs.addAll(mVenuesLoaded);
-            mVenuesLoaded.clear();
-            mVenuesLoaded.addAll(hs);
-
-            // sort
-            Collections.sort(mVenuesLoaded, new Comparator<BusinessSearchResult>() {
-                @Override
-                public int compare(BusinessSearchResult bsr1, BusinessSearchResult bsr2) {
-                    return (Float.valueOf(bsr1.getDistance()) > Float.valueOf(bsr2.getDistance())) ? 1 : -1;
-                }
-            });
             mVenueAdapter.notifyDataSetChanged();
         }
     }
