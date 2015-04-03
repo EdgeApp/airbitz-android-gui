@@ -721,6 +721,7 @@ public class CoreAPI {
             }
             return mCoreSettings;
         } else {
+
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
             Log.d(TAG, "Load settings failed - "+message);
         }
@@ -2558,7 +2559,13 @@ public class CoreAPI {
             }
         }
         if (mDataFetched) {
-            connectWatchers();
+            Thread connectEmAll = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectWatchers();
+                }
+            });
+            connectEmAll.start();
         }
     }
 
