@@ -1251,6 +1251,9 @@ public class NavigationActivity extends Activity
         mHandler.postDelayed(mAttemptLogout, 100);
         DisplayLoginOverlay(true);
 
+        AirbitzApplication.Logout();
+        mCoreAPI.logout();
+
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
