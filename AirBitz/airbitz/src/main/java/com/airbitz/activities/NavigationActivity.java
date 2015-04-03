@@ -261,6 +261,7 @@ public class NavigationActivity extends Activity
     private DrawerLayout mDrawer;
     private RelativeLayout mDrawerView;
     private TextView mDrawerAccount;
+    private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
     private TextView mDrawerBuySell;
     private TextView mDrawerSettings;
@@ -1989,6 +1990,7 @@ public class NavigationActivity extends Activity
         mDrawerAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            if(!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
                 if(mOtherAccountsListView.getVisibility() != View.VISIBLE) {
                     showOthersList(AirbitzApplication.getUsername(), true);
                 }
@@ -1996,7 +1998,9 @@ public class NavigationActivity extends Activity
                     showOthersList(AirbitzApplication.getUsername(), false);
                 }
             }
+            }
         });
+        mDrawerAccountArrow = (ImageView) findViewById(R.id.item_drawer_account_arrow);
 
         mOtherAccounts = new ArrayList<String>();
         mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts, true);
@@ -2053,9 +2057,16 @@ public class NavigationActivity extends Activity
                 mOtherAccountsListView.setLayoutParams(params);
             }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
+            mDrawerAccountArrow.animate()
+                    .rotation(180)
+                    .start();
+
         }
         else {
             mOtherAccountsListView.setVisibility(View.GONE);
+            mDrawerAccountArrow.animate()
+                    .rotation(0)
+                    .start();
         }
     }
 
