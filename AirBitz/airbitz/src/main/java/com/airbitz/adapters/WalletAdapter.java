@@ -66,6 +66,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private CoreAPI mCoreAPI;
     private boolean closeAfterArchive = false;
     private int archivePos;
+    private ImageView mArchiveButton;
+    private boolean mArchiveOpen = false;
 
     private OnHeaderButtonPress mHeaderButtonListener;
     public interface OnHeaderButtonPress {
@@ -103,6 +105,22 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void setIsBitcoin(boolean isBitcoin) {
         mIsBitcoin = isBitcoin;
+    }
+
+    public void setArchiveButtonState(boolean open) {
+        mArchiveOpen = open;
+        if(mArchiveButton != null) {
+            if(open) {
+                mArchiveButton.animate()
+                        .rotation(180)
+                        .start();
+            }
+            else {
+                mArchiveButton.animate()
+                        .rotation(0)
+                        .start();
+            }
+        }
     }
 
     public void addWallet(Wallet wallet) {
@@ -162,18 +180,24 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_header_text);
             final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_header_image);
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(mHeaderButtonListener != null) {
-                        mHeaderButtonListener.OnHeaderButtonPressed();
-                    }
-                }
-            });
             if (mWalletList.get(position).isArchiveHeader()) {
+                imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(mHeaderButtonListener != null) {
+                            mHeaderButtonListener.OnHeaderButtonPressed();
+                        }
+                    }
+                });
                 textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
                 textView.setBackgroundResource(R.drawable.bg_wallets_header);
-                imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
+                if(mArchiveButton == null) {
+                    mArchiveButton = imageButton;
+                    imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
+                    if(mArchiveOpen) {
+                        mArchiveButton.setRotation(180);
+                    }
+                }
                 archivePos = position;
 
                 if (hoverSecondHeader) {

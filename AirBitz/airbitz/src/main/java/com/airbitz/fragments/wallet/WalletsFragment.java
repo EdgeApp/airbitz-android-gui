@@ -609,6 +609,7 @@ public class WalletsFragment extends BaseFragment
         }
         mLatestWalletAdapter.swapWallets();
         mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletAdapter.setArchiveButtonState(!archiveClosed);
         mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
         mLatestWalletListView.setArchiveClosed(archiveClosed);
         mLatestWalletAdapter.notifyDataSetChanged();
