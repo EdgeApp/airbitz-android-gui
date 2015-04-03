@@ -1261,8 +1261,6 @@ public class NavigationActivity extends Activity
         @Override
         public void run() {
             if(mAsyncTasks.isEmpty()) {
-                AirbitzApplication.Logout();
-                mCoreAPI.logout();
                 resetApp();
                 startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
             }
