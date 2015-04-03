@@ -717,14 +717,12 @@ public class NavigationActivity extends Activity
         }
         //******************* end HockeyApp support
 
-        checkLoginExpired();
-
         //Look for Connection change events
         registerReceiver(ConnectivityChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
-        if (!AirbitzApplication.isLoggedIn()) {
+        if (loginExpired() || !AirbitzApplication.isLoggedIn()) {
             DisplayLoginOverlay(true);
             mNavThreadId = Tabs.BD.ordinal();
         } else {
@@ -1251,6 +1249,7 @@ public class NavigationActivity extends Activity
         mHandler.postDelayed(mAttemptLogout, 100);
         DisplayLoginOverlay(true);
 
+        resetApp();
         AirbitzApplication.Logout();
         mCoreAPI.logout();
 
@@ -1261,7 +1260,6 @@ public class NavigationActivity extends Activity
         @Override
         public void run() {
             if(mAsyncTasks.isEmpty()) {
-                resetApp();
                 startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
             }
             else {
@@ -1269,8 +1267,6 @@ public class NavigationActivity extends Activity
             }
         }
     };
-
-
 
     private void resetApp() {
         for(int i=0; i<mNavFragments.length; i++) {
@@ -1318,16 +1314,18 @@ public class NavigationActivity extends Activity
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    private void checkLoginExpired() {
+    private boolean loginExpired() {
         if (AirbitzApplication.getmBackgroundedTime() == 0 || !AirbitzApplication.isLoggedIn())
-            return;
+            return true;
 
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
             Logout();
+            return true;
         }
+        return false;
     }
 
     @Override
