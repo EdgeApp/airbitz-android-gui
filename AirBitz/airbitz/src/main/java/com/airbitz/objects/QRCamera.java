@@ -49,6 +49,7 @@ public class QRCamera implements
     ImageButton mFlashButton, mGalleryButton, mBluetoothButton;
     Handler mHandler = new Handler();
     boolean mFlashOn = false;
+    boolean mPreviewDone = false;
     CoreAPI mCoreAPI;
 
     //************** Callback for notification of a QR code scan result
@@ -163,13 +164,15 @@ public class QRCamera implements
             }
         }
         checkCameraFlash();
+
+        mPreviewDone = false;
     }
 
     Thread mStopThread;
     public void stopCamera() {
-        Log.d(TAG, "stopCamera");
-
-        if(mCamera != null) {
+        if(mCamera != null && !mPreviewDone) {
+            mPreviewDone = true;
+            Log.d(TAG, "stopping camera");
             mCamera.setPreviewCallback(null);
             mHandler.removeCallbacks(cameraFocusRunner);
             mPreviewFrame.removeView(mPreview);
@@ -178,6 +181,7 @@ public class QRCamera implements
                     public void run() {
                         mCamera.stopPreview();
                         mCamera.release();
+                        Log.d(TAG, "camera released");
                         mCamera = null;
                     }
                 });
@@ -308,6 +312,9 @@ public class QRCamera implements
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        if(mPreviewDone) {
+            return;
+        }
         if(mPreviewObscura.getVisibility() != View.GONE  &&  mPreviewObscura.getAnimation() == null) {
             mPreviewObscura.animate()
                     .alpha(0f)
