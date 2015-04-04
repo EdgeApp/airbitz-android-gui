@@ -391,7 +391,7 @@
     mBitcoin = (0,001 Bitcoin)
   </string>
   <string name="settings_denomination_buttons_ubitcoin">
-    μBitcoin = (0.000001 Bitcoin)
+    bits = (0.000001 Bitcoin)
   </string>
   <string name="settings_account_title">
     CUENTA

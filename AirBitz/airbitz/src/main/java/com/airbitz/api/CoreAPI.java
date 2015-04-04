@@ -1585,24 +1585,38 @@ public class CoreAPI {
         tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
         long satoshi = 100;
         int denomIndex = 0;
+        int fiatDecimals = 2;
+        String amtBTCDenom = "1 ";
         if(denomination != null) {
             if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
                 satoshi = (long) SATOSHI_PER_BTC;
                 denomIndex = 0;
+                fiatDecimals = 2;
+                amtBTCDenom = "1 ";
             } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
                 satoshi = (long) SATOSHI_PER_mBTC;
                 denomIndex = 1;
+                fiatDecimals = 3;
+                amtBTCDenom = "1 ";
             } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
                 satoshi = (long) SATOSHI_PER_uBTC;
                 denomIndex = 2;
+                fiatDecimals = 3;
+                amtBTCDenom = "1000 ";
             }
         }
 //        String currency = FormatCurrency(satoshi, currencyNum, false, false);
         double o = SatoshiToCurrency(satoshi, currencyNum);
-        String currency = formatCurrency(o, currencyNum, true, 3);
+        if (denomIndex == 2)
+        {
+            // unit of 'bits' is so small it's useless to show it's conversion rate
+            // Instead show "1000 bits = $0.253 USD"
+            o = o * 1000;
+        }
+        String currency = formatCurrency(o, currencyNum, true, fiatDecimals);
 
         String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
-        return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
+        return amtBTCDenom + mBTCDenominations[denomIndex] + " = " + currency + " " + currencyLabel;
     }
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
