@@ -486,8 +486,8 @@ public class CoreAPI {
         36, 124, 156, 192, 978, 826, 344, 484, 554, 608, 840
     };
 
-    private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
-    private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
+    private String[] mBTCDenominations = {"BTC", "mBTC", "bits"};
+    private String[] mBTCSymbols = {"฿ ", "m฿ ", "ƀ "};
 
     public String GetUserPIN() {
         return coreSettings().getSzPIN();

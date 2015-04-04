@@ -10,7 +10,7 @@ Click to Pay
 
 Dirección: [[abtag DIRECCIÓN]] 
 Importe: [[abtag AMOUNT_BTC]] BTC 
-Importe: [[abtag AMOUNT_MBTC]] MBTC 
+Importe: [[abtag AMOUNT_BITS]] bits
 
 Enviado desde el Monedero Airbitz Mobile Bitcoin + Directorio de Empresas 
 
