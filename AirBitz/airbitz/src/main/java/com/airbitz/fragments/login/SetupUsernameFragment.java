@@ -132,10 +132,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if (mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH || mUserNameEditText.getText().toString().trim().length() < USERNAME_MIN_LENGTH) {
                     mUserNameRedRingCover.setVisibility(View.VISIBLE);
-                    enableNextButton(false);
                 } else {
                     mUserNameRedRingCover.setVisibility(View.GONE);
-                    enableNextButton(true);
                 }
             }
 
@@ -185,12 +183,17 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         if (mCheckUsernameTask != null) {
             return;
         }
+        else if(mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH) {
+            mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_username_title),
+                    getResources().getString(R.string.activity_signup_insufficient_username_message));
+        }
+        else {
+            // Reset errors.
+            mUserNameEditText.setError(null);
 
-        // Reset errors.
-        mUserNameEditText.setError(null);
-
-        mCheckUsernameTask = new CheckUsernameTask();
-        mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUserNameEditText.getText().toString());
+            mCheckUsernameTask = new CheckUsernameTask();
+            mCheckUsernameTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUserNameEditText.getText().toString());
+        }
     }
 
     private void launchSetupPassword() {
@@ -212,7 +215,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     public void onResume() {
         super.onResume();
         Bundle bundle = getArguments();
-        enableNextButton(false);
+        enableNextButton(true);
         if(bundle.containsKey(USERNAME)) {
             mUserNameEditText.setText(bundle.getString(USERNAME));
         }

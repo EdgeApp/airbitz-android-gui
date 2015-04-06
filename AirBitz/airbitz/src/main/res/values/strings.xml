@@ -151,6 +151,8 @@
     <string name="activity_signup_password_fails">Your password…</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
+    <string name="activity_signup_insufficient_username_title">Sign Up</string>
+    <string name="activity_signup_insufficient_username_message">Sign Up failed:\nUsername must be at least 3 characters.</string>
     <string name="activity_signup_insufficient_pin">PIN must be 4 digits</string>
     <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
     <string name="activity_signup_time_to_crack">Time to crack:&#160;</string>
