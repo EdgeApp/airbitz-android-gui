@@ -71,7 +71,9 @@ import java.util.List;
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeRatesChange {
+public class RequestFragment extends BaseFragment implements
+        CoreAPI.OnExchangeRatesChange,
+        CoreAPI.OnWalletLoaded {
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
     public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
@@ -108,8 +110,6 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
-
-        loadNonArchivedWallets();
     }
 
     @Override
@@ -140,8 +140,6 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
         mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
 
         pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
-        pickWalletSpinner.setAdapter(dataAdapter);
         mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
@@ -368,8 +366,11 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
         double currency;
         long satoshi;
 
-        mAutoUpdatingTextFields = true;
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
+        if(walletPosition < 0) {
+            return;
+        }
+        mAutoUpdatingTextFields = true;
         Wallet wallet = mWallets.get(walletPosition);
         String bitcoin = mBitcoinField.getText().toString();
         String fiat = mFiatField.getText().toString();
@@ -409,8 +410,38 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
         // If large display, keep the calculator open
         ((NavigationActivity) getActivity()).lockCalculator();
 
-        loadNonArchivedWallets();
+        mCoreAPI.setOnWalletLoadedListener(this);
 
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mCoreAPI.removeExchangeRateChangeListener(this);
+
+        // If calculator is locked open, unlock it
+        ((NavigationActivity) getActivity()).unlockCalculator();
+
+        mCoreAPI.setOnWalletLoadedListener(null);
+    }
+
+    @Override
+    public void OnExchangeRatesChange() {
+        if (mSelectedWallet != null) {
+            setConversionText(mSelectedWallet.getCurrencyNum());
+            updateTextFieldContents();
+        }
+    }
+
+    @Override
+    public void onWalletsLoaded() {
+        mWallets = mCoreAPI.getCoreActiveWallets();
+
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
+        pickWalletSpinner.setAdapter(dataAdapter);
         if (!mWallets.isEmpty()) {
             mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
 
@@ -458,31 +489,5 @@ public class RequestFragment extends BaseFragment implements CoreAPI.OnExchangeR
             pickWalletSpinner.setSelection(mFromIndex);
         }
         mAutoUpdatingTextFields = false;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mCoreAPI.removeExchangeRateChangeListener(this);
-
-        // If calculator is locked open, unlock it
-        ((NavigationActivity) getActivity()).unlockCalculator();
-    }
-
-    @Override
-    public void OnExchangeRatesChange() {
-        if (mSelectedWallet != null) {
-            setConversionText(mSelectedWallet.getCurrencyNum());
-            updateTextFieldContents();
-        }
-    }
-
-    private void loadNonArchivedWallets() {
-        mWallets = mCoreAPI.getCoreActiveWallets();
-        if (pickWalletSpinner != null && pickWalletSpinner.getAdapter() != null) {
-            ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
-        }
     }
 }
