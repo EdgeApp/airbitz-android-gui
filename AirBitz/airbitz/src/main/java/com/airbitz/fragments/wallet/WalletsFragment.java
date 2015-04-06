@@ -567,7 +567,6 @@ public class WalletsFragment extends BaseFragment
         mCoreAPI.addExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(this);
         mCoreAPI.setOnWalletLoadedListener(this);
-        reloadWallets();
 
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         updateBalanceBar();

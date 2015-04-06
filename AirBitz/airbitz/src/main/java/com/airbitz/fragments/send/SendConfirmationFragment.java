@@ -79,7 +79,9 @@ import java.util.List;
 /**
  * Created on 2/21/14.
  */
-public class SendConfirmationFragment extends BaseFragment implements NavigationActivity.OnBackPress {
+public class SendConfirmationFragment extends BaseFragment implements
+        CoreAPI.OnWalletLoaded,
+        NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
@@ -182,11 +184,9 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
 
-
         mActivity = (NavigationActivity) getActivity();
 
         bundle = this.getArguments();
-        mWallets = mCoreAPI.getCoreActiveWallets();
 
         mAutoUpdatingTextFields = true;
     }
@@ -245,8 +245,6 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_root);
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
-        mWalletSpinner.setAdapter(dataAdapter);
 
         final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
@@ -765,6 +763,8 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
         }
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
+        mCoreAPI.setOnWalletLoadedListener(this);
+
         bundle = this.getArguments();
         if (bundle == null) {
             Log.d(TAG, "Send confirmation bundle is null");
@@ -781,11 +781,6 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
             mWalletForConversions = mSourceWallet;
             if (mIsUUID) {
                 mToWallet = mCoreAPI.getWalletFromUUID(mUUIDorURI);
-            }
-        }
-        for(int i=0; i<mWallets.size(); i++) {
-            if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
-                mWalletSpinner.setSelection(i, false);
             }
         }
         mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -892,6 +887,7 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
             mCalculateFeesTask.cancel(true);
         if (mMaxAmountTask != null)
             mMaxAmountTask.cancel(true);
+        mCoreAPI.setOnWalletLoadedListener(null);
     }
 
     private void saveInvalidEntryCount(int entries) {
@@ -1064,5 +1060,16 @@ public class SendConfirmationFragment extends BaseFragment implements Navigation
         }
     };
 
+    @Override
+    public void onWalletsLoaded() {
+        mWallets = mCoreAPI.getCoreActiveWallets();
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, true);
+        mWalletSpinner.setAdapter(dataAdapter);
+        for(int i=0; i<mWallets.size(); i++) {
+            if(mWallets.get(i).getName().equals(mSourceWallet.getName())) {
+                mWalletSpinner.setSelection(i, false);
+            }
+        }
+    }
 
 }

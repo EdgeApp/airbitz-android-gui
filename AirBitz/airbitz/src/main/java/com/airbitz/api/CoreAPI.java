@@ -321,6 +321,7 @@ public class CoreAPI {
     OnWalletLoaded mOnWalletLoadedListener = null;
     public void setOnWalletLoadedListener(OnWalletLoaded listener) {
         mOnWalletLoadedListener = listener;
+        reloadWallets();
     }
     public interface OnWalletLoaded {
         void onWalletsLoaded();
@@ -439,9 +440,12 @@ public class CoreAPI {
         return false;
     }
 
+    ReloadWalletTask mReloadWalletTask = null;
     public void reloadWallets() {
-        ReloadWalletTask task = new ReloadWalletTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if(mReloadWalletTask == null) {
+            mReloadWalletTask = new ReloadWalletTask();
+            mReloadWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     /**
@@ -465,6 +469,7 @@ public class CoreAPI {
             else {
                 Log.d(TAG, "no wallet loaded listener");
             }
+            mReloadWalletTask = null;
         }
     }
 

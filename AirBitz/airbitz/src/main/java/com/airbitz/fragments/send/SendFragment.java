@@ -90,6 +90,7 @@ import java.util.List;
 public class SendFragment extends BaseFragment implements
         QRCamera.OnScanResult,
         BluetoothListView.OnPeripheralSelected,
+        CoreAPI.OnWalletLoaded,
         BluetoothListView.OnBitcoinURIReceived,
         BluetoothListView.OnOneScanEnded {
     private final String TAG = getClass().getSimpleName();
@@ -185,8 +186,6 @@ public class SendFragment extends BaseFragment implements
         mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
 
         walletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
-        walletSpinner.setAdapter(dataAdapter);
 
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -418,7 +417,8 @@ public class SendFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mWallets = mCoreAPI.getCoreActiveWallets();
+
+        mCoreAPI.setOnWalletLoadedListener(this);
 
         dummyFocus.requestFocus();
         hasCheckedFirstUsage = false;
@@ -505,6 +505,7 @@ public class SendFragment extends BaseFragment implements
             mBluetoothListView.setOnOneScanEndedListener(null);
         }
 
+        mCoreAPI.setOnWalletLoadedListener(null);
         hasCheckedFirstUsage = false;
     }
 
@@ -649,5 +650,12 @@ public class SendFragment extends BaseFragment implements
         } else {
             ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
         }
+    }
+
+    @Override
+    public void onWalletsLoaded() {
+        mWallets = mCoreAPI.getCoreActiveWallets();
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        walletSpinner.setAdapter(dataAdapter);
     }
 }
