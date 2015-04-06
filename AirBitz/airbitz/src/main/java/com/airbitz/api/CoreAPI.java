@@ -2559,13 +2559,7 @@ public class CoreAPI {
             }
         }
         if (mDataFetched) {
-            Thread connectEmAll = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    connectWatchers();
-                }
-            });
-            connectEmAll.start();
+            connectWatchers();
         }
     }
 
@@ -2585,10 +2579,16 @@ public class CoreAPI {
     }
 
     public void connectWatchers() {
-        List<String> wallets = loadWalletUUIDs();
-        for (String uuid : wallets) {
-            connectWatcher(uuid);
-        }
+        Thread connectEmAll = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> wallets = loadWalletUUIDs();
+                for (String uuid : wallets) {
+                    connectWatcher(uuid);
+                }
+            }
+        });
+        connectEmAll.start();
     }
 
     public void connectWatcher(String uuid) {
