@@ -495,7 +495,11 @@ public class CoreAPI {
     private String[] mBTCSymbols = {"฿ ", "m฿ ", "ƀ "};
 
     public String GetUserPIN() {
-        return coreSettings().getSzPIN();
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return coreSettings().getSzPIN();
+        }
+        return "";
     }
 
     public tABC_CC SetPin(String pin) {
@@ -513,7 +517,11 @@ public class CoreAPI {
             return prefs.getBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), true);
         }
         else {
-            return coreSettings().getBDailySpendLimit();
+            tABC_AccountSettings settings = coreSettings();
+            if(settings != null) {
+                return coreSettings().getBDailySpendLimit();
+            }
+            return false;
         }
     }
 
@@ -537,8 +545,12 @@ public class CoreAPI {
             return prefs.getLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), 0);
         }
         else {
-            SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
-            return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+            tABC_AccountSettings settings = coreSettings();
+            if(settings != null) {
+                SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
+                return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+            }
+            return 0;
         }
     }
 
@@ -559,7 +571,11 @@ public class CoreAPI {
     }
 
     public boolean GetPINSpendLimitSetting() {
-        return coreSettings().getBSpendRequirePin();
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return coreSettings().getBSpendRequirePin();
+        }
+        return true;
     }
 
     public void SetPINSpendLimitSetting(boolean set) {
@@ -572,8 +588,12 @@ public class CoreAPI {
     }
 
     public long GetPINSpendLimit() {
-        SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
-        return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
+            return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        }
+        return 0;
     }
 
     public void SetPINSpendSatoshis(long spendLimit) {
@@ -894,23 +914,26 @@ public class CoreAPI {
     }
 
     public boolean needsRecoveryReminder(Wallet wallet) {
-        int reminderCount = coreSettings().getRecoveryReminderCount();
-        if (reminderCount >= RECOVERY_REMINDER_COUNT) {
-            // We reminded them enough
-            return false;
-        }
 
-        if (wallet.getBalanceSatoshi() < 10000000) {
-            // they do not have enough money to care
-            return false;
-        }
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int reminderCount = coreSettings().getRecoveryReminderCount();
+            if (reminderCount >= RECOVERY_REMINDER_COUNT) {
+                // We reminded them enough
+                return false;
+            }
 
-        if (hasRecoveryQuestionsSet()) {
-            // Recovery questions already set
-            clearRecoveryReminder();
-            return false;
-        }
+            if (wallet.getBalanceSatoshi() < 10000000) {
+                // they do not have enough money to care
+                return false;
+            }
 
+            if (hasRecoveryQuestionsSet()) {
+                // Recovery questions already set
+                clearRecoveryReminder();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -1389,7 +1412,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.i(TAG, "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
+            Log.i(TAG, "Error: CoreBridge.searchTransactionsIn: " + Error.getSzDescription());
         }
         return listTransactions;
     }
@@ -1430,9 +1453,13 @@ public class CoreAPI {
     //************************* Currency formatting
 
     public String formatDefaultCurrency(double in) {
-        String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
-        String out = String.format("%.3f", in);
-        return pre+out;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
+            String out = String.format("%.3f", in);
+            return pre+out;
+        }
+        return "";
     }
 
 
@@ -1587,47 +1614,57 @@ public class CoreAPI {
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
-        long satoshi = 100;
-        int denomIndex = 0;
-        int fiatDecimals = 2;
-        String amtBTCDenom = "1 ";
-        if(denomination != null) {
-            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
-                satoshi = (long) SATOSHI_PER_BTC;
-                denomIndex = 0;
-                fiatDecimals = 2;
-                amtBTCDenom = "1 ";
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
-                satoshi = (long) SATOSHI_PER_mBTC;
-                denomIndex = 1;
-                fiatDecimals = 3;
-                amtBTCDenom = "1 ";
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
-                satoshi = (long) SATOSHI_PER_uBTC;
-                denomIndex = 2;
-                fiatDecimals = 3;
-                amtBTCDenom = "1000 ";
-            }
-        }
-//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
-        double o = SatoshiToCurrency(satoshi, currencyNum);
-        if (denomIndex == 2)
-        {
-            // unit of 'bits' is so small it's useless to show it's conversion rate
-            // Instead show "1000 bits = $0.253 USD"
-            o = o * 1000;
-        }
-        String currency = formatCurrency(o, currencyNum, true, fiatDecimals);
 
-        String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
-        return amtBTCDenom + mBTCDenominations[denomIndex] + " = " + currency + " " + currencyLabel;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
+            long satoshi = 100;
+            int denomIndex = 0;
+            int fiatDecimals = 2;
+            String amtBTCDenom = "1 ";
+            if(denomination != null) {
+                if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                    satoshi = (long) SATOSHI_PER_BTC;
+                    denomIndex = 0;
+                    fiatDecimals = 2;
+                    amtBTCDenom = "1 ";
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                    satoshi = (long) SATOSHI_PER_mBTC;
+                    denomIndex = 1;
+                    fiatDecimals = 3;
+                    amtBTCDenom = "1 ";
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                    satoshi = (long) SATOSHI_PER_uBTC;
+                    denomIndex = 2;
+                    fiatDecimals = 3;
+                    amtBTCDenom = "1000 ";
+                }
+            }
+//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+            double o = SatoshiToCurrency(satoshi, currencyNum);
+            if (denomIndex == 2)
+            {
+                // unit of 'bits' is so small it's useless to show it's conversion rate
+                // Instead show "1000 bits = $0.253 USD"
+                o = o * 1000;
+            }
+            String currency = formatCurrency(o, currencyNum, true, fiatDecimals);
+
+            String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
+            return amtBTCDenom + mBTCDenominations[denomIndex] + " = " + currency + " " + currencyLabel;
+        }
+        return "";
+
     }
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
-        int currencyNumber = coreSettings().getCurrencyNum();
-        return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int currencyNumber = coreSettings().getCurrencyNum();
+            return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
+        }
+        return "";
     }
 
     public String FormatCurrency(long satoshi, int currencyNum, boolean btc, boolean withSymbol)
@@ -1646,8 +1683,12 @@ public class CoreAPI {
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {
-        int num = coreSettings().getCurrencyNum();
-        return SatoshiToCurrency(satoshi, num);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int num = coreSettings().getCurrencyNum();
+            return SatoshiToCurrency(satoshi, num);
+        }
+        return 0;
     }
 
     public double SatoshiToCurrency(long satoshi, int currencyNum) {
@@ -1661,7 +1702,11 @@ public class CoreAPI {
     }
 
     public long DefaultCurrencyToSatoshi(double currency) {
-        return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        }
+        return 0;
     }
 
     public long CurrencyToSatoshi(double currency, int currencyNum) {
@@ -1685,17 +1730,21 @@ public class CoreAPI {
         } catch(NumberFormatException e) { // ignore any non-double
         }
 
-        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
-        if(denomination != null) {
-            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
-                val = val * SATOSHI_PER_BTC;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
-                val = val * SATOSHI_PER_mBTC;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
-                val = val * SATOSHI_PER_uBTC;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
+            if(denomination != null) {
+                if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                    val = val * SATOSHI_PER_BTC;
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                    val = val * SATOSHI_PER_mBTC;
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                    val = val * SATOSHI_PER_uBTC;
+                }
             }
+            return val > MAX_SATOSHI;
         }
-        return val > MAX_SATOSHI;
+        return false;
     }
 
     public boolean TooMuchFiat(String fiat, int currencyNum) {
@@ -2850,10 +2899,14 @@ public class CoreAPI {
     }
 
     public tABC_CC PinSetupBlocking() {
-        String username = AirbitzApplication.getUsername();
-        String pin = coreSettings().getSzPIN();
-        tABC_Error pError = new tABC_Error();
-        return core.ABC_PinSetup(username, pin, pError);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            String username = AirbitzApplication.getUsername();
+            String pin = coreSettings().getSzPIN();
+            tABC_Error pError = new tABC_Error();
+            return core.ABC_PinSetup(username, pin, pError);
+        }
+        return tABC_CC.ABC_CC_Error;
     }
 
     final Runnable delayedPinSetup = new Runnable() {
