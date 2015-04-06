@@ -318,33 +318,12 @@ public class CoreAPI {
     };
 
     //***************** Wallet handling
-    public List<Wallet> loadWallets() {
-        return loadWallets(true);
+    OnWalletLoaded mOnWalletLoadedListener = null;
+    public void setOnWalletLoadedListener(OnWalletLoaded listener) {
+        mOnWalletLoadedListener = listener;
     }
-
-    public List<Wallet> loadWallets(boolean withTransactions) {
-        List<Wallet> list = new ArrayList<Wallet>();
-        List<Wallet> coreList = getCoreWallets(withTransactions);
-
-        if(coreList==null)
-            coreList = new ArrayList<Wallet>();
-        Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
-        headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
-        list.add(headerWallet);//Wallet HEADER
-        // Loop through and find non-archived wallets first
-        for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.getName()!=null)
-                list.add(wallet);
-        }
-        Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        list.add(archiveWallet); //Archive HEADER
-        // Loop through and find archived wallets now
-        for (Wallet wallet : coreList) {
-            if (wallet.isArchived() && wallet.getName()!=null)
-                list.add(wallet);
-        }
-        return list;
+    public interface OnWalletLoaded {
+        void onWalletsLoaded();
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
@@ -375,11 +354,6 @@ public class CoreAPI {
         return result == tABC_CC.ABC_CC_Ok;
     }
 
-    public void reloadWallets() {
-        mCoreWallets = null;
-        getCoreWallets(true);
-    }
-
     public void reloadWallet(Wallet wallet) {
         Wallet info = getWalletFromUUID(wallet.getUUID());
         if(info != null) {
@@ -389,20 +363,6 @@ public class CoreAPI {
             wallet.setBalanceSatoshi(info.getBalanceSatoshi());
             wallet.setCurrencyNum(info.getCurrencyNum());
         }
-    }
-
-    public Wallet getWalletFromName(String walletName) {
-        Wallet wallet = null;
-        List<Wallet> wallets = loadWallets();
-        for(Wallet w: wallets) {
-            if (w != null && w.getName().contains(walletName)) {
-                    wallet = w;
-            }
-        }
-        if(wallet!=null) {
-            wallet = getWalletFromUUID(wallet.getUUID());
-        }
-        return wallet;
     }
 
     public Wallet getWalletFromUUID(String uuid) {
@@ -477,6 +437,35 @@ public class CoreAPI {
             }
         }
         return false;
+    }
+
+    public void reloadWallets() {
+        ReloadWalletTask task = new ReloadWalletTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Reload the wallet list on async thread and alert any listener
+     */
+    public class ReloadWalletTask extends AsyncTask<Void, Void, List<Wallet>> {
+
+        @Override
+        protected List<Wallet> doInBackground(Void... params) {
+            mCoreWallets = null;
+            return getCoreWallets(true);
+        }
+
+        @Override
+        protected void onPostExecute(List<Wallet> walletList) {
+            mCoreWallets = walletList;
+            if (mOnWalletLoadedListener != null) {
+                Log.d(TAG, "wallets loaded");
+                mOnWalletLoadedListener.onWalletsLoaded();
+            }
+            else {
+                Log.d(TAG, "no wallet loaded listener");
+            }
+        }
     }
 
     //************ Account Recovery
