@@ -72,6 +72,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     private final String TAG = getClass().getSimpleName();
 
     public static String USERNAME = "com.airbitz.setupusername.username";
+    public static int USERNAME_MIN_LENGTH = 3;
 
     private EditText mUserNameEditText;
     private HighlightOnPressButton mNextButton;
@@ -129,8 +130,9 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (mUserNameEditText.getText().toString().length() < 3 || mUserNameEditText.getText().toString().trim().length() < 3) {
+                if (mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH || mUserNameEditText.getText().toString().trim().length() < USERNAME_MIN_LENGTH) {
                     mUserNameRedRingCover.setVisibility(View.VISIBLE);
+                    enableNextButton(false);
                 } else {
                     mUserNameRedRingCover.setVisibility(View.GONE);
                     enableNextButton(true);
