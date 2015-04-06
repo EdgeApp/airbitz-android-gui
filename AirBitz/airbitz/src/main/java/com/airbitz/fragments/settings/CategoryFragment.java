@@ -64,6 +64,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -496,6 +497,7 @@ public class CategoryFragment extends BaseFragment {
 
     private void goAddCategories() {
         mCategories = removeBlankSubcategories(mCoreAPI.loadCategories());
+        Collections.sort(mCategories);
         mCurrentCategories.addAll(mCategories);
     }
 
