@@ -367,6 +367,11 @@ public class CoreAPI {
         return result == tABC_CC.ABC_CC_Ok;
     }
 
+    public void reloadWallets() {
+        mCoreWallets = null;
+        getCoreWallets(true);
+    }
+
     public void reloadWallet(Wallet wallet) {
         Wallet info = getWalletFromUUID(wallet.getUUID());
         if(info != null) {
@@ -2222,24 +2227,26 @@ public class CoreAPI {
         return uuids;
     }
 
+    private List<Wallet> mCoreWallets = null;
     public List<Wallet> getCoreWallets(boolean withTransactions) {
-        List<Wallet> mWallets = new ArrayList<Wallet>();
+        if(mCoreWallets == null) {
+            List<Wallet> wallets = new ArrayList<Wallet>();
 
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
 
-        tABC_Error pError = new tABC_Error();
+            tABC_Error pError = new tABC_Error();
 
-        SWIGTYPE_p_int pCount = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+            SWIGTYPE_p_int pCount = core.new_intp();
+            SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
-        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                paWalletInfo, pUCount, pError);
+            tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    paWalletInfo, pUCount, pError);
 
-        if(result == tABC_CC.ABC_CC_Ok) {
-            int ptrToInfo = core.longp_value(lp);
-            int count = core.intp_value(pCount);
-            ppWalletInfo base = new ppWalletInfo(ptrToInfo);
+            if(result == tABC_CC.ABC_CC_Ok) {
+                int ptrToInfo = core.longp_value(lp);
+                int count = core.intp_value(pCount);
+                ppWalletInfo base = new ppWalletInfo(ptrToInfo);
 
                 for (int i = 0; i < count; i++) {
                     pLong temp = new pLong(base.getPtr(base, i * 4));
@@ -2253,14 +2260,21 @@ public class CoreAPI {
                     if (withTransactions) {
                         in.setTransactions(loadAllTransactions(in));
                     }
-                    mWallets.add(in);
+                    wallets.add(in);
+                }
+                core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
+                if(withTransactions) {
+                    mCoreWallets = wallets;
+                }
+                return wallets;
+            } else {
+                Log.d(TAG, "getCoreWallets failed.");
             }
-            core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
-            return mWallets;
-        } else {
-            Log.d(TAG, "getCoreWallets failed.");
+            return null;
         }
-        return null;
+        else {
+            return mCoreWallets;
+        }
     }
 
     public boolean walletsStillLoading() {
@@ -2552,12 +2566,18 @@ public class CoreAPI {
 
     private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
     public void startWatchers() {
-        List<String> wallets = loadWalletUUIDs();
-        for (String uuid : wallets) {
-            if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                startWatcher(uuid);
+        Thread startEmAll = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> wallets = loadWalletUUIDs();
+                for (String uuid : wallets) {
+                    if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
+                        startWatcher(uuid);
+                    }
+                }
             }
-        }
+        });
+        startEmAll.start();
         if (mDataFetched) {
             connectWatchers();
         }
@@ -2934,6 +2954,7 @@ public class CoreAPI {
     public void logout() {
         stopAllAsyncUpdates();
         mCoreSettings = null;
+        mCoreWallets = null;
 
         ClearCacheKeys();
     }

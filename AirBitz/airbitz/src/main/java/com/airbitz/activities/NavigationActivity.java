@@ -188,19 +188,6 @@ public class NavigationActivity extends Activity
         }
     };
 
-    final Runnable delayedEnableReceiveSendButtons = new Runnable() {
-        @Override
-        public void run() {
-            if(mCoreAPI.walletsStillLoading()) {
-                mNavBarFragment.disableSendRecieveButtons(true);
-                mHandler.postDelayed(delayedEnableReceiveSendButtons, 200);
-            }
-            else {
-                mNavBarFragment.disableSendRecieveButtons(false);
-            }
-        }
-    };
-
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
         @Override
@@ -752,7 +739,8 @@ public class NavigationActivity extends Activity
             mPasswordCheck.onResume();
         }
 
-        mHandler.post(delayedEnableReceiveSendButtons);
+        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
         mCoreAPI.addExchangeRateChangeListener(this);
 
@@ -772,7 +760,6 @@ public class NavigationActivity extends Activity
         if (null != mPasswordCheck) {
             mPasswordCheck.onPause();
         }
-        mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
         mCoreAPI.removeExchangeRateChangeListener(this);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
@@ -2114,4 +2101,32 @@ public class NavigationActivity extends Activity
         AlertDialog confirmDialog = builder.create();
         confirmDialog.show();
     }
+
+    public class WaitWalletLoadingTask extends AsyncTask<Void, Void, Void> {
+
+        WaitWalletLoadingTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            mNavBarFragment.disableSendRecieveButtons(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            while(mCoreAPI.walletsStillLoading()) {
+                try {
+                    Thread.currentThread().sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mNavBarFragment.disableSendRecieveButtons(false);
+        }
+    }
+
 }

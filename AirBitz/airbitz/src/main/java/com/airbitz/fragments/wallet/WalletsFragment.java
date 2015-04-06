@@ -602,18 +602,10 @@ public class WalletsFragment extends BaseFragment
     }
 
     public void updateWalletList(boolean archiveClosed) {
-        List<Wallet> walletList = getWallets(archiveClosed);
-        if(walletList != null && !walletList.isEmpty()) {
-            mLatestWalletList.clear();
-            mLatestWalletList.addAll(walletList);
+        if(mUpdateWalletListTask == null) {
+            mUpdateWalletListTask = new UpdateWalletListTask(archiveClosed);
+            mUpdateWalletListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
-        mLatestWalletAdapter.swapWallets();
-        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-        mLatestWalletAdapter.setArchiveButtonState(!archiveClosed);
-        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
-        mLatestWalletAdapter.notifyDataSetChanged();
-        mParentLayout.invalidate();
     }
 
     public List<Wallet> getWallets(boolean archiveClosed) {
@@ -683,8 +675,11 @@ public class WalletsFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            boolean success = mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                     mWalletName, mCurrencyNum);
+
+            mCoreAPI.reloadWallets();
+            return success;
         }
 
         @Override
@@ -705,6 +700,43 @@ public class WalletsFragment extends BaseFragment
         @Override
         protected void onCancelled() {
             mAddWalletTask = null;
+        }
+    }
+
+    UpdateWalletListTask mUpdateWalletListTask = null;
+    /**
+     * Update the wallet list on async thread
+     */
+    public class UpdateWalletListTask extends AsyncTask<Void, Void, List<Wallet>> {
+        boolean mArchiveClosed = false;
+        UpdateWalletListTask(boolean archiveClosed) {
+            mArchiveClosed = archiveClosed;
+        }
+
+        @Override
+        protected List<Wallet> doInBackground(Void... params) {
+            return getWallets(mArchiveClosed);
+        }
+
+        @Override
+        protected void onPostExecute(List<Wallet> walletList) {
+            mUpdateWalletListTask = null;
+            if(walletList != null && !walletList.isEmpty()) {
+                mLatestWalletList.clear();
+                mLatestWalletList.addAll(walletList);
+            }
+            mLatestWalletAdapter.swapWallets();
+            mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+            mLatestWalletAdapter.setArchiveButtonState(!mArchiveClosed);
+            mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+            mLatestWalletListView.setArchiveClosed(mArchiveClosed);
+            mLatestWalletAdapter.notifyDataSetChanged();
+            mParentLayout.invalidate();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mUpdateWalletListTask = null;
         }
     }
 }
