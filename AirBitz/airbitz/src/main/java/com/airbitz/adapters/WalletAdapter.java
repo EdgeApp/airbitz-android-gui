@@ -191,13 +191,13 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 });
                 textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
                 textView.setBackgroundResource(R.drawable.bg_wallets_header);
-                if(mArchiveButton == null) {
+//                if(mArchiveButton == null) {
                     mArchiveButton = imageButton;
                     imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
                     if(mArchiveOpen) {
                         mArchiveButton.setRotation(180);
                     }
-                }
+//                }
                 archivePos = position;
 
                 if (hoverSecondHeader) {
