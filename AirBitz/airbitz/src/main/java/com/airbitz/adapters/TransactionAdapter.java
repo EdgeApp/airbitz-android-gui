@@ -129,8 +129,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
             viewHolder.dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
             viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-            viewHolder.runningTotalTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.runningTotalTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
+            viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
             // store the holder with the view.
             convertView.setTag(viewHolder);
         } else {

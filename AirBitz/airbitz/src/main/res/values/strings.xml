@@ -20,7 +20,6 @@
     <string name="string_add_button">Add button adds a new wallet</string>
     <string name="string_payment_received">** Payment Received **</string>
     <string name="string_exit_app_question">"Would you like to exit Airbitz?"</string>
-    <string name="bhat">&#384;</string>
 
     <!-- Nav Bar strings -->
     <string name="nav_bar_directory_text">DIRECTORY</string>

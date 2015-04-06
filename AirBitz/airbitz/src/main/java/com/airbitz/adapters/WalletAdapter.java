@@ -219,7 +219,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            amountTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.NORMAL);
+            amountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace, Typeface.NORMAL);
             if (wallet.isLoading()) {
                 titleTextView.setText(R.string.loading);
             } else {
