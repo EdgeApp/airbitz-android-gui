@@ -404,7 +404,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
     private String fillTemplate(int id, String fullName) {
         String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
-        String amountMBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 5);
+        String amountBits = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 2);
 
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
@@ -426,7 +426,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         searchList.add("[[abtag BITCOIN_URI]]");
         searchList.add("[[abtag ADDRESS]]");
         searchList.add("[[abtag AMOUNT_BTC]]");
-        searchList.add("[[abtag AMOUNT_MBTC]]");
+        searchList.add("[[abtag AMOUNT_BITS]]");
 
         List<String> replaceList = new ArrayList<String>();
         if (fullName == null)
@@ -438,7 +438,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         replaceList.add(mRequestURI);
         replaceList.add(mAddress);
         replaceList.add(amountBTC);
-        replaceList.add(amountMBTC);
+        replaceList.add(amountBits);
 
         for (int i = 0; i < searchList.size(); i++) {
             content = content.replace(searchList.get(i), replaceList.get(i));

@@ -10,7 +10,7 @@ Click to Pay
 
 Address: [[abtag ADDRESS]]
 Amount: [[abtag AMOUNT_BTC]] BTC
-Amount: [[abtag AMOUNT_MBTC]] mBTC
+Amount: [[abtag AMOUNT_BITS]] bits
 
 Sent from the Airbitz Mobile Bitcoin Wallet + Business Directory
 
