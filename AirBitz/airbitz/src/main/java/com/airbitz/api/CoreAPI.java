@@ -100,6 +100,15 @@ public class CoreAPI {
 
     private CoreAPI() { }
 
+    public static CoreAPI getApi(Context context) {
+        mContext = context;
+        if (mInstance == null) {
+            mInstance = new CoreAPI();
+            Log.d(TAG, "New CoreAPI");
+        }
+        return mInstance;
+    }
+
     public static CoreAPI getApi() {
         if (mInstance == null) {
             mInstance = new CoreAPI();
@@ -108,7 +117,7 @@ public class CoreAPI {
         return mInstance;
     }
 
-    private Context mContext;
+    private static Context mContext;
 
     public native String getStringAtPtr(long pointer);
     public native byte[] getBytesAtPtr(long pointer, int length);
@@ -145,7 +154,6 @@ public class CoreAPI {
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
         }
-        mContext = context;
     }
 
     public void setupAccountSettings() {
@@ -492,7 +500,7 @@ public class CoreAPI {
     };
 
     private String[] mBTCDenominations = {"BTC", "mBTC", "bits"};
-    private String[] mBTCSymbols = {"฿ ", "m฿ ", "ƀ "};
+    private String[] mBTCSymbols = {"฿ ", "m฿ ", mContext.getResources().getString(R.string.bhat)+" "};
 
     public String GetUserPIN() {
         tABC_AccountSettings settings = coreSettings();

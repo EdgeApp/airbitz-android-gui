@@ -337,7 +337,7 @@ public class NavigationActivity extends Activity
     }
 
     public static CoreAPI initiateCore(Context context) {
-        CoreAPI api = CoreAPI.getApi();
+        CoreAPI api = CoreAPI.getApi(context);
         String seed = CoreAPI.getSeedData();
         api.Initialize(context, seed, seed.length());
         return api;
