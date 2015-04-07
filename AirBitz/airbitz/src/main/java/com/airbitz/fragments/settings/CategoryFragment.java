@@ -521,7 +521,7 @@ public class CategoryFragment extends BaseFragment {
             newCat = mAddField.getText().toString();
             mCategories.add(newCat);
             if (newCat.toLowerCase().contains(mSearchField.getText().toString().toLowerCase())) {
-                mCurrentCategories.add(newCat);
+                goAddCategories();
             }
             mCategoryAdapter.notifyDataSetChanged();
             doEdit = true;
