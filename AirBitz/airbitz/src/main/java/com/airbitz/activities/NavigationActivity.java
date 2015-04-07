@@ -425,11 +425,11 @@ public class NavigationActivity extends Activity
                     switchFragmentThread(position);
                 }
                 else {
-                    mDrawer.openDrawer(mDrawerView);
+                    openDrawer();
                 }
             }
             else if(position == Tabs.MORE.ordinal()) {
-                mDrawer.openDrawer(mDrawerView);
+                openDrawer();
             }
             else if(!isAtNavStackEntry()) {
                 onBackPressed();
@@ -2027,6 +2027,11 @@ public class NavigationActivity extends Activity
             @Override
             public void onDrawerStateChanged(int newState) {}
         });
+    }
+
+    private void openDrawer() {
+        mDrawerAccount.setText(AirbitzApplication.getUsername());
+        mDrawer.openDrawer(mDrawerView);
     }
 
     private void showOthersList(String username, boolean show)
