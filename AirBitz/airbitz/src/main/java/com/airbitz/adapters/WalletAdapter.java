@@ -68,6 +68,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private int archivePos;
     private ImageView mArchiveButton;
     private boolean mArchiveOpen = false;
+    private Typeface mBitcoinTypeface;
 
     private OnHeaderButtonPress mHeaderButtonListener;
     public interface OnHeaderButtonPress {
@@ -89,6 +90,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             addWallet(wallet);
         }
         mCoreAPI = CoreAPI.getApi();
+
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
     }
 
     public void setFirstHeaderHover(boolean status) {
@@ -218,8 +221,8 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
-            titleTextView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
-            amountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace, Typeface.NORMAL);
+            titleTextView.setTypeface(mBitcoinTypeface);
+            amountTextView.setTypeface(mBitcoinTypeface);
             if (wallet.isLoading()) {
                 titleTextView.setText(R.string.loading);
             } else {

@@ -190,6 +190,8 @@ public class WalletsFragment extends BaseFragment
     private AddWalletTask mAddWalletTask;
     private Handler mHandler = new Handler();
 
+    private Typeface mBitcoinTypeface;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,6 +217,8 @@ public class WalletsFragment extends BaseFragment
         }
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_header_layout);
+
+        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/NotoSans-Regular.ttf");
 
         mCurrencyList = new ArrayList<String>();
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
@@ -246,7 +250,9 @@ public class WalletsFragment extends BaseFragment
         mMoverCoin = (ImageView) mView.findViewById(R.id.button_mover_coin);
         mMoverType = (TextView) mView.findViewById(R.id.button_mover_type);
         mBottomType = (TextView) mView.findViewById(R.id.bottom_type);
+        mBottomType.setTypeface(mBitcoinTypeface);
         mTopType = (TextView) mView.findViewById(R.id.top_type);
+        mTopType.setTypeface(mBitcoinTypeface);
 
         walletsHeader = mView.findViewById(R.id.fragment_wallets_wallets_header);
         walletsHeader.setVisibility(View.GONE);
@@ -379,15 +385,14 @@ public class WalletsFragment extends BaseFragment
         mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!isAdded()) {
+                if (!isAdded()) {
                     return;
                 }
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
                 Wallet wallet = a.getList().get(i);
                 if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
-                }
-                else {
+                } else {
                     mParentLayout.requestFocus();
                     a.selectItem(view, i);
                     showWalletFragment(a.getList().get(i).getUUID());
@@ -412,6 +417,7 @@ public class WalletsFragment extends BaseFragment
                 }
             }
         });
+
 
         return mView;
     }

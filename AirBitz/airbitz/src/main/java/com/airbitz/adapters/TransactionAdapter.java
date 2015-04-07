@@ -33,6 +33,7 @@ package com.airbitz.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -78,6 +79,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private final Picasso mPicasso;
     private SimpleDateFormat mFormatter;
+    private Typeface mBitcoinTypeface;
 
     public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList) {
         super(context, R.layout.item_listview_transaction, listTransaction);
@@ -92,6 +94,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
         mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
+
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
     }
 
     public void createRunningSatoshi() {
@@ -129,8 +133,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
             viewHolder.dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
             viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-            viewHolder.runningTotalTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
-            viewHolder.creditAmountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
+            viewHolder.runningTotalTextView.setTypeface(mBitcoinTypeface);
+            viewHolder.creditAmountTextView.setTypeface(mBitcoinTypeface);
             // store the holder with the view.
             convertView.setTag(viewHolder);
         } else {
