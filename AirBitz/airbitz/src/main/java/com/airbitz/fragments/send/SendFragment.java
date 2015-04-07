@@ -144,7 +144,6 @@ public class SendFragment extends BaseFragment implements
             mCoreAPI = CoreAPI.getApi();
 
         mActivity = (NavigationActivity) getActivity();
-        mWallets = mCoreAPI.getCoreActiveWallets();
     }
 
     @Override
