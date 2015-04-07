@@ -249,6 +249,7 @@ public class WalletsFragment extends BaseFragment
         mTopType = (TextView) mView.findViewById(R.id.top_type);
 
         walletsHeader = mView.findViewById(R.id.fragment_wallets_wallets_header);
+        walletsHeader.setVisibility(View.GONE);
         walletsHeaderImage = (ImageView) mView.findViewById(R.id.item_listview_wallets_header_image);
         walletsHeaderImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +259,7 @@ public class WalletsFragment extends BaseFragment
         });
 
         archiveHeader = mView.findViewById(R.id.fragment_wallets_archive_header);
+        archiveHeader.setVisibility(View.GONE);
         archiveHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -367,7 +369,7 @@ public class WalletsFragment extends BaseFragment
         mTitleTextView = (TextView) mView.findViewById(R.id.fragment_wallets_title_textview);
 
         mLatestWalletListView = (DynamicListView) mView.findViewById(R.id.fragment_wallets_listview);
-        setupLatestWalletListView();
+        mLatestWalletListView.setVisibility(View.GONE);
 
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -415,12 +417,19 @@ public class WalletsFragment extends BaseFragment
     }
 
     private void setupLatestWalletListView() {
-        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-        mLatestWalletListView.setWalletList(mLatestWalletList);
-        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchiveClosed(mArchiveClosed);
-        mLatestWalletListView.setOnListReorderedListener(this);
+        if(mLatestWalletListView.getVisibility() != View.VISIBLE && mLatestWalletList.size() >= 3) {
+            mLatestWalletListView.setVisibility(View.VISIBLE);
+            walletsHeader.setVisibility(View.VISIBLE);
+            archiveHeader.setVisibility(View.VISIBLE);
+            mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+            mLatestWalletListView.setWalletList(mLatestWalletList);
+            mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+            mLatestWalletListView.setArchiveClosed(mArchiveClosed);
+            mLatestWalletListView.setOnListReorderedListener(this);
+
+            mLatestWalletListView.setHeaderVisibilityOnReturn();
+        }
     }
 
     @Override
@@ -510,6 +519,7 @@ public class WalletsFragment extends BaseFragment
     public void onWalletsLoaded() {
         Log.d(TAG, "wallet loaded");
         updateWalletList(mArchiveClosed);
+        setupLatestWalletListView();
         UpdateBalances();
     }
 
@@ -561,15 +571,11 @@ public class WalletsFragment extends BaseFragment
         SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
 
-
-        mLatestWalletListView.setHeaderVisibilityOnReturn();
-
         mCoreAPI.addExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(this);
-        mCoreAPI.setOnWalletLoadedListener(this);
+        mCoreAPI.setOnWalletLoadedListener(this); // this kicks off reading wallets
 
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        updateBalanceBar();
     }
 
     private void updateBalanceBar() {
@@ -616,11 +622,6 @@ public class WalletsFragment extends BaseFragment
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
         }
-        mLatestWalletAdapter.swapWallets();
-        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-        mLatestWalletAdapter.setArchiveButtonState(!archiveClosed);
-        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
         mLatestWalletAdapter.notifyDataSetChanged();
         mParentLayout.invalidate();
     }

@@ -546,7 +546,7 @@
     <string name="password_check_check_my_password">Check MY Password</string>
     <string name="password_check_check_later">Later</string>
     <string name="password_check_great_job">Great job remembering your password.</string>
-    <string name="password_check_checking">Checking password...</string>
+    <string name="password_check_checking">Checking password…</string>
     <string name="password_check_current_password">Current password</string>
 
     <!-- Settings -->
