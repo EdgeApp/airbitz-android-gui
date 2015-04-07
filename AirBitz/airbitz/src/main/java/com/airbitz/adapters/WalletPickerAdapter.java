@@ -32,6 +32,7 @@
 package com.airbitz.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class WalletPickerAdapter extends ArrayAdapter {
     private List<Wallet> mWalletList;
     private WalletPickerEnum mSource;
     private boolean mWithBalance;
+    private Typeface mBitcoinTypeface;
 
     public WalletPickerAdapter(Context context, List<Wallet> walletList, WalletPickerEnum source) {
         this(context, walletList, source, true);
@@ -64,6 +66,7 @@ public class WalletPickerAdapter extends ArrayAdapter {
         mWalletList = walletList;
         mSource = source;
         mWithBalance = withBalance;
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
     }
 
     @Override
@@ -71,6 +74,7 @@ public class WalletPickerAdapter extends ArrayAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
+        textView.setTypeface(mBitcoinTypeface);
         textView.setText(mWalletList.get(position).getName() + " (" + mWalletList.get(position).getBalanceFormatted() + ")");
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         return convertView;
@@ -86,10 +90,12 @@ public class WalletPickerAdapter extends ArrayAdapter {
         if (mSource == WalletPickerEnum.SendTo) {
             convertView = inflater.inflate(R.layout.item_send_listing_spinner, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_send_listing_spinner_textview);
+            textView.setTypeface(mBitcoinTypeface);
             textView.setText(title);
         } else {
             convertView = inflater.inflate(R.layout.item_request_wallet_spinner, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_textview);
+            textView.setTypeface(mBitcoinTypeface);
             textView.setText(title);
         }
         return convertView;

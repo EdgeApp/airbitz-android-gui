@@ -74,6 +74,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -159,6 +160,8 @@ public class SendConfirmationFragment extends BaseFragment implements
 
     private boolean mAutoUpdatingTextFields = false;
 
+    private Typeface mBitcoinTypeface;
+
     private View mView;
     /**
      * Wrap the fee calculation in an AsyncTask
@@ -194,6 +197,8 @@ public class SendConfirmationFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
+
+        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/NotoSans-Regular.ttf");
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
@@ -865,6 +870,7 @@ public class SendConfirmationFragment extends BaseFragment implements
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
 
+        mBTCSignTextview.setTypeface(mBitcoinTypeface);
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
         mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
