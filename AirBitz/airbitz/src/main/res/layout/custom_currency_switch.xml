@@ -78,6 +78,7 @@
             android:background="@drawable/bg_btn_green"
             android:gravity="center"
             android:textColor="@android:color/white"
+            android:text="@string/loading"
             android:textSize="18dp"
             android:textStyle="bold" />
 
