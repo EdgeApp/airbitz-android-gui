@@ -863,13 +863,6 @@ public class SendConfirmationFragment extends BaseFragment implements
             }
         }
 
-        mAuthorizationTextView = (TextView) mView.findViewById(R.id.textview_pin);
-        mConversionTextView = (TextView) mView.findViewById(R.id.textview_conversion);
-        mBTCSignTextview = (TextView) mView.findViewById(R.id.send_confirmation_btc_sign);
-        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
-        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
-        mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
-
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
         mBTCSignTextview.setText(mCoreAPI.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
