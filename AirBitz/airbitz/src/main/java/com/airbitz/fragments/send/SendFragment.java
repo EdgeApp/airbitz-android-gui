@@ -289,39 +289,6 @@ public class SendFragment extends BaseFragment implements
             }
         });
 
-        if (!mWallets.isEmpty()) {
-            mFromWallet = mWallets.get(0);
-        }
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String uuid = bundle.getString(UUID); // From a wallet with this UUID
-            if (uuid != null) {
-                mFromWallet = mCoreAPI.getWalletFromUUID(uuid);
-                if (mFromWallet != null) {
-                    for (int i = 0; i < mWallets.size(); i++) {
-                        if (mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
-                            final int finalI = i;
-                            walletSpinner.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    walletSpinner.setSelection(finalI);
-                                }
-                            });
-                            break;
-                        }
-                    }
-                }
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
-                String uriData = bundle.getString(NavigationActivity.URI_DATA);
-                bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
-                if (!uriData.isEmpty()) {
-                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
-                    if (info != null && info.getSzAddress() != null) {
-                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
-                    }
-                }
-            }
-        }
         // if BLE is supported on the device, enable
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             if (SettingFragment.getBLEPref()) {
@@ -333,8 +300,6 @@ public class SendFragment extends BaseFragment implements
                 // Bluetooth is not enabled - ask for enabling?
             }
         }
-
-        updateWalletOtherList();
 
         return mView;
     }
@@ -656,5 +621,41 @@ public class SendFragment extends BaseFragment implements
         mWallets = mCoreAPI.getCoreActiveWallets();
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
         walletSpinner.setAdapter(dataAdapter);
+
+        if (!mWallets.isEmpty()) {
+            mFromWallet = mWallets.get(0);
+        }
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String uuid = bundle.getString(UUID); // From a wallet with this UUID
+            if (uuid != null) {
+                mFromWallet = mCoreAPI.getWalletFromUUID(uuid);
+                if (mFromWallet != null) {
+                    for (int i = 0; i < mWallets.size(); i++) {
+                        if (mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
+                            final int finalI = i;
+                            walletSpinner.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    walletSpinner.setSelection(finalI);
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
+                String uriData = bundle.getString(NavigationActivity.URI_DATA);
+                bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
+                if (!uriData.isEmpty()) {
+                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
+                    if (info != null && info.getSzAddress() != null) {
+                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                    }
+                }
+            }
+        }
+
+        updateWalletOtherList();
     }
 }
