@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -49,7 +48,7 @@ public class QRCamera implements
     ImageButton mFlashButton, mGalleryButton, mBluetoothButton;
     Handler mHandler = new Handler();
     boolean mFlashOn = false;
-    boolean mPreviewDone = false;
+    boolean mPreviewing = false;
     CoreAPI mCoreAPI;
 
     //************** Callback for notification of a QR code scan result
@@ -117,7 +116,26 @@ public class QRCamera implements
         return mBluetoothButton;
     }
 
+    Runnable cameraStartRunner = new Runnable() {
+        @Override
+        public void run() {
+            if(mCamera != null) {
+                if(mPreviewing) {
+                    stopCamera();
+                }
+                mHandler.postDelayed(cameraStartRunner, 200);
+            }
+            else {
+                startupTheCamera();
+            }
+        }
+    };
+
     public void startCamera() {
+        mHandler.post(cameraStartRunner);
+    }
+
+    private void startupTheCamera() {
         //Get back camera unless there is none, then try the front camera - fix for Nexus 7
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras == 0) {
@@ -143,6 +161,7 @@ public class QRCamera implements
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
             Log.d(TAG, "Camera Does Not exist");
+            mHandler.postDelayed(cameraStartRunner, 200);
             return;
         }
 
@@ -163,14 +182,13 @@ public class QRCamera implements
             }
         }
         checkCameraFlash();
-
-        mPreviewDone = false;
+        mPreviewing = true;
     }
 
     Thread mStopThread;
     public void stopCamera() {
-        if(mCamera != null && !mPreviewDone) {
-            mPreviewDone = true;
+        if(mCamera != null && mPreviewing) {
+            mPreviewing = false;
             Log.d(TAG, "stopping camera");
             mCamera.setPreviewCallback(null);
             mHandler.removeCallbacks(cameraFocusRunner);
@@ -183,6 +201,7 @@ public class QRCamera implements
                         Log.d(TAG, "camera released");
                         mCamera = null;
                         mStopThread = null;
+                        mPreviewObscura.setVisibility(View.VISIBLE);
                     }
                 });
                 mStopThread.start();
@@ -312,10 +331,10 @@ public class QRCamera implements
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        if(mPreviewDone) {
+        if(!mPreviewing) {
             return;
         }
-        if(mPreviewObscura.getVisibility() != View.GONE  &&  mPreviewObscura.getAnimation() == null) {
+        if(mPreviewObscura.getVisibility() != View.GONE) {
             mPreviewObscura.animate()
                     .alpha(0f)
                     .setDuration(200)
