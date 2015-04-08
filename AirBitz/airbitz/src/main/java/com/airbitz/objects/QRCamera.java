@@ -201,7 +201,6 @@ public class QRCamera implements
                         Log.d(TAG, "camera released");
                         mCamera = null;
                         mStopThread = null;
-                        mPreviewObscura.setVisibility(View.VISIBLE);
                     }
                 });
                 mStopThread.start();
