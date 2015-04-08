@@ -229,7 +229,7 @@ public class CategoryFragment extends BaseFragment {
         mAddField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
                     goAddNewCategory();
                     return true;
                 }
@@ -520,9 +520,9 @@ public class CategoryFragment extends BaseFragment {
         if (!mAddField.getText().toString().substring(mAddField.getText().toString().indexOf(':') + 1).trim().isEmpty()) {
             newCat = mAddField.getText().toString();
             mCategories.add(newCat);
-            if (newCat.toLowerCase().contains(mSearchField.getText().toString().toLowerCase())) {
-                goAddCategories();
-            }
+            Collections.sort(mCategories);
+            mCurrentCategories.add(newCat);
+            Collections.sort(mCurrentCategories);
             mCategoryAdapter.notifyDataSetChanged();
             doEdit = true;
             mAddField.getText().clear();
