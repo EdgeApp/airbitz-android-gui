@@ -423,18 +423,20 @@ public class WalletsFragment extends BaseFragment
     }
 
     private void setupLatestWalletListView() {
+        mLatestWalletListView.setAdapter(mLatestWalletAdapter);
+        mLatestWalletListView.setWalletList(mLatestWalletList);
+        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
+        mLatestWalletListView.setArchiveClosed(mArchiveClosed);
+        mLatestWalletListView.setHeaderVisibilityOnReturn();
+        mLatestWalletListView.setOnListReorderedListener(this);
+    }
+
+    private void checkWalletListVisibility() {
         if(mLatestWalletListView.getVisibility() != View.VISIBLE && mLatestWalletList.size() >= 3) {
             mLatestWalletListView.setVisibility(View.VISIBLE);
             walletsHeader.setVisibility(View.VISIBLE);
             archiveHeader.setVisibility(View.VISIBLE);
-            mLatestWalletListView.setAdapter(mLatestWalletAdapter);
-            mLatestWalletListView.setWalletList(mLatestWalletList);
-            mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            mLatestWalletListView.setHeaders(walletsHeader, archiveHeader);
-            mLatestWalletListView.setArchiveClosed(mArchiveClosed);
-            mLatestWalletListView.setOnListReorderedListener(this);
-
-            mLatestWalletListView.setHeaderVisibilityOnReturn();
         }
     }
 
@@ -523,9 +525,10 @@ public class WalletsFragment extends BaseFragment
 
     @Override
     public void onWalletsLoaded() {
+        mActivity.showModalProgress(false);
         Log.d(TAG, "wallet loaded");
         updateWalletList(mArchiveClosed);
-        setupLatestWalletListView();
+        checkWalletListVisibility();
         UpdateBalances();
     }
 
@@ -582,6 +585,9 @@ public class WalletsFragment extends BaseFragment
         mCoreAPI.setOnWalletLoadedListener(this); // this kicks off reading wallets
 
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
+
+        setupLatestWalletListView();
+        mActivity.showModalProgress(true);
     }
 
     private void updateBalanceBar() {
@@ -628,6 +634,10 @@ public class WalletsFragment extends BaseFragment
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
         }
+        mLatestWalletAdapter.swapWallets();
+        mLatestWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mLatestWalletAdapter.setArchiveButtonState(!archiveClosed);
+        mLatestWalletListView.setArchiveClosed(archiveClosed);
         mLatestWalletAdapter.notifyDataSetChanged();
         mParentLayout.invalidate();
     }
