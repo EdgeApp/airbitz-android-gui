@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="280dp"
+    android:layout_width="290dp"
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:layout_marginBottom="@dimen/tabbar_height"
@@ -68,12 +68,12 @@
             android:layout_height="40dp"
             android:background="@color/drawer_dark_blue_gray"
             android:drawableLeft="@drawable/icon_bitcoin_symbol"
-            android:drawablePadding="20dp"
+            android:drawablePadding="10dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:singleLine="true"
-            android:text="1BTC = $340"
+            android:text="1000 bits = $ 0.246 USD"
             android:textColor="@color/light_gray_text"
             android:textSize="20dp" />
 
