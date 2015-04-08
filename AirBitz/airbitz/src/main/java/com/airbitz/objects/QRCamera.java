@@ -147,7 +147,6 @@ public class QRCamera implements
         }
 
         mPreview = new CameraSurfacePreview(mFragment.getActivity(), mCamera);
-        mPreviewFrame.removeView(mPreview);
         mPreviewFrame.addView(mPreview);
         if (mCamera != null) {
             mCamera.setPreviewCallback(this);
@@ -183,6 +182,7 @@ public class QRCamera implements
                         mCamera.release();
                         Log.d(TAG, "camera released");
                         mCamera = null;
+                        mStopThread = null;
                     }
                 });
                 mStopThread.start();
