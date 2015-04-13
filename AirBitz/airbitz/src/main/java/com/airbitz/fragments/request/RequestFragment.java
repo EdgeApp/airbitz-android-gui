@@ -63,6 +63,7 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -212,9 +213,6 @@ public class RequestFragment extends BaseFragment implements
                     EditText edittext = (EditText) view;
                     mBtc = true;
 
-                    int inType = edittext.getInputType();
-                    edittext.setInputType(InputType.TYPE_NULL);
-                    edittext.setInputType(inType);
                     mFiatField.setText("");
                     mBitcoinField.setText("");
                     mAutoUpdatingTextFields = true;
@@ -234,9 +232,6 @@ public class RequestFragment extends BaseFragment implements
                 EditText edittext = (EditText) view;
                 mBtc = false;
 
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.setInputType(inType);
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     mFiatField.setText("");
@@ -270,19 +265,17 @@ public class RequestFragment extends BaseFragment implements
         mBitcoinField.setOnEditorActionListener(calcDoneListener);
         mFiatField.setOnEditorActionListener(calcDoneListener);
 
-        View.OnTouchListener preventOSKeyboard = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();
-                edittext.setInputType(InputType.TYPE_NULL);
-                edittext.onTouchEvent(event);
-                edittext.setInputType(inType);
-                return true; // the listener has consumed the event
-            }
-        };
-
-        mBitcoinField.setOnTouchListener(preventOSKeyboard);
-        mFiatField.setOnTouchListener(preventOSKeyboard);
+        // Prevent OS keyboard from showing
+        try {
+            final Method method = EditText.class.getMethod(
+                    "setShowSoftInputOnFocus"
+                    , new Class[] { boolean.class });
+            method.setAccessible(true);
+            method.invoke(mBitcoinField, false);
+            method.invoke(mFiatField, false);
+        } catch (Exception e) {
+            // ignore
+        }
 
         mHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
