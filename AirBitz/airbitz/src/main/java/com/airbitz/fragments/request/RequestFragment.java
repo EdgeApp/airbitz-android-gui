@@ -404,8 +404,6 @@ public class RequestFragment extends BaseFragment implements
         ((NavigationActivity) getActivity()).lockCalculator();
 
         mCoreAPI.setOnWalletLoadedListener(this);
-
-
     }
 
     @Override
@@ -417,6 +415,8 @@ public class RequestFragment extends BaseFragment implements
 
         // If calculator is locked open, unlock it
         ((NavigationActivity) getActivity()).unlockCalculator();
+
+        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
 
         mCoreAPI.setOnWalletLoadedListener(null);
     }
