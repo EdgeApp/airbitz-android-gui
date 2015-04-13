@@ -60,6 +60,12 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
+        <include layout="@layout/loading_indicator"
+            android:id="@+id/business_directory_search_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
     </FrameLayout>
 
     <LinearLayout

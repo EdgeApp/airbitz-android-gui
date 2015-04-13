@@ -54,6 +54,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -132,6 +133,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private ListView mVenueListView;
     private VenueAdapter mVenueAdapter;
     private Spinner mMoreSpinner;
+    private View mSearchLoading;
     private CurrentLocationManager mLocationManager;
     private ViewGroup mViewGroupLoading;
     private TextView mNoResultView;
@@ -255,6 +257,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mMoreButton = (TextView) mBusinessLayout.findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
         mMoreSpinner = (Spinner) mBusinessLayout.findViewById(R.id.spinner_more_categories);
+        mSearchLoading = view.findViewById(R.id.business_directory_search_loading);
 
         mNoResultView = (TextView) view.findViewById(R.id.business_fragment_no_result_view);
 
@@ -676,6 +679,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         if (mMoreSpinner != null) {
             mMoreSpinner.setVisibility(View.GONE);
         }
+        if (mSearchLoading != null) {
+            mSearchLoading.setVisibility(View.GONE);
+        }
         mCurrentLocation = mLocationManager.getLocation();
         checkLocationManager();
         mLocationManager.addLocationChangeListener(this);
@@ -866,6 +872,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         } else {
             mVenueListView.setVisibility(View.GONE);
             mNoResultView.setVisibility(View.VISIBLE);
+            mSearchLoading.setVisibility(View.GONE);
         }
         if (!venues.isEmpty()) {
             mVenuesLoaded.addAll(venues);
@@ -909,6 +916,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
         public BusinessAutoCompleteAsynctask(List<Business> cacheData) {
             mCacheData = cacheData;
+            mSearchLoading.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -943,12 +951,14 @@ public class BusinessDirectoryFragment extends BaseFragment implements
                 }
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
+            mSearchLoading.setVisibility(View.GONE);
             mBusinessAutoCompleteAsyncTask = null;
         }
 
         @Override
         protected void onCancelled(List<Business> jSONResult) {
             mBusinessAutoCompleteAsyncTask = null;
+            mSearchLoading.setVisibility(View.GONE);
             super.onCancelled();
         }
     }
@@ -960,6 +970,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
         public LocationAutoCompleteAsynctask(List<LocationSearchResult> cacheData) {
             mCacheData = cacheData;
+            mSearchLoading.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -1000,12 +1011,14 @@ public class BusinessDirectoryFragment extends BaseFragment implements
                 }
             }
             mLocationAdapter.notifyDataSetChanged();
+            mSearchLoading.setVisibility(View.GONE);
             mLocationAutoCompleteAsyncTask = null;
         }
 
         @Override
         protected void onCancelled(List<LocationSearchResult> JSONResult) {
             super.onCancelled();
+            mSearchLoading.setVisibility(View.GONE);
             mLocationAutoCompleteAsyncTask = null;
         }
 
@@ -1037,6 +1050,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected void onCancelled() {
             mNoResultView.setVisibility(View.VISIBLE);
+            mSearchLoading.setVisibility(View.GONE);
             hideLoadingIndicator();
             mVenuesTask = null;
             super.onCancelled();
