@@ -129,6 +129,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     private List<BusinessSearchResult> mVenues = new ArrayList<BusinessSearchResult>();
     private List<MapLatLng> mMarkersLatLngList;
     private CurrentLocationManager mLocationManager;
+    private View mLoadingIndicator;
     private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private LocationAutoCompleteAsynctask mLocationAutoCompleteAsyncTask;
@@ -164,6 +165,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_map_business_directory, container, false);
 
+        mLoadingIndicator = view.findViewById(R.id.map_business_directory_search_loading);
         mVenueListView = (ListView) view.findViewById(R.id.map_fragment_layout);
         mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -676,6 +678,9 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         super.onResume();
         mMapShim.onResume();
 
+
+        mLoadingIndicator.setVisibility(View.GONE);
+
         if (!mVenues.isEmpty()) {
             List<BusinessSearchResult> venues =
                     new ArrayList<BusinessSearchResult>(mVenues);
@@ -831,6 +836,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
         public LocationAutoCompleteAsynctask(List<LocationSearchResult> cacheData) {
             mCacheData = cacheData;
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -872,11 +878,13 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             }
             mLocationAdapter.notifyDataSetChanged();
             mLocationAutoCompleteAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
         }
 
         @Override
         protected void onCancelled(List<LocationSearchResult> JSONResult) {
             mLocationAutoCompleteAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
             super.onCancelled();
         }
     }
@@ -887,6 +895,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
         public BusinessAutoCompleteAsynctask(List<Business> cacheData) {
             mCacheData = cacheData;
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -922,11 +931,13 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             }
             mBusinessSearchAdapter.notifyDataSetChanged();
             mBusinessAutoCompleteAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
         }
 
         @Override
         protected void onCancelled(List<Business> JSONResult) {
             mBusinessAutoCompleteAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
             super.onCancelled();
         }
     }
@@ -942,11 +953,13 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
         @Override
         protected void onPreExecute() {
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onCancelled() {
             mGetVenuesByBoundAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
             super.onCancelled();
         }
 
@@ -978,6 +991,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                 e.printStackTrace();
             }
             mGetVenuesByBoundAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
         }
     }
 
@@ -993,6 +1007,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected void onPreExecute() {
             showMessageProgress(getString(R.string.fragment_directory_detail_getting_venue_data), true);
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -1004,6 +1019,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         protected void onCancelled() {
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
             super.onCancelled();
         }
 
@@ -1017,6 +1033,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
         }
     }
 
@@ -1032,6 +1049,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected void onPreExecute() {
             showMessageProgress(getString(R.string.fragment_directory_detail_getting_venue_data), true);
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -1049,6 +1067,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         protected void onCancelled() {
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
             super.onCancelled();
         }
 
@@ -1061,6 +1080,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
             showMessageProgress("", false);
             mGetVenuesAsyncTask = null;
+            mLoadingIndicator.setVisibility(View.GONE);
         }
     }
 }

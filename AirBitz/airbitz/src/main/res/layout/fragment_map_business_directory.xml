@@ -31,7 +31,8 @@
         android:id="@+id/map_view_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/map_container"
@@ -109,13 +110,24 @@
     </LinearLayout>
 
     <!-- Search ListView -->
-    <ListView
-        android:id="@+id/listview_search"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/gray_border"
-        android:dividerHeight="1px"
-        android:visibility="gone" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
+        <ListView
+            android:id="@+id/listview_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/gray_border"
+            android:dividerHeight="1px"
+            android:visibility="gone" />
+
+        <include layout="@layout/loading_indicator"
+            android:id="@+id/map_business_directory_search_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 </LinearLayout>
