@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 BASE=$(pwd)
 CORE_PATH="../airbitz-core/deps"
@@ -6,6 +7,7 @@ WALLET_PATH="$BASE/AirBitz/airbitz"
 WALLET_MAIN="$WALLET_PATH/src/main"
 
 cd $CORE_PATH
+touch recipes/abc
 
 if [[ ! -n $(which ndk-build) ]]; then
     echo "ndk-build must be installed";
@@ -22,9 +24,9 @@ BUILD_DIR=build
 if [[ "$1" == "testnet" ]]; then
     BUILD_DIR=build-testnet
     make BUILD_DIR=$BUILD_DIR ENABLE_TESTNET=1 \
-        abc.clean abc.build-android-arm  abc.build-android-x86;
+        abc.build-android-arm abc.build-android-x86
 else
-    make abc.clean abc.build-android-arm  abc.build-android-x86
+    make abc.build-android-arm abc.build-android-x86
 fi
 
 mkdir -p $WALLET_MAIN/jni/
