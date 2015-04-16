@@ -125,7 +125,6 @@ public class CoreAPI {
     public native void set64BitLongAtPtr(long pointer, long value);
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, boolean addSign, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
-    public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
     public native int coreSweepKey(String jusername, String jpassword, String juuid, String wif, long ppchar, long jerrorp);

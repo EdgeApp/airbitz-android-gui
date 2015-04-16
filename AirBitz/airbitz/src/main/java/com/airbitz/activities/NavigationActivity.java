@@ -117,7 +117,7 @@ import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
-import com.airbitz.plugins.PluginFragment;
+import com.airbitz.plugins.BuySellFragment;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -1939,9 +1939,9 @@ public class NavigationActivity extends Activity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(mNavStacks[Tabs.MORE.ordinal()].peek() instanceof PluginFragment)) {
+                if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
-                    pushFragment(new PluginFragment(), NavigationActivity.Tabs.MORE.ordinal());
+                    pushFragment(new BuySellFragment(), NavigationActivity.Tabs.MORE.ordinal());
                 }
                 switchFragmentThread(Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);

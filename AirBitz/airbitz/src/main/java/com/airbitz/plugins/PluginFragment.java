@@ -73,16 +73,14 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
     private int mToolbarHeight;
     private LinearLayout.LayoutParams frameLayoutParams;
 
-
     private SendConfirmationFragment mSendConfirmation;
 
-    public PluginFragment() {
+    public PluginFragment(Plugin plugin) {
         mFramework = new PluginFramework(handler);
         mFramework.setup();
         mNav = new Stack<String>();
         setRetainInstance(true);
-
-        mPlugin = new Plugin("com.glidera", "Glidera", "file:///android_asset/glidera.html#/exchange/");
+        mPlugin = plugin;
     }
 
     @Override
@@ -103,12 +101,12 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPress();
+                ((NavigationActivity) getActivity()).onBackPressed();
             }
         });
 
         mFramework.buildPluginView(mPlugin, mWebView);
-        mWebView.loadUrl(mPlugin.main);
+        mWebView.loadUrl(mPlugin.sourceFile);
         mWebView.setBackgroundColor(0x00000000);
 
         mToolbarHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);

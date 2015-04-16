@@ -650,6 +650,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     private void hideSearch() {
+        mSearchField.setHint(getResources().getString(R.string.category_or_business_name_initial));
         mLocationField.setVisibility(View.GONE);
         mSearchListView.setVisibility(View.GONE);
         mBackButton.setVisibility(View.GONE);
@@ -658,6 +659,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     private void showSearch() {
+        mSearchField.setHint(getResources().getString(R.string.category_or_business_name));
         mLocationField.setVisibility(View.VISIBLE);
         mSearchListView.setVisibility(View.VISIBLE);
         mBackButton.setVisibility(View.VISIBLE);

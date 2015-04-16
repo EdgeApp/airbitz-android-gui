@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="app">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, ">
+  <!-- meta name=viewport content="width=device-width, height=device-height, initial-scale=1, user-scalable=no" -->
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <!-- iOS meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" / -->
+  <!-- ANDROID meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" / -->
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="Glidera Exchange Interface for Airbitz">
   <meta charset="utf-8">
-
   <title>Glidera Exchange</title>
-
   <style>
 /*!
  * Bootstrap v3.3.2 (http://getbootstrap.com)
@@ -466,11 +468,13 @@ html body {
   -o-animation: fadein 500ms;
   /* Opera < 12.1 */
   animation: fadein 500ms;
+  /*
   background: url('img/bg_app.jpg');
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: top center;
   background-attachment: fixed;
+  */
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -506,7 +510,7 @@ html body #wrap #footer p {
 }
 body {
   color: white;
-  font-family: Lato, sans-serif;
+  /* font-family: Lato, sans-serif; */
   background: transparent;
 }
 body h1,
@@ -819,8 +823,8 @@ body .order-limits {
   width: 100%;
 }
 body .order-review {
-  margin-top: 30px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 body .order-review table {
   margin-bottom: 10px;
@@ -898,27 +902,16 @@ body .input-error {
 }
 
 </style>
-
 </head>
 
 <body>
-
   <div id="wrap">
     <div id="main-content" ui-view="" class="container ng-trans ng-trans-fade easeInOutQuad" ng-cloak="" ng-animate="{enter: &apos;enter&apos;, leave: &apos;leave&apos;}">
         <h1 class="text-center">
           <i class="fa fa-spinner fa-spin"></i> Loading
         </h1>
     </div><!-- /.container -->
-
-    <div id="footer" class="container">
-      <p class="muted text-right">
-        powered by Glidera
-      </p>
-    </div>
   </div>
-
-
-
 
   <script type="text/javascript">
 
@@ -1042,8 +1035,6 @@ _bridge = function() {
     },
 
     back: function() {
-      console.log('Native Back Pressed');
-      _native.exit();
     },
 
     exit: function() {
@@ -1072,6 +1063,7 @@ _bridge = function() {
   Airbitz.core = {};
   Airbitz.ui = {};
   Airbitz._callbacks = {};
+  Airbitz._results = {};
   Airbitz._listeners = {};
   Airbitz._bridge = _bridge();
 
@@ -6722,7 +6714,7 @@ var Glidera = (function () {
 
   Glidera.prototype = {
     _nextNonce: function() {
-      return this.nonce++;
+      return new Date().getTime();
     },
     _request: function(authRequired, uri, opts) {
       opts = opts || {};
@@ -6756,14 +6748,24 @@ var Glidera = (function () {
       return Glidera.request(req, opts.callback);
     },
 
-    register: function(firstName, lastName, email, code, cb) {
+    registrationMode: function(cb) {
+      this._request(false, '/user/register/mode', {
+        'method': 'GET',
+        'callback': function(error, statusCode, body) {
+          cb(statusCode == 200, body.mode === 'OPEN');
+        }
+      });
+    },
+    register: function(firstName, lastName, email, countryCode, registrationCode, cb) {
       var that = this;
       this._request(false, '/user/register', {
         'method': 'POST',
         'data': {
           'firstName': firstName,
           'lastName': lastName,
-          'email': email
+          'email': email,
+          'countryCode': countryCode,
+          'registrationCode': registrationCode,
         },
         'callback': function(error, statusCode, body) {
           if (statusCode == 200) {
@@ -6834,13 +6836,15 @@ var Glidera = (function () {
       });
     },
 
-    createBankAccount: function(otpCode, routingNumber, accountNumber, description, accountType, callback) {
+    createBankAccount: function(otpCode, routingNumber, accountNumber, transit, institution, description, accountType, callback) {
       return this._request(true, '/user/bankaccount', {
         'method': 'POST',
         'otpCode': otpCode,
         'data': {
             'routingNumber': routingNumber,
             'accountNumber': accountNumber,
+            'transit': transit,
+            'institution': institution,
             'description': description,
             'bankAccountType': accountType
           },
@@ -7029,15 +7033,7 @@ var Glidera = (function () {
       ['$scope','$state', '$stateParams', 'DataFactory', 'UserFactory', 'TwoFactor', otpController])
     .factory('TwoFactor',
       ['$state', '$q', 'glideraFactory', otpFactory])
-    .directive('autofocus', ['$document', function($document) {
-      return {
-        link: function($scope, $element, attrs) {
-          setTimeout(function() {
-            $element[0].focus();
-          }, 100);
-        }
-      };
-    }]);
+    .directive('autoFocus', ['$timeout', autoFocus]);
 
   function otpController($scope, $state, $stateParams, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('2 Factor Verification');
@@ -7050,10 +7046,12 @@ var Glidera = (function () {
         if ($stateParams.confirmNumber == 'confirm' && userStatus.userPhoneIsSetup) {
           $scope.hasNumber = true;
         }
-        TwoFactor.requestCode().then(function() { }, function(error) {
-          $state.go('exchange');
-          Airbitz.ui.showAlert('Error', 'Unable to request 2fa token. Please retry again later.');
-        });
+        if ($stateParams.confirmNumber != 'confirm') {
+          TwoFactor.requestCode().then(function() { }, function(error) {
+            $state.go('exchange');
+            Airbitz.ui.showAlert('Error', 'Unable to request 2fa token. Please retry again later.');
+          });
+        }
       });
     };
     $scope.submit2FA = function() {
@@ -7066,160 +7064,100 @@ var Glidera = (function () {
   }
 
   function otpFactory($state, $q, glideraFactory) {
-      var code = '';
-      var oldCode = '';
-      var lastFetch = null;
-      var nextAction = function() { };
-      var factory = {};
-      var that = this;
-      factory.cached = function() {
-        if (!that.lastFetch || !that.code) {
-          return false;
-        }
-        // if the code is less than 2 minutes old, don't ask for 2fa
-        return ((new Date().getTime() - that.lastFetch.getTime()) / 1000.0) <= 2 * 60;
-      };
-      factory.confirmTwoFactor = function(finishedCallback) {
+    var code = '';
+    var oldCode = '';
+    var lastFetch = null;
+    var nextAction = function() { };
+    var factory = {};
+    var that = this;
+    factory.cached = function() {
+      if (!that.lastFetch || !that.code) {
+        return false;
+      }
+      // if the code is less than 2 minutes old, don't ask for 2fa
+      return ((new Date().getTime() - that.lastFetch.getTime()) / 1000.0) <= 2 * 60;
+    };
+    factory.confirmTwoFactor = function(finishedCallback) {
+      if (finishedCallback) {
+        that.nextAction = finishedCallback;
+      }
+      $state.go('verify2FA', {'confirmNumber': 'confirm'});
+    };
+    factory.showTwoFactor = function(finishedCallback) {
+      if (factory.cached())  {
+        finishedCallback(that.code);
+      } else {
         if (finishedCallback) {
           that.nextAction = finishedCallback;
         }
-        $state.go('verify2FA', {'confirmNumber': 'confirm'});
-      };
-      factory.showTwoFactor = function(finishedCallback) {
-        if (factory.cached())  {
-          finishedCallback(that.code);
-        } else {
-          if (finishedCallback) {
-            that.nextAction = finishedCallback;
-          }
-          $state.go('verify2FA', {'confirmNumber': ''});
-        }
-      };
-      factory.requestCode = function() {
-        var d = $q.defer();
-        glideraFactory.getTwoFactorCode(function(e, r, b) {
-          that.lastFetch = new Date();
-          r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
-        });
-        return d.promise;
-      };
-      factory.reset = function() {
-        that.lastFetch = null;
-        that.code = '';
-      };
-      factory.finish = function(c, o) {
-        that.code = c;
-        that.oldCode = o;
-        if (that.nextAction) {
-          that.nextAction();
-        }
-      };
-      factory.getCode = function() {
-        return that.code;
-      };
-      factory.getOldCode = function() {
-        return that.oldCode;
+        $state.go('verify2FA', {'confirmNumber': ''});
       }
-      return factory;
     };
-})();
-
-</script>
-  <script type="text/javascript">
-
-var app = angular.module('app.core', [
-  'ui.router',
-  'ngAnimate',
-  'app.filters',
-  'app.error',
-  ]);
-
-</script>
-  <script type="text/javascript">
-
-(function() {
-  angular.module('app.glidera', ['glidera'])
-    .factory('glideraFactory', ['glideraApi', glideraCactory]);
-
-  function glideraCactory(glideraApi) {
-    var g = new Glidera({
-      'sandbox': true,
-      'partnerAccessKey': Airbitz.config.get('GLIDERA_PARTNER_TOKEN')
-    });
-    if (Airbitz.config.get('TESTNET_ADDRESS')) {
-      g.sandboxAddress = Airbitz.config.get('TESTNET_ADDRESS')
+    factory.requestCode = function() {
+      var d = $q.defer();
+      glideraFactory.getTwoFactorCode(function(e, r, b) {
+        that.lastFetch = new Date();
+        r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
+    };
+    factory.reset = function() {
+      that.lastFetch = null;
+      that.code = '';
+    };
+    factory.finish = function(c, o) {
+      that.code = c;
+      that.oldCode = o;
+      if (that.nextAction) {
+        that.nextAction();
+      }
+    };
+    factory.getCode = function() {
+      return that.code;
+    };
+    factory.getOldCode = function() {
+      return that.oldCode;
     }
-    var account = Airbitz.core.readData('account') || {};
-    if (account) {
-      g.key = account.key;
-      g.secret = account.secret;
-    }
-    return g;
+    return factory;
+  };
+
+  function autoFocus($timeout) {
+    return {
+      restrict: 'A',
+      link: function(scope, element) {
+        $timeout(function() {
+          element[0].focus();
+        }, 500);
+      }
+    };
   }
 })();
 
 </script>
   <script type="text/javascript">
-(function() {
+(function () {
   'use strict';
 
   angular
-    .module('app.history', ['app.dataFactory'])
-    .run(['$rootScope', '$window', '$location', 'UserFactory', history]);
+    .module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app.limits', 'app.core'])
+    .controller('dashboardController', ['$scope', '$sce', '$state', 'Error', 'DataFactory', 'UserFactory', 'Limits', dashboardController])
+    .controller('addBankAccountController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', addBankAccountController])
+    .controller('verifyBankAccountController', ['$scope', '$state', '$stateParams', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', verifyBankAccountController])
+    .controller('editBankAccountController', ['$scope', '$state', '$stateParams', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', editBankAccountController])
+    .controller('orderController', ['$scope', '$state', '$stateParams', '$filter', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', 'Limits', 'Prices', orderController])
+    .controller('reviewOrderController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', 'Prices', reviewOrderController])
+    .controller('executeOrderController', ['$scope', '$state', 'DataFactory', 'UserFactory', executeOrderController])
+    .controller('transactionsController', ['$scope', '$state', 'DataFactory', transactionsController])
+    .directive('accountSummary', accountSummary)
+    .directive('routingNumberValidator', routingNumberValidator);
 
-  /* TODO: remove match(//) regexp and replace with state lookups */
-  function history($rootScope, $window, $location, UserFactory) {
-    var history = [];
-    var skip = false;
-    $rootScope.$on('$locationChangeStart', function(event, next, current) {
-      if (!UserFactory.isRegistered() && !next.match(/signup.html/)) {
-        console.log('Not registered. Redirecting to registration form.');
-        $location.path('/signup/');
-        return;
-      }
-      if (!skip) {
-        history.push(current);
-        Airbitz.ui.navStackPush(current);
-      }
-      // if we are on the dashboard screen, empty history
-      if (next.match(/\.html#\/exchange\/$/)
-        || next.match(/\.html#\/signup\/$/)) {
-        history.length = 0;
-        Airbitz.ui.navStackClear();
-      }
-      skip = false;
-    });
-    Airbitz._bridge.back = function() {
-      if (history.length == 0) {
-        Airbitz._bridge.exit();
-      } else {
-        var el = history.pop().replace(/.*#/, '');
-        Airbitz.ui.navStackPop();
-
-        $location.path(el).replace();
-        skip = true; // don't record this change in the history stack
-      }
-      $rootScope.$apply();
-    };
-  };
-})();
-
-</script>
-  <script type="text/javascript">
-
-angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app.limits', 'app.core'])
-.controller('homeController', ['$scope', '$state', 'DataFactory', 'UserFactory',
-  function ($scope, $state, DataFactory, UserFactory) {
-    $scope.exchange = DataFactory.getExchange();
-    $scope.account = UserFactory.getUserAccount();
-  }])
-.controller('dashboardController', ['$scope', '$sce', '$state', 'Error', 'DataFactory', 'UserFactory', 'Limits',
-  function ($scope, $sce, $state, Error, DataFactory, UserFactory, Limits) {
-    Airbitz.ui.title('Buy/Sell Bitcoin');
+  function dashboardController($scope, $sce, $state, Error, DataFactory, UserFactory, Limits) {
+    Airbitz.ui.title('Glidera ' + $scope.countryName);
     // set variables that might be cached locally to make sure they load faster if available
-    $scope.exchange = DataFactory.getExchange();
     $scope.account = UserFactory.getUserAccount();
     $scope.userStatus = UserFactory.getUserAccountStatus();
+    $scope.bankAccounts = DataFactory.getBankAccounts();
+    $scope.limits = Limits.getLimits();
     $scope.showOptions = !$scope.userStatus.userCanTransact;
     $scope.showDebug = false;
     $scope.debugClicks = 0;
@@ -7227,22 +7165,22 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
     UserFactory.fetchUserAccountStatus().then(function(b) {
       $scope.userStatus = b;
       $scope.showOptions = !$scope.userStatus.userCanTransact;
+    }).then(function() {
+      return Limits.fetchLimits().then(function(limits) {
+        $scope.limits = limits;
+      });
+    }).then(function() {
+      return DataFactory.fetchBankAccounts().then(function(bankAccounts) {
+        $scope.bankAccounts = bankAccounts;
+      }, Error.reject);
+    }).then(function() {
+      DataFactory.checkPhoneNumber($scope.account);
     });
-
-    $scope.limits = Limits.getLimits();
-    Limits.fetchLimits().then(function(limits) {
-      $scope.limits = limits;
-    });
-
-    $scope.bankAccounts = DataFactory.getBankAccounts();
-    DataFactory.fetchBankAccounts().then(function(bankAccounts) {
-      $scope.bankAccounts = bankAccounts;
-    }, Error.reject);
 
     $scope.routeBankAccount = function() {
       if ($scope.bankAccounts.length) {
         var bankAccount = $scope.bankAccounts[0]; // get first bank account if available
-        if(bankAccount.status == 'Pending') {
+        if (bankAccount.status === 'Pending Verification') {
           $state.go('exchangeVerifyBankAccount', {'uuid': bankAccount.bankAccountUuid});
         } else {
           $state.go('exchangeEditBankController', {'uuid': bankAccount.bankAccountUuid});
@@ -7298,22 +7236,14 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
       if($scope.debugClicks++ > 7) {
         $scope.showDebug = !$scope.showDebug;
       }
-      if ($scope.showDebug) {
-        Airbitz.ui.hideNavBar();
-      } else {
-        Airbitz.ui.showNavBar();
-      }
     };
 
     $scope.addBankAccount = function(){
       $state.go('exchangeAddBankAccount');
     };
-  }])
-.controller('addBankAccountController',
-  ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor',
-  function ($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
+  }
+  function addBankAccountController($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('Add Bank Account');
-    $scope.exchange = DataFactory.getExchange();
     $scope.account = UserFactory.getUserAccount();
     $scope.bankAccount = {};
     $scope.bankAccount.bankAccountType = 'CHECKING';
@@ -7331,10 +7261,8 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
         }, Error.reject);
       });
     };
-  }])
-.controller('verifyBankAccountController',
-  ['$scope', '$state', '$stateParams', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor',
-  function ($scope, $state, $stateParams, Error, DataFactory, UserFactory, TwoFactor) {
+  }
+  function verifyBankAccountController($scope, $state, $stateParams, Error, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('Verify Bank Account');
     $scope.account = UserFactory.getUserAccount();
     $scope.bankAccount = DataFactory.getBankAccount($stateParams.uuid);
@@ -7353,10 +7281,8 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
         $state.go('exchange');
       }, Error.reject);
     };
-  }])
-.controller('editBankAccountController',
-  ['$scope', '$state', '$stateParams', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor',
-  function ($scope, $state, $stateParams, Error, DataFactory, UserFactory, TwoFactor) {
+  }
+  function editBankAccountController($scope, $state, $stateParams, Error, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('Edit Bank Account');
     $scope.account = UserFactory.getUserAccount();
     $scope.bankAccount = DataFactory.getBankAccount($stateParams.uuid);
@@ -7376,22 +7302,21 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
         DataFactory.deleteBankAccount($scope.bankAccount.bankAccountUuid).then(function() {
           Airbitz.ui.showAlert('Bank Account Deleted', $scope.bankAccount.description + ' deleted');
           $state.go('exchange');
-        }, Error.reject);
+        }, function(res) {
+          if (res && res.message && res.message.match(/2FACode/i)) {
+            Airbitz.ui.showAlert('Unauthorized', 'Invalid 2 Factor code.');
+            TwoFactor.reset();
+            $state.go('exchangeEditBankController', {'uuid': $stateParams.uuid});
+          } else {
+            Error.reject(res);
+          }
+        });
       });
     };
-  }])
-
-.controller('orderController',
-  ['$scope', '$state', '$stateParams', '$filter', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', 'Limits', 'Prices',
-  function ($scope, $state, $stateParams, $filter, Error, DataFactory, UserFactory, TwoFactor, Limits, Prices) {
-    $scope.exchange = DataFactory.getExchange();
+  }
+  function orderController($scope, $state, $stateParams, $filter, Error, DataFactory, UserFactory, TwoFactor, Limits, Prices) {
     $scope.account = UserFactory.getUserAccount();
-
     $scope.limits = Limits.getLimits();
-    Limits.fetchLimits().then(function(limits) {
-      $scope.limits = limits;
-    });
-
     $scope.order = DataFactory.getOrder(false); // initialize new order and clear existing order
     $scope.order.orderAction = $stateParams.orderAction; // set order action
 
@@ -7401,24 +7326,20 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
       Airbitz.ui.title('Sell Bitcoin');
     }
 
-    Prices.setBuyQty(1).then(function() {
-      Prices.setSellQty(1);
+    Limits.fetchLimits().then(function(limits) {
+      $scope.limits = limits;
+    }).then(function() {
+      return Prices.setBuyQty(1).then(function() {
+        Prices.setSellQty(1);
+      });
+    }).then(function() {
+      return DataFactory.getUserWallets().then(function(userWallets) {
+        $scope.userWallets = userWallets;
+        $scope.order.transferToWallet = userWallets[0]
+      }, Error.reject);
     });
 
-    $scope.bankAccounts = DataFactory.getBankAccounts();
-    DataFactory.fetchBankAccounts().then(function(bankAccounts) {
-      $scope.bankAccounts = bankAccounts;
-      $scope.order.transferFromBankAccount = bankAccounts[0];
-    }, Error.reject);
-
-    DataFactory.getUserWallets().then(function(userWallets) {
-      $scope.userWallets = userWallets;
-      $scope.order.transferToWallet = userWallets[0]
-    }, Error.reject);
-
-
     $scope.convertFiatValue = function(input) {
-      // console.log('convert: ' + input + ' fiat to btc');
       if (typeof(input)==='undefined') input = 0;
 
       var price = ($scope.order.orderAction == 'buy')
@@ -7428,9 +7349,8 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
     };
 
     $scope.convertBtcValue = function(input) {
-      // console.log(input + ' satoshi = ' + input / 100000000 + ' BTC');
       if (typeof(input)==='undefined') input = 0;
-      // convert to btc before currency conversion to match ui
+
       var price = ($scope.order.orderAction == 'buy')
           ? Prices.currentBuy.price : Prices.currentSell.price;
       output = input * price;
@@ -7451,14 +7371,11 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
         });
       });
     };
-  }])
-
-.controller('reviewOrderController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', 'Prices',
-  function ($scope, $state, Error, DataFactory, UserFactory, TwoFactor, Prices) {
+  }
+  function reviewOrderController($scope, $state, Error, DataFactory, UserFactory, TwoFactor, Prices) {
     var order = DataFactory.getOrder(false);
-    console.log(JSON.stringify(order));
+    Airbitz.ui.title('Confirm Order');
     $scope.order = order;
-    $scope.exchange = DataFactory.getExchange();
     $scope.account = UserFactory.getUserAccount();
     $scope.priceObj = ($scope.order.orderAction == 'buy')
                     ? Prices.currentBuy : Prices.currentSell;
@@ -7484,49 +7401,44 @@ angular.module('app.exchange', ['app.dataFactory', 'app.2fa', 'app.prices', 'app
         }, Error.reject);
       }
     };
-  }])
-.controller('executeOrderController', ['$scope', '$state', 'DataFactory', 'UserFactory',
-  function ($scope, $state, DataFactory, UserFactory) {
-    $scope.exchange = DataFactory.getExchange();
+  }
+  function executeOrderController($scope, $state, DataFactory, UserFactory) {
     $scope.account = UserFactory.getUserAccount();
 
     $scope.exchange.confirmDeposit = function(){
       $state.go('confirmDeposit');
     };
-  }])
-.controller('transactionsController', ['$scope', '$state', 'DataFactory',
-  function ($scope, $state, DataFactory) {
-    // $scope.transactions = DataFactory.getTransactions();
-    // console.log('TRANSACTIONS: ' + $scope.transactions);
+  }
+  function transactionsController($scope, $state, DataFactory) {
     DataFactory.getTransactions().then(function(transactions) {
       $scope.transactions = transactions;
     })
-
-  }]).
-directive('accountSummary', [function() {
-  return {
-    templateUrl: 'app/user/partials/account.html'
-  };
-}]).
-directive('routingNumberValidator', [function() {
-  return {
-    require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-      ctrl.$validators.routingNumber = function(mv) {
-        if (!mv || !mv.toString().match(/^\d{9}$/)) {
-          return false;
+  }
+  function accountSummary() {
+    return {
+      templateUrl: 'app/user/partials/account.html'
+    };
+  }
+  function routingNumberValidator() {
+    return {
+      require: 'ngModel',
+      link: function(scope, elm, attrs, ctrl) {
+        ctrl.$validators.routingNumber = function(mv) {
+          if (!mv || !mv.toString().match(/^\d{9}$/)) {
+            return false;
+          }
+          var s = mv.toString().split('').map(function(i) {
+            return parseInt(i);
+          });
+          checksum = (7 * (s[0] + s[3] + s[6]) +
+                      3 * (s[1] + s[4] + s[7]) +
+                      9 * (s[2] + s[5])) % 10;
+          return s[8] == checksum;
         }
-        var s = mv.toString().split('').map(function(i) {
-          return parseInt(i);
-        });
-        checksum = (7 * (s[0] + s[3] + s[6]) +
-                    3 * (s[1] + s[4] + s[7]) +
-                    9 * (s[2] + s[5])) % 10;
-        return s[8] == checksum;
       }
-    }
-  };
-}]);
+    };
+  }
+})();
 
 </script>
   <script type="text/javascript">
@@ -7609,32 +7521,38 @@ directive('routingNumberValidator', [function() {
 
 </script>
   <script type="text/javascript">
+(function() {
+  'use strict';
 
-function priceLink($interval, Prices, scope, element, attrs, callback) {
-  var netTimeout;
+  function priceLink($interval, Prices, scope, element, attrs, callback) {
+    var netTimeout;
 
-  function updateView() {
-    var f = attrs.priceType === 'sell' ? Prices.updateSell : Prices.updateBuy;
-    f().then(function(b) {;
-      console.log("B = " + JSON.stringify(b));
-      callback(scope, b);
+    function updateView() {
+      var f = attrs.priceType === 'sell' ? Prices.updateSell : Prices.updateBuy;
+      f().then(function(b) {;
+        console.log("B = " + JSON.stringify(b));
+        callback(scope, b);
+      });
+    }
+
+    element.on('$destroy', function() {
+      $interval.cancel(netTimeout);
     });
+
+    netTimeout = $interval(function() {
+        updateView(); // update DOM
+    }, 5000);
+
+    updateView();
   }
 
-  element.on('$destroy', function() {
-    $interval.cancel(netTimeout);
-  });
+  angular
+    .module('app.prices', ['app.glidera'])
+    .factory('Prices', ['$q', 'glideraFactory', Prices])
+    .directive('priceUpdate', ['$interval', '$filter', 'Prices', priceUpdate])
+    .directive('priceExpires', ['$interval', '$filter', 'Prices', priceExpires])
 
-  netTimeout = $interval(function() {
-      updateView(); // update DOM
-  }, 5000);
-
-  updateView();
-}
-
-angular.module('app.prices', ['app.glidera']).
-factory('Prices', ['$q', 'glideraFactory',
-  function($q, glideraFactory) {
+  function Prices($q, glideraFactory) {
     var factory = {};
     var timeDiff = function(date) {
       return (new Date(date).getTime() - new Date().getTime()) / 1000.0;
@@ -7690,20 +7608,19 @@ factory('Prices', ['$q', 'glideraFactory',
       return deferred.promise;
     };
     return factory;
-  }]).
-directive('priceUpdate', ['$interval', '$filter', 'Prices',
-  function($interval, $filter, Prices) {
+  }
+  function priceUpdate($interval, $filter, Prices) {
     return {
       templateUrl: 'app/prices/partials/rate.html',
       link: function(scope, elements, attrs){
         return priceLink($interval, Prices, scope, elements, attrs, function(scope, b) {
           scope.price = $filter('currency')(b.price, '$', 2);
+          scope.currency = b.currency;
         });
       }
     };
-  }]).
-directive('priceExpires', ['$interval', '$filter', 'Prices',
-  function($interval, $filter, Prices) {
+  }
+  function priceExpires($interval, $filter, Prices) {
     return {
       templateUrl: 'app/prices/partials/expires.html',
       link: function(scope, elements, attrs){
@@ -7712,15 +7629,41 @@ directive('priceExpires', ['$interval', '$filter', 'Prices',
         });
       }
     };
-  }]);
+  }
+})();
 
 </script>
   <script type="text/javascript">
+(function () {
+  'use strict';
 
-angular.module('app.user', ['app.dataFactory', 'app.constants'])
-.controller('userAccountController', ['$scope', '$state', 'Error', 'States', 'UserFactory',
-  function ($scope, $state, Error, States, UserFactory) {
+  angular
+    .module('app.user', ['app.dataFactory', 'app.constants'])
+    .controller('homeController', ['$scope', '$state', 'UserFactory', homeController])
+    .controller('userAccountController', ['$scope', '$state', 'Error', 'States', 'Occupations', 'UserFactory', userAccountController])
+    .controller('apiKeyController', ['$scope', '$state', 'glideraFactory', 'UserFactory', apiKeyController])
+    .controller('disclaimerController', ['$scope', '$state', 'Error', 'States', 'UserFactory', disclaimerController])
+    .controller('signupController', ['$scope', '$state', 'Error', 'States', 'UserFactory', signupController])
+    .controller('verifyEmailController', ['$scope', '$state', 'Error', 'UserFactory', verifyEmailController])
+    .controller('verifyInfoController', ['$scope', '$state', 'Error', 'States', 'Occupations', 'UserFactory', verifyInfoController])
+    .controller('verifyPhoneController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', verifyPhoneController])
+    .directive('phoneNumberValidator', phoneNumberValidator);
+
+  function homeController($scope, $state, UserFactory) {
+    if (UserFactory.isRegistered()) {
+      $state.go("exchange");
+    } else {
+      if (Airbitz.core.readData('disclaimer')) {
+        $state.go("signup");
+      } else {
+        Airbitz.core.writeData('disclaimer', false);
+        $state.go("disclaimer");
+      }
+    }
+  }
+  function userAccountController($scope, $state, Error, States, Occupations, UserFactory) {
     $scope.states = States.getStates();
+    $scope.occupations = Occupations.getOccupations();
     $scope.account = UserFactory.getUserAccount();
     UserFactory.getFullUserAccount().then(function(account) {
       $scope.account = account;
@@ -7739,9 +7682,8 @@ angular.module('app.user', ['app.dataFactory', 'app.constants'])
         $state.go('exchange');
       }, Error.reject);
     };
-  }])
-.controller('apiKeyController', ['$scope', '$state', 'glideraFactory', 'UserFactory',
-  function ($scope, $state, glideraFactory, UserFactory) {
+  }
+  function apiKeyController($scope, $state, glideraFactory, UserFactory) {
     Airbitz.ui.title('Glidera API Keys');
     $scope.account = UserFactory.getUserAccount();
 
@@ -7764,7 +7706,7 @@ angular.module('app.user', ['app.dataFactory', 'app.constants'])
       Airbitz.core.clearData();
       $state.go('signup');
 
-      Airbitz.ui.showAlert('Acctoun Removed', 'Your account has been removed. Please register a new account or enter your access keys from Glidera.');
+      Airbitz.ui.showAlert('Account Removed', 'Your account has been removed. Please register a new account or enter your access keys from Glidera.');
     };
 
     $scope.submit = function(form) {
@@ -7781,14 +7723,34 @@ angular.module('app.user', ['app.dataFactory', 'app.constants'])
         glideraFactory.secret = '';
       });
     };
-  }])
-.controller('signupController', ['$scope', '$state', 'Error', 'States', 'UserFactory',
-  function ($scope, $state, Error, States, UserFactory) {
-    Airbitz.ui.title('Glidera Signup');
-    $scope.account = UserFactory.getUserAccount();
+  }
+  function disclaimerController($scope, $state, Error, States, UserFactory) {
+    Airbitz.ui.title('Disclaimer');
+    $scope.showDisclaimer = true;
 
     $scope.cancelSignup = function(){
-      $state.go('home');
+      Airbitz.ui.exit();
+    };
+
+    $scope.continueSignup = function(form) {
+      $state.go('signup');
+      Airbitz.core.writeData('disclaimer', true);
+    };
+  }
+  function signupController($scope, $state, Error, States, UserFactory) {
+    Airbitz.ui.title('Glidera - ' + $scope.countryName);
+    $scope.account = UserFactory.getUserAccount();
+    $scope.registrationCode = '';
+    $scope.regCodeRequired = false;
+    $scope.showDisclaimer = true;
+
+    UserFactory.registrationMode().then(function(isOpen) {
+      $scope.regCodeRequired = !isOpen;
+    }, function() {
+    });
+
+    $scope.cancelSignup = function(){
+      $state.go('disclaimer');
     };
 
     $scope.submitSignUp = function(form) {
@@ -7796,32 +7758,34 @@ angular.module('app.user', ['app.dataFactory', 'app.constants'])
       if (UserFactory.isRegistered()) {
         $state.go('verifyEmail');
       } else {
-        UserFactory.registerUser($scope.account.firstName, $scope.account.lastName, $scope.account.email).then(function() {
+        var countryCode = Airbitz.config.get('COUNTRY_CODE');
+        UserFactory.registerUser($scope.account.firstName,
+            $scope.account.lastName, $scope.account.email,
+            countryCode, $scope.registrationCode).then(function() {
           $state.go('verifyEmail');
         }, Error.reject);
       }
     };
-  }])
-.controller('verifyEmailController', ['$scope', '$state', 'Error', 'UserFactory',
-    function($scope, $state, Error, UserFactory) {
-      Airbitz.ui.title('Verify Email');
-      $scope.account = UserFactory.getUserAccount();
+  }
+  function verifyEmailController($scope, $state, Error, UserFactory) {
+    Airbitz.ui.title('Verify Email');
+    $scope.account = UserFactory.getUserAccount();
 
-      $scope.next = function() {
-        UserFactory.fetchUserAccountStatus().then(function(userStatus) {
-          if (userStatus.userEmailIsSetup) {
-            $state.go('verifyInfo');
-          } else {
-            Airbitz.ui.showAlert('Verify Email', 'Please verify your email address before proceeding!');
-            $state.go('verifyEmail');
-          }
-        }, Error.reject);
-      };
-    }])
-.controller('verifyInfoController', ['$scope', '$state', 'Error', 'States', 'UserFactory',
-  function($scope, $state, Error, States, UserFactory) {
+    $scope.next = function() {
+      UserFactory.fetchUserAccountStatus().then(function(userStatus) {
+        if (userStatus.userEmailIsSetup) {
+          $state.go('verifyPhone');
+        } else {
+          Airbitz.ui.showAlert('Verify Email', 'Please verify your email address before proceeding!');
+          $state.go('verifyEmail');
+        }
+      }, Error.reject);
+    };
+  }
+  function verifyInfoController($scope, $state, Error, States, Occupations, UserFactory) {
     Airbitz.ui.title('Verify User Information');
     $scope.states = States.getStates();
+    $scope.occupations = Occupations.getOccupations();
     $scope.account = UserFactory.getUserAccount();
 
     $scope.saveUserAccount = function() {
@@ -7831,35 +7795,34 @@ angular.module('app.user', ['app.dataFactory', 'app.constants'])
         $state.go('verifyPhone');
       }, Error.reject);
     };
-  }])
-.controller('verifyPhoneController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor',
-    function($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
-      Airbitz.ui.title('Verify Phone');
-      $scope.account = UserFactory.getUserAccount();
+  }
+  function verifyPhoneController($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
+    Airbitz.ui.title('Verify Phone');
+    $scope.account = UserFactory.getUserAccount();
 
-      var verifyCode = function() {
-        DataFactory.confirmPhoneNumber(TwoFactor.getCode(), TwoFactor.getOldCode()).then(function() {
-          $state.go('exchange');
-        }, Error.reject);
-      };
-      $scope.submitPhone = function(){
-        DataFactory.addPhoneNumber($scope.account.phone).then(function() {
-          TwoFactor.confirmTwoFactor(verifyCode);
-        }, Error.reject);
-      };
-    }]).
-directive('phoneNumberValidator', [function() {
-  var PHONE_REGEXP = /^[0-9]{3}-?[0-9]{3}-?[0-9]{4}$/i;
-
-  return {
-    require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-      ctrl.$validators.tel = function(modelValue) {
-        return !ctrl.$isEmpty(modelValue) && PHONE_REGEXP.test(modelValue.replace(/-/g, ''));
+    var verifyCode = function() {
+      DataFactory.confirmPhoneNumber(TwoFactor.getCode(), TwoFactor.getOldCode()).then(function() {
+        $state.go('exchange');
+      }, Error.reject);
+    };
+    $scope.submitPhone = function(){
+      DataFactory.addPhoneNumber($scope.account.phone).then(function() {
+        TwoFactor.confirmTwoFactor(verifyCode);
+      }, Error.reject);
+    };
+  }
+  function phoneNumberValidator() {
+    var PHONE_REGEXP = /^[0-9]{3}-?[0-9]{3}-?[0-9]{4}$/i;
+    return {
+      require: 'ngModel',
+      link: function(scope, elm, attrs, ctrl) {
+        ctrl.$validators.tel = function(modelValue) {
+          return !ctrl.$isEmpty(modelValue) && PHONE_REGEXP.test(modelValue.replace(/-/g, ''));
+        }
       }
-    }
-  };
-}]);
+    };
+  }
+})();
 
 </script>
   <script type="text/javascript">
@@ -7947,7 +7910,6 @@ directive('phoneNumberValidator', [function() {
     ]);
 
   function errorController($scope, $state, $stateParams) {
-    console.log('here');
     $scope.title = 'Authentication Error';
     $scope.message = 'Please try again.';
     $scope.refresh = function() {
@@ -8003,6 +7965,657 @@ directive('phoneNumberValidator', [function() {
 </script>
   <script type="text/javascript">
 
+var app = angular.module('app.core', [
+  'ui.router',
+  'ngAnimate',
+  'app.filters',
+  'app.error',
+  ]);
+
+</script>
+  <script type="text/javascript">
+(function() {
+  'use strict';
+
+  angular
+    .module('app.dataFactory', ['app.glidera', 'app.2fa', 'app.constants', 'app.limits'])
+    .factory('UserFactory', [ '$q', '$filter', 'States', 'Occupations', 'ExchangeFactory', 'glideraFactory', 'TwoFactor', UserFactory])
+    .factory('DataFactory', [ '$q', '$filter', 'States', 'ExchangeFactory', 'glideraFactory', 'TwoFactor', 'Prices', DataFactory]);
+
+  angular
+    .module('app.constants', [])
+    .factory('ExchangeFactory', [ExchangeFactory])
+    .factory('States', [States])
+    .factory('Occupations', [Occupations])
+
+  function UserFactory($q, $filter, States, Occupations, ExchangeFactory, glideraFactory, TwoFactor) {
+    var factory = {};
+    var account = Airbitz.core.readData('account') || {};
+
+    factory.isRegistered = function() {
+      return glideraFactory.hasRegistered();
+    };
+    factory.getUserAccount = function() {
+      return account;
+    };
+    factory.clearUser = function() {
+      account = {};
+      Airbitz.core.writeData('account', {});
+    };
+    factory.registrationMode = function() {
+      var d = $q.defer();
+      glideraFactory.registrationMode(function(success, isOpen) {
+        if (success) {
+          d.resolve(isOpen);
+        } else {
+          d.reject();
+        }
+      });
+      return d.promise;
+    };
+    factory.registerUser = function(firstName, lastName, email, countryCode, registrationCode) {
+      var d = $q.defer();
+      glideraFactory.register(firstName, lastName, email, countryCode, registrationCode, function(success, b) {
+        var account = factory.getUserAccount();
+        account.firstName = firstName;
+        account.lastName = lastName;
+        account.email = email;
+        account.countryCode = countryCode;
+        account.key = b["key"];
+        account.secret = b["secret"];
+        if (success) {
+          Airbitz.core.writeData('account', account);
+          d.resolve(b);
+        } else {
+          d.reject(b);
+        }
+      });
+      return d.promise;
+    };
+    var userStatus = Airbitz.core.readData('userStatus') || {
+      'userCanTransact': false,
+      'userEmailIsSetup': false,
+      'userBankAccountIsSetup': false,
+      'userBasicInfoIsSetup': false
+    };
+    factory.getUserAccountStatus = function() {
+      return userStatus;
+    };
+
+    factory.fetchUserAccountStatus = function() {
+      var d = $q.defer();
+      glideraFactory.userStatus(function(e,s,b) {
+        if (s == 200) {
+          userStatus = b;
+          Airbitz.core.writeData('userStatus', userStatus);
+          d.resolve(userStatus);
+        } else {
+          d.reject(b);
+        }
+      });
+      return d.promise;
+    };
+    factory.getFullUserAccount = function() {
+      return $q(function(resolve, reject) {
+        glideraFactory.getBasicInfo(function(e, s, b) {
+          if (s === 200) {
+            account.email = account.email || b.email;
+            account.firstName = b.firstName;
+            account.middleName = b.middleName;
+            account.lastName = b.lastName;
+            account.address1 = b.address1;
+            account.address2 = b.address2;
+            account.city = b.city;
+            account.zipCode = b.zipCode;
+            account.state = States.findState(b.state);
+            account.country = b.countryCode;
+            account.occupation = Occupations.find(b.occupation);
+            account.status = b.status.status;
+
+            // XXX: This is kind of hacky
+            if (b.birthDate) {
+              var birthDate = b.birthDate.replace(/T.*/, '');
+              account.birthDate = new Date(birthDate);
+            }
+            account.registered = true;
+
+            // persiste locally
+            console.log(account);
+            Airbitz.core.writeData('account', account);
+            resolve(account);
+          } else {
+            reject(b);
+          }
+        });
+      });
+    }
+    factory.updateUserAccount = function(account) {
+      return $q(function(resolve, reject) {
+        glideraFactory.updateBasicInfo({
+          'firstName': account.firstName,
+          'lastName': account.lastName,
+          'birthDate': $filter('date')(account.birthDate, 'yyyy-MM-dd'),
+          'address1': account.address1,
+          'address2': account.address2,
+          'city': account.city,
+          'state': account.state.id,
+          'occupation': account.occupation ? account.occupation.id : null,
+          'zipCode': account.zipCode,
+          'ip': '127.0.0.1'
+        }, function(e, s, b) {
+          if (s === 200) {
+            Airbitz.core.writeData('account', account);
+            resolve(b);
+          } else {
+            reject(b);
+          }
+        });
+      });
+    };
+
+    // Fetch the user data if available
+    factory.getFullUserAccount();
+    return factory;
+  }
+  function DataFactory($q, $filter, States, ExchangeFactory, glideraFactory, TwoFactor, Prices) {
+    var factory = {};
+
+    // transactions
+    factory.getTransactions = function() {
+      return $q(function(resolve, reject) {
+        glideraFactory.transactions(function(e, s, b) {
+          if (s >= 200 && s < 300) {
+            resolve(b.transactions);
+            console.log(b.transactions);
+
+            // return dummyData
+          } else {
+            reject(b);
+          }
+        });
+      });
+    };
+
+    factory.getUserWallets = function() {
+      return $q(function(resolve, reject) {
+        Airbitz.core.wallets({
+          success: resolve,
+          error: reject
+        });
+      });
+    };
+
+    factory.getExchange = function() {
+      return ExchangeFactory;
+    }
+
+    factory.addPhoneNumber = function(phoneNumber) {
+      var d = $q.defer();
+      glideraFactory.addPhoneNumber(phoneNumber, function(e, r, b) {
+        r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
+    };
+
+    factory.confirmPhoneNumber = function(newCode, oldCode) {
+      var d = $q.defer();
+      glideraFactory.confirmPhoneNumber(newCode, oldCode, function(e, r, b) {
+        r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
+    };
+
+    factory.getPhoneNumber = function() {
+      var d = $q.defer();
+      glideraFactory.getPhoneNumber(function(e, r, b) {
+        200 == r ? d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
+    };
+
+    factory.checkPhoneNumber = function(account) {
+      if (!account.phone) {
+        factory.getPhoneNumber().then(function(data) {
+          account.phone = data.phoneNumber;
+          Airbitz.core.writeData('account', account);
+        });
+      }
+    };
+
+    var bankAccounts = Airbitz.core.readData('bankAccounts') || [];
+    factory.getBankAccounts = function() {
+      return bankAccounts;
+    };
+    factory.fetchBankAccounts = function() {
+      return $q(function(resolve, reject) {
+        glideraFactory.getBankAccounts(function(e, s, b) {
+          if (s >= 200 && s < 300) {
+            bankAccounts = b.bankAccounts; //cache bank accounts
+            Airbitz.core.writeData('bankAccounts', bankAccounts);
+            resolve(b.bankAccounts);
+          } else {
+            reject(b);
+          }
+        });
+      });
+    };
+    factory.getBankAccount = function(uuid) {
+      var l = bankAccounts.filter(function(b) {
+        return b.bankAccountUuid == uuid;
+      });
+      return l.length > 0 ? l[0] : null;
+    };
+    factory.fetchBankAccount = function(uuid) {
+      return $q(function(resolve, reject) {
+        glideraFactory.getBankAccount(uuid, function(e, s, b) {
+          if (s >= 200 && s < 300) {
+            resolve(b);
+          } else {
+            reject(b);
+          }
+        });
+      });
+    };
+
+    // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-createBankAccount
+    factory.createBankAccount = function(bankAccount) {
+      console.log(bankAccount);
+      return $q(function(resolve, reject) {
+        glideraFactory.createBankAccount(
+          TwoFactor.getCode(),
+          bankAccount.routingNumber,
+          bankAccount.accountNumber,
+          bankAccount.transit,
+          bankAccount.institution,
+          bankAccount.description,
+          bankAccount.bankAccountType,
+          function(e, s, b) {
+            (s === 200) ? resolve(b.bankAccountUuid) : reject(b);
+        });
+      });
+    };
+
+    // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-verifyBankAccount
+    factory.verifyBankAccount = function(uuid, amount1) {;
+      return $q(function(resolve, reject) {
+        glideraFactory.verifyBankAccount(uuid, amount1,
+        function(e, s, b) {
+          (s == 200) ?  resolve(b) : reject(b);
+        });
+      });
+    };
+
+    // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-updateBankAccount
+    factory.updateBankAccount = function(bankAccount) {
+      return $q(function(resolve, reject) {
+        glideraFactory.updateBankAccount(
+            bankAccount.bankAccountUuid, bankAccount.description,
+            bankAccount.primary,
+        function(e, s, b) {
+          (s === 200) ? resolve(b) : reject(b);
+        });
+      });
+    };
+
+    // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-deleteBankAccount
+    factory.deleteBankAccount = function(accountId) {
+      return $q(function(resolve, reject) {
+        glideraFactory.deleteBankAccount(TwoFactor.getCode(), accountId,
+        function(e, s, b) {
+          (s == 200) ? resolve(b) : reject(b);
+        });
+      });
+    };
+
+    // initialize exchangeOrder
+    var exchangeOrder = {};
+
+    factory.createBuyOrder = function(order) {
+      // exchangeOrder = angular.copy(order);
+      exchangeOrder.destinationWallet = order.destinationWallet;
+      exchangeOrder.qty = order.qty;
+      exchangeOrder.useCurrentPrice = order.useCurrentPrice;
+      exchangeOrder.orderAction = order.orderAction
+    };
+
+    factory.getOrder = function(clear) {
+      if(clear) {
+        this.clearOrder();
+      }
+      return exchangeOrder;
+    };
+
+    factory.clearOrder = function() {
+      exchangeOrder = {};
+    };
+
+    var createAddress = function(wallet, label, amountSatoshi, amountFiat,
+                                category, notes, resolve, reject) {
+        Airbitz.core.createReceiveRequest(wallet, {
+          label: label,
+          category: category,
+          notes: notes,
+          amountSatoshi: amountSatoshi,
+          amountFiat: amountFiat,
+          success: resolve,
+          error: reject
+        })
+    };
+
+    var executeBuy = function(wallet, qty, request) {
+      var deferred = $q.defer(),
+          requestId = request['requestId'],
+          address = Airbitz._bridge.inDevMod()
+                  ? glideraFactory.sandboxAddress : request['address'];
+      if (address) {
+        var opts = {'priceUuid': Prices.buyUuid()};
+        glideraFactory.buy(TwoFactor.getCode(), address, qty, opts, function(e, r, b) {
+          console.log(JSON.stringify(b));
+          if (r == 200) {
+            factory.getOrder(false).details = b;
+            Airbitz.core.finalizeRequest(wallet, requestId);
+            deferred.resolve(b);
+          } else {
+            deferred.reject(b);
+          }
+        });
+      } else {
+        deferred.reject('Unable to obtain a destination address. Please try again later.');
+      }
+      return deferred.promise;
+    };
+
+    var formatNotes = function(action, amountFiat) {
+      return action + " on " + $filter('date')(new Date().getTime(), 'yyyy-MM-dd @ H:mm') + " for " + $filter('currency')(amountFiat);
+    }
+
+    var btcToSatoshi = function(btc) {
+      return btc * 100000000;
+    };
+
+    factory.buy = function(wallet, qty, amountFiat) {
+      var notes = formatNotes("Purchased", amountFiat);
+      return $q(function (resolve, reject) {
+        createAddress(wallet, 'Glidera', btcToSatoshi(qty), amountFiat, 'Exchange:Buy Bitcoin', notes, resolve, reject);
+      }).then(function(request) {
+        return executeBuy(wallet, qty, request);
+      }, function(error) {
+        return $q(function(resolve, reject) {
+          reject(error);
+        });
+      });
+    };
+
+    factory.sell = function(wallet, qty, amountFiat) {
+      var notes = formatNotes("Sold", amountFiat);
+      return $q(function(resolve, reject) {
+        glideraFactory.sellAddress(qty, function(e, r, b) {
+          (r == 200) ? resolve(b) : reject(b);
+        });
+      }).then(function(data) {
+        var sellAddress = data["sellAddress"];
+        var d = $q.defer();
+        createAddress(wallet, 'Glidera Refund', btcToSatoshi(qty), 
+                      amountFiat, 'Exchange:Refund Bitcoin', notes, function(req) {
+          d.resolve({'sellAddress': sellAddress, 'refundAddress': req['address']});
+        }, d.reject);
+        return d.promise;
+      }).then(function(data) {
+        var d = $q.defer();
+        Airbitz.core.requestSpend(wallet, data.sellAddress, btcToSatoshi(qty), amountFiat, {
+          label: 'Glidera',
+          category: 'Exchange:Sell Bitcoin',
+          notes: notes,
+          success: function(res) {
+            if (res && res.back) {
+              d.reject({"code": "IgnoreAction"});
+            } else {
+              d.resolve({'sellAddress': data.sellAddress,
+                        'refundAddress': data.refundAddress,
+                        'signedTx': res});
+            }
+          },
+          error: function() {
+            d.reject();
+          }
+        });
+        return d.promise;
+      }).then(function(data) {
+        var d = $q.defer();
+        var opts = {'priceUuid': Prices.sellUuid()};
+        glideraFactory.sell(TwoFactor.getCode(), data.refundAddress, data.signedTx, opts, function(e, r, b) {
+          if (r == 200) {
+            factory.getOrder(false).details = b;
+            d.resolve(b);
+          } else {
+            d.reject(b);
+          }
+        });
+        return d.promise;
+      }).catch(function(data) {
+        return $q(function(resolve, reject) {
+          reject(data);
+        });
+      });
+    };
+    return factory;
+  }
+
+  function ExchangeFactory() {
+    // default exchange data
+    return {
+      'name': 'Glidera',
+      'emailVerificationAddress': 'admin@glidera.com',
+      'depositId':  'Glidera Inc',
+      'orderTimeout': '60',
+      'depositTimeout': '3600',
+      'countryCode': Airbitz.config.get("COUNTRY_CODE"),
+      'currencyNum': Airbitz.config.get("CURRENCY_CODE"),
+      'currency': Airbitz.config.get("CURRENCY_ABBREV")
+    };
+  }
+  function States() {
+    var usStates = [
+      {"id": "AL", "name": "Alabama"},
+      {"id": "AK", "name": "Alaska"},
+      {"id": "AZ", "name": "Arizona"},
+      {"id": "AR", "name": "Arkansas"},
+      {"id": "CA", "name": "California"},
+      {"id": "CO", "name": "Colorado"},
+      {"id": "CT", "name": "Connecticut"},
+      {"id": "DE", "name": "Delaware"},
+      {"id": "DC", "name": "District"},
+      {"id": "FL", "name": "Florida"},
+      {"id": "GA", "name": "Georgia"},
+      {"id": "HI", "name": "Hawaii"},
+      {"id": "ID", "name": "Idaho"},
+      {"id": "IL", "name": "Illinois"},
+      {"id": "IN", "name": "Indiana"},
+      {"id": "IA", "name": "Iowa"},
+      {"id": "KS", "name": "Kansas"},
+      {"id": "KY", "name": "Kentucky"},
+      {"id": "LA", "name": "Louisiana"},
+      {"id": "ME", "name": "Maine"},
+      {"id": "MD", "name": "Maryland"},
+      {"id": "MA", "name": "Massachusetts"},
+      {"id": "MI", "name": "Michigan"},
+      {"id": "MN", "name": "Minnesota"},
+      {"id": "MS", "name": "Mississippi"},
+      {"id": "MO", "name": "Missouri"},
+      {"id": "MT", "name": "Montana"},
+      {"id": "NE", "name": "Nebraska"},
+      {"id": "NV", "name": "Nevada"},
+      {"id": "NH", "name": "New"},
+      {"id": "NJ", "name": "New"},
+      {"id": "NM", "name": "New"},
+      {"id": "NY", "name": "New"},
+      {"id": "NC", "name": "North"},
+      {"id": "ND", "name": "North"},
+      {"id": "OH", "name": "Ohio"},
+      {"id": "OK", "name": "Oklahoma"},
+      {"id": "OR", "name": "Oregon"},
+      {"id": "PA", "name": "Pennsylvania"},
+      {"id": "RI", "name": "Rhode"},
+      {"id": "SC", "name": "South"},
+      {"id": "SD", "name": "South"},
+      {"id": "TN", "name": "Tennessee"},
+      {"id": "TX", "name": "Texas"},
+      {"id": "UT", "name": "Utah"},
+      {"id": "VT", "name": "Vermont"},
+      {"id": "VA", "name": "Virginia"},
+      {"id": "WA", "name": "Washington"},
+      {"id": "WV", "name": "West"},
+      {"id": "WI", "name": "Wisconsin"},
+      {"id": "WY", "name": "Wyoming"}
+    ];
+    var caProvinces = [
+      {"id": "ON", "name": "Ontario"},
+      {"id": "QC", "name": "Quebec"},
+      {"id": "NS", "name": "Nova Scotia"},
+      {"id": "NB", "name": "New Brunswick"},
+      {"id": "MB", "name": "Manitoba"},
+      {"id": "BC", "name": "British Columbia"},
+      {"id": "PE", "name": "Prince Edward Island"},
+      {"id": "SK", "name": "Saskatchewan"},
+      {"id": "AB", "name": "Alberta"},
+      {"id": "NL", "name": "Newfoundland and Labrador"}
+    ];
+    var states = Airbitz.config.get("COUNTRY_CODE") === "US" ? usStates : caProvinces;
+    return {
+      getStates: function() {
+        return states;
+      },
+      findState: function(code) {
+        var l = states.filter(function(s) {
+          return s.id === code;
+        });
+        return l.length >= 1 ? l[0] : null;
+      }
+    }
+  }
+  function Occupations() {
+    var occupations = [
+      {"id": "1", "name": "Accounting"},
+      {"id": "2", "name": "Administration"},
+      {"id": "3", "name": "Arts, Culture"},
+      {"id": "4", "name": "Business"},
+      {"id": "5", "name": "Communications"},
+      {"id": "6", "name": "Customer Service"},
+      {"id": "7", "name": "Education"},
+      {"id": "8", "name": "Energy, Utilities"},
+      {"id": "9", "name": "Engineering"},
+      {"id": "10", "name": "Finance"},
+      {"id": "11", "name": "Financial Services"},
+      {"id": "12", "name": "Government"},
+      {"id": "13", "name": "Health"},
+      {"id": "14", "name": "Hospitality"},
+      {"id": "15", "name": "Human Resources"},
+      {"id": "16", "name": "Internet"},
+      {"id": "17", "name": "Legal"},
+      {"id": "18", "name": "Manufacturing"},
+      {"id": "19", "name": "Marketing"},
+      {"id": "20", "name": "Non profit"},
+      {"id": "21", "name": "Recreation"},
+      {"id": "22", "name": "Religion"},
+      {"id": "23", "name": "Research"},
+      {"id": "24", "name": "Sales"},
+      {"id": "25", "name": "Sports, Fitness"},
+      {"id": "26", "name": "Student"}
+    ];
+    return {
+      getOccupations: function() {
+        return occupations;
+      },
+      find: function(code) {
+        var l = occupations.filter(function(s) {
+          return s.id === code.toString();
+        });
+        return l.length >= 1 ? l[0] : null;
+      }
+    }
+  }
+})();
+
+</script>
+  <script type="text/javascript">
+
+(function() {
+  'use strict';
+
+  angular.module('app.glidera', ['glidera'])
+    .factory('glideraFactory', ['glideraApi', glideraCactory]);
+
+  function glideraCactory(glideraApi) {
+    var g = new Glidera({
+      'sandbox': true,
+      'partnerAccessKey': Airbitz.config.get('GLIDERA_PARTNER_TOKEN')
+    });
+    if (Airbitz.config.get('TESTNET_ADDRESS')) {
+      g.sandboxAddress = Airbitz.config.get('TESTNET_ADDRESS')
+    }
+    var account = Airbitz.core.readData('account') || {};
+    if (account) {
+      g.key = account.key;
+      g.secret = account.secret;
+    }
+    return g;
+  }
+})();
+
+</script>
+  <script type="text/javascript">
+(function() {
+  'use strict';
+
+  angular
+    .module('app.history', ['app.dataFactory'])
+    .run(['$rootScope', '$window', '$location', 'UserFactory', history]);
+
+  /* TODO: remove match(//) regexp and replace with state lookups */
+  function history($rootScope, $window, $location, UserFactory) {
+    var history = [];
+    var skip = false;
+    $rootScope.$on('$locationChangeStart', function(event, next, current) {
+      if (!UserFactory.isRegistered() && !next.match(/signup.html/)) {
+        console.log('Not registered. Redirecting to registration form.');
+        $location.path('/');
+        return;
+      }
+      if (!skip) {
+        history.push(current);
+        Airbitz.ui.navStackPush(current);
+      }
+      // if we are on the dashboard screen, empty history
+      if (next.match(/\.html#\/exchange\/$/)
+        || next.match(/\.html#\/signup\/$/)) {
+        history.length = 0;
+        Airbitz.ui.navStackClear();
+      } else if (next.match(/\.html#\/receipt\/$/)) {
+        Airbitz.ui.navStackClear();
+
+        history.push('/exchange/');
+        Airbitz.ui.navStackPush('/exchange/');
+      }
+      skip = false;
+    });
+    Airbitz._bridge.back = function() {
+      if (history.length == 0) {
+        Airbitz._bridge.exit();
+      } else {
+        var el = history.pop().replace(/.*#/, '');
+        Airbitz.ui.navStackPop();
+
+        $location.path(el).replace();
+        skip = true; // don't record this change in the history stack
+      }
+      $rootScope.$apply();
+    };
+  };
+})();
+
+</script>
+  <script type="text/javascript">
+
 var app = angular.module('app', ['app.core', 'app.history', 'app.exchange', 'app.user', 'app.2fa', 'app.receipt']);
 
 app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -8013,8 +8626,13 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
     // route for signup TODO, move partial
     .state("home", {
       url: "/",
-      templateUrl: "app/core/partials/index.html",
+      templateUrl: "app/user/partials/redirect.html",
       controller: "homeController",
+    })
+    .state("disclaimer", {
+      url: "/",
+      templateUrl: "app/user/partials/disclaimer.html",
+      controller: "disclaimerController",
     })
     // route for signup
     .state("signup", {
@@ -8126,6 +8744,8 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 }]).
 run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
   $rootScope.exchange = DataFactory.getExchange();
+  $rootScope.countryCode = Airbitz.config.get('COUNTRY_CODE');
+  $rootScope.countryName = Airbitz.config.get('COUNTRY_NAME');
 }]);
 
 </script>
@@ -8147,26 +8767,27 @@ module.run(['$templateCache', function($templateCache) {
     '        previous two factor code.</p>\n' +
     '      </div>\n' +
     '      <label for="inputOldVerificationCode" class="sr-only">Old Verification Code</label>\n' +
-    '      <input\n' +
-    '        ng-model="oldVerificationCode"\n' +
-    '        type="text"\n' +
+    '      <input type="text"\n' +
     '        id="inputOldVerificationCode"\n' +
     '        class="large text-center"\n' +
     '        placeholder="Previous 2FA Code"\n' +
+    '        autocorrect="off"\n' +
     '        autocomplete="off"\n' +
+    '        ng-model="oldVerificationCode"\n' +
+    '        pattern="[0-9]*"\n' +
     '      />\n' +
     '    </div>\n' +
     '    <div class="form-group">\n' +
     '      <label for="inputVerificationCode" class="sr-only">Verification Code</label>\n' +
-    '      <input\n' +
-    '        ng-model="verificationCode"\n' +
-    '        autofocus\n' +
-    '        type="number"\n' +
+    '      <input type="text"\n' +
     '        id="inputVerificationCode"\n' +
     '        class="large text-center"\n' +
     '        placeholder="Your Code"\n' +
-    '\n' +
+    '        autocorrect="off"\n' +
     '        autocomplete="off"\n' +
+    '        ng-model="verificationCode"\n' +
+    '        pattern="[0-9]*"\n' +
+    '        auto-focus\n' +
     '      />\n' +
     '      <button type="submit" ng-click="submit2FA()"\n' +
     '              class="buy-sell-next btn btn-lg btn-block btn-success">Verify Code</button>\n' +
@@ -8174,30 +8795,12 @@ module.run(['$templateCache', function($templateCache) {
     '  </form>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="row text-center">\n' +
+    '<div class="row text-center" ng-if="account.phone">\n' +
     '  <h3 class="col-xs-12">Code sent to:</h3>\n' +
-    '  <h3 class="col-xs-12" style="margin-top: 0;"><label class="label label-outline"><span style="color: #ddd;">Phone:</span> {{account.phone||"321-555-1212"}}</label></h3>\n' +
-    '</div>\n' +
-    '');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/core/partials/index.html',
-    '<div class="row text-center">\n' +
-    '  <h1>Glidera Exchange</h1>\n' +
+    '  <h3 class="col-xs-12" style="margin-top: 0;"><label class="label label-outline"><span style="color: #ddd;">Phone:</span> {{ account.phone }}</label></h3>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="row text-center" style="margin-top: 20px">\n' +
-    '  <a ui-sref="exchange" class="btn btn-lg btn-link">Cheat Code</a>\n' +
-    '  <a ui-sref="signup" class="btn btn-lg btn-success">Sign Up</a>\n' +
-    '</div>');
+    '');
 }]);
 })();
 
@@ -8256,26 +8859,69 @@ module.run(['$templateCache', function($templateCache) {
     '               class="form-control"\n' +
     '               placeholder="123456789"\n' +
     '               autocomplete="off"\n' +
-    '               required="" />\n' +
+    '               required=""\n' +
+    '               pattern="[0-9]*" \n' +
+    '               />\n' +
     '        <div class="input-error" ng-show="form.$submitted || form.accountNumber.$touched">\n' +
     '            <div ng-show="form.accountNumber.$error.required" class="label label-danger">Required.</div>\n' +
     '        </div>\n' +
     '      </div>\n' +
     '\n' +
-    '      <div class="form-group">\n' +
-    '        <label for="inputBankRoutingNumber" class="">Routing Number</label>\n' +
-    '        <input ng-model="bankAccount.routingNumber"\n' +
-    '               name="routingNumber"\n' +
-    '               type="number"\n' +
-    '               id="inputBankRoutingNumber"\n' +
-    '               class="form-control"\n' +
-    '               placeholder="987654321"\n' +
-    '               autocomplete="off"\n' +
-    '               required=""\n' +
-    '               routing-number-validator />\n' +
-    '        <div class="input-error" ng-show="form.$submitted || form.routingNumber.$touched">\n' +
-    '            <div ng-show="form.routingNumber.$error.required" class="label label-danger">Required.</div>\n' +
-    '            <div ng-show="form.routingNumber.$error.routingNumber" class="label label-danger">Valid routing number required</div>\n' +
+    '      <div ng-if="countryCode == \'US\'">\n' +
+    '        <div class="form-group">\n' +
+    '          <label for="inputBankRoutingNumber" class="">Routing Number</label>\n' +
+    '          <input ng-model="bankAccount.routingNumber"\n' +
+    '                name="routingNumber"\n' +
+    '                type="text"\n' +
+    '                id="inputBankRoutingNumber"\n' +
+    '                class="form-control"\n' +
+    '                placeholder="987654321"\n' +
+    '                autocomplete="off"\n' +
+    '                required=""\n' +
+    '                routing-number-validator \n' +
+    '                pattern="[0-9]*"\n' +
+    '                />\n' +
+    '          <div class="input-error" ng-show="form.$submitted || form.routingNumber.$touched">\n' +
+    '              <div ng-show="form.routingNumber.$error.required" class="label label-danger">Required.</div>\n' +
+    '              <div ng-show="form.routingNumber.$error.routingNumber" class="label label-danger">Valid routing number required</div>\n' +
+    '          </div>\n' +
+    '        </div>\n' +
+    '      </div>\n' +
+    '\n' +
+    '      <div ng-if="countryCode == \'CA\'">\n' +
+    '        <div class="form-group">\n' +
+    '          <label for="inputTransit" class="">Transit</label>\n' +
+    '          <input ng-model="bankAccount.transit"\n' +
+    '                name="transit"\n' +
+    '                type="text"\n' +
+    '                id="inputTransit"\n' +
+    '                class="form-control"\n' +
+    '                placeholder="12345"\n' +
+    '                autocomplete="off"\n' +
+    '                required=""\n' +
+    '                pattern="[0-9]*"\n' +
+    '                />\n' +
+    '          <div class="input-error" ng-show="form.$submitted || form.transit.$touched">\n' +
+    '              <div ng-show="form.transit.$error.required" class="label label-danger">Required.</div>\n' +
+    '              <div ng-show="form.transit.$error.transit" class="label label-danger">Valid transit number required</div>\n' +
+    '          </div>\n' +
+    '        </div>\n' +
+    '        <div class="form-group">\n' +
+    '          <label for="inputInstitution" class="">Institution</label>\n' +
+    '          <input ng-model="bankAccount.institution"\n' +
+    '                name="institution"\n' +
+    '                type="text"\n' +
+    '                id="inputInstitution"\n' +
+    '                class="form-control"\n' +
+    '                placeholder="123"\n' +
+    '                autocomplete="off"\n' +
+    '                required=""\n' +
+    '                pattern="[0-9]*"\n' +
+    '                />\n' +
+    '          <div class="input-error" ng-show="form.$submitted || form.institution.$touched">\n' +
+    '              <div ng-show="form.institution.$error.required" class="label label-danger">Required.</div>\n' +
+    '              <div ng-show="form.institution.$error.institution" class="label label-danger">Valid institution number required</div>\n' +
+    '          </div>\n' +
     '        </div>\n' +
     '      </div>\n' +
     '\n' +
@@ -8361,9 +9007,11 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/exchange.html',
-    '<div class="exchange-ticker row">\n' +
-    '  <div ng-click="showAccountDebug()" class="live-ticker text-right">\n' +
-    '    <div price-update price-type="{{ order.orderAction }}"></div>\n' +
+    '<div ng-click="showAccountDebug()">\n' +
+    '  <div class="exchange-ticker row">\n' +
+    '    <div class="live-ticker text-right">\n' +
+    '        <div price-update price-type="{{ order.orderAction }}"></div>\n' +
+    '    </div>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
@@ -8376,35 +9024,10 @@ module.run(['$templateCache', function($templateCache) {
     '  </div>\n' +
     '</div>\n' +
     '\n' +
-    '<!-- <div ng-if="userStatus.userCanTransact" exchange-limits></div> -->\n' +
-    '\n' +
     '<div account-summary></div>\n' +
-    '\n' +
-    '\n' +
-    '<!-- <div ng-if="userStatus.userCanTransact" class="exchange-payment-list row">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <ul class="exchange-payment-options list-group" ng-model="bankAccounts">\n' +
-    '      <li class="list-group-item header"><i class="fa fa-bank"></i>Payment Methods <button ng-if="bankAccounts.length == 0" ng-click="addBankAccount()" class="btn btn-primary btn-xs pull-right">ADD NEW</button></li>\n' +
-    '\n' +
-    '      <li ng-click="routeBankAccount(bankAccount)"\n' +
-    '          class="list-group-item"\n' +
-    '          ng-repeat="bankAccount in bankAccounts">\n' +
-    '        <div class="row">\n' +
-    '          <div class="col-xs-12">{{ bankAccount.description }}</div>\n' +
-    '        </div>\n' +
-    '        <div class="row">\n' +
-    '          <div class="col-xs-12">\n' +
-    '            <small>{{bankAccount.accountNumber}}</small> <label class="label label-outline pull-right">{{ bankAccount.status || \'UNKNOWN\' }}</label>\n' +
-    '          </div>\n' +
-    '        </div>\n' +
-    '      </li>\n' +
-    '    </ul>\n' +
-    '  </div>\n' +
-    '</div> -->\n' +
     '\n' +
     '<div ng-show="showDebug" class="ng-trans ng-trans-fade-up easeOutSine">\n' +
     '  <hr />\n' +
-    '\n' +
     '  <div class="row">\n' +
     '    <div class="col-xs-6">\n' +
     '      <button type="button" ui-sref="exchangeTransactions" class="btn btn-block btn-info">Log</button>\n' +
@@ -8429,7 +9052,7 @@ module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/order.execute.html',
     '<div class="row text-center">\n' +
     '  <h3 class="col-xs-12"><label class="label label-info">{{exchange.order.type||"BUY"}}</label></h3>\n' +
-    '  <h3 class="col-xs-12">Please deposit <label class="label label-default">{{exchange.order.currencySymbol||"$"}}{{exchange.order.getExchangeRate()||"5555.91"}} {{exchange.order.currency||"USD"}}</label></h3>\n' +
+    '  <h3 class="col-xs-12">Please deposit <label class="label label-default">{{exchange.currencySymbol || "$" }}{{ exchange.order.getExchangeRate() ||"5555.91"}} {{exchange.currency || "USD"}}</label></h3>\n' +
     '  <h3 class="col-xs-12">Bank <label class="label label-outline">{{exchange.depositBankName1}}</label></h3>\n' +
     '  <h3 class="col-xs-12">Accout # <label class="label label-outline">{{exchange.depositBankAccount1}}</label></h3>\n' +
     '  <h2 class="col-xs-12">or</h2>\n' +
@@ -8450,7 +9073,8 @@ module.run(['$templateCache', function($templateCache) {
     '  <div class="col-xs-12">\n' +
     '    <label class="label label-outline" style="border-radius: 100px; font-size: 14px;">{{exchange.depositTimeout||"60"}} seconds</label>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -8463,15 +9087,7 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/order.html',
     '<div class="buy-sell-header row">\n' +
-    '  <!-- <div class="col-xs-6">\n' +
-    '    <div class="btn-group pull-left" data-toggle-name="btc-fiat-toggle" data-toggle="buttons-radio">\n' +
-    '      <button  ui-sref="exchangeOrder({orderAction: \'buy\'})" ng-class="{ \'active\' : order.orderAction == \'buy\' }" type="button" value="default" data-toggle="button" class="btn btn-success">BUY</button>\n' +
-    '      <button  ui-sref="exchangeOrder({orderAction: \'sell\'})" ng-class="{ \'active\' : order.orderAction == \'sell\' }" type="button" value="distance" data-toggle="button"\n' +
-    '      class="btn btn-primary">SELL</button>\n' +
-    '    </div>\n' +
-    '  </div> -->\n' +
-    '\n' +
-    '  <div class="text-right col-xs-offset-6 col-xs-6">\n' +
+    '  <div class="text-right col-xs-12">\n' +
     '    <div class="live-ticker">\n' +
     '      <div price-update price-type="{{ order.orderAction }}"></div>\n' +
     '      <div price-expires price-type="{{ order.orderAction }}"></div>\n' +
@@ -8486,10 +9102,9 @@ module.run(['$templateCache', function($templateCache) {
     '      <div class="row">\n' +
     '        <div class="col-xs-6 form-group">\n' +
     '          <label for="inputBtcWallet" class="">BTC Wallet</label>\n' +
-    '          <select\n' +
+    '          <select id="inputBtcWallet"\n' +
     '            ng-model="order.transferToWallet"\n' +
     '            ng-options="w.name for w in userWallets"\n' +
-    '            id="inputBtcWallet"\n' +
     '            class="form-control input-lg">\n' +
     '          </select>\n' +
     '        </div>\n' +
@@ -8513,8 +9128,9 @@ module.run(['$templateCache', function($templateCache) {
     '            name="orderBtcInput"\n' +
     '            class="large right-square"\n' +
     '            id="inputBtcAmount"\n' +
-    '            placeholder="0.5"\n' +
+    '            placeholder="Enter Amount"\n' +
     '            step="any"\n' +
+    '            autocorrect="off"\n' +
     '            required="" />\n' +
     '          <span class="large input-group-addon">BTC</span>\n' +
     '        </div>\n' +
@@ -8533,12 +9149,12 @@ module.run(['$templateCache', function($templateCache) {
     '            name="orderFiatInput"\n' +
     '            class="large right-square"\n' +
     '            id="inputFiatAmount"\n' +
-    '            placeholder="100.00"\n' +
-    '            autofocus="true"\n' +
+    '            placeholder="Enter Amount"\n' +
+    '            autocorrect="off"\n' +
     '            tabindex="1"\n' +
     '            step="any"\n' +
     '            required="" />\n' +
-    '          <span class="large input-group-addon">USD</span>\n' +
+    '            <span class="large input-group-addon">{{ exchange.currency || "USD" }}</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
     '             ng-show="form.$submitted || form.orderFiatInput.$touched">\n' +
@@ -8578,8 +9194,8 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/order.review.html',
     '<div class="row">\n' +
-    '  <h2 class="col-xs-6" style="margin-top: 0;"><span class="label label-outline">{{ order.orderAction || "Buy" | uppercase }} Order</span></h2>\n' +
-    '  <div class="text-right col-xs-6">\n' +
+    '  <h2 class="col-xs-12" style="margin-top: 0;"><span class="label label-outline">{{ order.orderAction || "Buy" | uppercase }} Order</span></h2>\n' +
+    '  <div class="text-right col-xs-12">\n' +
     '    <div class="live-ticker">\n' +
     '      <div price-update price-type="{{ order.orderAction }}"></div>\n' +
     '      <div price-expires price-type="{{ order.orderAction }}"></div>\n' +
@@ -8596,20 +9212,12 @@ module.run(['$templateCache', function($templateCache) {
     '      </colgroup>\n' +
     '      <tbody>\n' +
     '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
-    '          <td>Payment Method</td>\n' +
-    '          <td>{{order.transferFromBankAccount.description || "FakeVisa 4494" }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
     '          <td>Destination Wallet</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "Travel Spending" }}</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
     '          <td>Sell From</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "Travel Spending" }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
-    '          <td>Deposit To</td>\n' +
-    '          <td>{{order.transferFromBankAccount.description || "FakeVisa 4494" }}</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>{{ exchange.order.currency }} Amount</td>\n' +
@@ -8617,15 +9225,15 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.subtotal || "priceSubtotal" | roundFiat }} {{ exchange.order.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.subtotal || "priceSubtotal" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Fees</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.fees || "priceFees" | roundFiat }} {{ exchange.order.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.fees || "priceFees" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Total</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.total || "priceTotal" | roundFiat }} {{ exchange.order.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.total || "priceTotal" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -8702,7 +9310,7 @@ module.run(['$templateCache', function($templateCache) {
     '  <div class="col-xs-12">\n' +
     '    <form name="form" class="form" novalidate>\n' +
     '      <div class="row">\n' +
-    '          <p class="col-xs-12" style="margin-top: 15px; margin-bottom: 15px;">Please check your account for two deposits from <label class="label label-info">{{ exchange.depositId }}</label> and input them below.</p>\n' +
+    '          <p class="col-xs-12" style="margin-top: 15px; margin-bottom: 15px;">Please check your account for a deposit from <label class="label label-info">{{ exchange.depositId }}</label> and input them below.</p>\n' +
     '          <div class="col-xs-6">\n' +
     '              <label for="inputDepositAmount1" class="">Deposit Amount</label>\n' +
     '              <input ng-model="deposit.amount1"\n' +
@@ -8729,7 +9337,8 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '    </form>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -8748,7 +9357,8 @@ module.run(['$templateCache', function($templateCache) {
     '  <div class="limit-buy-monthly">\n' +
     '    <span class="limit-label">Monthly: </span><span class="limit-data">{{ limits.monthlyBuyRemaining | currency:"$"}}</span>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -8831,7 +9441,7 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/prices/partials/rate.html',
     '<div class="live-price-rate">\n' +
-    '  <span class="price-rate-label">1 BTC =</span> <span class="price-rate-data">{{ price }}</span>\n' +
+    '  <span class="price-rate-label">1 BTC =</span> <span class="price-rate-data">{{ price }} {{ currency }} </span>\n' +
     '</div>\n' +
     '');
 }]);
@@ -8863,20 +9473,12 @@ module.run(['$templateCache', function($templateCache) {
     '    <table class="table table-bordered">\n' +
     '      <tbody>\n' +
     '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
-    '          <td>Payment Method</td>\n' +
-    '          <td>{{order.transferFromBankAccount.description || "FakeVisa 4494" }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
     '          <td>Destination Wallet</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "Travel Spending" }}</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
     '          <td>Sell From</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "Travel Spending" }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
-    '          <td>Deposit To</td>\n' +
-    '          <td>{{order.transferFromBankAccount.description || "FakeVisa 4494" }}</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -9037,21 +9639,62 @@ try {
   module = angular.module('app', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/user/partials/signup.html',
+  $templateCache.put('app/user/partials/disclaimer.html',
     '<div ng-show="showDisclaimer" class="row">\n' +
     '  <div class="col-xs-12">\n' +
     '    <h4>Airbitz Disclaimer</h4>\n' +
     '    <p class="shadow-text">You are now signing up for Glidera, a third party exchange service.  Your personal information is transmitted to Glidera Inc. directly.</p>\n' +
-    '    <p class="shadow-text">A copy of your information will be encrypted and stoed locally for your future use.</p>\n' +
+    '    <p class="shadow-text">A copy of your information will be encrypted and stored locally for your future use.</p>\n' +
     '    <p class="shadow-text">Airbitz will never have access to your personal information which is encrypted on your device.</p>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="row" style="margin-top: 10px; margin-bottom: 20px;">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <button ng-click="showDisclaimer = !showDisclaimer" class="pull-left btn btn-xs btn-success">Read Disclaimer</button>\n' +
-    '  </div>\n' +
+    '<div class="row">\n' +
+    '  <form name="form" class="exchange-sign-up col-xs-12" novalidate>\n' +
+    '\n' +
+    '    <div class="row text-right" style="margin-top: 40px;">\n' +
+    '      <div class="col-xs-12">\n' +
+    '        <button type="button"\n' +
+    '                class="btn btn-lg btn-link">Cancel</button>\n' +
+    '        <button type="button"\n' +
+    '                ng-click="continueSignup()"\n' +
+    '                class="btn btn-lg btn-success">I Understand</button>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '\n' +
+    '  </form>\n' +
     '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/user/partials/redirect.html',
+    '<div class="row text-center">\n' +
+    '  <h1>Glidera Exchange</h1>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="row text-center" style="margin-top: 20px">\n' +
+    '  <a ui-sref="exchange" class="btn btn-lg btn-link">Cheat Code</a>\n' +
+    '  <a ui-sref="signup" class="btn btn-lg btn-success">Sign Up</a>\n' +
+    '</div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/user/partials/signup.html',
     '\n' +
     '<div class="row">\n' +
     '  <form name="form" class="exchange-sign-up col-xs-12" novalidate>\n' +
@@ -9061,6 +9704,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <input ng-model="account.firstName" name="firstName" type="text" id="inputFirstName" class="form-control"\n' +
     '             placeholder="First Name"\n' +
     '             autofocus=""\n' +
+    '             autocorrect="off"\n' +
     '             autocomplete="off"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.firstName.$touched">\n' +
@@ -9072,6 +9716,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <label for="inputLastName" class="sr-only">Last</label>\n' +
     '      <input ng-model="account.lastName" name="lastName" type="text" id="inputLastName" class="form-control"\n' +
     '             placeholder="Last Name"\n' +
+    '             autocorrect="off"\n' +
     '             autocomplete="off"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.lastName.$touched">\n' +
@@ -9091,23 +9736,37 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '    </div>\n' +
     '\n' +
+    '    <div class="form-group" ng-show="regCodeRequired">\n' +
+    '      <label for="inputCode" class="">Registration Code</label>\n' +
+    '      <input ng-model="registrationCode" name="registrationCode" type="text" id="inputCode" class="form-control"\n' +
+    '             placeholder=""\n' +
+    '             autocomplete="off"\n' +
+    '             autocorrect="off"\n' +
+    '             autocapitalize="off"\n' +
+    '             required="" />\n' +
+    '      <div class="input-error" ng-show="form.$submitted || form.registrationCode.$touched">\n' +
+    '        <span ng-show="form.registrationCode.$error.required" class="label label-danger">Required</span>\n' +
+    '        <span ng-show="form.registrationCode.$error.registrationCode" class="label label-danger">Valid registration code required</span>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '\n' +
     '    <div class="row text-right" style="margin-top: 40px;">\n' +
     '      <div class="col-xs-12">\n' +
     '        <button type="button"\n' +
     '                ng-click="cancelSignup()"\n' +
     '                class="btn btn-lg btn-link">Cancel</button>\n' +
-    '        <button type="submit"\n' +
+    '        <button type="button"\n' +
     '                ng-disabled="form.$invalid"\n' +
     '                ng-click="submitSignUp()"\n' +
     '                class="btn btn-lg btn-success">Next</button>\n' +
     '      </div>\n' +
     '    </div>\n' +
     '\n' +
-    '<!--     <div class="row text-right" style="margin-top: 40px;">\n' +
+    '    <div class="row text-right" style="margin-top: 40px;">\n' +
     '      <div class="col-xs-12">\n' +
     '        <button type="button" ui-sref="apiKeys" class="btn btn-sm btn-primary">Keys</button>\n' +
     '      </div>\n' +
-    '    </div> -->\n' +
+    '    </div>\n' +
     '\n' +
     '  </form>\n' +
     '</div>\n' +
@@ -9124,12 +9783,13 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/userAccount.html',
     '<div class="user-account-form row">\n' +
-    '  <form name="form" ng-submit="saveUserAccount()" class="exchange-sign-up col-xs-12" novalidate>\n' +
+    '  <form name="form" class="exchange-sign-up col-xs-12" novalidate>\n' +
     '\n' +
     '    <div class="form-group">\n' +
     '      <label for="inputFirstName" class="">Name</label>\n' +
     '      <input ng-model="account.firstName" ng-required="true"\n' +
-    '             type="text" id="inputFirstName" class="form-control" placeholder="First name" autofocus="true" autocomplete="off"\n' +
+    '             type="text" id="inputFirstName" class="form-control"\n' +
+    '             placeholder="First name" autofocus="true" autocomplete="off" autocorrect="off"\n' +
     '             name="firstName"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.firstName.$touched">\n' +
@@ -9140,7 +9800,8 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputLastName" class="sr-only">Last</label>\n' +
     '      <input ng-model="account.lastName" ng-required="true"\n' +
-    '             type="text" id="inputLastName" class="form-control" placeholder="Last name" autofocus="" autocomplete="off"\n' +
+    '             type="text" id="inputLastName" class="form-control"\n' +
+    '             placeholder="Last name" autofocus="" autocomplete="off" autocorrect="off"\n' +
     '             name="lastName"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.lastName.$touched">\n' +
@@ -9151,7 +9812,8 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputAddress" class="">Address</label>\n' +
     '      <input ng-model="account.address1"\n' +
-    '             type="text" id="inputAddressStreet" class="form-control" placeholder="Address" autofocus="" autocomplete="off"\n' +
+    '             type="text" id="inputAddressStreet" class="form-control"\n' +
+    '             placeholder="Address" autofocus="" autocomplete="off" autocorrect="off"\n' +
     '             name="address"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.address.$touched">\n' +
@@ -9162,13 +9824,15 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputAddress2" class="sr-only">Address 2</label>\n' +
     '      <input ng-model="account.address2"\n' +
-    '             type="text" id="inputAddressStreet2" class="form-control" placeholder="Address 2" autofocus="" autocomplete="off" />\n' +
+    '             type="text" id="inputAddressStreet2" class="form-control"\n' +
+    '             placeholder="Address 2" autofocus="" autocomplete="off" autocorrect="off" />\n' +
     '    </div>\n' +
     '\n' +
     '    <div class="form-group">\n' +
     '      <label for="inputAddressCity" class="sr-only">City</label>\n' +
     '      <input ng-model="account.city"\n' +
-    '             type="text" id="inputAddressCity" class="form-control" placeholder="City" autofocus="" autocomplete="off"\n' +
+    '             type="text" id="inputAddressCity" class="form-control"\n' +
+    '             placeholder="City" autofocus="" autocomplete="off" autocorrect="off"\n' +
     '             name="city"\n' +
     '             required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.city.$touched">\n' +
@@ -9178,9 +9842,10 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '    <div class="row">\n' +
     '      <div class="form-group col-xs-6">\n' +
-    '        <label for="inputAddressZip" class="sr-only">Zip</label>\n' +
+    '        <label for="inputAddressZip" class="sr-only">Postal Code</label>\n' +
     '        <input ng-model="account.zipCode"\n' +
-    '               type="text" id="inputAddressZip" class="form-control" placeholder="Postal Code" autofocus="" autocomplete="off"\n' +
+    '               type="text" id="inputAddressZip" class="form-control"\n' +
+    '               placeholder="Postal Code" autofocus="" autocomplete="off" autocorrect="off"\n' +
     '               name="zip"\n' +
     '               required="" />\n' +
     '        <div class="input-error" ng-show="form.$submitted || form.zip.$touched">\n' +
@@ -9192,11 +9857,25 @@ module.run(['$templateCache', function($templateCache) {
     '        <select ng-options="o.name for o in states" ng-model="account.state" class="form-control"\n' +
     '                name="state"\n' +
     '                required="" />\n' +
-    '          <option value="">Select a State</option>\n' +
+    '          <option value="" ng-if="countryCode == \'US\'">Select a State</option>\n' +
+    '          <option value="" ng-if="countryCode == \'CA\'">Select a Province</option>\n' +
     '        </select>\n' +
     '        <div class="input-error" ng-show="form.$submitted || form.state.$touched">\n' +
     '          <span ng-show="form.state.$error.required" class="label label-danger">Required</span>\n' +
     '        </div>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '\n' +
+    '    <div class="form-group" ng-show="countryCode == \'CA\'">\n' +
+    '        <label for="inputOccupation" class="">Occupation</label>\n' +
+    '        <select ng-options="o.name for o in occupations" ng-model="account.occupation" class="form-control"\n' +
+    '                name="occupation"\n' +
+    '                required="" />\n' +
+    '            <option value="">Select an Occupation</option>\n' +
+    '        </select>\n' +
+    '      <div class="input-error" ng-show="form.$submitted || form.occupation.$touched">\n' +
+    '        <span ng-show="form.occupation.$error.required" class="label label-danger">Required</span>\n' +
+    '        <span ng-show="form.occupation.$error.occupation" class="label label-danger">Occupation Required</span>\n' +
     '      </div>\n' +
     '    </div>\n' +
     '\n' +
@@ -9216,7 +9895,7 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="row text-right" style="margin-top: 40px;">\n' +
     '      <div class="col-xs-12">\n' +
     '        <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-link">Cancel</button>\n' +
-    '        <button type="submit" class="btn btn-lg btn-success">Save</button>\n' +
+    '        <button type="button" ng-click="saveUserAccount()" class="btn btn-lg btn-success">Save</button>\n' +
     '      </div>\n' +
     '    </div>\n' +
     '  </form>\n' +
@@ -9263,10 +9942,6 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/verify.phone.html',
-    '<div class="verify-phone-info row">\n' +
-    '  <h3 class="col-xs-12">Codes sent from:</h3>\n' +
-    '  <h3 class="col-xs-12"><label class="label label-outline">{{exchange.phoneVerificationNumber}}</label></h3>\n' +
-    '</div>\n' +
     '\n' +
     '<div class="verify-phone-form text-center row">\n' +
     '  <form name="form" class="form col-xs-12" novalidate>\n' +
@@ -9295,7 +9970,6 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '    <div class="text-right row" style="margin-top: 40px;">\n' +
     '      <div class="col-xs-12">\n' +
-    '        <button type="button" ui-sref="exchange" class="buy-sell-next btn btn-lg btn-link">Later</button>\n' +
     '        <button type="submit"\n' +
     '                ng-click="submitPhone()"\n' +
     '                ng-disabled="form.$invalid"\n' +
@@ -9309,481 +9983,6 @@ module.run(['$templateCache', function($templateCache) {
     '');
 }]);
 })();
-
-</script>
-  <script type="text/javascript">
-
-angular.module('app.dataFactory', ['app.glidera', 'app.2fa', 'app.constants', 'app.limits']).
-factory('UserFactory', [
-  '$q', '$filter', 'States', 'ExchangeFactory', 'glideraFactory', 'TwoFactor',
-  function($q, $filter, States, ExchangeFactory, glideraFactory, TwoFactor) {
-    var factory = {};
-    var account = Airbitz.core.readData('account') || {};
-
-    factory.isRegistered = function() {
-      return glideraFactory.hasRegistered();
-    };
-    factory.getUserAccount = function() {
-      return account;
-    };
-    factory.clearUser = function() {
-      account = {};
-      Airbitz.core.writeData('account', {});
-    };
-    factory.registerUser = function(firstName, lastName, email) {
-      var d = $q.defer();
-      glideraFactory.register(firstName, lastName, email, '', function(success, b) {
-        var account = factory.getUserAccount();
-        account.firstName = firstName;
-        account.lastName = lastName;
-        account.email = email;
-        account.key = b["key"];
-        account.secret = b["secret"];
-        if (success) {
-          Airbitz.core.writeData('account', account);
-          d.resolve(b);
-        } else {
-          d.reject(b);
-        }
-      });
-      return d.promise;
-    };
-    var userStatus = Airbitz.core.readData('userStatus') || {
-      'userCanTransact': false,
-      'userEmailIsSetup': false,
-      'userBankAccountIsSetup': false,
-      'userBasicInfoIsSetup': false
-    };
-    factory.getUserAccountStatus = function() {
-      return userStatus;
-    };
-    factory.fetchUserAccountStatus = function() {
-      var d = $q.defer();
-      glideraFactory.userStatus(function(e,s,b) {
-        if (s == 200) {
-          userStatus = b;
-          Airbitz.core.writeData('userStatus', userStatus);
-          d.resolve(userStatus);
-        } else {
-          d.reject(b);
-        }
-      });
-      return d.promise;
-    };
-    factory.getFullUserAccount = function() {
-      return $q(function(resolve, reject) {
-        glideraFactory.getBasicInfo(function(e, s, b) {
-          if (s === 200) {
-            account.firstName = b.firstName;
-            account.middleName = b.middleName;
-            account.lastName = b.lastName;
-            account.address1 = b.address1;
-            account.address2 = b.address2;
-            account.city = b.city;
-            account.zipCode = b.zipCode;
-            account.state = States.findState(b.state);
-            account.status = b.status.status;
-
-            // XXX: This is kind of hacky
-            if (b.birthDate) {
-              var birthDate = b.birthDate.replace(/T.*/, '');
-              account.birthDate = new Date(birthDate);
-            }
-            account.registered = true;
-
-            // persiste locally
-            console.log(account);
-            Airbitz.core.writeData('account', account);
-            resolve(account);
-          } else {
-            reject(b);
-          }
-        });
-      });
-    }
-    factory.updateUserAccount = function(account) {
-      return $q(function(resolve, reject) {
-        glideraFactory.updateBasicInfo({
-          'firstName': account.firstName,
-          'lastName': account.lastName,
-          'birthDate': $filter('date')(account.birthDate, 'yyyy-MM-dd'),
-          'address1': account.address1,
-          'address2': account.address2,
-          'city': account.city,
-          'state': account.state.id,
-          'zipCode': account.zipCode
-        }, function(e, s, b) {
-          if (s === 200) {
-            Airbitz.core.writeData('account', account);
-            resolve(b);
-          } else {
-            reject(b);
-          }
-        });
-      });
-    };
-
-
-    // Fetch the user data if available
-    factory.getFullUserAccount();
-    return factory;
-
-  }]).
-factory('DataFactory', [
-  '$q', '$filter', 'States', 'ExchangeFactory', 'glideraFactory', 'TwoFactor', 'Prices',
-  function($q, $filter, States, ExchangeFactory, glideraFactory, TwoFactor, Prices) {
-  var factory = {};
-
-  // transactions
-  factory.getTransactions = function() {
-    return $q(function(resolve, reject) {
-      glideraFactory.transactions(function(e, s, b) {
-        if (s >= 200 && s < 300) {
-          resolve(b.transactions);
-          console.log(b.transactions);
-
-          // return dummyData
-        } else {
-          reject(b);
-        }
-      });
-    });
-  };
-
-  factory.getUserWallets = function() {
-    return $q(function(resolve, reject) {
-      Airbitz.core.wallets({
-        success: resolve,
-        error: reject
-      });
-    });
-  };
-
-  factory.getExchange = function() {
-    return ExchangeFactory;
-  }
-
-  factory.addPhoneNumber = function(phoneNumber) {
-    var d = $q.defer();
-    glideraFactory.addPhoneNumber(phoneNumber, function(e, r, b) {
-      r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
-    });
-    return d.promise;
-  };
-
-  factory.confirmPhoneNumber = function(newCode, oldCode) {
-    var d = $q.defer();
-    glideraFactory.confirmPhoneNumber(newCode, oldCode, function(e, r, b) {
-      r >= 200 && r < 300 ? d.resolve(b) : d.reject(b);
-    });
-    return d.promise;
-  };
-
-  factory.getPhoneNumber = function() {
-    var d = $q.defer();
-    glideraFactory.getPhoneNumber(function(e, r, b) {
-      200 == r ? d.resolve(b) : d.reject(b);
-    });
-    return d.promise;
-  };
-
-  var bankAccounts = Airbitz.core.readData('bankAccounts') || [];
-  factory.getBankAccounts = function() {
-    return bankAccounts;
-  };
-  factory.fetchBankAccounts = function() {
-    return $q(function(resolve, reject) {
-      glideraFactory.getBankAccounts(function(e, s, b) {
-        if (s >= 200 && s < 300) {
-          bankAccounts = b.bankAccounts; //cache bank accounts
-          Airbitz.core.writeData('bankAccounts', bankAccounts);
-          resolve(b.bankAccounts);
-        } else {
-          reject(b);
-        }
-      });
-    });
-  };
-  factory.getBankAccount = function(uuid) {
-    var l = bankAccounts.filter(function(b) {
-      return b.bankAccountUuid == uuid;
-    });
-    return l.length > 0 ? l[0] : null;
-  };
-  factory.fetchBankAccount = function(uuid) {
-    return $q(function(resolve, reject) {
-      glideraFactory.getBankAccount(uuid, function(e, s, b) {
-        if (s >= 200 && s < 300) {
-          resolve(b);
-        } else {
-          reject(b);
-        }
-      });
-    });
-  };
-
-  // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-createBankAccount
-  factory.createBankAccount = function(bankAccount) {
-    console.log(bankAccount);
-    return $q(function(resolve, reject) {
-      glideraFactory.createBankAccount(
-        TwoFactor.getCode(),
-        bankAccount.routingNumber,
-        bankAccount.accountNumber,
-        bankAccount.description,
-        bankAccount.bankAccountType,
-        function(e, s, b) {
-          (s === 200) ? resolve(b.bankAccountUuid) : reject(b);
-      });
-    });
-  };
-
-  // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-verifyBankAccount
-  factory.verifyBankAccount = function(uuid, amount1) {;
-    return $q(function(resolve, reject) {
-      glideraFactory.verifyBankAccount(uuid, amount1,
-      function(e, s, b) {
-        (s == 200) ?  resolve(b) : reject(b);
-      });
-    });
-  };
-
-  // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-updateBankAccount
-  factory.updateBankAccount = function(bankAccount) {
-    return $q(function(resolve, reject) {
-      glideraFactory.updateBankAccount(
-          bankAccount.bankAccountUuid, bankAccount.description,
-          bankAccount.primary,
-      function(e, s, b) {
-        (s === 200) ? resolve(b) : reject(b);
-      });
-    });
-  };
-
-  // MAPS TO: https://sandbox.glidera.com/documentation.xhtml#apiReference-deleteBankAccount
-  factory.deleteBankAccount = function(accountId) {
-    return $q(function(resolve, reject) {
-      glideraFactory.deleteBankAccount(TwoFactor.getCode(), accountId,
-      function(e, s, b) {
-        (s == 200) ? resolve(b) : reject(b);
-      });
-    });
-  };
-
-  // initialize exchangeOrder
-  var exchangeOrder = {};
-
-  factory.createBuyOrder = function(order) {
-    // exchangeOrder = angular.copy(order);
-    exchangeOrder.destinationWallet = order.destinationWallet;
-    exchangeOrder.qty = order.qty;
-    exchangeOrder.useCurrentPrice = order.useCurrentPrice;
-    exchangeOrder.orderAction = order.orderAction
-  };
-
-  factory.getOrder = function(clear) {
-    if(clear) {
-      this.clearOrder();
-    }
-    return exchangeOrder;
-  };
-
-  factory.clearOrder = function() {
-    exchangeOrder = {};
-  };
-
-  var createAddress = function(wallet, label, amountSatoshi, amountFiat,
-                               category, notes, resolve, reject) {
-      Airbitz.core.createReceiveRequest(wallet, {
-        label: label,
-        category: category,
-        notes: notes,
-        amountSatoshi: amountSatoshi,
-        amountFiat: amountFiat,
-        success: resolve,
-        error: reject
-      })
-  };
-
-  var executeBuy = function(wallet, qty, request) {
-    var deferred = $q.defer(),
-        requestId = request['requestId'],
-        address = Airbitz._bridge.inDevMod()
-                ? glideraFactory.sandboxAddress : request['address'];
-    if (address) {
-      var opts = {'priceUuid': Prices.buyUuid()};
-      glideraFactory.buy(TwoFactor.getCode(), address, qty, opts, function(e, r, b) {
-        console.log(JSON.stringify(b));
-        if (r == 200) {
-          factory.getOrder(false).details = b;
-          Airbitz.core.finalizeRequest(wallet, requestId);
-          deferred.resolve(b);
-        } else {
-          deferred.reject(b);
-        }
-      });
-    } else {
-      deferred.reject('Unable to obtain a destination address. Please try again later.');
-    }
-    return deferred.promise;
-  };
-
-  factory.buy = function(wallet, qty, amountFiat) {
-    // TODO: check buy limits
-    return $q(function (resolve, reject) {
-      createAddress(wallet, 'Glidera', btcToSatoshi(qty), amountFiat, 'Exchange:Buy Bitcoin', '', resolve, reject);
-    }).then(function(request) {
-      return executeBuy(wallet, qty, request);
-    }, function(error) {
-      return $q(function(resolve, reject) {
-        reject(error);
-      });
-    });
-  };
-
-  var btcToSatoshi = function(btc) {
-    return btc * 100000000;
-  };
-
-  factory.sell = function(wallet, qty, amountFiat) {
-    // TODO: check sell limits
-    return $q(function(resolve, reject) {
-      glideraFactory.sellAddress(qty, function(e, r, b) {
-        (r == 200) ? resolve(b) : reject(b);
-      });
-    }).then(function(data) {
-      var sellAddress = data["sellAddress"];
-      var d = $q.defer();
-      createAddress(wallet, 'Glidera Refund', btcToSatoshi(qty), 
-                    amountFiat, 'Exchange:Refund Bitcoin', '', function(req) {
-        d.resolve({'sellAddress': sellAddress, 'refundAddress': req['address']});
-      }, d.reject);
-      return d.promise;
-    }).then(function(data) {
-      var d = $q.defer();
-      Airbitz.core.requestSpend(wallet, data.sellAddress, btcToSatoshi(qty), amountFiat, {
-        label: 'Glidera',
-        category: 'Exchange:Sell Bitcoin',
-        notes: '',
-        success: function(signedTx) {
-          d.resolve({'sellAddress': data.sellAddress,
-                     'refundAddress': data.refundAddress,
-                     'signedTx': signedTx});
-        },
-        error: function() {
-          d.reject({"code": "IgnoreAction"});
-        }
-      });
-      return d.promise;
-    }).then(function(data) {
-      var d = $q.defer();
-      var opts = {'priceUuid': Prices.sellUuid()};
-      glideraFactory.sell(TwoFactor.getCode(), data.refundAddress, data.signedTx, opts, function(e, r, b) {
-        if (r == 200) {
-          factory.getOrder(false).details = b;
-          d.resolve(b);
-        } else {
-          d.reject(b);
-        }
-      });
-      return d.promise;
-    }).catch(function(data) {
-      return $q(function(resolve, reject) {
-        reject(data);
-      });
-    });
-  };
-  return factory;
-}]);
-
-angular.module('app.constants', []).
-factory('ExchangeFactory', [function() {
-  // default exchange data
-  return {
-    'name': 'Glidera',
-    'icon': 'fa-bitcoin',
-    'countryCode': 'US', // ISO 3661-1
-    'emailVerificationAddress': 'admin@glidera.com',
-    'phoneVerificationNumber': '+1 650-331-0021',
-    'depositBankName1': 'Bank of America',
-    'depositBankAccount1': '90001923932',
-    'depositBankName2': 'METRO BANK',
-    'depositBankAccount2': '23002223932',
-    'orderTimeout': '60',
-    'depositTimeout': '3600',
-    'verificationCode': 'someCode',
-    'depositId': 'GLIDER-USA-002',
-    'supportsBankAccounts': true,
-    'supportsCreditCards': false,
-    'currencyNum': 840
-  };
-}]).
-factory('States', [function() {
-  var states = [
-    {"id": "AL", "name": "Alabama"},
-    {"id": "AK", "name": "Alaska"},
-    {"id": "AZ", "name": "Arizona"},
-    {"id": "AR", "name": "Arkansas"},
-    {"id": "CA", "name": "California"},
-    {"id": "CO", "name": "Colorado"},
-    {"id": "CT", "name": "Connecticut"},
-    {"id": "DE", "name": "Delaware"},
-    {"id": "DC", "name": "District"},
-    {"id": "FL", "name": "Florida"},
-    {"id": "GA", "name": "Georgia"},
-    {"id": "HI", "name": "Hawaii"},
-    {"id": "ID", "name": "Idaho"},
-    {"id": "IL", "name": "Illinois"},
-    {"id": "IN", "name": "Indiana"},
-    {"id": "IA", "name": "Iowa"},
-    {"id": "KS", "name": "Kansas"},
-    {"id": "KY", "name": "Kentucky"},
-    {"id": "LA", "name": "Louisiana"},
-    {"id": "ME", "name": "Maine"},
-    {"id": "MD", "name": "Maryland"},
-    {"id": "MA", "name": "Massachusetts"},
-    {"id": "MI", "name": "Michigan"},
-    {"id": "MN", "name": "Minnesota"},
-    {"id": "MS", "name": "Mississippi"},
-    {"id": "MO", "name": "Missouri"},
-    {"id": "MT", "name": "Montana"},
-    {"id": "NE", "name": "Nebraska"},
-    {"id": "NV", "name": "Nevada"},
-    {"id": "NH", "name": "New"},
-    {"id": "NJ", "name": "New"},
-    {"id": "NM", "name": "New"},
-    {"id": "NY", "name": "New"},
-    {"id": "NC", "name": "North"},
-    {"id": "ND", "name": "North"},
-    {"id": "OH", "name": "Ohio"},
-    {"id": "OK", "name": "Oklahoma"},
-    {"id": "OR", "name": "Oregon"},
-    {"id": "PA", "name": "Pennsylvania"},
-    {"id": "RI", "name": "Rhode"},
-    {"id": "SC", "name": "South"},
-    {"id": "SD", "name": "South"},
-    {"id": "TN", "name": "Tennessee"},
-    {"id": "TX", "name": "Texas"},
-    {"id": "UT", "name": "Utah"},
-    {"id": "VT", "name": "Vermont"},
-    {"id": "VA", "name": "Virginia"},
-    {"id": "WA", "name": "Washington"},
-    {"id": "WV", "name": "West"},
-    {"id": "WI", "name": "Wisconsin"},
-    {"id": "WY", "name": "Wyoming"}
-  ];
-  return {
-    getStates: function() {
-      return states;
-    },
-    findState: function(code) {
-      var l = states.filter(function(s) {
-        return s.id === code;
-      });
-      return l.length >= 1 ? l[0] : null;
-    }
-  }
-}]);
 
 </script>
 </body>
