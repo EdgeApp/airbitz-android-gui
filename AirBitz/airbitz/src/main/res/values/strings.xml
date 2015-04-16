@@ -48,6 +48,7 @@
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
+    <string name="category_or_business_name_initial">Search</string>
     <string name="category_or_business_name">Business Name or Category</string>
     <string name="city_state_county">City, State/Province, or Country</string>
     <string name="your_location">Your Location</string>

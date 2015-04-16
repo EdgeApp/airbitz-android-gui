@@ -56,7 +56,7 @@
                     android:background="@drawable/emboss_frost"
                     android:drawableLeft="@drawable/ico_search"
                     android:drawablePadding="10dp"
-                    android:hint="@string/category_or_business_name"
+                    android:hint="@string/category_or_business_name_initial"
                     android:imeOptions="actionNext"
                     android:inputType="text|textNoSuggestions"
                     android:paddingBottom="5dp"
