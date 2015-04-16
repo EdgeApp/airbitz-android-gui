@@ -43,8 +43,10 @@ import com.airbitz.models.Wallet;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.AirbitzApplication;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,16 +58,44 @@ public class PluginFramework {
     public static String JS_CALLBACK = "javascript:Airbitz._callbacks[%s]('%s');";
     public static String JS_EXCHANGE_UPDATE = "javascript:Airbitz._bridge.exchangeRateUpdate();";
 
-    static class Plugin {
-        public String pluginId;
-        public String name;
-        public String main;
+    static public class Plugin {
+        String pluginId;
+        String sourceFile;
+        String name;
+        Map<String, String> env;
 
-        public Plugin(String pluginId, String name, String main) {
-            this.pluginId = pluginId;
-            this.name = name;
-            this.main = main;
+        Plugin() {
+            env = new HashMap<String, String>();
         }
+    }
+
+    public static List<Plugin> getPlugins() {
+        return mPlugins;
+    }
+
+    static List<Plugin> mPlugins;
+    static {
+        mPlugins = new LinkedList<Plugin>();
+
+        Plugin plugin = new Plugin();
+        plugin.pluginId = "com.glidera.us";
+        plugin.sourceFile = "file:///android_asset/glidera.html";
+        plugin.name = "Glidera USA";
+        plugin.env.put("COUNTRY_CODE", "US");
+        plugin.env.put("COUNTRY_NAME", "United States");
+        plugin.env.put("CURRENCY_CODE", "840");
+        plugin.env.put("CURRENCY_ABBREV", "USD");
+        mPlugins.add(plugin);
+
+        plugin = new Plugin();
+        plugin.pluginId = "com.glidera.ca";
+        plugin.sourceFile = "file:///android_asset/glidera.html";
+        plugin.name = "Glidera Canada";
+        plugin.env.put("COUNTRY_CODE", "CA");
+        plugin.env.put("COUNTRY_NAME", "Canada");
+        plugin.env.put("CURRENCY_CODE", "124");
+        plugin.env.put("CURRENCY_ABBREV", "CAD");
+        mPlugins.add(plugin);
     }
 
 
@@ -300,7 +330,7 @@ public class PluginFramework {
                 String token = AirbitzApplication.getContext().getString(R.string.glidera_partner_key);
                 return token;
             } else {
-                return "";
+                return plugin.env.get(key);
             }
         }
 

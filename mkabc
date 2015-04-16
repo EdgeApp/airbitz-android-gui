@@ -31,7 +31,6 @@ fi
 
 mkdir -p $WALLET_MAIN/jni/
 mkdir -p $WALLET_MAIN/jniLibs/armeabi/
-mkdir -p $WALLET_MAIN/jniLibs/x86/
 
 echo $(pwd)
 cp ../src/ABC.h $WALLET_MAIN/jni/

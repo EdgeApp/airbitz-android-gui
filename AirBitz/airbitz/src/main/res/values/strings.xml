@@ -550,6 +550,8 @@
     <string name="password_check_checking">Checking password…</string>
     <string name="password_check_current_password">Current password</string>
 
+    <string name="buysell_title">Buy/Sell</string>
+
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
