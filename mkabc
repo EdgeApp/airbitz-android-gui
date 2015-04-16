@@ -24,9 +24,9 @@ BUILD_DIR=build
 if [[ "$1" == "testnet" ]]; then
     BUILD_DIR=build-testnet
     make BUILD_DIR=$BUILD_DIR ENABLE_TESTNET=1 \
-        abc.build-android-arm abc.build-android-x86
+        abc.build-android-arm
 else
-    make abc.build-android-arm abc.build-android-x86
+    make abc.build-android-arm
 fi
 
 mkdir -p $WALLET_MAIN/jni/
@@ -36,15 +36,13 @@ mkdir -p $WALLET_MAIN/jniLibs/x86/
 echo $(pwd)
 cp ../src/ABC.h $WALLET_MAIN/jni/
 cp $BUILD_DIR/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
-cp $BUILD_DIR/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
 
 cd $WALLET_PATH
 swig -java -package com.airbitz.api \
         -outdir src/main/java/com/airbitz/api \
         -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
 cd src/main/jni/
-ndk-build
+$BASE/$CORE_PATH/$BUILD_DIR/ndk/android-ndk-r10d/ndk-build
 
 cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/
-cp ../libs/x86/libairbitz.so ../jniLibs/x86/
 
