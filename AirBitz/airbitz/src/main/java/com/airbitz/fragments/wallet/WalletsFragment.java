@@ -218,7 +218,7 @@ public class WalletsFragment extends BaseFragment
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_header_layout);
 
-        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/NotoSans-Regular.ttf");
+        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
 
         mCurrencyList = new ArrayList<String>();
         mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));

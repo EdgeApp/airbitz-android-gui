@@ -91,7 +91,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
         mCoreAPI = CoreAPI.getApi();
 
-        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
     }
 
     public void setFirstHeaderHover(boolean status) {

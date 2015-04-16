@@ -95,7 +95,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
 
-        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
     }
 
     public void createRunningSatoshi() {

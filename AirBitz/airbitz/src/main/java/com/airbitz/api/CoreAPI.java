@@ -494,7 +494,7 @@ public class CoreAPI {
     };
 
     private String[] mBTCDenominations = {"BTC", "mBTC", "bits"};
-    private String[] mBTCSymbols = {"฿ ", "m฿ ", "ƀ "};
+    private String[] mBTCSymbols = {"Ƀ ", "mɃ ", "ƀ "};
 
     public String GetUserPIN() {
         tABC_AccountSettings settings = coreSettings();

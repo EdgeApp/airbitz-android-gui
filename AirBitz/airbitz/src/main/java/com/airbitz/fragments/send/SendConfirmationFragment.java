@@ -198,7 +198,7 @@ public class SendConfirmationFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
-        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/NotoSans-Regular.ttf");
+        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);

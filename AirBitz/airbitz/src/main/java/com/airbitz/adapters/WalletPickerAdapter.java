@@ -66,7 +66,7 @@ public class WalletPickerAdapter extends ArrayAdapter {
         mWalletList = walletList;
         mSource = source;
         mWithBalance = withBalance;
-        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/NotoSans-Regular.ttf");
+        mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
     }
 
     @Override
