@@ -529,7 +529,7 @@ public class WalletsFragment extends BaseFragment
         Log.d(TAG, "wallet loaded");
         updateWalletList(mArchiveClosed);
         checkWalletListVisibility();
-        UpdateBalances();
+        updateBalanceBar();
     }
 
     public void showAddWalletLayout() {
