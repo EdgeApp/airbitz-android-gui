@@ -45,7 +45,6 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -60,7 +59,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -72,13 +70,11 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
 import com.airbitz.objects.BleUtil;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
@@ -105,9 +101,9 @@ public class SettingFragment extends BaseFragment {
     AlertDialog mCurrencyDialog;
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
-    private RelativeLayout mCategoryContainer;
-    private RelativeLayout mSpendingLimitContainer;
-    private RelativeLayout mTwoFactorContainer;
+    private Button mCategoryButton;
+    private Button mSpendingLimitButton;
+    private Button mTwoFactorButton;
     private View mNFCSwitchLayout;
     private View mBLESwitchLayout;
     private HighlightOnPressImageButton mHelpButton;
@@ -116,9 +112,9 @@ public class SettingFragment extends BaseFragment {
     private RadioButton mBitcoinButton;
     private RadioButton mmBitcoinButton;
     private RadioButton muBitcoinButton;
-    private HighlightOnPressButton mChangePasswordButton;
-    private HighlightOnPressButton mChangePINButton;
-    private HighlightOnPressButton mChangeRecoveryButton;
+    private Button mChangePasswordButton;
+    private Button mChangePINButton;
+    private Button mChangeRecoveryButton;
     private Switch mSendNameSwitch;
     private Switch mMerchantModeSwitch;
     private Switch mPinReloginSwitch;
@@ -127,17 +123,16 @@ public class SettingFragment extends BaseFragment {
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
-    private HighlightOnPressButton mAutoLogoffButton;
-    private HighlightOnPressButton mDebugButton;
-    private HighlightOnPressButton mDefaultCurrencyButton;
-    private HighlightOnPressButton mDefaultDistanceButton;
+    private Button mAutoLogoffButton;
+    private Button mDebugButton;
+    private Button mDefaultCurrencyButton;
+    private Button mDefaultDistanceButton;
     private TextView mAccountTitle;
-    private HighlightOnPressButton mUSDollarButton;
-    private HighlightOnPressButton mCanadianDollarButton;
-    private HighlightOnPressButton mEuroButton;
-    private HighlightOnPressButton mPesoButton;
-    private HighlightOnPressButton mYuanButton;
-    private HighlightOnPressButton mLogoutButton;
+    private Button mUSDollarButton;
+    private Button mCanadianDollarButton;
+    private Button mEuroButton;
+    private Button mPesoButton;
+    private Button mYuanButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private String[] mCurrencyItems;
     private String[] mDistanceItems;
@@ -190,34 +185,25 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mChangePasswordButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_change_password);
-        mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
-        mChangeRecoveryButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_recovery);
+        mChangePasswordButton = (Button) mView.findViewById(R.id.settings_button_change_password);
+        mChangePINButton = (Button) mView.findViewById(R.id.settings_button_pin);
+        mChangeRecoveryButton = (Button) mView.findViewById(R.id.settings_button_recovery);
 
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
-        mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
+        mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
-        mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
-        mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
+        mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
+        mDefaultDistanceButton = (Button) mView.findViewById(R.id.settings_button_distance);
 
-        mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
-        mCanadianDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_canadian);
-        mEuroButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_euro);
-        mPesoButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_peso);
-        mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
+        mUSDollarButton = (Button) mView.findViewById(R.id.settings_button_usd);
+        mCanadianDollarButton = (Button) mView.findViewById(R.id.settings_button_canadian);
+        mEuroButton = (Button) mView.findViewById(R.id.settings_button_euro);
+        mPesoButton = (Button) mView.findViewById(R.id.settings_button_peso);
+        mYuanButton = (Button) mView.findViewById(R.id.settings_button_yuan);
 
-        mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCurrentSettings();
-                ((NavigationActivity) getActivity()).Logout(false);
-            }
-        });
-
-        mDebugButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_debug);
+        mDebugButton = (Button) mView.findViewById(R.id.settings_button_debug);
         mDebugButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -226,8 +212,8 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
-        mCategoryContainer.setOnClickListener(new View.OnClickListener() {
+        mCategoryButton = (Button) mView.findViewById(R.id.settings_button_category);
+        mCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CategoryFragment();
@@ -235,8 +221,8 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mSpendingLimitContainer = (RelativeLayout) mView.findViewById(R.id.settings_spending_limits_container);
-        mSpendingLimitContainer.setOnClickListener(new View.OnClickListener() {
+        mSpendingLimitButton = (Button) mView.findViewById(R.id.settings_button_spending_limits);
+        mSpendingLimitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new SpendingLimitsFragment();
@@ -244,8 +230,8 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mTwoFactorContainer = (RelativeLayout) mView.findViewById(R.id.settings_two_factor_container);
-        mTwoFactorContainer.setOnClickListener(new View.OnClickListener() {
+        mTwoFactorButton = (Button) mView.findViewById(R.id.settings_button_two_factor_authentication);
+        mTwoFactorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new TwoFactorShowFragment();
@@ -752,13 +738,13 @@ public class SettingFragment extends BaseFragment {
         private int mNumberSelection;
         private int mTextSelection;
         private AlertDialog mDialog;
-        private Button mButton;
+        private TextView mButton;
         private Activity mActivity;
         private int mMinutes;
         private NumberPicker mNumberPicker;
         private NumberPicker mTextPicker;
 
-        AutoLogoffDialogManager(Button button, Activity activity) {
+        AutoLogoffDialogManager(TextView button, Activity activity) {
             this.mButton = button;
             this.mActivity = activity;
             mAutoLogoffStrings.add(mActivity.getString(R.string.settings_days));

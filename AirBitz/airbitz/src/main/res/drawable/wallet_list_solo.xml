@@ -4,7 +4,7 @@
     <item>
 
         <shape>
-            <solid android:color="@color/listitem_normal" />
+            <solid android:color="@color/listitem_background" />
             <corners android:radius="6dp" />
         </shape>
     </item>

@@ -7,7 +7,7 @@
         android:right=".5dp"
         android:top=".5dp">
         <shape>
-            <solid android:color="@color/listitem_normal" />
+            <solid android:color="@color/listitem_background" />
             <corners
                 android:bottomLeftRadius="6dp"
                 android:bottomRightRadius="6dp" />
