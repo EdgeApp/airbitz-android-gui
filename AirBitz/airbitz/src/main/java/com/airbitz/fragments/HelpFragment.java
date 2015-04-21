@@ -34,6 +34,7 @@ package com.airbitz.fragments;
 import android.app.Fragment;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -92,6 +93,8 @@ public class HelpFragment extends BaseFragment {
             tv.setMovementMethod(LinkMovementMethod.getInstance());
             tv.setVisibility(View.VISIBLE);
             tv.setText(mHtml);
+            Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
+            tv.setTypeface(type);
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
