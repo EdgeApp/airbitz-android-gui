@@ -1947,11 +1947,6 @@ public class NavigationActivity extends Activity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
-        if (mCoreAPI.isTestNet()) {
-            mDrawerBuySell.setVisibility(View.VISIBLE);
-        } else {
-            mDrawerBuySell.setVisibility(View.GONE);
-        }
 
         mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
