@@ -80,6 +80,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     public static int CHANGE_PASSWORD = 1;
     public static int CHANGE_PASSWORD_VIA_QUESTIONS = 2;
     public static int CHANGE_PIN = 3;
+    public static int CHANGE_PASSWORD_NO_VERIFY = 4;
     private int mMode = SIGNUP;
     private final String TAG = getClass().getSimpleName();
     private RelativeLayout mParentLayout;
@@ -286,7 +287,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     animator.setDuration(300);
                     animator.start();
                 }
-                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                if(animatorWidget != null && (mMode == CHANGE_PASSWORD_VIA_QUESTIONS || mMode == CHANGE_PASSWORD_NO_VERIFY)) {
                     animatorWidget.setDuration(300);
                     animatorWidget.start();
                 }
@@ -308,7 +309,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     animator.addListener(endListener);
                     animator.start();
                 }
-                if(animatorWidget != null && mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                if(animatorWidget != null && (mMode == CHANGE_PASSWORD_VIA_QUESTIONS || mMode == CHANGE_PASSWORD_NO_VERIFY)) {
                     animatorWidget.setDuration(300);
                     animatorWidget.start();
                 }
@@ -338,7 +339,24 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
             mUserNameEditText.requestFocus();
-        } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+        }
+        else if (mMode == CHANGE_PASSWORD_NO_VERIFY) {
+            // change mUsername label, title
+            mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
+            mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
+            mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
+            mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mNextButton.setText(getResources().getString(R.string.string_done));
+            // hide mUsername
+            mUserNameRedRingCover.setVisibility(View.GONE);
+            mUserNameEditText.setVisibility(View.GONE);
+            mHintTextView.setVisibility(View.INVISIBLE);
+            // hide PIN
+            mWithdrawalPinEditText.setVisibility(View.GONE);
+            mWithdrawalLabel.setVisibility(View.GONE);
+        }
+        else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             // change mUsername label, title
             mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
@@ -442,7 +460,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 bUserNameFieldIsValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
             }
-        } else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
+        }
+        else if (mMode == CHANGE_PASSWORD_NO_VERIFY) {
+            bUserNameFieldIsValid = true;
+        }
+        else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
             // if the mPassword is wrong
             if (!mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mUserNameEditText.getText().toString())) {
@@ -488,7 +510,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         boolean bpinNameFieldIsValid = true;
 
         // if we are signing up for a new account
-        if (mMode != CHANGE_PASSWORD) {
+        if (mMode != CHANGE_PASSWORD && mMode != CHANGE_PASSWORD_NO_VERIFY) {
             // if the pin isn't long enough
             if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
                 bpinNameFieldIsValid = false;
@@ -611,7 +633,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             Editable pass = mPasswordEditText.getText();
             mPassword = new char[pass.length()];
             pass.getChars(0, pass.length(), mPassword, 0);
-            if (mMode == CHANGE_PASSWORD) {
+            if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                 mUsername = AirbitzApplication.getUsername();
                 success = mCoreAPI.ChangePassword(String.valueOf(mPassword));
             } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
@@ -630,7 +652,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                if (mMode == CHANGE_PASSWORD) {
+                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     AirbitzApplication.Login(mUsername, mPassword);
                     mCoreAPI.PinSetup();
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
@@ -645,7 +667,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }
             } else {
-                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_bad));
                 } else {
                     mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_bad));
