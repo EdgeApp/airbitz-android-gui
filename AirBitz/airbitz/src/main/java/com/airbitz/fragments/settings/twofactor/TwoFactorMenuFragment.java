@@ -51,6 +51,12 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Two Factor Authentication Menu
  * Created 2/5/15
@@ -71,6 +77,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     private Button mResetButton;
     private HighlightOnPressImageButton mHelpButton;
     private TextView mTitleTextView;
+    private TextView mResetDescription, mResetDate;
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
 
@@ -136,6 +143,8 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 //            }
 //        });
 
+        mResetDate = (TextView) mView.findViewById(R.id.fragment_twofactor_date);
+        mResetDescription = (TextView) mView.findViewById(R.id.fragment_twofactor_description);
         return mView;
     }
 
@@ -146,6 +155,40 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         mStoreSecret = bundle.getBoolean(STORE_SECRET, false);
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
         mUsername = bundle.getString(USERNAME);
+
+        tABC_CC cc = mCoreAPI.GetTwoFactorDate();
+        String date = mCoreAPI.mTwoFactorDate;
+        if(cc == tABC_CC.ABC_CC_Ok) {
+            if(date == null || date.isEmpty()) {
+                mResetDate.setVisibility(View.GONE);
+                mResetDescription.setVisibility(View.GONE);
+                mResetButton.setVisibility(View.VISIBLE);
+            }
+            else {
+                mResetDate.setVisibility(View.VISIBLE);
+                mResetDescription.setVisibility(View.VISIBLE);
+                mResetButton.setVisibility(View.GONE);
+                mResetDate.setText(formatDate(date));
+            }
+        }
+        else {
+            mResetDate.setVisibility(View.GONE);
+            mResetDescription.setVisibility(View.GONE);
+            mResetButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private String formatDate(String date) {
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        SimpleDateFormat outFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        Date result;
+        try {
+            result = df1.parse(date);
+            return "Reset Date: " + outFormat.format(result);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "Reset Date: null";
     }
 
     @Override

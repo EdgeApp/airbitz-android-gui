@@ -3152,7 +3152,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
         tABC_CC cc = core.ABC_OtpResetDate(ppChar, error);
-        mTwoFactorDate = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        mTwoFactorDate = error.getCode() == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
         return cc;
     }
 
