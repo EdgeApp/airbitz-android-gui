@@ -513,6 +513,8 @@
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
     <string name="twofactor_remind_later">Remind Me Later</string>
     <string name="twofactor_enable">Enable</string>
+    <string name="twofactor_invalid_title">Two Factor Invalid</string>
+    <string name="twofactor_invalid_message">The Two Factor Authentication token on this device is invalid. Either the token was changed by a different device or your clock is skewed. Please check your system time to ensure it is correct.</string>
     <string name="twofactor_unable_import_token">We are sorry we are unable to import the token at this time.</string>
 
     <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>

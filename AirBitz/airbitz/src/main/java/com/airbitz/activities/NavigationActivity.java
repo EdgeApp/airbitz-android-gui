@@ -1868,26 +1868,43 @@ public class NavigationActivity extends Activity
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
-                builder.setMessage(getString(R.string.twofactor_required_message))
-                        .setTitle(getString(R.string.twofactor_required_title))
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.twofactor_enable),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                        launchTwoFactorScan();
-                                    }
-                                })
-                        .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        mOTPAlertDialog = null;
-                                    }
-                                });
-                mOTPAlertDialog = builder.create();
-                mOTPAlertDialog.show();
+                if(mCoreAPI.TwoFactorSecret() != null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    builder.setMessage(getString(R.string.twofactor_required_message))
+                            .setTitle(getString(R.string.twofactor_required_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                            launchTwoFactorScan();
+                                        }
+                                    })
+                            .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    builder.setMessage(getString(R.string.twofactor_invalid_message))
+                            .setTitle(getString(R.string.twofactor_invalid_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.string_ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
+                }
             }
         }
     };
