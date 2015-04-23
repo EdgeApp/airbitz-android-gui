@@ -3146,6 +3146,17 @@ public class CoreAPI {
                 AirbitzApplication.getPassword(), error);
     }
 
+    public String mTwoFactorDate;
+    public tABC_CC GetTwoFactorDate() {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_OtpResetDate(ppChar, error);
+        mTwoFactorDate = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        return cc;
+    }
+
+
     public List<String> listAccounts() {
         tABC_Error error = new tABC_Error();
         tABC_CC cc;

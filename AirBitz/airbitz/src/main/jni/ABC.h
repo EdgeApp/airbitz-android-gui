@@ -587,12 +587,6 @@ tABC_CC ABC_IsTestNet(bool *pResult, tABC_Error *pError);
 /* === All data at once: === */
 tABC_CC ABC_ClearKeyCache(tABC_Error *pError);
 
-tABC_CC ABC_DataSyncAll(const char *szUserName,
-                        const char *szPassword,
-                        tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
-                        void *pData,
-                        tABC_Error *pError);
-
 /* === General info: === */
 
 /**
@@ -765,6 +759,13 @@ tABC_CC ABC_OtpAuthRemove(const char *szUserName,
  */
 tABC_CC ABC_OtpResetGet(char **szUsernames,
                         tABC_Error *pError);
+
+/**
+ * Returns the OTP reset date for the last account that failed to log in,
+ * if any. Returns an empty string otherwise.
+ */
+tABC_CC ABC_OtpResetDate(char **pszDate,
+                         tABC_Error *pError);
 
 /**
  * Launches an OTP reset timer on the server,

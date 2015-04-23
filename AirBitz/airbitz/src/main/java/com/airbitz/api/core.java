@@ -117,10 +117,6 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_ClearKeyCache(tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_DataSyncAll(String szUserName, String szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void fAsyncBitCoinEventCallback, SWIGTYPE_p_void pData, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_DataSyncAll(szUserName, szPassword, SWIGTYPE_p_f_p_q_const__struct_sABC_AsyncBitCoinInfo__void.getCPtr(fAsyncBitCoinEventCallback), SWIGTYPE_p_void.getCPtr(pData), tABC_Error.getCPtr(pError), pError));
-  }
-
   public static tABC_CC ABC_GeneralInfoUpdate(tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GeneralInfoUpdate(tABC_Error.getCPtr(pError), pError));
   }
@@ -251,6 +247,10 @@ public class core implements coreConstants {
 
   public static tABC_CC ABC_OtpResetGet(SWIGTYPE_p_p_char szUsernames, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_OtpResetGet(SWIGTYPE_p_p_char.getCPtr(szUsernames), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_OtpResetDate(SWIGTYPE_p_p_char pszDate, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_OtpResetDate(SWIGTYPE_p_p_char.getCPtr(pszDate), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_OtpResetSet(String szUserName, tABC_Error pError) {

@@ -309,7 +309,6 @@ public class coreJNI {
   public final static native int ABC_Version(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);
-  public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GeneralInfoUpdate(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_GetCurrencies(long jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_GetQuestionChoices(long jarg1, long jarg2, tABC_Error jarg2_);
@@ -343,6 +342,7 @@ public class coreJNI {
   public final static native int ABC_OtpAuthSet(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_OtpAuthRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpResetGet(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_OtpResetDate(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_OtpResetSet(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_OtpResetRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
