@@ -1868,6 +1868,7 @@ public class NavigationActivity extends Activity
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
+                mCoreAPI.GetTwoFactorSecret(AirbitzApplication.getUsername());
                 if(mCoreAPI.TwoFactorSecret() != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
                     builder.setMessage(getString(R.string.twofactor_required_message))
