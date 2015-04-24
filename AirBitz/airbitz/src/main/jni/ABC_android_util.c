@@ -71,8 +71,12 @@ Java_com_airbitz_api_CoreAPI_coreDataSyncAccount(JNIEnv *jenv, jclass jcls, jstr
   callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
   bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
   errorp = *(tABC_Error **)&jerrorp;
+
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "calling ABC_DataSyncAccount");
   result = (tABC_CC)ABC_DataSyncAccount((char const *)username, (char const *)password,
                                         callback, bcInfo, errorp);
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "returned from ABC_DataSyncAccount");
+
   jresult = (jint)result;
   if (username) (*jenv)->ReleaseStringUTFChars(jenv, jusername, (const char *)username);
   if (password) (*jenv)->ReleaseStringUTFChars(jenv, jpassword, (const char *)password);
