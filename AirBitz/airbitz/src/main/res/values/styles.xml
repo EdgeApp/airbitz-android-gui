@@ -9,7 +9,6 @@
     <style name="CategoryItem">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed</item>
-        <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
         <item name="android:shadowColor">@android:color/white</item>
@@ -26,7 +25,6 @@
     <style name="CategoryItemTop">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed_top</item>
-        <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
         <item name="android:shadowColor">@android:color/white</item>
@@ -43,7 +41,6 @@
     <style name="CategoryItemBottom">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed_bottom</item>
-        <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
         <item name="android:shadowColor">@android:color/white</item>
@@ -60,7 +57,6 @@
     <style name="CategoryItemDetail">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed</item>
-        <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
         <item name="android:drawablePadding">@dimen/content_padding_2</item>
@@ -75,7 +71,6 @@
     <style name="CategoryItemDetailTop">
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:background">@drawable/transparent_until_pressed_top</item>
-        <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/dark_gray_text</item>
         <item name="android:textSize">@dimen/text_size_h4</item>
         <item name="android:drawablePadding">@dimen/content_padding_2</item>

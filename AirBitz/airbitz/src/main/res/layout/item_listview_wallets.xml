@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
     android:background="@color/listitem_normal"
@@ -19,7 +20,8 @@
         android:gravity="center_vertical"
         android:singleLine="true"
         android:textColor="@color/gray_text"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        tools:text="My Wallet"/>
 
     <TextView
         android:id="@+id/textview_amount"
@@ -27,22 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:textColor="@color/dark_blue_text"
-        android:textSize="14dp" />
-
-    <ImageView
-        android:id="@+id/imageview_icon"
-        android:layout_width="22.8dp"
-        android:layout_height="28.8dp"
-        android:layout_gravity="center_vertical"
-        android:adjustViewBounds="true"
-        android:paddingBottom="9.45dp"
-        android:paddingLeft="5.45dp"
-        android:paddingTop="9.45dp"
-        android:layout_marginRight="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/arrow_right" />
+        android:textSize="14dp"
+        tools:text = "mB 20.12345"/>
 
 </LinearLayout>
