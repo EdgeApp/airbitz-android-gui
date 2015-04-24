@@ -2903,7 +2903,7 @@ public class CoreAPI {
         tABC_AccountSettings settings = coreSettings();
         if(settings != null) {
             String username = AirbitzApplication.getUsername();
-            String pin = coreSettings().getSzPIN();
+            String pin = settings.getSzPIN();
             tABC_Error pError = new tABC_Error();
             return core.ABC_PinSetup(username, pin, pError);
         }
