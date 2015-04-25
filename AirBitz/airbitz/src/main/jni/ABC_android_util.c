@@ -294,7 +294,7 @@ Java_com_airbitz_api_CoreAPI_getCoreCurrencyNumbers(JNIEnv *env, jclass cls)
 JNIEXPORT jstring JNICALL
 Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint currencyNum)
 {
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting code lookup"); //"ptr=%p", (void *) base);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting code lookup"); //"ptr=%p", (void *) base);
     tABC_Error error;
     int currencyCount;
     tABC_Currency *currencies;
@@ -303,7 +303,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint cur
         int i = 0;
         for (i = 0; i < currencyCount; ++i) {
             if (currencyNum == currencies[i].num) {
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "code found"); //"ptr=%p", (void *) base);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "code found"); //"ptr=%p", (void *) base);
                 const char *buf = currencies[i].szCode;
                 jstring jresult = (*env)->NewStringUTF(env, buf);
                 return jresult;
@@ -321,7 +321,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint cur
 JNIEXPORT jstring JNICALL
 Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, jint currencyNum)
 {
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting description lookup"); //"ptr=%p", (void *) base);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting description lookup"); //"ptr=%p", (void *) base);
     tABC_Error error;
     int currencyCount;
     tABC_Currency *currencies;
@@ -330,7 +330,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, j
         int i = 0;
         for (i = 0; i < currencyCount; ++i) {
             if (currencyNum == currencies[i].num) {
-    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "description found"); //"ptr=%p", (void *) base);
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "description found"); //"ptr=%p", (void *) base);
                 const char *buf = currencies[i].szDescription;
                 jstring jresult = (*env)->NewStringUTF(env, buf);
                 return jresult;
