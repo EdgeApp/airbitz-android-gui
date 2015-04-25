@@ -4068,175 +4068,6 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1RequestInfo(J
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSource_1currencyNum_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  struct sABC_ExchangeRateSource *arg1 = (struct sABC_ExchangeRateSource *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSource **)&jarg1; 
-  arg2 = (int)jarg2; 
-  if (arg1) (arg1)->currencyNum = arg2;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSource_1currencyNum_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  struct sABC_ExchangeRateSource *arg1 = (struct sABC_ExchangeRateSource *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSource **)&jarg1; 
-  result = (int) ((arg1)->currencyNum);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSource_1szSource_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
-  struct sABC_ExchangeRateSource *arg1 = (struct sABC_ExchangeRateSource *) 0 ;
-  char *arg2 = (char *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSource **)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
-    if (!arg2) return ;
-  }
-  {
-    free(arg1->szSource);
-    if (arg2) {
-      arg1->szSource = (char *) malloc(strlen((const char *)arg2)+1);
-      strcpy((char *)arg1->szSource, (const char *)arg2);
-    } else {
-      arg1->szSource = 0;
-    }
-  }
-  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
-}
-
-
-SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSource_1szSource_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jstring jresult = 0 ;
-  struct sABC_ExchangeRateSource *arg1 = (struct sABC_ExchangeRateSource *) 0 ;
-  char *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSource **)&jarg1; 
-  result = (char *) ((arg1)->szSource);
-  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1ExchangeRateSource(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  struct sABC_ExchangeRateSource *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (struct sABC_ExchangeRateSource *)calloc(1, sizeof(struct sABC_ExchangeRateSource));
-  *(struct sABC_ExchangeRateSource **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1ExchangeRateSource(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  struct sABC_ExchangeRateSource *arg1 = (struct sABC_ExchangeRateSource *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(struct sABC_ExchangeRateSource **)&jarg1; 
-  free((char *) arg1);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSources_1numSources_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  struct sABC_ExchangeRateSources *arg1 = (struct sABC_ExchangeRateSources *) 0 ;
-  unsigned int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSources **)&jarg1; 
-  arg2 = (unsigned int)jarg2; 
-  if (arg1) (arg1)->numSources = arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSources_1numSources_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  struct sABC_ExchangeRateSources *arg1 = (struct sABC_ExchangeRateSources *) 0 ;
-  unsigned int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSources **)&jarg1; 
-  result = (unsigned int) ((arg1)->numSources);
-  jresult = (jlong)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSources_1aSources_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  struct sABC_ExchangeRateSources *arg1 = (struct sABC_ExchangeRateSources *) 0 ;
-  tABC_ExchangeRateSource **arg2 = (tABC_ExchangeRateSource **) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSources **)&jarg1; 
-  arg2 = *(tABC_ExchangeRateSource ***)&jarg2; 
-  if (arg1) (arg1)->aSources = arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1ExchangeRateSources_1aSources_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  struct sABC_ExchangeRateSources *arg1 = (struct sABC_ExchangeRateSources *) 0 ;
-  tABC_ExchangeRateSource **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(struct sABC_ExchangeRateSources **)&jarg1; 
-  result = (tABC_ExchangeRateSource **) ((arg1)->aSources);
-  *(tABC_ExchangeRateSource ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1ExchangeRateSources(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  struct sABC_ExchangeRateSources *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (struct sABC_ExchangeRateSources *)calloc(1, sizeof(struct sABC_ExchangeRateSources));
-  *(struct sABC_ExchangeRateSources **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_delete_1tABC_1ExchangeRateSources(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  struct sABC_ExchangeRateSources *arg1 = (struct sABC_ExchangeRateSources *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(struct sABC_ExchangeRateSources **)&jarg1; 
-  free((char *) arg1);
-}
-
-
 SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinDenomination_1denominationType_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct sABC_BitcoinDenomination *arg1 = (struct sABC_BitcoinDenomination *) 0 ;
   int arg2 ;
@@ -4642,31 +4473,43 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1curr
 }
 
 
-SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1exchangeRateSources_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1szExchangeRateSource_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
-  tABC_ExchangeRateSources *arg2 = (tABC_ExchangeRateSources *) 0 ;
+  char *arg2 = (char *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(struct sABC_AccountSettings **)&jarg1; 
-  arg2 = *(tABC_ExchangeRateSources **)&jarg2; 
-  if (arg1) (arg1)->exchangeRateSources = *arg2;
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szExchangeRateSource);
+    if (arg2) {
+      arg1->szExchangeRateSource = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szExchangeRateSource, (const char *)arg2);
+    } else {
+      arg1->szExchangeRateSource = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1exchangeRateSources_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1szExchangeRateSource_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
   struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
-  tABC_ExchangeRateSources *result = 0 ;
+  char *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct sABC_AccountSettings **)&jarg1; 
-  result = (tABC_ExchangeRateSources *)& ((arg1)->exchangeRateSources);
-  *(tABC_ExchangeRateSources **)&jresult = result; 
+  result = (char *) ((arg1)->szExchangeRateSource);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
   return jresult;
 }
 

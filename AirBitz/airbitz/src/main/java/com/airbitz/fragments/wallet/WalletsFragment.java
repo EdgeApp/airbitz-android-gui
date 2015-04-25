@@ -220,8 +220,7 @@ public class WalletsFragment extends BaseFragment
 
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
 
-        mCurrencyList = new ArrayList<String>();
-        mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
+        mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
 
         mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mLatestWalletAdapter.setHeaderButtonListener(this);
@@ -556,7 +555,7 @@ public class WalletsFragment extends BaseFragment
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
-                int[] nums = mCoreAPI.getCurrencyNumbers();
+                int[] nums = mCoreAPI.getCurrencyNumberArray();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
             } else {
                 mActivity.pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());

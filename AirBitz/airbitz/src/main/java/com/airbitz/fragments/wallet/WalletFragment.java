@@ -589,7 +589,7 @@ public class WalletFragment extends BaseFragment
     private void UpdateBalances() {
         long totalSatoshis = mWallet.getBalanceSatoshi();
 
-        mBottomType.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
+        mBottomType.setText(mCoreAPI.currencyCodeLookup(mWallet.getCurrencyNum()));
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
         String temp = mCoreAPI.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);

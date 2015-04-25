@@ -255,6 +255,90 @@ Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr 
     return result;
 }
 
+JNIEXPORT jintArray JNICALL
+Java_com_airbitz_api_CoreAPI_getCoreCurrencyNumbers(JNIEnv *env, jclass cls)
+{
+    jintArray result;
+
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+
+    result = (*env)->NewIntArray(env, currencyCount);
+    if (result == NULL) {
+        return NULL; /* out of memory error thrown */
+    }
+
+    if(currencyCount > 0) {
+         jint out[currencyCount];
+         if (error.code == ABC_CC_Ok) {
+             int i = 0;
+             for (i = 0; i < currencyCount; ++i) {
+                 out[i] = currencies[i].num;
+             }
+         }
+        // move from the temp structure to the java structure
+        (*env)->SetIntArrayRegion(env, result, 0, currencyCount, out);
+        return result;
+    }
+    return NULL;
+}
+
+/*
+ * Return number from currency at index
+ */
+JNIEXPORT jstring JNICALL
+Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint currencyNum)
+{
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting code lookup"); //"ptr=%p", (void *) base);
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+    if (error.code == ABC_CC_Ok) {
+        int i = 0;
+        for (i = 0; i < currencyCount; ++i) {
+            if (currencyNum == currencies[i].num) {
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "code found"); //"ptr=%p", (void *) base);
+                char *buf = currencies[i].szCode;
+                jstring jresult = (*env)->NewStringUTF(env, buf);
+                return jresult;
+            }
+        }
+    }
+    char *buf = "";
+    jstring jresult = (*env)->NewStringUTF(env, buf);
+    return jresult;
+}
+
+/*
+ * Return number from currency at index
+ */
+JNIEXPORT jstring JNICALL
+Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, jint currencyNum)
+{
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting description lookup"); //"ptr=%p", (void *) base);
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+    if (error.code == ABC_CC_Ok) {
+        int i = 0;
+        for (i = 0; i < currencyCount; ++i) {
+            if (currencyNum == currencies[i].num) {
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "description found"); //"ptr=%p", (void *) base);
+                char *buf = currencies[i].szDescription;
+                jstring jresult = (*env)->NewStringUTF(env, buf);
+                return jresult;
+            }
+        }
+    }
+    char *buf = "";
+    jstring jresult = (*env)->NewStringUTF(env, buf);
+    return jresult;
+}
+
 /*
  * Return 64 bit long from ptr
  */
