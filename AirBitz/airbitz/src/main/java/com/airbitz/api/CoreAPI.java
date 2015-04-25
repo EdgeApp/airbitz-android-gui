@@ -62,7 +62,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
@@ -487,28 +486,22 @@ public class CoreAPI {
         return pError;
     }
 
-    //************ Settings handling
-    private String[] mFauxCurrencyCode = {
-        "AUD", "CAD", "CNY", "CUP", "EUR", "GBP", "HKD", "MXN", "NZD", "PHP", "USD"
-    };
-    private String[] mFauxCurrencySymbol = {
-        "$", "$", "¥", "₱", "€", "£", "$", "$", "$", "₱", "$"
-    };
+    //************ Currency handling
     private int[] mCurrencyNumbers;
-
-    private Map<Integer, String> currencySymbolCache = new HashMap<>();
-    private Map<Integer, String> currencyCodeCache = new HashMap<>();
+    private Map<Integer, String> mCurrencySymbolCache = new HashMap<>();
+    private Map<Integer, String> mCurrencyCodeCache = new HashMap<>();
+    private Map<Integer, String> mCurrencyDescriptionCache = new HashMap<>();
 
     public String currencyCodeLookup(int currencyNum)
     {
-        String cached = currencyCodeCache.get(currencyNum);
+        String cached = mCurrencyCodeCache.get(currencyNum);
         if (cached != null) {
             return cached;
         }
 
         String code = getCurrencyCode(currencyNum);
         if(code != null) {
-            currencyCodeCache.put(currencyNum, code);
+            mCurrencyCodeCache.put(currencyNum, code);
             return code;
         }
 
@@ -517,14 +510,14 @@ public class CoreAPI {
 
     public String currencyDescriptionLookup(int currencyNum)
     {
-        String cached = currencyCodeCache.get(currencyNum);
+        String cached = mCurrencyDescriptionCache.get(currencyNum);
         if (cached != null) {
             return cached;
         }
 
         String description = getCurrencyDescription(currencyNum);
         if(description != null) {
-            currencyCodeCache.put(currencyNum, description);
+            mCurrencyDescriptionCache.put(currencyNum, description);
             return description;
         }
 
@@ -533,7 +526,7 @@ public class CoreAPI {
 
     public String currencySymbolLookup(int currencyNum)
     {
-        String cached = currencySymbolCache.get(currencyNum);
+        String cached = mCurrencySymbolCache.get(currencyNum);
         if (cached != null) {
             return cached;
         }
@@ -541,7 +534,7 @@ public class CoreAPI {
         String code = currencyCodeLookup(currencyNum);
         String symbol  = Currency.getInstance(code).getSymbol();
         if(symbol != null) {
-            currencySymbolCache.put(currencyNum, symbol);
+            mCurrencySymbolCache.put(currencyNum, symbol);
             return symbol;
         }
         else {
@@ -549,7 +542,72 @@ public class CoreAPI {
         }
     }
 
+    public String getUserCurrencyAcronym() {
+        tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return currencyCodeLookup(840);
+        }
+        else {
+            return currencyCodeLookup(settings.getCurrencyNum());
+        }
+    }
 
+    public String getUserCurrencySymbol() {
+        tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return currencySymbolLookup(840);
+        }
+        else {
+            return currencySymbolLookup(settings.getCurrencyNum());
+        }
+    }
+
+    public String getCurrencyDenomination(int currencyNum) {
+        return currencySymbolLookup(currencyNum);
+    }
+
+    public int[] getCurrencyNumberArray() {
+        ArrayList<Integer> intKeys = new ArrayList<Integer>(mCurrencyCodeCache.keySet());
+        int[] ints = new int[intKeys.size()];
+        int i = 0;
+        for (Integer n : intKeys) {
+            ints[i++] = n;
+        }
+        return ints;
+    }
+
+    public String getCurrencyAcronym(int currencyNum) {
+        return currencyCodeLookup(currencyNum);
+    }
+
+    public List<String> getCurrencyCodeAndDescriptionArray() {
+        initCurrencies();
+        List<String> strings = new ArrayList<>();
+        // Populate all codes and lists and the return list
+        for(Integer number : mCurrencyNumbers) {
+            String code = currencyCodeLookup(number);
+            String description = currencyDescriptionLookup(number);
+            String symbol = currencySymbolLookup(number);
+            strings.add(code + " - " + description);
+        }
+        return strings;
+    }
+
+    public void initCurrencies() {
+        if(mCurrencyNumbers == null) {
+            mCurrencyNumbers = getCoreCurrencyNumbers();
+            mCurrencySymbolCache = new HashMap<>();
+            mCurrencyCodeCache = new HashMap<>();
+            mCurrencyDescriptionCache = new HashMap<>();
+            for(Integer number : mCurrencyNumbers) {
+                currencyCodeLookup(number);
+                currencyDescriptionLookup(number);
+                currencySymbolLookup(number);
+            }
+        }
+    }
+
+    //************ Settings handling
     private String[] mBTCDenominations = {"BTC", "mBTC", "bits"};
     private String[] mBTCSymbols = {"Ƀ ", "mɃ ", "ƀ "};
 
@@ -710,70 +768,7 @@ public class CoreAPI {
         return mBTCSymbols[bitcoinDenomination.getDenominationType()];
     }
 
-    public String getUserCurrencyAcronym() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
-            return currencyCodeLookup(840);
-        }
-        else {
-            return currencyCodeLookup(settings.getCurrencyNum());
-        }
-    }
 
-    public String getCurrencyDenomination(int currencyNum) {
-        return currencySymbolLookup(currencyNum);
-    }
-
-    public int[] getCurrencyNumberArray() {
-        ArrayList<Integer> intKeys = new ArrayList<Integer>(currencyCodeCache.keySet());
-        int[] ints = new int[intKeys.size()];
-        int i = 0;
-        for (Integer n : intKeys) {
-            ints[i++] = n;
-        }
-        return ints;
-    }
-
-    public String getCurrencyAcronym(int currencyNum) {
-        return currencyCodeLookup(currencyNum);
-    }
-
-    public List<String> getCurrencyCodeAndDescriptionArray() {
-        if(mCurrencyNumbers == null) {
-            mCurrencyNumbers = getCoreCurrencyNumbers();
-        }
-        List<String> strings = new ArrayList<>();
-        // Populate all codes
-        for(Integer number : mCurrencyNumbers) {
-            String code = currencyCodeLookup(number);
-            String description = currencyDescriptionLookup(number);
-            strings.add(code + " - " + description);
-        }
-        return strings;
-    }
-
-//    private class MyCurrency extends tABC_Currency {
-//        String mCode = null;
-//        int mNum = -1;
-//        String mCountries;
-//        String mDescription;
-//
-//        public MyCurrency(long pv) {
-//            super(pv, false);
-//            if(pv!=0) {
-//                mCode = super.getSzCode();
-//                mNum = super.getNum();
-//                mCountries = super.getSzCountries();
-//                mDescription = super.getSzDescription();
-//            }
-//        }
-//
-//        public String getCode() { return mCode; }
-//        public int getmNum() { return mNum; }
-//        public String getCountries() { return mCountries; }
-//        public String getDescription() { return mDescription; }
-//    }
-//
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings coreSettings() {
         if(mCoreSettings != null) {
@@ -2950,13 +2945,14 @@ public class CoreAPI {
     }
 
     public int getLocaleDefaultCurrencyNum() {
+        initCurrencies();
         Locale locale = Locale.getDefault();
 
         java.util.Currency currency = java.util.Currency.getInstance(locale);
 
-        List<String> supported = Arrays.asList(mFauxCurrencyCode);
-        if(supported.contains(currency.getCurrencyCode())) {
-            int number = getNumericCode(currency.getCurrencyCode());
+        Map<Integer, String> supported = mCurrencyCodeCache;
+        if (supported.containsValue(currency.getCurrencyCode())) {
+            int number = getCurrencyNumberFromCode(currency.getCurrencyCode());
             Log.d(TAG, "number country code: "+number);
             return number;
         } else {
@@ -2964,11 +2960,12 @@ public class CoreAPI {
         }
     }
 
-    private int getNumericCode(String currencyCode) {
-        int index = -1;
+    public int getCurrencyNumberFromCode(String currencyCode) {
+        initCurrencies();
 
-        for(int i=0; i< mFauxCurrencyCode.length; i++) {
-            if(mFauxCurrencyCode[i].contains(currencyCode)) {
+        int index = -1;
+        for(int i=0; i< mCurrencyNumbers.length; i++) {
+            if(currencyCode.equals(currencyCodeLookup(mCurrencyNumbers[i]))) {
                 index = i;
                 break;
             }

@@ -81,6 +81,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
 
 /**
@@ -596,13 +597,17 @@ public class SettingFragment extends BaseFragment {
         if (mCurrencyDialog != null && mCurrencyDialog.isShowing()) {
             return;
         }
-        mCurrencyDialog = defaultDialogLayout(items, mCoreAPI.SettingsCurrencyIndex())
+
+        int index = findInArray(button, items.toArray(new String[items.size()]));
+        mCurrencyDialog = defaultDialogLayout(items, index)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 NumberPicker picker = (NumberPicker) mCurrencyDialog.findViewById(R.id.dialog_number_picker);
-                                mCurrencyNum = mCoreAPI.getCurrencyNumberArray()[picker.getValue()];
-                                mDefaultCurrencyButton.setText(mCoreAPI.getCurrencyAcronym(mCurrencyNum));
+                                String selection = items.get(picker.getValue());
+                                String code = selection.substring(0, 3);
+                                mDefaultCurrencyButton.setText(code);
+                                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
                                 saveCurrentSettings();
                             }
                         }
@@ -632,8 +637,13 @@ public class SettingFragment extends BaseFragment {
         mDefaultExchangeDialog.show();
     }
 
-    private int findInArray(Button val, String[] arr) {
-        return Math.max(0, Arrays.asList(arr).indexOf(val.getText().toString()));
+    private int findInArray(Button button, String[] arr) {
+        for(int i = 0; i<arr.length; i++) {
+            if(button.getText().toString().equals(arr[i].substring(0,3))) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override

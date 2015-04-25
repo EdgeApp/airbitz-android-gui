@@ -451,7 +451,7 @@ public class WalletsFragment extends BaseFragment
             if (!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis += wallet.getBalanceSatoshi();
         }
-        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mBottomType.setText(mCoreAPI.getUserCurrencySymbol());
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
         String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);

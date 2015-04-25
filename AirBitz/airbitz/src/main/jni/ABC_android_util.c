@@ -255,6 +255,9 @@ Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr 
     return result;
 }
 
+/*
+ * Return list of all numbers of currencies at index
+ */
 JNIEXPORT jintArray JNICALL
 Java_com_airbitz_api_CoreAPI_getCoreCurrencyNumbers(JNIEnv *env, jclass cls)
 {
@@ -286,7 +289,7 @@ Java_com_airbitz_api_CoreAPI_getCoreCurrencyNumbers(JNIEnv *env, jclass cls)
 }
 
 /*
- * Return number from currency at index
+ * Return code from currency at index
  */
 JNIEXPORT jstring JNICALL
 Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint currencyNum)
@@ -301,7 +304,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint cur
         for (i = 0; i < currencyCount; ++i) {
             if (currencyNum == currencies[i].num) {
     __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "code found"); //"ptr=%p", (void *) base);
-                char *buf = currencies[i].szCode;
+                const char *buf = currencies[i].szCode;
                 jstring jresult = (*env)->NewStringUTF(env, buf);
                 return jresult;
             }
@@ -313,7 +316,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint cur
 }
 
 /*
- * Return number from currency at index
+ * Return description from currency at index
  */
 JNIEXPORT jstring JNICALL
 Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, jint currencyNum)
@@ -328,7 +331,7 @@ Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, j
         for (i = 0; i < currencyCount; ++i) {
             if (currencyNum == currencies[i].num) {
     __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "description found"); //"ptr=%p", (void *) base);
-                char *buf = currencies[i].szDescription;
+                const char *buf = currencies[i].szDescription;
                 jstring jresult = (*env)->NewStringUTF(env, buf);
                 return jresult;
             }
