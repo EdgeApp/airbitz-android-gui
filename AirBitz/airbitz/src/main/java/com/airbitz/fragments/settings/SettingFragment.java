@@ -131,17 +131,12 @@ public class SettingFragment extends BaseFragment {
     private HighlightOnPressButton mDefaultDistanceButton;
     private TextView mAccountTitle;
     private HighlightOnPressButton mExchangeButton;
-    private HighlightOnPressButton mCanadianDollarButton;
-    private HighlightOnPressButton mEuroButton;
-    private HighlightOnPressButton mPesoButton;
-    private HighlightOnPressButton mYuanButton;
     private HighlightOnPressButton mLogoutButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private List<String> mCurrencyItems;
     private List<String> mDistanceItems;
     private int mCurrencyNum;
     private List<String> mExchanges;
-    private String[] mUSDExchangeItems;
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
@@ -196,11 +191,7 @@ public class SettingFragment extends BaseFragment {
         mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
         mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
 
-        mExchangeButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
-        mCanadianDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_canadian);
-        mEuroButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_euro);
-        mPesoButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_peso);
-        mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
+        mExchangeButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_default_exchange);
 
         mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
@@ -377,12 +368,12 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-//        mExchangeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showExchangeDialog(mExchangeButton, mUSDExchangeItems);
-//            }
-//        });
+        mExchangeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showExchangeDialog(mExchangeButton, mExchanges);
+            }
+        });
 
         mAccountTitle.setText(getString(R.string.settings_account_title) + ": " + AirbitzApplication.getUsername());
 
@@ -439,7 +430,6 @@ public class SettingFragment extends BaseFragment {
         mExchanges = mCoreAPI.getExchangeRateSources();
 
         mExchangeButton.setText(mCoreSettings.getSzExchangeRateSource());
-        mUSDExchangeItems = USD_EXCHANGES;
     }
 
     private void saveDenomination() {
