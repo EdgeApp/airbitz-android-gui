@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#ccffffff"
@@ -12,9 +13,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="0dp"
-        android:visibility="visible">
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="0dp">
 
         <ImageView
             android:id="@+id/imageview_contact_pic"
@@ -35,11 +35,11 @@
         android:id="@+id/layout_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
+        android:layout_marginLeft="9dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:paddingTop="10dp"
         android:weightSum="3">
 
         <TextView
@@ -49,8 +49,9 @@
             android:layout_height="wrap_content"
             android:paddingBottom="1.5dp"
             android:textColor="@color/dark_blue_text"
-            android:textSize="10dp"
-            android:textStyle="bold" />
+            android:textSize="11dp"
+            android:textStyle="bold"
+            tools:text="Apr 20 2015, 20:46 PM" />
 
         <TextView
             android:id="@+id/textview_name"
@@ -62,19 +63,20 @@
             android:paddingTop="0.5dp"
             android:singleLine="true"
             android:textColor="@android:color/black"
-            android:textSize="14dp" />
+            android:textSize="13dp"
+            tools:text="John Doe" />
 
         <TextView
             android:id="@+id/textview_confirmations"
-            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:paddingBottom="0.5dp"
-            android:paddingTop="1.5dp"
+            android:paddingTop="1dp"
             android:singleLine="true"
             android:textColor="@color/green_text_dark"
-            android:textSize="10dp" />
+            android:textSize="12dp"
+            tools:text="Confirmed" />
 
     </LinearLayout>
 
@@ -83,48 +85,34 @@
         android:id="@+id/item_listview_transaction_creditdebit_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginRight="9dp"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textview_amount_kredit"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:paddingBottom="7.5dp"
+            android:shadowColor="#00000000"
+            android:textColor="@color/green_text_dark"
+            android:textSize="14dp"
+            tools:text="mB 16.39721" />
 
-            <TextView
-                android:id="@+id/textview_amount_kredit"
-                style="@style/WhiteDropShadow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:paddingBottom="7.5dp"
-                android:paddingTop="0.5dp"
-                android:shadowColor="#00000000"
-                android:textColor="@color/green_text_dark"
-                android:textSize="14dp" />
-
-            <TextView
-                android:id="@+id/textview_amount_running_total"
-                style="@style/WhiteDropShadow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginBottom="0.5dp"
-                android:layout_marginTop="7.5dp"
-                android:gravity="right"
-                android:textColor="@color/gray_text"
-                android:textSize="12dp" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageview_icon"
+        <TextView
+            android:id="@+id/textview_amount_running_total"
+            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="7dp"
-            android:src="@drawable/arrow_right" />
+            android:layout_gravity="right"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="7.5dp"
+            android:gravity="right"
+            android:textColor="@color/gray_text"
+            android:textSize="12dp"
+            tools:text="mB 20.39721" />
 
     </LinearLayout>
 </LinearLayout>

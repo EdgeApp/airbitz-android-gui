@@ -137,16 +137,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
-
-        if (0 == position && mListTransaction.size() == 1) {
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo));
-        } else if (0 == position) {
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive));
-        } else if (mListTransaction.size() - 1 == position) {
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom));
-        } else {
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
-        }
+        convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
 
         Transaction transaction = mListTransaction.get(position);
 

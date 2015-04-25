@@ -18,29 +18,16 @@
         android:scaleType="fitXY"
         android:src="@drawable/ico_dots" />
 
-    <ImageView
-        android:id="@+id/imageview_arrow"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="10dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/arrow_right" />
-
     <TextView
         android:id="@+id/textview_business_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:layout_toLeftOf="@id/imageview_arrow"
         android:layout_toRightOf="@id/imageview_icon"
         android:ellipsize="none"
         android:singleLine="false"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="15dp" />
-
 
 </RelativeLayout>
