@@ -220,8 +220,7 @@ public class WalletsFragment extends BaseFragment
 
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
 
-        mCurrencyList = new ArrayList<String>();
-        mCurrencyList.addAll(Arrays.asList(mCoreAPI.getCurrencyAcronyms()));
+        mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
 
         mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mLatestWalletAdapter.setHeaderButtonListener(this);
@@ -452,7 +451,7 @@ public class WalletsFragment extends BaseFragment
             if (!wallet.isArchiveHeader() && !wallet.isHeader() && !wallet.isArchived())
                 totalSatoshis += wallet.getBalanceSatoshi();
         }
-        mBottomType.setText(mCoreAPI.getUserCurrencyAcronym());
+        mBottomType.setText(mCoreAPI.getUserCurrencySymbol());
         mTopType.setText(mCoreAPI.getDefaultBTCDenomination());
         mBitCoinBalanceButton.setText(mCoreAPI.formatSatoshi(totalSatoshis, true));
         String temp = mCoreAPI.FormatDefaultCurrency(totalSatoshis, false, true);
@@ -556,7 +555,7 @@ public class WalletsFragment extends BaseFragment
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
-                int[] nums = mCoreAPI.getCurrencyNumbers();
+                int[] nums = mCoreAPI.getCurrencyNumberArray();
                 addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
             } else {
                 mActivity.pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());

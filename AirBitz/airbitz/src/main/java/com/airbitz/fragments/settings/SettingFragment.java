@@ -45,7 +45,6 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -72,7 +71,6 @@ import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
@@ -83,6 +81,7 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
 
 /**
@@ -132,22 +131,13 @@ public class SettingFragment extends BaseFragment {
     private HighlightOnPressButton mDefaultCurrencyButton;
     private HighlightOnPressButton mDefaultDistanceButton;
     private TextView mAccountTitle;
-    private HighlightOnPressButton mUSDollarButton;
-    private HighlightOnPressButton mCanadianDollarButton;
-    private HighlightOnPressButton mEuroButton;
-    private HighlightOnPressButton mPesoButton;
-    private HighlightOnPressButton mYuanButton;
+    private HighlightOnPressButton mExchangeButton;
     private HighlightOnPressButton mLogoutButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
-    private String[] mCurrencyItems;
-    private String[] mDistanceItems;
+    private List<String> mCurrencyItems;
+    private List<String> mDistanceItems;
     private int mCurrencyNum;
-    private List<CoreAPI.ExchangeRateSource> mExchanges;
-    private String[] mUSDExchangeItems;
-    private String[] mCanadianExchangeItems;
-    private String[] mEuroExchangeItems;
-    private String[] mPesoExchangeItems;
-    private String[] mYuanExchangeItems;
+    private List<String> mExchanges;
     private CoreAPI mCoreAPI;
     private View mView;
     private tABC_AccountSettings mCoreSettings;
@@ -167,8 +157,8 @@ public class SettingFragment extends BaseFragment {
             mView = inflater.inflate(R.layout.fragment_setting, container, false);
         }
 
-        mCurrencyItems = mCoreAPI.getCurrencyAcronyms();
-        mDistanceItems = getResources().getStringArray(R.array.distance_list);
+        mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
+        mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
 
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
         mHelpButton.setVisibility(View.VISIBLE);
@@ -202,11 +192,7 @@ public class SettingFragment extends BaseFragment {
         mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
         mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
 
-        mUSDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_usd);
-        mCanadianDollarButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_canadian);
-        mEuroButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_euro);
-        mPesoButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_peso);
-        mYuanButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_yuan);
+        mExchangeButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_default_exchange);
 
         mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
@@ -383,38 +369,10 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mUSDollarButton.setOnClickListener(new View.OnClickListener() {
+        mExchangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showExchangeDialog(mUSDollarButton, mUSDExchangeItems);
-            }
-        });
-
-        mCanadianDollarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showExchangeDialog(mCanadianDollarButton, mCanadianExchangeItems);
-            }
-        });
-
-        mEuroButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showExchangeDialog(mEuroButton, mEuroExchangeItems);
-            }
-        });
-
-        mPesoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showExchangeDialog(mPesoButton, mPesoExchangeItems);
-            }
-        });
-
-        mYuanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showExchangeDialog(mYuanButton, mYuanExchangeItems);
+                showExchangeDialog(mExchangeButton, mExchanges);
             }
         });
 
@@ -470,32 +428,9 @@ public class SettingFragment extends BaseFragment {
         mDefaultDistanceButton.setText(getResources().getStringArray(R.array.distance_list)[getDistancePref()]);
 
         //Default Exchange
-        mExchanges = mCoreAPI.getExchangeRateSources(settings.getExchangeRateSources());
+        mExchanges = mCoreAPI.getExchangeRateSources();
 
-        mUSDollarButton.setText(exchangeForCurrencyNum(USD_NUM));
-        mUSDExchangeItems = USD_EXCHANGES;
-        mCanadianDollarButton.setText(exchangeForCurrencyNum(CAD_NUM));
-        mCanadianExchangeItems = OTHER_EXCHANGES;
-        mEuroButton.setText(exchangeForCurrencyNum(EUR_NUM));
-        mEuroExchangeItems = OTHER_EXCHANGES;
-        mPesoButton.setText(exchangeForCurrencyNum(PESO_NUM));
-        mPesoExchangeItems = OTHER_EXCHANGES;
-        mYuanButton.setText(exchangeForCurrencyNum(YUAN_NUM));
-        mYuanExchangeItems = OTHER_EXCHANGES;
-    }
-
-    // searches the exchanges in the settings for the exchange associated with the given currency number
-    // NULL is returned if none can be found
-    String exchangeForCurrencyNum(int currencyNum) {
-        String szRetVal = "";
-        // look through all the sources
-        for (CoreAPI.ExchangeRateSource source : mExchanges) {
-            if (source.getmCurrencyNum() == currencyNum) {
-                szRetVal = source.getSource();
-                break;
-            }
-        }
-        return szRetVal;
+        mExchangeButton.setText(mCoreSettings.getSzExchangeRateSource());
     }
 
     private void saveDenomination() {
@@ -555,29 +490,7 @@ public class SettingFragment extends BaseFragment {
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
-        mExchanges = mCoreAPI.getExchangeRateSources(
-                        mCoreSettings.getExchangeRateSources());
-
-        // Default Exchanges
-        for (CoreAPI.ExchangeRateSource source : mExchanges) {
-            switch (source.getCurrencyNum()) {
-                case USD_NUM:
-                    source.setSzSource(mUSDollarButton.getText().toString());
-                    break;
-                case CAD_NUM:
-                    source.setSzSource(mCanadianDollarButton.getText().toString());
-                    break;
-                case EUR_NUM:
-                    source.setSzSource(mEuroButton.getText().toString());
-                    break;
-                case PESO_NUM:
-                    source.setSzSource(mPesoButton.getText().toString());
-                    break;
-                case YUAN_NUM:
-                    source.setSzSource(mYuanButton.getText().toString());
-                    break;
-            }
-        }
+        mCoreSettings.setSzExchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {
             mCoreAPI.saveAccountSettings(mCoreSettings);
@@ -619,7 +532,7 @@ public class SettingFragment extends BaseFragment {
         }
     }
 
-    private AlertDialog.Builder defaultDialogLayout(final String[] items, int index) {
+    private AlertDialog.Builder defaultDialogLayout(final List<String> items, int index) {
         LinearLayout linearLayout = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lLP =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -630,12 +543,12 @@ public class SettingFragment extends BaseFragment {
 
         NumberPicker mTextPicker =
                 new NumberPicker(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustomLight));
-        mTextPicker.setMaxValue(items.length - 1);
+        mTextPicker.setMaxValue(items.size() - 1);
         mTextPicker.setId(R.id.dialog_number_picker);
         mTextPicker.setMinValue(0);
         mTextPicker.setValue(index);
         mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        mTextPicker.setDisplayedValues(items);
+        mTextPicker.setDisplayedValues(items.toArray(new String[items.size()]));
         linearLayout.addView(mTextPicker);
 
         return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
@@ -660,7 +573,7 @@ public class SettingFragment extends BaseFragment {
         return prefs.getInt(DISTANCE_PREF, 0); // default to Automatic
     }
 
-    private void showDistanceDialog(final Button button, final String[] items) {
+    private void showDistanceDialog(final Button button, final List<String> items) {
         if (mDistanceDialog != null && mDistanceDialog.isShowing()) {
             return;
         }
@@ -671,7 +584,7 @@ public class SettingFragment extends BaseFragment {
                                 NumberPicker picker = (NumberPicker) mDistanceDialog.findViewById(R.id.dialog_number_picker);
                                 int index = picker.getValue();
                                 saveDistancePref(index);
-                                mDefaultDistanceButton.setText(mDistanceItems[index]);
+                                mDefaultDistanceButton.setText(mDistanceItems.get(index));
                                 saveCurrentSettings();
                             }
                         }
@@ -680,17 +593,21 @@ public class SettingFragment extends BaseFragment {
         mDistanceDialog.show();
     }
 
-    private void showCurrencyDialog(final Button button, final String[] items) {
+    private void showCurrencyDialog(final Button button, final List<String> items) {
         if (mCurrencyDialog != null && mCurrencyDialog.isShowing()) {
             return;
         }
-        mCurrencyDialog = defaultDialogLayout(items, mCoreAPI.SettingsCurrencyIndex())
+
+        int index = findInArray(button, items.toArray(new String[items.size()]));
+        mCurrencyDialog = defaultDialogLayout(items, index)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 NumberPicker picker = (NumberPicker) mCurrencyDialog.findViewById(R.id.dialog_number_picker);
-                                mCurrencyNum = mCoreAPI.getCurrencyNumbers()[picker.getValue()];
-                                mDefaultCurrencyButton.setText(mCoreAPI.getCurrencyAcronym(mCurrencyNum));
+                                String selection = items.get(picker.getValue());
+                                String code = selection.substring(0, 3);
+                                mDefaultCurrencyButton.setText(code);
+                                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
                                 saveCurrentSettings();
                             }
                         }
@@ -699,18 +616,18 @@ public class SettingFragment extends BaseFragment {
         mCurrencyDialog.show();
     }
 
-    private void showExchangeDialog(final Button button, final String[] items) {
+    private void showExchangeDialog(final Button button, final List<String> items) {
         if (mDefaultExchangeDialog != null && mDefaultExchangeDialog.isShowing()) {
             return;
         }
-        int index = findInArray(button, items);
+        int index = findInArray(button, items.toArray(new String[items.size()]));
         mDefaultExchangeDialog = defaultDialogLayout(items, index)
                 .setPositiveButton(R.string.string_ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 NumberPicker picker = (NumberPicker) mDefaultExchangeDialog.findViewById(R.id.dialog_number_picker);
                                 int num = picker.getValue();
-                                button.setText(items[num]);
+                                button.setText(items.get(num));
                                 saveCurrentSettings();
                                 mCoreAPI.updateExchangeRates();
                             }
@@ -720,8 +637,13 @@ public class SettingFragment extends BaseFragment {
         mDefaultExchangeDialog.show();
     }
 
-    private int findInArray(Button val, String[] arr) {
-        return Math.max(0, Arrays.asList(arr).indexOf(val.getText().toString()));
+    private int findInArray(Button button, String[] arr) {
+        for(int i = 0; i<arr.length; i++) {
+            if(button.getText().toString().equals(arr[i].substring(0,3))) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override

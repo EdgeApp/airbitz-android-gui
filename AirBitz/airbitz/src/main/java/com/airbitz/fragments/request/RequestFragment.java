@@ -36,13 +36,11 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -288,7 +286,7 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSelectedWallet = mWallets.get(i);
-                mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+                mFiatDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
                 setConversionText(mSelectedWallet.getCurrencyNum());
                 updateTextFieldContents();
             }
@@ -462,7 +460,7 @@ public class RequestFragment extends BaseFragment implements
         }
 
         mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.getCurrencyAcronyms()[mCoreAPI.CurrencyIndex(mSelectedWallet.getCurrencyNum())]);
+        mFiatDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
         setConversionText(mSelectedWallet.getCurrencyNum());
         mCoreAPI.addExchangeRateChangeListener(this);
 

@@ -71,8 +71,12 @@ Java_com_airbitz_api_CoreAPI_coreDataSyncAccount(JNIEnv *jenv, jclass jcls, jstr
   callback = ABC_BitCoin_Event_Callback; // *(tABC_BitCoin_Event_Callback *)&jcallback;
   bcInfo = *(void **)&bitcoinInfo;    // holds bitcoinInfo
   errorp = *(tABC_Error **)&jerrorp;
+
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "calling ABC_DataSyncAccount");
   result = (tABC_CC)ABC_DataSyncAccount((char const *)username, (char const *)password,
                                         callback, bcInfo, errorp);
+    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "returned from ABC_DataSyncAccount");
+
   jresult = (jint)result;
   if (username) (*jenv)->ReleaseStringUTFChars(jenv, jusername, (const char *)username);
   if (password) (*jenv)->ReleaseStringUTFChars(jenv, jpassword, (const char *)password);
@@ -249,6 +253,93 @@ Java_com_airbitz_api_CoreAPI_getBytesAtPtr( JNIEnv *env, jobject obj, jlong ptr 
     jbyteArray result = (*env)->NewByteArray(env, len);
     (*env)->SetByteArrayRegion( env, result, 0, len, *(const jbyte **) &ptr );
     return result;
+}
+
+/*
+ * Return list of all numbers of currencies at index
+ */
+JNIEXPORT jintArray JNICALL
+Java_com_airbitz_api_CoreAPI_getCoreCurrencyNumbers(JNIEnv *env, jclass cls)
+{
+    jintArray result;
+
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+
+    result = (*env)->NewIntArray(env, currencyCount);
+    if (result == NULL) {
+        return NULL; /* out of memory error thrown */
+    }
+
+    if(currencyCount > 0) {
+         jint out[currencyCount];
+         if (error.code == ABC_CC_Ok) {
+             int i = 0;
+             for (i = 0; i < currencyCount; ++i) {
+                 out[i] = currencies[i].num;
+             }
+         }
+        // move from the temp structure to the java structure
+        (*env)->SetIntArrayRegion(env, result, 0, currencyCount, out);
+        return result;
+    }
+    return NULL;
+}
+
+/*
+ * Return code from currency at index
+ */
+JNIEXPORT jstring JNICALL
+Java_com_airbitz_api_CoreAPI_getCurrencyCode( JNIEnv *env, jobject obj, jint currencyNum)
+{
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting code lookup"); //"ptr=%p", (void *) base);
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+    if (error.code == ABC_CC_Ok) {
+        int i = 0;
+        for (i = 0; i < currencyCount; ++i) {
+            if (currencyNum == currencies[i].num) {
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "code found"); //"ptr=%p", (void *) base);
+                const char *buf = currencies[i].szCode;
+                jstring jresult = (*env)->NewStringUTF(env, buf);
+                return jresult;
+            }
+        }
+    }
+    char *buf = "";
+    jstring jresult = (*env)->NewStringUTF(env, buf);
+    return jresult;
+}
+
+/*
+ * Return description from currency at index
+ */
+JNIEXPORT jstring JNICALL
+Java_com_airbitz_api_CoreAPI_getCurrencyDescription( JNIEnv *env, jobject obj, jint currencyNum)
+{
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "starting description lookup"); //"ptr=%p", (void *) base);
+    tABC_Error error;
+    int currencyCount;
+    tABC_Currency *currencies;
+    ABC_GetCurrencies(&currencies, &currencyCount, &error);
+    if (error.code == ABC_CC_Ok) {
+        int i = 0;
+        for (i = 0; i < currencyCount; ++i) {
+            if (currencyNum == currencies[i].num) {
+//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_getCurrencyCode", "description found"); //"ptr=%p", (void *) base);
+                const char *buf = currencies[i].szDescription;
+                jstring jresult = (*env)->NewStringUTF(env, buf);
+                return jresult;
+            }
+        }
+    }
+    char *buf = "";
+    jstring jresult = (*env)->NewStringUTF(env, buf);
+    return jresult;
 }
 
 /*
