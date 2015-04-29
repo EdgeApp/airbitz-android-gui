@@ -62,6 +62,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
@@ -852,8 +853,13 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     private void checkLocationManager() {
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
-        if(!locationEnabled && getActivity() != null) {
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+        if(!locationEnabled) {
+            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+                AirbitzApplication.setLocationWarn(false);
+            }
+        } else {
+            AirbitzApplication.setLocationWarn(true);
         }
     }
 

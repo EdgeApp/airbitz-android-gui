@@ -50,6 +50,7 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
+    private static String LOCATION_MODE = "com.airbitz.application.locationmode";
     public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
     public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
@@ -169,6 +170,18 @@ public class AirbitzApplication extends Application {
     public static void setBitcoinSwitchMode(boolean state) {
         SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
         editor.putBoolean(BITCOIN_MODE, state);
+        editor.apply();
+    }
+
+    public static boolean getLocationWarn() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        boolean state = prefs.getBoolean(LOCATION_MODE, true);
+        return state;
+    }
+
+    public static void setLocationWarn(boolean state) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(LOCATION_MODE, state);
         editor.apply();
     }
 

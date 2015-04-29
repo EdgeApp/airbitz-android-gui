@@ -31,9 +31,7 @@
 
 package com.airbitz.fragments.directory;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,6 +51,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
@@ -141,14 +140,14 @@ public class DirectoryDetailFragment extends BaseFragment {
         }
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationEnabled = false;
-            if(getActivity() != null) {
-                mActivity.ShowFadingDialog(getString(R.string.fragment_business_enable_location_services));
+        locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
+        if(!locationEnabled) {
+            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+                AirbitzApplication.setLocationWarn(false);
             }
         } else {
-            locationEnabled = true;
+            AirbitzApplication.setLocationWarn(true);
         }
 
         Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
