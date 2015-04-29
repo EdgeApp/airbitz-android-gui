@@ -848,13 +848,6 @@ public class SendConfirmationFragment extends BaseFragment implements
             if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
                 mAuthorizationEdittext.requestFocus();
             }
-            else {
-                mBitcoinField.postDelayed(new Runnable() {
-                    public void run() {
-                        mBitcoinField.requestFocus();
-                    }
-                }, 200);
-            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
