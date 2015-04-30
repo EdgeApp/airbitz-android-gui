@@ -247,18 +247,18 @@
 
         <LinearLayout
             android:id="@+id/fragment_landing_swipe_layout"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/fragment_landing_entries_layout"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:gravity="center"
+            android:layout_centerHorizontal="true"
             android:orientation="horizontal"
             android:visibility="visible">
 
             <TextView
                 android:id="@+id/fragment_landing_swipe_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:padding="6.3dp"
                 style="@style/BlackDropShadow"
@@ -270,6 +270,7 @@
                 android:id="@+id/fragment_landing_arrowright_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="@string/fragment_landing_arrow_description"
                 android:src="@drawable/ico_arrow_right" />
         </LinearLayout>
