@@ -157,6 +157,8 @@ public class CoreAPI {
             }
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
+
+            initCurrencies();
         }
     }
 
