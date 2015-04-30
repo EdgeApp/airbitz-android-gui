@@ -423,18 +423,17 @@
                             android:textColor="@color/settings_button_text"
                             android:textSize="13dp" />
 
-                        <com.airbitz.objects.HighlightOnPressButton
+                        <com.airbitz.objects.HighlightOnPressSpinner
                             android:id="@+id/settings_button_currency"
                             android:layout_width="100dp"
                             android:layout_height="28dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_gravity="center_vertical"
                             android:background="@drawable/bg_btn_blue_stretch"
-                            android:textSize="16dp"
-                            android:textColor="@android:color/white" />
+                            android:gravity="center"
+                            android:popupBackground="@drawable/rounded_edge_white_bg"
+                            android:spinnerMode="dialog" />
                     </LinearLayout>
 
 

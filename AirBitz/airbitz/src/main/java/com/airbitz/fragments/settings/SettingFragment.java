@@ -52,6 +52,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -60,12 +61,14 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -78,6 +81,7 @@ import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.HighlightOnPressSpinner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +132,7 @@ public class SettingFragment extends BaseFragment {
     private EditText mNicknameEditText;
     private HighlightOnPressButton mAutoLogoffButton;
     private HighlightOnPressButton mDebugButton;
-    private HighlightOnPressButton mDefaultCurrencyButton;
+    private HighlightOnPressSpinner mDefaultCurrencySpinner;
     private HighlightOnPressButton mDefaultDistanceButton;
     private TextView mAccountTitle;
     private HighlightOnPressButton mExchangeButton;
@@ -189,7 +193,7 @@ public class SettingFragment extends BaseFragment {
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
         mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
-        mDefaultCurrencyButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_currency);
+        mDefaultCurrencySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.settings_button_currency);
         mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
 
         mExchangeButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_default_exchange);
@@ -355,11 +359,27 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCurrencyDialog(mDefaultCurrencyButton, mCurrencyItems);
+        final List<String> mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
+        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, mCurrencyList);
+        mDefaultCurrencySpinner.setAdapter(mCurrencyAdapter);
+        int num = mCoreAPI.coreSettings().getCurrencyNum();
+        String defaultCode = mCoreAPI.getCurrencyCode(num);
+        for(int i=0; i<mCurrencyList.size(); i++) {
+            if(mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
+                mDefaultCurrencySpinner.setSelection(i);
+                break;
             }
+        }
+        mDefaultCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String code = mCurrencyList.get(position).substring(0, 3);
+                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
+                saveCurrentSettings();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         mDefaultDistanceButton.setOnClickListener(new View.OnClickListener() {
@@ -418,10 +438,6 @@ public class SettingFragment extends BaseFragment {
         if(mBLESwitchLayout.getVisibility() == View.VISIBLE) {
             mBLESwitch.setChecked(getBLEPref());
         }
-
-        // Default Currency
-        mCurrencyNum = mCoreSettings.getCurrencyNum();
-        mDefaultCurrencyButton.setText(mCoreAPI.getUserCurrencyAcronym());
 
         mMerchantModeSwitch.setChecked(getMerchantModePref());
 
@@ -591,29 +607,6 @@ public class SettingFragment extends BaseFragment {
                 )
                 .create();
         mDistanceDialog.show();
-    }
-
-    private void showCurrencyDialog(final Button button, final List<String> items) {
-        if (mCurrencyDialog != null && mCurrencyDialog.isShowing()) {
-            return;
-        }
-
-        int index = findInArray(button, items.toArray(new String[items.size()]));
-        mCurrencyDialog = defaultDialogLayout(items, index)
-                .setPositiveButton(R.string.string_ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                NumberPicker picker = (NumberPicker) mCurrencyDialog.findViewById(R.id.dialog_number_picker);
-                                String selection = items.get(picker.getValue());
-                                String code = selection.substring(0, 3);
-                                mDefaultCurrencyButton.setText(code);
-                                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
-                                saveCurrentSettings();
-                            }
-                        }
-                )
-                .create();
-        mCurrencyDialog.show();
     }
 
     private void showExchangeDialog(final Button button, final List<String> items) {
