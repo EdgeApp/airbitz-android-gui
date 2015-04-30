@@ -483,9 +483,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             boolean result = mCoreAPI.recoveryAnswers(answers, username);
 
             // If we have otp enabled, persist the token
-            mCoreAPI.GetTwoFactorSecret(username);
-            if (mCoreAPI.TwoFactorSecret() != null) {
-                mCoreAPI.OtpKeySet(username, mCoreAPI.TwoFactorSecret());
+            String secret = mCoreAPI.GetTwoFactorSecret();
+            if (secret != null) {
+                mCoreAPI.OtpKeySet(username, secret);
             }
             return result;
         }

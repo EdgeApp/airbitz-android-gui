@@ -1859,17 +1859,20 @@ public class NavigationActivity extends Activity
 
     //********************  OTP support
     @Override
-    public void onOTPError() {
-        mHandler.post(showOTPErrorDialog);
+    public void onOTPError(String secret) {
+        if(secret != null) {
+            mHandler.post(mShowOTPSkew);
+        }
+        else {
+            mHandler.post(mShowOTPRequired);
+        }
     }
 
     AlertDialog mOTPAlertDialog;
-    final Runnable showOTPErrorDialog = new Runnable() {
+    final Runnable mShowOTPRequired = new Runnable() {
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                mCoreAPI.GetTwoFactorSecret(AirbitzApplication.getUsername());
-                if(mCoreAPI.TwoFactorSecret() != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
                     builder.setMessage(getString(R.string.twofactor_required_message))
                             .setTitle(getString(R.string.twofactor_required_title))
@@ -1890,8 +1893,14 @@ public class NavigationActivity extends Activity
                                     });
                     mOTPAlertDialog = builder.create();
                     mOTPAlertDialog.show();
-                }
-                else {
+            }
+        }
+    };
+
+    final Runnable mShowOTPSkew = new Runnable() {
+        @Override
+        public void run() {
+            if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
                     builder.setMessage(getString(R.string.twofactor_invalid_message))
                             .setTitle(getString(R.string.twofactor_invalid_title))
@@ -1905,7 +1914,6 @@ public class NavigationActivity extends Activity
                                     });
                     mOTPAlertDialog = builder.create();
                     mOTPAlertDialog.show();
-                }
             }
         }
     };
