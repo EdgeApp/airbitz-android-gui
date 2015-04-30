@@ -220,7 +220,7 @@ public class WalletsFragment extends BaseFragment
 
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
 
-        mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
+        mCurrencyList = mCoreAPI.getCurrencyCodeArray();
 
         mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mLatestWalletAdapter.setHeaderButtonListener(this);

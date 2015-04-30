@@ -593,6 +593,17 @@ public class CoreAPI {
         return strings;
     }
 
+    public List<String> getCurrencyCodeArray() {
+        initCurrencies();
+        List<String> strings = new ArrayList<>();
+        // Populate all codes and lists and the return list
+        for(Integer number : mCurrencyNumbers) {
+            String code = currencyCodeLookup(number);
+            strings.add(code);
+        }
+        return strings;
+    }
+
     public void initCurrencies() {
         if(mCurrencyNumbers == null) {
             mCurrencyNumbers = getCoreCurrencyNumbers();
