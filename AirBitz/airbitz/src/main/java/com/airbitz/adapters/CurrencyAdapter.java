@@ -81,7 +81,7 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
         convertView = inflater.inflate(R.layout.item_currency_spinner, parent, false);
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
-        textView.setText(mCurrencies.get(position));
+        textView.setText(mCurrencies.get(position).substring(0, 3));
         textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         textView.setSingleLine(false);
         return convertView;
