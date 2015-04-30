@@ -31,7 +31,6 @@
 
 package com.airbitz.fragments.request;
 
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,6 +40,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +71,6 @@ public class ContactPickerFragment extends BaseFragment {
     public final static String EMAIL = "com.airbitz.contact_picker_fragment.email";
     public final static String SMS = "com.airbitz.contact_picker_fragment.sms";
     private final String TAG = getClass().getSimpleName();
-    GenerateContactsTask mGenerateContactsTask = null;
     private EditText mContactName;
     private TextView mFragmentTitle;
     private ListView mSearchListView;
@@ -202,88 +201,91 @@ public class ContactPickerFragment extends BaseFragment {
     }
 
     private void updateAutoCompleteArray(String strTerm) {
-        mFilteredContacts.clear();
-        mFilteredContacts.addAll(GetMatchedContacts(strTerm, mBundle.getString(TYPE).equals(EMAIL)));
-        mSearchAdapter.notifyDataSetChanged();
+        mAutoCompleteContactsTask = new AutoCompleteContactsTask();
+        mAutoCompleteContactsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strTerm);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mGenerateContactsTask = new GenerateContactsTask();
-        mGenerateContactsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        mContactName.requestFocus();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mGenerateContactsTask != null)
-            mGenerateContactsTask.cancel(true);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
+
+    private static final String[] EMAIL_PROJECTION = new String[] {
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+            ContactsContract.CommonDataKinds.Email.DATA,
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+    };
+
+    private static final String[] PHONE_PROJECTION = new String[] {
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+    };
 
     private List<Contact> GetMatchedContacts(String term, boolean emailSearch) {
         List<Contact> contacts = new ArrayList<Contact>();
 
-        for (Contact contact : mContacts) {
-            if (emailSearch && contact.getName() != null && contact.getEmail() != null) {
-                if (contact.getName().contains(term) || contact.getEmail().contains(term))
-                    contacts.add(contact);
-            } else if (!emailSearch && contact.getName() != null && contact.getPhone() != null) { // phone search
-                if (contact.getName().contains(term) || contact.getPhone().contains(term))
-                    contacts.add(contact);
+        long startMillis = System.currentTimeMillis();
+
+        ContentResolver contentResolver = mActivity.getContentResolver();
+
+        StringBuilder buffer = null;
+        String[] args = null;
+        if (term != null) {
+            buffer = new StringBuilder();
+            buffer.append("UPPER(");
+            buffer.append(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
+            buffer.append(") GLOB ?");
+            args = new String[]{term.toUpperCase() + "*"};
+        }
+
+        if(emailSearch) {
+            Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, EMAIL_PROJECTION, buffer == null ? null : buffer.toString(), args,
+                    ContactsContract.Contacts.SORT_KEY_PRIMARY + " ASC");
+            if (cursor != null) {
+                try {
+                    final int displayNameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                    final int emailIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+                    int indexThumbnail = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+                    String name, email;
+                    while (cursor.moveToNext()) {
+                        name = cursor.getString(displayNameIndex);
+                        email = cursor.getString(emailIndex);
+                        String thumbnail = cursor.getString(indexThumbnail);
+                        contacts.add(new Contact(name, email, null, thumbnail));
+                    }
+                } finally {
+                    cursor.close();
+                }
             }
         }
-        return contacts;
-    }
-
-    private List<Contact> GenerateListOfContacts(Context context) {
-        List<Contact> contacts = new ArrayList<Contact>();
-        ContentResolver cr = context.getContentResolver();
-
-        if (mBundle.getString(TYPE) != null && mBundle.getString(TYPE).equals(EMAIL)) {
-            Uri uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
-            String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                    ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-
-            Cursor people = cr.query(uri, projection, null, null, null);
-
-            if (people != null) {
-                int indexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY);
-                int indexEmail = people.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-                int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
-
-                people.moveToFirst();
-                while (people.moveToNext()) {
-                    String name = people.getString(indexName);
-                    String email = people.getString(indexEmail);
-                    String thumbnail = people.getString(indexThumbnail);
-                    contacts.add(new Contact(name, email, null, thumbnail));
+        else {
+            Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PHONE_PROJECTION, buffer == null ? null : buffer.toString(), args,
+                    ContactsContract.Contacts.SORT_KEY_PRIMARY + " ASC");
+            if (cursor != null) {
+                try {
+                    final int displayNameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                    int indexNumber = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    int indexThumbnail = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+                    String name, number;
+                    while (cursor.moveToNext()) {
+                        name = cursor.getString(displayNameIndex);
+                        number = cursor.getString(indexNumber);
+                        String thumbnail = cursor.getString(indexThumbnail);
+                        contacts.add(new Contact(name, null, number, thumbnail));
+                    }
+                } finally {
+                    cursor.close();
                 }
-                people.close();
-            }
-        } else {
-            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Contacts.PHOTO_THUMBNAIL_URI};
-
-            Cursor people = cr.query(uri, projection, null, null, null);
-
-            if (people != null) {
-                int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-                int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                int indexThumbnail = people.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
-
-                people.moveToFirst();
-                while (people.moveToNext()) {
-                    String name = people.getString(indexName);
-                    String number = people.getString(indexNumber);
-                    String thumbnail = people.getString(indexThumbnail);
-                    contacts.add(new Contact(name, null, number, thumbnail));
-                }
-                people.close();
-            }
-        }
+            }        }
+        Log.d(TAG, "total search time: " + (System.currentTimeMillis() - startMillis));
         return contacts;
     }
 
@@ -291,31 +293,32 @@ public class ContactPickerFragment extends BaseFragment {
         public void onContactSelection(Contact contact);
     }
 
-    public class GenerateContactsTask extends AsyncTask<Void, Void, Void> {
+
+    AutoCompleteContactsTask mAutoCompleteContactsTask = null;
+    public class AutoCompleteContactsTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected void onPreExecute() {
-            ((NavigationActivity) getActivity()).showModalProgress(true);
+            mFilteredContacts.clear();
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            mContacts = GenerateListOfContacts(mActivity);
+        protected Void doInBackground(String... params) {
+            mFilteredContacts.addAll(GetMatchedContacts(params[0], mBundle.getString(TYPE).equals(EMAIL)));
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
-            updateAutoCompleteArray(mContactName.getText().toString());
+            mSearchAdapter.notifyDataSetChanged();
             mContactName.requestFocus();
-            mGenerateContactsTask = null;
+            mAutoCompleteContactsTask = null;
             mActivity.showModalProgress(false);
         }
 
         @Override
         protected void onCancelled() {
-            mGenerateContactsTask = null;
-            mActivity.showModalProgress(false);
+            mAutoCompleteContactsTask = null;
         }
     }
 
