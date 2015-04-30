@@ -2156,7 +2156,7 @@ public class CoreAPI {
     }
 
 
-    public interface OnOTPError { public void onOTPError(); }
+    public interface OnOTPError { public void onOTPError(String secret); }
     private OnOTPError mOnOTPError;
     public void setOnOTPErrorListener(OnOTPError listener) {
         mOnOTPError = listener;
@@ -2188,12 +2188,13 @@ public class CoreAPI {
                 ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
                         AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
 
-                mOTPError = tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP;
+                if(tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
+                    if (mOnOTPError != null && AirbitzApplication.isLoggedIn()) {
+                        mOnOTPError.onOTPError(GetTwoFactorSecret());
+                    }
+                }
             }
 
-            if (mOTPError && mOnOTPError != null) {
-                mOnOTPError.onOTPError();
-            }
 
             List<String> uuids = loadWalletUUIDs();
             for (String uuid : uuids) {
@@ -2432,7 +2433,7 @@ public class CoreAPI {
         SWIGTYPE_p_unsigned_int pWCount = core.int_to_uint(pWidth);
 
         tABC_Error error = new tABC_Error();
-        tABC_CC cc = core.ABC_QrEncode(mTwoFactorSecret, ppData, pWCount, error);
+        tABC_CC cc = core.ABC_QrEncode(GetTwoFactorSecret(), ppData, pWCount, error);
         if (cc == tABC_CC.ABC_CC_Ok) {
             int width = core.intp_value(pWidth);
             return getBytesAtPtr(core.longp_value(lp), width*width);
@@ -3046,7 +3047,6 @@ public class CoreAPI {
 
     //*********************** Two Factor Authentication
     boolean mTwoFactorOn = false;
-    String mTwoFactorSecret;
 
     public boolean isTwoFactorOn() {
         return mTwoFactorOn;
@@ -3072,18 +3072,14 @@ public class CoreAPI {
         return core.ABC_OtpKeySet(username, secret, error);
     }
 
-    public String TwoFactorSecret() {
-        return mTwoFactorSecret;
-    }
-
     // Blocking
-    public tABC_CC GetTwoFactorSecret(String username) {
+    public String GetTwoFactorSecret() {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_OtpKeyGet(username, ppChar, error);
-        mTwoFactorSecret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
-        return cc;
+        tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
+        String secret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        return secret;
     }
 
     public boolean isTwoFactorResetPending(String username) {
@@ -3116,7 +3112,6 @@ public class CoreAPI {
                     AirbitzApplication.getPassword(), error);
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = false;
-                mTwoFactorSecret = null;
                 core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
             }
         }

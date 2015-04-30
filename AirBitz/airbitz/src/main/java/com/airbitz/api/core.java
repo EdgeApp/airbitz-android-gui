@@ -221,6 +221,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_PasswordOk(szUserName, szPassword, SWIGTYPE_p_bool.getCPtr(pOk), tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_PasswordExists(String szUserName, SWIGTYPE_p_bool pExists, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_PasswordExists(szUserName, SWIGTYPE_p_bool.getCPtr(pExists), tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_OtpKeyGet(String szUserName, SWIGTYPE_p_p_char pszKey, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_OtpKeyGet(szUserName, SWIGTYPE_p_p_char.getCPtr(pszKey), tABC_Error.getCPtr(pError), pError));
   }

@@ -323,6 +323,7 @@ public class coreJNI {
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_PasswordOk(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_PasswordExists(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeyGet(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeySet(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeyRemove(String jarg1, long jarg2, tABC_Error jarg2_);
