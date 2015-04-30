@@ -437,6 +437,9 @@ public class SendFragment extends BaseFragment implements
     }
 
     public void goAutoCompleteWalletListing() {
+        if(mWalletOtherList == null) {
+            return;
+        }
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
         if (text.isEmpty()) {
