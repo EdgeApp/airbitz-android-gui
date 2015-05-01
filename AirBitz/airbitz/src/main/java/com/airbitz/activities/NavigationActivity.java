@@ -716,6 +716,10 @@ public class NavigationActivity extends Activity
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
+        mNavBarFragment.disableSendRecieveButtons(true);
+        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
@@ -738,9 +742,6 @@ public class NavigationActivity extends Activity
         if (null != mPasswordCheck) {
             mPasswordCheck.onResume();
         }
-
-        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
         mCoreAPI.addExchangeRateChangeListener(this);
 
@@ -2133,9 +2134,7 @@ public class NavigationActivity extends Activity
         WaitWalletLoadingTask() { }
 
         @Override
-        protected void onPreExecute() {
-            mNavBarFragment.disableSendRecieveButtons(true);
-        }
+        protected void onPreExecute() { }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -2152,6 +2151,7 @@ public class NavigationActivity extends Activity
         @Override
         protected void onPostExecute(Void v) {
             mNavBarFragment.disableSendRecieveButtons(false);
+            switchFragmentThread(mNavThreadId);
         }
     }
 
