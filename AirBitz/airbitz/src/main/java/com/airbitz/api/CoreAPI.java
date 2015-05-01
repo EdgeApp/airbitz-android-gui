@@ -533,13 +533,19 @@ public class CoreAPI {
             return cached;
         }
 
-        String code = currencyCodeLookup(currencyNum);
-        String symbol  = Currency.getInstance(code).getSymbol();
-        if(symbol != null) {
-            mCurrencySymbolCache.put(currencyNum, symbol);
-            return symbol;
+        try {
+            String code = currencyCodeLookup(currencyNum);
+            String symbol  = Currency.getInstance(code).getSymbol();
+            if(symbol != null) {
+                mCurrencySymbolCache.put(currencyNum, symbol);
+                return symbol;
+            }
+            else {
+                Log.d(TAG, "Bad currency code: " + code);
+                return "";
+            }
         }
-        else {
+        catch (Exception e) {
             return "";
         }
     }
