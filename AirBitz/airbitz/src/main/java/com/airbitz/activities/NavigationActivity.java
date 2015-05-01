@@ -259,6 +259,8 @@ public class NavigationActivity extends Activity
 
     private RememberPasswordCheck mPasswordCheck;
 
+    private boolean activityInForeground = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -745,12 +747,16 @@ public class NavigationActivity extends Activity
 
         mCoreAPI.addExchangeRateChangeListener(this);
 
+        activityInForeground = true;
+
         super.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
@@ -2150,8 +2156,10 @@ public class NavigationActivity extends Activity
 
         @Override
         protected void onPostExecute(Void v) {
-            mNavBarFragment.disableSendRecieveButtons(false);
-            switchFragmentThread(mNavThreadId);
+            if(activityInForeground) {
+                mNavBarFragment.disableSendRecieveButtons(false);
+                switchFragmentThread(mNavThreadId);
+            }
         }
     }
 
