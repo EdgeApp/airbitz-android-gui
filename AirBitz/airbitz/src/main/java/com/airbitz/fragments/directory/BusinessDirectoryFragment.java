@@ -100,6 +100,10 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     static int LOCATION_TIMEOUT = 10000;
     static float LOCATION_ACCURACY_METERS = 100.0f;
 
+    static String SEARCH_RESTAURANTS = "Restaurants &amp; Food Trucks";
+    static String SEARCH_BARS = "Bars &amp; Nightclubs";
+    static String SEARCH_COFFEE = "Coffee &amp; Tea";
+
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
     public static final String BUSINESSTYPE = "BUSINESSTYPE";
@@ -300,7 +304,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_RESTAURANTS);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
@@ -313,7 +317,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_BARS);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
@@ -326,7 +330,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_COFFEE);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
