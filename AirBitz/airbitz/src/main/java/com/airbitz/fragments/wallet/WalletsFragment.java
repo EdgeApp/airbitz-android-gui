@@ -218,9 +218,7 @@ public class WalletsFragment extends BaseFragment
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.fragment_wallets_header_layout);
 
-        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
-
-        mCurrencyList = mCoreAPI.getCurrencyCodeArray();
+        mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
         mLatestWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mLatestWalletAdapter.setHeaderButtonListener(this);
@@ -334,10 +332,17 @@ public class WalletsFragment extends BaseFragment
             }
         });
 
+        mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
-        int settingIndex = mCoreAPI.SettingsCurrencyIndex();
-        mAddWalletCurrencySpinner.setSelection(settingIndex);
+        int num = mCoreAPI.coreSettings().getCurrencyNum();
+        String defaultCode = mCoreAPI.getCurrencyCode(num);
+        for(int i=0; i<mCurrencyList.size(); i++) {
+            if(mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
+                mAddWalletCurrencySpinner.setSelection(i);
+                break;
+            }
+        }
 
         mAddWalletOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -555,8 +560,9 @@ public class WalletsFragment extends BaseFragment
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             if (!mAddWalletOnOffSwitch.isChecked()) {
-                int[] nums = mCoreAPI.getCurrencyNumberArray();
-                addNewWallet(mAddWalletNameEditText.getText().toString(), nums[mAddWalletCurrencySpinner.getSelectedItemPosition()]);
+                String code = mAddWalletCurrencySpinner.getSelectedItem().toString().substring(0, 3);
+                int numberFromCode = mCoreAPI.getCurrencyNumberFromCode(code);
+                addNewWallet(mAddWalletNameEditText.getText().toString(), numberFromCode);
             } else {
                 mActivity.pushFragment(new OfflineWalletFragment(), NavigationActivity.Tabs.WALLET.ordinal());
             }
