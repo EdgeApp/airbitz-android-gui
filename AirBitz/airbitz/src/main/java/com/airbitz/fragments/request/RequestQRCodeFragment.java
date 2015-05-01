@@ -555,8 +555,9 @@ public class RequestQRCodeFragment extends BaseFragment implements
             if(mID == null) {
                 mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
                 mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+                mQRBitmap = null;
             }
-            if (mID != null) {
+            if (mQRBitmap == null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
