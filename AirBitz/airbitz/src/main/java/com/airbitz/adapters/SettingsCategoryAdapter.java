@@ -100,9 +100,10 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.ShowFadingDialog(String.format(mContext.getString(R.string.fragment_category_deleted), mCurrentCategories.get(position)));
-                mCurrentCategories.remove(pos);
-                mCategories.remove(pos);
+                String item = mCurrentCategories.get(position);
+                mContext.ShowFadingDialog(String.format(mContext.getString(R.string.fragment_category_deleted), item));
+                mCurrentCategories.remove(item);
+                mCategories.remove(item);
                 notifyDataSetChanged();
             }
         });
