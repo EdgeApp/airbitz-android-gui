@@ -853,7 +853,7 @@ public class NavigationActivity extends Activity
         }
 
         String scheme =uri.getScheme();
-        if ("bitcoin".equals(scheme)) {
+        if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
