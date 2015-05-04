@@ -2436,6 +2436,88 @@ SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinURIInfo_1amou
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinURIInfo_1szCategory_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_BitcoinURIInfo *arg1 = (struct sABC_BitcoinURIInfo *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_BitcoinURIInfo **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szCategory);
+    if (arg2) {
+      arg1->szCategory = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szCategory, (const char *)arg2);
+    } else {
+      arg1->szCategory = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinURIInfo_1szCategory_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_BitcoinURIInfo *arg1 = (struct sABC_BitcoinURIInfo *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_BitcoinURIInfo **)&jarg1; 
+  result = (char *) ((arg1)->szCategory);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinURIInfo_1szRet_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  struct sABC_BitcoinURIInfo *arg1 = (struct sABC_BitcoinURIInfo *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_BitcoinURIInfo **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    free(arg1->szRet);
+    if (arg2) {
+      arg1->szRet = (char *) malloc(strlen((const char *)arg2)+1);
+      strcpy((char *)arg1->szRet, (const char *)arg2);
+    } else {
+      arg1->szRet = 0;
+    }
+  }
+  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1BitcoinURIInfo_1szRet_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  struct sABC_BitcoinURIInfo *arg1 = (struct sABC_BitcoinURIInfo *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_BitcoinURIInfo **)&jarg1; 
+  result = (char *) ((arg1)->szRet);
+  if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1BitcoinURIInfo(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   struct sABC_BitcoinURIInfo *result = 0 ;
