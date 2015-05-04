@@ -150,6 +150,10 @@ public class coreJNI {
   public final static native String tABC_BitcoinURIInfo_szMessage_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
   public final static native void tABC_BitcoinURIInfo_amountSatoshi_set(long jarg1, tABC_BitcoinURIInfo jarg1_, long jarg2);
   public final static native long tABC_BitcoinURIInfo_amountSatoshi_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
+  public final static native void tABC_BitcoinURIInfo_szCategory_set(long jarg1, tABC_BitcoinURIInfo jarg1_, String jarg2);
+  public final static native String tABC_BitcoinURIInfo_szCategory_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
+  public final static native void tABC_BitcoinURIInfo_szRet_set(long jarg1, tABC_BitcoinURIInfo jarg1_, String jarg2);
+  public final static native String tABC_BitcoinURIInfo_szRet_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
   public final static native long new_tABC_BitcoinURIInfo();
   public final static native void delete_tABC_BitcoinURIInfo(long jarg1);
   public final static native void tABC_TxDetails_amountSatoshi_set(long jarg1, tABC_TxDetails jarg1_, long jarg2);
