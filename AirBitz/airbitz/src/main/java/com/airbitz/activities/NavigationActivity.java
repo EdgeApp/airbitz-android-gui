@@ -905,6 +905,8 @@ public class NavigationActivity extends Activity
                 bundle.putString(SendFragment.UUID, info.address);
                 bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
                 bundle.putString(SendFragment.LABEL, info.label);
+                bundle.putString(SendFragment.CATEGORY, info.getSzCategory());
+                bundle.putString(SendFragment.RETURN_URL, info.getSzRet());
                 bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
                 fragment.setArguments(bundle);
                 pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
