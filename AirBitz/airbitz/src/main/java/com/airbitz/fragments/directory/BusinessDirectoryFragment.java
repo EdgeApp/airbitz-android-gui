@@ -100,9 +100,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     static int LOCATION_TIMEOUT = 10000;
     static float LOCATION_ACCURACY_METERS = 100.0f;
 
-    static String SEARCH_RESTAURANTS = "Restaurants &amp; Food Trucks";
-    static String SEARCH_BARS = "Bars &amp; Nightclubs";
-    static String SEARCH_COFFEE = "Coffee &amp; Tea";
+    static String SEARCH_RESTAURANTS = "Restaurants & Food Trucks";
+    static String SEARCH_BARS = "Bars & Nightclubs";
+    static String SEARCH_COFFEE = "Coffee & Tea";
 
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
