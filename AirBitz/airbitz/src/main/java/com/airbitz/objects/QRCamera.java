@@ -70,8 +70,8 @@ public class QRCamera implements
         }
     };
 
-    public QRCamera(Fragment activity, View cameraLayout) {
-        mFragment = activity;
+    public QRCamera(Fragment frag, View cameraLayout) {
+        mFragment = frag;
         mCoreAPI = CoreAPI.getApi();
         mCameraLayout = cameraLayout;
 
@@ -161,7 +161,9 @@ public class QRCamera implements
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
             Log.d(TAG, "Camera Does Not exist");
-            mHandler.postDelayed(cameraStartRunner, 200);
+            if(mFragment.getActivity() != null) {
+                mHandler.postDelayed(cameraStartRunner, 500);
+            }
             return;
         }
 
