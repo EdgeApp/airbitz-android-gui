@@ -371,8 +371,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         } else if (mMode == CHANGE_PIN) {
             // hide both mPassword fields
             mPasswordForPINEditText = mUserNameEditText;
-            mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password_hint));
+            mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mHintTextView.setVisibility(View.GONE);
             mPasswordEditText.setVisibility(View.GONE);
             mPasswordConfirmationEditText.setVisibility(View.GONE);
             mWithdrawalPinEditText.setHint(getResources().getString(R.string.activity_signup_new_pin));
