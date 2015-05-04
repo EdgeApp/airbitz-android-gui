@@ -89,6 +89,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.Business;
@@ -712,6 +713,15 @@ public class TransactionDetailFragment extends BaseFragment
     private void goDone() {
         mReminderTask = new CheckReminderNotification(mWallet);
         mReminderTask.execute();
+
+        String returnUrl = getArguments().getString(SendFragment.RETURN_URL);
+        if(returnUrl != null && (returnUrl.startsWith("https://") || returnUrl.startsWith("http://"))) {
+            final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(returnUrl));
+            mActivity.startActivity(intent);
+        }
+        else {
+            Log.d(TAG, "Return URL does not begin with http or https");
+        }
     }
 
     private void done() {

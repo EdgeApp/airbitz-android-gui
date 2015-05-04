@@ -1030,7 +1030,7 @@ public class SendConfirmationFragment extends BaseFragment implements
                         }, 500);
                     } else {
                         mFundsSent = true;
-                        mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
+                        mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId(), getArguments().getString(SendFragment.RETURN_URL));
                     }
                 }
             }

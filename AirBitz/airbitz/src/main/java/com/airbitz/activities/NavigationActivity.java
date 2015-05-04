@@ -1025,7 +1025,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public void onSentFunds(String walletUUID, String txId) {
+    public void onSentFunds(String walletUUID, String txId, String returnUrl) {
         Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
@@ -1038,6 +1038,7 @@ public class NavigationActivity extends Activity
         bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, txId);
         bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
         Log.d(TAG, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
@@ -1555,7 +1556,7 @@ public class NavigationActivity extends Activity
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
         if (amount > 0 && !txid.isEmpty()) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
             ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
                     getString(R.string.import_wallet_swept_funds_message));
         }
@@ -1569,7 +1570,7 @@ public class NavigationActivity extends Activity
     public void showHiddenBitsTransaction(String txid, String uuid, long amount,
                 String message, String zeroMessage, String tweet) {
         if(txid != null) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
         }
 
         if (amount == 0 && !zeroMessage.isEmpty()) {

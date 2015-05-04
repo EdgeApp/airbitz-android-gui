@@ -2831,11 +2831,11 @@ public class CoreAPI {
             if (uriAddress!=null) {
                 Log.d(TAG, "BitcoinURI address: "+uriAddress);
                 Log.d(TAG, "BitcoinURI amount: " + amountSatoshi);
+                Log.d(TAG, "BitcoinURI category: " + uri.getSzCategory());
+                Log.d(TAG, "BitcoinURI return address: " + uri.getSzRet());
 
-                String label = uri.getSzLabel();
-                String message = uri.getSzMessage();
-                if (message!=null) {
-                    Log.d(TAG, "BitcoinURI message: "+message);
+                if(!isValidCategory(uri.getSzCategory())) {
+                    uri.setSzCategory("");
                 }
             }
             else {
@@ -2847,6 +2847,11 @@ public class CoreAPI {
         }
 
         return uri;
+    }
+
+    private boolean isValidCategory(String category) {
+        return category.startsWith("Expense") || category.startsWith("Exchange") ||
+                category.startsWith("Income") || category.startsWith("Transfer");
     }
 
     public class BitcoinURIInfo extends tABC_BitcoinURIInfo {
