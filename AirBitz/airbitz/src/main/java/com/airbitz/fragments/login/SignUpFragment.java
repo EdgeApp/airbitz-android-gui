@@ -322,10 +322,8 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             return;
         //Hide some elements if this is not a fresh signup
         mMode = bundle.getInt(MODE);
-        if (mMode == CHANGE_PASSWORD) {
-            // Reuse mUserNameEditText for old mPassword too
-            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
-            mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
+            mUserNameEditText.setVisibility(View.GONE);
             mUserNameRedRingCover.setVisibility(View.GONE);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -342,6 +340,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         }
         else if (mMode == CHANGE_PASSWORD_NO_VERIFY) {
             // change mUsername label, title
+            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -370,6 +369,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mHintTextView.setVisibility(View.INVISIBLE);
         } else if (mMode == CHANGE_PIN) {
             // hide both mPassword fields
+            mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password));
+            mUserNameEditText.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
+            mUserNameRedRingCover.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
             mPasswordForPINEditText = mUserNameEditText;
             mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -462,7 +464,8 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_enter_username));
             }
         }
-        else if (mMode == CHANGE_PASSWORD_NO_VERIFY) {
+        else if (mMode == CHANGE_PASSWORD_NO_VERIFY || !(mCoreAPI.PasswordExists() && (mMode == CHANGE_PASSWORD ||
+            mMode == CHANGE_PIN))) {
             bUserNameFieldIsValid = true;
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
@@ -470,13 +473,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // if the mPassword is wrong
             if (!mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mUserNameEditText.getText().toString())) {
                 bUserNameFieldIsValid = false;
-                if (mMode == CHANGE_PIN) {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_change_pin_failed), getResources().getString(R.string.activity_signup_incorrect_password));
-                } else if (mMode == CHANGE_PASSWORD) {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_change_password_failed), getResources().getString(R.string.activity_signup_incorrect_password));
-                } else {
-                    mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_password));
-                }
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_current_password));
             }
         }
         return bUserNameFieldIsValid;
@@ -513,7 +510,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         // if we are signing up for a new account
         if (mMode != CHANGE_PASSWORD && mMode != CHANGE_PASSWORD_NO_VERIFY) {
             // if the pin isn't long enough
-            if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
+            if (mCoreAPI.PasswordExists() && mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
                 bpinNameFieldIsValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
             }

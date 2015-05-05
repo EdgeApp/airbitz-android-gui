@@ -174,7 +174,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         enableShow(mShow);
         Bundle bundle = getArguments();
         mUsername = bundle.getString(USERNAME);
-        mPassword = bundle.getString(PASSWORD).toCharArray();
+        mPassword = bundle.getString(PASSWORD, "").toCharArray();
         mPin = bundle.getString(PIN);
 
         mUsernameTextView.setText(mUsername);

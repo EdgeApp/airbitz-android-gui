@@ -97,6 +97,7 @@ public class SettingFragment extends BaseFragment {
     private static final String NFC_PREF = "NFCPref";
     private static final String BLE_PREF = "BLEPref";
     public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
+    public static final String START_CHANGE_PASSWORD = "com.airbitz.fragments.settingfragment.StartChangePassword";
     private final String TAG = getClass().getSimpleName();
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
@@ -638,6 +639,15 @@ public class SettingFragment extends BaseFragment {
         if (bundle != null && bundle.getBoolean(START_RECOVERY_PASSWORD)) {
             mChangeRecoveryButton.performClick();
             bundle.putBoolean(START_RECOVERY_PASSWORD, false);
+        }
+
+        if (bundle != null && bundle.getBoolean(START_CHANGE_PASSWORD)) {
+            mChangePasswordButton.performClick();
+            bundle.putBoolean(START_CHANGE_PASSWORD, false);
+        }
+
+        if(!mCoreAPI.PasswordExists()) {
+            mPinReloginSwitch.setEnabled(false);
         }
 
         mCoreSettings = mCoreAPI.newCoreSettings();

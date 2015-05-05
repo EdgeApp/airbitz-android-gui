@@ -845,7 +845,7 @@ public class CoreAPI {
     }
 
 
-    public boolean needsPasswordCheck() {
+    public boolean incrementPinCount() {
         tABC_AccountSettings settings = coreSettings();
         if(settings == null) {
             return false;
@@ -2946,17 +2946,77 @@ public class CoreAPI {
         tABC_CC result = core.ABC_PinLoginDelete(username, pError);
     }
 
+    OnPasswordCheckListener mOnPasswordCheckListener = null;
+    public void SetOnPasswordCheckListener(OnPasswordCheckListener listener, String password) {
+        mOnPasswordCheckListener = listener;
+    }
+    public interface OnPasswordCheckListener {
+        void onPasswordCheck(boolean passwordOkay);
+    }
+
+    private class PasswordOKRunnable implements Runnable {
+        private final String mPassword;
+
+        PasswordOKRunnable(final String password) {
+            this.mPassword = password;
+        }
+
+        public void run() {
+            boolean check = false;
+            if(mPassword == null || mPassword.isEmpty()) {
+                check = !PasswordExists();
+            }
+            else {
+                tABC_Error pError = new tABC_Error();
+                SWIGTYPE_p_long lp = core.new_longp();
+                SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+                tABC_CC result = core.ABC_PasswordOk(AirbitzApplication.getUsername(), mPassword, okay, pError);
+                if(result.equals(tABC_CC.ABC_CC_Ok)) {
+                    check = getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+                } else {
+                    Log.d(TAG, "Password OK error:"+pError.getSzDescription());
+                }
+            }
+
+            if(mOnPasswordCheckListener != null) {
+                mOnPasswordCheckListener.onPasswordCheck(check);
+            }
+        }
+    }
+
     public boolean PasswordOK(String username, String password) {
+        boolean check = false;
+        if(password == null || password.isEmpty()) {
+            check = !PasswordExists();
+        }
+        else {
+            tABC_Error pError = new tABC_Error();
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+            tABC_CC result = core.ABC_PasswordOk(username, password, okay, pError);
+            if(result.equals(tABC_CC.ABC_CC_Ok)) {
+                check = getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+            } else {
+                Log.d(TAG, "Password OK error:"+pError.getSzDescription());
+            }
+        }
+
+        return check;
+    }
+
+    public boolean PasswordExists() {
         tABC_Error pError = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+        SWIGTYPE_p_bool exists = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
-        tABC_CC result = core.ABC_PasswordOk(username, password, okay, pError);
-        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+        tABC_CC result = core.ABC_PasswordExists(AirbitzApplication.getUsername(), exists, pError);
+        if(pError.getCode().equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
-            Log.d(TAG, "Password OK error:"+pError.getSzDescription());
-            return false;
+            Log.d(TAG, "Password Exists error:"+pError.getSzDescription());
+            return true;
         }
     }
 

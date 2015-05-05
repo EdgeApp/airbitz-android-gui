@@ -149,6 +149,7 @@
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
     <string name="activity_signup_enter_username">You must enter a user name</string>
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
+    <string name="activity_signup_incorrect_current_password">Incorrect current password.</string>
     <string name="activity_signup_password_fails">Your password…</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
@@ -205,6 +206,8 @@
     <string name="activity_recovery_warning_dirty_change_message">Warning: You are about to exit password recovery and questions &amp; answers have not yet been set. Exit anyway?</string>
     <string name="activity_recovery_warning_dirty_forgot_title">Password Recovery</string>
     <string name="activity_recovery_warning_dirty_forgot_message">Warning: You are about to exit password recovery and all progress will be lost. Exit anyway?</string>
+    <string name="fragment_recovery_mismatch_title">Password Mismatch</string>
+    <string name="fragment_recovery_mismatch_message">Please enter your correct password.</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
@@ -553,6 +556,11 @@
     <string name="password_check_great_job">Great job remembering your password.</string>
     <string name="password_check_checking">Checking password…</string>
     <string name="password_check_current_password">Current password</string>
+
+    <!-- Password Set -->
+    <string name="password_set_title">No password set</string>
+    <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
+    <string name="password_set_skip">Skip</string>
 
     <string name="buysell_title">Buy/Sell</string>
 
