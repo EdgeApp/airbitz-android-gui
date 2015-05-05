@@ -92,20 +92,12 @@ import java.util.List;
  * Created on 2/12/14.
  */
 public class SettingFragment extends BaseFragment {
-    static final int USD_NUM = 840;
-    static final int CAD_NUM = 124;
-    static final int EUR_NUM = 978;
-    static final int PESO_NUM = 484;
-    static final int YUAN_NUM = 156;
-    static final String[] USD_EXCHANGES = new String[]{"Bitstamp", "BraveNewCoin", "Coinbase"};
-    static final String[] OTHER_EXCHANGES = new String[]{"BraveNewCoin", "Coinbase"};
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
     private static final String NFC_PREF = "NFCPref";
     private static final String BLE_PREF = "BLEPref";
     public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
     private final String TAG = getClass().getSimpleName();
-    AlertDialog mCurrencyDialog;
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
     private RelativeLayout mCategoryContainer;
