@@ -310,6 +310,10 @@ typedef struct sABC_BitcoinURIInfo
     char *szMessage;
     /** amount of bitcoins */
     int64_t amountSatoshi;
+    /** Airbitz category extension */
+    char *szCategory;
+    /** Airbitz ret extension for return URI */
+    char *szRet;
 } tABC_BitcoinURIInfo;
 
 /**
@@ -456,36 +460,6 @@ typedef struct sABC_RequestInfo
 } tABC_RequestInfo;
 
 /**
- * AirBitz Exchange Rate Source
- *
- * This structure contains the exchange rate
- * source to use for a currencies.
- *
- */
-typedef struct sABC_ExchangeRateSource
-{
-    /** ISO 4217 currency code */
-    int                         currencyNum;
-    /** exchange rate source */
-    char                        *szSource;
-} tABC_ExchangeRateSource;
-
-/**
- * AirBitz Exchange Rate Sources
- *
- * This structure contains the exchange rate
- * sources to use for different currencies.
- *
- */
-typedef struct sABC_ExchangeRateSources
-{
-    /** number of sources */
-    unsigned int numSources;
-    /** array of exchange rate sources */
-    tABC_ExchangeRateSource **aSources;
-} tABC_ExchangeRateSources;
-
-/**
  * AirBitz Bitcoin Denomination
  *
  * This structure contains the method for
@@ -527,8 +501,8 @@ typedef struct sABC_AccountSettings
     char                        *szLanguage;
     /** default ISO 4217 currency code */
     int                         currencyNum;
-    /** bitcoin exchange rate sources */
-    tABC_ExchangeRateSources    exchangeRateSources;
+    /** bitcoin exchange rate source */
+    char                        *szExchangeRateSource;
     /** how to display bitcoin denomination */
     tABC_BitcoinDenomination    bitcoinDenomination;
     /** use advanced features (e.g., allow offline wallet creation) */
@@ -587,12 +561,6 @@ tABC_CC ABC_IsTestNet(bool *pResult, tABC_Error *pError);
 /* === All data at once: === */
 tABC_CC ABC_ClearKeyCache(tABC_Error *pError);
 
-tABC_CC ABC_DataSyncAll(const char *szUserName,
-                        const char *szPassword,
-                        tABC_BitCoin_Event_Callback fAsyncBitCoinEventCallback,
-                        void *pData,
-                        tABC_Error *pError);
-
 /* === General info: === */
 
 /**
@@ -603,7 +571,7 @@ tABC_CC ABC_GeneralInfoUpdate(tABC_Error *pError);
 
 tABC_CC ABC_GetCurrencies(tABC_Currency **paCurrencyArray,
                           int *pCount,
-                         tABC_Error *pError);
+                          tABC_Error *pError);
 
 tABC_CC ABC_GetQuestionChoices(tABC_QuestionChoices **pOut,
                                tABC_Error *pError);
@@ -705,6 +673,10 @@ tABC_CC ABC_PasswordOk(const char *szUserName,
                        bool *pOk,
                        tABC_Error *pError);
 
+tABC_CC ABC_PasswordExists(const char *szUserName,
+                           bool *pExists,
+                           tABC_Error *pError);
+
 /* === OTP authentication: === */
 
 /**
@@ -765,6 +737,13 @@ tABC_CC ABC_OtpAuthRemove(const char *szUserName,
  */
 tABC_CC ABC_OtpResetGet(char **szUsernames,
                         tABC_Error *pError);
+
+/**
+ * Returns the OTP reset date for the last account that failed to log in,
+ * if any. Returns an empty string otherwise.
+ */
+tABC_CC ABC_OtpResetDate(char **pszDate,
+                         tABC_Error *pError);
 
 /**
  * Launches an OTP reset timer on the server,

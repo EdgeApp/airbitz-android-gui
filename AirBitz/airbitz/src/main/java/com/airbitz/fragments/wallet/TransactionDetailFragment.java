@@ -40,10 +40,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.ThumbnailUtils;
@@ -74,7 +71,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -93,6 +89,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.Business;
@@ -716,6 +713,15 @@ public class TransactionDetailFragment extends BaseFragment
     private void goDone() {
         mReminderTask = new CheckReminderNotification(mWallet);
         mReminderTask.execute();
+
+        String returnUrl = getArguments().getString(SendFragment.RETURN_URL);
+        if(returnUrl != null && (returnUrl.startsWith("https://") || returnUrl.startsWith("http://"))) {
+            final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(returnUrl));
+            mActivity.startActivity(intent);
+        }
+        else {
+            Log.d(TAG, "Return URL does not begin with http or https");
+        }
     }
 
     private void done() {
@@ -1091,7 +1097,7 @@ public class TransactionDetailFragment extends BaseFragment
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText((mCoreAPI.getCurrencyAcronyms())[mCoreAPI.CurrencyIndex(mWallet.getCurrencyNum())]);
+        mFiatDenominationLabel.setText(mCoreAPI.currencySymbolLookup(mWallet.getCurrencyNum()));
 
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 

@@ -69,35 +69,46 @@ public class PluginFramework {
         }
     }
 
+    static class PluginList {
+        List<Plugin> mPlugins;
+
+        PluginList() {
+            CoreAPI api = CoreAPI.getApi();
+            mPlugins = new LinkedList<Plugin>();
+
+            Plugin plugin;
+            if (api.isTestNet()) {
+                plugin = new Plugin();
+                plugin.pluginId = "com.glidera.us";
+                plugin.sourceFile = "file:///android_asset/glidera.html";
+                plugin.name = "Glidera USA";
+                plugin.env.put("COUNTRY_CODE", "US");
+                plugin.env.put("COUNTRY_NAME", "United States");
+                plugin.env.put("CURRENCY_CODE", "840");
+                plugin.env.put("CURRENCY_ABBREV", "USD");
+                mPlugins.add(plugin);
+            }
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.glidera.ca";
+            plugin.sourceFile = "file:///android_asset/glidera.html";
+            plugin.name = "Glidera Canada";
+            plugin.env.put("COUNTRY_CODE", "CA");
+            plugin.env.put("COUNTRY_NAME", "Canada");
+            plugin.env.put("CURRENCY_CODE", "124");
+            plugin.env.put("CURRENCY_ABBREV", "CAD");
+            mPlugins.add(plugin);
+        }
+    }
+
+    private static PluginList mInstance;
+
     public static List<Plugin> getPlugins() {
-        return mPlugins;
+        if (mInstance == null) {
+            mInstance = new PluginList();
+        }
+        return mInstance.mPlugins;
     }
-
-    static List<Plugin> mPlugins;
-    static {
-        mPlugins = new LinkedList<Plugin>();
-
-        Plugin plugin = new Plugin();
-        plugin.pluginId = "com.glidera.us";
-        plugin.sourceFile = "file:///android_asset/glidera.html";
-        plugin.name = "Glidera USA";
-        plugin.env.put("COUNTRY_CODE", "US");
-        plugin.env.put("COUNTRY_NAME", "United States");
-        plugin.env.put("CURRENCY_CODE", "840");
-        plugin.env.put("CURRENCY_ABBREV", "USD");
-        mPlugins.add(plugin);
-
-        plugin = new Plugin();
-        plugin.pluginId = "com.glidera.ca";
-        plugin.sourceFile = "file:///android_asset/glidera.html";
-        plugin.name = "Glidera Canada";
-        plugin.env.put("COUNTRY_CODE", "CA");
-        plugin.env.put("COUNTRY_NAME", "Canada");
-        plugin.env.put("CURRENCY_CODE", "124");
-        plugin.env.put("CURRENCY_ABBREV", "CAD");
-        mPlugins.add(plugin);
-    }
-
 
     public interface UiHandler {
         public void showAlert(String title, String message);

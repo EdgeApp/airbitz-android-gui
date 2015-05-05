@@ -64,6 +64,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
@@ -704,14 +705,14 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     }
 
     private void checkLocationManager() {
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationEnabled = false;
-            if(getActivity() != null) {
+        locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
+        if(!locationEnabled) {
+            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
                 Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+                AirbitzApplication.setLocationWarn(false);
             }
         } else {
-            locationEnabled = true;
+            AirbitzApplication.setLocationWarn(true);
         }
         mMapShim.setLocationEnabled(locationEnabled);
     }

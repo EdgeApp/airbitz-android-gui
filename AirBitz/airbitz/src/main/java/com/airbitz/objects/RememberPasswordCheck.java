@@ -32,12 +32,14 @@
 package com.airbitz.objects;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.ContextThemeWrapper;
 import android.view.inputmethod.EditorInfo;
@@ -48,6 +50,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.login.SignUpFragment;
 
 import java.util.List;
 
@@ -102,6 +105,14 @@ public class RememberPasswordCheck {
         mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_skip), FADING_TIMEOUT, true);
     }
 
+    private void showPasswordCheckChange() {
+        Fragment fragment = new SignUpFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_NO_VERIFY);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+    }
+
     private void handlePasswordResults(boolean correct) {
         if (correct) {
             mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), FADING_TIMEOUT, true);
@@ -114,6 +125,13 @@ public class RememberPasswordCheck {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     showPasswordCheckAlert();
+                                }
+                            })
+                    .setNeutralButton(mActivity.getResources().getString(R.string.string_change),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    showPasswordCheckChange();
                                 }
                             })
                     .setNegativeButton(mActivity.getResources().getString(R.string.string_no),

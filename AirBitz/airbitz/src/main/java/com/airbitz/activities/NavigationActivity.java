@@ -259,6 +259,8 @@ public class NavigationActivity extends Activity
 
     private RememberPasswordCheck mPasswordCheck;
 
+    private boolean activityInForeground = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -716,6 +718,10 @@ public class NavigationActivity extends Activity
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
+        mNavBarFragment.disableSendRecieveButtons(true);
+        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
@@ -739,10 +745,9 @@ public class NavigationActivity extends Activity
             mPasswordCheck.onResume();
         }
 
-        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-
         mCoreAPI.addExchangeRateChangeListener(this);
+
+        activityInForeground = true;
 
         super.onResume();
     }
@@ -750,6 +755,8 @@ public class NavigationActivity extends Activity
     @Override
     public void onPause() {
         super.onPause();
+
+        activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
@@ -846,7 +853,7 @@ public class NavigationActivity extends Activity
         }
 
         String scheme =uri.getScheme();
-        if ("bitcoin".equals(scheme)) {
+        if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
@@ -898,6 +905,8 @@ public class NavigationActivity extends Activity
                 bundle.putString(SendFragment.UUID, info.address);
                 bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
                 bundle.putString(SendFragment.LABEL, info.label);
+                bundle.putString(SendFragment.CATEGORY, info.getSzCategory());
+                bundle.putString(SendFragment.RETURN_URL, info.getSzRet());
                 bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
                 fragment.setArguments(bundle);
                 pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
@@ -1018,7 +1027,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public void onSentFunds(String walletUUID, String txId) {
+    public void onSentFunds(String walletUUID, String txId, String returnUrl) {
         Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
@@ -1031,6 +1040,7 @@ public class NavigationActivity extends Activity
         bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, txId);
         bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
         Log.d(TAG, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
@@ -1548,7 +1558,7 @@ public class NavigationActivity extends Activity
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
         if (amount > 0 && !txid.isEmpty()) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
             ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
                     getString(R.string.import_wallet_swept_funds_message));
         }
@@ -1562,7 +1572,7 @@ public class NavigationActivity extends Activity
     public void showHiddenBitsTransaction(String txid, String uuid, long amount,
                 String message, String zeroMessage, String tweet) {
         if(txid != null) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
         }
 
         if (amount == 0 && !zeroMessage.isEmpty()) {
@@ -1859,35 +1869,61 @@ public class NavigationActivity extends Activity
 
     //********************  OTP support
     @Override
-    public void onOTPError() {
-        mHandler.post(showOTPErrorDialog);
+    public void onOTPError(String secret) {
+        if(secret != null) {
+            mHandler.post(mShowOTPSkew);
+        }
+        else {
+            mHandler.post(mShowOTPRequired);
+        }
     }
 
     AlertDialog mOTPAlertDialog;
-    final Runnable showOTPErrorDialog = new Runnable() {
+    final Runnable mShowOTPRequired = new Runnable() {
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
-                builder.setMessage(getString(R.string.twofactor_required_message))
-                        .setTitle(getString(R.string.twofactor_required_title))
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.twofactor_enable),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                        launchTwoFactorScan();
-                                    }
-                                })
-                        .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        mOTPAlertDialog = null;
-                                    }
-                                });
-                mOTPAlertDialog = builder.create();
-                mOTPAlertDialog.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    builder.setMessage(getString(R.string.twofactor_required_message))
+                            .setTitle(getString(R.string.twofactor_required_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                            launchTwoFactorScan();
+                                        }
+                                    })
+                            .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
+            }
+        }
+    };
+
+    final Runnable mShowOTPSkew = new Runnable() {
+        @Override
+        public void run() {
+            if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    builder.setMessage(getString(R.string.twofactor_invalid_message))
+                            .setTitle(getString(R.string.twofactor_invalid_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.string_ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
             }
         }
     };
@@ -1947,11 +1983,6 @@ public class NavigationActivity extends Activity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
-        if (mCoreAPI.isTestNet()) {
-            mDrawerBuySell.setVisibility(View.VISIBLE);
-        } else {
-            mDrawerBuySell.setVisibility(View.GONE);
-        }
 
         mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
@@ -2112,9 +2143,7 @@ public class NavigationActivity extends Activity
         WaitWalletLoadingTask() { }
 
         @Override
-        protected void onPreExecute() {
-            mNavBarFragment.disableSendRecieveButtons(true);
-        }
+        protected void onPreExecute() { }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -2130,7 +2159,10 @@ public class NavigationActivity extends Activity
 
         @Override
         protected void onPostExecute(Void v) {
-            mNavBarFragment.disableSendRecieveButtons(false);
+            if(activityInForeground) {
+                mNavBarFragment.disableSendRecieveButtons(false);
+                switchFragmentThread(mNavThreadId);
+            }
         }
     }
 

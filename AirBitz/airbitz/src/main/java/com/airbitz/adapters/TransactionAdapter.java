@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created on 2/13/14.
@@ -91,7 +92,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
         mPicasso = Picasso.with(context);
-        mFormatter = new SimpleDateFormat("MMM dd yyyy, kk:mm aa");
+        mFormatter = new SimpleDateFormat("MMM dd h:mm aa", Locale.getDefault());
         mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
 

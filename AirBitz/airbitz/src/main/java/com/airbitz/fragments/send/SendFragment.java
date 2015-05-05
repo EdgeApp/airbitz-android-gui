@@ -102,6 +102,7 @@ public class SendFragment extends BaseFragment implements
     public static final String AMOUNT_FIAT = "com.airbitz.Sendfragment_AMOUNT_FIAT";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String CATEGORY = "com.airbitz.Sendfragment_CATEGORY";
+    public static final String RETURN_URL = "com.airbitz.Sendfragment_RETURN_URL";
     public static final String NOTES = "com.airbitz.Sendfragment_NOTES";
     public static final String LOCKED = "com.airbitz.Sendfragment_LOCKED";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
@@ -129,6 +130,7 @@ public class SendFragment extends BaseFragment implements
     private List<Wallet> mWalletOtherList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
+    private String mReturnURL;
     private List<Wallet> mCurrentListing;
     private WalletPickerAdapter listingAdapter;
     private boolean mForcedBluetoothScanning = false;
@@ -278,7 +280,7 @@ public class SendFragment extends BaseFragment implements
         mListingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                GotoSendConfirmation(mCurrentListing.get(i).getUUID(), 0, " ", true);
+                GotoSendConfirmation(mCurrentListing.get(i).getUUID(), 0, " ", "", "", true);
             }
         });
 
@@ -315,7 +317,8 @@ public class SendFragment extends BaseFragment implements
 
         CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
         if (results.address != null) {
-            GotoSendConfirmation(results.address, results.amountSatoshi, results.label, false);
+            GotoSendConfirmation(results.address, results.amountSatoshi, results.label,
+                    results.getSzCategory(), results.getSzRet(), false);
         } else {
             ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
             ((NavigationActivity) getActivity()).ShowOkMessageDialog(
@@ -356,7 +359,7 @@ public class SendFragment extends BaseFragment implements
         }
     }
 
-    public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, boolean isUUID) {
+    public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, String category, String returnUrl, boolean isUUID) {
         if (mToEdittext != null) {
             mActivity.hideSoftKeyboard(mToEdittext);
         }
@@ -366,6 +369,8 @@ public class SendFragment extends BaseFragment implements
         bundle.putString(UUID, uuid);
         bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
         bundle.putString(LABEL, label);
+        bundle.putString(CATEGORY, category);
+        bundle.putString(RETURN_URL, returnUrl);
         if (mFromWallet == null) {
             if (mCoreAPI == null) {
                 mCoreAPI = CoreAPI.getApi();
@@ -437,6 +442,9 @@ public class SendFragment extends BaseFragment implements
     }
 
     public void goAutoCompleteWalletListing() {
+        if(mWalletOtherList == null) {
+            return;
+        }
         String text = mToEdittext.getText().toString();
         mCurrentListing.clear();
         if (text.isEmpty()) {
@@ -606,7 +614,7 @@ public class SendFragment extends BaseFragment implements
             CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
             if (info != null && info.address != null) {
                 Log.d(TAG, "Bitcoin found");
-                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, info.getSzCategory(), info.getSzRet(), false);
             } else if (info != null) {
                 ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
@@ -650,7 +658,7 @@ public class SendFragment extends BaseFragment implements
                 if (!uriData.isEmpty()) {
                     CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
                     if (info != null && info.getSzAddress() != null) {
-                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, false);
+                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, info.getSzCategory(), info.getSzRet(), false);
                     }
                 }
             }

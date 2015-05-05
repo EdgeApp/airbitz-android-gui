@@ -848,13 +848,6 @@ public class SendConfirmationFragment extends BaseFragment implements
             if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
                 mAuthorizationEdittext.requestFocus();
             }
-            else {
-                mBitcoinField.postDelayed(new Runnable() {
-                    public void run() {
-                        mBitcoinField.requestFocus();
-                    }
-                }, 200);
-            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
@@ -1037,7 +1030,7 @@ public class SendConfirmationFragment extends BaseFragment implements
                         }, 500);
                     } else {
                         mFundsSent = true;
-                        mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId());
+                        mActivity.onSentFunds(mFromWallet.getUUID(), txResult.getTxId(), getArguments().getString(SendFragment.RETURN_URL));
                     }
                 }
             }

@@ -67,6 +67,22 @@ public class tABC_BitcoinURIInfo {
     return new SWIGTYPE_p_int64_t(coreJNI.tABC_BitcoinURIInfo_amountSatoshi_get(swigCPtr, this), true);
   }
 
+  public void setSzCategory(String value) {
+    coreJNI.tABC_BitcoinURIInfo_szCategory_set(swigCPtr, this, value);
+  }
+
+  public String getSzCategory() {
+    return coreJNI.tABC_BitcoinURIInfo_szCategory_get(swigCPtr, this);
+  }
+
+  public void setSzRet(String value) {
+    coreJNI.tABC_BitcoinURIInfo_szRet_set(swigCPtr, this, value);
+  }
+
+  public String getSzRet() {
+    return coreJNI.tABC_BitcoinURIInfo_szRet_get(swigCPtr, this);
+  }
+
   public tABC_BitcoinURIInfo() {
     this(coreJNI.new_tABC_BitcoinURIInfo(), true);
   }

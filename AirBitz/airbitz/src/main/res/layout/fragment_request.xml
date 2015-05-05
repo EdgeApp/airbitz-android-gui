@@ -85,8 +85,8 @@
 
                 <RelativeLayout
                     android:id="@+id/fragment_request_expand"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="72dp"
+                    android:layout_height="78dp"
                     android:layout_below="@id/layout_wallet"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="12dp">
@@ -99,7 +99,7 @@
                         android:layout_width="20dp"
                         android:layout_height="32dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="12dp"
                         android:background="@drawable/expand_arrow" />
                     <TextView
                         android:layout_width="match_parent"

@@ -107,13 +107,12 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_currencyNum_get(swigCPtr, this);
   }
 
-  public void setExchangeRateSources(tABC_ExchangeRateSources value) {
-    coreJNI.tABC_AccountSettings_exchangeRateSources_set(swigCPtr, this, tABC_ExchangeRateSources.getCPtr(value), value);
+  public void setSzExchangeRateSource(String value) {
+    coreJNI.tABC_AccountSettings_szExchangeRateSource_set(swigCPtr, this, value);
   }
 
-  public tABC_ExchangeRateSources getExchangeRateSources() {
-    long cPtr = coreJNI.tABC_AccountSettings_exchangeRateSources_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new tABC_ExchangeRateSources(cPtr, false);
+  public String getSzExchangeRateSource() {
+    return coreJNI.tABC_AccountSettings_szExchangeRateSource_get(swigCPtr, this);
   }
 
   public void setBitcoinDenomination(tABC_BitcoinDenomination value) {

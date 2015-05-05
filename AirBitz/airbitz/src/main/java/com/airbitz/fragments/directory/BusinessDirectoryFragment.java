@@ -62,6 +62,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
@@ -98,6 +99,10 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     static int CATEGORY_TIMEOUT = 15000;
     static int LOCATION_TIMEOUT = 10000;
     static float LOCATION_ACCURACY_METERS = 100.0f;
+
+    static String SEARCH_RESTAURANTS = "Restaurants & Food Trucks";
+    static String SEARCH_BARS = "Bars & Nightclubs";
+    static String SEARCH_COFFEE = "Coffee & Tea";
 
     public static final String LOCATION = "LOCATION";
     public static final String BUSINESS = "BUSINESS";
@@ -299,7 +304,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_RESTAURANTS);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
@@ -312,7 +317,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_BARS);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
@@ -325,7 +330,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUSINESS, ((TextView) view).getText().toString());
+                bundle.putString(BUSINESS, SEARCH_COFFEE);
                 bundle.putString(LOCATION, "");
                 bundle.putString(BUSINESSTYPE, "category");
                 Fragment fragment = new MapBusinessDirectoryFragment();
@@ -852,8 +857,13 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     private void checkLocationManager() {
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
-        if(!locationEnabled && getActivity() != null) {
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+        if(!locationEnabled) {
+            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
+                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
+                AirbitzApplication.setLocationWarn(false);
+            }
+        } else {
+            AirbitzApplication.setLocationWarn(true);
         }
     }
 

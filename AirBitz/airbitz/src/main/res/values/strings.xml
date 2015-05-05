@@ -8,6 +8,7 @@
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
+    <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
@@ -236,7 +237,7 @@
     <string name="settings_title_currency">Default Currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE RATE</string>
-    <string name="settings_title_usd">US dollar</string>
+    <string name="settings_exchange_text">Default Exchange</string>
     <string name="settings_title_canadian">Canadian dollar</string>
     <string name="settings_title_euro">Euro</string>
     <string name="settings_title_peso">Mexican Peso</string>
@@ -507,10 +508,13 @@
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
     <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
+    <string name="fragment_two_factor_menu_requested">Two factor reset has been requested.</string>
     <string name="twofactor_required_title">Two Factor Authentication On</string>
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
     <string name="twofactor_remind_later">Remind Me Later</string>
     <string name="twofactor_enable">Enable</string>
+    <string name="twofactor_invalid_title">Two Factor Invalid</string>
+    <string name="twofactor_invalid_message">The Two Factor Authentication token on this device is invalid. Either the token was changed by a different device or your clock is skewed. Please check your system time to ensure it is correct.</string>
     <string name="twofactor_unable_import_token">We are sorry we are unable to import the token at this time.</string>
 
     <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>

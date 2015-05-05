@@ -150,6 +150,10 @@ public class coreJNI {
   public final static native String tABC_BitcoinURIInfo_szMessage_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
   public final static native void tABC_BitcoinURIInfo_amountSatoshi_set(long jarg1, tABC_BitcoinURIInfo jarg1_, long jarg2);
   public final static native long tABC_BitcoinURIInfo_amountSatoshi_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
+  public final static native void tABC_BitcoinURIInfo_szCategory_set(long jarg1, tABC_BitcoinURIInfo jarg1_, String jarg2);
+  public final static native String tABC_BitcoinURIInfo_szCategory_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
+  public final static native void tABC_BitcoinURIInfo_szRet_set(long jarg1, tABC_BitcoinURIInfo jarg1_, String jarg2);
+  public final static native String tABC_BitcoinURIInfo_szRet_get(long jarg1, tABC_BitcoinURIInfo jarg1_);
   public final static native long new_tABC_BitcoinURIInfo();
   public final static native void delete_tABC_BitcoinURIInfo(long jarg1);
   public final static native void tABC_TxDetails_amountSatoshi_set(long jarg1, tABC_TxDetails jarg1_, long jarg2);
@@ -246,18 +250,6 @@ public class coreJNI {
   public final static native long tABC_RequestInfo_owedSatoshi_get(long jarg1, tABC_RequestInfo jarg1_);
   public final static native long new_tABC_RequestInfo();
   public final static native void delete_tABC_RequestInfo(long jarg1);
-  public final static native void tABC_ExchangeRateSource_currencyNum_set(long jarg1, tABC_ExchangeRateSource jarg1_, int jarg2);
-  public final static native int tABC_ExchangeRateSource_currencyNum_get(long jarg1, tABC_ExchangeRateSource jarg1_);
-  public final static native void tABC_ExchangeRateSource_szSource_set(long jarg1, tABC_ExchangeRateSource jarg1_, String jarg2);
-  public final static native String tABC_ExchangeRateSource_szSource_get(long jarg1, tABC_ExchangeRateSource jarg1_);
-  public final static native long new_tABC_ExchangeRateSource();
-  public final static native void delete_tABC_ExchangeRateSource(long jarg1);
-  public final static native void tABC_ExchangeRateSources_numSources_set(long jarg1, tABC_ExchangeRateSources jarg1_, long jarg2);
-  public final static native long tABC_ExchangeRateSources_numSources_get(long jarg1, tABC_ExchangeRateSources jarg1_);
-  public final static native void tABC_ExchangeRateSources_aSources_set(long jarg1, tABC_ExchangeRateSources jarg1_, long jarg2);
-  public final static native long tABC_ExchangeRateSources_aSources_get(long jarg1, tABC_ExchangeRateSources jarg1_);
-  public final static native long new_tABC_ExchangeRateSources();
-  public final static native void delete_tABC_ExchangeRateSources(long jarg1);
   public final static native void tABC_BitcoinDenomination_denominationType_set(long jarg1, tABC_BitcoinDenomination jarg1_, int jarg2);
   public final static native int tABC_BitcoinDenomination_denominationType_get(long jarg1, tABC_BitcoinDenomination jarg1_);
   public final static native void tABC_BitcoinDenomination_satoshi_set(long jarg1, tABC_BitcoinDenomination jarg1_, long jarg2);
@@ -282,8 +274,8 @@ public class coreJNI {
   public final static native String tABC_AccountSettings_szLanguage_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_currencyNum_set(long jarg1, tABC_AccountSettings jarg1_, int jarg2);
   public final static native int tABC_AccountSettings_currencyNum_get(long jarg1, tABC_AccountSettings jarg1_);
-  public final static native void tABC_AccountSettings_exchangeRateSources_set(long jarg1, tABC_AccountSettings jarg1_, long jarg2, tABC_ExchangeRateSources jarg2_);
-  public final static native long tABC_AccountSettings_exchangeRateSources_get(long jarg1, tABC_AccountSettings jarg1_);
+  public final static native void tABC_AccountSettings_szExchangeRateSource_set(long jarg1, tABC_AccountSettings jarg1_, String jarg2);
+  public final static native String tABC_AccountSettings_szExchangeRateSource_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_bitcoinDenomination_set(long jarg1, tABC_AccountSettings jarg1_, long jarg2, tABC_BitcoinDenomination jarg2_);
   public final static native long tABC_AccountSettings_bitcoinDenomination_get(long jarg1, tABC_AccountSettings jarg1_);
   public final static native void tABC_AccountSettings_bAdvancedFeatures_set(long jarg1, tABC_AccountSettings jarg1_, boolean jarg2);
@@ -309,7 +301,6 @@ public class coreJNI {
   public final static native int ABC_Version(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);
-  public final static native int ABC_DataSyncAll(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GeneralInfoUpdate(long jarg1, tABC_Error jarg1_);
   public final static native int ABC_GetCurrencies(long jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_GetQuestionChoices(long jarg1, long jarg2, tABC_Error jarg2_);
@@ -336,6 +327,7 @@ public class coreJNI {
   public final static native int ABC_ChangePasswordWithRecoveryAnswers(String jarg1, String jarg2, String jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SetAccountRecoveryQuestions(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_PasswordOk(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
+  public final static native int ABC_PasswordExists(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeyGet(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeySet(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpKeyRemove(String jarg1, long jarg2, tABC_Error jarg2_);
@@ -343,6 +335,7 @@ public class coreJNI {
   public final static native int ABC_OtpAuthSet(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_OtpAuthRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_OtpResetGet(long jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_OtpResetDate(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_OtpResetSet(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_OtpResetRemove(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_LoadAccountSettings(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
