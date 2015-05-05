@@ -167,6 +167,7 @@ public class TwoFactorShowFragment extends BaseFragment
     void initUI()
     {
         mPassword.setText("");
+        mPassword.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
 
         _isOn = false;
         updateTwoFactorUI(false);

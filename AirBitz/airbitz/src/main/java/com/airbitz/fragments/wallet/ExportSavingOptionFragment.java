@@ -795,7 +795,10 @@ public class ExportSavingOptionFragment extends BaseFragment
     }
 
     private void setupUI(int type) {
-        if (type == ExportTypes.PrivateSeed.ordinal()) {
+        if(!mCoreApi.PasswordExists()) {
+            mPasswordEditText.setVisibility(View.GONE);
+        }
+        else if (type == ExportTypes.PrivateSeed.ordinal()) {
             mDatesLayout.setVisibility(View.GONE);
             mLastPeriodLayout.setVisibility(View.GONE);
             mThisPeriodLayout.setVisibility(View.GONE);

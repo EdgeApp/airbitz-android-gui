@@ -82,7 +82,8 @@ import java.util.List;
  */
 public class SendConfirmationFragment extends BaseFragment implements
         CoreAPI.OnWalletLoaded,
-        NavigationActivity.OnBackPress {
+        NavigationActivity.OnBackPress,
+        CoreAPI.OnPasswordCheckListener {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
@@ -673,40 +674,47 @@ public class SendConfirmationFragment extends BaseFragment implements
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
              mAuthorizationEdittext.requestFocus();
-        } else if (mPasswordRequired && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mAuthorizationEdittext.getText().toString())) {
-             mInvalidEntryCount += 1;
-             saveInvalidEntryCount(mInvalidEntryCount);
-             if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
-                 if(mInvalidEntryStartMillis == 0) {
-                     mInvalidEntryStartMillis = System.currentTimeMillis();
-                     mHandler.postDelayed(invalidEntryTimer, INVALID_ENTRY_WAIT_MILLIS);
-                 }
-                 remaining = (mInvalidEntryStartMillis + INVALID_ENTRY_WAIT_MILLIS - System.currentTimeMillis()) / 1000;
-                 String message = String.format(getString(R.string.fragment_send_confirmation_password_remaining), remaining);
-                 mActivity.ShowFadingDialog(message);
-             } else {
-                 mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_message));
-             }
-             mAuthorizationEdittext.requestFocus();
-        } else if (mAmountToSendSatoshi == 0) {
-             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (mAmountToSendSatoshi < DUST_AMOUNT) {
-             showDustAlert();
+        } else if (mPasswordRequired) {
+             mActivity.showModalProgress(true);
+             mCoreAPI.SetOnPasswordCheckListener(this, mAuthorizationEdittext.getText().toString());
         } else {
-             // show the sending screen
-             SuccessFragment mSuccessFragment = new SuccessFragment();
-             Bundle bundle = new Bundle();
-             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
-             mSuccessFragment.setArguments(bundle);
-             if (null != exitHandler) {
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.MORE.ordinal());
-             } else {
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
-             }
-
-             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mAmountFiat, mLabel, mCategory, mNotes);
-             mSendOrTransferTask.execute();
+             continueChecks();
          }
+    }
+
+    @Override
+    public void onPasswordCheck(boolean passwordOkay) {
+        mActivity.showModalProgress(false);
+
+        if(passwordOkay) {
+            continueChecks();
+        }
+        else {
+            mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_title));
+            mAuthorizationEdittext.requestFocus();
+        }
+    }
+
+    private void continueChecks() {
+        if (mAmountToSendSatoshi == 0) {
+            mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
+        } else if (mAmountToSendSatoshi < DUST_AMOUNT) {
+            showDustAlert();
+        } else {
+            // show the sending screen
+            SuccessFragment mSuccessFragment = new SuccessFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            mSuccessFragment.setArguments(bundle);
+            if (null != exitHandler) {
+                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.MORE.ordinal());
+            } else {
+                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
+            }
+
+            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mUUIDorURI, mAmountToSendSatoshi, mAmountFiat, mLabel, mCategory, mNotes);
+            mSendOrTransferTask.execute();
+        }
         resetSlider();
     }
 

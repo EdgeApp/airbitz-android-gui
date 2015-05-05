@@ -147,14 +147,7 @@ public class SpendingLimitsFragment extends BaseFragment {
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_password_edittext);
         mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                } else {
-                }
-            }
-        });
+
         mPasswordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -201,6 +194,10 @@ public class SpendingLimitsFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        if(!mCoreAPI.PasswordExists()) {
+            mPasswordEditText.setVisibility(View.GONE);
+        }
 
         mDailyEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetDailySpendLimit(), false));
         mDailySwitch.setChecked(mCoreAPI.GetDailySpendLimitSetting());

@@ -1154,7 +1154,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public void UserJustLoggedIn(boolean fullLogin) {
+    public void UserJustLoggedIn(boolean passwordLogin) {
         showNavBar();
         checkDailyLimitPref();
         mCoreAPI.setupAccountSettings();
@@ -1169,15 +1169,25 @@ public class NavigationActivity extends Activity
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
         checkFirstWalletSetup();
-        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
+        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
             mCoreAPI.PinSetup();
         }
         DisplayLoginOverlay(false, true);
 
-        if (!fullLogin && mCoreAPI.needsPasswordCheck()) {
+        boolean checkPassword = false;
+        // if the user has a password, increment PIN login count
+        if (mCoreAPI.PasswordExists()) {
+            checkPassword = mCoreAPI.incrementPinCount();
+        }
+
+        if(!passwordLogin && !mCoreAPI.PasswordExists()) {
+            showPasswordSetAlert();
+        }
+        else if (!passwordLogin && checkPassword) {
             mPasswordCheck = new RememberPasswordCheck(this);
             mPasswordCheck.showPasswordCheckAlert();
-        } else {
+        }
+        else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
@@ -1510,20 +1520,20 @@ public class NavigationActivity extends Activity
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
                     tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-                    ProgressBar progress = ((ProgressBar)view.findViewById(R.id.fading_alert_progress));
-                    if(!cancelable) {
+                    ProgressBar progress = ((ProgressBar) view.findViewById(R.id.fading_alert_progress));
+                    if (!cancelable) {
                         progress.setVisibility(View.VISIBLE);
                     }
-                    if(thumbnail != null) {
+                    if (thumbnail != null) {
                         view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
-                        if(!thumbnail.isEmpty()) {
+                        if (!thumbnail.isEmpty()) {
                             ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
                         }
                     }
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(mFadingDialog != null) {
+                            if (mFadingDialog != null) {
                                 mFadingDialog.dismiss();
                             }
                         }
@@ -1853,6 +1863,44 @@ public class NavigationActivity extends Activity
             });
             mAlertNotificationDialog.show();
         }
+    }
+
+    private Dialog mPasswordSetDialog;
+    private void showPasswordSetAlert() {
+            if (!NavigationActivity.this.isFinishing() && mPasswordSetDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                builder.setMessage(getString(R.string.password_set_message))
+                        .setTitle(getString(R.string.password_set_title))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.password_set_skip),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        mPasswordSetDialog = null;
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.string_ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        mPasswordSetDialog = null;
+                                        launchChangePassword();
+                                    }
+                                });
+                mPasswordSetDialog = builder.create();
+                mPasswordSetDialog.show();
+        }
+    }
+
+    private void launchChangePassword() {
+        Bundle bundle = new Bundle();
+
+        Fragment frag = new SettingFragment();
+        bundle.putBoolean(SettingFragment.START_CHANGE_PASSWORD, true);
+        frag.setArguments(bundle);
+        mNavStacks[Tabs.MORE.ordinal()].clear();
+        mNavStacks[Tabs.MORE.ordinal()].add(frag);
+        switchFragmentThread(Tabs.WALLET.ordinal());
     }
 
     private void checkDailyLimitPref() {

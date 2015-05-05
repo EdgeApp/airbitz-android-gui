@@ -339,6 +339,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
+        if(mPasswordEditText.getText().toString().isEmpty()) {
+            return true;
+        }
         boolean bNewPasswordFieldsAreValid = true;
             List<String> fails = checkPasswordRules(mPasswordEditText.getText().toString());
             if (!fails.isEmpty()) {
@@ -400,9 +403,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             return;
         }
 
+        char[] password = null;
         Editable pass = mPasswordEditText.getText();
-        char[] password = new char[pass.length()];
-        pass.getChars(0, pass.length(), password, 0);
+        if(!pass.toString().isEmpty()) {
+            password = new char[pass.length()];
+            pass.getChars(0, pass.length(), password, 0);
+        }
 
         // Reset errors.
         mPasswordEditText.setError(null);
@@ -429,6 +435,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     public class CreateAccountTask extends AsyncTask<Void, Void, String> {
 
         private final char[] mPassword;
+        private String mPasswordString;
 
         CreateAccountTask(char[] password) {
             mPassword = password;
@@ -437,8 +444,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
         @Override
         protected String doInBackground(Void... params) {
+            mPasswordString = null;
+            if(mPassword != null) {
+                String.valueOf(mPassword);
+            }
             return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
-                    String.valueOf(mPassword), mWithdrawalPinEditText.getText().toString());
+                    mPasswordString , mWithdrawalPinEditText.getText().toString());
         }
 
         @Override
@@ -448,7 +459,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                     SetupWriteItDownFragment fragment = new SetupWriteItDownFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(SetupWriteItDownFragment.USERNAME, getArguments().getString(USERNAME));
-                    bundle.putString(SetupWriteItDownFragment.PASSWORD, String.valueOf(mPassword));
+                    bundle.putString(SetupWriteItDownFragment.PASSWORD, mPasswordString);
                     bundle.putString(SetupWriteItDownFragment.PIN, mWithdrawalPinEditText.getText().toString());
                     fragment.setArguments(bundle);
                     mActivity.pushFragment(fragment);
