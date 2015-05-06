@@ -55,7 +55,8 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 /**
  * Created on 2/10/14.
  */
-public class SpendingLimitsFragment extends BaseFragment {
+public class SpendingLimitsFragment extends BaseFragment
+    implements CoreAPI.OnPasswordCheckListener {
     private final String TAG = getClass().getSimpleName();
 
     private EditText mPasswordEditText;
@@ -211,7 +212,14 @@ public class SpendingLimitsFragment extends BaseFragment {
 
 
     private void goSave() {
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+        mActivity.showModalProgress(true);
+        mCoreAPI.SetOnPasswordCheckListener(this, mPasswordEditText.getText().toString());
+    }
+
+    @Override
+    public void onPasswordCheck(boolean passwordOkay) {
+        mActivity.showModalProgress(false);
+        if(passwordOkay) {
             long satoshis = mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString());
             mCoreAPI.SetDailySpendSatoshis(satoshis);
             mCoreAPI.SetDailySpendLimitSetting(mDailySwitch.isChecked());
