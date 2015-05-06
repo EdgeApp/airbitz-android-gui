@@ -323,8 +323,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         //Hide some elements if this is not a fresh signup
         mMode = bundle.getInt(MODE);
         if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
-            mUserNameEditText.setVisibility(View.GONE);
+            // hide mUsername
             mUserNameRedRingCover.setVisibility(View.GONE);
+            mUserNameEditText.setVisibility(View.GONE);
+            mHintTextView.setVisibility(View.INVISIBLE);
+
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
@@ -338,7 +341,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mWithdrawalLabel.setVisibility(View.GONE);
             mUserNameEditText.requestFocus();
         }
-        else if (mMode == CHANGE_PASSWORD_NO_VERIFY) {
+        else if (mMode == CHANGE_PASSWORD) {
             // change mUsername label, title
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
@@ -347,10 +350,8 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mNextButton.setText(getResources().getString(R.string.string_done));
-            // hide mUsername
-            mUserNameRedRingCover.setVisibility(View.GONE);
-            mUserNameEditText.setVisibility(View.GONE);
-            mHintTextView.setVisibility(View.INVISIBLE);
+            // change title
+            mTitleTextView.setText(R.string.activity_signup_title_change_password);
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
