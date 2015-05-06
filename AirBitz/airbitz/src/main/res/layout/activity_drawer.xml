@@ -8,54 +8,7 @@
     android:background="@color/light_gray"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
 
-        <include layout="@layout/divider_horizontal_dark_gray" />
-
-        <TextView
-            android:id="@+id/item_drawer_logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/transparent_until_pressed"
-            android:clickable="true"
-            android:drawableLeft="@drawable/icon_logout"
-            android:drawablePadding="20dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:paddingBottom="20dp"
-            android:paddingLeft="20dp"
-            android:paddingTop="20dp"
-            android:singleLine="true"
-            android:text="@string/drawer_logout"
-            android:textColor="@color/gray_text"
-            android:textSize="20dp" />
-
-        <include layout="@layout/divider_horizontal_dark_gray" />
-
-        <TextView
-            android:id="@+id/item_drawer_settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/transparent_until_pressed"
-            android:clickable="true"
-            android:drawableLeft="@drawable/icon_settings"
-            android:drawablePadding="20dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:paddingBottom="20dp"
-            android:paddingLeft="20dp"
-            android:paddingTop="20dp"
-            android:singleLine="true"
-            android:text="@string/drawer_settings"
-            android:textColor="@color/gray_text"
-            android:textSize="20dp" />
-
-
-    </LinearLayout>
     <LinearLayout
         android:id="@+id/drawer_top_layout"
         android:layout_width="match_parent"
@@ -114,6 +67,14 @@
 
         <include layout="@layout/divider_horizontal_dark_gray" />
 
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_drawer_bottom_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/drawer_top_layout" >
+
         <TextView
             android:id="@+id/item_drawer_buy_sell"
             android:layout_width="match_parent"
@@ -132,9 +93,60 @@
             android:textColor="@color/gray_text"
             android:textSize="20dp" />
 
-        <include layout="@layout/divider_horizontal_dark_gray" />
+        <include layout="@layout/divider_horizontal_dark_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/item_drawer_buy_sell" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <include layout="@layout/divider_horizontal_dark_gray" />
+
+            <TextView
+                android:id="@+id/item_drawer_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/transparent_until_pressed"
+                android:clickable="true"
+                android:drawableLeft="@drawable/icon_logout"
+                android:drawablePadding="20dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:singleLine="true"
+                android:text="@string/drawer_logout"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <include layout="@layout/divider_horizontal_dark_gray" />
+
+            <TextView
+                android:id="@+id/item_drawer_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/transparent_until_pressed"
+                android:clickable="true"
+                android:drawableLeft="@drawable/icon_settings"
+                android:drawablePadding="20dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:singleLine="true"
+                android:text="@string/drawer_settings"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/drawer_account_list"

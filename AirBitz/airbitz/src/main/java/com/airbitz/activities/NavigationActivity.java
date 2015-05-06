@@ -247,6 +247,7 @@ public class NavigationActivity extends Activity
 
     private DrawerLayout mDrawer;
     private RelativeLayout mDrawerView;
+    private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
     private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
@@ -2019,6 +2020,7 @@ public class NavigationActivity extends Activity
         mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
         mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
 
+        mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
         mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2110,6 +2112,7 @@ public class NavigationActivity extends Activity
 
     private void openDrawer() {
         mDrawerAccount.setText(AirbitzApplication.getUsername());
+        showOthersList(AirbitzApplication.getUsername(), false);
         mDrawer.openDrawer(mDrawerView);
     }
 
@@ -2119,21 +2122,15 @@ public class NavigationActivity extends Activity
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
-            if(mOtherAccountsAdapter.getCount() > 4) {
-                View item = mOtherAccountsAdapter.getView(0, null, mOtherAccountsListView);
-                item.measure(0, 0);
-                ViewGroup.LayoutParams params = mOtherAccountsListView.getLayoutParams();
-                params.height = 4 * item.getMeasuredHeight();
-                mOtherAccountsListView.setLayoutParams(params);
-            }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
+            mDrawerBuySellLayout.setVisibility(View.GONE);
             mDrawerAccountArrow.animate()
                     .rotation(180)
                     .start();
-
         }
         else {
             mOtherAccountsListView.setVisibility(View.GONE);
+            mDrawerBuySellLayout.setVisibility(View.VISIBLE);
             mDrawerAccountArrow.animate()
                     .rotation(0)
                     .start();
