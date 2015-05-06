@@ -2949,15 +2949,16 @@ public class CoreAPI {
     OnPasswordCheckListener mOnPasswordCheckListener = null;
     public void SetOnPasswordCheckListener(OnPasswordCheckListener listener, String password) {
         mOnPasswordCheckListener = listener;
+        mPeriodicTaskHandler.post(new PasswordOKAsync(password));
     }
     public interface OnPasswordCheckListener {
         void onPasswordCheck(boolean passwordOkay);
     }
 
-    private class PasswordOKRunnable implements Runnable {
+    private class PasswordOKAsync implements Runnable {
         private final String mPassword;
 
-        PasswordOKRunnable(final String password) {
+        PasswordOKAsync(final String password) {
             this.mPassword = password;
         }
 
@@ -2967,20 +2968,12 @@ public class CoreAPI {
                 check = !PasswordExists();
             }
             else {
-                tABC_Error pError = new tABC_Error();
-                SWIGTYPE_p_long lp = core.new_longp();
-                SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
-
-                tABC_CC result = core.ABC_PasswordOk(AirbitzApplication.getUsername(), mPassword, okay, pError);
-                if(result.equals(tABC_CC.ABC_CC_Ok)) {
-                    check = getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
-                } else {
-                    Log.d(TAG, "Password OK error:"+pError.getSzDescription());
-                }
+                check = PasswordOK(AirbitzApplication.getUsername(), mPassword);
             }
 
             if(mOnPasswordCheckListener != null) {
                 mOnPasswordCheckListener.onPasswordCheck(check);
+                mOnPasswordCheckListener = null;
             }
         }
     }
