@@ -154,8 +154,8 @@ public class WalletFragment extends BaseFragment
     private ListView mListTransaction;
     private ViewGroup mListHeaderView;
     private TransactionAdapter mTransactionAdapter;
-    private List<Transaction> mTransactions;
-    private List<Transaction> mAllTransactions;
+    private List<Transaction> mTransactions = new ArrayList<Transaction>();
+    private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
     private LinkedHashMap<String, Uri> mCombinedPhotos;
     private Wallet mWallet;
     private CoreAPI mCoreAPI;
@@ -181,9 +181,6 @@ public class WalletFragment extends BaseFragment
                 } else {
                     mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
                 }
-                if (mTransactions == null) {
-                    mTransactions = new ArrayList<Transaction>();
-                }
             }
         }
     }
@@ -201,9 +198,6 @@ public class WalletFragment extends BaseFragment
         mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_wallet_swipe_layout);
         mSwipeLayout.setOnRefreshListener(this);
 
-        mAllTransactions = new ArrayList<Transaction>();
-        mAllTransactions.addAll(mTransactions);
-
         mCombinedPhotos = Common.GetMatchedContactsList(mActivity, null);
         mTransactionAdapter = new TransactionAdapter(mActivity, mWallet, mTransactions, mCombinedPhotos);
 
@@ -214,7 +208,6 @@ public class WalletFragment extends BaseFragment
         mWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallet_walletname_edittext);
 
         mExportButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_wallet_export_button);
-
 
         mButtonMover = (Button) mView.findViewById(R.id.button_mover);
         mHeaderView = (RelativeLayout) mView.findViewById(R.id.fragment_wallet_export_layout);
@@ -547,6 +540,17 @@ public class WalletFragment extends BaseFragment
             mSendButton.setEnabled(false);
             mSendButton.setAlpha(0.5f);
         }
+
+        if(mSearchLayout.getVisibility() == View.VISIBLE) {
+            // kick off a search if search field has text
+            mSearchField.setText(mSearchField.getText().toString());
+            mSearchField.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSearchField.selectAll();
+                }
+            });
+        }
     }
 
     private void updateSendRequestButtons() {
@@ -679,6 +683,7 @@ public class WalletFragment extends BaseFragment
             if (!isAdded()) {
                 return;
             }
+            mAllTransactions = transactions;
             updateTransactionsListView(transactions);
 
             mTransactionTask = null;
