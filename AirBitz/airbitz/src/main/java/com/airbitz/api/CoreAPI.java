@@ -2841,7 +2841,7 @@ public class CoreAPI {
                 Log.d(TAG, "BitcoinURI category: " + uri.getSzCategory());
                 Log.d(TAG, "BitcoinURI return address: " + uri.getSzRet());
 
-                if(!isValidCategory(uri.getSzCategory())) {
+                if (null == uri.getSzCategory() || !isValidCategory(uri.getSzCategory())) {
                     uri.setSzCategory("");
                 }
             }
