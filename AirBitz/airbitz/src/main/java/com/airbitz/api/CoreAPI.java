@@ -158,6 +158,13 @@ public class CoreAPI {
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
 
+            // Fetch General Info
+            new Thread(new Runnable() {
+                public void run() {
+                    generalInfoUpdate();
+                }
+            }).start();
+
             initCurrencies();
         }
     }
@@ -2834,7 +2841,7 @@ public class CoreAPI {
                 Log.d(TAG, "BitcoinURI category: " + uri.getSzCategory());
                 Log.d(TAG, "BitcoinURI return address: " + uri.getSzRet());
 
-                if(!isValidCategory(uri.getSzCategory())) {
+                if (null == uri.getSzCategory() || !isValidCategory(uri.getSzCategory())) {
                     uri.setSzCategory("");
                 }
             }

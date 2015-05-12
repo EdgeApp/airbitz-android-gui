@@ -109,6 +109,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private List<String> mStringQuestions;
     private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mNumericQuestions;
+    private Map<String, Integer> mMustCategory = new HashMap<String, Integer>();
+    private List<String> mMustQuestions;
     private boolean mSaved = false;
 
     private CoreAPI mCoreAPI;
@@ -168,6 +170,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         mStringQuestions = new ArrayList<String>();
         mNumericQuestions = new ArrayList<String>();
+        mMustQuestions = new ArrayList<String>();
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
@@ -373,10 +376,10 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         int position = 0;
         mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
         mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
         mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
         mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
 
         setListWithQuestionViews(mQuestionViews);
     }
@@ -423,8 +426,10 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 List<String> unchosen;
                 if (qv.mType == QuestionType.STRING) {
                     unchosen = getUnchosenQuestions(mStringQuestions);
-                } else {
+                } else if (qv.mType == QuestionType.NUMERIC) {
                     unchosen = getUnchosenQuestions(mNumericQuestions);
+                } else {
+                    unchosen = getUnchosenQuestions(mMustQuestions);
                 }
                 qv.setAvailableQuestions(unchosen);
 
@@ -479,7 +484,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         }
     }
 
-    private enum QuestionType {STRING, NUMERIC}
+    private enum QuestionType {STRING, NUMERIC, MUST}
 
     /**
      * Attempt to verify answers
@@ -579,10 +584,14 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     } else if (category.equals("numeric")) {
                         mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
                         mNumericQuestions.add(choice.getQuestion());
+                    } else if (category.equals("must")) {
+                        mMustCategory.put(choice.getQuestion(), (int) choice.getMinLength());
+                        mMustQuestions.add(choice.getQuestion());
                     }
                 }
                 mStringQuestions.add(getString(R.string.activity_recovery_question_default));
                 mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
+                mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
                 Log.d(TAG, "No Questions");
@@ -705,6 +714,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     } else if (mType == QuestionType.NUMERIC) {
                         if (mNumericCategory.containsKey(chosenQuestion))
                             mCharLimit = mNumericCategory.get(chosenQuestion);
+                    } else if (mType == QuestionType.MUST) {
+                        if (mMustCategory.containsKey(chosenQuestion))
+                            mCharLimit = mMustCategory.get(chosenQuestion);
                     }
 
                     if (mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
