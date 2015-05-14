@@ -136,6 +136,10 @@ public class QRCamera implements
     }
 
     private void startupTheCamera() {
+        if(mFragment.getActivity() == null) {
+            return;
+        }
+
         //Get back camera unless there is none, then try the front camera - fix for Nexus 7
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras == 0) {
@@ -161,9 +165,7 @@ public class QRCamera implements
             mCamera = Camera.open(cameraIndex);
         } catch (Exception e) {
             Log.d(TAG, "Camera Does Not exist");
-            if(mFragment.getActivity() != null) {
-                mHandler.postDelayed(cameraStartRunner, 500);
-            }
+            mHandler.postDelayed(cameraStartRunner, 500);
             return;
         }
 

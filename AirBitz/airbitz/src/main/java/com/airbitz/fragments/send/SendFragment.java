@@ -481,12 +481,6 @@ public class SendFragment extends BaseFragment implements
         hasCheckedFirstUsage = false;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopCamera();
-    }
-
     public void ShowMessageAndStartCameraDialog(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(message)
