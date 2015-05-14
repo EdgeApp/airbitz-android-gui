@@ -268,13 +268,6 @@ public class NavigationActivity extends Activity
 
         mCoreAPI = initiateCore(this);
 
-        mCoreAPI.setOnOTPErrorListener(this);
-        mCoreAPI.setOTPResetRequestListener(this);
-        mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnDataSyncListener(this);
-        mCoreAPI.setOnBlockHeightChangeListener(this);
-        mCoreAPI.setOnOnRemotePasswordChangeListener(this);
-
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
@@ -337,6 +330,15 @@ public class NavigationActivity extends Activity
         // Navigation Drawer slideout
         setupDrawer();
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    private void setCoreListeners(NavigationActivity activity) {
+        mCoreAPI.setOnOTPErrorListener(activity);
+        mCoreAPI.setOTPResetRequestListener(activity);
+        mCoreAPI.setOnIncomingBitcoinListener(activity);
+        mCoreAPI.setOnDataSyncListener(activity);
+        mCoreAPI.setOnBlockHeightChangeListener(activity);
+        mCoreAPI.setOnOnRemotePasswordChangeListener(activity);
     }
 
     public static CoreAPI initiateCore(Context context) {
@@ -748,6 +750,8 @@ public class NavigationActivity extends Activity
 
         mCoreAPI.addExchangeRateChangeListener(this);
 
+        setCoreListeners(this);
+
         activityInForeground = true;
 
         super.onResume();
@@ -756,6 +760,8 @@ public class NavigationActivity extends Activity
     @Override
     public void onPause() {
         super.onPause();
+
+        setCoreListeners(null);
 
         activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
