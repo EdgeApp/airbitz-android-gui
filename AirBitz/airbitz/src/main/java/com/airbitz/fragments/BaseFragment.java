@@ -39,12 +39,24 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.squareup.leakcanary.RefWatcher;
 
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
     NavigationActivity mActivity;
+
+
+    // For debug builds, watch for memory leaks of all fragments
+    @Override public void onDestroy() {
+        super.onDestroy();
+        if(AirbitzApplication.isDebugging()) {
+            RefWatcher refWatcher = AirbitzApplication.getRefWatcher(getActivity());
+            refWatcher.watch(this);
+        }
+    }
 
     // Overriding the fragment transition animations to use variable display width
     @Override

@@ -39,6 +39,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+
 import java.util.UUID;
 
 /**
@@ -63,10 +66,20 @@ public class AirbitzApplication extends Application {
     private static String mClientId;
     private static String mUserAgent;
 
+    // Memory leak watcher
+    private RefWatcher refWatcher;
+    public static RefWatcher getRefWatcher(Context context) {
+        AirbitzApplication application = (AirbitzApplication) context.getApplicationContext();
+        return application.refWatcher;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        if(isDebugging()) {
+            refWatcher = LeakCanary.install(this);
+        }
     }
 
     public static boolean isLoggedIn() {
