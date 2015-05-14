@@ -659,7 +659,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
 
             public void onStartFailure(int errorCode) {
                 mActivity.ShowFadingDialog(getString(R.string.request_qr_ble_advertise_start_failed));
-            };
+            }
         };
 
         mBleAdvertiser.startAdvertising(
@@ -679,6 +679,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         if (mBleAdvertiser != null) {
             mBleAdvertiser.stopAdvertising(mAdvCallback);
             mBleAdvertiser = null;
+            mAdvCallback = null;
         }
     }
 
