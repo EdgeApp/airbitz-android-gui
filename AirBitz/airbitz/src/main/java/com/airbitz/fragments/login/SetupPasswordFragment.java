@@ -446,7 +446,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         protected String doInBackground(Void... params) {
             mPasswordString = null;
             if(mPassword != null) {
-                String.valueOf(mPassword);
+                mPasswordString = String.valueOf(mPassword);
             }
             return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
                     mPasswordString , mWithdrawalPinEditText.getText().toString());
