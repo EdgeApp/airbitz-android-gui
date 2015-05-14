@@ -176,7 +176,8 @@ public class QRCamera implements
                 List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
                 if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO) &&
+                        !supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     mHandler.post(cameraFocusRunner);
                 }
