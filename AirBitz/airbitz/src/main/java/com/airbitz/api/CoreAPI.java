@@ -3182,7 +3182,7 @@ public class CoreAPI {
 
         public boolean newSpend(String text) {
             tABC_Error pError = new tABC_Error();
-            core.ABC_SpendNewDecode(_pSpendSWIG, text, pError);
+            core.ABC_SpendNewDecode(text, _pSpendSWIG, pError);
             _pSpend = new Spend(core.longp_value(_lpSpend));
             return pError.getCode() == tABC_CC.ABC_CC_Ok;
         }
