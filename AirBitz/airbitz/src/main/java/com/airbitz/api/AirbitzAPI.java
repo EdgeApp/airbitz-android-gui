@@ -68,7 +68,6 @@ import javax.net.ssl.TrustManager;
 public class AirbitzAPI {
 
     private static AirbitzAPI mInstance = null;
-
     private static String TAG = AirbitzAPI.class.getSimpleName();
 
     private static final String SERVER_ROOT = "https://api.airbitz.co/";
@@ -114,7 +113,7 @@ public class AirbitzAPI {
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
         HttpsURLConnection urlConnection = null;
-        Log.d(TAG, url + params.toString());
+        Log.d(TAG, url + params);
         if (api.mApiCache.get(url + params) != null) {
             return (String) api.mApiCache.get(url + params);
         }
@@ -213,6 +212,9 @@ public class AirbitzAPI {
     public String getSearchByTerm(String term, String page_size, String page, String sort){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("term", term));
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
 
         if(page_size.length() != 0){
             params.add(new BasicNameValuePair("page_size", page_size));
@@ -271,6 +273,9 @@ public class AirbitzAPI {
     public String getSearchByLatLongAndBusiness(String latlong, String businessName, String category, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", latlong));
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
 
         if(businessName.length()>0){
             params.add(new BasicNameValuePair("term", businessName));
@@ -333,6 +338,9 @@ public class AirbitzAPI {
     public String getSearchByBoundsAndBusiness(String bounds, String businessName, String category, String ll, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("bounds", bounds));
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
 
         if(businessName.length()>0){
             params.add(new BasicNameValuePair("term", businessName));
@@ -439,7 +447,7 @@ public class AirbitzAPI {
         }catch (JSONException e){
             Log.e(TAG, ""+e.getMessage());
         }catch (Exception e){
-            Log.e(TAG, ""+e.getMessage());
+            Log.e(TAG, "" + e.getMessage());
         }
         return null;
     }
@@ -453,6 +461,9 @@ public class AirbitzAPI {
         if(term.length() > 0){
 
             params.add(new BasicNameValuePair("term", term));
+        }
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
         }
 
         if(ll.length()>0){
@@ -470,7 +481,7 @@ public class AirbitzAPI {
                 }
             }
         }catch (JSONException e){
-            Log.d(TAG, ""+e.getMessage());
+            Log.d(TAG, "" + e.getMessage());
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -486,6 +497,10 @@ public class AirbitzAPI {
 
         if(term.length()>0){
             params.add(new BasicNameValuePair("term", term));
+        }
+
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
         }
 
         if(location.length() > 0){
@@ -552,6 +567,9 @@ public class AirbitzAPI {
         if(businessFlag.equalsIgnoreCase("business")){
             params.add(new BasicNameValuePair("term", name));
         }
+        if(getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
         else if(businessFlag.equalsIgnoreCase("category")){
             params.add(new BasicNameValuePair("category", name));
         }
@@ -570,4 +588,8 @@ public class AirbitzAPI {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
+    private String getLanguageCode() {
+        String lang = AirbitzApplication.getContext().getResources().getConfiguration().locale.getLanguage();
+        return (lang.equals("en") || lang.equals("es")) ? lang : null;
+    }
 }
