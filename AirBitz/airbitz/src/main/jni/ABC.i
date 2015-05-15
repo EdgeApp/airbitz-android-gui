@@ -9,6 +9,7 @@
 %pointer_functions(int, intp);
 %pointer_functions(long, longp);
 %pointer_functions(int64_t, int64_tp);
+%pointer_functions(uint64_t, uint64_tp);
 %pointer_functions(double, doublep);
 
 %include typemaps.i
@@ -38,4 +39,4 @@
 %pointer_cast(long *, tABC_QuestionChoices **, longp_to_ppQuestionChoices);
 %pointer_cast(long *, unsigned char **, longp_to_unsigned_ppChar);
 %pointer_cast(char **, long *, charpp_to_longp);
-%pointer_cast(long *, tABC_BitcoinURIInfo **, longPtr_to_ppBitcoinURIInfo);
+%pointer_cast(long *, tABC_SpendTarget **, longPtr_to_ppSpendTarget);

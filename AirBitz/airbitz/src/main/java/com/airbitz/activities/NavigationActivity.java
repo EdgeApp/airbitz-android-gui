@@ -903,21 +903,13 @@ public class NavigationActivity extends Activity
             bundle.putString(URI_DATA, dataUri.toString());
             switchFragmentThread(Tabs.SEND.ordinal(), bundle);
         } else {
-            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(dataUri.toString());
-            if (info != null && info.address != null) {
-                switchFragmentThread(Tabs.SEND.ordinal());
-                Fragment fragment = new SendConfirmationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SendFragment.IS_UUID, false);
-                bundle.putString(SendFragment.UUID, info.address);
-                bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
-                bundle.putString(SendFragment.LABEL, info.label);
-                bundle.putString(SendFragment.CATEGORY, info.getSzCategory());
-                bundle.putString(SendFragment.RETURN_URL, info.getSzRet());
-                bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
-                fragment.setArguments(bundle);
-                pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
-            }
+            CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
+            switchFragmentThread(Tabs.SEND.ordinal());
+            SendConfirmationFragment fragment = new SendConfirmationFragment();
+            fragment.setSpendTarget(target);
+            Bundle bundle = new Bundle();
+            bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
+            fragment.setArguments(bundle);
         }
     }
 
