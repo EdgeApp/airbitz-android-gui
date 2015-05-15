@@ -280,7 +280,9 @@ public class SendFragment extends BaseFragment implements
         mListingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                GotoSendConfirmation(mCurrentListing.get(i).getUUID(), 0, " ", "", "", true);
+                CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
+                target.newTransfer(mCurrentListing.get(i).getUUID());
+                GotoSendConfirmation(target);
             }
         });
 
@@ -315,10 +317,10 @@ public class SendFragment extends BaseFragment implements
             return;
         }
 
-        CoreAPI.BitcoinURIInfo results = mCoreAPI.CheckURIResults(strTo);
-        if (results.address != null) {
-            GotoSendConfirmation(results.address, results.amountSatoshi, results.label,
-                    results.getSzCategory(), results.getSzRet(), false);
+        CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
+        if(target.newSpend(strTo)) {
+            Log.d(TAG, "Bitcoin found");
+            GotoSendConfirmation(target);
         } else {
             ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
             ((NavigationActivity) getActivity()).ShowOkMessageDialog(
@@ -359,18 +361,13 @@ public class SendFragment extends BaseFragment implements
         }
     }
 
-    public void GotoSendConfirmation(String uuid, long amountSatoshi, String label, String category, String returnUrl, boolean isUUID) {
+    public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
         if (mToEdittext != null) {
             mActivity.hideSoftKeyboard(mToEdittext);
         }
-        Fragment fragment = new SendConfirmationFragment();
+        SendConfirmationFragment fragment = new SendConfirmationFragment();
+        fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IS_UUID, isUUID);
-        bundle.putString(UUID, uuid);
-        bundle.putLong(AMOUNT_SATOSHI, amountSatoshi);
-        bundle.putString(LABEL, label);
-        bundle.putString(CATEGORY, category);
-        bundle.putString(RETURN_URL, returnUrl);
         if (mFromWallet == null) {
             if (mCoreAPI == null) {
                 mCoreAPI = CoreAPI.getApi();
@@ -605,11 +602,12 @@ public class SendFragment extends BaseFragment implements
     public void onScanResult(String result) {
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
-            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(result);
-            if (info != null && info.address != null) {
+            CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
+
+            if(target.newSpend(result)) {
                 Log.d(TAG, "Bitcoin found");
-                GotoSendConfirmation(info.address, info.amountSatoshi, info.label, info.getSzCategory(), info.getSzRet(), false);
-            } else if (info != null) {
+                GotoSendConfirmation(target);
+            } else {
                 ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
             }
             mQRCamera.setOnScanResultListener(null);
@@ -650,9 +648,12 @@ public class SendFragment extends BaseFragment implements
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
                 if (!uriData.isEmpty()) {
-                    CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(uriData);
-                    if (info != null && info.getSzAddress() != null) {
-                        GotoSendConfirmation(info.address, info.amountSatoshi, info.label, info.getSzCategory(), info.getSzRet(), false);
+                    CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
+                    if(target.newSpend(uriData)) {
+                        Log.d(TAG, "Bitcoin found");
+                        GotoSendConfirmation(target);
+                    } else {
+                        ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
                     }
                 }
             }

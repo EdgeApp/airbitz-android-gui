@@ -31,31 +31,26 @@
 
 package com.airbitz.plugins;
 
-import android.app.Fragment;
-import android.graphics.Color;
-import android.os.Build;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import android.graphics.Rect;
-import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreAPI.SpendTarget;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
-import com.airbitz.plugins.PluginFramework.UiHandler;
 import com.airbitz.plugins.PluginFramework.Plugin;
-import com.airbitz.utils.Common;
+import com.airbitz.plugins.PluginFramework.UiHandler;
 
 import java.util.Stack;
 
@@ -202,20 +197,22 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
             };
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    mSendConfirmation = new SendConfirmationFragment();
-                    mSendConfirmation.setExitHandler(exitHandler);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(SendFragment.UUID, address);
-                    bundle.putLong(SendFragment.AMOUNT_SATOSHI, amountSatoshi);
-                    bundle.putDouble(SendFragment.AMOUNT_FIAT, amountFiat);
-                    bundle.putString(SendFragment.FROM_WALLET_UUID, uuid);
-                    bundle.putString(SendFragment.LABEL, label);
-                    bundle.putString(SendFragment.CATEGORY, category);
-                    bundle.putString(SendFragment.NOTES, notes);
-                    bundle.putBoolean(SendFragment.LOCKED, true);
-                    mSendConfirmation.setArguments(bundle);
+                    CoreAPI api = CoreAPI.getApi();
+                    SpendTarget target = api.getNewSpendTarget();
+                    if(target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
+                        mSendConfirmation = new SendConfirmationFragment();
+                        mSendConfirmation.setSpendTarget(target);
+                        mSendConfirmation.setExitHandler(exitHandler);
 
-                    ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.MORE.ordinal());
+                        Bundle bundle = new Bundle();
+                        bundle.putDouble(SendFragment.AMOUNT_FIAT, amountFiat);
+                        bundle.putString(SendFragment.FROM_WALLET_UUID, uuid);
+                        bundle.putBoolean(SendFragment.LOCKED, true);
+                        mSendConfirmation.setArguments(bundle);
+
+                        ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.MORE.ordinal());
+
+                    }
                 }
             });
         }
