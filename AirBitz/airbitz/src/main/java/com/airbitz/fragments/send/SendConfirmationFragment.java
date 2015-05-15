@@ -817,6 +817,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             _destUUID = mSpendTarget.getSpend().getSzDestUUID();
             if (_destUUID != null) {
                 mIsUUID = true;
+                mToWallet = mCoreAPI.getWalletFromUUID(_destUUID);
             }
             mAmountToSendSatoshi = mSpendTarget.getSpendAmount();
         }
