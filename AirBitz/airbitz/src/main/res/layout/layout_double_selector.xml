@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_double_selector"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:ignore="MergeRootFrame">
+
+        <LinearLayout
+            android:id="@+id/layout_double_selector_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_white_outline"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/layout_double_selector_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="USD"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/white"
+                android:textSize="16dp" />
+
+            <FrameLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"/>
+
+            <Button
+                android:id="@+id/layout_double_selector_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="mBTC"
+                android:singleLine="true"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/white"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+</RelativeLayout>
