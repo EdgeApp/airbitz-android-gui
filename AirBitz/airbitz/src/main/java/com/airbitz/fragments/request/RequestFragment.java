@@ -79,8 +79,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -136,26 +138,24 @@ public class RequestFragment extends BaseFragment implements
     private final String TAG = getClass().getSimpleName();
     int mFromIndex = 0;
     private String mUUID = null;
-    private EditText mBitcoinField;
+    private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
     private HighlightOnPressImageButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
-    private HighlightOnPressButton mNextButton;
     private TextView mTitleTextView;
     private TextView mWalletTextView;
     private TextView mConverterTextView;
-    private TextView mBTCDenominationTextView;
-    private TextView mFiatDenominationTextView;
+    private TextView mDenominationTextView;
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
 
     private Long mSavedSatoshi;
     private int mSavedIndex;
-    private boolean mBtc = false;
+    private boolean mAmountIsBitcoin = false;
 
     private NavigationActivity mActivity;
     private Handler mHandler;
@@ -168,6 +168,9 @@ public class RequestFragment extends BaseFragment implements
     private NfcAdapter mNfcAdapter;
     private ImageView mNFCImageView;
     private ImageView mBLEImageView;
+    private Button mSMSButton;
+    private Button mEmailButton;
+    private Button mCopyButton;
     private boolean emailType = false;
     private ImageView mQRView;
     private Bitmap mQRBitmap;
@@ -197,8 +200,7 @@ public class RequestFragment extends BaseFragment implements
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
-        mBitcoinField = (EditText) mView.findViewById(R.id.edittext_btc);
-
+        mAmountField = (EditText) mView.findViewById(R.id.edittext_btc);
 
 //        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 //        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
@@ -212,26 +214,37 @@ public class RequestFragment extends BaseFragment implements
 
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 
-        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.button_expand);
-
         pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
         mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
         mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mBitcoinField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mBTCDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
-        mFiatDenominationTextView = (TextView) mView.findViewById(R.id.request_fiat_denomination);
-
-
+        mDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.fragment_request_bitcoin_address);
 
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        View buttons = (RelativeLayout) mView.findViewById(R.id.fragment_request_action_buttons);
+        mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
+        mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goNext();
+                copyToClipboard();
+            }
+        });
+        mEmailButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_center);
+        mEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startEmail();
+            }
+        });
+        mSMSButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_right);
+        mSMSButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSMS();
             }
         });
 
@@ -243,7 +256,7 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
-        final TextWatcher mBTCTextWatcher = new TextWatcher() {
+        final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
@@ -254,27 +267,19 @@ public class RequestFragment extends BaseFragment implements
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!mAutoUpdatingTextFields) {
-                    updateTextFieldContents();
-                    mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
-                }
+                amountChanged();
             }
         };
 
-        mBitcoinField.addTextChangedListener(mBTCTextWatcher);
+        mAmountField.addTextChangedListener(mAmountChangedListener);
 
-        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mAmountField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    EditText edittext = (EditText) view;
-                    mBtc = true;
-
-                    mBitcoinField.setText("");
-                    mAutoUpdatingTextFields = true;
-                    mBitcoinField.addTextChangedListener(mBTCTextWatcher);
-                    mCalculator.setEditText(mBitcoinField);
-                    mAutoUpdatingTextFields = false;
+                    mAmountIsBitcoin = true;
+                    mAmountField.setText("");
+                    mCalculator.setEditText(mAmountField);
                     ((NavigationActivity) getActivity()).showCalculator();
                 } else {
                     ((NavigationActivity) getActivity()).hideCalculator();
@@ -282,14 +287,12 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
-        TextView.OnEditorActionListener calcDoneListener = new TextView.OnEditorActionListener() {
+        TextView.OnEditorActionListener amountEditorListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
                         keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    if(((NavigationActivity) getActivity()).isLargeDpi()) {
-                        goNext();
-                    }
+                    amountChanged();
                     return true;
                 }
                 else {
@@ -298,7 +301,7 @@ public class RequestFragment extends BaseFragment implements
             }
         };
 
-        mBitcoinField.setOnEditorActionListener(calcDoneListener);
+        mAmountField.setOnEditorActionListener(amountEditorListener);
 
         // Prevent OS keyboard from showing
         try {
@@ -306,7 +309,7 @@ public class RequestFragment extends BaseFragment implements
                     "setShowSoftInputOnFocus"
                     , new Class[] { boolean.class });
             method.setAccessible(true);
-            method.invoke(mBitcoinField, false);
+            method.invoke(mAmountField, false);
         } catch (Exception e) {
             // ignore
         }
@@ -322,14 +325,12 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSelectedWallet = mWallets.get(i);
-                mFiatDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
                 setConversionText(mSelectedWallet.getCurrencyNum());
-                updateTextFieldContents();
+                updateAmount();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
         return mView;
@@ -342,11 +343,11 @@ public class RequestFragment extends BaseFragment implements
         format.setDecimalFormatSymbols(symbols);
         float f = 0f;
         try {
-            f = format.parse(mBitcoinField.getText().toString()).floatValue();
+            f = format.parse(mAmountField.getText().toString()).floatValue();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (!mBitcoinField.getText().toString().isEmpty() && f < 0) {
+        if (!mAmountField.getText().toString().isEmpty() && f < 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
             builder.setMessage(getString(R.string.request_invalid_amount))
                     .setCancelable(false)
@@ -360,7 +361,7 @@ public class RequestFragment extends BaseFragment implements
             AlertDialog alert = builder.create();
             alert.show();
         } else {
-            mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+            mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
             mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
 
             Wallet wallet = (Wallet) pickWalletSpinner.getSelectedItem();
@@ -370,7 +371,7 @@ public class RequestFragment extends BaseFragment implements
             Fragment frag = new RequestQRCodeFragment();
             Bundle bundle = new Bundle();
             bundle.putString(Wallet.WALLET_UUID, wallet.getUUID());
-            bundle.putString(BITCOIN_VALUE, mBitcoinField.getText().toString());
+            bundle.putString(BITCOIN_VALUE, mAmountField.getText().toString());
             bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
             bundle.putString(BITCOIN_ID, id);
             bundle.putString(BITCOIN_ADDRESS, requestAddress);
@@ -384,36 +385,41 @@ public class RequestFragment extends BaseFragment implements
         mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
     }
 
-    private void updateTextFieldContents() {
-        updateTextFieldContents(mBtc);
-    }
-
-    private void updateTextFieldContents(boolean btc) {
-        double currency;
-        long satoshi;
+    private void updateAmount() {
 
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         if(walletPosition < 0) {
             return;
         }
-        mAutoUpdatingTextFields = true;
         Wallet wallet = mWallets.get(walletPosition);
-        String bitcoin = mBitcoinField.getText().toString();
-        if (btc) {
+        if (mAmountIsBitcoin) {
+            String bitcoin = mAmountField.getText().toString();
             if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
-                satoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
             } else {
                 Log.d(TAG, "Too much bitcoin");
             }
         } else {
+            String fiat = mAmountField.getText().toString();
+            try {
+                if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
+                    double currency = Double.parseDouble(fiat);
+                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                } else {
+                    Log.d(TAG, "Too much fiat");
+                }
+            } catch (NumberFormatException e) {
+                //not a double, ignore
+            }
         }
-        mAutoUpdatingTextFields = false;
+
+        createNewQRBitmap();
     }
 
     private void focus(EditText view) {
         view.requestFocus();
         mCalculator.setEditText(view);
-        mBtc = mBitcoinField == view;
+        mAmountIsBitcoin = mAmountField == view;
     }
 
     @Override
@@ -436,7 +442,7 @@ public class RequestFragment extends BaseFragment implements
         // If calculator is locked open, unlock it
         ((NavigationActivity) getActivity()).unlockCalculator();
 
-        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mBitcoinField.getText().toString());
+        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
 
         mCoreAPI.setOnWalletLoadedListener(null);
     }
@@ -445,7 +451,7 @@ public class RequestFragment extends BaseFragment implements
     public void OnExchangeRatesChange() {
         if (mSelectedWallet != null) {
             setConversionText(mSelectedWallet.getCurrencyNum());
-            updateTextFieldContents();
+            updateAmount();
         }
     }
 
@@ -481,8 +487,7 @@ public class RequestFragment extends BaseFragment implements
             }
         }
 
-        mBTCDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
+        mDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
         setConversionText(mSelectedWallet.getCurrencyNum());
         mCoreAPI.addExchangeRateChangeListener(this);
 
@@ -490,13 +495,13 @@ public class RequestFragment extends BaseFragment implements
         if (mSavedSatoshi != null) {
             mFromIndex = mSavedIndex;
             if(mFromIndex < mWallets.size()) {
-                mBitcoinField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+                mAmountField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
                 mSelectedWallet = mWallets.get(mFromIndex);
                 pickWalletSpinner.setSelection(mFromIndex);
                 mSavedSatoshi = null;
             }
         } else {
-            mBitcoinField.setText("");
+            mAmountField.setText("");
             pickWalletSpinner.setSelection(mFromIndex);
         }
         mAutoUpdatingTextFields = false;
@@ -717,7 +722,23 @@ public class RequestFragment extends BaseFragment implements
 
     public void updateWithAmount(long newAmount) {
         mAmountSatoshi = newAmount;
+        mAmountField.setText(
+                String.format(getResources().getString(R.string.bitcoing_remaining),
+                        mCoreAPI.formatSatoshi(mAmountSatoshi, true))
+        );
 
+        createNewQRBitmap();
+
+        // Alert the user
+        alertPartialPayment();
+    }
+
+    public void amountChanged() {
+        mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+        createNewQRBitmap();
+    }
+
+    private void createNewQRBitmap() {
         if (mCreateBitmapTask != null) {
             mCreateBitmapTask.cancel(true);
         }
@@ -725,9 +746,6 @@ public class RequestFragment extends BaseFragment implements
         mID = null;
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        // Alert the user
-        alertPartialPayment();
     }
 
     private void alertPartialPayment() {
@@ -838,7 +856,7 @@ public class RequestFragment extends BaseFragment implements
     private void checkBle() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
-//            mBLEImageView.setVisibility(View.VISIBLE);
+            mBLEImageView.setVisibility(View.VISIBLE);
             stopAirbitzAdvertise();
             startAirbitzAdvertise(mRequestURI);
             mHandler.postDelayed(mContinuousReAdvertiseRunnable, READVERTISE_REPEAT_PERIOD);

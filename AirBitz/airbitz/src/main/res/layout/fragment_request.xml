@@ -163,7 +163,7 @@
                 android:textSize="14dp" />
 
             <include
-                android:id="@+id/fragment_request_triple_action"
+                android:id="@+id/fragment_request_action_buttons"
                 layout="@layout/layout_triple_selector"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"

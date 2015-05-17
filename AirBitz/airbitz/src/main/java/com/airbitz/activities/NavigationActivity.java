@@ -920,14 +920,14 @@ public class NavigationActivity extends Activity
         mTxId = txId;
 
         // If in merchant donation mode, stay on QR screen and show amount
-        RequestQRCodeFragment fragment = requestMatchesDonation();
+        RequestFragment fragment = requestMatchesDonation();
         if(fragment != null) {
             showIncomingDialog(walletUUID, txId, false);
             return;
         }
 
         /* If showing QR code, launch receiving screen*/
-        RequestQRCodeFragment f = requestMatchesQR(mUUID, mTxId);
+        RequestFragment f = requestMatchesQR(mUUID, mTxId);
         Log.d(TAG, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
@@ -1000,12 +1000,12 @@ public class NavigationActivity extends Activity
         ShowFadingDialog(message, delay);
     }
 
-    private RequestQRCodeFragment requestMatchesQR(String uuid, String txid) {
+    private RequestFragment requestMatchesQR(String uuid, String txid) {
         Fragment f = mNavStacks[mNavThreadId].peek();
         if (!(f instanceof RequestQRCodeFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isShowingQRCodeFor(uuid, txid)) {
             return qr;
         } else {
@@ -1013,12 +1013,12 @@ public class NavigationActivity extends Activity
         }
     }
 
-    private RequestQRCodeFragment requestMatchesDonation() {
+    private RequestFragment requestMatchesDonation() {
         Fragment f = mNavStacks[mNavThreadId].peek();
         if (!(f instanceof RequestQRCodeFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isMerchantDonation()) {
             return qr;
         } else {
