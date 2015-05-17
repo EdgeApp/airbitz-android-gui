@@ -975,8 +975,8 @@ void ABC_SpendTargetFree(tABC_SpendTarget *pSpend);
  * Creates a spend target from a piece of text.
  * The text could be a URL, a payment address, or other things as well.
  */
-tABC_CC ABC_SpendNewDecode(tABC_SpendTarget **ppSpend,
-                           const char *szText,
+tABC_CC ABC_SpendNewDecode(const char *szText,
+                           tABC_SpendTarget **ppSpend,
                            tABC_Error *pError);
 
 /**

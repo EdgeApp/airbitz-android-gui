@@ -431,8 +431,8 @@ public class core implements coreConstants {
     coreJNI.ABC_SpendTargetFree(tABC_SpendTarget.getCPtr(pSpend), pSpend);
   }
 
-  public static tABC_CC ABC_SpendNewDecode(SWIGTYPE_p_p_sABC_SpendTarget ppSpend, String szText, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SpendNewDecode(SWIGTYPE_p_p_sABC_SpendTarget.getCPtr(ppSpend), szText, tABC_Error.getCPtr(pError), pError));
+  public static tABC_CC ABC_SpendNewDecode(String szText, SWIGTYPE_p_p_sABC_SpendTarget ppSpend, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SpendNewDecode(szText, SWIGTYPE_p_p_sABC_SpendTarget.getCPtr(ppSpend), tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_SpendNewTransfer(String szUserName, String szWalletUUID, SWIGTYPE_p_uint64_t amount, SWIGTYPE_p_p_sABC_SpendTarget ppSpend, tABC_Error pError) {

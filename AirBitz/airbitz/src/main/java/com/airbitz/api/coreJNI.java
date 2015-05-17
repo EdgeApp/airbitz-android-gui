@@ -353,7 +353,7 @@ public class coreJNI {
   public final static native int ABC_GetPendingRequests(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native void ABC_FreeRequests(long jarg1, long jarg2);
   public final static native void ABC_SpendTargetFree(long jarg1, tABC_SpendTarget jarg1_);
-  public final static native int ABC_SpendNewDecode(long jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
+  public final static native int ABC_SpendNewDecode(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_SpendNewTransfer(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_SpendNewInternal(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, tABC_Error jarg7_);
   public final static native int ABC_SpendGetFee(String jarg1, String jarg2, long jarg3, tABC_SpendTarget jarg3_, long jarg4, long jarg5, tABC_Error jarg5_);
