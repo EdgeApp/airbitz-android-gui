@@ -6816,26 +6816,26 @@ SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_ABC_1SpendTargetFree(JNIEnv
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SpendNewDecode(JNIEnv *jenv, jclass jcls, jlong jarg1, jstring jarg2, jlong jarg3, jobject jarg3_) {
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1SpendNewDecode(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3, jobject jarg3_) {
   jint jresult = 0 ;
-  tABC_SpendTarget **arg1 = (tABC_SpendTarget **) 0 ;
-  char *arg2 = (char *) 0 ;
+  char *arg1 = (char *) 0 ;
+  tABC_SpendTarget **arg2 = (tABC_SpendTarget **) 0 ;
   tABC_Error *arg3 = (tABC_Error *) 0 ;
   tABC_CC result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg3_;
-  arg1 = *(tABC_SpendTarget ***)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
-    if (!arg2) return 0;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
+    if (!arg1) return 0;
   }
+  arg2 = *(tABC_SpendTarget ***)&jarg2; 
   arg3 = *(tABC_Error **)&jarg3; 
-  result = (tABC_CC)ABC_SpendNewDecode(arg1,(char const *)arg2,arg3);
+  result = (tABC_CC)ABC_SpendNewDecode((char const *)arg1,arg2,arg3);
   jresult = (jint)result; 
-  if (arg2) (*jenv)->ReleaseStringUTFChars(jenv, jarg2, (const char *)arg2);
+  if (arg1) (*jenv)->ReleaseStringUTFChars(jenv, jarg1, (const char *)arg1);
   return jresult;
 }
 
