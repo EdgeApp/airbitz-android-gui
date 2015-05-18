@@ -2,10 +2,9 @@
 <html ng-app="app">
 <head>
   <!-- meta name=viewport content="width=device-width, height=device-height, initial-scale=1, user-scalable=no" -->
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <!-- iOS meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" / -->
   <!-- ANDROID meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" / -->
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="Glidera Exchange Interface for Airbitz">
   <meta charset="utf-8">
   <title>Glidera Exchange</title>
@@ -481,7 +480,6 @@ html body {
 html body #main-content {
   position: absolute;
   width: 100%;
-  padding-bottom: 70px;
 }
 html body #wrap {
   position: absolute;
@@ -786,7 +784,7 @@ body .exchange-buy-sell {
   margin-bottom: 30px;
 }
 body .buy-sell-header {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 body .buy-sell-header .btn-group .btn.active {
   background: none;
@@ -7430,7 +7428,7 @@ var Glidera = (function () {
           var s = mv.toString().split('').map(function(i) {
             return parseInt(i);
           });
-          checksum = (7 * (s[0] + s[3] + s[6]) +
+          var checksum = (7 * (s[0] + s[3] + s[6]) +
                       3 * (s[1] + s[4] + s[7]) +
                       9 * (s[2] + s[5])) % 10;
           return s[8] == checksum;
@@ -7645,7 +7643,6 @@ var Glidera = (function () {
     .controller('disclaimerController', ['$scope', '$state', 'Error', 'States', 'UserFactory', disclaimerController])
     .controller('signupController', ['$scope', '$state', 'Error', 'States', 'UserFactory', signupController])
     .controller('verifyEmailController', ['$scope', '$state', 'Error', 'UserFactory', verifyEmailController])
-    .controller('verifyInfoController', ['$scope', '$state', 'Error', 'States', 'Occupations', 'UserFactory', verifyInfoController])
     .controller('verifyPhoneController', ['$scope', '$state', 'Error', 'DataFactory', 'UserFactory', 'TwoFactor', verifyPhoneController])
     .directive('phoneNumberValidator', phoneNumberValidator);
 
@@ -7662,6 +7659,8 @@ var Glidera = (function () {
     }
   }
   function userAccountController($scope, $state, Error, States, Occupations, UserFactory) {
+    var title = 'User Information';
+    Airbitz.ui.title(title);
     $scope.states = States.getStates();
     $scope.occupations = Occupations.getOccupations();
     $scope.account = UserFactory.getUserAccount();
@@ -7680,7 +7679,10 @@ var Glidera = (function () {
       UserFactory.updateUserAccount($scope.account).then(function() {
         Airbitz.ui.showAlert('Saved', 'User information has been updated.');
         $state.go('exchange');
-      }, Error.reject);
+      }, function(e) {
+        Error.reject(e);
+        Airbitz.ui.title(title);
+      });
     };
   }
   function apiKeyController($scope, $state, glideraFactory, UserFactory) {
@@ -7782,20 +7784,6 @@ var Glidera = (function () {
       }, Error.reject);
     };
   }
-  function verifyInfoController($scope, $state, Error, States, Occupations, UserFactory) {
-    Airbitz.ui.title('Verify User Information');
-    $scope.states = States.getStates();
-    $scope.occupations = Occupations.getOccupations();
-    $scope.account = UserFactory.getUserAccount();
-
-    $scope.saveUserAccount = function() {
-      Airbitz.ui.title('Saving...');
-      UserFactory.updateUserAccount($scope.account).then(function() {
-        Airbitz.ui.showAlert('Saved', 'User information has been updated.');
-        $state.go('verifyPhone');
-      }, Error.reject);
-    };
-  }
   function verifyPhoneController($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('Verify Phone');
     $scope.account = UserFactory.getUserAccount();
@@ -7812,7 +7800,7 @@ var Glidera = (function () {
     };
   }
   function phoneNumberValidator() {
-    var PHONE_REGEXP = /^[0-9]{3}-?[0-9]{3}-?[0-9]{4}$/i;
+    var PHONE_REGEXP = /^\+?[0-9]*[ -]?[0-9]{3}[ -]?[0-9]{3}[ -]?[0-9]{4}$/i;
     return {
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
@@ -8528,7 +8516,7 @@ var app = angular.module('app.core', [
       },
       find: function(code) {
         var l = occupations.filter(function(s) {
-          return s.id === code.toString();
+          return code && s.id === code.toString();
         });
         return l.length >= 1 ? l[0] : null;
       }
@@ -8547,7 +8535,7 @@ var app = angular.module('app.core', [
 
   function glideraCactory(glideraApi) {
     var g = new Glidera({
-      'sandbox': true,
+      'sandbox': Airbitz.config.get('SANDBOX') === 'true' ? true : false,
       'partnerAccessKey': Airbitz.config.get('GLIDERA_PARTNER_TOKEN')
     });
     if (Airbitz.config.get('TESTNET_ADDRESS')) {
@@ -8651,12 +8639,6 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
       url: "/signup/verify/email/",
       templateUrl: "app/user/partials/verify.email.html",
       controller: "verifyEmailController",
-    })
-    // route for signup info verification
-    .state("verifyInfo", {
-      url: "/signup/verify/info/",
-      templateUrl: "app/user/partials/userAccount.html",
-      controller: "verifyInfoController",
     })
     // route for phone verification
     .state("verifyPhone", {
@@ -9105,7 +9087,7 @@ module.run(['$templateCache', function($templateCache) {
     '          <select id="inputBtcWallet"\n' +
     '            ng-model="order.transferToWallet"\n' +
     '            ng-options="w.name for w in userWallets"\n' +
-    '            class="form-control input-lg">\n' +
+    '            class="form-control">\n' +
     '          </select>\n' +
     '        </div>\n' +
     '\n' +
@@ -9126,13 +9108,13 @@ module.run(['$templateCache', function($templateCache) {
     '            ng-change="convertBtcValue(order.orderBtcInput)"\n' +
     '            type="number"\n' +
     '            name="orderBtcInput"\n' +
-    '            class="large right-square"\n' +
+    '            class="right-square"\n' +
     '            id="inputBtcAmount"\n' +
     '            placeholder="Enter Amount"\n' +
     '            step="any"\n' +
     '            autocorrect="off"\n' +
     '            required="" />\n' +
-    '          <span class="large input-group-addon">BTC</span>\n' +
+    '          <span class="input-group-addon">BTC</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
     '             ng-show="form.$submitted || form.orderBtcInput.$touched">\n' +
@@ -9147,14 +9129,14 @@ module.run(['$templateCache', function($templateCache) {
     '            ng-change="convertFiatValue(order.orderFiatInput)"\n' +
     '            type="number"\n' +
     '            name="orderFiatInput"\n' +
-    '            class="large right-square"\n' +
+    '            class="right-square"\n' +
     '            id="inputFiatAmount"\n' +
     '            placeholder="Enter Amount"\n' +
     '            autocorrect="off"\n' +
     '            tabindex="1"\n' +
     '            step="any"\n' +
     '            required="" />\n' +
-    '            <span class="large input-group-addon">{{ exchange.currency || "USD" }}</span>\n' +
+    '            <span class="input-group-addon">{{ exchange.currency || "USD" }}</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
     '             ng-show="form.$submitted || form.orderFiatInput.$touched">\n' +
@@ -9454,78 +9436,6 @@ try {
   module = angular.module('app', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/receipt/partials/receipt.html',
-    '<h2 class="order-receipt-heading">\n' +
-    '  <img class="bitcoin-logo" src="./img/bitcoin-icon-logo.png"> Order Receipt\n' +
-    '</h2>\n' +
-    '\n' +
-    '<div class="order-review row">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <table class="table table-bordered">\n' +
-    '      <tbody>\n' +
-    '        <tr>\n' +
-    '          <td>Order Type</td>\n' +
-    '          <td>{{ order.orderAction || "orderAction" | titlecase }} Order</td>\n' +
-    '        </tr>\n' +
-    '      </tbody>\n' +
-    '    </table>\n' +
-    '\n' +
-    '    <table class="table table-bordered">\n' +
-    '      <tbody>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
-    '          <td>Destination Wallet</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
-    '          <td>Sell From</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
-    '        </tr>\n' +
-    '      </tbody>\n' +
-    '    </table>\n' +
-    '\n' +
-    '    <table class="table table-bordered">\n' +
-    '      <tbody>\n' +
-    '        <tr>\n' +
-    '          <td>BTC Price:</td>\n' +
-    '          <td>{{ order.details.price | currency }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr>\n' +
-    '          <td>BTC Amount:</td>\n' +
-    '          <td>{{ order.orderBtcInput }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr>\n' +
-    '          <td>Sub Total:</td>\n' +
-    '          <td>{{ order.details.subtotal }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr>\n' +
-    '          <td>Fees:</td>\n' +
-    '          <td>{{ order.details.fees }}</td>\n' +
-    '        </tr>\n' +
-    '        <tr>\n' +
-    '          <td>Total:</td>\n' +
-    '          <td>{{ order.details.total }}</td>\n' +
-    '        </tr>\n' +
-    '      </tbody>\n' +
-    '    </table>\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '\n' +
-    '<div class="row">\n' +
-    '  <div class="text-right col-xs-12">\n' +
-    '    <button ng-click="finish()" class="btn btn-lg btn-primary">Finish</button>\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/account.html',
     '<div class="exchange-user-account row">\n' +
     '  <div class="account-message col-xs-12"\n' +
@@ -9533,34 +9443,34 @@ module.run(['$templateCache', function($templateCache) {
     '  </div>\n' +
     '  <div class="col-xs-12">\n' +
     '    <ul class="list-group">\n' +
-    '      <li ng-show="userStatus.userCanTransact" ng-click="showAccountOptions()" class="header list-group-item">\n' +
+    '      <li ng-if="userStatus.userCanTransact" ng-click="showAccountOptions()" class="header list-group-item">\n' +
     '        <span class="list-group-item-heading">{{ account.firstName || \'first\' | titlecase }} {{ account.lastName || \'last\' | titlecase }}</span>\n' +
     '        <p class="list-group-item-text">Tap to view your account details</p>\n' +
     '        <label class="status label label-outline pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userCanTransact}">{{ userStatus.userCanTransact | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-if="userStatus.userCanTransact" ng-show="showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="userStatus.userCanTransact && showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <div exchange-limits></div>\n' +
     '      </li>\n' +
-    '      <li ng-show="showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Email</span>\n' +
     '        <p class="list-group-item-text">{{account.email || \'email\'}}</p>\n' +
     '        <label class="status label label-outline pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userEmailIsSetup}">{{ userStatus.userEmailIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-show="showOptions" ui-sref="account" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
-    '        <span class="list-group-item-heading">Account Information</span>\n' +
-    '        <p class="list-group-item-text">Tap to edit</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.userBasicInfoIsSetup}">{{ userStatus.userBasicInfoIsSetup | statusFilter }}</label>\n' +
-    '      </li>\n' +
-    '      <li ng-show="showOptions" ui-sref="verifyPhone" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="showOptions" ui-sref="verifyPhone" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Mobile Phone</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
     '        <label class="status label label-outline pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userPhoneIsSetup}">{{ userStatus.userPhoneIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-show="showOptions" ng-click="routeBankAccount()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="showOptions" ui-sref="account" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '        <span class="list-group-item-heading">Account Information</span>\n' +
+    '        <p class="list-group-item-text">Tap to edit</p>\n' +
+    '        <label class="status label label-outline pull-right"\n' +
+    '               ng-class="{\'label-success\': userStatus.userBasicInfoIsSetup}">{{ userStatus.userBasicInfoIsSetup | statusFilter }}</label>\n' +
+    '      </li>\n' +
+    '      <li ng-if="showOptions" ng-click="routeBankAccount()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Bank Account</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
     '        <label class="status label label-outline pull-right"\n' +
@@ -9568,7 +9478,8 @@ module.run(['$templateCache', function($templateCache) {
     '      </li>\n' +
     '    </ul>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -9742,8 +9653,7 @@ module.run(['$templateCache', function($templateCache) {
     '             placeholder=""\n' +
     '             autocomplete="off"\n' +
     '             autocorrect="off"\n' +
-    '             autocapitalize="off"\n' +
-    '             required="" />\n' +
+    '             autocapitalize="off" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.registrationCode.$touched">\n' +
     '        <span ng-show="form.registrationCode.$error.required" class="label label-danger">Required</span>\n' +
     '        <span ng-show="form.registrationCode.$error.registrationCode" class="label label-danger">Valid registration code required</span>\n' +
@@ -9764,7 +9674,7 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '    <div class="row text-right" style="margin-top: 40px;">\n' +
     '      <div class="col-xs-12">\n' +
-    '        <button type="button" ui-sref="apiKeys" class="btn btn-sm btn-primary">Keys</button>\n' +
+    '        <button type="button" ui-sref="apiKeys" class="btn btn-sm btn-primary">Existing Account?</button>\n' +
     '      </div>\n' +
     '    </div>\n' +
     '\n' +
@@ -9945,6 +9855,11 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '<div class="verify-phone-form text-center row">\n' +
     '  <form name="form" class="form col-xs-12" novalidate>\n' +
+    '\n' +
+    '    <div class="row" style="margin: 20px 0">\n' +
+    '      <p>Please enter your phone number.</p>\n' +
+    '    </div>\n' +
+    '\n' +
     '    <div class="row">\n' +
     '      <div class="form-group col-xs-offset-1 col-xs-10">\n' +
     '        <label for="inputPhone" class="sr-only">Verification Code</label>\n' +
@@ -9979,6 +9894,78 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '  </form>\n' +
     '\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/receipt/partials/receipt.html',
+    '<h2 class="order-receipt-heading">\n' +
+    '  <img class="bitcoin-logo" src="./img/bitcoin-icon-logo.png"> Order Receipt\n' +
+    '</h2>\n' +
+    '\n' +
+    '<div class="order-review row">\n' +
+    '  <div class="col-xs-12">\n' +
+    '    <table class="table table-bordered">\n' +
+    '      <tbody>\n' +
+    '        <tr>\n' +
+    '          <td>Order Type</td>\n' +
+    '          <td>{{ order.orderAction || "orderAction" | titlecase }} Order</td>\n' +
+    '        </tr>\n' +
+    '      </tbody>\n' +
+    '    </table>\n' +
+    '\n' +
+    '    <table class="table table-bordered">\n' +
+    '      <tbody>\n' +
+    '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
+    '          <td>Destination Wallet</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
+    '        </tr>\n' +
+    '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
+    '          <td>Sell From</td>\n' +
+    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
+    '        </tr>\n' +
+    '      </tbody>\n' +
+    '    </table>\n' +
+    '\n' +
+    '    <table class="table table-bordered">\n' +
+    '      <tbody>\n' +
+    '        <tr>\n' +
+    '          <td>BTC Price:</td>\n' +
+    '          <td>{{ order.details.price | currency }}</td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '          <td>BTC Amount:</td>\n' +
+    '          <td>{{ order.orderBtcInput }}</td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '          <td>Sub Total:</td>\n' +
+    '          <td>{{ order.details.subtotal }}</td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '          <td>Fees:</td>\n' +
+    '          <td>{{ order.details.fees }}</td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '          <td>Total:</td>\n' +
+    '          <td>{{ order.details.total }}</td>\n' +
+    '        </tr>\n' +
+    '      </tbody>\n' +
+    '    </table>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="row">\n' +
+    '  <div class="text-right col-xs-12">\n' +
+    '    <button ng-click="finish()" class="btn btn-lg btn-primary">Finish</button>\n' +
+    '  </div>\n' +
     '</div>\n' +
     '');
 }]);
