@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,12 +173,17 @@ public class AirbitzAPI {
             result += "?";
             for(int index = 0; index < params.size();index++){
                 NameValuePair keyVal = params.get(index);
-                if(keyVal.getValue() != null && keyVal.getValue() != "" ){
+                if(keyVal.getValue() != null && !"".equals(keyVal.getValue())){
                     if(index > 0){
                         result += "&";
                     }
                     String paramKey = keyVal.getName();
-                    String paramVal = keyVal.getValue().replace(" ", "%20");
+                    String paramVal = "";
+                    try {
+                        paramVal = URLEncoder.encode(keyVal.getValue(), "utf-8").replace(" ", "%20");
+                    } catch (Exception e) {
+                        Log.e(TAG, "", e);
+                    }
                     result +=paramKey + "=" + paramVal;
                 }
             }
