@@ -60,6 +60,10 @@ public class BuySellFragment extends BaseFragment {
     private PluginsAdapter mAdapter;
     private List<Plugin> mPlugins;
 
+    public BuySellFragment() {
+        mPlugins = PluginFramework.getPlugins();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,7 +85,6 @@ public class BuySellFragment extends BaseFragment {
             }
         });
 
-        mPlugins = PluginFramework.getPlugins();
         mAdapter = new PluginsAdapter(getActivity(), mPlugins);
         mPluginsListView = (ListView) mView.findViewById(R.id.fragment_buysell_listview);
         mPluginsListView.setAdapter(mAdapter);
@@ -91,12 +94,30 @@ public class BuySellFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 PluginsAdapter adapter = (PluginsAdapter) adapterView.getAdapter();
                 Plugin plugin = adapter.getItem(i);
-                PluginFragment fragment = new PluginFragment(plugin);
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
+                launchPlugin(plugin);
             }
         });
 
         return mView;
+    }
+
+    public boolean launchPluginByCountry(String country,  String provider) {
+        Plugin plugin = null;
+        for (Plugin p : mPlugins) {
+            if (p.provider.equals(provider) && p.country.equals(country)) {
+                plugin = p;
+            }
+        }
+        if (null != plugin) {
+            launchPlugin(plugin);
+            return true;
+        }
+        return false;
+    }
+
+    private void launchPlugin(Plugin plugin) {
+        PluginFragment fragment = new PluginFragment(plugin);
+        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
     }
 
     public class PluginsAdapter extends BaseAdapter {

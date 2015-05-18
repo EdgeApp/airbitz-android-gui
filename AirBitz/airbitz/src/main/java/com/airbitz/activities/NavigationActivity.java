@@ -860,7 +860,12 @@ public class NavigationActivity extends Activity
         }
 
         String scheme =uri.getScheme();
-        if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
+        if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
+            List<String> path = uri.getPathSegments();
+            if (2 == path.size()) {
+                launchBuySell(path.get(1), path.get(0));
+            }
+        } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
@@ -887,6 +892,22 @@ public class NavigationActivity extends Activity
     public void onAddressRequest() {
         popFragment();
         mDataUri = null;
+    }
+
+    private void launchBuySell(String country, String provider) {
+        BuySellFragment buySell = null;
+        if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
+            mNavStacks[Tabs.MORE.ordinal()].clear();
+
+            buySell = new BuySellFragment();
+            pushFragmentNoAnimation(buySell, NavigationActivity.Tabs.MORE.ordinal());
+        } else {
+            buySell = (BuySellFragment) mNavStacks[Tabs.MORE.ordinal()].get(0);
+        }
+        switchFragmentThread(Tabs.MORE.ordinal());
+        mDrawer.closeDrawer(mDrawerView);
+
+        buySell.launchPluginByCountry(country, provider);
     }
 
     /*
