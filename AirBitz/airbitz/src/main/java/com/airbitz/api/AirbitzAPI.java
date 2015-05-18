@@ -534,13 +534,20 @@ public class AirbitzAPI {
     }
 
     public String getBusinessById(String businessId){
-        return getRequest(API_BUSINESS+businessId,"");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        if (getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+        return getRequest(API_BUSINESS+businessId, createURLParams(params));
     }
 
     public String getBusinessByIdAndLatLong(String businessId, String ll){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", ll));
-        return getRequest(API_BUSINESS+businessId+"/",createURLParams(params));
+        if (getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+        return getRequest(API_BUSINESS + businessId + "/", createURLParams(params));
     }
 
     public String getSearchByCategoryAndLocation(String category, String location, String page_size, String page, String sort){
