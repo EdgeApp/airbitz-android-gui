@@ -2722,10 +2722,10 @@ public class CoreAPI {
         }
     }
 
-    public tABC_CC PinLogin(String username, String pin) {
+    public tABC_Error PinLogin(String username, String pin) {
         tABC_Error pError = new tABC_Error();
         tABC_CC result = core.ABC_PinLogin(username, pin, pError);
-        return result;
+        return pError;
     }
 
     public void PinSetup() {

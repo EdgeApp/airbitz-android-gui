@@ -570,11 +570,13 @@ public class LandingFragment extends BaseFragment implements
         }
 
         @Override
-        protected tABC_CC doInBackground(Object... params) {
+        protected tABC_Error doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPin = (String) params[1];
-            if(mUsername == null || mPin == null) {
-                return tABC_CC.ABC_CC_Error;
+            if (mUsername == null || mPin == null) {
+                tABC_Error error = new tABC_Error();
+                error.setCode(tABC_CC.ABC_CC_Error);
+                return error;
             }
             else {
                 return mCoreAPI.PinLogin(mUsername, mPin);
@@ -585,15 +587,15 @@ public class LandingFragment extends BaseFragment implements
         protected void onPostExecute(final Object success) {
             mActivity.showModalProgress(false);
             mPINLoginTask = null;
-            tABC_CC result = (tABC_CC) success;
+            tABC_Error result = (tABC_Error) success;
             mPinEditText.setText("");
 
-            if(result == tABC_CC.ABC_CC_Ok) {
+            if(result.getCode() == tABC_CC.ABC_CC_Ok) {
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mUsername, null);
                 return;
             }
-            else if(result == tABC_CC.ABC_CC_BadPassword) {
+            else if(result.getCode() == tABC_CC.ABC_CC_BadPassword) {
                     mActivity.setFadingDialogListener(LandingFragment.this);
                     mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                     mPinEditText.requestFocus();
