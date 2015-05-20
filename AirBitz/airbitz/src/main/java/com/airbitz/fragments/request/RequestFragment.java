@@ -140,13 +140,11 @@ public class RequestFragment extends BaseFragment implements
     private String mUUID = null;
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
-    private HighlightOnPressImageButton mHelpButton;
+    private HighlightOnPressButton mHelpButton;
     private HighlightOnPressButton mImportWalletButton;
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
-    private TextView mTitleTextView;
-    private TextView mWalletTextView;
     private TextView mConverterTextView;
     private TextView mDenominationTextView;
     private Calculator mCalculator;
@@ -204,21 +202,17 @@ public class RequestFragment extends BaseFragment implements
 
 //        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 //        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
+        mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
+        RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
+        mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_help);
         mHelpButton.setVisibility(View.VISIBLE);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.request_title);
+        pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
 
         mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
-
-        pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
-        mWalletTextView = (TextView) mView.findViewById(R.id.textview_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
-        mWalletTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
         mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
@@ -227,6 +221,7 @@ public class RequestFragment extends BaseFragment implements
 
         View buttons = (RelativeLayout) mView.findViewById(R.id.fragment_request_action_buttons);
         mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
+        mCopyButton.setText(getString(R.string.fragment_request_copy_title));
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,6 +229,7 @@ public class RequestFragment extends BaseFragment implements
             }
         });
         mEmailButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_center);
+        mEmailButton.setText(getString(R.string.fragment_request_email_title));
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,6 +237,7 @@ public class RequestFragment extends BaseFragment implements
             }
         });
         mSMSButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_right);
+        mSMSButton.setText(getString(R.string.fragment_request_sms_title));
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -430,6 +427,8 @@ public class RequestFragment extends BaseFragment implements
         ((NavigationActivity) getActivity()).lockCalculator();
 
         mCoreAPI.setOnWalletLoadedListener(this);
+
+        checkFirstUsage();
     }
 
     @Override
@@ -524,7 +523,7 @@ public class RequestFragment extends BaseFragment implements
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-            mNFCImageView.setVisibility(View.VISIBLE);
+//            mNFCImageView.setVisibility(View.VISIBLE);
             mNfcAdapter.setNdefPushMessageCallback(this, mActivity);
         }
     }
@@ -856,7 +855,7 @@ public class RequestFragment extends BaseFragment implements
     private void checkBle() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
-            mBLEImageView.setVisibility(View.VISIBLE);
+//            mBLEImageView.setVisibility(View.VISIBLE);
             stopAirbitzAdvertise();
             startAirbitzAdvertise(mRequestURI);
             mHandler.postDelayed(mContinuousReAdvertiseRunnable, READVERTISE_REPEAT_PERIOD);

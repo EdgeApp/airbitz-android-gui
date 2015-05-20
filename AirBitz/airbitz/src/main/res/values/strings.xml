@@ -347,6 +347,9 @@
     <!-- Strings for Request fragment -->
     <string name="address_request_title">Address Request</string>
     <string name="address_request_message">%1$s has requested a bitcoin address to send money to. Please choose a wallet to receive funds.</string>
+    <string name="fragment_request_copy_title">Copy</string>
+    <string name="fragment_request_email_title">Email</string>
+    <string name="fragment_request_sms_title">SMS</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
