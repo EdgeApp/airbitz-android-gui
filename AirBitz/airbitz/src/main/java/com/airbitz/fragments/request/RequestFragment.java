@@ -169,6 +169,10 @@ public class RequestFragment extends BaseFragment implements
     private Button mSMSButton;
     private Button mEmailButton;
     private Button mCopyButton;
+
+    private Button mFiatSelect;
+    private Button mBitcoinSelect;
+
     private boolean emailType = false;
     private ImageView mQRView;
     private Bitmap mQRBitmap;
@@ -245,6 +249,23 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
+        View fiatSelectors = (RelativeLayout) mView.findViewById(R.id.fragment_request_fiat_btc_select);
+        mFiatSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_left);
+        mFiatSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swapAmount();
+            }
+        });
+
+        mBitcoinSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_right);
+        mBitcoinSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swapAmount();
+            }
+        });
+
         mImportWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,7 +295,6 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    mAmountIsBitcoin = true;
                     mAmountField.setText("");
                     mCalculator.setEditText(mAmountField);
                     ((NavigationActivity) getActivity()).showCalculator();
@@ -323,6 +343,7 @@ public class RequestFragment extends BaseFragment implements
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSelectedWallet = mWallets.get(i);
                 setConversionText(mSelectedWallet.getCurrencyNum());
+                mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
                 updateAmount();
             }
 
@@ -333,53 +354,40 @@ public class RequestFragment extends BaseFragment implements
         return mView;
     }
 
-    private void goNext() {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');
-        DecimalFormat format = new DecimalFormat("0.#");
-        format.setDecimalFormatSymbols(symbols);
-        float f = 0f;
-        try {
-            f = format.parse(mAmountField.getText().toString()).floatValue();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if (!mAmountField.getText().toString().isEmpty() && f < 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-            builder.setMessage(getString(R.string.request_invalid_amount))
-                    .setCancelable(false)
-                    .setNeutralButton(getResources().getString(R.string.string_ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            }
-                    );
-            AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
-            mSavedIndex = pickWalletSpinner.getSelectedItemPosition();
-
-            Wallet wallet = (Wallet) pickWalletSpinner.getSelectedItem();
-            String id = mCoreAPI.createReceiveRequestFor(wallet, "", "", mSavedSatoshi);
-            String requestAddress = mCoreAPI.getRequestAddress(wallet.getUUID(), id);
-
-            Fragment frag = new RequestQRCodeFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(Wallet.WALLET_UUID, wallet.getUUID());
-            bundle.putString(BITCOIN_VALUE, mAmountField.getText().toString());
-            bundle.putLong(SATOSHI_VALUE, mSavedSatoshi);
-            bundle.putString(BITCOIN_ID, id);
-            bundle.putString(BITCOIN_ADDRESS, requestAddress);
-            frag.setArguments(bundle);
-            ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
-        }
-    }
-
-
     private void setConversionText(int currencyNum) {
         mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+    }
+
+    private void swapAmount() {
+        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
+        if(walletPosition < 0) {
+            return;
+        }
+        Wallet wallet = mWallets.get(walletPosition);
+        mAmountIsBitcoin = !mAmountIsBitcoin;
+        if(mAmountIsBitcoin) {
+            String fiat = mAmountField.getText().toString();
+            try {
+                if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
+                    double currency = Double.parseDouble(fiat);
+                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                    mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
+                } else {
+                    Log.d(TAG, "Too much fiat");
+                }
+            } catch (NumberFormatException e) {
+                //not a double, ignore
+            }
+        }
+        else {
+            String bitcoin = mAmountField.getText().toString();
+            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
+                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+                mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
+            } else {
+                Log.d(TAG, "Too much bitcoin");
+            }
+        }
     }
 
     private void updateAmount() {
@@ -411,12 +419,6 @@ public class RequestFragment extends BaseFragment implements
         }
 
         createNewQRBitmap();
-    }
-
-    private void focus(EditText view) {
-        view.requestFocus();
-        mCalculator.setEditText(view);
-        mAmountIsBitcoin = mAmountField == view;
     }
 
     @Override
@@ -503,6 +505,9 @@ public class RequestFragment extends BaseFragment implements
             mAmountField.setText("");
             pickWalletSpinner.setSelection(mFromIndex);
         }
+
+        mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
+        mBitcoinSelect.setText(mCoreAPI.getDefaultBTCDenomination());
         mAutoUpdatingTextFields = false;
     }
 
