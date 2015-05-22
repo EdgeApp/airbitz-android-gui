@@ -72,6 +72,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tom on 6/20/14.
@@ -1891,12 +1894,19 @@ public class CoreAPI {
     private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
     private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
 
+    private ThreadPoolExecutor exchangeRateThread;
+    private ThreadPoolExecutor dataSyncThread;
+
     public interface OnExchangeRatesChange {
         public void OnExchangeRatesChange();
     }
 
     public void startAllAsyncUpdates() {
         startWatchers();
+
+        exchangeRateThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        dataSyncThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
         startExchangeRateUpdates();
         startFileSyncUpdates();
     }
@@ -1905,6 +1915,12 @@ public class CoreAPI {
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
         stopWatchers();
+
+        exchangeRateThread.shutdown();
+        exchangeRateThread = null;
+
+        dataSyncThread.shutdown();
+        dataSyncThread = null;
     }
 
     public void restoreConnectivity() {
@@ -1931,7 +1947,9 @@ public class CoreAPI {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Log.d(TAG, "Exchange Rate Update initiated.");
-            mUpdateExchangeRateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if (exchangeRateThread != null) {
+                mUpdateExchangeRateTask.executeOnExecutor(exchangeRateThread);
+            }
         }
     }
 
@@ -1962,7 +1980,7 @@ public class CoreAPI {
     }
 
     // Exchange Rate updates may have delay the first call
-    public void updateAllExchangeRates()
+    private void updateAllExchangeRates()
     {
         if (AirbitzApplication.isLoggedIn())
         {
@@ -2038,9 +2056,9 @@ public class CoreAPI {
     public void syncAllData()
     {
         if (AirbitzApplication.isLoggedIn()) {
-            if(mSyncDataTask==null) {
+            if(mSyncDataTask == null && null != dataSyncThread) {
                 mSyncDataTask = new SyncDataTask();
-                mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                mSyncDataTask.executeOnExecutor(dataSyncThread);
                 Log.d(TAG, "File sync initiated.");
             }
         }
