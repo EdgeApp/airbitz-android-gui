@@ -722,8 +722,6 @@ public class NavigationActivity extends Activity
             mCoreAPI.restoreConnectivity();
         }
         mNavBarFragment.disableSendRecieveButtons(true);
-        WaitWalletLoadingTask task = new WaitWalletLoadingTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
         switchFragmentThread(mNavThreadId);
 
@@ -2201,33 +2199,4 @@ public class NavigationActivity extends Activity
         AlertDialog confirmDialog = builder.create();
         confirmDialog.show();
     }
-
-    public class WaitWalletLoadingTask extends AsyncTask<Void, Void, Void> {
-
-        WaitWalletLoadingTask() { }
-
-        @Override
-        protected void onPreExecute() { }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            while(mCoreAPI.walletsStillLoading()) {
-                try {
-                    Thread.currentThread().sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            if(activityInForeground) {
-                mNavBarFragment.disableSendRecieveButtons(false);
-                switchFragmentThread(mNavThreadId);
-            }
-        }
-    }
-
 }
