@@ -123,6 +123,9 @@ public class LandingFragment extends BaseFragment implements
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
 
+    private int mPinFailedCount;
+    static final int MAX_PIN_FAILS = 3;
+
     /**
      * Represents an asynchronous question fetch task
      */
@@ -487,8 +490,11 @@ public class LandingFragment extends BaseFragment implements
                     });
         }
         if (isPinLogin) {
+            mPinFailedCount = 0;
+
             showOthersList(false);
             mPinLayout.setVisibility(View.VISIBLE);
+
             mPasswordLayout.setVisibility(View.GONE);
             mForgotPasswordButton.setVisibility(View.GONE);
 
@@ -603,7 +609,10 @@ public class LandingFragment extends BaseFragment implements
             else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(Common.errorMap(getActivity(), result));
-                abortPermanently();
+                mPinFailedCount++;
+                if (mPinFailedCount >= MAX_PIN_FAILS) {
+                    abortPermanently();
+                }
                 return;
             }
         }
