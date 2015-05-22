@@ -2533,9 +2533,7 @@ public class CoreAPI {
     public void startWatchers() {
         List<String> wallets = loadWalletUUIDs();
         for (String uuid : wallets) {
-            if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                startWatcher(uuid);
-            }
+            startWatcher(uuid);
         }
         if (mDataFetched) {
             connectWatchers();
@@ -2543,31 +2541,31 @@ public class CoreAPI {
     }
 
     private void startWatcher(String uuid) {
-        tABC_Error error = new tABC_Error();
-        core.ABC_WatcherStart(AirbitzApplication.getUsername(),
-                              AirbitzApplication.getPassword(),
-                              uuid, error);
-        printABCError(error);
+        if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_WatcherStart(AirbitzApplication.getUsername(),
+                                AirbitzApplication.getPassword(),
+                                uuid, error);
+            printABCError(error);
+            Log.d(TAG, "Started watcher for " + uuid);
 
-        Thread thread = new Thread(new WatcherRunnable(uuid));
-        mWatcherTasks.put(uuid, thread);
-        thread.start();
+            Thread thread = new Thread(new WatcherRunnable(uuid));
+            mWatcherTasks.put(uuid, thread);
+            thread.start();
 
-        watchAddresses(uuid);
-        Log.d(TAG, "Started watcher for "+uuid);
+            watchAddresses(uuid);
+
+            if (mDataFetched) {
+                connectWatcher(uuid);
+            }
+        }
     }
 
     public void connectWatchers() {
-        Thread connectEmAll = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> wallets = loadWalletUUIDs();
-                for (String uuid : wallets) {
-                    connectWatcher(uuid);
-                }
-            }
-        });
-        connectEmAll.start();
+        List<String> wallets = loadWalletUUIDs();
+        for (String uuid : wallets) {
+            connectWatcher(uuid);
+        }
     }
 
     public void connectWatcher(String uuid) {
@@ -2585,24 +2583,11 @@ public class CoreAPI {
     }
 
     private void watchAddresses(String uuid) {
-        Thread thread = new Thread(new WatchAddressesRunnable(uuid));
-        thread.start();
-    }
-
-    private class WatchAddressesRunnable implements Runnable {
-        private final String uuid;
-
-        WatchAddressesRunnable(final String uuid) {
-            this.uuid = uuid;
-        }
-
-        public void run() {
-            tABC_Error error = new tABC_Error();
-            core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(),
-                    uuid, error);
-            printABCError(error);
-        }
+        tABC_Error error = new tABC_Error();
+        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(),
+                uuid, error);
+        printABCError(error);
     }
 
     /*
