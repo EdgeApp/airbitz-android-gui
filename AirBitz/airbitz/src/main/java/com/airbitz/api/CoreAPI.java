@@ -278,7 +278,9 @@ public class CoreAPI {
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() {
             mCoreSettings = null;
-            mOnBlockHeightChange.onBlockHeightChange();
+            if (null != mOnBlockHeightChange) {
+                mOnBlockHeightChange.onBlockHeightChange();
+            }
         }
     };
 
