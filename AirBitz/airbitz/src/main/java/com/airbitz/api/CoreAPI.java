@@ -2600,12 +2600,17 @@ public class CoreAPI {
         }
     }
 
-    private void watchAddresses(String uuid) {
-        tABC_Error error = new tABC_Error();
-        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(),
-                uuid, error);
-        printABCError(error);
+    private void watchAddresses(final String uuid) {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                tABC_Error error = new tABC_Error();
+                core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        uuid, error);
+                printABCError(error);
+            }
+        });
+        thread.start();
     }
 
     /*
