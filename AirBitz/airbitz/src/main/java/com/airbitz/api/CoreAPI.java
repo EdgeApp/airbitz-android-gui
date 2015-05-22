@@ -2531,18 +2531,12 @@ public class CoreAPI {
 
     private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
     public void startWatchers() {
-        Thread startEmAll = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> wallets = loadWalletUUIDs();
-                for (String uuid : wallets) {
-                    if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                        startWatcher(uuid);
-                    }
-                }
+        List<String> wallets = loadWalletUUIDs();
+        for (String uuid : wallets) {
+            if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
+                startWatcher(uuid);
             }
-        });
-        startEmAll.start();
+        }
         if (mDataFetched) {
             connectWatchers();
         }
