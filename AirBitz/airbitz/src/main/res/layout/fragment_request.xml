@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_parent"
+    xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -66,15 +67,29 @@
                     android:textSize="17dp"
                     android:textStyle="normal" />
 
-                <include
+                <info.hoang8f.android.segmented.SegmentedGroup
                     android:id="@+id/request_fiat_btc_select"
-                    layout="@layout/layout_double_selector"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_margin="2dp"
+                    segmentedgroup:tint_color="@color/text_off_white"
+                    segmentedgroup:checked_text_color="@color/text_dark_gray"
+                    android:orientation="horizontal">
 
+                    <RadioButton
+                        android:id="@+id/layout_double_selector_left"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="USD"
+                        style="@style/RadioButton" />
+
+                    <RadioButton
+                        android:id="@+id/layout_double_selector_right"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:text="mBTC"
+                        style="@style/RadioButton" />
+                </info.hoang8f.android.segmented.SegmentedGroup>
             </LinearLayout>
 
 
@@ -159,14 +174,37 @@
                 android:text="1XxdlerRraLLjev9274"
                 android:textSize="14dp" />
 
-            <include
+            <info.hoang8f.android.segmented.SegmentedGroup
                 android:id="@+id/request_bottom_buttons"
-                layout="@layout/layout_triple_selector"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="2dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_gravity="center_horizontal"
+                segmentedgroup:tint_color="@color/text_off_white"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/fragment_triple_selector_left"
+                    android:layout_width="116dp"
+                    android:layout_height="wrap_content"
+                    android:text="Copy"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/fragment_triple_selector_center"
+                    android:layout_width="116dp"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/fragment_triple_selector_right"
+                    android:layout_width="116dp"
+                    android:layout_height="wrap_content"
+                    android:text="SMS"
+                    style="@style/RadioButton" />
+            </info.hoang8f.android.segmented.SegmentedGroup>
+
 
         </LinearLayout>
     </RelativeLayout>

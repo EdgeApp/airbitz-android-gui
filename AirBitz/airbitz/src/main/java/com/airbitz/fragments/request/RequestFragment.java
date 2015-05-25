@@ -108,6 +108,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
+
 /**
  * Created on 2/13/14.
  */
@@ -137,7 +139,7 @@ public class RequestFragment extends BaseFragment implements
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
     private HighlightOnPressButton mHelpButton;
-    private HighlightOnPressButton mImportWalletButton;
+//    private HighlightOnPressButton mImportWalletButton;
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
@@ -210,7 +212,7 @@ public class RequestFragment extends BaseFragment implements
 
         pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
 
-        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
+//        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
         mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -219,12 +221,13 @@ public class RequestFragment extends BaseFragment implements
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
-        View buttons = (RelativeLayout) mView.findViewById(R.id.request_bottom_buttons);
+        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
         mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
         mCopyButton.setText(getString(R.string.fragment_request_copy_title));
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttons.clearCheck();
                 copyToClipboard();
             }
         });
@@ -233,6 +236,7 @@ public class RequestFragment extends BaseFragment implements
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttons.clearCheck();
                 startEmail();
             }
         });
@@ -241,12 +245,14 @@ public class RequestFragment extends BaseFragment implements
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttons.clearCheck();
                 startSMS();
             }
         });
 
-        View fiatSelectors = (RelativeLayout) mView.findViewById(R.id.request_fiat_btc_select);
+        SegmentedGroup fiatSelectors = (SegmentedGroup) mView.findViewById(R.id.request_fiat_btc_select);
         mFiatSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_left);
+        mFiatSelect.setSelected(true);
         mFiatSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -262,13 +268,15 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
-        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment frag = new ImportFragment();
-                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
-            }
-        });
+        fiatSelectors.check(mFiatSelect.getId());
+
+//        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Fragment frag = new ImportFragment();
+//                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
+//            }
+//        });
 
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
@@ -367,7 +375,12 @@ public class RequestFragment extends BaseFragment implements
                 if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
                     double currency = Double.parseDouble(fiat);
                     mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-                    mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
+                    if(mAmountSatoshi == 0) {
+                        mAmountField.setText("");
+                    }
+                    else {
+                        mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
+                    }
                 } else {
                     Log.d(TAG, "Too much fiat");
                 }
@@ -379,7 +392,12 @@ public class RequestFragment extends BaseFragment implements
             String bitcoin = mAmountField.getText().toString();
             if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
                 mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
-                mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
+                if(mAmountSatoshi == 0) {
+                    mAmountField.setText("");
+                }
+                else {
+                    mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
+                }
             } else {
                 Log.d(TAG, "Too much bitcoin");
             }
