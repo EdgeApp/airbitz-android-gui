@@ -100,14 +100,10 @@ import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -202,7 +198,7 @@ public class RequestFragment extends BaseFragment implements
 
         mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
-        mAmountField = (EditText) mView.findViewById(R.id.edittext_btc);
+        mAmountField = (EditText) mView.findViewById(R.id.request_amount);
 
 //        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 //        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
@@ -220,10 +216,10 @@ public class RequestFragment extends BaseFragment implements
         mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
-        mDenominationTextView = (TextView) mView.findViewById(R.id.request_btc_denomination);
-        mBitcoinAddress = (TextView) mView.findViewById(R.id.fragment_request_bitcoin_address);
+        mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
+        mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
-        View buttons = (RelativeLayout) mView.findViewById(R.id.fragment_request_action_buttons);
+        View buttons = (RelativeLayout) mView.findViewById(R.id.request_bottom_buttons);
         mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
         mCopyButton.setText(getString(R.string.fragment_request_copy_title));
         mCopyButton.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +245,7 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
-        View fiatSelectors = (RelativeLayout) mView.findViewById(R.id.fragment_request_fiat_btc_select);
+        View fiatSelectors = (RelativeLayout) mView.findViewById(R.id.request_fiat_btc_select);
         mFiatSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_left);
         mFiatSelect.setOnClickListener(new View.OnClickListener() {
             @Override

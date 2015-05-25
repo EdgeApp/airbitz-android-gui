@@ -37,7 +37,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/qr_code_layout"
+                android:id="@+id/request_qr_code_layout"
                 android:layout_width="252dp"
                 android:layout_height="252dp"
                 android:layout_margin="10dp"
@@ -56,7 +56,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/qr_code_layout"
+                android:layout_below="@id/request_qr_code_layout"
                 android:layout_marginBottom="15.75dp"
                 android:layout_marginLeft="12.6dp"
                 android:layout_marginRight="12.6dp"
@@ -82,14 +82,14 @@
                     android:visibility="gone" />
 
                 <LinearLayout
-                    android:id="@+id/layout_container"
+                    android:id="@+id/request_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="6dp">
 
                     <TextView
-                        android:id="@+id/textview_waiting"
+                        android:id="@+id/request_waiting"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"

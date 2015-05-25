@@ -3,7 +3,6 @@
     android:id="@+id/layout_double_selector"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     tools:ignore="MergeRootFrame">
 
         <LinearLayout
@@ -20,8 +19,9 @@
                 android:padding="4dp"
                 android:text="USD"
                 android:singleLine="true"
+                android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_off_white"
                 android:textSize="16dp" />
 
             <FrameLayout
@@ -38,7 +38,7 @@
                 android:singleLine="true"
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_off_white"
                 android:textSize="16dp" />
         </LinearLayout>
 

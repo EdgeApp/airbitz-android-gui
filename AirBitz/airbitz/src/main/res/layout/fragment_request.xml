@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="44.1dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_request_header"
@@ -37,26 +37,26 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/request_btc_denomination"
+                    android:id="@+id/request_selected_denomination"
                     style="@style/GrayDropShadow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
                     android:text="USD"
-                    android:textColor="@android:color/white"
-                    android:textSize="17dp"
+                    android:textColor="@color/text_off_white"
+                    android:textSize="26dp"
                     android:textStyle="normal" />
 
                 <EditText
-                    android:id="@+id/edittext_btc"
+                    android:id="@+id/request_amount"
                     style="@style/GrayDropShadow"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_weight="20"
                     android:layout_margin="2dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/emboss_down"
+                    android:background="@android:color/transparent"
                     android:hint="@string/request_amount_hint"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -67,11 +67,11 @@
                     android:textStyle="normal" />
 
                 <include
-                    android:id="@+id/fragment_request_fiat_btc_select"
+                    android:id="@+id/request_fiat_btc_select"
                     layout="@layout/layout_double_selector"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginRight="4dp"
                     android:layout_gravity="center_vertical" />
 
@@ -80,46 +80,42 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_import"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/button_import_wallet"
-                android:layout_width="95dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/bg_button_gray"
-                android:text="@string/request_button_import"
-                android:textColor="@android:color/white"
-                android:textSize="14dp"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/textview_converter"
-                style="@style/GrayDropShadow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:gravity="right"
-                android:singleLine="true"
-                android:text="1 uBTC = $ 000.000 USD"
-                android:textColor="@android:color/white"
-                android:textSize="16dp" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/qr_code_layout"
+        <TextView
+            android:id="@+id/request_not_selected_denomination"
+            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="28dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/layout_export_data"
+            android:singleLine="true"
+            android:text="BTC"
+            android:textColor="@color/text_dark_gray"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/textview_converter"
+            style="@style/GrayDropShadow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/layout_export_data"
+            android:layout_alignParentRight="true"
+            android:gravity="end"
+            android:singleLine="true"
+            android:text="1 uBTC = $ 000.000 USD"
+            android:textColor="@color/text_dark_gray"
+            android:textSize="16dp" />
+
+        <RelativeLayout
+            android:id="@+id/request_qr_code_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/textview_converter"
             android:background="@drawable/rounded_edge_white_bg" >
 
             <ImageView
@@ -133,13 +129,14 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/layout_container"
+            android:id="@+id/request_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/request_qr_code_layout"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textview_waiting"
+                android:id="@+id/request_waiting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
@@ -150,7 +147,7 @@
                 android:textSize="18dp" />
 
             <TextView
-                android:id="@+id/fragment_request_bitcoin_address"
+                android:id="@+id/request_bitcoin_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
@@ -163,7 +160,7 @@
                 android:textSize="14dp" />
 
             <include
-                android:id="@+id/fragment_request_action_buttons"
+                android:id="@+id/request_bottom_buttons"
                 layout="@layout/layout_triple_selector"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
@@ -172,5 +169,5 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>
