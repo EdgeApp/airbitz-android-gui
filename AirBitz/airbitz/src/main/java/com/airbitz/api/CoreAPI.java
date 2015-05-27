@@ -3232,10 +3232,6 @@ for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
 
         public void updateTransaction(String walletUUID, String txId, double fiatAmount) {
             String categoryText = "Transfer:Wallet:";
-
-            tABC_Error error = new tABC_Error();
-            SWIGTYPE_p_long lptrans = core.new_longp();
-            SWIGTYPE_p_p_sABC_TxInfo ppTrans = core.longp_to_ppTxInfo(lptrans);
             Wallet destWallet = null;
             Wallet srcWallet = getWalletFromUUID(walletUUID);
             if (_pSpend != null) {
@@ -3243,8 +3239,7 @@ for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
             }
 
             Transaction tx = getTransaction(walletUUID, txId);
-
-            if (tx.getAmountSatoshi() > 0) {
+            if (null != tx) {
                 if (destWallet != null) {
                     tx.setName(destWallet.getName());
                     tx.setCategory(categoryText + destWallet.getName());
@@ -3254,17 +3249,14 @@ for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
                 }
                 storeTransaction(tx);
             }
-            core.ABC_GetTransaction(AirbitzApplication.getUsername(), null, walletUUID, txId, ppTrans, error);
-            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
-            }
 
             // This was a transfer
             if (destWallet != null) {
                 Transaction destTx = getTransaction(destWallet.getUUID(), txId);
-                if (error.getCode() == tABC_CC.ABC_CC_Ok) {
-                    tx.setName(destWallet.getName());
-                    tx.setCategory(categoryText + srcWallet.getName());
-                    storeTransaction(tx);
+                if (null != destTx) {
+                    destTx.setName(srcWallet.getName());
+                    destTx.setCategory(categoryText + srcWallet.getName());
+                    storeTransaction(destTx);
                 }
             }
         }
