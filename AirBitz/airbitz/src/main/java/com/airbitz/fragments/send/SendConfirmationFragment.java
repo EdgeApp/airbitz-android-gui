@@ -819,6 +819,7 @@ public class SendConfirmationFragment extends BaseFragment implements
                 mToWallet = mCoreAPI.getWalletFromUUID(_destUUID);
             }
             mAmountToSendSatoshi = mSpendTarget.getSpendAmount();
+            mLocked = !mSpendTarget.getSpend().getAmountMutable();
         }
 
         mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
