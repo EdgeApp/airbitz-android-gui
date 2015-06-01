@@ -837,8 +837,6 @@ public class SendConfirmationFragment extends BaseFragment implements
         mBitcoinField.setFocusable(!mLocked);
         mFiatField.setEnabled(!mLocked);
         mFiatField.setFocusable(!mLocked);
-        mWalletSpinner.setEnabled(!mLocked);
-        mWalletSpinner.setFocusable(!mLocked);
         if (mLocked) {
             mMaxButton.setVisibility(View.INVISIBLE);
         } else {
