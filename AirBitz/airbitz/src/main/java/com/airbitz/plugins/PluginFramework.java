@@ -62,6 +62,8 @@ public class PluginFramework {
         String pluginId;
         String sourceFile;
         String name;
+        String provider;
+        String country;
         Map<String, String> env;
 
         Plugin() {
@@ -82,6 +84,8 @@ public class PluginFramework {
                 plugin.pluginId = "com.glidera.us";
                 plugin.sourceFile = "file:///android_asset/glidera.html";
                 plugin.name = "Glidera USA";
+                plugin.provider = "glidera";
+                plugin.country = "US";
                 plugin.env.put("COUNTRY_CODE", "US");
                 plugin.env.put("COUNTRY_NAME", "United States");
                 plugin.env.put("CURRENCY_CODE", "840");
@@ -93,6 +97,8 @@ public class PluginFramework {
             plugin.pluginId = "com.glidera.ca";
             plugin.sourceFile = "file:///android_asset/glidera.html";
             plugin.name = "Glidera Canada";
+            plugin.provider = "glidera";
+            plugin.country = "CA";
             plugin.env.put("COUNTRY_CODE", "CA");
             plugin.env.put("COUNTRY_NAME", "Canada");
             plugin.env.put("CURRENCY_CODE", "124");

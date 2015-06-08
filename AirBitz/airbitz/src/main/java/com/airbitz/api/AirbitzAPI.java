@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,12 +173,17 @@ public class AirbitzAPI {
             result += "?";
             for(int index = 0; index < params.size();index++){
                 NameValuePair keyVal = params.get(index);
-                if(keyVal.getValue() != null && keyVal.getValue() != "" ){
+                if(keyVal.getValue() != null && !"".equals(keyVal.getValue())){
                     if(index > 0){
                         result += "&";
                     }
                     String paramKey = keyVal.getName();
-                    String paramVal = keyVal.getValue().replace(" ", "%20");
+                    String paramVal = "";
+                    try {
+                        paramVal = URLEncoder.encode(keyVal.getValue(), "utf-8").replace(" ", "%20");
+                    } catch (Exception e) {
+                        Log.e(TAG, "", e);
+                    }
                     result +=paramKey + "=" + paramVal;
                 }
             }
@@ -440,6 +446,9 @@ public class AirbitzAPI {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("sort", sort));
+        if (getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
 
         String response =  getRequest(API_CATEGORIES, createURLParams(params));
         try{
@@ -525,13 +534,20 @@ public class AirbitzAPI {
     }
 
     public String getBusinessById(String businessId){
-        return getRequest(API_BUSINESS+businessId,"");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        if (getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+        return getRequest(API_BUSINESS+businessId, createURLParams(params));
     }
 
     public String getBusinessByIdAndLatLong(String businessId, String ll){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", ll));
-        return getRequest(API_BUSINESS+businessId+"/",createURLParams(params));
+        if (getLanguageCode() != null) {
+            params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+        return getRequest(API_BUSINESS + businessId + "/", createURLParams(params));
     }
 
     public String getSearchByCategoryAndLocation(String category, String location, String page_size, String page, String sort){
@@ -570,7 +586,7 @@ public class AirbitzAPI {
         if(getLanguageCode() != null) {
             params.add(new BasicNameValuePair("lang", getLanguageCode()));
         }
-        else if(businessFlag.equalsIgnoreCase("category")){
+        if(businessFlag.equalsIgnoreCase("category")){
             params.add(new BasicNameValuePair("category", name));
         }
 

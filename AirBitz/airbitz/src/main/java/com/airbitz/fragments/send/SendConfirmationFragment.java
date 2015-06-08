@@ -150,7 +150,6 @@ public class SendConfirmationFragment extends BaseFragment implements
     private long mInvalidEntryStartMillis = 0;
     private boolean mFundsSent = false;
 
-    private boolean _bAddressIsWalletUUID;
     private String _sendTo;
     private String _destUUID;
 
@@ -764,14 +763,14 @@ public class SendConfirmationFragment extends BaseFragment implements
         long dailyLimit = mCoreAPI.GetDailySpendLimit();
         boolean dailyLimitSetting = mCoreAPI.GetDailySpendLimitSetting();
 
-        if (!_bAddressIsWalletUUID && dailyLimitSetting
+        if (mToWallet == null && dailyLimitSetting
             && (mAmountToSendSatoshi + mCoreAPI.GetTotalSentToday(mSourceWallet) >= dailyLimit)) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
             mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_password));
             mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else if (!_bAddressIsWalletUUID && mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
+        } else if (mToWallet == null && mCoreAPI.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreAPI.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
             // Show PIN pad
             mPinRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
@@ -820,6 +819,7 @@ public class SendConfirmationFragment extends BaseFragment implements
                 mToWallet = mCoreAPI.getWalletFromUUID(_destUUID);
             }
             mAmountToSendSatoshi = mSpendTarget.getSpendAmount();
+            mLocked = !mSpendTarget.getSpend().getAmountMutable();
         }
 
         mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -837,22 +837,20 @@ public class SendConfirmationFragment extends BaseFragment implements
         mBitcoinField.setFocusable(!mLocked);
         mFiatField.setEnabled(!mLocked);
         mFiatField.setFocusable(!mLocked);
-        mWalletSpinner.setEnabled(!mLocked);
-        mWalletSpinner.setFocusable(!mLocked);
         if (mLocked) {
             mMaxButton.setVisibility(View.INVISIBLE);
         } else {
             mMaxButton.setVisibility(View.VISIBLE);
         }
 
-        if (!_bAddressIsWalletUUID && _sendTo.length() > 10) {
+        if (mToWallet != null) {
+            mToEdittext.setText(mToWallet.getName());
+        } else {
             String temp = _sendTo;
             if (_sendTo.length() > 20) {
                 temp = _sendTo.substring(0, 5) + "..." + _sendTo.substring(_sendTo.length() - 5, _sendTo.length());
             }
             mToEdittext.setText(temp);
-        } else {
-            mToEdittext.setText(mToWallet.getName());
         }
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment

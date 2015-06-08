@@ -74,6 +74,7 @@ public class coreJNI {
   public final static native int ABC_CC_NotSupported_get();
   public final static native int ABC_CC_MutexError_get();
   public final static native int ABC_CC_NoTransaction_get();
+  public final static native int ABC_CC_Empty_Wallet_get();
   public final static native int ABC_CC_ParseError_get();
   public final static native int ABC_CC_InvalidWalletID_get();
   public final static native int ABC_CC_NoRequest_get();

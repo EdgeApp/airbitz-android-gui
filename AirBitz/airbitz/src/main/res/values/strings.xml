@@ -89,6 +89,7 @@
     <string name="server_error_bad_pin">Invalid PIN</string>
     <string name="server_error_bad_pin_login">Invalid PIN. Please log in.</string>
     <string name="server_error_pin_expired">PIN has expired. Please log in.</string>
+    <string name="server_error_invalid_pin_wait">Too many failed login attempts. Please try again in %1$s seconds.</string>
     <string name="server_error_other">An error has occurred.</string>
 
     <!-- Strings related to Landing -->

@@ -43,6 +43,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -316,17 +317,7 @@ public class SendFragment extends BaseFragment implements
             mListviewContainer.setVisibility(View.GONE);
             return;
         }
-
-        CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
-        if(target.newSpend(strTo)) {
-            Log.d(TAG, "Bitcoin found");
-            GotoSendConfirmation(target);
-        } else {
-            ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-            ((NavigationActivity) getActivity()).ShowOkMessageDialog(
-                    getResources().getString(R.string.fragment_send_failure_title),
-                    getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
-        }
+        newSpend(strTo);
     }
 
     public void stopCamera() {
@@ -602,14 +593,7 @@ public class SendFragment extends BaseFragment implements
     public void onScanResult(String result) {
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
-            CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
-
-            if(target.newSpend(result)) {
-                Log.d(TAG, "Bitcoin found");
-                GotoSendConfirmation(target);
-            } else {
-                ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
-            }
+            newSpend(result);
             mQRCamera.setOnScanResultListener(null);
         } else {
             ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
@@ -648,17 +632,44 @@ public class SendFragment extends BaseFragment implements
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
                 if (!uriData.isEmpty()) {
-                    CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
-                    if(target.newSpend(uriData)) {
-                        Log.d(TAG, "Bitcoin found");
-                        GotoSendConfirmation(target);
-                    } else {
-                        ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_invalid));
-                    }
+                    newSpend(uriData);
                 }
             }
         }
 
         updateWalletOtherList();
+    }
+
+    private void newSpend(String text) {
+        new NewSpendTask().execute(text);
+    }
+
+    public class NewSpendTask extends AsyncTask<String, Void, Boolean> {
+        CoreAPI.SpendTarget target;
+
+        NewSpendTask() {
+            target = mCoreAPI.getNewSpendTarget();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... text) {
+            return target.newSpend(text[0]);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean result) {
+            if (result) {
+                GotoSendConfirmation(target);
+            } else {
+                ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
+                ((NavigationActivity) getActivity()).ShowOkMessageDialog(
+                        getResources().getString(R.string.fragment_send_failure_title),
+                        getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
     }
 }
