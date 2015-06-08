@@ -32,9 +32,11 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.graphics.Point;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -46,10 +48,28 @@ import com.airbitz.activities.NavigationActivity;
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
     NavigationActivity mActivity;
+    private boolean mUseActionBar;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActivity().getActionBar().hide();
+        mUseActionBar = false;
+    }
+
+    public void onCreate(Bundle savedInstanceState, boolean useActionBar) {
+        super.onCreate(savedInstanceState);
+        mUseActionBar = useActionBar;
+        if (useActionBar) {
+            getActivity().getActionBar().show();
+        } else {
+            getActivity().getActionBar().hide();
+        }
+    }
 
     // For debug builds, watch for memory leaks of all fragments
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
     }
 

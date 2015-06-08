@@ -265,6 +265,8 @@ public class NavigationActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
 
         mCoreAPI = initiateCore(this);
 
@@ -569,7 +571,8 @@ public class NavigationActivity extends Activity
     }
 
     public void showNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
+        // if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
+        if (mNavBarFragmentLayout.getVisibility() == View.GONE) {
             mHandler.postDelayed(delayedShowNavBar, 50);
         }
     }
