@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/textview_currency"
     android:layout_width="match_parent"
@@ -10,5 +9,4 @@
     android:paddingRight="15.75dp"
     android:textColor="#FFFFFF"
     android:textSize="18dp">
-
 </TextView>

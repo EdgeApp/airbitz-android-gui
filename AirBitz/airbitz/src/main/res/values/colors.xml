@@ -57,4 +57,6 @@
     <color name="drawer_dark_blue_gray">#333344</color>
     <color name="navbar_text_disabled">#ffaaaaaa</color>
 
+    <color name="settings_group">#99ffffff</color>
+    <color name="btn_blue">#ff2291CF</color>
 </resources>
