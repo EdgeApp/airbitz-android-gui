@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -35,14 +35,19 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -92,7 +97,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     private TextView mHintTextView;
     private Button mNextButton;
     private boolean mGoodPassword = false;
-    private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
     private View mWidgetContainer;
     private ImageView mSwitchImage1;
@@ -100,12 +104,12 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
     private TextView mTimeTextView;
-    private View mUserNameRedRingCover;
     private CreateAccountTask mCreateAccountTask;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
+    private Toolbar mToolbar;
 
     /**
      * Represents an asynchronous account creation task
@@ -117,6 +121,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -124,18 +129,20 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_signup, container, false);
         } else {
-
             return mView;
         }
 
-        mActivity = (NavigationActivity) getActivity();
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.activity_signup_title);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        mActivity = (NavigationActivity) getActivity();
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
         mNextButton = (Button) mView.findViewById(R.id.activity_signup_next_button);
-
-        mUserNameRedRingCover = mView.findViewById(R.id.activity_signup_username_redring);
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.activity_signup_username_edittext);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_edittext);
@@ -143,26 +150,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.activity_signup_withdrawal_edittext);
         mHintTextView = (TextView) mView.findViewById(R.id.activity_signup_password_help);
         mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.activity_signup_title);
-
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mHintTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mWithdrawalLabel.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-
-        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
 
         mSwitchImage1 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_1);
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
@@ -200,27 +187,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             }
         };
         mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
-
-        mUserNameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (mUserNameEditText.getText().toString().length() < 3 || mUserNameEditText.getText().toString().trim().length() < 3) {
-                    mUserNameRedRingCover.setVisibility(View.VISIBLE);
-                } else {
-                    mUserNameRedRingCover.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
 
         mPasswordEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -261,6 +227,16 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         });
 
         return mView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return onBackPress();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
@@ -317,24 +293,27 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     };
 
     private void setupUI(Bundle bundle) {
-        if (bundle == null)
+        if (bundle == null) {
             return;
-        //Hide some elements if this is not a fresh signup
+        }
+
         mMode = bundle.getInt(MODE);
         if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
             // hide mUsername
-            mUserNameRedRingCover.setVisibility(View.GONE);
             mUserNameEditText.setVisibility(View.GONE);
             mHintTextView.setVisibility(View.INVISIBLE);
 
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordEditText.setTypeface(Typeface.DEFAULT);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setTypeface(Typeface.DEFAULT);
+            mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
-            mTitleTextView.setText(R.string.activity_signup_title_change_password);
+            mToolbar.setTitle(R.string.activity_signup_title_change_password);
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
@@ -344,46 +323,51 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // change mUsername label, title
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
+            mUserNameEditText.setTypeface(Typeface.DEFAULT);
+            mToolbar.setTitle(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordEditText.setTypeface(Typeface.DEFAULT);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setTypeface(Typeface.DEFAULT);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
-            mTitleTextView.setText(R.string.activity_signup_title_change_password);
+            mToolbar.setTitle(R.string.activity_signup_title_change_password);
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
         }
         else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             // change mUsername label, title
-            mTitleTextView.setText(R.string.activity_signup_title_change_password_via_questions);
+            mToolbar.setTitle(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordEditText.setTypeface(Typeface.DEFAULT);
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordConfirmationEditText.setTypeface(Typeface.DEFAULT);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // hide mUsername
-            mUserNameRedRingCover.setVisibility(View.GONE);
             mUserNameEditText.setVisibility(View.GONE);
             mHintTextView.setVisibility(View.INVISIBLE);
         } else if (mMode == CHANGE_PIN) {
             // hide both mPassword fields
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mUserNameEditText.setTypeface(Typeface.DEFAULT);
             mUserNameEditText.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
-            mUserNameRedRingCover.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
             mPasswordForPINEditText = mUserNameEditText;
             mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mPasswordForPINEditText.setTypeface(Typeface.DEFAULT);
             mHintTextView.setVisibility(View.GONE);
             mPasswordEditText.setVisibility(View.GONE);
             mPasswordConfirmationEditText.setVisibility(View.GONE);
             mWithdrawalPinEditText.setHint(getResources().getString(R.string.activity_signup_new_pin));
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
-            mTitleTextView.setText(R.string.activity_signup_title_change_pin);
+            mToolbar.setTitle(R.string.activity_signup_title_change_pin);
             mUserNameEditText.requestFocus();
         }
     }
