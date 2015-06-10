@@ -26,23 +26,16 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/fragment_spending_limits_password_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/emboss_down"
-                    android:ems="10"
                     android:hint="@string/fragment_landing_password_hint"
                     android:inputType="textPassword"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:selectAllOnFocus="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="14dp" />
+                    style="@style/EditText" />
 
                 <View
                     android:id="@+id/fragment_spending_limits_password__redring"
@@ -53,8 +46,6 @@
                     android:background="@drawable/edit_text_red_ring"
                     android:focusable="false"
                     android:visibility="invisible" />
-
-
             </RelativeLayout>
 
             <Switch
@@ -84,23 +75,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp">
+
                 <EditText
                     android:id="@+id/fragment_spending_limits_daily_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/emboss_down"
-                    android:ems="10"
                     android:hint="@string/fragment_spending_limits_hint_text"
                     android:inputType="numberDecimal"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:selectAllOnFocus="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="16dp" />
+                    style="@style/EditText" />
+
                 <TextView
                     android:id="@+id/fragment_spending_limits_daily_denomination"
                     android:layout_width="wrap_content"
@@ -133,24 +118,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="0dp">
+
                 <EditText
                     android:id="@+id/fragment_spending_limits_pin_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="0dp"
-                    android:background="@drawable/emboss_down"
-                    android:ems="10"
                     android:hint="@string/fragment_spending_limits_hint_text"
                     android:singleLine="true"
                     android:inputType="numberDecimal"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
-                    android:selectAllOnFocus="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="16dp" />
+                    style="@style/EditText" />
+
                 <TextView
                     android:id="@+id/fragment_spending_limits_pin_denomination"
                     android:layout_width="wrap_content"

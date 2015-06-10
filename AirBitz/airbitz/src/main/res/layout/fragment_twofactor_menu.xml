@@ -4,11 +4,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <include
-        android:id="@+id/layout_title_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
     <LinearLayout
         android:id="@+id/fragment_twofactor_menu_buttons"
@@ -16,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
         <TextView
