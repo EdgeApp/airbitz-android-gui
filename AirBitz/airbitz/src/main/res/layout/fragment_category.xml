@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/category_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/fragment_category_layout_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
     <LinearLayout
         android:id="@+id/layout_search_container"
         android:layout_width="match_parent"
         android:layout_height="78dp"
-        android:layout_below="@id/fragment_category_layout_header"
+        android:layout_below="@id/toolbar"
         android:background="@color/header_search"
         android:orientation="vertical">
 
