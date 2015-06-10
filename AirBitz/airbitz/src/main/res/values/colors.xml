@@ -59,4 +59,8 @@
 
     <color name="settings_group">#99ffffff</color>
     <color name="btn_blue">#ff2291CF</color>
+
+    <color name="colorPrimary">#ff2291CF</color>
+    <color name="colorPrimaryDark">#ff2291CF</color>
+    <color name="colorPrimaryFrost">#ccffffff</color>
 </resources>

@@ -48,24 +48,16 @@ import com.airbitz.activities.NavigationActivity;
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
     NavigationActivity mActivity;
-    private boolean mUseActionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getActionBar().hide();
-        mUseActionBar = false;
     }
 
-    public void onCreate(Bundle savedInstanceState, boolean useActionBar) {
-        super.onCreate(savedInstanceState);
-        mUseActionBar = useActionBar;
-        if (useActionBar) {
-            getActivity().getActionBar().show();
-        } else {
-            getActivity().getActionBar().hide();
-        }
+    public NavigationActivity getBaseActivity() {
+        return (NavigationActivity) getActivity();
     }
+
 
     // For debug builds, watch for memory leaks of all fragments
     @Override

@@ -31,7 +31,6 @@
 
 package com.airbitz.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -118,6 +117,7 @@ import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import android.support.v7.app.ActionBarActivity;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -132,7 +132,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class NavigationActivity extends Activity
+public class NavigationActivity extends ActionBarActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnExchangeRatesChange,
@@ -265,11 +265,8 @@ public class NavigationActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getActionBar().hide();
 
         mCoreAPI = initiateCore(this);
-
         setContentView(R.layout.activity_navigation);
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
