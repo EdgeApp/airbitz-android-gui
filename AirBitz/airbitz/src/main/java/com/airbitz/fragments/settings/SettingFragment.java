@@ -32,7 +32,6 @@
 package com.airbitz.fragments.settings;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -70,6 +69,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -137,7 +137,7 @@ public class SettingFragment extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, true);
+        super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
         mActivity = ((NavigationActivity)getActivity());
@@ -150,10 +150,11 @@ public class SettingFragment extends BaseFragment {
             mView = inflater.inflate(R.layout.fragment_setting, container, false);
         }
 
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setTitle(R.string.settings_title);
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.settings_title);
+        if (toolbar != null) {
+            getBaseActivity().setSupportActionBar(toolbar);
+        }
 
         mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
