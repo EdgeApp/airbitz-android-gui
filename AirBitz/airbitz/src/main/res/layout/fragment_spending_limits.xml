@@ -1,19 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_spending_limits_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <include
-        android:id="@+id/layout_title_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_title_header">
+        android:layout_below="@id/toolbar"
+        android:animateLayoutChanges="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,17 +63,13 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="2dp"
-                    android:background="@android:color/transparent"
                     android:checked="false"
                     android:switchMinWidth="0dp"
                     android:text="@string/fragment_spending_limits_daily_title"
                     android:textColor="@android:color/white"
                     android:textOff=""
                     android:textOn=""
-                    android:textSize="14dp"
-                    android:singleLine="true"
-                    android:thumb="@drawable/btn_toggle_thumb"
-                    android:track="@drawable/toggle_selector" />
+                    android:singleLine="true" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -85,7 +77,8 @@
                 android:text="@string/fragment_spending_limits_daily_subtext"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="-6dp"
-                android:textSize="11dp" />
+                android:textSize="11dp"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -128,17 +121,13 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="2dp"
-                android:background="@android:color/transparent"
                 android:checked="false"
                 android:switchMinWidth="0dp"
                 android:text="@string/fragment_spending_limits_pin_title"
                 android:textColor="@android:color/white"
                 android:textOff=""
                 android:textOn=""
-                android:textSize="14dp"
-                android:singleLine="true"
-                android:thumb="@drawable/btn_toggle_thumb"
-                android:track="@drawable/toggle_selector" />
+                android:singleLine="true" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -191,5 +180,4 @@
 
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

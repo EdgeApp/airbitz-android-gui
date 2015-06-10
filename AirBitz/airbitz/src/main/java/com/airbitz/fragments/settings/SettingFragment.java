@@ -367,7 +367,6 @@ public class SettingFragment extends BaseFragment {
                 && !TextUtils.isEmpty(data.getStringExtra(CurrencyPickerActivity.CURRENCY))) {
             String code = data.getStringExtra(CurrencyPickerActivity.CURRENCY);
             int num = mCoreAPI.getCurrencyNumberFromCode(code);
-Log.d(TAG, code + " " + num);
             if (num > 0) {
                 mCurrencyNum = num;
                 saveCurrentSettings();
@@ -495,7 +494,6 @@ Log.d(TAG, code + " " + num);
         saveBLEPref(mBLESwitch.isChecked());
 
         // Default Currency
-        Log.d(TAG, "Saving..." + mCurrencyNum);
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
         mCoreSettings.setSzExchangeRateSource(mExchangeButton.getText().toString());
