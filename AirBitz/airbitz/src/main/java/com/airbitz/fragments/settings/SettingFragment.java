@@ -41,12 +41,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -72,7 +74,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.CurrencyAdapter;
+import com.airbitz.activities.CurrencyPickerActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -119,7 +121,7 @@ public class SettingFragment extends BaseFragment {
     private EditText mNicknameEditText;
     private Button mAutoLogoffButton;
     private Button mDebugButton;
-    private Spinner mDefaultCurrencySpinner;
+    private Button mDefaultCurrencyButton;
     private Button mDefaultDistanceButton;
     private TextView mAccountTitle;
     private Button mExchangeButton;
@@ -177,7 +179,7 @@ public class SettingFragment extends BaseFragment {
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
         mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
-        mDefaultCurrencySpinner = (Spinner) mView.findViewById(R.id.settings_button_currency);
+        mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
         mDefaultDistanceButton = (Button) mView.findViewById(R.id.settings_button_distance);
 
         mExchangeButton = (Button) mView.findViewById(R.id.settings_button_default_exchange);
@@ -325,28 +327,16 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        final List<String> mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
-        CurrencyAdapter mCurrencyAdapter =
-            new CurrencyAdapter(mActivity, R.layout.item_settings_currency_spinner, mCurrencyList);
-        mDefaultCurrencySpinner.setAdapter(mCurrencyAdapter);
-        int num = mCoreAPI.coreSettings().getCurrencyNum();
-        String defaultCode = mCoreAPI.getCurrencyCode(num);
-        for(int i=0; i<mCurrencyList.size(); i++) {
-            if(mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
-                mDefaultCurrencySpinner.setSelection(i);
-                break;
-            }
-        }
-        mDefaultCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mCurrencyNum = mCoreAPI.coreSettings().getCurrencyNum();
+        String defaultCode = mCoreAPI.getCurrencyCode(mCurrencyNum);
+        mDefaultCurrencyButton.setText(defaultCode);
+        mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String code = mCurrencyList.get(position).substring(0, 3);
-                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
-                saveCurrentSettings();
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CurrencyPickerActivity.class);
+                getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top);
+                getActivity().startActivityForResult(intent, 0);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         mDefaultDistanceButton.setOnClickListener(new View.OnClickListener() {
@@ -368,6 +358,21 @@ public class SettingFragment extends BaseFragment {
         setUserNameState(mSendNameSwitch.isChecked());
 
         return mView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (Activity.RESULT_OK == resultCode
+                && !TextUtils.isEmpty(data.getStringExtra(CurrencyPickerActivity.CURRENCY))) {
+            String code = data.getStringExtra(CurrencyPickerActivity.CURRENCY);
+            int num = mCoreAPI.getCurrencyNumberFromCode(code);
+Log.d(TAG, code + " " + num);
+            if (num > 0) {
+                mCurrencyNum = num;
+                saveCurrentSettings();
+                mDefaultCurrencyButton.setText(code);
+            }
+        }
     }
 
     @Override
@@ -489,6 +494,7 @@ public class SettingFragment extends BaseFragment {
         saveBLEPref(mBLESwitch.isChecked());
 
         // Default Currency
+        Log.d(TAG, "Saving..." + mCurrencyNum);
         mCoreSettings.setCurrencyNum(mCurrencyNum);
 
         mCoreSettings.setSzExchangeRateSource(mExchangeButton.getText().toString());

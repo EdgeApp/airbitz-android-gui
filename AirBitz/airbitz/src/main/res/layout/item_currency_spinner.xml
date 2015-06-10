@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textview_currency"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:gravity="center"
-    android:paddingLeft="15.75dp"
-    android:paddingRight="15.75dp"
-    android:textColor="#FFFFFF"
-    android:textSize="18dp">
-</TextView>
+    android:background="@android:color/white">
+    
+    <TextView
+        android:id="@+id/textview_currency"
+        android:layout_alignParentLeft="true"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:paddingLeft="15.75dp"
+        android:paddingRight="15.75dp"
+        android:paddingTop="15.75dp"
+        android:paddingBottom="15.75dp"
+        android:textColor="@android:color/black"
+        android:singleLine="true"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/textview_description"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/textview_currency"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:paddingLeft="15.75dp"
+        android:paddingRight="15.75dp"
+        android:paddingTop="15.75dp"
+        android:paddingBottom="15.75dp"
+        android:textColor="@android:color/black"
+        android:singleLine="true"
+        android:textSize="18dp" />
+
+</RelativeLayout>

@@ -87,10 +87,18 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResCurrencySpinner, parent, false);
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
-        textView.setText(mCurrencies.get(position).substring(0, 3));
-        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        textView.setSingleLine(false);
+        String pair = mCurrencies.get(position);
+        String[] tuple = pair.split(" - ");
+
+        TextView code = (TextView) convertView.findViewById(R.id.textview_currency);
+        TextView desc = (TextView) convertView.findViewById(R.id.textview_description);
+        if (tuple.length == 2) {
+            code.setText(tuple[0]);
+            desc.setText(tuple[1]);
+        } else {
+            code.setText(tuple[0]);
+            desc.setText("");
+        }
         return convertView;
     }
 }

@@ -331,6 +331,13 @@ public class NavigationActivity extends ActionBarActivity
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment frag = mNavStacks[mNavThreadId].peek();
+        if (frag != null) {
+            frag.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void setCoreListeners(NavigationActivity activity) {
         mCoreAPI.setOnOTPErrorListener(activity);
         mCoreAPI.setOTPResetRequestListener(activity);

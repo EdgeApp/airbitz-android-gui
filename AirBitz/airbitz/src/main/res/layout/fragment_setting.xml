@@ -159,10 +159,9 @@
                         android:text="@string/settings_title_currency"
                         style="@style/SettingsSplitText" />
 
-                    <Spinner
+                    <Button
                         android:id="@+id/settings_button_currency"
-                        android:spinnerMode="dialog" 
-                        style="@style/SettingsSpinner" />
+                        style="@style/SettingsSplitButton" />
 
                 </LinearLayout>
 

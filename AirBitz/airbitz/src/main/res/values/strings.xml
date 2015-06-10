@@ -240,6 +240,7 @@
     <string name="settings_title_ble">Bluetooth</string>
     <string name="settings_title_ble_send_only">Bluetooth (Send only)</string>
     <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_select_currency">Select a currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE RATE</string>
     <string name="settings_exchange_text">Default Exchange</string>

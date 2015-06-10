@@ -114,7 +114,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
+
+        <activity
+            android:name=".activities.CurrencyPickerActivity"
+            android:label="@string/settings_select_currency" />
 
         <uses-library
             android:name="com.google.android.maps"
