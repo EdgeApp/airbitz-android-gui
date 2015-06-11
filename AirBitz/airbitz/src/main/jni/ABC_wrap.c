@@ -1353,6 +1353,18 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1InvalidOTP_1get(JN
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1SpendDust_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  enum eABC_CC result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (enum eABC_CC)ABC_CC_SpendDust;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1CC_1Obsolete_1get(JNIEnv *jenv, jclass jcls) {
   jint jresult = 0 ;
   enum eABC_CC result;
@@ -3630,6 +3642,34 @@ SWIGEXPORT jstring JNICALL Java_com_airbitz_api_coreJNI_tABC_1SpendTarget_1szNam
   arg1 = *(struct sABC_SpendTarget **)&jarg1; 
   result = (char *) ((arg1)->szName);
   if (result) jresult = (*jenv)->NewStringUTF(jenv, (const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1SpendTarget_1bSigned_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  struct sABC_SpendTarget *arg1 = (struct sABC_SpendTarget *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_SpendTarget **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->bSigned = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_airbitz_api_coreJNI_tABC_1SpendTarget_1bSigned_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  struct sABC_SpendTarget *arg1 = (struct sABC_SpendTarget *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_SpendTarget **)&jarg1; 
+  result = (bool) ((arg1)->bSigned);
+  jresult = (jboolean)result; 
   return jresult;
 }
 
