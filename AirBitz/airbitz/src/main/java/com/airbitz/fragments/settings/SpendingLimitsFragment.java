@@ -130,29 +130,8 @@ public class SpendingLimitsFragment extends BaseFragment
             }
         });
 
-        mPasswordRedRing = mView.findViewById(R.id.fragment_spending_limits_password__redring);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_password_edittext);
         mPasswordEditText.setTypeface(Typeface.DEFAULT);
-        mPasswordEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (mPasswordEditText.getText().toString().length() < 10 || mPasswordEditText.getText().toString().trim().length() < 10) {
-                    mPasswordRedRing.setVisibility(View.VISIBLE);
-                } else {
-                    mPasswordRedRing.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
         return mView;
     }
 

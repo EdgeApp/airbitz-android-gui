@@ -9,4 +9,8 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowTitleSize">0dp</item>
     </style>
+
+    <style name="ToolBarCommon">
+        <item name="android:elevation">4dp</item>
+    </style>
 </resources>

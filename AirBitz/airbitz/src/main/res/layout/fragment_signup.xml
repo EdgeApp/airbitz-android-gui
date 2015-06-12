@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_signup_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    style="@style/SettingsFragment">
 
     <include layout="@layout/layout_toolbar_header" />
 
@@ -12,9 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:paddingLeft="14dp"
@@ -37,7 +35,6 @@
             android:paddingLeft="6.3dp"
             android:paddingRight="6.3dp"
             android:text="@string/activity_signup_password_help"
-            android:textColor="@android:color/white"
             android:textSize="18dp" />
 
         <com.airbitz.objects.LimitedEditText
@@ -68,7 +65,6 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/activity_signup_pin_label"
-                android:textColor="@android:color/white"
                 android:textSize="14dp" />
 
             <EditText
@@ -87,16 +83,16 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
+        <Button
+            android:id="@+id/activity_signup_next_button"
+            android:layout_below="@id/activity_signup_withdrawal_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="25dp"
+            android:text="@string/activity_recovery_complete_button"
+            style="@style/BlueButton" />
 
-    <Button
-        android:id="@+id/activity_signup_next_button"
-        android:layout_below="@id/fragment_signup_widget_container"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="25dp"
-        android:text="@string/activity_recovery_complete_button"
-        style="@style/BlueButton" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/activity_signup_popup_layout"
@@ -116,7 +112,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_signup_password_requirements"
-            android:textColor="@android:color/white"
             android:textSize="16dp"
             android:textStyle="bold"
             android:gravity="left"
@@ -143,7 +138,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/activity_signup_popup_uppercase"
-                android:textColor="#FFFFFF"
                 android:textSize="13dp" />
         </LinearLayout>
 
@@ -167,7 +161,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/activity_signup_popup_lowercase"
-                android:textColor="#FFFFFF"
                 android:textSize="13dp" />
         </LinearLayout>
 
@@ -191,7 +184,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/activity_signup_popup_number"
-                android:textColor="#FFFFFF"
                 android:textSize="13dp" />
         </LinearLayout>
 
@@ -215,7 +207,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/activity_signup_popup_length"
-                android:textColor="#FFFFFF"
                 android:textSize="13dp" />
         </LinearLayout>
 
@@ -228,9 +219,9 @@
             android:layout_marginTop="3dp"
             android:layout_marginBottom="1dp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
             android:textAllCaps="true"
             android:textSize="13dp" />
+
     </LinearLayout>
 
 </RelativeLayout>

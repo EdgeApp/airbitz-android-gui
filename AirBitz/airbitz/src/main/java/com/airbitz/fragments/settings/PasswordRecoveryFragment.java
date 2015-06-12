@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -140,6 +141,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
+        mPasswordEditText.setTypeface(Typeface.DEFAULT);
         mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
 
         if (getArguments() != null) {

@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    style="@style/SettingsFragment">
 
     <include layout="@layout/layout_toolbar_header" />
 
@@ -14,8 +15,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="25.2dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -23,50 +22,34 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.airbitz.objects.LimitedEditText
-                    android:id="@+id/fragment_spending_limits_password_edittext"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/fragment_landing_password_hint"
-                    android:inputType="textPassword"
-                    android:paddingLeft="12.6dp"
-                    android:paddingRight="12.6dp"
-                    style="@style/EditText" />
-
-                <View
-                    android:id="@+id/fragment_spending_limits_password__redring"
-                    android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edit_text_red_ring"
-                    android:focusable="false"
-                    android:visibility="invisible" />
-            </RelativeLayout>
+            <com.airbitz.objects.LimitedEditText
+                android:id="@+id/fragment_spending_limits_password_edittext"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/fragment_landing_password_hint"
+                android:inputType="textPassword"
+                android:paddingLeft="12.6dp"
+                android:paddingRight="12.6dp"
+                style="@style/EditText" />
 
             <Switch
                     android:id="@+id/fragment_spending_limits_toggle_daily_limit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="2dp"
                     android:checked="false"
                     android:switchMinWidth="0dp"
                     android:text="@string/fragment_spending_limits_daily_title"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textOff=""
                     android:textOn=""
                     android:singleLine="true" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
                 android:text="@string/fragment_spending_limits_daily_subtext"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:layout_marginTop="-6dp"
                 android:textSize="11dp"
                 />
@@ -78,12 +61,12 @@
 
                 <EditText
                     android:id="@+id/fragment_spending_limits_daily_edittext"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="0dp"
                     android:hint="@string/fragment_spending_limits_hint_text"
                     android:inputType="numberDecimal"
                     android:paddingLeft="12.6dp"
                     android:paddingRight="12.6dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     style="@style/EditText" />
 
                 <TextView
@@ -95,34 +78,33 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:textSize="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/text_hint"
-                    android:text="@string/fragment_spending_limits_denomination"/>
-                </RelativeLayout>
+                    android:text="@string/fragment_spending_limits_denomination"
+                    style="@style/EditText" />
+            </RelativeLayout>
 
             <Switch
                 android:id="@+id/fragment_spending_limits_toggle_pin_limit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="2dp"
                 android:checked="false"
                 android:switchMinWidth="0dp"
                 android:text="@string/fragment_spending_limits_pin_title"
-                android:textColor="@android:color/white"
                 android:textOff=""
                 android:textOn=""
                 android:singleLine="true" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp">
+                android:layout_height="wrap_content" >
 
                 <EditText
                     android:id="@+id/fragment_spending_limits_pin_edittext"
-                    android:layout_marginBottom="6.3dp"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:hint="@string/fragment_spending_limits_hint_text"
                     android:singleLine="true"
                     android:inputType="numberDecimal"
@@ -139,23 +121,18 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:textSize="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/text_hint"
-                    android:text="@string/fragment_spending_limits_denomination"/>
+                    android:text="@string/fragment_spending_limits_denomination" 
+                    style="@style/EditText" />
             </RelativeLayout>
 
-
-            <com.airbitz.objects.HighlightOnPressButton
+            <Button
                 android:id="@+id/fragment_spending_limits_button_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/bg_button_blue"
-                android:padding="6dp"
                 android:text="@string/fragment_spending_limits_save"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
+                style="@style/BlueButton" />
 
         </LinearLayout>
     </ScrollView>

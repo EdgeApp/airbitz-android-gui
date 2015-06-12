@@ -2,7 +2,7 @@
     android:id="@+id/fragment_twofactor_show_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    style="@style/SettingsFragment">
 
     <include layout="@layout/layout_toolbar_header" />
 
@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:textColor="@android:color/white"
         android:text="@string/fragment_twofactor_show_instruction"/>
 
     <RelativeLayout
@@ -51,7 +50,6 @@
             android:singleLine="true"
             android:switchMinWidth="0dp"
             android:text="@string/fragment_twofactor_show_enabled"
-            android:textColor="@android:color/white"
             android:textOff=""
             android:textOn=""
             android:textSize="18sp"
@@ -107,8 +105,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_twofactor_show_reset_requested"
                 android:layout_margin="4dp"
-                android:gravity="center"
-                android:textColor="@android:color/white"/>
+                android:gravity="center" />
 
             <LinearLayout
                 android:layout_width="match_parent"
