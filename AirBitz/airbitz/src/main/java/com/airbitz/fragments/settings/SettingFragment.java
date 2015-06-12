@@ -73,8 +73,9 @@ import android.support.v7.widget.Toolbar;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
+import com.airbitz.activities.CategoryActivity;
 import com.airbitz.activities.CurrencyPickerActivity;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
@@ -198,8 +199,9 @@ public class SettingFragment extends BaseFragment {
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new CategoryFragment();
-                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
+                Intent intent = new Intent(getActivity(), CategoryActivity.class);
+                getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top);
+                getActivity().startActivity(intent);
             }
         });
 

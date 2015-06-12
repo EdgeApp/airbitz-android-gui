@@ -292,9 +292,6 @@ public class NavigationActivity extends ActionBarActivity
                     keyBoardUp = true;
                     if(keyBoardUp != mLastKeyBoardUp) {
                         hideNavBar();
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
-                        }
                     }
                 } else {
                     keyBoardUp = false;
@@ -309,9 +306,6 @@ public class NavigationActivity extends ActionBarActivity
                                 Log.d(TAG, "Keyboard down, not logged in, in directory");
                                 showNavBar();
                             }
-                        }
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
                         }
                     }
                 }

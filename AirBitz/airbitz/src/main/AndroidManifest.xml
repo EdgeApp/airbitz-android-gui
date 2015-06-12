@@ -121,6 +121,10 @@
             android:name=".activities.CurrencyPickerActivity"
             android:label="@string/settings_select_currency" />
 
+        <activity
+            android:name=".activities.CategoryActivity"
+            android:label="@string/settings_category_title" />
+
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />

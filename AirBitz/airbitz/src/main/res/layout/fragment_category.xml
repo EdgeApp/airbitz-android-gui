@@ -1,333 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/category_page"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    style="@style/SettingsFragment">
 
     <include layout="@layout/layout_toolbar_header" />
 
-    <LinearLayout
-        android:id="@+id/layout_search_container"
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:layout_below="@id/toolbar"
-        android:background="@color/header_search"
-        android:orientation="vertical">
-
-        <com.airbitz.objects.LimitedEditText
-            android:id="@+id/search_field"
-            android:layout_width="match_parent"
-            android:layout_height="28.35dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="7dp"
-            android:background="@drawable/emboss_white"
-            android:drawableLeft="@drawable/ico_search"
-            android:drawablePadding="12.6dp"
-            android:hint="@string/string_search"
-            android:imeOptions="actionDone"
-            android:inputType="textAutoComplete|textNoSuggestions"
-            android:paddingLeft="12.6dp"
-            android:selectAllOnFocus="true"
-            android:textColor="@color/gray_text"
-            android:textColorHint="@color/enabled_hint_color"
-            android:textCursorDrawable="@drawable/bold_cursor"
-            android:textSize="16dp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="28.35dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="6dp">
-
-            <com.airbitz.objects.LimitedEditText
-                android:id="@+id/add_field"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="12.6dp"
-                android:layout_toLeftOf="@+id/settings_category_button_add"
-                android:background="@drawable/emboss_white"
-                android:hint="@string/settings_categories_add_new"
-                android:imeOptions="actionDone"
-                android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
-                android:paddingLeft="12.6dp"
-                android:textColor="@color/gray_text"
-                android:textColorHint="@color/enabled_hint_color"
-                android:textCursorDrawable="@drawable/bold_cursor"
-                android:textSize="16dp" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/settings_category_button_add"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/btn_add_category" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ListView
+        android:id="@+id/category_list_view"
         android:layout_above="@+id/done_cancel_container"
-        android:layout_below="@+id/layout_search_container"
-        android:background="@android:color/transparent">
-
-        <ListView
-            android:id="@+id/category_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/mostly_opaque_black"
-            android:dividerHeight="1px" />
-
-    </LinearLayout>
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/mostly_opaque_black"
+        android:dividerHeight="1px" />
 
     <LinearLayout
         android:id="@+id/done_cancel_container"
         android:layout_width="match_parent"
-        android:layout_height="50.4dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingBottom="6.3dp"
-        android:paddingTop="6.3dp">
+        android:orientation="horizontal">
 
-        <com.airbitz.objects.HighlightOnPressButton
+        <Button
             android:id="@+id/button_cancel"
-            android:layout_width="138.6dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="6.3dp"
-            android:background="@drawable/bg_button_red"
+            android:layout_weight="1"
             android:text="@string/string_cancel"
-            android:textColor="#FFFFFF" />
+            style="@style/RedButton"  />
 
-        <com.airbitz.objects.HighlightOnPressButton
+        <Button
             android:id="@+id/button_done"
-            android:layout_width="138.6dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="6.3dp"
-            android:background="@drawable/bg_btn_green"
             android:text="@string/string_done"
-            android:textColor="#FFFFFF" />
-
+            android:layout_weight="1"
+            style="@style/GreenButton" />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/settings_category_dummy_focus"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:id="@+id/add_popup_triangle_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_search_container"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:visibility="invisible" >
-
-        <LinearLayout
-            android:id="@+id/add_popup_container"
-            android:layout_width="match_parent"
-            android:layout_height="189dp"
-            android:background="@drawable/category_popup"
-            android:orientation="vertical"
-            android:padding="6.3dp" >
-
-            <TextView
-                android:id="@+id/add_popup_expense"
-                android:layout_width="match_parent"
-                android:layout_height="44.1dp"
-                android:background="#FFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="12.6dp"
-                android:text="@string/settings_categories_expense"
-                android:textColor="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/mostly_opaque_black" />
-
-            <TextView
-                android:id="@+id/add_popup_income"
-                android:layout_width="match_parent"
-                android:layout_height="44.1dp"
-                android:background="#FFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="12.6dp"
-                android:text="@string/settings_categories_income"
-                android:textColor="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/mostly_opaque_black" />
-
-            <TextView
-                android:id="@+id/add_popup_transfer"
-                android:layout_width="match_parent"
-                android:layout_height="44.1dp"
-                android:background="#FFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="12.6dp"
-                android:text="@string/settings_categories_transfer"
-                android:textColor="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/mostly_opaque_black" />
-
-            <TextView
-                android:id="@+id/add_popup_exchange"
-                android:layout_width="match_parent"
-                android:layout_height="44.1dp"
-                android:background="#FFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="12.6dp"
-                android:text="@string/settings_categories_exchange"
-                android:textColor="@android:color/black" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/popup_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_above="@+id/item_popup_edittext_container"
-            android:background="@color/listitem_normal"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
-
-        <RelativeLayout
-            android:id="@+id/item_popup_edittext_container"
-            android:layout_width="match_parent"
-            android:layout_height="44.1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
-            android:paddingBottom="9.45dp"
-            android:paddingLeft="9.45dp"
-            android:paddingRight="9.45dp"
-            android:paddingTop="9.45dp">
-
-            <com.airbitz.objects.LimitedEditText
-                android:id="@+id/item_popup_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/item_popup_delete"
-                android:background="@drawable/emboss_down"
-                android:imeOptions="actionDone"
-                android:inputType="textAutoComplete|textCapWords|textNoSuggestions"
-                android:paddingLeft="12.6dp"
-                android:textSize="17dp" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/item_popup_delete"
-                android:layout_width="37.8dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="9.45dp"
-                android:background="@drawable/btn_delete_category" />
-
-            <View
-                android:id="@+id/settings_category_list_item_dummy_focus"
-                android:layout_width="0px"
-                android:layout_height="0px" />
-
-        </RelativeLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/category_popup"
-            android:layout_above="@+id/item_popup_edittext_container"
-            android:layout_marginBottom="0dp"
-            android:paddingTop="6.3dp">
-
-            <LinearLayout
-                android:id="@+id/item_popup_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="12.6dp"
-                android:paddingRight="12.6dp">
-
-                <TextView
-                    android:id="@+id/item_popup_expense"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:text="@string/settings_categories_expense"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black" />
-
-                <TextView
-                    android:id="@+id/item_popup_income"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:text="@string/settings_categories_income"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black" />
-
-                <TextView
-                    android:id="@+id/item_popup_transfer"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:text="@string/settings_categories_transfer"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/mostly_opaque_black" />
-
-                <TextView
-                    android:id="@+id/item_popup_exchange"
-                    android:layout_width="match_parent"
-                    android:layout_height="44.1dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:text="@string/settings_categories_exchange"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
-        </ScrollView>
-
-    </RelativeLayout>
 </RelativeLayout>
