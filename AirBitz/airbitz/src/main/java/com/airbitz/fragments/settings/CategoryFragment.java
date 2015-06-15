@@ -32,13 +32,10 @@
 package com.airbitz.fragments.settings;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,11 +46,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.adapters.SettingsCategoryAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.CategoryWidget;
@@ -64,10 +62,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
-    private ActionBarActivity mParentActivity;
+    private NavigationActivity mActivity;
     private CoreAPI mCoreAPI;
     private Toolbar mToolbar;
 
@@ -95,8 +93,8 @@ public class CategoryFragment extends Fragment {
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.settings_category_title);
 
-        mParentActivity = (ActionBarActivity) getActivity();
-        mParentActivity.setSupportActionBar(mToolbar);
+        mActivity = (NavigationActivity) getActivity();
+        mActivity.setSupportActionBar(mToolbar);
 
         mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
         mDoneButton = (Button) mView.findViewById(R.id.button_done);
@@ -119,7 +117,7 @@ public class CategoryFragment extends Fragment {
                 if (mChanged) {
                     areYouSure();
                 } else {
-                    getActivity().finish();
+                    mActivity.popFragment();
                 }
             }
         });
@@ -127,7 +125,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 saveAllChanges();
-                getActivity().finish();
+                mActivity.popFragment();
             }
         });
 
@@ -216,7 +214,7 @@ public class CategoryFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-                                getActivity().finish();
+                                mActivity.popFragment();
                             }
                         }
                 )

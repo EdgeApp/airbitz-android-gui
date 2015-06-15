@@ -110,16 +110,19 @@
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_first_name"
                         android:hint="@string/settings_edit_first_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
 
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_last_name"
                         android:hint="@string/settings_edit_last_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
 
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_nick_name"
                         android:hint="@string/settings_edit_nick_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
 
                 </LinearLayout>

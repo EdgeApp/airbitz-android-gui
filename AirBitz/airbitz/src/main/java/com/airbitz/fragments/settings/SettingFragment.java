@@ -73,8 +73,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.activities.CategoryActivity;
-import com.airbitz.activities.CurrencyPickerActivity;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
@@ -82,6 +80,7 @@ import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
@@ -199,9 +198,8 @@ public class SettingFragment extends BaseFragment {
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CategoryActivity.class);
-                getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top);
-                getActivity().startActivity(intent);
+                Fragment fragment = new CategoryFragment();
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -336,9 +334,11 @@ public class SettingFragment extends BaseFragment {
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CurrencyPickerActivity.class);
-                getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top);
-                getActivity().startActivityForResult(intent, 0);
+                String code = mCoreAPI.getCurrencyCode(mCurrencyNum);
+
+                CurrencyFragment fragment = new CurrencyFragment();
+                fragment.setSelected(code);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -361,20 +361,6 @@ public class SettingFragment extends BaseFragment {
         setUserNameState(mSendNameSwitch.isChecked());
 
         return mView;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (Activity.RESULT_OK == resultCode
-                && !TextUtils.isEmpty(data.getStringExtra(CurrencyPickerActivity.CURRENCY))) {
-            String code = data.getStringExtra(CurrencyPickerActivity.CURRENCY);
-            int num = mCoreAPI.getCurrencyNumberFromCode(code);
-            if (num > 0) {
-                mCurrencyNum = num;
-                saveCurrentSettings();
-                mDefaultCurrencyButton.setText(code);
-            }
-        }
     }
 
     @Override
