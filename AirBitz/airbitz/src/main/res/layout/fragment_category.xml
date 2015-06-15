@@ -13,7 +13,7 @@
         android:layout_above="@+id/done_cancel_container"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:divider="@color/mostly_opaque_black"
         android:dividerHeight="1px" />
 
@@ -36,6 +36,7 @@
             android:text="@string/string_done"
             android:layout_weight="1"
             style="@style/GreenButton" />
+
     </LinearLayout>
 
 </RelativeLayout>

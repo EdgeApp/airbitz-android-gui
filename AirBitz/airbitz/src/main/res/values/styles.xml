@@ -194,7 +194,7 @@
     </style>
 
     <style name="SettingsButton" parent="SettingsItem">
-        <item name="android:background">@drawable/transparent_until_pressed</item>
+        <item name="android:background">@drawable/settings_button</item>
         <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
@@ -251,7 +251,7 @@
         <item name="android:gravity">right</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/transparent_until_pressed</item>
+        <item name="android:background">@drawable/settings_button</item>
         <item name="android:textColor">@color/blue_text</item>
     </style>
 
@@ -272,9 +272,6 @@
     <style name="Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">25.2dp</item>
-        <item name="android:layout_marginTop">6.3dp</item>
-        <item name="android:background">@drawable/bg_button_green</item>
         <item name="android:padding">10dp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">17dp</item>

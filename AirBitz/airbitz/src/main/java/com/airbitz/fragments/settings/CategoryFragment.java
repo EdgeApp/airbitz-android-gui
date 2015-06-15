@@ -95,6 +95,8 @@ public class CategoryFragment extends BaseFragment {
 
         mActivity = (NavigationActivity) getActivity();
         mActivity.setSupportActionBar(mToolbar);
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
         mDoneButton = (Button) mView.findViewById(R.id.button_done);
@@ -114,11 +116,7 @@ public class CategoryFragment extends BaseFragment {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mChanged) {
-                    areYouSure();
-                } else {
-                    mActivity.popFragment();
-                }
+                exit();
             }
         });
         mDoneButton.setOnClickListener(new View.OnClickListener() {
@@ -159,9 +157,20 @@ public class CategoryFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private void exit() {
+        if (mChanged) {
+            areYouSure();
+        } else {
+            mActivity.popFragment();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                exit();
+                return true;
             case R.id.action_add:
                 // custom dialog please
                 showAddDialog();

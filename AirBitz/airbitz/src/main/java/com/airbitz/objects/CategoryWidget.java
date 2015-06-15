@@ -51,8 +51,8 @@ public class CategoryWidget extends FrameLayout {
 
     static final int[] BACKGROUNDS = {
         R.drawable.bg_button_red,
-        R.drawable.bg_btn_green,
-        R.drawable.bg_btn_blue,
+        R.drawable.bg_button_green,
+        R.drawable.bg_button_blue,
         R.drawable.bg_button_orange
     };
 
