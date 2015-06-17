@@ -79,6 +79,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import android.support.v7.app.ActionBarActivity;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -86,26 +87,27 @@ import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.NavigationBarFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
-import com.airbitz.fragments.login.SetupUsernameFragment;
-import com.airbitz.fragments.request.AddressRequestFragment;
-import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.fragments.settings.CategoryFragment;
-import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.request.ImportFragment;
 import com.airbitz.fragments.login.LandingFragment;
-import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.request.AddressRequestFragment;
+import com.airbitz.fragments.request.ImportFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.request.RequestQRCodeFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
-import com.airbitz.fragments.settings.SettingFragment;
-import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.settings.CategoryFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
@@ -117,7 +119,6 @@ import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
-import android.support.v7.app.ActionBarActivity;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -225,7 +226,7 @@ public class NavigationActivity extends ActionBarActivity
             new BusinessDirectoryFragment(),
             new RequestFragment(),
             new SendFragment(),
-            new WalletsFragment(),
+            new TransactionListFragment(),
             new SettingFragment()};
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
@@ -781,7 +782,7 @@ public class NavigationActivity extends ActionBarActivity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-        Fragment frag = new WalletsFragment();
+        Fragment frag = new TransactionListFragment();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
         mNavStacks[Tabs.WALLET.ordinal()].clear();
@@ -1309,7 +1310,7 @@ public class NavigationActivity extends ActionBarActivity
             case 2:
                 return new SendFragment();
             case 3:
-                return new WalletsFragment();
+                return new TransactionListFragment();
             case 4:
                 return new SettingFragment();
             default:
