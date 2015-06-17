@@ -12,13 +12,16 @@ if [[ ! -n $(which swig) ]]; then
     exit 1
 fi
 
-make abc.clean abc.build-android-arm  abc.build-android-x86
+touch recipes/abc
+make abc.build-android-arm abc.build-android-x86
 
 mkdir -p $WALLET_MAIN/jni/
 mkdir -p $WALLET_MAIN/jniLibs/armeabi/
 mkdir -p $WALLET_MAIN/jniLibs/x86/
 
 cp ../src/ABC.h $WALLET_MAIN/jni/
+sed  -e 's/const char *\*/const char *const /' $WALLET_MAIN/jni/ABC.h \
+    > $WALLET_MAIN/jni/ABC-const.h
 cp build/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
 cp build/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
 
