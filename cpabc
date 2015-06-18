@@ -22,6 +22,8 @@ mkdir -p $WALLET_MAIN/jniLibs/armeabi/
 # mkdir -p $WALLET_MAIN/jniLibs/x86/
 
 cp $CORE_PATH/../src/ABC.h $WALLET_MAIN/jni/
+sed  -e 's/const char *\*/const char *const /' $WALLET_MAIN/jni/ABC.h \
+    > $WALLET_MAIN/jni/ABC-const.h
 cp $BUILD_DIR/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
 # cp $BUILD_DIR/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
 
