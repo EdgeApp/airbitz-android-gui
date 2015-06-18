@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:orientation="horizontal"
     android:layout_height="44.1dp">
 
     <TextView
         android:id="@+id/item_listview_wallets_header_text"
         android:layout_width="match_parent"
-        android:layout_height="44.1dp"
-        android:background="@drawable/bg_wallets_header"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
         android:clickable="false"
         android:gravity="center"
         android:text="@string/fragment_wallets_list_wallets_title"
@@ -22,6 +20,18 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/two_mm"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:padding="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/btn_add" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/item_listview_wallets_header_image"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/two_mm"
         android:adjustViewBounds="true"
