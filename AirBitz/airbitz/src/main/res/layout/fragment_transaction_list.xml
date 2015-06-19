@@ -32,31 +32,6 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/wallet_view"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/fragment_wallets" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:textColor="@android:color/white"
-        android:background="?attr/colorPrimaryDark"
-        style="@style/ToolBarCommon" >
-
-        <Button
-            android:id="@+id/title"
-            android:textColor="@android:color/white"
-            android:background="@null"
-            android:textSize="20dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/layout_toolbar_title" />
 
 </RelativeLayout>

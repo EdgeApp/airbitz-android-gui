@@ -61,7 +61,7 @@
 
     <color name="colorPrimary">#ff2291CF</color>
     <color name="colorPrimaryDark">#ff2291CF</color>
-    <color name="colorPrimaryFrost">#eeffffff</color>
+    <color name="colorPrimaryFrost">#aaffffff</color>
 
     <color name="wallet_list_header">#ff2291CF</color>
 </resources>

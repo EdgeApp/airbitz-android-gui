@@ -47,6 +47,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -69,7 +70,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -152,9 +152,7 @@ public class SettingFragment extends BaseFragment {
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.settings_title);
-        if (toolbar != null) {
-            getBaseActivity().setSupportActionBar(toolbar);
-        }
+        getBaseActivity().setSupportActionBar(toolbar);
 
         mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
@@ -372,12 +370,12 @@ public class SettingFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_help:
-                ((NavigationActivity) getActivity()).pushFragment(
-                    new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.MORE.ordinal());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case R.id.action_help:
+            ((NavigationActivity) getActivity()).pushFragment(
+                new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.MORE.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 

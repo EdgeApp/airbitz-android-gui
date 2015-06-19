@@ -28,16 +28,4 @@
         android:scaleType="centerCrop"
         android:src="@drawable/btn_add" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/item_listview_wallets_header_image"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/two_mm"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:padding="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/btn_add" />
-
 </RelativeLayout>

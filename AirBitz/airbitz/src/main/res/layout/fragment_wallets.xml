@@ -3,13 +3,14 @@
     android:id="@+id/fragment_wallets_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryFrost"
-    android:paddingTop="?android:attr/actionBarSize">
+    android:background="@android:color/white">
+
+    <include layout="@layout/layout_toolbar_title" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/toolbar">
 
         <com.airbitz.objects.DynamicListView
             android:id="@+id/fragment_wallets_listview"

@@ -1,105 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_wallets_parent_layout"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_wallets_addwallet_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorPrimaryFrost">
 
-    <LinearLayout
-        android:id="@+id/fragment_wallets_addwallet_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_wallet_addwallet_height"
-        android:layout_marginLeft="12.6dp"
-        android:layout_marginRight="12.6dp"
-        android:layout_marginTop="44.1dp"
-        android:background="@drawable/bg_add_wallet"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_height="wrap_content" 
+        android:textColor="@android:color/white"
+        android:background="?attr/colorPrimaryDark"
+        style="@style/ToolBarCommon" />
 
-        <com.airbitz.objects.LimitedEditText
-            android:id="@+id/fragment_wallets_addwallet_name_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_margin="9.45dp"
-            android:background="@drawable/emboss_down"
-            android:gravity="center_vertical"
-            android:hint="@string/fragment_wallets_addwallet_name_hint"
-            android:imeOptions="actionDone"
-            android:inputType="textVisiblePassword|textNoSuggestions|textCapWords"
-            android:paddingLeft="9.45dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@color/text_hint"
-            android:textCursorDrawable="@drawable/bold_cursor_white"
-            android:textSize="14dp" />
+    <com.airbitz.objects.LimitedEditText
+        android:id="@+id/fragment_wallets_addwallet_name_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_margin="9.45dp"
+        android:gravity="center_vertical"
+        android:hint="@string/fragment_wallets_addwallet_name_hint"
+        android:imeOptions="actionDone"
+        style="@style/EditText" />
 
-        <LinearLayout
-            android:id="@+id/fragment_wallets_addwallet_currency_layout"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginBottom="6dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="visible">
+    <LinearLayout
+        android:id="@+id/fragment_wallets_addwallet_currency_layout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="138.6dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/fragment_wallets_addwallet_currency_textview"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="15dp" />
+        <TextView
+            android:layout_width="138.6dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/fragment_wallets_addwallet_currency_textview"
+            android:textStyle="bold" />
 
-            <com.airbitz.objects.HighlightOnPressSpinner
-                android:id="@+id/fragment_wallets_addwallet_currency_spinner"
-                android:layout_width="138.6dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="6.3dp"
-                android:background="@drawable/bg_button_white_outline"
-                android:textColor="#222222"
-                android:dropDownVerticalOffset="0dp"
-                android:gravity="center"
-                android:popupBackground="@drawable/rounded_edge_white_bg"
-                android:spinnerMode="dropdown" />
+        <Spinner
+            android:id="@+id/fragment_wallets_addwallet_currency_spinner"
+            android:layout_width="138.6dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6.3dp"
+            android:dropDownVerticalOffset="0dp"
+            android:gravity="center"
+            android:popupBackground="@drawable/rounded_edge_white_bg"
+            android:spinnerMode="dropdown" />
 
-        </LinearLayout>
+    </LinearLayout>
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12.6dp"
+        android:layout_marginTop="12.6dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/fragment_wallets_addwallet_cancel_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12.6dp"
-            android:layout_marginTop="12.6dp"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:text="@string/string_cancel"
+            style="@style/RedButton" />
 
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/fragment_wallets_addwallet_cancel_button"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/bg_button_red"
-                android:text="@string/string_cancel"
-                android:textColor="#FFFFFF"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/fragment_wallets_addwallet_done_button"
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_btn_green"
-                android:text="@string/string_done"
-                android:textColor="#FFFFFF"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/fragment_wallets_addwallet_done_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/string_done"
+            style="@style/GreenButton" />
     </LinearLayout>
-</RelativeLayout>
-
+</LinearLayout>
