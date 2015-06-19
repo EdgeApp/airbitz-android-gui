@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ccffffff"
     android:baselineAligned="false"
     android:gravity="center_vertical">
 
@@ -44,7 +42,6 @@
 
         <TextView
             android:id="@+id/textview_date"
-            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="1.5dp"
@@ -54,7 +51,6 @@
 
         <TextView
             android:id="@+id/textview_name"
-            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -66,7 +62,6 @@
 
         <TextView
             android:id="@+id/textview_confirmations"
-            style="@style/WhiteDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -88,24 +83,22 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textview_amount_kredit"
-                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:paddingBottom="7.5dp"
                 android:paddingTop="0.5dp"
-                android:shadowColor="#00000000"
                 android:textColor="@color/green_text_dark"
                 android:textSize="14dp" />
 
             <TextView
                 android:id="@+id/textview_amount_running_total"
-                style="@style/WhiteDropShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -116,15 +109,5 @@
                 android:textSize="12dp" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageview_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="7dp"
-            android:src="@drawable/arrow_right" />
-
     </LinearLayout>
 </LinearLayout>

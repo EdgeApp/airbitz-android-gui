@@ -3,70 +3,80 @@
     android:id="@+id/fragment_wallet_sendrequest_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="20dp"
-    android:paddingBottom="15dp"
-    android:gravity="center"
+    android:paddingTop="15dp"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/fragment_wallet_request_button"
-        android:layout_width="138.6dp"
-        android:layout_height="37.8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:gravity="center"
         android:background="@drawable/bg_button_green" >
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/ico_nav_request_selected"/>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@drawable/tab_divider"/>-->
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:text="@string/fragment_wallet_request_button"
-            android:textColor="@android:color/white"
-            android:textStyle="normal" />
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:background="@drawable/ico_nav_request_selected"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/fragment_wallet_request_button"
+                android:textColor="@android:color/white"
+                android:textStyle="normal"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/fragment_wallet_send_button"
-        android:layout_width="138.6dp"
-        android:layout_height="37.8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="15dp"
+        android:gravity="center"
         android:background="@drawable/bg_button_blue" >
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/ico_nav_send_selected"/>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@drawable/tab_divider"/>-->
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:text="@string/fragment_wallet_send_button"
-            android:textStyle="normal"
-            android:textColor="@android:color/white"/>
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:background="@drawable/ico_nav_send_selected"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/fragment_wallet_send_button"
+                android:textStyle="normal"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
 

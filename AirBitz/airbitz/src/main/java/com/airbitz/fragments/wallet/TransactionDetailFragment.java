@@ -49,6 +49,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -64,6 +65,9 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,8 +165,6 @@ public class TransactionDetailFragment extends BaseFragment
     private int baseExpensePosition = 1;
     private int baseTransferPosition = 2;
     private int baseExchangePosition = 3;
-    private HighlightOnPressImageButton mBackButton;
-    private HighlightOnPressImageButton mHelpButton;
     private EditText mFiatValueEdittext;
     private String mFiatValue;
     private TextView mFiatDenominationLabel;
@@ -209,6 +211,8 @@ public class TransactionDetailFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         mActivity = (NavigationActivity) getActivity();
         mCoreAPI = CoreAPI.getApi();
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -216,6 +220,12 @@ public class TransactionDetailFragment extends BaseFragment
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
+
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        getBaseActivity().setSupportActionBar(toolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPicasso = Picasso.with(getActivity());
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
@@ -232,14 +242,8 @@ public class TransactionDetailFragment extends BaseFragment
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        mTitleTextView = (TextView) mView.findViewById(R.id.title);
         mTitleTextView.setText(R.string.transaction_details_title);
-
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
 
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
@@ -576,19 +580,12 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goDone();
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
-            }
-        });
+        // mHelpButton.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View view) {
+        //         ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
+        //     }
+        // });
 
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -602,6 +599,26 @@ public class TransactionDetailFragment extends BaseFragment
         }
 
         return mView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_standard, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.action_help:
+            mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS));
+            return true;
+        case android.R.id.home:
+            mActivity.popFragment();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupOriginalCategories() {

@@ -31,112 +31,17 @@
 
 package com.airbitz.activities;
 
-import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import com.airbitz.R;
-import com.airbitz.adapters.CurrencyAdapter;
-import com.airbitz.api.CoreAPI;
-
-import java.util.List;
 
 public class CurrencyPickerActivity extends ActionBarActivity {
-    private final String TAG = getClass().getSimpleName();
-    public static  String CURRENCY = "currency";
-
-    private CoreAPI mApi;
-    private CurrencyAdapter mAdapter;
-    private List<String> mOrigDescriptions;
-    private List<String> mOrigCodes;
-    private List<String> mDescriptions;
-    private List<String> mCodes;
-    private ListView mListView;
-    private EditText mSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_currency_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.settings_title);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        mSearch = (EditText) findViewById(R.id.search);
-        mSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String query = editable.toString();
-                mDescriptions.clear(); mCodes.clear();
-                if (TextUtils.isEmpty(query)) {
-                    mDescriptions.addAll(mOrigDescriptions);
-                    mCodes.addAll(mOrigCodes);
-                } else {
-                    for (int i = 0; i < mOrigDescriptions.size(); ++i) {
-                        String d = mOrigDescriptions.get(i);
-                        if (d.toLowerCase().contains(query.toLowerCase())) {
-                            mDescriptions.add(mOrigDescriptions.get(i));
-                            mCodes.add(mOrigDescriptions.get(i));
-                        }
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-
-        mApi = CoreAPI.getApi();
-        mOrigDescriptions = mApi.getCurrencyCodeAndDescriptionArray();
-        mOrigCodes = mApi.getCurrencyCodeArray();
-        mDescriptions = mApi.getCurrencyCodeAndDescriptionArray();
-        mCodes = mApi.getCurrencyCodeArray();
-
-        mAdapter = new CurrencyAdapter(this, mDescriptions);
-        mListView = (ListView) findViewById(R.id.listview_currency);
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String code = mCodes.get(i);
-                Intent intent = new Intent();
-                intent.putExtra(CURRENCY, code);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                setResult(RESULT_CANCELED);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        setContentView(R.layout.activity_currency_picker);
     }
 }
+

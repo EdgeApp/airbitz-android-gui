@@ -16,226 +16,222 @@
             android:orientation="vertical"
             android:layout_marginTop="?android:attr/actionBarSize">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+            <TextView
+                android:id="@+id/settings_denomination_title"
+                android:text="@string/settings_denomination_title"
+                style="@style/SettingsTitle" />
 
-                <TextView
-                    android:id="@+id/settings_denomination_title"
-                    android:text="@string/settings_denomination_title"
-                    style="@style/SettingsTitle" />
+            <RadioGroup
+                android:id="@+id/settings_denomination_denomination_group"
+                style="@style/SettingsGroup">
 
-                <RadioGroup
-                    android:id="@+id/settings_denomination_denomination_group"
-                    style="@style/SettingsGroup">
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_bitcoin"
+                    android:text="@string/settings_denomination_buttons_bitcoin"
+                    style="@style/SettingsRadioItem" />
 
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_bitcoin"
-                        android:text="@string/settings_denomination_buttons_bitcoin"
-                        style="@style/SettingsRadioItem" />
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_mbitcoin"
+                    android:text="@string/settings_denomination_buttons_mbitcoin"
+                    style="@style/SettingsRadioItem" />
 
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_mbitcoin"
-                        android:text="@string/settings_denomination_buttons_mbitcoin"
-                        style="@style/SettingsRadioItem" />
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_ubitcoin"
+                    android:text="@string/settings_denomination_buttons_ubitcoin"
+                    style="@style/SettingsRadioItem" />
 
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_ubitcoin"
-                        android:text="@string/settings_denomination_buttons_ubitcoin"
-                        style="@style/SettingsRadioItem" />
+            </RadioGroup>
 
-                </RadioGroup>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/settings_account_title"
+                android:text="@string/settings_account_title"
+                style="@style/SettingsTitle" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:id="@+id/credentials_buttons"
+                style="@style/SettingsGroup">
 
-                <TextView
-                    android:id="@+id/settings_account_title"
-                    android:text="@string/settings_account_title"
-                    style="@style/SettingsTitle" />
-
-                <LinearLayout
-                    android:id="@+id/credentials_buttons"
-                    style="@style/SettingsGroup">
-
+                <FrameLayout style="@style/SettingsRowFirst">
                     <Button
                         android:id="@+id/settings_button_change_password"
                         android:text="@string/settings_button_change_password"
                         style="@style/SettingsButton" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_pin"
                         android:text="@string/settings_button_pin"
                         style="@style/SettingsButton" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_recovery"
                         android:text="@string/settings_button_recovery"
                         style="@style/SettingsButton" />
-
-                </LinearLayout>
-
+                </FrameLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/settings_user_title"
+                android:text="@string/settings_user_title"
+                style="@style/SettingsTitle" />
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:id="@+id/user_buttons"
+                style="@style/SettingsGroup">
 
-                <TextView
-                    android:id="@+id/settings_user_title"
-                    android:text="@string/settings_user_title"
-                    style="@style/SettingsTitle" />
-
-                <LinearLayout
-                    android:id="@+id/user_buttons"
-                    style="@style/SettingsGroup">
-
+                <FrameLayout style="@style/SettingsRowFirst">
                     <Switch
                         android:id="@+id/settings_toggle_send_user_info"
                         android:text="@string/settings_button_send_user_info"
                         style="@style/SettingsSwitch" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_first_name"
                         android:hint="@string/settings_edit_first_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_last_name"
                         android:hint="@string/settings_edit_last_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <com.airbitz.objects.LimitedEditText
                         android:id="@+id/settings_edit_nick_name"
                         android:hint="@string/settings_edit_nick_name"
+                        android:background="@null"
                         style="@style/SettingsEditText" />
-
-                </LinearLayout>
+                </FrameLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+            <TextView
+                android:id="@+id/settings_general_title"
+                android:text="@string/settings_options_title"
+                style="@style/SettingsTitle" />
 
-                <TextView
-                    android:id="@+id/settings_general_title"
-                    android:text="@string/settings_options_title"
-                    style="@style/SettingsTitle" />
+            <LinearLayout
+                android:id="@+id/misc_views"
+                style="@style/SettingsGroup">
 
                 <LinearLayout
-                    android:id="@+id/misc_views"
-                    style="@style/SettingsGroup">
+                    android:orientation="horizontal"
+                    style="@style/SettingsRowFirst">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        style="@style/SettingsItem">
+                    <TextView
+                        android:id="@+id/settings_title_auto_logoff"
+                        android:text="@string/settings_title_auto_logoff"
+                        style="@style/SettingsSplitText" />
 
-                        <TextView
-                            android:id="@+id/settings_title_auto_logoff"
-                            android:text="@string/settings_title_auto_logoff"
-                            style="@style/SettingsSplitText" />
+                    <Button
+                        android:id="@+id/settings_button_auto_logoff"
+                        style="@style/SettingsSplitButton" />
 
-                        <Button
-                            android:id="@+id/settings_button_auto_logoff"
-                            style="@style/SettingsSplitButton" />
-                    </LinearLayout>
+                </LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        style="@style/SettingsItem">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
 
-                        <TextView
-                            android:id="@+id/settings_title_currency"
-                            android:text="@string/settings_title_currency"
-                            style="@style/SettingsSplitText" />
+                    <TextView
+                        android:id="@+id/settings_title_currency"
+                        android:text="@string/settings_title_currency"
+                        style="@style/SettingsSplitText" />
 
-                        <Button
-                            android:id="@+id/settings_button_currency"
-                            style="@style/SettingsSplitButton" />
+                    <Button
+                        android:id="@+id/settings_button_currency"
+                        style="@style/SettingsSplitButton" />
 
-                    </LinearLayout>
+                </LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        style="@style/SettingsItem">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
 
-                        <TextView
-                            android:id="@+id/settings_title_distance"
-                            android:text="@string/settings_title_distance"
-                            style="@style/SettingsSplitText" />
+                    <TextView
+                        android:id="@+id/settings_title_distance"
+                        android:text="@string/settings_title_distance"
+                        style="@style/SettingsSplitText" />
 
-                        <Button
-                            android:id="@+id/settings_button_distance"
-                            style="@style/SettingsSplitButton" />
+                    <Button
+                        android:id="@+id/settings_button_distance"
+                        style="@style/SettingsSplitButton" />
 
-                    </LinearLayout>
+                </LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        style="@style/SettingsItem">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
 
-                        <TextView
-                            android:id="@+id/settings_title_default_exchange"
-                            android:text="@string/settings_exchange_text"
-                            style="@style/SettingsSplitText" />
+                    <TextView
+                        android:id="@+id/settings_title_default_exchange"
+                        android:text="@string/settings_exchange_text"
+                        style="@style/SettingsSplitText" />
 
-                        <Button
-                            android:id="@+id/settings_button_default_exchange"
-                            style="@style/SettingsSplitButton" />
-                    </LinearLayout>
+                    <Button
+                        android:id="@+id/settings_button_default_exchange"
+                        style="@style/SettingsSplitButton" />
+                </LinearLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_category"
                         android:text="@string/settings_button_change_categories"
                         style="@style/SettingsButton" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_spending_limits"
                         android:text="@string/settings_button_change_spending_limits"
                         style="@style/SettingsButton" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_two_factor_authentication"
                         android:text="@string/settings_button_two_factor_authentication"
                         style="@style/SettingsButton" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Switch
                         android:id="@+id/settings_toggle_merchant_mode"
                         android:text="@string/settings_title_merchant_mode"
                         style="@style/SettingsSwitch" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Switch
                         android:id="@+id/settings_toggle_nfc"
                         android:text="@string/settings_title_nfc"
                         style="@style/SettingsSwitch" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Switch
                         android:id="@+id/settings_toggle_ble"
                         android:text="@string/settings_title_ble"
                         style="@style/SettingsSwitch" />
+                </FrameLayout>
 
+                <FrameLayout style="@style/SettingsRow">
                     <Switch
                         android:id="@+id/settings_toggle_pin_login"
                         android:text="@string/settings_title_pin_login"
                         style="@style/SettingsSwitch" />
+                </FrameLayout>
 
-                </LinearLayout>
             </LinearLayout>
 
             <Button

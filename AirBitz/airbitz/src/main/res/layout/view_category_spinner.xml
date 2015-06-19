@@ -15,15 +15,13 @@
         android:layout_marginRight="20dp"
         android:textColor="@android:color/white"
         android:popupBackground="@drawable/rounded_edge_white_bg"
-        android:dropDownVerticalOffset="0dp"
         android:spinnerMode="dropdown" />
 
     <com.airbitz.objects.LimitedEditText
         android:id="@+id/postfix_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/prefix_spinner"
-        android:layout_alignParentRight="true"
         android:inputType="textVisiblePassword|textNoSuggestions"
         style="@style/EditText" />
 

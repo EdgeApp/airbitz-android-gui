@@ -22,7 +22,6 @@
     <color name="mostly_opaque_black">#DD000000</color>
     <color name="lightly_opaque_black">#20000000</color>
     <color name="off_white">#FFEDEDED</color>
-    <color name="wallet_list_header">#44000000</color>
     <color name="header_search">#2291cf</color>
     <color name="text_yellow">#FFFFFF34</color>
 
@@ -62,5 +61,7 @@
 
     <color name="colorPrimary">#ff2291CF</color>
     <color name="colorPrimaryDark">#ff2291CF</color>
-    <color name="colorPrimaryFrost">#ccffffff</color>
+    <color name="colorPrimaryFrost">#aaffffff</color>
+
+    <color name="wallet_list_header">#ff2291CF</color>
 </resources>
