@@ -57,10 +57,15 @@
     <color name="navbar_text_disabled">#ffaaaaaa</color>
 
     <color name="settings_group">#99ffffff</color>
-    <color name="btn_blue">#ff2291CF</color>
+
+    <color name="btn_blue">#ff006698</color>
+    <color name="btn_blue_pressed">#99006698</color>
+
+    <color name="btn_red">#ffd02e32</color>
+    <color name="btn_red_pressed">#99d02e32</color>
 
     <color name="colorPrimary">#ff2291CF</color>
-    <color name="colorPrimaryDark">#ff2291CF</color>
+    <color name="colorPrimaryDark">#ff006698</color>
     <color name="colorPrimaryFrost">#aaffffff</color>
 
     <color name="wallet_list_header">#ff2291CF</color>

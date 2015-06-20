@@ -41,4 +41,5 @@
     <dimen name="calc_button_margin">3dp</dimen>
     <dimen name="calc_button_textsize">14dp</dimen>
 
+    <dimen name="btn_radius">2dp</dimen>
 </resources>
