@@ -488,8 +488,12 @@ public class NavigationActivity extends ActionBarActivity
         // Only show visually if we're displaying the thread
         if (mNavThreadId == threadID) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
-                transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+            if (mNavStacks[threadID].size() != 0) {
+                if (fragment instanceof HelpFragment) {
+                    transaction.setCustomAnimations(R.animator.fade_in, 0);
+                } else {
+                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+                }
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -522,8 +526,12 @@ public class NavigationActivity extends ActionBarActivity
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if ((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
-            transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+        if (mNavStacks[mNavThreadId].size() != 0) {
+            if (fragment instanceof HelpFragment) {
+                transaction.setCustomAnimations(0, R.animator.fade_out);
+            } else {
+                transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+            }
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
         transaction.commitAllowingStateLoss();

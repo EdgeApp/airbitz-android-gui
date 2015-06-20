@@ -184,9 +184,7 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
                 if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
                 } else {
-                    if (!wallet.isArchived()) {
-                        AirbitzApplication.setCurrentWallet(wallet.getUUID());
-                    }
+                    AirbitzApplication.setCurrentWallet(wallet.getUUID());
                     WalletsFragment.popFragment(mActivity);
                 }
             }

@@ -193,7 +193,6 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                     }
                 });
                 textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
-                textView.setBackgroundResource(R.drawable.bg_wallets_header);
                 mArchiveButton = imageButton;
                 imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
                 if (mArchiveOpen) {
@@ -250,25 +249,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     public void selectItem(View view, int position) {
-        if (1 == position) {
-            if (2 == archivePos) {
-                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
-            } else {
-                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_selected));
-            }
-        } else if (position == archivePos - 1) {
-            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
-        } else if (position == archivePos + 1) {
-            if (position == mWalletList.size() - 1) {
-                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_solo_selected));
-            } else {
-                view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_top_archive_selected));
-            }
-        } else if (position == mWalletList.size() - 1) {
-            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_bottom_selected));
-        } else {
-            view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selected));
-        }
+        view.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard_selected));
     }
 
     public int getMapSize() {
