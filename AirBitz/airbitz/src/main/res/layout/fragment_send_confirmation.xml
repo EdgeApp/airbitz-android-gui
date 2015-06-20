@@ -305,11 +305,11 @@
 
     </RelativeLayout>
 
-    <View
-        android:id="@+id/fragment_sendconfirmation_dummy_focus"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+    <com.airbitz.objects.Calculator
+        android:id="@+id/fragment_send_confirmation_calculator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

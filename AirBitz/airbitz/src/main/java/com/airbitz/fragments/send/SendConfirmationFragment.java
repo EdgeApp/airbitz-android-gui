@@ -83,7 +83,8 @@ import java.util.List;
 public class SendConfirmationFragment extends BaseFragment implements
         CoreAPI.OnWalletLoaded,
         NavigationActivity.OnBackPress,
-        CoreAPI.OnPasswordCheckListener {
+        CoreAPI.OnPasswordCheckListener,
+        Calculator.OnCalculatorKey {
     private final String TAG = getClass().getSimpleName();
 
     private final int INVALID_ENTRY_COUNT_MAX = 3;
@@ -112,8 +113,6 @@ public class SendConfirmationFragment extends BaseFragment implements
     private TextWatcher mBTCTextWatcher;
 
     private Bundle bundle;
-
-    private View mDummyFocus;
 
     private EditText mFiatField;
     private EditText mBitcoinField;
@@ -216,10 +215,6 @@ public class SendConfirmationFragment extends BaseFragment implements
         mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
         mTitleTextView.setText(R.string.send_confirmation_title);
 
-        mDummyFocus = mView.findViewById(R.id.fragment_sendconfirmation_dummy_focus);
-
-        mParentLayout = (RelativeLayout) mView.findViewById(R.id.layout_parent);
-
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
         mBackButton.setVisibility(View.VISIBLE);
         mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
@@ -227,7 +222,12 @@ public class SendConfirmationFragment extends BaseFragment implements
 
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
-//        mCalculator = mActivity.getCalculatorView();
+        mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
+        mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
+
+        mCalculator = (Calculator) mView.findViewById(R.id.fragment_send_confirmation_calculator_layout);
+        mCalculator.setCalculatorKeyListener(this);
+        mCalculator.setEditText(mBitcoinField);
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
@@ -241,9 +241,6 @@ public class SendConfirmationFragment extends BaseFragment implements
 
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
-
-        mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
-        mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
 
@@ -322,11 +319,10 @@ public class SendConfirmationFragment extends BaseFragment implements
                 Log.d(TAG, "Bitcoin field focus changed");
                 if (hasFocus) {
                     mBitcoinField.selectAll();
-
                     mCalculator.setEditText(mBitcoinField);
-//                    mActivity.showCalculator();
+                    mCalculator.setVisibility(View.VISIBLE);
                 } else {
-//                    mActivity.hideCalculator();
+                    mCalculator.setVisibility(View.GONE);
                 }
             }
         });
@@ -336,7 +332,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             public void onClick(View view) {
                 Log.d(TAG, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
-//                mActivity.showCalculator();
+                mCalculator.setVisibility(View.VISIBLE);
             }
         });
 
@@ -366,9 +362,9 @@ public class SendConfirmationFragment extends BaseFragment implements
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
-//                    mActivity.showCalculator();
+                    mCalculator.setVisibility(View.VISIBLE);
                 } else {
-//                    mActivity.hideCalculator();
+                    mCalculator.setVisibility(View.GONE);
                 }
             }
         });
@@ -377,7 +373,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 mCalculator.setEditText(mFiatField);
-//                mActivity.showCalculator();
+                mCalculator.setVisibility(View.VISIBLE);
             }
         });
 
@@ -391,7 +387,7 @@ public class SendConfirmationFragment extends BaseFragment implements
                     return true;
                 }
                 else {
-                    mDummyFocus.requestFocus();
+                    mView.requestFocus();
                     return true;
                 }
             }
@@ -515,7 +511,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             }
         });
 
-        mDummyFocus.requestFocus();
+        mView.requestFocus();
 
         return mView;
     }
@@ -591,6 +587,13 @@ public class SendConfirmationFragment extends BaseFragment implements
             mCalculateFeesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     };
+
+    @Override
+    public void OnCalculatorKeyPressed(String tag) {
+        if (tag.equals("done")) {
+            mCalculator.setVisibility(View.GONE);
+        }
+    }
 
     private void calculateFees() {
         mHandler.removeCallbacks(delayCalcFees);

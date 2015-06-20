@@ -132,7 +132,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TransactionDetailFragment extends BaseFragment
         implements CurrentLocationManager.OnCurrentLocationChange,
-        TransactionDetailCategoryAdapter.OnNewCategory {
+        TransactionDetailCategoryAdapter.OnNewCategory,
+        Calculator.OnCalculatorKey {
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
 
@@ -221,7 +222,7 @@ public class TransactionDetailFragment extends BaseFragment
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
 
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.fragment_transaction_title_bar);
         toolbar.setTitle("");
         getBaseActivity().setSupportActionBar(toolbar);
         getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -237,7 +238,9 @@ public class TransactionDetailFragment extends BaseFragment
             locationEnabled = true;
         }
 
-//        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
+        mCalculator = (Calculator) mView.findViewById(R.id.fragment_transaction_detail_calculator_layout);
+        mCalculator.setCalculatorKeyListener(this);
+        mCalculator.setEditText(mFiatValueEdittext);
 
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
@@ -547,9 +550,9 @@ public class TransactionDetailFragment extends BaseFragment
                     mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mCalculator.setEditText(mFiatValueEdittext);
                     mFiatValueEdittext.selectAll();
-//                    ((NavigationActivity) getActivity()).showCalculator();
+                    mCalculator.setVisibility(View.VISIBLE);
                 } else {
-//                    ((NavigationActivity) getActivity()).hideCalculator();
+                    mCalculator.setVisibility(View.GONE);
                 }
             }
         });
@@ -646,6 +649,13 @@ public class TransactionDetailFragment extends BaseFragment
 
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
+    }
+
+    @Override
+    public void OnCalculatorKeyPressed(String tag) {
+        if (tag.equals("done")) {
+            mCalculator.setVisibility(View.GONE);
+        }
     }
 
     private void showUpperLayout(boolean visible) {
