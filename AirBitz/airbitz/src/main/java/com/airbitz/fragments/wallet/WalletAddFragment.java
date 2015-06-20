@@ -31,6 +31,8 @@
 
 package com.airbitz.fragments.wallet;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -158,7 +160,7 @@ public class WalletAddFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
-            mActivity.popFragment();
+            WalletAddFragment.popFragment(mActivity);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -180,7 +182,8 @@ public class WalletAddFragment extends BaseFragment {
     private void goCancel() {
         mAddWalletCancelButton.setClickable(false);
         mAddWalletDoneButton.setClickable(false);
-        mActivity.popFragment();
+
+        WalletAddFragment.popFragment(mActivity);
     }
 
     public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
@@ -219,7 +222,7 @@ public class WalletAddFragment extends BaseFragment {
                     Log.d(TAG, "AddWalletTask failed");
                 } else {
                     mActivity.ShowFadingDialog(String.format(getString(R.string.fragment_wallets_created_wallet), mWalletName));
-                    mActivity.popFragment();
+                    WalletAddFragment.popFragment(mActivity);
                 }
             }
         }
@@ -228,5 +231,20 @@ public class WalletAddFragment extends BaseFragment {
         protected void onCancelled() {
             mAddWalletTask = null;
         }
+    }
+
+    public static void pushFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        Fragment fragment = new WalletAddFragment();
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        mActivity.popFragment(transaction);
     }
 }

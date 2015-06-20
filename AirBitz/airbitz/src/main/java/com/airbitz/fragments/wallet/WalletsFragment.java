@@ -34,6 +34,7 @@ package com.airbitz.fragments.wallet;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -145,7 +146,7 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
         walletsHeaderImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.pushFragment(new WalletAddFragment(), NavigationActivity.Tabs.WALLET.ordinal());
+                WalletAddFragment.pushFragment(mActivity);
             }
         });
 
@@ -186,7 +187,7 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
                     if (!wallet.isArchived()) {
                         AirbitzApplication.setCurrentWallet(wallet.getUUID());
                     }
-                    mActivity.popFragment();
+                    WalletsFragment.popFragment(mActivity);
                 }
             }
         });
@@ -197,7 +198,7 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
-            mActivity.popFragment();
+            WalletsFragment.popFragment(mActivity);
             return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.WALLETS));
@@ -325,5 +326,20 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
             }
         }
         return list;
+    }
+
+    public static void pushFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.slide_in_top, R.animator.fade_out);
+
+        Fragment fragment = new WalletsFragment();
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.slide_out_top);
+
+        mActivity.popFragment(transaction);
     }
 }

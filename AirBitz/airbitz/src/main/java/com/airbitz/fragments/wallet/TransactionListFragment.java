@@ -211,8 +211,7 @@ public class TransactionListFragment extends BaseFragment
         mTitleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new WalletsFragment();
-                mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+                WalletsFragment.pushFragment(mActivity);
             }
         });
 
