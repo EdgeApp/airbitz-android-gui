@@ -5,6 +5,7 @@
     xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <include
@@ -226,7 +227,7 @@
         </LinearLayout>
 
         <com.airbitz.objects.Calculator
-            android:id="@+id/navigation_calculator_layout"
+            android:id="@+id/fragment_request_calculator_layout"
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:visibility="gone" />

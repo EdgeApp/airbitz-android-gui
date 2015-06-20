@@ -169,27 +169,6 @@ public class NavigationActivity extends ActionBarActivity
         }
     };
 
-    final Runnable delayedShowCalculator = new Runnable() {
-        @Override
-        public void run() {
-            mCalculatorView.setAlpha(0f);
-            mCalculatorView.setVisibility(View.VISIBLE);
-            mCalculatorView.animate()
-                    .alpha(1f)
-                    .setDuration(200)
-                    .setListener(null);
-            mCalculatorView.setEnabled(true);
-        }
-    };
-
-    final Runnable delayedShowNumberpad = new Runnable() {
-        @Override
-        public void run() {
-            mNumberpadView.setVisibility(View.VISIBLE);
-            mNumberpadView.setEnabled(true);
-        }
-    };
-
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
         @Override
@@ -218,7 +197,6 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mCalcLocked = false;
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
-    private Calculator mCalculatorView;
     private Numberpad mNumberpadView;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
@@ -273,7 +251,6 @@ public class NavigationActivity extends ActionBarActivity
         getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
 
         setTypeFaces();
@@ -593,82 +570,6 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public Calculator getCalculatorView() {
-        return mCalculatorView;
-    }
-
-    public Numberpad getNumberpadView() {
-        return mNumberpadView;
-    }
-
-    public boolean isLargeDpi() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return !(metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH);
-    }
-
-    public void lockCalculator() {
-        if (!isLargeDpi()) {
-            return;
-        }
-        mCalcLocked = true;
-        showCalculator();
-    }
-
-    public void unlockCalculator() {
-        if (!mCalcLocked) {
-            return;
-        }
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-        params.setMargins(0, 0, 0, 0);
-        mCalculatorView.setLayoutParams(params);
-        mCalcLocked = false;
-        if (isLargeDpi()) {
-            mCalculatorView.showDoneButton();
-        }
-        hideCalculator();
-    }
-
-    public void hideCalculator() {
-        mHandler.removeCallbacks(delayedShowCalculator);
-        mCalculatorView.setVisibility(View.GONE);
-        mCalculatorView.setEnabled(false);
-    }
-
-    public void showCalculator() {
-        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
-
-        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-
-        // Move calculator above the tab bar
-        params.setMargins(0, 0, 0, tbHeight);
-        mCalculatorView.setLayoutParams(params);
-
-        if (mCalculatorView.getVisibility() != View.VISIBLE) {
-            mHandler.postDelayed(delayedShowCalculator, 100);
-        }
-    }
-
-    public void hideNumberpad() {
-        mHandler.removeCallbacks(delayedShowNumberpad);
-        mNumberpadView.setVisibility(View.GONE);
-        mNumberpadView.setEnabled(false);
-    }
-
-    public void showNumberpad() {
-        mHandler.postDelayed(delayedShowNumberpad, 100);
-    }
-
-    public void onCalculatorButtonClick(View v) {
-        mCalculatorView.onButtonClick(v);
-        if (v.getTag().toString().equals("done")) {
-            hideCalculator();
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (mViewPager.getVisibility() == View.VISIBLE) {
@@ -687,18 +588,10 @@ public class NavigationActivity extends ActionBarActivity
                 return;
         }
 
-        if (!mCalcLocked) {
-            hideCalculator();
-        }
-
         showModalProgress(false);
 
-        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
-
         if (isAtNavStackEntry()) {
-            if (!calcVisible || mCalcLocked) {
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
-            }
         } else {
             popFragment();
         }

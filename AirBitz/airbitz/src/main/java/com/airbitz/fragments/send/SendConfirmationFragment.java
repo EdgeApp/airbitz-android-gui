@@ -227,7 +227,7 @@ public class SendConfirmationFragment extends BaseFragment implements
 
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
-        mCalculator = mActivity.getCalculatorView();
+//        mCalculator = mActivity.getCalculatorView();
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
@@ -324,9 +324,9 @@ public class SendConfirmationFragment extends BaseFragment implements
                     mBitcoinField.selectAll();
 
                     mCalculator.setEditText(mBitcoinField);
-                    mActivity.showCalculator();
+//                    mActivity.showCalculator();
                 } else {
-                    mActivity.hideCalculator();
+//                    mActivity.hideCalculator();
                 }
             }
         });
@@ -336,7 +336,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             public void onClick(View view) {
                 Log.d(TAG, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
-                mActivity.showCalculator();
+//                mActivity.showCalculator();
             }
         });
 
@@ -366,9 +366,9 @@ public class SendConfirmationFragment extends BaseFragment implements
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
-                    mActivity.showCalculator();
+//                    mActivity.showCalculator();
                 } else {
-                    mActivity.hideCalculator();
+//                    mActivity.hideCalculator();
                 }
             }
         });
@@ -377,7 +377,7 @@ public class SendConfirmationFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 mCalculator.setEditText(mFiatField);
-                mActivity.showCalculator();
+//                mActivity.showCalculator();
             }
         });
 
@@ -856,7 +856,7 @@ public class SendConfirmationFragment extends BaseFragment implements
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
 
-        mActivity.hideCalculator();
+//        mActivity.hideCalculator();
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
@@ -883,9 +883,9 @@ public class SendConfirmationFragment extends BaseFragment implements
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
-            if (mActivity.isLargeDpi()) {
-                mFiatField.requestFocus();
-            }
+//            if (mActivity.isLargeDpi()) {
+//                mFiatField.requestFocus();
+//            }
         }
 
         mBTCSignTextview.setTypeface(mBitcoinTypeface);

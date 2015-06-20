@@ -237,7 +237,7 @@ public class TransactionDetailFragment extends BaseFragment
             locationEnabled = true;
         }
 
-        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
+//        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
 
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
         mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
@@ -415,12 +415,12 @@ public class TransactionDetailFragment extends BaseFragment
                 return false;
             }
         });
-        if(mActivity.isLargeDpi()) {
-            ViewGroup vg = (ViewGroup) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
-            ViewGroup.LayoutParams lp = vg.getLayoutParams();
-            lp.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
-            vg.setLayoutParams(lp);
-        }
+//        if(mActivity.isLargeDpi()) {
+//            ViewGroup vg = (ViewGroup) mView.findViewById(R.id.transaction_detail_layout_edittext_notes);
+//            ViewGroup.LayoutParams lp = vg.getLayoutParams();
+//            lp.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+//            vg.setLayoutParams(lp);
+//        }
 
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
@@ -547,9 +547,9 @@ public class TransactionDetailFragment extends BaseFragment
                     mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mCalculator.setEditText(mFiatValueEdittext);
                     mFiatValueEdittext.selectAll();
-                    ((NavigationActivity) getActivity()).showCalculator();
+//                    ((NavigationActivity) getActivity()).showCalculator();
                 } else {
-                    ((NavigationActivity) getActivity()).hideCalculator();
+//                    ((NavigationActivity) getActivity()).hideCalculator();
                 }
             }
         });

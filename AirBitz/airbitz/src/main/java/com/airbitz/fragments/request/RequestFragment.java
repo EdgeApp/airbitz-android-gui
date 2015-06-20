@@ -116,7 +116,8 @@ public class RequestFragment extends BaseFragment implements
         CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnWalletLoaded,
         ContactPickerFragment.ContactSelection,
-        NfcAdapter.CreateNdefMessageCallback
+        NfcAdapter.CreateNdefMessageCallback,
+        Calculator.OnCalculatorKey
 {
     public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
     public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
@@ -197,9 +198,64 @@ public class RequestFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_request, container, false);
 
-        mCalculator = ((NavigationActivity) getActivity()).getCalculatorView();
-
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
+        mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        final TextWatcher mAmountChangedListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                amountChanged();
+            }
+        };
+
+        mAmountField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCalculator.getVisibility() != View.VISIBLE) {
+                    mCalculator.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        mAmountField.addTextChangedListener(mAmountChangedListener);
+        mAmountField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mAmountField.setText("");
+                    mCalculator.setVisibility(View.VISIBLE);
+                    mCalculator.setEditText(mAmountField);
+                } else {
+                    mCalculator.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        TextView.OnEditorActionListener amountEditorListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    amountChanged();
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        };
+
+        mAmountField.setOnEditorActionListener(amountEditorListener);
+
+        mCalculator = (Calculator) mView.findViewById(R.id.fragment_request_calculator_layout);
+        mCalculator.setCalculatorKeyListener(this);
+        mCalculator.setEditText(mAmountField);
 
 //        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 //        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
@@ -222,7 +278,6 @@ public class RequestFragment extends BaseFragment implements
 
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
-        mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
         mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
 
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
@@ -276,52 +331,6 @@ public class RequestFragment extends BaseFragment implements
         });
 
         fiatSelectors.check(mFiatSelect.getId());
-
-        final TextWatcher mAmountChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                amountChanged();
-            }
-        };
-
-        mAmountField.addTextChangedListener(mAmountChangedListener);
-
-        mAmountField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    mAmountField.setText("");
-                    mCalculator.setEditText(mAmountField);
-                    ((NavigationActivity) getActivity()).showCalculator();
-                } else {
-                    ((NavigationActivity) getActivity()).hideCalculator();
-                }
-            }
-        });
-
-        TextView.OnEditorActionListener amountEditorListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    amountChanged();
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-        };
-
-        mAmountField.setOnEditorActionListener(amountEditorListener);
 
         // Prevent OS keyboard from showing
         try {
@@ -438,9 +447,6 @@ public class RequestFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
 
-        // If large display, keep the calculator open
-        ((NavigationActivity) getActivity()).lockCalculator();
-
         mCoreAPI.setOnWalletLoadedListener(this);
 
         checkFirstUsage();
@@ -452,9 +458,6 @@ public class RequestFragment extends BaseFragment implements
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCoreAPI.removeExchangeRateChangeListener(this);
-
-        // If calculator is locked open, unlock it
-        ((NavigationActivity) getActivity()).unlockCalculator();
 
         mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
 
@@ -798,6 +801,13 @@ public class RequestFragment extends BaseFragment implements
             return null;
     }
 
+    @Override
+    public void OnCalculatorKeyPressed(String tag) {
+        if (tag.equals("done")) {
+            mCalculator.setVisibility(View.GONE);
+        }
+    }
+
 //    @Override
 //    public void onRefresh() {
 //        if(mSelectedWallet != null) {
@@ -815,7 +825,7 @@ public class RequestFragment extends BaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            mActivity.showModalProgress(true);
+//            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -861,7 +871,7 @@ public class RequestFragment extends BaseFragment implements
         @Override
         protected void onCancelled() {
             mCreateBitmapTask = null;
-            mActivity.showModalProgress(false);
+//            mActivity.showModalProgress(false);
         }
     }
     //******************************** BLE support
