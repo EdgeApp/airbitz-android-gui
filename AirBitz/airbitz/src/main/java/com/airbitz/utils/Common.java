@@ -39,9 +39,15 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -327,7 +333,34 @@ public class Common {
         p.setColor(Color.WHITE);
         canvas.drawPaint(p);
         canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
-        return imageBitmap;
+        return getRoundedCornerBitmap(imageBitmap);
+    }
+
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        BitmapShader shader;
+        shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setShader(shader);
+
+        RectF rectF = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        // rect contains the bounds of the shape
+        // radius is the radius in pixels of the rounded corners
+        // paint contains the shader that will texture the shape
+        canvas.drawRoundRect(rectF, 16, 16, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
     }
 
     public static Map<String, String> splitQuery(Uri uri) throws UnsupportedEncodingException {

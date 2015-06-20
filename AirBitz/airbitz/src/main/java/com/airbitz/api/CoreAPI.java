@@ -2441,7 +2441,7 @@ for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
 
     public Bitmap getQRCodeBitmap(String uuid, String id) {
         byte[] array = getQRCode(uuid, id);
-        return FromBinary(array, (int) Math.sqrt(array.length), 4);
+        return FromBinary(array, (int) Math.sqrt(array.length), 16);
     }
 
     private Bitmap FromBinary(byte[] bits, int width, int scale) {

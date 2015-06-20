@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <include
@@ -154,8 +155,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_white_corners" />
+            android:layout_gravity="center" />
 
     </RelativeLayout>
 

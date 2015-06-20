@@ -219,7 +219,7 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if(mCalculator.getVisibility() != View.VISIBLE) {
-                    mCalculator.setVisibility(View.VISIBLE);
+                    showCalculator(true);
                 }
             }
         });
@@ -229,10 +229,10 @@ public class RequestFragment extends BaseFragment implements
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mAmountField.setText("");
-                    mCalculator.setVisibility(View.VISIBLE);
+                    showCalculator(true);
                     mCalculator.setEditText(mAmountField);
                 } else {
-                    mCalculator.setVisibility(View.GONE);
+                    showCalculator(false);
                 }
             }
         });
@@ -259,13 +259,33 @@ public class RequestFragment extends BaseFragment implements
 
 //        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
 //        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
+
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
         RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
         mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
         mHelpButton.setVisibility(View.VISIBLE);
+        mHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
+            }
+        });
 
         pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
+        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSelectedWallet = mWallets.get(i);
+                setConversionText(mSelectedWallet.getCurrencyNum());
+                mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
+                updateAmount();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
 
 //        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
 //        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
@@ -342,26 +362,6 @@ public class RequestFragment extends BaseFragment implements
         } catch (Exception e) {
             // ignore
         }
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
-            }
-        });
-
-        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSelectedWallet = mWallets.get(i);
-                setConversionText(mSelectedWallet.getCurrencyNum());
-                mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
-                updateAmount();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
 
         return mView;
     }
@@ -804,6 +804,15 @@ public class RequestFragment extends BaseFragment implements
     @Override
     public void OnCalculatorKeyPressed(String tag) {
         if (tag.equals("done")) {
+            showCalculator(false);
+        }
+    }
+    
+    private void showCalculator(boolean show) {
+        if(show) {
+            mCalculator.setVisibility(View.VISIBLE);
+        }
+        else {
             mCalculator.setVisibility(View.GONE);
         }
     }
@@ -873,10 +882,6 @@ public class RequestFragment extends BaseFragment implements
             mCreateBitmapTask = null;
 //            mActivity.showModalProgress(false);
         }
-    }
-
-    private void rescaleBitmapImage() {
-
     }
 
     //******************************** BLE support
