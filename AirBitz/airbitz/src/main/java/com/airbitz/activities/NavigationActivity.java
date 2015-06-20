@@ -502,8 +502,6 @@ public class NavigationActivity extends ActionBarActivity
 
     public void pushFragment(Fragment fragment, FragmentTransaction transaction) {
         mNavStacks[mNavThreadId].push(fragment);
-
-        // Only show visually if we're displaying the thread
         transaction.replace(R.id.activityLayout, fragment);
         transaction.commitAllowingStateLoss();
     }
@@ -518,12 +516,7 @@ public class NavigationActivity extends ActionBarActivity
         // Only show visually if we're displaying the thread
         if (mNavThreadId == threadID) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            if (mNavStacks[threadID].size() != 0 && fragment instanceof WalletAddFragment) {
-                transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-            } else if (mNavStacks[threadID].size() != 0 && fragment instanceof WalletsFragment) {
-                transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-            } else if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
+            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
                 transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
             }
             transaction.replace(R.id.activityLayout, fragment);
@@ -543,16 +536,21 @@ public class NavigationActivity extends ActionBarActivity
         getFragmentManager().executePendingTransactions();
     }
 
+    public void popFragment(FragmentTransaction transaction) {
+        hideSoftKeyboard(mFragmentLayout);
+        Fragment fragment = mNavStacks[mNavThreadId].pop();
+        getFragmentManager().executePendingTransactions();
+
+        transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
+        transaction.commitAllowingStateLoss();
+    }
+
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if (mNavStacks[mNavThreadId].size() != 0 && fragment instanceof WalletAddFragment) {
-            transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        } else if (mNavStacks[mNavThreadId].size() != 0 && fragment instanceof WalletsFragment) {
-            transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        } else if ((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
+        if ((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
             transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
