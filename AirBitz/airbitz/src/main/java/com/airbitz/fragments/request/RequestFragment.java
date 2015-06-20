@@ -33,7 +33,6 @@ package com.airbitz.fragments.request;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -207,12 +206,20 @@ public class RequestFragment extends BaseFragment implements
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
         RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
-        mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_help);
+        mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
         mHelpButton.setVisibility(View.VISIBLE);
 
         pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
 
 //        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
+//        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Fragment frag = new ImportFragment();
+//                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
+//            }
+//        });
+
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
         mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
@@ -269,14 +276,6 @@ public class RequestFragment extends BaseFragment implements
         });
 
         fiatSelectors.check(mFiatSelect.getId());
-
-//        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Fragment frag = new ImportFragment();
-//                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
-//            }
-//        });
 
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override

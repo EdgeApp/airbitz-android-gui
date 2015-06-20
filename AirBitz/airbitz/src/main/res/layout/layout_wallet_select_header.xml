@@ -5,7 +5,7 @@
     android:background="@android:color/transparent">
 
     <com.airbitz.objects.HighlightOnPressButton
-        android:id="@+id/layout_wallet_select_header_back"
+        android:id="@+id/layout_wallet_select_header_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -15,7 +15,7 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/string_back_button"
         android:text="Back"
-        android:visibility="visible" />
+        android:visibility="invisible" />
 
     <com.airbitz.objects.HighlightOnPressSpinner
         android:id="@+id/layout_wallet_select_header_spinner"
@@ -34,7 +34,7 @@
         android:textSize="18dp" />
 
     <com.airbitz.objects.HighlightOnPressButton
-        android:id="@+id/layout_wallet_select_header_help"
+        android:id="@+id/layout_wallet_select_header_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -45,6 +45,6 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/string_help_button"
         android:text="Help"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
 
 </RelativeLayout>
