@@ -874,6 +874,11 @@ public class RequestFragment extends BaseFragment implements
 //            mActivity.showModalProgress(false);
         }
     }
+
+    private void rescaleBitmapImage() {
+
+    }
+
     //******************************** BLE support
     // See BluetoothListView for protocol explanation
     private BluetoothLeAdvertiser mBleAdvertiser;

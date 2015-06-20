@@ -57,7 +57,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
@@ -79,7 +79,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import android.support.v7.app.ActionBarActivity;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -99,23 +98,19 @@ import com.airbitz.fragments.login.TransparentFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.request.ImportFragment;
 import com.airbitz.fragments.request.RequestFragment;
-import com.airbitz.fragments.request.RequestQRCodeFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.fragments.settings.CategoryFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
-import com.airbitz.fragments.wallet.WalletAddFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
-import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
@@ -931,7 +926,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private RequestFragment requestMatchesQR(String uuid, String txid) {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
         RequestFragment qr = (RequestFragment) f;
@@ -944,7 +939,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private RequestFragment requestMatchesDonation() {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
         RequestFragment qr = (RequestFragment) f;
