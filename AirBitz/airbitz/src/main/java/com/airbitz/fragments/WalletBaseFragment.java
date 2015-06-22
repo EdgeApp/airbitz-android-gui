@@ -52,7 +52,7 @@ import com.airbitz.models.Wallet;
 
 import java.util.List;
 
-public class WalletBaseFragment extends BaseFragment {
+public class WalletBaseFragment extends BaseFragment implements CoreAPI.OnWalletLoaded {
 
     protected List<Wallet> mWallets;
     protected Wallet mWallet;
@@ -72,6 +72,8 @@ public class WalletBaseFragment extends BaseFragment {
         mCoreApi = CoreAPI.getApi();
         mWallets = mCoreApi.getCoreActiveWallets();
         mWallet = mCoreApi.getWalletFromUUID(uuid);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -109,17 +111,33 @@ public class WalletBaseFragment extends BaseFragment {
         WalletChoiceAdapter adapter = new WalletChoiceAdapter(mActivity, mWallets);
         adapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
         mWalletList.setAdapter(adapter);
-        for (int i = 0; i < mWallets.size(); i++) {
-            if (mWallet.getUUID().equals(mWallets.get(i).getUUID())) {
-                mWalletList.setSelection(i);
-            }
-        }
         mWalletList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 walletChanged(mWallets.get(i));
             }
         });
+    }
+
+    @Override
+    public void onWalletsLoaded() {
+        mWallets = mCoreApi.getCoreActiveWallets();
+
+        WalletChoiceAdapter adapter = new WalletChoiceAdapter(mActivity, mWallets);
+        adapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+        mWalletList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCoreApi.setOnWalletLoadedListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCoreApi.setOnWalletLoadedListener(null);
     }
 
     protected void updateTitle() {
