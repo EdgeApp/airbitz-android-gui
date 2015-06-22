@@ -150,6 +150,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         String dateString = mFormatter.format(transaction.getDate() * 1000);
         viewHolder.dateTextView.setText(dateString);
 
+        long transactionSatoshis = transaction.getAmountSatoshi();
+        long transactionSatoshisAbs = Math.abs(transactionSatoshis);
+
         String name = transaction.getName();
         viewHolder.nameTextView.setText(name);
         Uri payeeImage = mContactList.get(name);
@@ -172,12 +175,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                         .into(viewHolder.contactImageView);
                 Log.d(TAG, "loading remote " + payeeImage.toString());
             }
+            viewHolder.contactImageView.setBackgroundResource(0);
         } else {
-            viewHolder.contactImageViewFrame.setVisibility(View.INVISIBLE);
+            viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
+            if (transactionSatoshis > 0) {
+                viewHolder.contactImageView.setImageResource(R.drawable.ic_request);
+                viewHolder.contactImageView.setBackgroundResource(R.drawable.bg_icon_request);
+            } else {
+                viewHolder.contactImageView.setImageResource(R.drawable.ic_send);
+                viewHolder.contactImageView.setBackgroundResource(R.drawable.bg_icon_send);
+            }
         }
-
-        long transactionSatoshis = transaction.getAmountSatoshi();
-        long transactionSatoshisAbs = Math.abs(transactionSatoshis);
 
         String btcSymbol;
         String btcSymbolBalance = mCoreAPI.getUserBTCSymbol();

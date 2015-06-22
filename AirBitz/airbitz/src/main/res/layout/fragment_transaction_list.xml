@@ -33,5 +33,5 @@
     </LinearLayout>
 
     <include layout="@layout/layout_toolbar_title" />
-
+    
 </RelativeLayout>

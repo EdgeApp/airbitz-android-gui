@@ -97,9 +97,9 @@ public class TransactionListFragment extends BaseFragment
         NavigationActivity.OnBackPress {
 
     private final String TAG = getClass().getSimpleName();
-    private SearchView mSearchView;
     private MenuItem mSearchItem;
-    private boolean searchPage = false;
+    private SearchView mSearchView;
+    private boolean mSearchPage = false;
     private View mRequestButton;
     private View mSendButton;
     private TextView mTitleView;
@@ -200,12 +200,15 @@ public class TransactionListFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_list, container, false);
-            searchPage = false;
+            mSearchPage = false;
         }
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         getBaseActivity().setSupportActionBar(toolbar);
+
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
 
         mTitleView = (TextView) mView.findViewById(R.id.title);
         mTitleView.setOnClickListener(new View.OnClickListener() {
@@ -321,7 +324,7 @@ public class TransactionListFragment extends BaseFragment
 
     private void updateDisplay() {
         if (null != mWallet) {
-            mTitleView.setText(mWallet.getName());
+            mTitleView.setText(mWallet.getName() + " ▼");
         } else {
             mTitleView.setText(R.string.string_loading);
         }
@@ -333,8 +336,8 @@ public class TransactionListFragment extends BaseFragment
         inflater.inflate(R.menu.menu_transaction_list, menu);
 
         mSearchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) mSearchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String text) {
                 try {
@@ -358,9 +361,17 @@ public class TransactionListFragment extends BaseFragment
                 return true;
             }
         });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mTitleView.setVisibility(View.GONE);
+                getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
+                mSearchPage = true;
+            }
+        });
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             public boolean onClose() {
-                updateTransactionsListView(mAllTransactions);
+                hideSearch();
                 return true;
             }
         });
@@ -370,13 +381,8 @@ public class TransactionListFragment extends BaseFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                return true;
             case android.R.id.home:
-                if (null != mSearchView) {
-                    mSearchItem.collapseActionView();
-                }
-                return true;
+                return hideSearch();
             case R.id.action_help:
                 mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS));
                 return true;
@@ -387,11 +393,19 @@ public class TransactionListFragment extends BaseFragment
 
     @Override
     public boolean onBackPress() {
-        if (searchPage) {
+        return hideSearch();
+    }
+
+    private boolean hideSearch() {
+        if (mSearchPage) {
+            mSearchPage = false;
+            mTitleView.setVisibility(View.VISIBLE);
+
             mTransactionAdapter.setSearch(false);
+            startTransactionTask();
+            mSearchView.onActionViewCollapsed();
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
-            startTransactionTask();
             return true;
         }
         return false;
