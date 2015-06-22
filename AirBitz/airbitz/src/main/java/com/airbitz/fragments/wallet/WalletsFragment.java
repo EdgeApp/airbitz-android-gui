@@ -182,6 +182,9 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
         case R.id.action_add:
             WalletAddFragment.pushFragment(mActivity);
             return true;
+        case R.id.action_export:
+            ExportFragment.pushFragment(mActivity);
+            return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.WALLETS));
             return true;
