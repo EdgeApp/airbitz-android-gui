@@ -45,7 +45,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,14 +55,12 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.OfflineWalletFragment;
 import com.airbitz.utils.Common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class WalletAddFragment extends BaseFragment {
+public class WalletAddFragment extends BaseFragment
+    implements NavigationActivity.OnBackPress {
 
     public final String TAG = getClass().getSimpleName();
 
@@ -96,7 +93,7 @@ public class WalletAddFragment extends BaseFragment {
         }
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle(R.string.fragment_wallets_add_wallet);
         getBaseActivity().setSupportActionBar(toolbar);
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -165,6 +162,12 @@ public class WalletAddFragment extends BaseFragment {
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onBackPress() {
+        WalletAddFragment.popFragment(mActivity);
+        return true;
     }
 
     private void goDone() {

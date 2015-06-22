@@ -31,59 +31,40 @@
 
 package com.airbitz.fragments.wallet;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.OfflineWalletFragment;
-import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.HighlightOnPressSpinner;
-import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WalletsFragment extends BaseFragment implements DynamicListView.OnListReordering,
+        NavigationActivity.OnBackPress,
         CoreAPI.OnWalletLoaded,
         NavigationActivity.OnWalletUpdated,
         WalletAdapter.OnHeaderButtonPress {
@@ -111,7 +92,6 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
-    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,12 +123,7 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
         walletsHeader = mView.findViewById(R.id.fragment_wallets_wallets_header);
         walletsHeader.setVisibility(View.GONE);
         walletsHeaderImage = (ImageView) mView.findViewById(R.id.item_listview_wallets_header_image);
-        walletsHeaderImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                WalletAddFragment.pushFragment(mActivity);
-            }
-        });
+        walletsHeaderImage.setVisibility(View.GONE);
 
         archiveHeader = mView.findViewById(R.id.fragment_wallets_archive_header);
         archiveHeader.setVisibility(View.GONE);
@@ -193,10 +168,19 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_wallets, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
             WalletsFragment.popFragment(mActivity);
+            return true;
+        case R.id.action_add:
+            WalletAddFragment.pushFragment(mActivity);
             return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.WALLETS));
@@ -204,6 +188,12 @@ public class WalletsFragment extends BaseFragment implements DynamicListView.OnL
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onBackPress() {
+        WalletsFragment.popFragment(mActivity);
+        return true;
     }
 
     private void setupLatestWalletListView() {

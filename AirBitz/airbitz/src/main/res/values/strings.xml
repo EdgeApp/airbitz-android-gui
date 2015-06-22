@@ -282,6 +282,7 @@
     <string name="fragment_category_transfer">Transfer:</string>
     <string name="fragment_category_exchange">Exchange:</string>
     <string name="fragment_category_deleted">%1$s Deleted</string>
+    <string name="fragment_category_add">Add Category</string>
 
     <!-- Strings for AutoLogoff Dialog -->
     <string name="dialog_title">Set Auto Logoff time</string>
@@ -328,6 +329,7 @@
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
+    <string name="fragment_wallets_add_wallet">Add Wallet</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
     <string name="fragment_wallets_list_archive_title">ARCHIVE</string>
     <string name="fragment_wallets_balance_text">Total Balance</string>

@@ -9,5 +9,5 @@
         android:id="@+id/action_add"
         android:icon="@android:drawable/ic_menu_add"
         app:showAsAction="always"
-        android:title="@string/fragment_category_add" />
+        android:title="@string/fragment_wallets_add_wallet" />
 </menu>
