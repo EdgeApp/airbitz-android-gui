@@ -221,7 +221,7 @@ public class TransactionDetailFragment extends BaseFragment
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
 
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.fragment_transaction_title_bar);
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         getBaseActivity().setSupportActionBar(toolbar);
         getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
