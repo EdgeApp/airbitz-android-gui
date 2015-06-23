@@ -33,5 +33,7 @@
     </LinearLayout>
 
     <include layout="@layout/layout_toolbar_title" />
+
+    <include layout="@layout/fragment_wallets" />
     
 </RelativeLayout>

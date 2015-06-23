@@ -69,7 +69,6 @@ public class WalletAddFragment extends BaseFragment
     private Button mAddWalletDoneButton;
     private Spinner mAddWalletCurrencySpinner;
     private LinearLayout mAddWalletCurrencyLayout;
-    private View mInvisibleCover;
 
     private List<String> mCurrencyList;
     private CoreAPI mCoreAPI;
@@ -98,7 +97,6 @@ public class WalletAddFragment extends BaseFragment
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mInvisibleCover = mView.findViewById(R.id.fragment_wallets_invisible_cover);
         mAddWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallets_addwallet_name_edittext);
         mAddWalletCancelButton = (Button) mView.findViewById(R.id.fragment_wallets_addwallet_cancel_button);
         mAddWalletDoneButton = (Button) mView.findViewById(R.id.fragment_wallets_addwallet_done_button);

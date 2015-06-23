@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/fragment_category_textview_title"
         android:layout_width="0dp"
-        android:layout_height="44.1dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="12.6dp"
         android:layout_marginStart="12.6dp"
@@ -16,8 +16,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textColor="@color/gray_text"
-        android:textSize="15dp" />
+        android:textColor="@color/gray_text" />
 
     <TextView
         android:id="@+id/textview_amount"
@@ -25,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
+        android:layout_marginRight="10dp"
         android:textColor="@color/dark_blue_text"
-        android:textSize="14dp" />
+        />
 
 </LinearLayout>
