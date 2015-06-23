@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" 
-    android:textColor="@android:color/white"
-    android:background="?attr/colorPrimaryDark"
-    style="@style/ToolBarCommon" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:textColor="@android:color/black"
+        android:background="@color/colorPrimaryFrost"
+        style="@style/ToolBarCommon" >
 
-    <Button
-        android:id="@+id/title"
-        android:textColor="@android:color/white"
-        android:background="@null"
-        android:textSize="18dp"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/title"
+            android:textColor="@android:color/black"
+            android:background="@null"
+            android:textSize="18dp"
+            android:textAllCaps="false"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
+</merge>

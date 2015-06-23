@@ -138,7 +138,6 @@ public class TransactionDetailFragment extends BaseFragment
     private final int MIN_AUTOCOMPLETE = 5;
 
     private HighlightOnPressButton mDoneButton;
-    private HighlightOnPressButton mAdvanceDetailsButton;
     private HighlightOnPressSpinner mCategorySpinner;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
@@ -222,7 +221,7 @@ public class TransactionDetailFragment extends BaseFragment
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
 
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.fragment_transaction_title_bar);
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         getBaseActivity().setSupportActionBar(toolbar);
         getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -243,7 +242,6 @@ public class TransactionDetailFragment extends BaseFragment
         mCalculator.setEditText(mFiatValueEdittext);
 
         mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
-        mAdvanceDetailsButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_advanced);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.title);
         mTitleTextView.setText(R.string.transaction_details_title);
@@ -304,13 +302,6 @@ public class TransactionDetailFragment extends BaseFragment
                         ((NavigationActivity) getActivity()).hideSoftKeyboard(activityRootView);
                     }
                 }
-            }
-        });
-
-        mAdvanceDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowAdvancedDetails(true);
             }
         });
 
@@ -606,7 +597,7 @@ public class TransactionDetailFragment extends BaseFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_standard, menu);
+        inflater.inflate(R.menu.menu_transaction_details, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -615,6 +606,9 @@ public class TransactionDetailFragment extends BaseFragment
         switch (item.getItemId()) {
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS));
+            return true;
+        case R.id.action_advanced:
+            showAdvancedDetails(true);
             return true;
         case android.R.id.home:
             mActivity.popFragment();
@@ -950,7 +944,7 @@ public class TransactionDetailFragment extends BaseFragment
         baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
     }
 
-    private void ShowAdvancedDetails(boolean hasFocus) {
+    private void showAdvancedDetails(boolean hasFocus) {
         if (hasFocus) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;

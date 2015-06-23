@@ -7,10 +7,9 @@
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:title="Search" />
-
     <item
         android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_menu_add_black"
         app:showAsAction="always"
-        android:title="Add" />
+        android:title="@string/fragment_category_add" />
 </menu>

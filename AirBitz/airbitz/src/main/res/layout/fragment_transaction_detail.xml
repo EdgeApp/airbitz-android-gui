@@ -7,15 +7,14 @@
     android:transitionName="transaction_details"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_toolbar_title"
-        android:id="@+id/fragment_transaction_title_bar"/>
+    <include layout="@layout/layout_toolbar_title" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_below="@id/fragment_transaction_title_bar"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
         <LinearLayout
@@ -386,19 +385,6 @@
                 android:gravity="center_horizontal|bottom"
                 android:orientation="horizontal"
                 android:padding="3dp">
-
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/transaction_detail_button_advanced"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_button_gray"
-                    android:gravity="center"
-                    android:layout_marginRight="12dp"
-                    android:text="@string/transaction_details_advanced_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="16dp" />
 
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/transaction_detail_button_done"
