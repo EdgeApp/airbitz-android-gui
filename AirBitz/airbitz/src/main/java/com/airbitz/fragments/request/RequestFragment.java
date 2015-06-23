@@ -127,8 +127,6 @@ public class RequestFragment extends BaseFragment implements
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
 
-
-
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.firstusagecount";
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
     public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
@@ -277,6 +275,7 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mSelectedWallet = mWallets.get(i);
+                AirbitzApplication.setCurrentWallet(mSelectedWallet.getUUID());
                 setConversionText(mSelectedWallet.getCurrencyNum());
                 mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
                 updateAmount();
@@ -493,6 +492,8 @@ public class RequestFragment extends BaseFragment implements
                 }
             } else if (bundle != null && bundle.getString(MERCHANT_MODE) != null) {
 //                focus(mFiatField);
+            } else if(AirbitzApplication.getCurrentWallet() != null) {
+                mSelectedWallet = mCoreAPI.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
             } else {
                 mFromIndex = 0;
                 if (mWallets != null && !mWallets.isEmpty())
@@ -525,6 +526,9 @@ public class RequestFragment extends BaseFragment implements
         mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
         mBitcoinSelect.setText(mCoreAPI.getDefaultBTCDenomination());
         mAutoUpdatingTextFields = false;
+
+        // Set the wallet selection globally
+        AirbitzApplication.setCurrentWallet(mSelectedWallet.getUUID());
     }
 
     private void checkFirstUsage() {
