@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="44.1dp"
-    android:background="@color/colorPrimaryFrost"
+    android:background="@android:color/white"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/fragment_category_textview_title"
-        style="@style/WhiteDropShadow"
         android:layout_width="0dp"
         android:layout_height="44.1dp"
         android:layout_gravity="center_vertical"
@@ -22,7 +21,6 @@
 
     <TextView
         android:id="@+id/textview_amount"
-        style="@style/WhiteDropShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -30,18 +28,5 @@
         android:layout_marginRight="1dp"
         android:textColor="@color/dark_blue_text"
         android:textSize="14dp" />
-
-    <ImageView
-        android:id="@+id/imageview_icon"
-        android:layout_width="22.8dp"
-        android:layout_height="28.8dp"
-        android:layout_gravity="center_vertical"
-        android:adjustViewBounds="true"
-        android:paddingBottom="9.45dp"
-        android:paddingLeft="5.45dp"
-        android:paddingTop="9.45dp"
-        android:layout_marginRight="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/arrow_right" />
 
 </LinearLayout>

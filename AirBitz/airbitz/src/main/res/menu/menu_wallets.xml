@@ -7,8 +7,12 @@
         app:showAsAction="always"
         android:title="@string/fragment_wallets_add_wallet" />
 
+    <item android:id="@+id/action_export"
+          android:title="@string/export_title"
+          android:icon="@drawable/btn_export" />
+
     <item android:id="@+id/action_help"
           android:title="@string/string_help"
-          android:icon="@android:drawable/ic_menu_help"
-          app:showAsAction="always" />
+          android:icon="@android:drawable/ic_menu_help" />
+
 </menu>

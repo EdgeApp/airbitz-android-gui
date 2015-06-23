@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="vertical"
-            android:layout_marginTop="?android:attr/actionBarSize">
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:paddingTop="20dp">
 
             <TextView
                 android:id="@+id/settings_denomination_title"

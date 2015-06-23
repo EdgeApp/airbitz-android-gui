@@ -33,6 +33,7 @@ package com.airbitz.fragments;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -47,17 +48,22 @@ import com.airbitz.activities.NavigationActivity;
 
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
-    NavigationActivity mActivity;
+    protected NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public NavigationActivity getBaseActivity() {
-        return (NavigationActivity) getActivity();
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (NavigationActivity) activity;
     }
 
+    public NavigationActivity getBaseActivity() {
+        return mActivity;
+    }
 
     // For debug builds, watch for memory leaks of all fragments
     @Override
