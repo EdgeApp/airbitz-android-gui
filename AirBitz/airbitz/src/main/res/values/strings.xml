@@ -96,13 +96,13 @@
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>
-    <string name="fragment_landing_detail_text">Digital Currency Wallet</string>
+    <string name="fragment_landing_detail_text">Bitcoin Wallet</string>
     <string name="fragment_landing_swipe_text">Swipe to View Business Directory</string>
     <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
     <string name="fragment_landing_username_hint">User Name</string>
     <string name="fragment_landing_password_hint">Password</string>
-    <string name="fragment_landing_signin_button">Log In</string>
-    <string name="fragment_landing_signup_button">Create Account</string>
+    <string name="fragment_landing_signin_button">Sign In</string>
+    <string name="fragment_landing_signup_button">Sign Up</string>
     <string name="fragment_landing_forgot_password">Forgot Password</string>
     <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>

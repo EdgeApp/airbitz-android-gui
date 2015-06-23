@@ -3,8 +3,8 @@
     android:id="@+id/fragment_landing_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_landing"
     android:focusableInTouchMode="true"
+    android:background="@drawable/postcard_mountain"
     tools:context="com.airbitz.activities.LandingActivity"
     tools:ignore="MergeRootFrame">
 
@@ -12,9 +12,14 @@
         android:id="@+id/fragment_landing_main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
         android:orientation="vertical"
         android:visibility="visible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/postcard_mountain"
+            android:scaleType="centerCrop" />
 
         <ImageView
             android:id="@+id/fragment_landing_logo_imageview"
@@ -33,10 +38,9 @@
             android:layout_below="@id/fragment_landing_logo_imageview"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            style="@style/BlackDropShadow"
             android:text="@string/fragment_landing_detail_text"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
+            android:textColor="@color/dark_text"
+            android:textSize="18dp" />
 
         <RelativeLayout
             android:id="@+id/fragment_landing_entries_layout"
@@ -68,6 +72,7 @@
                     android:paddingRight="12.6dp"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
+
                     style="@style/LandingEditText"
                     />
 
@@ -91,15 +96,14 @@
                 <com.airbitz.objects.HighlightOnPressButton
                     android:id="@+id/fragment_landing_signin_button"
                     android:layout_width="match_parent"
-                    android:layout_height="37.8dp"
+                    android:layout_height="@dimen/button_height"
                     android:layout_below="@id/fragment_landing_password_edittext"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
                     android:layout_marginTop="6.3dp"
-                    android:background="@drawable/bg_btn_green"
+                    android:background="@color/button_green"
                     android:text="@string/fragment_landing_signin_button"
                     android:textColor="@android:color/white"
-                    android:textStyle="bold"
                     android:textSize="15dp"
                     />
 
@@ -278,12 +282,12 @@
         <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/fragment_landing_create_account"
             android:layout_width="245.7dp"
-            android:layout_height="44.1dp"
+            android:layout_height="@dimen/button_height"
             android:layout_below="@id/fragment_landing_swipe_layout"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="6.3dp"
             android:layout_marginTop="6.3dp"
-            android:background="@drawable/bg_button_red"
+            android:background="@color/button_blue"
             style="@style/BlackDropShadow"
             android:text="@string/fragment_landing_signup_button"
             android:textColor="@android:color/white"
@@ -312,18 +316,6 @@
                 android:textSize="15dp"
                 android:textStyle="bold"/>
 
-            <com.airbitz.objects.HighlightOnPressButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:drawablePadding="10dp"
-                android:background="@drawable/button_forgot_password_arrow"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="6.3dp"
-                android:paddingRight="6.3dp"
-                android:clickable="false"
-                android:visibility="visible" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -338,7 +330,7 @@
         android:contentDescription="@string/string_back_button"
         android:padding="12.6dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ico_nav_directory_white"
+        android:src="@drawable/ico_nav_directory_dark"
         android:visibility="visible" />
 
     <FrameLayout

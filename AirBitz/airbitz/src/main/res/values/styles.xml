@@ -131,8 +131,8 @@
 
     <style name="LandingEditText">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="android:textColor">@color/dark_text_field_text</item>
+        <item name="android:textColorHint">@color/dark_text_field_text_hint</item>
         <item name="android:textCursorDrawable">@drawable/bold_cursor_white</item>
         <item name="android:background">@drawable/emboss_down</item>
     </style>
