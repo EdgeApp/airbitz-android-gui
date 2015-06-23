@@ -74,6 +74,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -137,7 +138,6 @@ public class RequestFragment extends BaseFragment implements
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
     private HighlightOnPressButton mHelpButton;
-//    private HighlightOnPressButton mImportWalletButton;
     private List<Wallet> mWallets;
     private Wallet mSelectedWallet;
     private HighlightOnPressSpinner pickWalletSpinner;
@@ -260,7 +260,7 @@ public class RequestFragment extends BaseFragment implements
 
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
 
-        RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
+        final RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
         mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
         mHelpButton.setVisibility(View.VISIBLE);
         mHelpButton.setOnClickListener(new View.OnClickListener() {
@@ -285,15 +285,6 @@ public class RequestFragment extends BaseFragment implements
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
-//        mImportWalletButton = (HighlightOnPressButton) mView.findViewById(R.id.button_import_wallet);
-//        mImportWalletButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Fragment frag = new ImportFragment();
-//                ((NavigationActivity) getActivity()).pushFragment(frag, NavigationActivity.Tabs.REQUEST.ordinal());
-//            }
-//        });
 
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
@@ -475,7 +466,7 @@ public class RequestFragment extends BaseFragment implements
     public void onWalletsLoaded() {
         mWallets = mCoreAPI.getCoreActiveWallets();
 
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request, false);
         pickWalletSpinner.setAdapter(dataAdapter);
         if (!mWallets.isEmpty()) {
             mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
