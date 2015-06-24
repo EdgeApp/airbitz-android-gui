@@ -90,11 +90,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TransactionListFragment
-        extends WalletsFragment
-        implements CoreAPI.OnExchangeRatesChange,
-        NavigationActivity.OnWalletUpdated,
-        SwipeRefreshLayout.OnRefreshListener {
+public class TransactionListFragment extends WalletsFragment
+        implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -165,23 +162,6 @@ public class TransactionListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null) {
-                String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-                if (walletUUID == null || walletUUID.isEmpty()) {
-                    Log.d(TAG, "no detail info");
-                } else {
-                    mWallet = mCoreApi.getWalletFromUUID(walletUUID);
-                }
-            }
-        }
-        if (mWallet == null) {
-            if (AirbitzApplication.getCurrentWallet() == null) {
-                AirbitzApplication.setCurrentWallet(mCoreApi.loadWalletUUIDs().get(0));
-            }
-        }
         setHasOptionsMenu(true);
     }
 
@@ -415,8 +395,6 @@ public class TransactionListFragment
     @Override
     public void onResume() {
         super.onResume();
-        mCoreApi.addExchangeRateChangeListener(this);
-        mActivity.setOnWalletUpdated(this);
 
         if (mWallet != null) {
             setupTransactions();
@@ -481,8 +459,6 @@ public class TransactionListFragment
             mTransactionTask.cancel(true);
             mTransactionTask = null;
         }
-        mCoreApi.removeExchangeRateChangeListener(this);
-        mActivity.setOnWalletUpdated(null);
     }
 
     // Sum all transactions and show in total
@@ -520,7 +496,8 @@ public class TransactionListFragment
     }
 
     @Override
-    public void OnExchangeRatesChange() {
+    public void onExchangeRatesChange() {
+        super.onExchangeRatesChange();
         updateBalances();
     }
 

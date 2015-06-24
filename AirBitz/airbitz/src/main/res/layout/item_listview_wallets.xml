@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/fragment_category_textview_title"
         android:layout_width="0dp"
-        android:layout_height="44.1dp"
+        android:layout_height="@dimen/wallet_row_height"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="12.6dp"
         android:layout_marginStart="12.6dp"
