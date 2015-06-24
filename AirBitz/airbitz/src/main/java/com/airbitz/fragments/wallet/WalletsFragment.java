@@ -78,23 +78,16 @@ public class WalletsFragment extends WalletBaseFragment implements
     public final String TAG = getClass().getSimpleName();
 
     private View mWalletsHeader;
+    private View mArchiveHeader;
     private ImageView walletsHeaderImage;
     private ImageView archiveMovingHeaderImage;
-    private View mArchiveHeader;
-    private TextView mBalanceLabel;
-    private boolean mArchiveClosed = false;
-    private DynamicListView mLatestWalletListView;
+    private DynamicListView mWalletListView;
     private WalletAdapter mWalletAdapter;
-    private List<Wallet> mLatestWalletList;
+    private List<Wallet> mLatestWalletList = new ArrayList<Wallet>();
+    private boolean mArchiveClosed = false;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mLatestWalletList = new ArrayList<Wallet>();
-    }
-
-    @Override
-    protected void setupWalletList(View view) {
+    protected void setupWalletViews(View view) {
         mWalletsContainer = view.findViewById(R.id.wallets_container);
 
         mWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
@@ -126,9 +119,9 @@ public class WalletsFragment extends WalletBaseFragment implements
             }
         });
 
-        mLatestWalletListView = (DynamicListView) view.findViewById(R.id.fragment_wallets_listview);
-        mLatestWalletListView.setVisibility(View.GONE);
-        mLatestWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mWalletListView = (DynamicListView) view.findViewById(R.id.fragment_wallets_listview);
+        mWalletListView.setVisibility(View.GONE);
+        mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (!isAdded()) {
@@ -144,7 +137,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                 }
             }
         });
-        hideWalletList();
     }
 
     @Override
@@ -175,15 +167,9 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
     }
 
-    @Override
-    protected void walletChanged(Wallet newWallet) {
-        super.walletChanged(newWallet);
-        hideWalletList();
-    }
-
     private void checkWalletListVisibility() {
-        if (mLatestWalletListView.getVisibility() != View.VISIBLE && mLatestWalletList.size() >= 3) {
-            mLatestWalletListView.setVisibility(View.VISIBLE);
+        if (mWalletListView.getVisibility() != View.VISIBLE && mLatestWalletList.size() >= 3) {
+            mWalletListView.setVisibility(View.VISIBLE);
             mWalletsHeader.setVisibility(View.VISIBLE);
             mArchiveHeader.setVisibility(View.VISIBLE);
         }
@@ -229,14 +215,19 @@ public class WalletsFragment extends WalletBaseFragment implements
         prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, mArchiveClosed).apply();
     }
 
+    @Override
+    protected void fetchWallets() {
+        mWallets = mCoreApi.getCoreWallets(false);
+    }
+
     private void setupLatestWalletListView() {
-        mLatestWalletListView.setAdapter(mWalletAdapter);
-        mLatestWalletListView.setWalletList(mLatestWalletList);
-        mLatestWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mLatestWalletListView.setHeaders(mWalletsHeader, mArchiveHeader);
-        mLatestWalletListView.setArchiveClosed(mArchiveClosed);
-        mLatestWalletListView.setHeaderVisibilityOnReturn();
-        mLatestWalletListView.setOnListReorderedListener(this);
+        mWalletListView.setAdapter(mWalletAdapter);
+        mWalletListView.setWalletList(mLatestWalletList);
+        mWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mWalletListView.setHeaders(mWalletsHeader, mArchiveHeader);
+        mWalletListView.setArchiveClosed(mArchiveClosed);
+        mWalletListView.setHeaderVisibilityOnReturn();
+        mWalletListView.setOnListReorderedListener(this);
     }
 
     private void updateWalletList(boolean archiveClosed) {
@@ -248,13 +239,13 @@ public class WalletsFragment extends WalletBaseFragment implements
         mWalletAdapter.swapWallets();
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
         mWalletAdapter.setArchiveButtonState(!archiveClosed);
-        mLatestWalletListView.setArchiveClosed(archiveClosed);
+        mWalletListView.setArchiveClosed(archiveClosed);
         mWalletAdapter.notifyDataSetChanged();
     }
 
     private List<Wallet> getWallets(boolean archiveClosed) {
         List<Wallet> list = new ArrayList<Wallet>();
-        List<Wallet> coreList = mCoreApi.getCoreWallets(false);
+        List<Wallet> coreList = mWallets;
 
         if (coreList == null) {
             return null;

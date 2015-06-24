@@ -419,13 +419,18 @@ public class TransactionListFragment
         mActivity.setOnWalletUpdated(this);
 
         if (mWallet != null) {
-            walletChanged(mWallet);
+            setupTransactions();
         }
     }
 
     @Override
     protected void walletChanged(Wallet newWallet) {
-        mTransactionAdapter = new TransactionAdapter(mActivity, newWallet, mTransactions, mCombinedPhotos);
+        super.walletChanged(newWallet);
+        setupTransactions();
+    }
+
+    private void setupTransactions() {
+        mTransactionAdapter = new TransactionAdapter(mActivity, mWallet, mTransactions, mCombinedPhotos);
         mListTransaction.setAdapter(mTransactionAdapter);
 
         if (!mTransactions.isEmpty()) {
@@ -436,10 +441,6 @@ public class TransactionListFragment
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mRequestButton.setClickable(false);
         mSendButton.setClickable(false);
-    }
-
-    private void reloadWallets() {
-        mCoreApi.reloadWallets(); // async call return as onWalletsLoaded
     }
 
     private void updateSendRequestButtons() {
