@@ -158,7 +158,7 @@ public class ImportFragment extends BaseFragment implements
         mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.import_title);
 
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
@@ -190,7 +190,7 @@ public class ImportFragment extends BaseFragment implements
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mQRCodeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_import_from_wallet_spinner);
         final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);

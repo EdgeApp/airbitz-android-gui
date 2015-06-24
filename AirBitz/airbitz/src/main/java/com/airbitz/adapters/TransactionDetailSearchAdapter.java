@@ -89,7 +89,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
 
             viewHolder = new ViewHolderItem();
             viewHolder.textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
-            viewHolder.textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
             viewHolder.addressView = (TextView) convertView.findViewById(R.id.transaction_detail_item_address);
             // store the holder with the view.
@@ -126,7 +126,7 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
 
             viewHolder.addressView.setVisibility(View.VISIBLE);
             viewHolder.addressView.setText(strAddress);
-            viewHolder.addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+            viewHolder.addressView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         } else if (mCombined.get(position) instanceof String) {
             nameForImage = (String) mCombined.get(position);
             viewHolder.textView.setText(nameForImage);

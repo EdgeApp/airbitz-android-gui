@@ -150,11 +150,8 @@ public class NavigationActivity extends ActionBarActivity
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
-    public static Typeface montserratBoldTypeFace;
-    public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-    public static Typeface helveticaNeueTypeFace;
     final Runnable delayedShowNavBar = new Runnable() {
         @Override
         public void run() {
@@ -381,11 +378,10 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void setTypeFaces() {
-        montserratBoldTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Regular.ttf");
-        helveticaNeueTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
     }
 
     /*
@@ -1450,7 +1446,7 @@ public class NavigationActivity extends ActionBarActivity
                     View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
-                    tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                    tv.setTypeface(NavigationActivity.latoRegularTypeFace);
                     ProgressBar progress = ((ProgressBar) view.findViewById(R.id.fading_alert_progress));
                     if (!cancelable) {
                         progress.setVisibility(View.VISIBLE);

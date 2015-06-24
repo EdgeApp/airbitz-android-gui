@@ -103,7 +103,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         mUserNameRedRingCover.setVisibility(View.GONE);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.fragment_setup_titles);
 
         mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
@@ -123,7 +123,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         });
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.fragment_setup_username_edittext);
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mUserNameEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }

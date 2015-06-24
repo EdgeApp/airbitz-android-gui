@@ -81,7 +81,7 @@ public class LocationAdapterTemp extends ArrayAdapter<String> implements Filtera
         convertView = inflater.inflate(R.layout.item_listview_location, parent, false);
         RelativeLayout layoutItem = (RelativeLayout) convertView.findViewById(R.id.layout_item);
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
-        textView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
         textView.setText(mLocationValue.get(position));
 
 //        if(position == 0 || position == 1){

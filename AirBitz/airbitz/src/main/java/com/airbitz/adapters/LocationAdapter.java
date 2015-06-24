@@ -90,7 +90,7 @@ public class LocationAdapter extends ArrayAdapter<LocationSearchResult> implemen
         final LocationSearchResult location = mLocationValue.get(position);
 
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
-        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         textView.setText(location.getLocationName());
 
         if (sCurrentLocation.equals(location.getLocationName()) ||

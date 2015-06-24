@@ -197,7 +197,7 @@ public class RequestFragment extends BaseFragment implements
         mView = inflater.inflate(R.layout.fragment_request, container, false);
 
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
-        mAmountField.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -288,7 +288,7 @@ public class RequestFragment extends BaseFragment implements
 
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
 
-        mConverterTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mConverterTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);

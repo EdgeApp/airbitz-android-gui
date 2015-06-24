@@ -88,7 +88,7 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setVisibility(View.INVISIBLE);
 
         ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);

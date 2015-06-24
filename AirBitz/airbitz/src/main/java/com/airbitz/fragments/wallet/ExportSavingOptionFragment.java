@@ -159,11 +159,11 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
 
-        mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mToTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_export_saving_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPrintButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_print);
         mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);

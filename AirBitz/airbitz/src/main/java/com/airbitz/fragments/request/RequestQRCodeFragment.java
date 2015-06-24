@@ -192,7 +192,7 @@ public class RequestQRCodeFragment extends BaseFragment implements
         });
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.request_qr_title);
 
         mBitcoinAmount = (TextView) mView.findViewById(R.id.textview_bitcoin_amount);

@@ -100,7 +100,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.fragment_setup_titles);
 
         mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
@@ -121,10 +121,10 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         });
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_repassword_edittext);
-        mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordConfirmationEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mRule1Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
         mRule2Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
@@ -181,7 +181,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         });
 
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.fragment_password_pin_edittext);
-        mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         final TextWatcher mPINTextWatcher = new TextWatcher() {

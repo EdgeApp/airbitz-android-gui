@@ -204,7 +204,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
         // mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        // mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.BOLD);
+        // mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
         // mTitleTextView.setText(R.string.send_confirmation_title);
 
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
@@ -233,7 +233,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mConversionTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mConversionTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mSlideTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
         mAuthorizationTextView = (TextView) mView.findViewById(R.id.textview_pin);

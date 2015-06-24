@@ -238,11 +238,11 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         mBackButton.setVisibility(View.VISIBLE);
 
         mSearchEdittext = (EditText) view.findViewById(R.id.edittext_search);
-        mSearchEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        mSearchEdittext.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         mSearchEdittext.setText(mBusinessName);
 
         mLocationEdittext = (EditText) view.findViewById(R.id.edittext_location);
-        mLocationEdittext.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        mLocationEdittext.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         mLocationEdittext.setText(mLocationName);
 
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);

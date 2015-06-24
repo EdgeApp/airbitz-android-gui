@@ -104,7 +104,7 @@ public class AddressRequestFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.fragment_address_request, container, false);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.address_request_title);
 
         mInstruction = (TextView) mView.findViewById(R.id.textview_instruction);

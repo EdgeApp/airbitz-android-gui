@@ -130,8 +130,8 @@ public class SuccessFragment extends BaseFragment {
 
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
 
-        mSendingTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mSendingTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

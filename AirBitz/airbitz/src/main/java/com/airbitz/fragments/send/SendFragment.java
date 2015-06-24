@@ -151,7 +151,7 @@ public class SendFragment extends WalletBaseFragment implements
         mScanQRButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_send_scanning_button);
 
         // mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        // mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        // mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         // mTitleTextView.setText(R.string.send_title);
 
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
@@ -171,8 +171,8 @@ public class SendFragment extends WalletBaseFragment implements
 
         mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
-        mQRCodeTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mToEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mQRCodeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         walletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.from_wallet_spinner);
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -97,7 +97,7 @@ public class AccountsAdapter extends BaseAdapter {
         }
         TextView textView = (TextView) convertView.findViewById(R.id.item_usernames_text);
         textView.setText(mUsernames.get(position));
-        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        textView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         // Show delete button if there is a listener
         if(mOnButtonTouchedListener != null) {

@@ -133,7 +133,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.creditAmountTextView = (TextView) convertView.findViewById(R.id.textview_amount_kredit);
             viewHolder.confirmationsTextView = (TextView) convertView.findViewById(R.id.textview_confirmations);
             viewHolder.dateTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
-            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
             viewHolder.runningTotalTextView.setTypeface(mBitcoinTypeface);
             viewHolder.creditAmountTextView.setTypeface(mBitcoinTypeface);
             // store the holder with the view.

@@ -286,12 +286,12 @@ public class TransactionDetailFragment extends BaseFragment
         mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
         mCategories = new ArrayList<Category>();
 
-        mDateTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mDateTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mFiatValueEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mBitcoinValueTextview.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.NORMAL);
+        mFiatValueEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mBitcoinValueTextview.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
 
-        mDoneButton.setTypeface(NavigationActivity.montserratBoldTypeFace, Typeface.NORMAL);
+        mDoneButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mDummyFocus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -335,7 +335,7 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
         mPayeeEditText = (EditText) mView.findViewById(R.id.transaction_detail_edittext_name);
-        mPayeeEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPayeeEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         mPayeeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -387,7 +387,7 @@ public class TransactionDetailFragment extends BaseFragment
         });
 
         mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
-        mNoteEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mNoteEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
         mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -417,7 +417,7 @@ public class TransactionDetailFragment extends BaseFragment
 //        }
 
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
-        mCategoryEdittext.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCategoryEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
         mCategoryEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
