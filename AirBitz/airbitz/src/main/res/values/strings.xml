@@ -301,7 +301,7 @@
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
+    <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
@@ -312,6 +312,7 @@
     <string name="fragment_send_address">Address</string>
     <string name="fragment_send_photos">Photos</string>
     <string name="fragment_send_flash">Flash</string>
+    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>

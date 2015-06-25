@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -48,6 +49,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -66,7 +70,6 @@ import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.BleDevice;
@@ -207,6 +210,7 @@ public class SendFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 buttons.clearCheck();
+                showAddressDialog();
             }
         });
 
@@ -321,10 +325,8 @@ public class SendFragment extends BaseFragment implements
     }
 
     private void checkAndSendAddress(String strTo) {
-
         if (strTo == null || strTo.isEmpty()) {
             ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-//            mListviewContainer.setVisibility(View.GONE);
             return;
         }
         newSpend(strTo);
@@ -419,33 +421,6 @@ public class SendFragment extends BaseFragment implements
                 mWalletOtherList.add(wallet);
             }
         }
-    }
-
-    public void goAutoCompleteWalletListing() {
-        if(mWalletOtherList == null) {
-            return;
-        }
-        String text = mToEdittext.getText().toString();
-        mCurrentWalletListing.clear();
-        if (text.isEmpty()) {
-            for (Wallet w : mWalletOtherList) {
-                if (!w.isArchived()) {
-                    mCurrentWalletListing.add(w);
-                }
-            }
-        } else {
-            for (Wallet w : mWalletOtherList) {
-                if (!w.isArchived() && w.getName().toLowerCase().contains(text.toLowerCase())) {
-                    mCurrentWalletListing.add(w);
-                }
-            }
-        }
-        if (mCurrentWalletListing.isEmpty() || !mToEdittext.hasFocus()) {
-            mListviewContainer.setVisibility(View.GONE);
-        } else {
-            mListviewContainer.setVisibility(View.VISIBLE);
-        }
-        mCurrentWalletListingAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -545,7 +520,7 @@ public class SendFragment extends BaseFragment implements
     @Override
     public void onWalletsLoaded() {
         mWallets = mCoreApi.getCoreActiveWallets();
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, false);
         pickWalletSpinner.setAdapter(dataAdapter);
 
         if (!mWallets.isEmpty()) {
@@ -614,5 +589,40 @@ public class SendFragment extends BaseFragment implements
         @Override
         protected void onCancelled() {
         }
+    }
+
+    public void showAddressDialog() {
+        mToEdittext = new EditText(getActivity());
+        mToEdittext.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
+        mToEdittext.setHintTextColor(getResources().getColor(R.color.text_hint));
+        mToEdittext.setTextColor(getResources().getColor(R.color.text_dark_gray));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_done),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                checkAndSendAddress(mToEdittext.getText().toString());
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(Html.fromHtml("<b>"+getResources().getString(R.string.string_cancel)+"</b>"),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.setView(mToEdittext);
+        final AlertDialog dialog = builder.create();
+
+        // this changes the colors of the system's UI buttons we're using
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+            }
+        });
+        dialog.show();
     }
 }
