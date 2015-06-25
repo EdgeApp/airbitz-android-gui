@@ -109,7 +109,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         });
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(R.string.activity_signup_title);
 
         mShowContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_show_container);

@@ -134,7 +134,7 @@ public class ContactPickerFragment extends BaseFragment {
             }
         });
 
-        mContactName.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mContactName.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mContactName.setText("");
         mContactName.setOnFocusChangeListener(new View.OnFocusChangeListener() {

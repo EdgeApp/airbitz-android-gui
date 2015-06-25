@@ -148,12 +148,12 @@ public class LandingFragment extends BaseFragment implements
 
         mBlackoutView = mView.findViewById(R.id.fragment_landing_black);
         mDetailTextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
-        mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mDetailTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mSwipeLayout = (LinearLayout) mView.findViewById(R.id.fragment_landing_swipe_layout);
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.fragment_landing_username_edittext);
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mUserNameEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -167,7 +167,7 @@ public class LandingFragment extends BaseFragment implements
 
         mPasswordLayout = mView.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_landing_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -203,7 +203,7 @@ public class LandingFragment extends BaseFragment implements
         });
 
         mCreateAccountButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_landing_create_account);
-        mCreateAccountButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCreateAccountButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -319,7 +319,7 @@ public class LandingFragment extends BaseFragment implements
         });
 
         HighlightOnPressButton mSignInButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_landing_signin_button);
-        mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mSignInButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

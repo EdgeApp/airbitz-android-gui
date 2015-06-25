@@ -77,7 +77,7 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
         textView.setText(mCurrencies.get(position));
-        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        textView.setTypeface(NavigationActivity.latoRegularTypeFace);
         textView.setSingleLine(false);
         return convertView;
     }

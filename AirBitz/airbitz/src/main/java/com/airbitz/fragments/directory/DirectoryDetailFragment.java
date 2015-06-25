@@ -233,7 +233,7 @@ public class DirectoryDetailFragment extends BaseFragment {
 
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
 
         if (!TextUtils.isEmpty(mBusinessName)) {
             mTitleTextView.setText(mBusinessName);

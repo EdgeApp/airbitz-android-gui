@@ -113,7 +113,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mScanButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_scan_token);
-        mScanButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
+        mScanButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
         mScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +122,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         });
 
         mResetButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_request_reset);
-        mResetButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
+        mResetButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

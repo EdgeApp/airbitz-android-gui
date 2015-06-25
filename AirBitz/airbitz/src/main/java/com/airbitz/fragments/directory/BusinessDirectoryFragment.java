@@ -106,11 +106,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     static final int MAX_VENUES = 500;
     static final int PAGE_SIZE = 20;
     static final int VENUE_LOAD_AHEAD = 3;
-    public static Typeface montserratBoldTypeFace;
-    public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-    public static Typeface helveticaNeueTypeFace;
     private static String mLocationWords = "";
     private static String mBusinessType = "business";
     Handler mHandler = new Handler();
@@ -197,11 +194,11 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             StrictMode.setThreadPolicy(policy);
         }
 
-        montserratBoldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Regular.ttf");
+        latoBlackTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Bold.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-RegIta.ttf");
-        helveticaNeueTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
 
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
         mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
@@ -270,14 +267,14 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mSearchListView = (ListView) view.findViewById(R.id.listview_search);
         mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
 
-        mSearchField.setTypeface(montserratRegularTypeFace);
-        mLocationField.setTypeface(montserratRegularTypeFace);
+        mSearchField.setTypeface(latoRegularTypeFace);
+        mLocationField.setTypeface(latoRegularTypeFace);
 
-        mRestaurantButton.setTypeface(montserratRegularTypeFace);
-        mBarButton.setTypeface(montserratRegularTypeFace);
-        mCoffeeButton.setTypeface(montserratRegularTypeFace);
-        mMoreButton.setTypeface(montserratRegularTypeFace);
-        ((TextView)view.findViewById(R.id.textview_nearyou_sticky)).setTypeface(montserratRegularTypeFace);
+        mRestaurantButton.setTypeface(latoRegularTypeFace);
+        mBarButton.setTypeface(latoRegularTypeFace);
+        mCoffeeButton.setTypeface(latoRegularTypeFace);
+        mMoreButton.setTypeface(latoRegularTypeFace);
+        ((TextView)view.findViewById(R.id.textview_nearyou_sticky)).setTypeface(latoRegularTypeFace);
 
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override

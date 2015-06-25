@@ -73,7 +73,7 @@ public class BuySellFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.fragment_buysell, container, false);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(getString(R.string.buysell_title));
 
         ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
@@ -156,7 +156,7 @@ public class BuySellFragment extends BaseFragment {
 
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.item_name);
-                holder.name.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                holder.name.setTypeface(NavigationActivity.latoRegularTypeFace);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();

@@ -83,9 +83,9 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         BleDevice device = mDevices.get(position);
 
         TextView nameView = (TextView) convertView.findViewById(R.id.bluetooth_item_name);
-        nameView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        nameView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         TextView addressView = (TextView) convertView.findViewById(R.id.bluetooth_item_address);
-        addressView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        addressView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
         String partialAddress = null;
         String name = null;

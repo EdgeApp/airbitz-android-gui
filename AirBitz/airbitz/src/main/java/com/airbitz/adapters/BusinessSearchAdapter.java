@@ -89,9 +89,9 @@ public class BusinessSearchAdapter extends ArrayAdapter<Business> implements Fil
         TextView textView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
 
         if (business.getType().equalsIgnoreCase("business")) {
-            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.BOLD);
+            textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace, Typeface.BOLD);
         } else if (business.getType().equalsIgnoreCase("category")) {
-            textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace, Typeface.ITALIC);
+            textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace, Typeface.ITALIC);
         } else {
             // Assert. no other type
         }

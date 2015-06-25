@@ -77,7 +77,7 @@ public class ContactSearchAdapter extends ArrayAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_transaction_detail_business, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
-        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.transaction_detail_item_imageview);
         TextView infoView = (TextView) convertView.findViewById(R.id.transaction_detail_item_address);
 

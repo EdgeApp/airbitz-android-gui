@@ -96,8 +96,8 @@ public class VenueAdapter extends BaseAdapter {
 
             venueNameTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
             distanceTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
-            addressTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
-            discountTextView.setTypeface(BusinessDirectoryFragment.helveticaNeueTypeFace);
+            addressTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
+            discountTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
             viewHolder = new VenueViewHolderItem();
             viewHolder.relativeLayoutItem = (RelativeLayout) convertView.findViewById(R.id.mainLayout);
