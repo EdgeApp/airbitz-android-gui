@@ -207,21 +207,21 @@
                     android:id="@+id/fragment_triple_selector_left"
                     android:layout_width="116dp"
                     android:layout_height="wrap_content"
-                    android:text="Copy"
+                    android:text="@string/fragment_request_copy_title"
                     style="@style/RadioButton" />
 
                 <RadioButton
                     android:id="@+id/fragment_triple_selector_center"
                     android:layout_width="116dp"
                     android:layout_height="wrap_content"
-                    android:text="Email"
+                    android:text="@string/fragment_request_email_title"
                     style="@style/RadioButton" />
 
                 <RadioButton
                     android:id="@+id/fragment_triple_selector_right"
                     android:layout_width="116dp"
                     android:layout_height="wrap_content"
-                    android:text="SMS"
+                    android:text="@string/fragment_request_sms_title"
                     style="@style/RadioButton" />
             </info.hoang8f.android.segmented.SegmentedGroup>
 

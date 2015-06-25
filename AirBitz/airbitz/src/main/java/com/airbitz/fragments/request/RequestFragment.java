@@ -297,7 +297,6 @@ public class RequestFragment extends BaseFragment implements
 
         final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
         mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
-        mCopyButton.setText(getString(R.string.fragment_request_copy_title));
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,7 +305,6 @@ public class RequestFragment extends BaseFragment implements
             }
         });
         mEmailButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_center);
-        mEmailButton.setText(getString(R.string.fragment_request_email_title));
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,7 +313,6 @@ public class RequestFragment extends BaseFragment implements
             }
         });
         mSMSButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_right);
-        mSMSButton.setText(getString(R.string.fragment_request_sms_title));
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
