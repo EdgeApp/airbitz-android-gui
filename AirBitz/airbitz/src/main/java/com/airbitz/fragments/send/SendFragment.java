@@ -90,7 +90,8 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 public class SendFragment extends BaseFragment implements
         BluetoothListView.OnPeripheralSelected,
         CoreAPI.OnWalletLoaded,
-        BluetoothListView.OnBitcoinURIReceived
+        BluetoothListView.OnBitcoinURIReceived,
+        QRCamera.OnScanResult
 {
     private final String TAG = getClass().getSimpleName();
 
@@ -315,6 +316,8 @@ public class SendFragment extends BaseFragment implements
 //            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
 
+        mQRCamera.setOnScanResultListener(this);
+
         checkFirstBLEUsage();
         startBluetoothSearch();
     }
@@ -348,7 +351,7 @@ public class SendFragment extends BaseFragment implements
         if(mBluetoothListView != null) {
             mBluetoothListView.close();
         }
-
+        mQRCamera.setOnScanResultListener(null);
         mCoreApi.setOnWalletLoadedListener(null);
         hasCheckedFirstUsage = false;
     }
@@ -425,6 +428,7 @@ public class SendFragment extends BaseFragment implements
         });
     }
 
+    @Override
     public void onScanResult(String result) {
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
