@@ -364,8 +364,7 @@ public class RequestFragment extends WalletBaseFragment implements
             // ignore
         }
 
-        mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
-
+        mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, r.getDisplayMetrics());
         return mView;
     }
 
@@ -1109,9 +1108,9 @@ public class RequestFragment extends WalletBaseFragment implements
             mQRView.getLocationOnScreen(mQrCoords);
             mCalculator.getLocationOnScreen(mCalcCoords);
 
-            float qrY = mQrCoords[1] + mQRView.getHeight() + mQrPadding;
+            float qrY = mQrCoords[1] + mQRView.getHeight();
             float calcY = mCalcCoords[1];
-            float diff = qrY - calcY;
+            float diff = (qrY + mQrPadding) - calcY;
             int newHeight = mQRView.getHeight() - (int) (diff / 2.0);
             if (newHeight > mOrigQrHeight) {
                 return;
