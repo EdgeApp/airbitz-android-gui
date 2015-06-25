@@ -18,46 +18,4 @@
             android:background="@android:color/black"
             android:visibility="visible"/>
 
-        <ImageButton
-            android:id="@+id/button_flash"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginRight="20dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/btn_flash_off" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_centerVertical="true" >
-
-            <ImageButton
-                android:id="@+id/button_bluetooth"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@android:color/transparent"
-                android:layout_marginBottom="20dp"
-                android:layout_centerHorizontal="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_ble_icon"
-                android:visibility="gone"/>
-
-            <ImageButton
-                android:id="@+id/button_gallery"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/button_bluetooth"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/gallery_button" />
-
-        </RelativeLayout>
-
     </RelativeLayout>
