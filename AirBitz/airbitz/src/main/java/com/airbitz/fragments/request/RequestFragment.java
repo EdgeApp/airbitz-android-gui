@@ -143,6 +143,7 @@ public class RequestFragment extends BaseFragment implements
     private HighlightOnPressSpinner pickWalletSpinner;
     private TextView mConverterTextView;
     private TextView mDenominationTextView;
+    private TextView mBTCTextView;
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
@@ -291,6 +292,7 @@ public class RequestFragment extends BaseFragment implements
         mConverterTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
+        mBTCTextView = (TextView) mView.findViewById(R.id.request_not_selected_denomination);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
         final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
@@ -360,6 +362,16 @@ public class RequestFragment extends BaseFragment implements
         mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
     }
 
+    private void swapDenominations() {
+        //TODO animate
+        if(mAmountIsBitcoin) {
+            mDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+        }
+        else {
+            mDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
+        }
+    }
+
     private void swapAmount() {
         int walletPosition = pickWalletSpinner.getSelectedItemPosition();
         if(walletPosition < 0) {
@@ -400,6 +412,7 @@ public class RequestFragment extends BaseFragment implements
                 Log.d(TAG, "Too much bitcoin");
             }
         }
+        swapDenominations();
     }
 
     private void updateAmount() {
