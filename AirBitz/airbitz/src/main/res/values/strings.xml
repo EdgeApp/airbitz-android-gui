@@ -15,6 +15,7 @@
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
+    <string name="string_total">TOTAL:</string>
     <string name="string_finish">FINISH</string>
     <string name="string_help">Help</string>
     <string name="string_loading">Loading...</string>

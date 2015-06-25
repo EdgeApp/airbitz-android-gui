@@ -62,10 +62,12 @@ public class WalletBaseFragment extends BaseFragment implements
         NavigationActivity.OnBackPress,
         NavigationActivity.OnWalletUpdated {
 
+    private final String TAG = WalletBaseFragment.class.getSimpleName();
+
+    private Toolbar mToolbar;
+    protected Handler mHandler = new Handler();
     protected List<Wallet> mWallets;
     protected Wallet mWallet;
-
-    protected Handler mHandler = new Handler();
     protected ListView mWalletList;
     protected View mWalletsContainer;
     protected TextView mTitleView;
@@ -73,13 +75,12 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mHomeEnabled = false;
     protected boolean mDropDownEnabled = true;
     protected boolean mOnBitcoinMode = true;
-    protected boolean mExpanded = true;
+    protected boolean mExpanded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreApi = CoreAPI.getApi();
-        mExpanded = false;
 
         String uuid = AirbitzApplication.getCurrentWallet();
         if (uuid == null) {
@@ -87,7 +88,7 @@ public class WalletBaseFragment extends BaseFragment implements
             AirbitzApplication.setCurrentWallet(uuid);
         }
 
-        mWallets = mCoreApi.getCoreActiveWallets();
+        fetchWallets();
         mWallet = mCoreApi.getWalletFromUUID(uuid);
 
         setHasOptionsMenu(true);
@@ -98,15 +99,9 @@ public class WalletBaseFragment extends BaseFragment implements
         super.onStart();
 
         View view = getView();
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        if (null != toolbar) {
-            toolbar.setTitle(""); // XXX: Should just disable the title
-            mActivity.setSupportActionBar(toolbar);
-            if (mHomeEnabled) {
-                mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
-            }
-        }
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        mToolbar.setTitle(""); // XXX: Should just disable the title
+        mActivity.setSupportActionBar(mToolbar);
 
         mTitleView = (TextView) view.findViewById(R.id.title);
         updateTitle();
@@ -117,23 +112,32 @@ public class WalletBaseFragment extends BaseFragment implements
                 }
             });
         }
-        setupWalletList(view);
+        setupWalletViews(view);
         if (mExpanded) {
             finishShowWallets();
         } else {
             finishHideWallets();
+
+            if (mHomeEnabled) {
+                mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
         }
+    }
+
+    protected void fetchWallets() {
+        mWallets = mCoreApi.getCoreActiveWallets();
     }
 
     @Override
     public void onWalletsLoaded() {
-        mWallets = mCoreApi.getCoreActiveWallets();
+        fetchWallets();
         loadWallets();
     }
 
     @Override
     public void onWalletUpdated() {
-        mWallets = mCoreApi.getCoreActiveWallets();
+        fetchWallets();
         loadWallets();
     }
 
@@ -143,7 +147,7 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void onExchangeRatesChange() {
-        mWallets = mCoreApi.getCoreActiveWallets();
+        fetchWallets();
         loadWallets();
     }
 
@@ -153,7 +157,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mWalletList.setAdapter(adapter);
     }
 
-    protected void setupWalletList(View view) {
+    protected void setupWalletViews(View view) {
         mWalletList = (ListView) view.findViewById(R.id.wallet_choices);
         mWalletList.setVisibility(View.GONE);
         mWalletList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -178,6 +182,7 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+
         mCoreApi.setOnWalletLoadedListener(this);
         mCoreApi.addExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(this);
@@ -188,6 +193,7 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
+
         mCoreApi.setOnWalletLoadedListener(null);
         mCoreApi.removeExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(null);
@@ -272,6 +278,7 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public void hideWalletList() {
+
         AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mActivity, R.animator.slide_out_top);
         set.setTarget(mWalletsContainer);
         set.addListener(new Animator.AnimatorListener() {
@@ -299,7 +306,9 @@ public class WalletBaseFragment extends BaseFragment implements
         mActivity.invalidateOptionsMenu();
         mExpanded = false;
 
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (!mHomeEnabled) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
     }
 }

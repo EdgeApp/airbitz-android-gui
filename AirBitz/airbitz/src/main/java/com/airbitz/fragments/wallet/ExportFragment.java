@@ -48,18 +48,14 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.models.Wallet;
-import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created on 2/22/14.
- */
 public class ExportFragment extends WalletBaseFragment {
 
     View mView;
@@ -69,16 +65,10 @@ public class ExportFragment extends WalletBaseFragment {
     private Button mPdfbutton;
     private Button mWalletPrivateSeed;
 
-    private NavigationActivity mActivity;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(true);
         setHomeEnabled(true);
-
-        String uuid = AirbitzApplication.getCurrentWallet();
     }
 
     @Override
@@ -86,9 +76,7 @@ public class ExportFragment extends WalletBaseFragment {
         if (mView != null) {
             return mView;
         }
-        mActivity = (NavigationActivity) getActivity();
         mView = inflater.inflate(R.layout.fragment_export, container, false);
-
         mCSVButton = (Button) mView.findViewById(R.id.button_csv);
         mQuickenButton = (Button) mView.findViewById(R.id.button_quicken);
         mQuickBooksButton = (Button) mView.findViewById(R.id.button_quickbooks);
@@ -133,11 +121,6 @@ public class ExportFragment extends WalletBaseFragment {
     }
 
     @Override
-    protected void walletChanged(Wallet newWallet) {
-        super.walletChanged(newWallet);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_standard, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -145,16 +128,19 @@ public class ExportFragment extends WalletBaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (super.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
-            case android.R.id.home:
-                ExportFragment.popFragment(mActivity);
-                return true;
-            case R.id.action_help:
-                mActivity.pushFragment(
-                        new HelpFragment(HelpFragment.EXPORT_WALLET), NavigationActivity.Tabs.WALLET.ordinal());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case android.R.id.home:
+            ExportFragment.popFragment(mActivity);
+            return true;
+        case R.id.action_help:
+            mActivity.pushFragment(
+                new HelpFragment(HelpFragment.EXPORT_WALLET), NavigationActivity.Tabs.WALLET.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 

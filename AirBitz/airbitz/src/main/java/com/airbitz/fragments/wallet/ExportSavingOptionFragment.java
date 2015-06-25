@@ -39,7 +39,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -91,6 +90,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
     private final String TAG = getClass().getSimpleName();
+
     View mView;
     private HighlightOnPressButton mFromButton;
     private HighlightOnPressButton mToButton;
@@ -138,18 +138,15 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
         mExportType = mBundle.getInt(EXPORT_TYPE);
-
-        setHasOptionsMenu(true);
         setHomeEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
-        } else {
+        if (mView != null) {
             return mView;
         }
+        mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
 
         today = Calendar.getInstance();
 
@@ -564,16 +561,19 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (super.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
-            case android.R.id.home:
-                ExportSavingOptionFragment.popFragment(getBaseActivity());
-                return true;
-            case R.id.action_help:
-                getBaseActivity().pushFragment(
-                        new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        case android.R.id.home:
+            ExportSavingOptionFragment.popFragment(mActivity);
+            return true;
+        case R.id.action_help:
+            mActivity.pushFragment(
+                new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
