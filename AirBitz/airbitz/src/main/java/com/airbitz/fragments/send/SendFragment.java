@@ -139,12 +139,6 @@ public class SendFragment extends BaseFragment implements
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
         mQRCamera = new QRCamera(this, mCameraLayout);
 
-//        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
-//        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-//
-//        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
-//        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-
         final RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_send_header);
         mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
         mHelpButton.setVisibility(View.VISIBLE);
