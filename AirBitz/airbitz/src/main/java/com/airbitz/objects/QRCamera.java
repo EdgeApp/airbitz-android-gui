@@ -78,43 +78,43 @@ public class QRCamera implements
         mPreviewFrame = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_preview);
         mPreviewObscura = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_obscura);
 
-        mFlashButton = (ImageButton) mCameraLayout.findViewById(R.id.button_flash);
-        mFlashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mCamera == null) {
-                    return;
-                }
-                if (!mFlashOn) {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
-                    mFlashOn = true;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(parameters);
-                } else {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
-                    mFlashOn = false;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-            }
-        });
+//        mFlashButton = (ImageButton) mCameraLayout.findViewById(R.id.button_flash);
+//        mFlashButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(mCamera == null) {
+//                    return;
+//                }
+//                if (!mFlashOn) {
+//                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
+//                    mFlashOn = true;
+//                    Camera.Parameters parameters = mCamera.getParameters();
+//                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//                    mCamera.setParameters(parameters);
+//                } else {
+//                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
+//                    mFlashOn = false;
+//                    Camera.Parameters parameters = mCamera.getParameters();
+//                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+//                    mCamera.setParameters(parameters);
+//                }
+//            }
+//        });
 
-        mGalleryButton = (ImageButton) mCameraLayout.findViewById(R.id.button_gallery);
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PickAPicture();
-            }
-        });
-
-        mBluetoothButton = (ImageButton) mCameraLayout.findViewById(R.id.button_bluetooth);
+//        mGalleryButton = (ImageButton) mCameraLayout.findViewById(R.id.button_gallery);
+//        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                PickAPicture();
+//            }
+//        });
+//
+//        mBluetoothButton = (ImageButton) mCameraLayout.findViewById(R.id.button_bluetooth);
     }
 
-    public ImageButton getBluetoothButton() {
-        return mBluetoothButton;
-    }
+//    public ImageButton getBluetoothButton() {
+//        return mBluetoothButton;
+//    }
 
     Runnable cameraStartRunner = new Runnable() {
         @Override
