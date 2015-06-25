@@ -87,12 +87,12 @@ public class WalletPickerAdapter extends ArrayAdapter {
             title += " (" + mWalletList.get(position).getBalanceFormatted() + ")";
         }
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (mSource == WalletPickerEnum.SendTo) {
-            convertView = inflater.inflate(R.layout.item_send_listing_spinner, parent, false);
-            TextView textView = (TextView) convertView.findViewById(R.id.item_send_listing_spinner_textview);
+        if (mSource == WalletPickerEnum.SendFrom) {
+            convertView = inflater.inflate(R.layout.item_send_wallet_spinner, parent, false);
+            TextView textView = (TextView) convertView.findViewById(R.id.item_send_wallet_spinner_textview);
             textView.setTypeface(mBitcoinTypeface);
             textView.setText(title);
-        } else {
+        } else if(mSource == WalletPickerEnum.Request) {
             convertView = inflater.inflate(R.layout.item_request_wallet_spinner, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_textview);
             textView.setTypeface(mBitcoinTypeface);

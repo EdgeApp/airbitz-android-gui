@@ -41,7 +41,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -50,8 +49,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -113,10 +110,6 @@ public class SendFragment extends BaseFragment implements
 
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
-    private EditText mToEdittext;
-//    private TextView mFromTextView;
-//    private TextView mToTextView;
-//    private TextView mQRCodeTextView;
     private Button mTransferButton, mAddressButton, mFlashButton, mGalleryButton;
     private ListView mToWalletListView;
     private RelativeLayout mListviewContainer;
@@ -214,71 +207,8 @@ public class SendFragment extends BaseFragment implements
             }
         });
 
-
-//        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
-//        mToEdittext.setTypeface(NavigationActivity.montserratRegularTypeFace);
-//
-//        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-//                if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                    checkAndSendAddress(mToEdittext.getText().toString());
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
-//        mToEdittext.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-//                mActivity.showSoftKeyboard(mToEdittext);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                goAutoCompleteWalletListing();
-//            }
-//        });
-//
-//        mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
-//                if (hasFocus) {
-//                    goAutoCompleteWalletListing();
-//                    mActivity.showSoftKeyboard(mToEdittext);
-//                } else {
-//                    mListviewContainer.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//
-//        mToEdittext.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mListviewContainer.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        mToEdittext.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                    if (mListviewContainer.getVisibility() == View.VISIBLE) {
-//                        mListviewContainer.setVisibility(View.GONE);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-
         mCurrentWalletListing = new ArrayList<Wallet>();
-        mCurrentWalletListingAdapter = new WalletPickerAdapter(getActivity(), mCurrentWalletListing, WalletPickerEnum.SendTo);
+        mCurrentWalletListingAdapter = new WalletPickerAdapter(getActivity(), mCurrentWalletListing, WalletPickerEnum.SendFrom);
 
         mToWalletListView = (ListView) mView.findViewById(R.id.fragment_send_transfer_list);
         mToWalletListView.setAdapter(mCurrentWalletListingAdapter);
@@ -325,10 +255,6 @@ public class SendFragment extends BaseFragment implements
     }
 
     private void checkAndSendAddress(String strTo) {
-        if (strTo == null || strTo.isEmpty()) {
-            ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-            return;
-        }
         newSpend(strTo);
     }
 
@@ -355,9 +281,6 @@ public class SendFragment extends BaseFragment implements
     }
 
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
-        if (mToEdittext != null) {
-            mActivity.hideSoftKeyboard(mToEdittext);
-        }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
@@ -500,7 +423,7 @@ public class SendFragment extends BaseFragment implements
         if(mBluetoothListView != null) {
             mBluetoothListView.setOnBitcoinURIReceivedListener(null);
         }
-        mToEdittext.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 checkAndSendAddress(bitcoinAddress);
@@ -579,7 +502,6 @@ public class SendFragment extends BaseFragment implements
             if (result) {
                 GotoSendConfirmation(target);
             } else {
-                ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
                 ((NavigationActivity) getActivity()).ShowOkMessageDialog(
                         getResources().getString(R.string.fragment_send_failure_title),
                         getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
@@ -592,17 +514,17 @@ public class SendFragment extends BaseFragment implements
     }
 
     public void showAddressDialog() {
-        mToEdittext = new EditText(getActivity());
-        mToEdittext.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
-        mToEdittext.setHintTextColor(getResources().getColor(R.color.text_hint));
-        mToEdittext.setTextColor(getResources().getColor(R.color.text_dark_gray));
+        final EditText editText = new EditText(getActivity());
+        editText.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
+        editText.setHintTextColor(getResources().getColor(R.color.text_hint));
+        editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_done),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                checkAndSendAddress(mToEdittext.getText().toString());
+                                checkAndSendAddress(editText.getText().toString());
                                 dialog.dismiss();
                             }
                         })
@@ -612,7 +534,7 @@ public class SendFragment extends BaseFragment implements
                                 dialog.cancel();
                             }
                         });
-        builder.setView(mToEdittext);
+        builder.setView(editText);
         final AlertDialog dialog = builder.create();
 
         // this changes the colors of the system's UI buttons we're using
