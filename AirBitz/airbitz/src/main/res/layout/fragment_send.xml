@@ -65,10 +65,21 @@
 
     </FrameLayout>
 
+    <ListView
+        android:id="@+id/fragment_send_transfer_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_gray_text"
+        android:layout_below="@id/fragment_send_header"
+        android:layout_above="@id/fragment_send_buttons"
+        android:visibility="gone"/>
+
+
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_above="@id/fragment_send_buttons"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        android:visibility="visible" />
 </RelativeLayout>
