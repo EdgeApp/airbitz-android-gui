@@ -89,7 +89,7 @@
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
             android:singleLine="true"
-            android:text="BUY/SELL BITCOIN"
+            android:text="@string/drawer_buy_sell"
             android:textColor="@color/gray_text"
             android:textSize="20dp" />
 
@@ -97,6 +97,30 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@id/item_drawer_buy_sell" />
+
+        <TextView
+            android:id="@+id/item_drawer_import"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_until_pressed"
+            android:clickable="true"
+            android:drawableLeft="@drawable/icon_gift_box"
+            android:drawablePadding="20dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:singleLine="false"
+            android:text="@string/drawer_import"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp"
+            android:layout_below="@id/item_drawer_buy_sell" />
+
+        <include layout="@layout/divider_horizontal_dark_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/item_drawer_import" />
 
         <LinearLayout
             android:layout_width="match_parent"

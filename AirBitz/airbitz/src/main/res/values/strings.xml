@@ -587,5 +587,6 @@
     <!-- Navigation Drawer -->
     <string name="drawer_logout">LOGOUT</string>
     <string name="drawer_settings">SETTINGS</string>
-
+    <string name="drawer_buy_sell">BUY/SELL BITCOIN</string>
+    <string name="drawer_import">IMPORT GIFT CARD\n(private key)</string>
 </resources>

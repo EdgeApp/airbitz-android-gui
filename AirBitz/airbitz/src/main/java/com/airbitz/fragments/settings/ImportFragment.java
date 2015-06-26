@@ -29,10 +29,12 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments.request;
+package com.airbitz.fragments.settings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
@@ -40,7 +42,9 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +53,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -62,6 +67,7 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
@@ -75,31 +81,24 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
+
 /**
  * Created on 3/3/14.
  */
-public class ImportFragment extends BaseFragment implements
+public class ImportFragment extends WalletBaseFragment implements
         CoreAPI.OnWalletSweep,
         QRCamera.OnScanResult
 {
     public static String URI = "com.airbitz.importfragment.uri";
 
     private final String TAG = getClass().getSimpleName();
-    private EditText mToEdittext;
-    private ImageButton mBackButton;
-    private ImageButton mHelpButton;
-    private HighlightOnPressSpinner mWalletSpinner;
-    private HighlightOnPressButton mSubmitButton;
-    private TextView mFromTextView;
-    private TextView mToTextView;
-    private TextView mQRCodeTextView;
-    private TextView mTitleTextView;
+    private Button mAddressButton, mFlashButton, mGalleryButton;
     private NfcAdapter mNfcAdapter;
     private QRCamera mQRCamera;
     private CoreAPI mCoreAPI;
     private View mView;
     private List<Wallet> mWallets;//Actual wallets
-    private Wallet mFromWallet;
     private Handler mHandler = new Handler();
     private NavigationActivity mActivity;
     private LinearLayout mImportLayout;
@@ -145,110 +144,54 @@ public class ImportFragment extends BaseFragment implements
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_layout_camera);
 
-        mImportLayout = (LinearLayout) mView.findViewById(R.id.fragment_import_layout);
         mBusyLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_busy_layout);
         mBusyText = (TextView) mView.findViewById(R.id.fragment_import_busy_text);
         mBusyText.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
-        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
-        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
-        mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(R.string.import_title);
-
-        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
+        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.import_bottom_buttons);
+        mFlashButton = (Button) buttons.findViewById(R.id.fragment_import_button_flash);
+        mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                buttons.clearCheck();
+                mQRCamera.setFlashOn(!mQRCamera.isFlashOn());
             }
         });
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
+        mGalleryButton = (Button) buttons.findViewById(R.id.fragment_import_button_photos);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.IMPORT_WALLET), NavigationActivity.Tabs.REQUEST.ordinal());
+                buttons.clearCheck();
+                Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(in, QRCamera.RESULT_LOAD_IMAGE);
             }
         });
 
-        mSubmitButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_import_enter_button);
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+        mAddressButton = (Button) buttons.findViewById(R.id.fragment_import_button_address);
+        mAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptSubmit();
+                buttons.clearCheck();
+                showAddressDialog();
             }
         });
-
-        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mQRCodeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-
-        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_import_from_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
-        mWalletSpinner.setAdapter(dataAdapter);
-
-        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mFromWallet = mWallets.get(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                }
-            }
-        });
-
-        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if(!textView.getText().toString().isEmpty()) {
-                        attemptSubmit();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
 
         return mView;
     }
 
     private void showBusyLayout(boolean on) {
         if(on) {
-            mImportLayout.setVisibility(View.GONE);
             mBusyLayout.setVisibility(View.VISIBLE);
             stopCamera();
         }
         else {
-            mImportLayout.setVisibility(View.VISIBLE);
             mBusyLayout.setVisibility(View.GONE);
             startCamera();
         }
     }
 
     private void scanQRCodes() {
-        mSubmitButton.setVisibility(View.INVISIBLE);
         mCameraLayout.setVisibility(View.VISIBLE);
         startCamera();
 
@@ -256,15 +199,14 @@ public class ImportFragment extends BaseFragment implements
         mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
+//            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
         }
         else {
-            mQRCodeTextView.setText(getString(R.string.send_scan_text));
+//            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
     }
 
     private void stopScanningQRCodes() {
-        mSubmitButton.setVisibility(View.VISIBLE);
         mCameraLayout.setVisibility(View.GONE);
         stopCamera();
     }
@@ -291,16 +233,14 @@ public class ImportFragment extends BaseFragment implements
         Bundle args = getArguments();
 
         if(args != null && args.getString(URI) != null && getHiddenBitsToken(args.getString(URI)) != null) {
-            mToEdittext.setText(args.getString(URI));
-            mToEdittext.clearFocus();
-            mActivity.hideSoftKeyboard(mToEdittext);
+            mSweptAddress = args.getString(URI);
             stopScanningQRCodes();
+            showAddressDialog();
         }
         else {
             scanQRCodes();
         }
 
-        mFromWallet = mWallets.get(0);
         mCoreAPI.setOnWalletSweepListener(this);
 
         clearSweepAddress();
@@ -325,8 +265,7 @@ public class ImportFragment extends BaseFragment implements
     public void onScanResult(String result) {
         if (result != null) {
             Log.d(TAG, "HiddenBits found");
-            mToEdittext.setText(result);
-            attemptSubmit();
+            attemptSubmit(result);
         }
         mQRCamera.setOnScanResultListener(null);
     }
@@ -340,15 +279,14 @@ public class ImportFragment extends BaseFragment implements
         }
     }
 
-    private void attemptSubmit() {
-        String uriString = mToEdittext.getText().toString().trim();
+    private void attemptSubmit(String uriString) {
         String token = getHiddenBitsToken(uriString);
 
         String entry = token != null ? token : uriString;
 
         mBusyText.setText(String.format(getString(R.string.import_wallet_busy_text), entry));
         showBusyLayout(true);
-        mSweptAddress = mCoreAPI.SweepKey(mFromWallet.getUUID(), entry);
+        mSweptAddress = mCoreAPI.SweepKey(mWallet.getUUID(), entry);
 
         if(mSweptAddress != null && !mSweptAddress.isEmpty()) {
             mHandler.postDelayed(sweepNotFoundRunner, 30000);
@@ -440,7 +378,7 @@ public class ImportFragment extends BaseFragment implements
         mSweptID = txID;
         mSweptAmount = amount;
 
-        String token = getHiddenBitsToken(mToEdittext.getText().toString());
+        String token = getHiddenBitsToken(mSweptAddress);
         if(token != null) { // hidden bitz
             // Check to see if both paths are done
             checkHiddenBitsAsyncData();
@@ -451,14 +389,13 @@ public class ImportFragment extends BaseFragment implements
         mHandler.removeCallbacks(sweepNotFoundRunner);
 
         clearSweepAddress();
-        mActivity.showPrivateKeySweepTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount);
+        mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
         mSweptAmount = -1;
     }
 
     private void clearSweepAddress() {
         // Clear out sweep info
         mSweptAddress = "";
-        mToEdittext.setText(mSweptAddress);
     }
 
     // This is only called for HiddenBits
@@ -471,10 +408,48 @@ public class ImportFragment extends BaseFragment implements
             mHandler.removeCallbacks(sweepNotFoundRunner);
             showBusyLayout(false);
 
-            mActivity.showHiddenBitsTransaction(mSweptID, mFromWallet.getUUID(), mSweptAmount,
+            mActivity.showHiddenBitsTransaction(mSweptID, mWallet.getUUID(), mSweptAmount,
                     mMessage, mZeroMessage, mTweet);
 
             mSweptAmount = -1;
         }
+    }
+
+    public void showAddressDialog() {
+        final EditText editText = new EditText(getActivity());
+        if(mSweptAddress != null) {
+            editText.setText(mSweptAddress);
+        }
+        editText.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
+        editText.setHintTextColor(getResources().getColor(R.color.text_hint));
+        editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_done),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                attemptSubmit(editText.getText().toString().trim());
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(Html.fromHtml("<b>" + getResources().getString(R.string.string_cancel) + "</b>"),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.setView(editText);
+        final AlertDialog dialog = builder.create();
+
+        // this changes the colors of the system's UI buttons we're using
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+            }
+        });
+        dialog.show();
     }
 }

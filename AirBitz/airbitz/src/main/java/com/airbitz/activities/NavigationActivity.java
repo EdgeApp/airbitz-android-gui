@@ -96,7 +96,7 @@ import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.login.TransparentFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
-import com.airbitz.fragments.request.ImportFragment;
+import com.airbitz.fragments.settings.ImportFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
@@ -224,6 +224,7 @@ public class NavigationActivity extends ActionBarActivity
     private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
     private TextView mDrawerBuySell;
+    private TextView mDrawerImport;
     private TextView mDrawerSettings;
     private TextView mDrawerLogout;
     private ListView mOtherAccountsListView;
@@ -1952,10 +1953,20 @@ public class NavigationActivity extends ActionBarActivity
             public void onClick(View v) {
                 if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
-                    pushFragment(new BuySellFragment(), NavigationActivity.Tabs.MORE.ordinal());
+                    pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
                 }
                 switchFragmentThread(Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerImport = (TextView) findViewById(R.id.item_drawer_import);
+        mDrawerImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
+                mDrawerSettings.performClick();
+                pushFragment(new ImportFragment(), Tabs.MORE.ordinal());
             }
         });
 
