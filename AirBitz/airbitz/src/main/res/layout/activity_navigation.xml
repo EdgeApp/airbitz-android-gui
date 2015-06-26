@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_marginBottom="@dimen/tabbar_height"
+            android:background="@drawable/bg_app"
             android:orientation="vertical" />
 
         <com.airbitz.objects.Calculator

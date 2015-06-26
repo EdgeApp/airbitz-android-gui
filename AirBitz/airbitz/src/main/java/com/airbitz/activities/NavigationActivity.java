@@ -240,7 +240,6 @@ public class NavigationActivity extends ActionBarActivity
 
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
