@@ -6,17 +6,11 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/fragment_send_header"
-        layout="@layout/layout_wallet_select_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
-
-    <include
         android:id="@+id/fragment_send_layout_camera"
         layout="@layout/fragment_camera_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_send_header"
+        android:layout_below="@id/toolbar"
         android:visibility="visible" />
 
     <FrameLayout
@@ -70,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/off_white"
-        android:layout_below="@id/fragment_send_header"
+        android:layout_below="@id/toolbar"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -80,4 +74,7 @@
         android:layout_above="@id/fragment_send_buttons"
         android:orientation="vertical"
         android:visibility="visible" />
+
+
+    <include layout="@layout/layout_toolbar_dropdown" />
 </RelativeLayout>
