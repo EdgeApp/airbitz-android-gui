@@ -67,7 +67,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/layout_title_header"
         android:background="@color/white_frost"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/fragment_import_busy_text"
