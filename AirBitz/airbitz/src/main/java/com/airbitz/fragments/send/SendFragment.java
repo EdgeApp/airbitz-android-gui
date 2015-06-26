@@ -486,32 +486,13 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     public void onWalletsLoaded() {
+        super.onWalletsLoaded();
         mWallets = mCoreApi.getCoreActiveWallets();
 
-        if (!mWallets.isEmpty()) {
-            mFromWallet = mWallets.get(0);
-        }
+        mFromWallet = mWallet;
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String uuid = bundle.getString(UUID); // From a wallet with this UUID
-            if (uuid != null) {
-                mFromWallet = mCoreApi.getWalletFromUUID(uuid);
-                if (mFromWallet != null) {
-//                    for (int i = 0; i < mWallets.size(); i++) {
-//                        if (mFromWallet.getUUID().equals(mWallets.get(i).getUUID()) && !mWallets.get(i).isArchived()) {
-//                            final int finalI = i;
-//                            pickWalletSpinner.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    pickWalletSpinner.setSelection(finalI);
-//                                }
-//                            });
-//                            break;
-//                        }
-//                    }
-                    this.walletChanged(mFromWallet);
-                }
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
+            if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(NavigationActivity.URI_SOURCE)) {
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
                 if (!uriData.isEmpty()) {
@@ -519,8 +500,6 @@ public class SendFragment extends WalletBaseFragment implements
                 }
             }
         }
-
-//        AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
         updateWalletOtherList();
     }
 
