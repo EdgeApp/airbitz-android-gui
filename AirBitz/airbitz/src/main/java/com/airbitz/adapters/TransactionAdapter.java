@@ -69,6 +69,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private final String TAG = getClass().getSimpleName();
     private Context mContext;
     private Wallet mWallet;
+    private boolean mLoading;
     private boolean mSearch;
     private boolean mIsBitcoin = true;
     private int mCurrencyNum;
@@ -82,11 +83,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private SimpleDateFormat mFormatter;
     private Typeface mBitcoinTypeface;
 
-    public TransactionAdapter(Context context, Wallet wallet, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList) {
+    public TransactionAdapter(Context context, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList) {
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
-        mWallet = wallet;
-        mCurrencyNum = mWallet.getCurrencyNum();
         mListTransaction = listTransaction;
         mContactList = contactList;
         createRunningSatoshi();
@@ -97,6 +96,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
 
         mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
+    }
+
+    public void setWallet(Wallet wallet) {
+        mWallet = wallet;
+    }
+
+    public void setLoading(boolean loading) {
+        mLoading = loading;
     }
 
     public void createRunningSatoshi() {
@@ -118,9 +125,40 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     }
 
     @Override
+    public int getCount() {
+        if (mListTransaction.size() == 0) {
+            return 1;
+        } else {
+            return mListTransaction.size();
+        }
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (mListTransaction.size() == 0) {
+            if (mLoading) {
+                return getLoadingView(position, convertView, parent);
+            } else {
+                return getEmptyView(position, convertView, parent);
+            }
+        } else {
+            return getNormalView(position, convertView, parent);
+        }
+    }
+
+    private View getEmptyView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        return inflater.inflate(R.layout.item_listview_transaction_empty, parent, false);
+    }
+
+    private View getLoadingView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        return inflater.inflate(R.layout.item_listview_transaction_loading, parent, false);
+    }
+
+    private View getNormalView(int position, View convertView, ViewGroup parent) {
         ViewHolderItem viewHolder;
-        if (convertView == null) {
+        if (convertView == null || null == convertView.getTag()) {
             // well set up the ViewHolder
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_transaction, parent, false);
@@ -141,7 +179,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
-
 
         convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
 
@@ -203,7 +240,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             String btcCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, true);
             viewHolder.creditAmountTextView.setText(btcCurrency);
 
-            String fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+            String fiatCurrency = "";
+            if (mWallet != null && mWallet.getCurrencyNum() != -1) {
+                fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+            } else {
+                fiatCurrency = "";
+            }
             viewHolder.runningTotalTextView.setText(fiatCurrency);
 
             if (bPositive) {

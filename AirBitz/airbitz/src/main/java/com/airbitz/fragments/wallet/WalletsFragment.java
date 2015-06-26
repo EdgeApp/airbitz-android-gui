@@ -282,7 +282,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         mWalletListView.setArchiveClosed(archiveClosed);
         mWalletAdapter.notifyDataSetChanged();
 
-        if (mHeaderTotal != null) {
+        if (mHeaderTotal != null && null != mWallet) {
             long totalSatoshis = mWallet.getBalanceSatoshi();
             mFiatSelect.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
             mBitcoinSelect.setText(mCoreApi.getDefaultBTCDenomination());

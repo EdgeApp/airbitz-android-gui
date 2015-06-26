@@ -60,6 +60,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -186,11 +187,14 @@ public class TransactionListFragment extends WalletsFragment
 
         mCombinedPhotos = Common.GetMatchedContactsList(mActivity, null);
 
+        mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions, mCombinedPhotos);
+        mTransactionAdapter.setLoading(true);
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mListHeaderView == null) {
             mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_header, null, false);
             mListTransaction.addHeaderView(mListHeaderView, null, false);
         }
+        mListTransaction.setAdapter(mTransactionAdapter);
 
         mSendButton = mListHeaderView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = mListHeaderView.findViewById(R.id.fragment_wallet_request_button);
@@ -388,6 +392,13 @@ public class TransactionListFragment extends WalletsFragment
         if (mTransactionTask != null) {
             mTransactionTask.cancel(false);
         }
+        mTransactionAdapter.setLoading(mLoading);
+        mTransactionAdapter.setWallet(mWallet);
+        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+
+        mRequestButton.setClickable(false);
+        mSendButton.setClickable(false);
+
         mTransactionTask = new TransactionTask();
         mTransactionTask.execute(mWallet);
     }
@@ -397,46 +408,10 @@ public class TransactionListFragment extends WalletsFragment
         mTransactions.addAll(transactions);
         mTransactionAdapter.createRunningSatoshi();
         mTransactionAdapter.notifyDataSetChanged();
-        findBizIdThumbnails();
 
+        findBizIdThumbnails();
         updateBalanceBar();
         updateSendRequestButtons();
-    }
-
-    Runnable startTxListUpdate = new Runnable() {
-        @Override
-        public void run() {
-            updateTransactionsListView(new ArrayList<Transaction>(mTransactions));
-        }
-    };
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mWallet != null) {
-            setupTransactions();
-        }
-    }
-
-    @Override
-    protected void walletChanged(Wallet newWallet) {
-        super.walletChanged(newWallet);
-        setupTransactions();
-    }
-
-    private void setupTransactions() {
-        mTransactionAdapter = new TransactionAdapter(mActivity, mWallet, mTransactions, mCombinedPhotos);
-        mListTransaction.setAdapter(mTransactionAdapter);
-
-        if (!mTransactions.isEmpty()) {
-            mHandler.post(startTxListUpdate);
-        }
-
-        startTransactionTask();
-        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
-        mRequestButton.setClickable(false);
-        mSendButton.setClickable(false);
     }
 
     private void updateSendRequestButtons() {
@@ -481,21 +456,31 @@ public class TransactionListFragment extends WalletsFragment
 
     // Sum all transactions and show in total
     private void updateBalances() {
-        long totalSatoshis = mWallet.getBalanceSatoshi();
+        if (mWallet != null) {
+            long totalSatoshis = mWallet.getBalanceSatoshi();
 
-        mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-        mTopType.setText(mCoreApi.getDefaultBTCDenomination());
-        mBitCoinBalanceButton.setText(mCoreApi.formatSatoshi(totalSatoshis, true));
-        String temp = mCoreApi.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
-        mFiatBalanceButton.setText(temp);
-        if (mOnBitcoinMode) {
-            mButtonMover.setText(mBitCoinBalanceButton.getText());
-            mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-            mMoverType.setText(mTopType.getText());
+            mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+            mTopType.setText(mCoreApi.getDefaultBTCDenomination());
+            mBitCoinBalanceButton.setText(mCoreApi.formatSatoshi(totalSatoshis, true));
+            String temp = mCoreApi.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
+            mFiatBalanceButton.setText(temp);
+
+            if (mOnBitcoinMode) {
+                mButtonMover.setText(mBitCoinBalanceButton.getText());
+                mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
+                mMoverType.setText(mTopType.getText());
+            } else {
+                mButtonMover.setText(mFiatBalanceButton.getText());
+                mMoverCoin.setImageResource(0);
+                mMoverType.setText(mBottomType.getText());
+            }
         } else {
-            mButtonMover.setText(mFiatBalanceButton.getText());
-            mMoverCoin.setImageResource(0);
-            mMoverType.setText(mBottomType.getText());
+            mBottomType.setText("");
+            mTopType.setText("");
+            mBitCoinBalanceButton.setText("");
+            mFiatBalanceButton.setText("");
+            mButtonMover.setText("");
+            mMoverType.setText("");
         }
     }
 
@@ -516,22 +501,35 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     public void onExchangeRatesChange() {
         super.onExchangeRatesChange();
-        updateBalances();
+        if (!mLoading) {
+            updateBalances();
+        }
     }
 
     @Override
     public void onWalletUpdated() {
+        super.onWalletUpdated();
         if (mWallet != null) {
-            Log.d(TAG, "Reloading wallet");
             mCoreApi.reloadWallet(mWallet);
-
             startTransactionTask();
         }
     }
 
     @Override
+    public void onWalletsLoaded() {
+        super.onWalletsLoaded();
+        startTransactionTask();
+    }
+
+    @Override
+    protected void walletChanged(Wallet newWallet) {
+        super.walletChanged(newWallet);
+        startTransactionTask();
+    }
+
+    @Override
     public void onRefresh() {
-        if(mWallet != null) {
+        if (mWallet != null) {
             mCoreApi.connectWatcher(mWallet.getUUID());
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -557,13 +555,6 @@ public class TransactionListFragment extends WalletsFragment
         }
 
         @Override
-        protected void onPreExecute() {
-            if (mTransactions.isEmpty()) {
-                mActivity.showModalProgress(true);
-            }
-        }
-
-        @Override
         protected List<Transaction> doInBackground(Wallet... wallet) {
             return mCoreApi.loadAllTransactions(wallet[0]);
         }
@@ -577,14 +568,12 @@ public class TransactionListFragment extends WalletsFragment
             updateTransactionsListView(transactions);
 
             mTransactionTask = null;
-            mActivity.showModalProgress(false);
         }
 
         @Override
         protected void onCancelled() {
             mTransactionTask = null;
             super.onCancelled();
-            mActivity.showModalProgress(false);
         }
     }
 

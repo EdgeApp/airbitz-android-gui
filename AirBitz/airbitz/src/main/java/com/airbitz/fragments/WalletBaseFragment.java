@@ -32,6 +32,7 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.os.Bundle;
@@ -76,6 +77,7 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mDropDownEnabled = true;
     protected boolean mOnBitcoinMode = true;
     protected boolean mExpanded = false;
+    protected boolean mLoading = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,14 +85,12 @@ public class WalletBaseFragment extends BaseFragment implements
         mCoreApi = CoreAPI.getApi();
 
         String uuid = AirbitzApplication.getCurrentWallet();
-        if (uuid == null) {
-            uuid = mCoreApi.loadWalletUUIDs().get(0);
-            AirbitzApplication.setCurrentWallet(uuid);
+        if (uuid != null) {
+            mLoading = false;
+            mWallet = mCoreApi.getWalletFromUUID(uuid);
+        } else {
+            mLoading = true;
         }
-
-        fetchWallets();
-        mWallet = mCoreApi.getWalletFromUUID(uuid);
-
         setHasOptionsMenu(true);
     }
 
@@ -123,6 +123,7 @@ public class WalletBaseFragment extends BaseFragment implements
                 mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
         }
+        updateTitle();
     }
 
     protected void fetchWallets() {
@@ -132,13 +133,25 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onWalletsLoaded() {
         fetchWallets();
+        if (mWallet == null) {
+            String uuid = AirbitzApplication.getCurrentWallet();
+            if (uuid == null) {
+                uuid = mCoreApi.loadWalletUUIDs().get(0);
+                AirbitzApplication.setCurrentWallet(uuid);
+            }
+            mWallet = mCoreApi.getWalletFromUUID(uuid);
+        }
+        mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
         loadWallets();
+        updateTitle();
     }
 
     @Override
     public void onWalletUpdated() {
+        mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
         fetchWallets();
         loadWallets();
+        updateTitle();
     }
 
     @Override
@@ -209,7 +222,11 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void updateTitle() {
-        mTitleView.setText(mWallet.getName() + " ▼");
+        if (mLoading) {
+            mTitleView.setText(R.string.string_loading);
+        } else {
+            mTitleView.setText(mWallet.getName() + " ▼");
+        }
     }
 
     protected void walletChanged(Wallet newWallet) {
@@ -250,20 +267,11 @@ public class WalletBaseFragment extends BaseFragment implements
     public void showWalletList() {
         AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mActivity, R.animator.slide_in_top);
         set.setTarget(mWalletsContainer);
-        set.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) { }
-
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animator) {
                 finishShowWallets();
             }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-
-            @Override
-            public void onAnimationCancel(Animator animator) { }
         });
         set.start();
     }
@@ -281,7 +289,7 @@ public class WalletBaseFragment extends BaseFragment implements
 
         AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mActivity, R.animator.slide_out_top);
         set.setTarget(mWalletsContainer);
-        set.addListener(new Animator.AnimatorListener() {
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 finishHideWallets();
@@ -291,12 +299,6 @@ public class WalletBaseFragment extends BaseFragment implements
             public void onAnimationStart(Animator animator) {
                 mWalletsContainer.setVisibility(View.VISIBLE);
             }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-
-            @Override
-            public void onAnimationCancel(Animator animator) { }
         });
         set.start();
     }
