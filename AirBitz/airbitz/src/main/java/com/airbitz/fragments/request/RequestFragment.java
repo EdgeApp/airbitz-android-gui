@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,14 +23,19 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.fragments.request;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -51,6 +56,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -69,15 +75,25 @@ import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -90,7 +106,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Contact;
@@ -105,6 +121,7 @@ import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,9 +130,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 /**
  * Created on 2/13/14.
  */
-public class RequestFragment extends BaseFragment implements
-        CoreAPI.OnExchangeRatesChange,
-        CoreAPI.OnWalletLoaded,
+public class RequestFragment extends WalletBaseFragment implements
         ContactPickerFragment.ContactSelection,
         NfcAdapter.CreateNdefMessageCallback,
         Calculator.OnCalculatorKey
@@ -137,18 +152,18 @@ public class RequestFragment extends BaseFragment implements
     private String mUUID = null;
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
-    private HighlightOnPressButton mHelpButton;
-    private List<Wallet> mWallets;
-    private Wallet mSelectedWallet;
-    private HighlightOnPressSpinner pickWalletSpinner;
+
     private TextView mConverterTextView;
     private TextView mDenominationTextView;
-    private TextView mBTCTextView;
+    private TextView mOtherDenominationTextView;
+    private TextView mOtherAmountTextView;
+    private View mBottomContainer;
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
 
     private Long mSavedSatoshi;
+    private String mSavedCurrency;
     private int mSavedIndex;
     private boolean mAmountIsBitcoin = false;
 
@@ -172,9 +187,22 @@ public class RequestFragment extends BaseFragment implements
 
     private boolean emailType = false;
     private ImageView mQRView;
+    private View mQRProgress;
     private Bitmap mQRBitmap;
     private CreateBitmapTask mCreateBitmapTask;
     private AlertDialog mPartialDialog;
+    private SegmentedGroup mFiatSelectors;
+
+    // currency swap variables
+    static final int SWAP_DURATION = 200;
+
+    // Keyboard animation variables
+    static final int KEYBOARD_ANIM = 250;
+    private int mQrCoords[] = new int[2];
+    private int mCalcCoords[] = new int[2];
+    private float mOrigQrHeight;
+    private float mQrPadding;
+
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -195,8 +223,9 @@ public class RequestFragment extends BaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_request, container, false);
+        Resources r = getResources();
 
+        mView = inflater.inflate(R.layout.fragment_request, container, false);
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
         mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
         final TextWatcher mAmountChangedListener = new TextWatcher() {
@@ -210,7 +239,9 @@ public class RequestFragment extends BaseFragment implements
 
             @Override
             public void afterTextChanged(Editable editable) {
-                amountChanged();
+                if (!mAutoUpdatingTextFields) {
+                    amountChanged();
+                }
             }
         };
 
@@ -218,7 +249,7 @@ public class RequestFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if(mCalculator.getVisibility() != View.VISIBLE) {
-                    showCalculator(true);
+                    showCalculator();
                 }
             }
         });
@@ -228,10 +259,10 @@ public class RequestFragment extends BaseFragment implements
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     mAmountField.setText("");
-                    showCalculator(true);
+                    showCalculator();
                     mCalculator.setEditText(mAmountField);
                 } else {
-                    showCalculator(false);
+                    hideCalculator();
                 }
             }
         });
@@ -252,47 +283,29 @@ public class RequestFragment extends BaseFragment implements
 
         mAmountField.setOnEditorActionListener(amountEditorListener);
 
+        mBottomContainer = mView.findViewById(R.id.bottom_container);
         mCalculator = (Calculator) mView.findViewById(R.id.fragment_request_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mAmountField);
 
-//        mNFCImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_nfc_image);
-//        mBLEImageView = (ImageView) mView.findViewById(R.id.fragment_request_qrcode_ble_image);
-
+        mQRProgress = mView.findViewById(R.id.progress_horizontal);
         mQRView = (ImageView) mView.findViewById(R.id.qr_code_view);
-
-        final RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_request_header);
-        mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
-        mHelpButton.setVisibility(View.VISIBLE);
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
+        mQRView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.REQUEST), NavigationActivity.Tabs.REQUEST.ordinal());
-            }
-        });
-
-        pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
-        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSelectedWallet = mWallets.get(i);
-                AirbitzApplication.setCurrentWallet(mSelectedWallet.getUUID());
-                setConversionText(mSelectedWallet.getCurrencyNum());
-                mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
-                updateAmount();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+                if (mCalculator.getVisibility() == View.VISIBLE) {
+                    hideCalculator();
+                } else {
+                    showCalculator();
+                }
             }
         });
 
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
-
         mConverterTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
-        mBTCTextView = (TextView) mView.findViewById(R.id.request_not_selected_denomination);
+        mOtherDenominationTextView = (TextView) mView.findViewById(R.id.request_not_selected_denomination);
+        mOtherAmountTextView = (TextView) mView.findViewById(R.id.request_not_selected_value);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
         final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
@@ -321,25 +334,24 @@ public class RequestFragment extends BaseFragment implements
             }
         });
 
-        SegmentedGroup fiatSelectors = (SegmentedGroup) mView.findViewById(R.id.request_fiat_btc_select);
-        mFiatSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_left);
+        mFiatSelectors = (SegmentedGroup) mView.findViewById(R.id.request_fiat_btc_select);
+        mFiatSelect = (Button) mFiatSelectors.findViewById(R.id.layout_double_selector_left);
         mFiatSelect.setSelected(true);
         mFiatSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                swapAmount();
+                swapStart();
             }
         });
 
-        mBitcoinSelect = (Button) fiatSelectors.findViewById(R.id.layout_double_selector_right);
+        mBitcoinSelect = (Button) mFiatSelectors.findViewById(R.id.layout_double_selector_right);
         mBitcoinSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                swapAmount();
+                swapStart();
             }
         });
-
-        fiatSelectors.check(mFiatSelect.getId());
+        updateMode();
 
         // Prevent OS keyboard from showing
         try {
@@ -352,73 +364,60 @@ public class RequestFragment extends BaseFragment implements
             // ignore
         }
 
+        mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, r.getDisplayMetrics());
         return mView;
     }
 
-    private void setConversionText(int currencyNum) {
+    @Override
+    protected void walletChanged(Wallet newWallet) {
+        super.walletChanged(newWallet);
+
+        updateAmount();
+    }
+
+    private long parseFiatToSatoshi() {
+        String fiat = mAmountField.getText().toString();
+        try {
+            double currency = Double.parseDouble(fiat);
+            return mCoreAPI.CurrencyToSatoshi(currency, mWallet.getCurrencyNum());
+        } catch (NumberFormatException e) {
+            /* Sshhhhh */
+        }
+        return 0;
+    }
+
+    private void updateConversion() {
+        if (mAmountIsBitcoin) {
+            long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+            String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
+            mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+            mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+            mOtherAmountTextView.setText(currency);
+        } else {
+            long satoshi = parseFiatToSatoshi();
+            mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+            mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+            mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+        }
+        if (TextUtils.isEmpty(mAmountField.getText())) {
+            mOtherAmountTextView.setText("");
+        }
+        int currencyNum = mWallet.getCurrencyNum();
         mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+        updateMode();
     }
 
-    private void swapDenominations() {
-        //TODO animate
-        if(mAmountIsBitcoin) {
-            mDenominationTextView.setText(mCoreAPI.getDefaultBTCDenomination());
+    private void updateMode() {
+        mDenominationTextView.setVisibility(View.VISIBLE);
+        if (mAmountIsBitcoin) {
+            mFiatSelectors.check(mBitcoinSelect.getId());
+        } else {
+            mFiatSelectors.check(mFiatSelect.getId());
         }
-        else {
-            mDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
-        }
-    }
-
-    private void swapAmount() {
-        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
-        if(walletPosition < 0) {
-            return;
-        }
-        Wallet wallet = mWallets.get(walletPosition);
-        mAmountIsBitcoin = !mAmountIsBitcoin;
-        if(mAmountIsBitcoin) {
-            String fiat = mAmountField.getText().toString();
-            try {
-                if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
-                    double currency = Double.parseDouble(fiat);
-                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
-                    if(mAmountSatoshi == 0) {
-                        mAmountField.setText("");
-                    }
-                    else {
-                        mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
-                    }
-                } else {
-                    Log.d(TAG, "Too much fiat");
-                }
-            } catch (NumberFormatException e) {
-                //not a double, ignore
-            }
-        }
-        else {
-            String bitcoin = mAmountField.getText().toString();
-            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
-                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
-                if(mAmountSatoshi == 0) {
-                    mAmountField.setText("");
-                }
-                else {
-                    mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mSelectedWallet.getCurrencyNum(), false, false));
-                }
-            } else {
-                Log.d(TAG, "Too much bitcoin");
-            }
-        }
-        swapDenominations();
     }
 
     private void updateAmount() {
-
-        int walletPosition = pickWalletSpinner.getSelectedItemPosition();
-        if(walletPosition < 0) {
-            return;
-        }
-        Wallet wallet = mWallets.get(walletPosition);
+        Wallet wallet = mWallet;
         if (mAmountIsBitcoin) {
             String bitcoin = mAmountField.getText().toString();
             if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
@@ -439,97 +438,90 @@ public class RequestFragment extends BaseFragment implements
                 //not a double, ignore
             }
         }
-
+        updateConversion();
         createNewQRBitmap();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (isMenuExpanded()) {
+            super.onCreateOptionsMenu(menu, inflater);
+            return;
+        }
+        inflater.inflate(R.menu.menu_standard, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (isMenuExpanded()) {
+            return super.onOptionsItemSelected(item);
+        }
+        switch (item.getItemId()) {
+        case R.id.action_help:
+            mActivity.pushFragment(
+                new HelpFragment(HelpFragment.REQUEST),
+                    NavigationActivity.Tabs.REQUEST.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        mCoreAPI.setOnWalletLoadedListener(this);
-
         checkFirstUsage();
+        if (mOrigQrHeight == 0f) {
+            mOrigQrHeight = mQRView.getHeight();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mCoreAPI.removeExchangeRateChangeListener(this);
-
-        mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
-
-        mCoreAPI.setOnWalletLoadedListener(null);
+        getActivity().getWindow().setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        if (TextUtils.isEmpty(mAmountField.getText().toString())) {
+            mSavedSatoshi = null;
+            mSavedCurrency = null;
+        } else {
+            if (mAmountIsBitcoin) {
+                mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+                mSavedCurrency = null;
+            } else {
+                mSavedCurrency = mAmountField.getText().toString();
+                mSavedSatoshi = null;
+            }
+        }
     }
 
     @Override
-    public void OnExchangeRatesChange() {
-        if (mSelectedWallet != null) {
-            setConversionText(mSelectedWallet.getCurrencyNum());
+    protected void onExchangeRatesChange() {
+        if (mWallet != null) {
             updateAmount();
         }
     }
 
     @Override
     public void onWalletsLoaded() {
-        mWallets = mCoreAPI.getCoreActiveWallets();
-
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request, false);
-        pickWalletSpinner.setAdapter(dataAdapter);
-        if (!mWallets.isEmpty()) {
-            mSelectedWallet = mWallets.get(pickWalletSpinner.getSelectedItemPosition());
-
-            Bundle bundle = getArguments();
-            if (mUUID == null && bundle != null && bundle.getString(FROM_UUID) != null) {
-                mUUID = bundle.getString(FROM_UUID);
-                mSelectedWallet = mCoreAPI.getWalletFromUUID(mUUID);
-                for (int i = 0; i < mWallets.size(); i++) {
-                    if (mSelectedWallet.getUUID().equals(mWallets.get(i).getUUID())) {
-                        pickWalletSpinner.setSelection(i);
-                        mFromIndex = i;
-                    }
-                }
-            } else if (bundle != null && bundle.getString(MERCHANT_MODE) != null) {
-//                focus(mFiatField);
-            } else if(AirbitzApplication.getCurrentWallet() != null) {
-                mSelectedWallet = mCoreAPI.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
-            } else {
-                mFromIndex = 0;
-                if (mWallets != null && !mWallets.isEmpty())
-                    mSelectedWallet = mWallets.get(mFromIndex);
-            }
-
-            if(mSelectedWallet==null) {
-                mSelectedWallet = mWallets.get(0);
-            }
-        }
-
-        mDenominationTextView.setText(mCoreAPI.currencyCodeLookup(mSelectedWallet.getCurrencyNum()));
-        setConversionText(mSelectedWallet.getCurrencyNum());
-        mCoreAPI.addExchangeRateChangeListener(this);
+        super.onWalletsLoaded();
 
         mAutoUpdatingTextFields = true;
         if (mSavedSatoshi != null) {
-            mFromIndex = mSavedIndex;
-            if(mFromIndex < mWallets.size()) {
-                mAmountField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
-                mSelectedWallet = mWallets.get(mFromIndex);
-                pickWalletSpinner.setSelection(mFromIndex);
-                mSavedSatoshi = null;
-            }
-        } else {
-            mAmountField.setText("");
-            pickWalletSpinner.setSelection(mFromIndex);
+            mAmountField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+        } else if (mSavedCurrency != null) {
+            mAmountField.setText(mSavedCurrency);
         }
+        mSavedSatoshi = null;
+        mSavedCurrency = null;
 
-        mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mSelectedWallet.getCurrencyNum()));
+        mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mWallet.getCurrencyNum()));
         mBitcoinSelect.setText(mCoreAPI.getDefaultBTCDenomination());
         mAutoUpdatingTextFields = false;
 
-        // Set the wallet selection globally
-        AirbitzApplication.setCurrentWallet(mSelectedWallet.getUUID());
+        updateConversion();
+        createNewQRBitmap();
     }
 
     private void checkFirstUsage() {
@@ -613,7 +605,7 @@ public class RequestFragment extends BaseFragment implements
 
         startActivity(Intent.createChooser(intent, "SMS"));
 
-        mCoreAPI.finalizeRequest(contact, "SMS", mID, mSelectedWallet);
+        mCoreAPI.finalizeRequest(contact, "SMS", mID, mWallet);
     }
 
     private void startEmail() {
@@ -650,7 +642,7 @@ public class RequestFragment extends BaseFragment implements
         intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
         startActivity(Intent.createChooser(intent, "email"));
 
-        mCoreAPI.finalizeRequest(contact, "Email", mID, mSelectedWallet);
+        mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
     }
 
     private void showNoQRAttached(final Contact contact) {
@@ -746,6 +738,7 @@ public class RequestFragment extends BaseFragment implements
     }
 
     public void updateWithAmount(long newAmount) {
+        mAutoUpdatingTextFields = true;
         mAmountSatoshi = newAmount;
         mAmountField.setText(
                 String.format(getResources().getString(R.string.bitcoing_remaining),
@@ -756,10 +749,12 @@ public class RequestFragment extends BaseFragment implements
 
         // Alert the user
         alertPartialPayment();
+        mAutoUpdatingTextFields = false;
     }
 
     public void amountChanged() {
         mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+        updateConversion();
         createNewQRBitmap();
     }
 
@@ -809,31 +804,9 @@ public class RequestFragment extends BaseFragment implements
     @Override
     public void OnCalculatorKeyPressed(String tag) {
         if (tag.equals("done")) {
-            showCalculator(false);
+            hideCalculator();
         }
     }
-    
-    private void showCalculator(boolean show) {
-        if(show) {
-            mCalculator.setVisibility(View.VISIBLE);
-        }
-        else {
-            mCalculator.setVisibility(View.GONE);
-        }
-    }
-
-//    @Override
-//    public void onRefresh() {
-//        if(mSelectedWallet != null) {
-//            mCoreAPI.connectWatcher(mSelectedWallet.getUUID());
-//        }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mSwipeLayout.setRefreshing(false);
-//            }
-//        }, 1000);
-//    }
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -846,15 +819,15 @@ public class RequestFragment extends BaseFragment implements
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             if(mID == null) {
-                mID = mCoreAPI.createReceiveRequestFor(mSelectedWallet, "", "", mAmountSatoshi);
-                mAddress = mCoreAPI.getRequestAddress(mSelectedWallet.getUUID(), mID);
+                mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
+                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
                 mQRBitmap = null;
             }
             if (mQRBitmap == null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
-                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mSelectedWallet.getUUID(), mID);
+                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
                     mQRBitmap = Common.AddWhiteBorder(mQRBitmap);
                     Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
@@ -876,8 +849,9 @@ public class RequestFragment extends BaseFragment implements
                     mBitcoinAddress.setText(mAddress);
                     if (mQRBitmap != null) {
                         mQRView.setImageBitmap(mQRBitmap);
+                        mQRProgress.setVisibility(View.GONE);
                     }
-                    mCoreAPI.prioritizeAddress(mAddress, mSelectedWallet.getUUID());
+                    mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
                 }
             }
         }
@@ -1113,4 +1087,217 @@ public class RequestFragment extends BaseFragment implements
             mHandler.postDelayed(this, READVERTISE_REPEAT_PERIOD);
         }
     };
+
+    private Interpolator mCalcInterpolator = new AccelerateInterpolator() {
+        @Override
+        public float getInterpolation(float input) {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    mView.invalidate();
+                }
+            });
+            return super.getInterpolation(input);
+        }
+    };
+
+    private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
+        public void onAnimationUpdate(ValueAnimator animation) {
+            if (mOrigQrHeight == 0.0f) {
+                mOrigQrHeight = mQRView.getHeight();
+            }
+            mQRView.getLocationOnScreen(mQrCoords);
+            mCalculator.getLocationOnScreen(mCalcCoords);
+
+            float qrY = mQrCoords[1] + mQRView.getHeight();
+            float calcY = mCalcCoords[1];
+            float diff = (qrY + mQrPadding) - calcY;
+            int newHeight = mQRView.getHeight() - (int) (diff / 2.0);
+            if (newHeight > mOrigQrHeight) {
+                return;
+            }
+            mQRView.getLayoutParams().height = newHeight;
+            mQRView.requestLayout();
+        }
+    };
+
+    private void showCalculator() {
+        if (mCalculator.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+        val.addUpdateListener(mUpdateListener);
+        ObjectAnimator key = ObjectAnimator.ofFloat(mCalculator, "translationY", mCalculator.getHeight(), 0f);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(KEYBOARD_ANIM);
+        set.playTogether(key, val);
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                mCalculator.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mCalculator.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) { }
+
+            @Override
+            public void onAnimationCancel(Animator animator) { }
+        });
+        set.start();
+    }
+
+    private void hideCalculator() {
+        if (mCalculator.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+
+        ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
+        val.addUpdateListener(mUpdateListener);
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(mCalculator, "translationY", 0f, mCalculator.getHeight());
+        key.setDuration(KEYBOARD_ANIM);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(key, val);
+        set.setDuration(KEYBOARD_ANIM);
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                mCalculator.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mCalculator.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) { }
+
+            @Override
+            public void onAnimationCancel(Animator animator) { }
+        });
+        set.start();
+    }
+
+    private void swapAmount() {
+        mAmountIsBitcoin = !mAmountIsBitcoin;
+        if (mAmountIsBitcoin) {
+            String fiat = mAmountField.getText().toString();
+            try {
+                if (!mCoreAPI.TooMuchFiat(fiat, mWallet.getCurrencyNum())) {
+                    double currency = Double.parseDouble(fiat);
+                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, mWallet.getCurrencyNum());
+                    if (mAmountSatoshi == 0) {
+                        mAmountField.setText("");
+                    } else {
+                        mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
+                    }
+                } else {
+                    Log.d(TAG, "Too much fiat");
+                }
+            } catch (NumberFormatException e) {
+                //not a double, ignore
+            }
+        } else {
+            String bitcoin = mAmountField.getText().toString();
+            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
+                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+                if (mAmountSatoshi == 0) {
+                    mAmountField.setText("");
+                } else {
+                    mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false));
+                }
+            } else {
+                Log.d(TAG, "Too much bitcoin");
+            }
+        }
+        updateConversion();
+    }
+
+    private void swapStart() {
+        final boolean animateAmount = !TextUtils.isEmpty(mAmountField.getText());
+        mDenominationTextView.setPivotY(mDenominationTextView.getHeight());
+        mAmountField.setPivotY(mAmountField.getHeight());
+        mOtherDenominationTextView.setPivotY(0f);
+        mOtherAmountTextView.setPivotY(0f);
+
+        Animator anim = AnimatorInflater.loadAnimator(mActivity, R.animator.scale_down);
+        Animator top = anim.clone();
+        top.setTarget(mDenominationTextView);
+
+        Animator bot = anim.clone();
+        bot.setTarget(mOtherDenominationTextView);
+
+        List<Animator> list = new LinkedList<>();
+        list.add(top);
+        list.add(bot);
+
+        if (animateAmount) {
+            Animator amt = anim.clone();
+            amt.setTarget(mAmountField);
+            list.add(amt);
+
+            amt = anim.clone();
+            amt.setTarget(mOtherAmountTextView);
+            list.add(amt);
+        }
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(SWAP_DURATION / 2);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                swapAmount();
+                swapEnd(animateAmount);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) { }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) { }
+
+            @Override
+            public void onAnimationCancel(Animator animator) { }
+        });
+        set.playTogether(list.toArray(new Animator[list.size()]));
+        set.start();
+    }
+
+    private void swapEnd(boolean animateAmount) {
+        Animator anim = AnimatorInflater.loadAnimator(mActivity, R.animator.scale_up);
+
+        Animator top = anim.clone();
+        top.setTarget(mDenominationTextView);
+
+        Animator bot = anim.clone();
+        bot.setTarget(mOtherDenominationTextView);
+
+        List<Animator> list = new LinkedList<>();
+        list.add(top);
+        list.add(bot);
+
+        if (animateAmount) {
+            Animator amt = anim.clone();
+            amt.setTarget(mAmountField);
+            list.add(amt);
+
+            amt = anim.clone();
+            amt.setTarget(mOtherAmountTextView);
+            list.add(amt);
+        }
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(SWAP_DURATION / 2);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.playTogether(list.toArray(new Animator[list.size()]));
+        set.start();
+    }
 }

@@ -77,6 +77,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendFragment;
+import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
@@ -167,6 +168,14 @@ public class TransactionListFragment extends WalletsFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Bundle bundle = this.getArguments();
+        if (bundle != null && bundle.getBoolean(WalletsFragment.CREATE)) {
+            bundle.putBoolean(WalletsFragment.CREATE, false);
+            buildFragments(bundle);
+        } else {
+            Log.d(TAG, "onCreateView stopping in Wallets");
+        }
+
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_list, container, false);
             mSearchPage = false;
@@ -349,6 +358,15 @@ public class TransactionListFragment extends WalletsFragment
             return true;
         }
         return hideSearch();
+    }
+
+    private void buildFragments(Bundle bundle) {
+        if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)
+                || bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
+            Fragment details = new TransactionDetailFragment();
+            details.setArguments(bundle);
+            mActivity.pushFragment(details, NavigationActivity.Tabs.WALLET.ordinal());
+        }
     }
 
     private boolean hideSearch() {
