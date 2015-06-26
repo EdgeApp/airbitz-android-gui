@@ -68,12 +68,10 @@
     <ListView
         android:id="@+id/fragment_send_transfer_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/off_white"
         android:layout_below="@id/fragment_send_header"
-        android:layout_above="@id/fragment_send_buttons"
         android:visibility="gone"/>
-
 
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"

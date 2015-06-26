@@ -30,13 +30,13 @@
 
     <ImageButton
         android:id="@+id/fragment_send_header_close_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginRight="4dp"
         android:layout_marginEnd="4dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/btn_close"/>
+        android:background="@drawable/white_close"/>
 
 </RelativeLayout>
