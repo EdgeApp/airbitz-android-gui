@@ -424,7 +424,7 @@ public class ImportFragment extends WalletBaseFragment implements
         editText.setHintTextColor(getResources().getColor(R.color.text_hint));
         editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
+        builder.setTitle(getResources().getString(R.string.fragment_import_address_dialog_title))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_done),
                         new DialogInterface.OnClickListener() {
