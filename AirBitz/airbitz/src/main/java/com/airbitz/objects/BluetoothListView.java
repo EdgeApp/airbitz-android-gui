@@ -346,6 +346,7 @@ public class BluetoothListView extends ListView {
 
     // Attempt GATT connection
     public void connectGatt(BleDevice result) {
+        Log.d(TAG, "connectGatt");
         BluetoothDevice device = result.getDevice();
         mBluetoothGatt = device.connectGatt(mActivity, false, mGattCallback);
         refreshDeviceCache(mBluetoothGatt);
@@ -452,6 +453,7 @@ public class BluetoothListView extends ListView {
                     if(!success) {
                         mActivity.ShowFadingDialog(getResources().getString(R.string.bluetoothlistview_connection_failed));
                     }
+                    break;
                 }
             }
         }

@@ -293,4 +293,36 @@
         <item name="android:background">@drawable/bg_button_orange</item>
     </style>
 
+    <!-- Calculator Styles -->
+    <style name="CalcButton">
+        <item name="android:layout_height">@dimen/calc_button_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_margin">@dimen/calc_button_margin</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/calc_button_numsize</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="WhiteCalc" parent="CalcButton">
+        <item name="android:background">@drawable/calc_btn_white</item>
+    </style>
+
+    <style name="GreyCalc" parent="CalcButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/calc_btn_gray</item>
+    </style>
+
+    <style name="GreenCalc" parent="CalcButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/calc_btn_green</item>
+        <!-- item name="android:textSize">@dimen/calc_button_textsize</item -->
+    </style>
+
+    <style name="OrangeCalc" parent="CalcButton">
+        <item name="android:background">@drawable/calc_btn_orange</item>
+        <item name="android:textColor">@android:color/white</item>
+        <!-- item name="android:textSize">@dimen/calc_button_textsize</item -->
+    </style>
+
 </resources>

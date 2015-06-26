@@ -86,4 +86,14 @@
     <color name="colorPrimaryFrost">#ccffffff</color>
 
     <color name="wallet_list_header">#ff2291CF</color>
+
+    <color name="calc_background">#ccffffff</color>
+    <color name="calc_button_white">#ffffffff</color>
+    <color name="calc_button_white_pressed">#ccffffff</color>
+    <color name="calc_button_green">#ff80C342</color>
+    <color name="calc_button_green_pressed">#cc80C342</color>
+    <color name="calc_button_orange">#ffffa634</color>
+    <color name="calc_button_orange_pressed">#ccffa634</color>
+    <color name="calc_button_grey">#ff999999</color>
+    <color name="calc_button_grey_pressed">#cc999999</color>
 </resources>

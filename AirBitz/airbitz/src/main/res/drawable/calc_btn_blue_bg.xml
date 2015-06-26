@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 <item>
     <shape android:shape="rectangle" >
-        <corners android:radius="8dp" />
+        <corners android:radius="@dimen/calc_button_radius" />
         <gradient
             android:angle="270"
             android:endColor="#404040"
@@ -21,7 +21,7 @@
     android:right="1.2dp"
     android:top="1.2dp">
     <shape android:shape="rectangle" >
-        <corners android:radius="6dp" />
+        <corners android:radius="@dimen/calc_button_radius" />
         <gradient
             android:angle="270"
             android:endColor="#0189dc"

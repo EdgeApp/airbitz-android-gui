@@ -31,8 +31,6 @@
 
 package com.airbitz.fragments.send;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -40,36 +38,37 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletChoiceAdapter;
+import com.airbitz.adapters.WalletOtherAdapter;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.WalletBaseFragment;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
@@ -85,16 +84,18 @@ import com.airbitz.objects.QRCamera;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
+
 
 /**
  * Created on 2/22/14.
  */
-public class SendFragment extends WalletBaseFragment implements
-        QRCamera.OnScanResult,
+public class SendFragment extends BaseFragment implements
         BluetoothListView.OnPeripheralSelected,
         CoreAPI.OnWalletLoaded,
         BluetoothListView.OnBitcoinURIReceived,
-        BluetoothListView.OnOneScanEnded {
+        QRCamera.OnScanResult
+{
     private final String TAG = getClass().getSimpleName();
 
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.send.firstusagecount";
@@ -113,50 +114,33 @@ public class SendFragment extends WalletBaseFragment implements
 
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
-    private EditText mToEdittext;
-    private TextView mFromTextView;
-    private TextView mToTextView;
-    private TextView mQRCodeTextView;
-    private ImageButton mBluetoothButton;
-    private ListView mToWalletListView;
+    private Button mTransferButton, mAddressButton, mFlashButton, mGalleryButton;
+    private ListView mOtherWalletsListView;
     private RelativeLayout mListviewContainer;
     private RelativeLayout mCameraLayout;
     private RelativeLayout mBluetoothLayout;
     private BluetoothListView mBluetoothListView;
     private HighlightOnPressSpinner pickWalletSpinner;
     private HighlightOnPressButton mHelpButton;
-    private List<Wallet> mWalletOtherList;//NAMES
+    private List<Wallet> mOtherWalletsList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private String mReturnURL;
-    private List<Wallet> mCurrentListing;
-    private WalletPickerAdapter listingAdapter;
+    private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
     private View mView;
     QRCamera mQRCamera;
+    private CoreAPI mCoreApi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mCoreApi = CoreAPI.getApi();
+
         mView = inflater.inflate(R.layout.fragment_send, container, false);
 
         mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
         mQRCamera = new QRCamera(this, mCameraLayout);
-
-        mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
-        mToTextView = (TextView) mView.findViewById(R.id.textview_to);
-        mQRCodeTextView = (TextView) mView.findViewById(R.id.textview_scan_qrcode);
-
-        mToEdittext = (EditText) mView.findViewById(R.id.edittext_to);
-
-        mCurrentListing = new ArrayList<Wallet>();
-        listingAdapter = new WalletPickerAdapter(getActivity(), mCurrentListing, WalletPickerEnum.SendTo);
-        mToWalletListView.setAdapter(listingAdapter);
-
-        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mToEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mQRCodeTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         final RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_send_header);
         mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
@@ -173,8 +157,9 @@ public class SendFragment extends WalletBaseFragment implements
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mFromWallet = mWallets.get(i);
+                AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
                 updateWalletOtherList();
-                goAutoCompleteWalletListing();
+//                goAutoCompleteWalletListing();
             }
 
             @Override
@@ -182,79 +167,66 @@ public class SendFragment extends WalletBaseFragment implements
             }
         });
 
-//        mBluetoothButton = mQRCamera.getBluetoothButton();
-//        mBluetoothButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mForcedBluetoothScanning = true;
-//                ViewBluetoothPeripherals(true);
-//            }
-//        });
-
-        mToEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    checkAndSendAddress(mToEdittext.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        mToEdittext.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                mActivity.showSoftKeyboard(mToEdittext);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                goAutoCompleteWalletListing();
-            }
-        });
-
-        mToEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    goAutoCompleteWalletListing();
-                    mActivity.showSoftKeyboard(mToEdittext);
-                } else {
-                    mListviewContainer.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        mToEdittext.setOnClickListener(new View.OnClickListener() {
+        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
+        mFlashButton = (Button) buttons.findViewById(R.id.fragment_send_button_flash);
+        mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListviewContainer.setVisibility(View.VISIBLE);
+                buttons.clearCheck();
+                mQRCamera.setFlashOn(!mQRCamera.isFlashOn());
             }
         });
 
-        mToEdittext.setOnKeyListener(new View.OnKeyListener() {
+        mGalleryButton = (Button) buttons.findViewById(R.id.fragment_send_button_photos);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (mListviewContainer.getVisibility() == View.VISIBLE) {
-                        mListviewContainer.setVisibility(View.GONE);
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View view) {
+                buttons.clearCheck();
+                Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(in, QRCamera.RESULT_LOAD_IMAGE);
             }
         });
 
-        mToWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mTransferButton = (Button) buttons.findViewById(R.id.fragment_send_button_transfer);
+        mTransferButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttons.clearCheck();
+                mOtherWalletsListView.setVisibility(
+                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        mAddressButton = (Button) buttons.findViewById(R.id.fragment_send_button_address);
+        mAddressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttons.clearCheck();
+                showAddressDialog();
+            }
+        });
+
+        mOtherWalletsList = new ArrayList<Wallet>();
+        mOtherWalletsAdapter = new WalletOtherAdapter(getActivity(), mOtherWalletsList);
+
+        mOtherWalletsListView = (ListView) mView.findViewById(R.id.fragment_send_transfer_list);
+        View headerView = inflater.inflate(R.layout.fragment_send_other_wallet_layout, null, true);
+        ImageButton headerCloseButton = (ImageButton) headerView.findViewById(R.id.fragment_send_header_close_button);
+        headerCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOtherWalletsListView.setVisibility(
+                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            }
+        });
+        mOtherWalletsListView.addHeaderView(headerView);
+        mOtherWalletsListView.setAdapter(mOtherWalletsAdapter);
+
+        mOtherWalletsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CoreAPI.SpendTarget target = mCoreApi.getNewSpendTarget();
-                target.newTransfer(mCurrentListing.get(i).getUUID());
+                target.newTransfer(mOtherWalletsList.get(i-1).getUUID());
                 GotoSendConfirmation(target);
             }
         });
@@ -264,7 +236,6 @@ public class SendFragment extends WalletBaseFragment implements
             if (SettingFragment.getBLEPref()) {
                 mBluetoothListView = new BluetoothListView(mActivity);
                 mBluetoothLayout.addView(mBluetoothListView, 0);
-                mBluetoothButton.setVisibility(View.VISIBLE);
             }
             else {
                 // Bluetooth is not enabled - ask for enabling?
@@ -274,30 +245,25 @@ public class SendFragment extends WalletBaseFragment implements
         return mView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_standard, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    // delegated from the containing fragment
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_help:
-                mActivity.pushFragment(new HelpFragment(HelpFragment.SEND), NavigationActivity.Tabs.SEND.ordinal());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            String info = mQRCamera.AttemptDecodePicture(thumbnail);
+            stopCamera();
+            onScanResult(info);
         }
     }
 
     private void checkAndSendAddress(String strTo) {
-
-        if (strTo == null || strTo.isEmpty()) {
-            ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
-//            mListviewContainer.setVisibility(View.GONE);
-            return;
-        }
         newSpend(strTo);
     }
 
@@ -308,7 +274,6 @@ public class SendFragment extends WalletBaseFragment implements
 
     public void startCamera() {
         mQRCamera.startCamera();
-        mQRCamera.setOnScanResultListener(this);
         checkFirstUsage();
     }
 
@@ -324,24 +289,13 @@ public class SendFragment extends WalletBaseFragment implements
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (mQRCamera != null && requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            mQRCamera.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
-        if (mToEdittext != null) {
-            mActivity.hideSoftKeyboard(mToEdittext);
-        }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
         if (mFromWallet == null) {
             mFromWallet = mWallets.get(0);
+            AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
         }
         bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
@@ -362,14 +316,6 @@ public class SendFragment extends WalletBaseFragment implements
 
         startCamera();
 
-        if(mBluetoothButton.getVisibility() == View.VISIBLE) {
-            ViewBluetoothPeripherals(true);
-            mBluetoothListView.setOnOneScanEndedListener(this);
-        }
-        else {
-            ViewBluetoothPeripherals(false);
-        }
-
         if (pickWalletSpinner != null && pickWalletSpinner.getAdapter() != null) {
             ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
         }
@@ -378,11 +324,16 @@ public class SendFragment extends WalletBaseFragment implements
         NfcAdapter mNfcAdapter = nfcManager.getDefaultAdapter();
 
         if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
+//            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
         }
         else {
-            mQRCodeTextView.setText(getString(R.string.send_scan_text));
+//            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
+
+        mQRCamera.setOnScanResultListener(this);
+
+        checkFirstBLEUsage();
+        startBluetoothSearch();
     }
 
     @Override
@@ -398,50 +349,24 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void updateWalletOtherList() {
-        mWalletOtherList = new ArrayList<Wallet>();
+        mOtherWalletsList.clear();
         for (Wallet wallet : mWallets) {
             if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
-                mWalletOtherList.add(wallet);
+                mOtherWalletsList.add(wallet);
             }
         }
-    }
-
-    public void goAutoCompleteWalletListing() {
-        if(mWalletOtherList == null) {
-            return;
-        }
-        String text = mToEdittext.getText().toString();
-        mCurrentListing.clear();
-        if (text.isEmpty()) {
-            for (Wallet w : mWalletOtherList) {
-                if (!w.isArchived()) {
-                    mCurrentListing.add(w);
-                }
-            }
-        } else {
-            for (Wallet w : mWalletOtherList) {
-                if (!w.isArchived() && w.getName().toLowerCase().contains(text.toLowerCase())) {
-                    mCurrentListing.add(w);
-                }
-            }
-        }
-        if (mCurrentListing.isEmpty() || !mToEdittext.hasFocus()) {
-            mListviewContainer.setVisibility(View.GONE);
-        } else {
-            mListviewContainer.setVisibility(View.VISIBLE);
-        }
-        listingAdapter.notifyDataSetChanged();
+        mOtherWalletsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopCamera();
+        stopBluetoothSearch();
         if(mBluetoothListView != null) {
             mBluetoothListView.close();
-            mBluetoothListView.setOnOneScanEndedListener(null);
         }
-
+        mQRCamera.setOnScanResultListener(null);
         mCoreApi.setOnWalletLoadedListener(null);
         hasCheckedFirstUsage = false;
     }
@@ -481,32 +406,6 @@ public class SendFragment extends WalletBaseFragment implements
         hasCheckedFirstUsage = true;
     }
 
-    // Show Bluetooth peripherals
-    private void ViewBluetoothPeripherals(boolean bluetooth) {
-        if(bluetooth) {
-            mCameraLayout.setVisibility(View.GONE);
-            mBluetoothLayout.setVisibility(View.VISIBLE);
-            mQRCodeTextView.setVisibility(View.GONE);
-            startBluetoothSearch();
-        }
-        else {
-            stopBluetoothSearch();
-            mCameraLayout.setVisibility(View.VISIBLE);
-            if(mBluetoothLayout.getVisibility() != View.GONE  &&  mBluetoothLayout.getAnimation() == null) {
-                mBluetoothLayout.animate()
-                        .alpha(0f)
-                        .setDuration(200)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mBluetoothLayout.setVisibility(View.GONE);
-                            }
-                        });
-            }
-            mQRCodeTextView.setVisibility(View.VISIBLE);
-        }
-    }
-
     // Start the Bluetooth search
     private void startBluetoothSearch() {
         if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
@@ -536,7 +435,7 @@ public class SendFragment extends WalletBaseFragment implements
         if(mBluetoothListView != null) {
             mBluetoothListView.setOnBitcoinURIReceivedListener(null);
         }
-        mToEdittext.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 checkAndSendAddress(bitcoinAddress);
@@ -545,32 +444,10 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     @Override
-    public void onOneScanEnded(boolean hasDevices) {
-        if(!hasDevices) {
-            if(mForcedBluetoothScanning) {
-                mBluetoothLayout.setVisibility(View.VISIBLE);
-            }
-            else {
-                Log.d(TAG, "No bluetooth devices, switching to guns...");
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewBluetoothPeripherals(false);
-                    }
-                });
-            }
-        }
-        else {
-            checkFirstBLEUsage();
-        }
-    }
-
-    @Override
     public void onScanResult(String result) {
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
             newSpend(result);
-            mQRCamera.setOnScanResultListener(null);
         } else {
             ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
         }
@@ -579,7 +456,7 @@ public class SendFragment extends WalletBaseFragment implements
     @Override
     public void onWalletsLoaded() {
         mWallets = mCoreApi.getCoreActiveWallets();
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom);
+        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.SendFrom, false);
         pickWalletSpinner.setAdapter(dataAdapter);
 
         if (!mWallets.isEmpty()) {
@@ -613,6 +490,7 @@ public class SendFragment extends WalletBaseFragment implements
             }
         }
 
+        AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
         updateWalletOtherList();
     }
 
@@ -637,7 +515,6 @@ public class SendFragment extends WalletBaseFragment implements
             if (result) {
                 GotoSendConfirmation(target);
             } else {
-                ((NavigationActivity) getActivity()).hideSoftKeyboard(mToEdittext);
                 ((NavigationActivity) getActivity()).ShowOkMessageDialog(
                         getResources().getString(R.string.fragment_send_failure_title),
                         getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
@@ -647,5 +524,40 @@ public class SendFragment extends WalletBaseFragment implements
         @Override
         protected void onCancelled() {
         }
+    }
+
+    public void showAddressDialog() {
+        final EditText editText = new EditText(getActivity());
+        editText.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
+        editText.setHintTextColor(getResources().getColor(R.color.text_hint));
+        editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_done),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                checkAndSendAddress(editText.getText().toString());
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(Html.fromHtml("<b>"+getResources().getString(R.string.string_cancel)+"</b>"),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.setView(editText);
+        final AlertDialog dialog = builder.create();
+
+        // this changes the colors of the system's UI buttons we're using
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+            }
+        });
+        dialog.show();
     }
 }

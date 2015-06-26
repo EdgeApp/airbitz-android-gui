@@ -228,6 +228,7 @@
                 android:id="@+id/fragment_landing_pin_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:cursorVisible="false"
                 android:layout_below="@id/fragment_landing_current_user"
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"

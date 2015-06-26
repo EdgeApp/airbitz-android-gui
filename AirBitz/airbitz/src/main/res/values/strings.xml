@@ -33,8 +33,8 @@
     <string name="nav_bar_more_text">MORE</string>
 
     <!-- Calculator strings -->
-    <string name="calculator_back">&lt;&#160;DEL</string>
-    <string name="calculator_done">DONE</string>
+    <string name="calculator_back">&lt;&#160;Del</string>
+    <string name="calculator_done">Done</string>
 
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
@@ -301,7 +301,7 @@
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
+    <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
@@ -312,6 +312,8 @@
     <string name="fragment_send_address">Address</string>
     <string name="fragment_send_photos">Photos</string>
     <string name="fragment_send_flash">Flash</string>
+    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
