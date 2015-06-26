@@ -313,6 +313,7 @@
     <string name="fragment_send_photos">Photos</string>
     <string name="fragment_send_flash">Flash</string>
     <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>

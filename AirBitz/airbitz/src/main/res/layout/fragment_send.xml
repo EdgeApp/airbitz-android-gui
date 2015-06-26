@@ -69,7 +69,7 @@
         android:id="@+id/fragment_send_transfer_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_gray_text"
+        android:background="@color/off_white"
         android:layout_below="@id/fragment_send_header"
         android:layout_above="@id/fragment_send_buttons"
         android:visibility="gone"/>

@@ -57,12 +57,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.WalletChoiceAdapter;
+import com.airbitz.adapters.WalletOtherAdapter;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
@@ -112,19 +115,18 @@ public class SendFragment extends BaseFragment implements
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
     private Button mTransferButton, mAddressButton, mFlashButton, mGalleryButton;
-    private ListView mToWalletListView;
+    private ListView mOtherWalletsListView;
     private RelativeLayout mListviewContainer;
     private RelativeLayout mCameraLayout;
     private RelativeLayout mBluetoothLayout;
     private BluetoothListView mBluetoothListView;
     private HighlightOnPressSpinner pickWalletSpinner;
     private HighlightOnPressButton mHelpButton;
-    private List<Wallet> mWalletOtherList;//NAMES
+    private List<Wallet> mOtherWalletsList;//NAMES
     private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private String mReturnURL;
-    private List<Wallet> mCurrentWalletListing;
-    private WalletPickerAdapter mCurrentWalletListingAdapter;
+    private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
     private View mView;
     QRCamera mQRCamera;
@@ -190,6 +192,8 @@ public class SendFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 buttons.clearCheck();
+                mOtherWalletsListView.setVisibility(
+                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             }
         });
 
@@ -202,17 +206,27 @@ public class SendFragment extends BaseFragment implements
             }
         });
 
-        mCurrentWalletListing = new ArrayList<Wallet>();
-        mCurrentWalletListingAdapter = new WalletPickerAdapter(getActivity(), mCurrentWalletListing, WalletPickerEnum.SendFrom);
+        mOtherWalletsList = new ArrayList<Wallet>();
+        mOtherWalletsAdapter = new WalletOtherAdapter(getActivity(), mOtherWalletsList);
 
-        mToWalletListView = (ListView) mView.findViewById(R.id.fragment_send_transfer_list);
-        mToWalletListView.setAdapter(mCurrentWalletListingAdapter);
+        mOtherWalletsListView = (ListView) mView.findViewById(R.id.fragment_send_transfer_list);
+        View headerView = inflater.inflate(R.layout.fragment_send_other_wallet_layout, null, true);
+        ImageButton headerCloseButton = (ImageButton) headerView.findViewById(R.id.fragment_send_header_close_button);
+        headerCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOtherWalletsListView.setVisibility(
+                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            }
+        });
+        mOtherWalletsListView.addHeaderView(headerView);
+        mOtherWalletsListView.setAdapter(mOtherWalletsAdapter);
 
-        mToWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mOtherWalletsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CoreAPI.SpendTarget target = mCoreApi.getNewSpendTarget();
-                target.newTransfer(mCurrentWalletListing.get(i).getUUID());
+                target.newTransfer(mOtherWalletsList.get(i-1).getUUID());
                 GotoSendConfirmation(target);
             }
         });
@@ -335,12 +349,13 @@ public class SendFragment extends BaseFragment implements
     }
 
     public void updateWalletOtherList() {
-        mWalletOtherList = new ArrayList<Wallet>();
+        mOtherWalletsList.clear();
         for (Wallet wallet : mWallets) {
             if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
-                mWalletOtherList.add(wallet);
+                mOtherWalletsList.add(wallet);
             }
         }
+        mOtherWalletsAdapter.notifyDataSetChanged();
     }
 
     @Override
