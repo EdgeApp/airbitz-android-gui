@@ -31,16 +31,22 @@
 
 package com.airbitz.objects;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.util.Log;
 
 import com.airbitz.R;
 
@@ -273,4 +279,71 @@ public class Calculator extends LinearLayout  {
             }
         }
     };
+
+    // Keyboard animation variables
+    static final int KEYBOARD_ANIM = 250;
+
+    public void showCalculator() {
+        showCalculator(null);
+    }
+
+    public void showCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
+        if (this.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+        if (null != updateListener) {
+            val.addUpdateListener(updateListener);
+        }
+        ObjectAnimator key = ObjectAnimator.ofFloat(this, "translationY", this.getHeight(), 0f);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(KEYBOARD_ANIM);
+        set.playTogether(key, val);
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+            }
+        });
+        set.start();
+    }
+
+    public void hideCalculator() {
+        hideCalculator(null);
+    }
+
+    public void hideCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
+        if (getVisibility() == View.INVISIBLE) {
+            return;
+        }
+        ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
+        if (null != updateListener) {
+            val.addUpdateListener(updateListener);
+        }
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(this, "translationY", 0f, this.getHeight());
+        key.setDuration(KEYBOARD_ANIM);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(key, val);
+        set.setDuration(KEYBOARD_ANIM);
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Calculator.this.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+            }
+        });
+        set.start();
+    }
 }

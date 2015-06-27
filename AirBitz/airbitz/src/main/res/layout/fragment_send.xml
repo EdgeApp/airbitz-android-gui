@@ -22,36 +22,48 @@
 
         <info.hoang8f.android.segmented.SegmentedGroup
             android:id="@+id/request_bottom_buttons"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="10dp"
             android:layout_gravity="center_horizontal"
-            segmentedgroup:tint_color="@color/text_off_white"
+            segmentedgroup:tint_color="@android:color/white"
             android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/fragment_send_button_transfer"
-                android:layout_width="74dp"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_transfer"
                 style="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/fragment_send_button_address"
-                android:layout_width="74dp"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_address"
                 style="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/fragment_send_button_photos"
-                android:layout_width="74dp"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_photos"
                 style="@style/RadioButton" />
             <RadioButton
                 android:id="@+id/fragment_send_button_flash"
-                android:layout_width="74dp"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_flash"
                 style="@style/RadioButton" />

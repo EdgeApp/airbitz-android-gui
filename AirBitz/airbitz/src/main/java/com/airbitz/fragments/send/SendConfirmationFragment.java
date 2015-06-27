@@ -32,6 +32,9 @@
 package com.airbitz.fragments.send;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -169,10 +172,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
      * Represents an asynchronous send or transfer
      */
     private SendOrTransferTask mSendOrTransferTask;
-
     private Handler mHandler = new Handler();
+    static final int KEYBOARD_ANIM = 250;
 
     private CoreAPI.SpendTarget mSpendTarget = null;
+
 
     public interface OnExitHandler {
         public void error();
@@ -303,9 +307,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 if (hasFocus) {
                     mBitcoinField.selectAll();
                     mCalculator.setEditText(mBitcoinField);
-                    mCalculator.setVisibility(View.VISIBLE);
+                    mCalculator.showCalculator();
                 } else {
-                    mCalculator.setVisibility(View.GONE);
+                    mCalculator.hideCalculator();
                 }
             }
         });
@@ -315,7 +319,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             public void onClick(View view) {
                 Log.d(TAG, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
-                mCalculator.setVisibility(View.VISIBLE);
+                mCalculator.showCalculator();
             }
         });
 
@@ -345,9 +349,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 if (hasFocus) {
                     resetFiatAndBitcoinFields();
                     mCalculator.setEditText(mFiatField);
-                    mCalculator.setVisibility(View.VISIBLE);
+                    mCalculator.showCalculator();
                 } else {
-                    mCalculator.setVisibility(View.GONE);
+                    mCalculator.hideCalculator();
                 }
             }
         });
@@ -356,7 +360,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             @Override
             public void onClick(View view) {
                 mCalculator.setEditText(mFiatField);
-                mCalculator.setVisibility(View.VISIBLE);
+                mCalculator.showCalculator();
             }
         });
 
@@ -581,7 +585,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     public void OnCalculatorKeyPressed(String tag) {
         if (tag.equals("done")) {
-            mCalculator.setVisibility(View.GONE);
+            mCalculator.hideCalculator();
         }
     }
 

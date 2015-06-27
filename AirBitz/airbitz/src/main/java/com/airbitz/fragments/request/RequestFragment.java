@@ -33,6 +33,7 @@ package com.airbitz.fragments.request;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -184,15 +185,13 @@ public class RequestFragment extends WalletBaseFragment implements
     private AlertDialog mPartialDialog;
     private SegmentedGroup mFiatSelectors;
 
-    // currency swap variables
-    static final int SWAP_DURATION = 200;
-
-    // Keyboard animation variables
-    static final int KEYBOARD_ANIM = 250;
-    private int mQrCoords[] = new int[2];
-    private int mCalcCoords[] = new int[2];
     private float mOrigQrHeight;
     private float mQrPadding;
+    private int mQrCoords[] = new int[2];
+    private int mCalcCoords[] = new int[2];
+
+    // currency swap variables
+    static final int SWAP_DURATION = 200;
 
     final Runnable dialogKiller = new Runnable() {
         @Override
@@ -1112,68 +1111,11 @@ public class RequestFragment extends WalletBaseFragment implements
     };
 
     private void showCalculator() {
-        if (mCalculator.getVisibility() == View.VISIBLE) {
-            return;
-        }
-        ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
-        val.addUpdateListener(mUpdateListener);
-        ObjectAnimator key = ObjectAnimator.ofFloat(mCalculator, "translationY", mCalculator.getHeight(), 0f);
-
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(KEYBOARD_ANIM);
-        set.playTogether(key, val);
-        set.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mCalculator.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mCalculator.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-
-            @Override
-            public void onAnimationCancel(Animator animator) { }
-        });
-        set.start();
+        mCalculator.showCalculator(mUpdateListener);
     }
 
     private void hideCalculator() {
-        if (mCalculator.getVisibility() == View.INVISIBLE) {
-            return;
-        }
-
-        ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
-        val.addUpdateListener(mUpdateListener);
-        ObjectAnimator key =
-            ObjectAnimator.ofFloat(mCalculator, "translationY", 0f, mCalculator.getHeight());
-        key.setDuration(KEYBOARD_ANIM);
-
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(key, val);
-        set.setDuration(KEYBOARD_ANIM);
-        set.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mCalculator.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mCalculator.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-
-            @Override
-            public void onAnimationCancel(Animator animator) { }
-        });
-        set.start();
+        mCalculator.hideCalculator(mUpdateListener);
     }
 
     private void swapAmount() {
@@ -1242,21 +1184,12 @@ public class RequestFragment extends WalletBaseFragment implements
         AnimatorSet set = new AnimatorSet();
         set.setDuration(SWAP_DURATION / 2);
         set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.addListener(new Animator.AnimatorListener() {
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 swapAmount();
                 swapEnd(animateAmount);
             }
-
-            @Override
-            public void onAnimationStart(Animator animator) { }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-
-            @Override
-            public void onAnimationCancel(Animator animator) { }
         });
         set.playTogether(list.toArray(new Animator[list.size()]));
         set.start();

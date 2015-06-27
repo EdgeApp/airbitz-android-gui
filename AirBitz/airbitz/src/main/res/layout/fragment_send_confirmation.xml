@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -184,7 +182,7 @@
                 android:textColor="@color/text_dark_gray"
                 android:textSize="15dp" />
 
-            <com.airbitz.objects.HighlightOnPressButton
+            <Button
                 android:id="@+id/button_max"
                 android:layout_width="55.1dp"
                 android:layout_height="18.9dp"
@@ -192,10 +190,9 @@
                 android:layout_below="@+id/layout_to"
                 android:layout_marginBottom="2dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/bg_btn_green"
                 android:text="@string/send_confirmation_max_button_title"
-                android:textColor="@android:color/white"
-                android:textSize="12dp" />
+                android:textSize="12dp"
+                style="GreenButton" />
 
 
         </RelativeLayout>
@@ -274,9 +271,9 @@
     <com.airbitz.objects.Calculator
         android:id="@+id/fragment_send_confirmation_calculator_layout"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <include layout="@layout/layout_toolbar_dropdown" />
 

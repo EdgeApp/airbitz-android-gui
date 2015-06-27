@@ -31,6 +31,11 @@
 
 package com.airbitz.fragments.send;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -194,8 +199,7 @@ public class SendFragment extends WalletBaseFragment implements
             @Override
             public void onClick(View view) {
                 buttons.clearCheck();
-                mOtherWalletsListView.setVisibility(
-                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                showOtherWallets();
             }
         });
 
@@ -217,8 +221,7 @@ public class SendFragment extends WalletBaseFragment implements
         headerCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOtherWalletsListView.setVisibility(
-                        mOtherWalletsListView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                hideOtherWallets();
             }
         });
         mOtherWalletsListView.addHeaderView(headerView);
@@ -313,6 +316,14 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     @Override
+    public boolean onBackPress() {
+        if (super.onBackPress()) {
+            return true;
+        }
+        return hideOtherWallets();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -392,6 +403,8 @@ public class SendFragment extends WalletBaseFragment implements
             return super.onOptionsItemSelected(item);
         }
         switch (item.getItemId()) {
+            case android.R.id.home:
+                return hideOtherWallets();
             case R.id.action_help:
                 mActivity.pushFragment(
                         new HelpFragment(HelpFragment.SEND),
@@ -568,5 +581,73 @@ public class SendFragment extends WalletBaseFragment implements
             }
         });
         dialog.show();
+    }
+
+    private boolean toggleOtherWallets() {
+        if (mOtherWalletsListView.getVisibility() == View.VISIBLE) {
+            return hideOtherWallets();
+        } else {
+            return showOtherWallets();
+        }
+    }
+
+    private boolean showOtherWallets() {
+        if (mOtherWalletsListView.getVisibility() == View.VISIBLE) {
+            return false;
+        }
+
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(mOtherWalletsListView, "translationY", mOtherWalletsListView.getHeight(), 0f);
+        key.setDuration(250);
+        key.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                finishShowOthers();
+            }
+        });
+        key.start();
+        mOtherWalletsListView.setVisibility(View.VISIBLE);
+        return true;
+    }
+
+    public void finishShowOthers() {
+        mOtherWalletsListView.setVisibility(View.VISIBLE);
+        mActivity.invalidateOptionsMenu();
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    private boolean hideOtherWallets() {
+        if (mOtherWalletsListView.getVisibility() == View.GONE) {
+            return false;
+        }
+
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(mOtherWalletsListView, "translationY", 0f, mOtherWalletsListView.getHeight());
+        key.setDuration(250);
+        key.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                finishHideOthers();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mOtherWalletsListView.setVisibility(View.VISIBLE);
+            }
+        });
+        key.start();
+        return true;
+    }
+
+    private void finishHideOthers() {
+        mOtherWalletsListView.setVisibility(View.GONE);
+        mActivity.invalidateOptionsMenu();
+        mExpanded = false;
+
+        if (!mHomeEnabled) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
     }
 }
