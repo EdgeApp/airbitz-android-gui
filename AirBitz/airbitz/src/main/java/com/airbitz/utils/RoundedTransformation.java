@@ -26,13 +26,8 @@ public class RoundedTransformation implements com.squareup.picasso.Transformatio
 
     @Override
     public Bitmap transform(final Bitmap source) {
-        final Paint shadowPaint = new Paint();
-        shadowPaint.setAntiAlias(true);
-        shadowPaint.setShadowLayer(margin / 2, radius / 2, radius / 2, 0x30000000);
-
         Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, shadowPaint);
 
         final Paint picPaint = new Paint();
         picPaint.setAntiAlias(true);

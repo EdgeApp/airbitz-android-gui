@@ -19,13 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:layout_margin="2dp"
             android:src="@drawable/arrow_right" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/frame_rounded" />
 
     </FrameLayout>
 

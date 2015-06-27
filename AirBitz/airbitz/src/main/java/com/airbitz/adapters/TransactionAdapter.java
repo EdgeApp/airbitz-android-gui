@@ -92,7 +92,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mCoreAPI = CoreAPI.getApi();
         mPicasso = Picasso.with(context);
         mFormatter = new SimpleDateFormat("MMM dd h:mm aa", Locale.getDefault());
-        mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, mContext.getResources().getDisplayMetrics());
+        mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
 
         mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
@@ -199,7 +199,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), payeeImage);
                     Bitmap bmap2 = ThumbnailUtils.extractThumbnail(bitmap, mDimen, mDimen);
-                    RoundedTransformation rt = new RoundedTransformation(mRound, mRound);
+                    RoundedTransformation rt = new RoundedTransformation(mRound, 0);
                     bitmap = rt.transform(bmap2);
                     viewHolder.contactImageView.setImageBitmap(bitmap);
                 } catch (IOException e) {
@@ -208,7 +208,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             } else {
                 mPicasso.load(payeeImage)
                         .noFade()
-                        .transform(new RoundedTransformation(mRound, mRound))
+                        .transform(new RoundedTransformation(mRound, 0))
                         .into(viewHolder.contactImageView);
                 Log.d(TAG, "loading remote " + payeeImage.toString());
             }
