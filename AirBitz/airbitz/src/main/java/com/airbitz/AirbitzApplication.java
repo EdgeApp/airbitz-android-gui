@@ -39,6 +39,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.airbitz.objects.AirbitzRequestHandler;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.UUID;
 
 /**
@@ -63,11 +67,20 @@ public class AirbitzApplication extends Application {
     private static String mClientId;
     private static String mUserAgent;
     private static String mWalletUuid;
+    private static Picasso mPicasso;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+
+        Picasso.Builder builder = new Picasso.Builder(mContext);
+        builder.addRequestHandler(new AirbitzRequestHandler(mContext));
+        mPicasso = builder.build();
+    }
+
+    public static Picasso getPicasso() {
+        return mPicasso;
     }
 
     public static boolean isLoggedIn() {

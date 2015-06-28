@@ -274,7 +274,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mArrayOnlineBusinesses = new ArrayList<BusinessSearchResult>();
         mArrayAddresses = new ConcurrentHashMap<String, String>();
         mCombinedPhotos = new LinkedHashMap<String, Uri>();
-        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mContactNames, mArrayAutoComplete, mCombinedPhotos);
+        mSearchAdapter = new TransactionDetailSearchAdapter(getActivity(), mBusinesses, mArrayAutoComplete);
         mSearchListView.setAdapter(mSearchAdapter);
 
         goSearch();

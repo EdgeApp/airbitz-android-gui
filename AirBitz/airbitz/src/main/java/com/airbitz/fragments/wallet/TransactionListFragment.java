@@ -37,7 +37,6 @@ import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,6 +87,7 @@ import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -151,7 +151,6 @@ public class TransactionListFragment extends WalletsFragment
     private TransactionAdapter mTransactionAdapter;
     private List<Transaction> mTransactions = new ArrayList<Transaction>();
     private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
-    private LinkedHashMap<String, Uri> mCombinedPhotos;
     private View mView;
     private TransactionTask mTransactionTask;
     private SearchTask mSearchTask;
@@ -186,9 +185,7 @@ public class TransactionListFragment extends WalletsFragment
         mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_wallet_swipe_layout);
         mSwipeLayout.setOnRefreshListener(this);
 
-        mCombinedPhotos = Common.GetMatchedContactsList(mActivity, null);
-
-        mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions, mCombinedPhotos);
+        mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions);
         mTransactionAdapter.setLoading(true);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
@@ -384,7 +381,6 @@ public class TransactionListFragment extends WalletsFragment
         mTransactionAdapter.createRunningSatoshi();
         mTransactionAdapter.notifyDataSetChanged();
 
-        findBizIdThumbnails();
         updateBalanceBar();
         updateSendRequestButtons();
     }
@@ -539,15 +535,6 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private void findBizIdThumbnails() {
-        for (Transaction transaction : mTransactions) {
-            if (!mCombinedPhotos.containsKey(transaction.getName()) && transaction.getmBizId() != 0) {
-                GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(transaction.getName(), transaction.getmBizId());
-                task.executeOnExecutor(mExecutor);
-            }
-        }
-    }
-
     class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
 
         public TransactionTask() {
@@ -598,37 +585,6 @@ public class TransactionListFragment extends WalletsFragment
         @Override
         protected void onCancelled() {
             mSearchTask = null;
-            super.onCancelled();
-        }
-    }
-
-    class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
-        private String mName;
-        private long mBizId;
-
-        GetBizIdThumbnailAsyncTask(String name, long id) {
-            mName = name;
-            mBizId = id;
-        }
-
-        @Override
-        protected BusinessDetail doInBackground(Void... voids) {
-            return api.getHttpBusiness((int) mBizId);
-        }
-
-        @Override
-        protected void onPostExecute(BusinessDetail business) {
-            if (business != null && business.getSquareImageLink() != null) {
-                Uri uri = Uri.parse(business.getSquareImageLink());
-                Log.d(TAG, "Got " + uri);
-                mCombinedPhotos.put(mName, uri);
-                mTransactionAdapter.notifyDataSetChanged();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
             super.onCancelled();
         }
     }

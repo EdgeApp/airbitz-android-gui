@@ -47,13 +47,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.utils.RoundedTransformation;
+
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -75,7 +78,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private int mCurrencyNum;
     private CoreAPI mCoreAPI;
     private List<Transaction> mListTransaction;
-    private LinkedHashMap<String, Uri> mContactList;
     private long[] mRunningSatoshi;
     private int mRound, mDimen;
 
@@ -83,14 +85,15 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private SimpleDateFormat mFormatter;
     private Typeface mBitcoinTypeface;
 
-    public TransactionAdapter(Context context, List<Transaction> listTransaction, LinkedHashMap<String, Uri> contactList) {
+    public TransactionAdapter(Context context, List<Transaction> listTransaction) {
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
         mListTransaction = listTransaction;
-        mContactList = contactList;
         createRunningSatoshi();
         mCoreAPI = CoreAPI.getApi();
-        mPicasso = Picasso.with(context);
+
+        mPicasso = AirbitzApplication.getPicasso();
+
         mFormatter = new SimpleDateFormat("MMM dd h:mm aa", Locale.getDefault());
         mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
@@ -190,40 +193,37 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         long transactionSatoshis = transaction.getAmountSatoshi();
         long transactionSatoshisAbs = Math.abs(transactionSatoshis);
+        final int placeholder = transactionSatoshis > 0
+            ? R.drawable.ic_request : R.drawable.ic_send;
+        final int background = transactionSatoshis > 0
+            ? R.drawable.bg_icon_request : R.drawable.bg_icon_send;
+        viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
 
         String name = transaction.getName();
-        viewHolder.nameTextView.setText(name);
-        Uri payeeImage = mContactList.get(name);
-        if (mContactList != null && payeeImage != null && !name.isEmpty()) {
-            viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
-            if (payeeImage.getScheme().contains("content")) {
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), payeeImage);
-                    Bitmap bmap2 = ThumbnailUtils.extractThumbnail(bitmap, mDimen, mDimen);
-                    RoundedTransformation rt = new RoundedTransformation(mRound, 0);
-                    bitmap = rt.transform(bmap2);
-                    viewHolder.contactImageView.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                mPicasso.load(payeeImage)
-                        .noFade()
-                        .transform(new RoundedTransformation(mRound, 0))
-                        .into(viewHolder.contactImageView);
-                Log.d(TAG, "loading remote " + payeeImage.toString());
-            }
-            viewHolder.contactImageView.setBackgroundResource(0);
+        String uri = null;
+        if (0 < transaction.getmBizId()) {
+            uri = "airbitz://business/" + transaction.getmBizId();
         } else {
-            viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
-            if (transactionSatoshis > 0) {
-                viewHolder.contactImageView.setImageResource(R.drawable.ic_request);
-                viewHolder.contactImageView.setBackgroundResource(R.drawable.bg_icon_request);
-            } else {
-                viewHolder.contactImageView.setImageResource(R.drawable.ic_send);
-                viewHolder.contactImageView.setBackgroundResource(R.drawable.bg_icon_send);
-            }
+            uri = "airbitz://person/" + transaction.getName();
         }
+        final ImageView img = viewHolder.contactImageView;
+        img.setImageResource(placeholder);
+        img.setBackgroundResource(background);
+        mPicasso.load(uri)
+                .placeholder(placeholder)
+                .transform(new RoundedTransformation(mRound, 0))
+                .into(viewHolder.contactImageView, new Callback.EmptyCallback() {
+                    @Override
+                    public void onSuccess() {
+                        img.setBackgroundResource(android.R.color.transparent);
+                    }
+                    @Override
+                    public void onError() {
+                        img.setImageResource(placeholder);
+                        img.setBackgroundResource(background);
+                    }
+                });
+        viewHolder.nameTextView.setText(name);
 
         String btcSymbol;
         String btcSymbolBalance = mCoreAPI.getUserBTCSymbol();

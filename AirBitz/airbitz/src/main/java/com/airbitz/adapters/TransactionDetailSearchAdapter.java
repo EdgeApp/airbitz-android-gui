@@ -40,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.BusinessSearchResult;
@@ -48,26 +49,18 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by matt on 6/10/14.
- */
 public class TransactionDetailSearchAdapter extends ArrayAdapter {
     private Context mContext;
     private List<BusinessSearchResult> mBusinesses;
-    private List<String> mContactNames;
-    private Map<String, Uri> mContactPhotos;
     private List<Object> mCombined;
     private final Picasso mPicasso;
 
-    public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<String> contactNames,
-                                          List<Object> combined, Map<String, Uri> contactPhotos) {
-        super(context, R.layout.item_listview_icon_with_text, combined);
+    public TransactionDetailSearchAdapter(Context context, List<BusinessSearchResult> businesses, List<Object> combined) {
+        super(context, R.layout.item_listview_transaction_detail, combined);
         mContext = context;
         mBusinesses = businesses;
-        mContactNames = contactNames;
-        mContactPhotos = contactPhotos;
         mCombined = combined;
-        mPicasso = Picasso.with(context);
+        mPicasso = AirbitzApplication.getPicasso();
     }
 
     @Override
@@ -102,19 +95,14 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
         }
 
         String nameForImage = "";
-        viewHolder.imageWrapper.setBackgroundResource(nextColor(position));
+        String uri = null;
         if (mCombined.get(position) instanceof BusinessSearchResult) {
             final BusinessSearchResult business = (BusinessSearchResult) mCombined.get(position);
             nameForImage = business.getName();
             viewHolder.textView.setText(nameForImage);
 
-            if (business.getSquareProfileImage()!=null) {
-                viewHolder.imageView.setVisibility(View.VISIBLE);
-                mPicasso.load(business.getSquareProfileImage().getImageThumbnail()).into(viewHolder.imageView);
-            } else {
-                viewHolder.imageView.setVisibility(View.GONE);
-                viewHolder.imageAbbrev.setVisibility(View.VISIBLE);
-                viewHolder.imageAbbrev.setText(formatAbbrev(nameForImage));
+            if (business.getSquareProfileImage() != null) {
+                uri = business.getSquareProfileImage().getImageThumbnail();
             }
 
             // create the address
@@ -139,15 +127,18 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
             nameForImage = (String) mCombined.get(position);
             viewHolder.textView.setText(nameForImage);
             viewHolder.addressView.setVisibility(View.GONE);
-
-            if (mContactPhotos.get(nameForImage) != null) {
-                viewHolder.imageView.setVisibility(View.VISIBLE);
-                mPicasso.load(mContactPhotos.get(nameForImage)).into(viewHolder.imageView);
-            } else {
-                viewHolder.imageView.setVisibility(View.GONE);
-                viewHolder.imageAbbrev.setVisibility(View.VISIBLE);
-                viewHolder.imageAbbrev.setText(formatAbbrev(nameForImage));
-            }
+            uri = "airbitz://person/" + nameForImage;
+        }
+        viewHolder.imageAbbrev.setText(formatAbbrev(nameForImage));
+        viewHolder.imageWrapper.setBackgroundResource(nextColor(position));
+        if (null != uri) {
+            mPicasso.load(uri).into(viewHolder.imageView);
+            viewHolder.imageView.setVisibility(View.VISIBLE);
+            viewHolder.imageAbbrev.setVisibility(View.GONE);
+        } else {
+            viewHolder.imageView.setImageResource(android.R.color.transparent);
+            viewHolder.imageView.setVisibility(View.GONE);
+            viewHolder.imageAbbrev.setVisibility(View.VISIBLE);
         }
         return convertView;
     }
@@ -176,5 +167,4 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
         TextView textView;
         TextView addressView;
     }
-
 }
