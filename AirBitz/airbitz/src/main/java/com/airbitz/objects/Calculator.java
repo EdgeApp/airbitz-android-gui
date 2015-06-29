@@ -288,12 +288,12 @@ public class Calculator extends LinearLayout  {
         showCalculator(null);
     }
 
-    public void showCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
+    public void showCalculator(final ValueAnimator.AnimatorUpdateListener updateListener) {
         if (mAnimating || getVisibility() == View.VISIBLE) {
             return;
         }
         mAnimating = true;
-        ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+        final ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
         if (null != updateListener) {
             val.addUpdateListener(updateListener);
         }
@@ -306,6 +306,9 @@ public class Calculator extends LinearLayout  {
             @Override
             public void onAnimationEnd(Animator animator) {
                 Calculator.this.setVisibility(View.VISIBLE);
+                if (null != updateListener) {
+                    updateListener.onAnimationUpdate(val);
+                }
                 mAnimating = false;
             }
 
@@ -321,12 +324,12 @@ public class Calculator extends LinearLayout  {
         hideCalculator(null);
     }
 
-    public void hideCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
+    public void hideCalculator(final ValueAnimator.AnimatorUpdateListener updateListener) {
         if (mAnimating || getVisibility() != View.VISIBLE) {
             return;
         }
         mAnimating = true;
-        ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
+        final ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
         if (null != updateListener) {
             val.addUpdateListener(updateListener);
         }
@@ -334,13 +337,16 @@ public class Calculator extends LinearLayout  {
             ObjectAnimator.ofFloat(this, "translationY", 0f, this.getHeight());
         key.setDuration(KEYBOARD_ANIM);
 
-        AnimatorSet set = new AnimatorSet();
+        final AnimatorSet set = new AnimatorSet();
         set.playTogether(key, val);
         set.setDuration(KEYBOARD_ANIM);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 Calculator.this.setVisibility(View.INVISIBLE);
+                if (null != updateListener) {
+                    updateListener.onAnimationUpdate(val);
+                }
                 mAnimating = false;
             }
 
