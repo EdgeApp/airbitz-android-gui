@@ -100,6 +100,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
+        mCurrencyNum = mWallet.getCurrencyNum();
     }
 
     public void setLoading(boolean loading) {
