@@ -282,15 +282,17 @@ public class Calculator extends LinearLayout  {
 
     // Keyboard animation variables
     static final int KEYBOARD_ANIM = 250;
+    private boolean mAnimating = false;
 
     public void showCalculator() {
         showCalculator(null);
     }
 
     public void showCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
-        if (this.getVisibility() == View.VISIBLE) {
+        if (mAnimating) {
             return;
         }
+        mAnimating = true;
         ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
         if (null != updateListener) {
             val.addUpdateListener(updateListener);
@@ -304,6 +306,7 @@ public class Calculator extends LinearLayout  {
             @Override
             public void onAnimationEnd(Animator animator) {
                 Calculator.this.setVisibility(View.VISIBLE);
+                mAnimating = false;
             }
 
             @Override
@@ -319,9 +322,10 @@ public class Calculator extends LinearLayout  {
     }
 
     public void hideCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
-        if (getVisibility() == View.INVISIBLE) {
+        if (mAnimating) {
             return;
         }
+        mAnimating = true;
         ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
         if (null != updateListener) {
             val.addUpdateListener(updateListener);
@@ -337,6 +341,7 @@ public class Calculator extends LinearLayout  {
             @Override
             public void onAnimationEnd(Animator animator) {
                 Calculator.this.setVisibility(View.INVISIBLE);
+                mAnimating = false;
             }
 
             @Override

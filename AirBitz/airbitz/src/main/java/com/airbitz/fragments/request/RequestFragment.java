@@ -1090,23 +1090,27 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     };
 
+    private void alignQrCode() {
+        if (mOrigQrHeight == 0.0f) {
+            mOrigQrHeight = mQRView.getHeight();
+        }
+        mQRView.getLocationOnScreen(mQrCoords);
+        mCalculator.getLocationOnScreen(mCalcCoords);
+
+        float qrY = mQrCoords[1] + mQRView.getHeight();
+        float calcY = mCalcCoords[1];
+        float diff = (qrY + mQrPadding) - calcY;
+        int newHeight = mQRView.getHeight() - (int) (diff / 2.0);
+        if (newHeight > mOrigQrHeight) {
+            return;
+        }
+        mQRView.getLayoutParams().height = newHeight;
+        mQRView.requestLayout();
+    }
+
     private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
         public void onAnimationUpdate(ValueAnimator animation) {
-            if (mOrigQrHeight == 0.0f) {
-                mOrigQrHeight = mQRView.getHeight();
-            }
-            mQRView.getLocationOnScreen(mQrCoords);
-            mCalculator.getLocationOnScreen(mCalcCoords);
-
-            float qrY = mQrCoords[1] + mQRView.getHeight();
-            float calcY = mCalcCoords[1];
-            float diff = (qrY + mQrPadding) - calcY;
-            int newHeight = mQRView.getHeight() - (int) (diff / 2.0);
-            if (newHeight > mOrigQrHeight) {
-                return;
-            }
-            mQRView.getLayoutParams().height = newHeight;
-            mQRView.requestLayout();
+            alignQrCode();
         }
     };
 
