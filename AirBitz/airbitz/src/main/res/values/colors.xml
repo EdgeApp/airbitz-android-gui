@@ -96,4 +96,14 @@
     <color name="calc_button_orange_pressed">#ccffa634</color>
     <color name="calc_button_grey">#ff999999</color>
     <color name="calc_button_grey_pressed">#cc999999</color>
+
+
+    <color name="contact_color_1">#ffec6a5e</color>
+    <color name="contact_color_2">#ffff9c00</color>
+    <color name="contact_color_3">#fff4d347</color>
+    <color name="contact_color_4">#ff7ccc52</color>
+    <color name="contact_color_5">#ff66aee4</color>
+    <color name="contact_color_6">#ff5ee0ec</color>
+    <color name="contact_color_7">#ffb400ff</color>
+    <color name="contact_color_8">#ff777777</color>
 </resources>
