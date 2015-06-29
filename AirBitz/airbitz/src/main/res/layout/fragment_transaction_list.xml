@@ -32,8 +32,15 @@
 
     </LinearLayout>
 
-    <include layout="@layout/layout_toolbar_title" />
+    <FrameLayout
+        android:id="@+id/toolbar_blocker"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@android:color/black"
+        android:visibility="invisible" />
 
     <include layout="@layout/fragment_wallets" />
-    
+
+    <include layout="@layout/layout_toolbar_title" />
+
 </RelativeLayout>

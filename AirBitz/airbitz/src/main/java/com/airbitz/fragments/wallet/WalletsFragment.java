@@ -323,4 +323,9 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
         return list;
     }
+
+    @Override
+    protected int getAnimDuration() {
+        return 200;
+    }
 }

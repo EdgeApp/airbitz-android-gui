@@ -84,6 +84,8 @@
     <color name="colorPrimary">#ff2291CF</color>
     <color name="colorPrimaryDark">#ff006698</color>
     <color name="colorPrimaryFrost">#ccffffff</color>
+    <color name="toolbarBackgroundColor">#eeffffff</color>
+    <color name="toolbarBlockerColor">#99000000</color>
 
     <color name="wallet_list_header">#ff2291CF</color>
 

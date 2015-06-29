@@ -31,9 +31,9 @@
 package com.airbitz.fragments;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +66,8 @@ public class WalletBaseFragment extends BaseFragment implements
     private final String TAG = WalletBaseFragment.class.getSimpleName();
 
     private Toolbar mToolbar;
+    private View mBlocker;
+
     protected Handler mHandler = new Handler();
     protected List<Wallet> mWallets;
     protected Wallet mWallet;
@@ -100,8 +102,19 @@ public class WalletBaseFragment extends BaseFragment implements
 
         View view = getView();
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mToolbar.setTitle(""); // XXX: Should just disable the title
         mActivity.setSupportActionBar(mToolbar);
+        mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mBlocker = view.findViewById(R.id.toolbar_blocker);
+        mBlocker.setVisibility(View.INVISIBLE);
+        mBlocker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mExpanded) {
+                    hideWalletList();
+                }
+            }
+        });
 
         mTitleView = (TextView) view.findViewById(R.id.title);
         updateTitle();
@@ -264,13 +277,27 @@ public class WalletBaseFragment extends BaseFragment implements
         return mExpanded;
     }
 
+    protected int getAnimDuration() {
+        return 100;
+    }
+
     public void showWalletList() {
-        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mActivity, R.animator.slide_in_top);
-        set.setTarget(mWalletsContainer);
+        ObjectAnimator blocker = ObjectAnimator.ofFloat(mBlocker, "alpha", 0f, 1f);
+        ObjectAnimator key = ObjectAnimator.ofFloat(mWalletsContainer, "translationY", -mWalletsContainer.getHeight(), 0f);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(getAnimDuration());
+        set.playTogether(key, blocker);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animator) {
+            public void onAnimationEnd(Animator aniamtor) {
                 finishShowWallets();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mBlocker.setVisibility(View.VISIBLE);
+                mWalletsContainer.setVisibility(View.VISIBLE);
             }
         });
         set.start();
@@ -278,6 +305,7 @@ public class WalletBaseFragment extends BaseFragment implements
 
     public void finishShowWallets() {
         mWalletsContainer.setVisibility(View.VISIBLE);
+        mBlocker.setVisibility(View.VISIBLE);
         mActivity.invalidateOptionsMenu();
         mExpanded = true;
 
@@ -287,8 +315,12 @@ public class WalletBaseFragment extends BaseFragment implements
 
     public void hideWalletList() {
 
-        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mActivity, R.animator.slide_out_top);
-        set.setTarget(mWalletsContainer);
+        ObjectAnimator blocker = ObjectAnimator.ofFloat(mBlocker, "alpha", 1f, 0f);
+        ObjectAnimator key = ObjectAnimator.ofFloat(mWalletsContainer, "translationY", 0f, -mWalletsContainer.getHeight());
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(getAnimDuration());
+        set.playTogether(key, blocker);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animator) {
@@ -298,13 +330,15 @@ public class WalletBaseFragment extends BaseFragment implements
             @Override
             public void onAnimationStart(Animator animator) {
                 mWalletsContainer.setVisibility(View.VISIBLE);
+                mBlocker.setVisibility(View.VISIBLE);
             }
         });
         set.start();
     }
 
     public void finishHideWallets() {
-        mWalletsContainer.setVisibility(View.GONE);
+        mWalletsContainer.setVisibility(View.INVISIBLE);
+        mBlocker.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
         mExpanded = false;
 
