@@ -235,10 +235,12 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void updateTitle() {
-        if (mLoading) {
-            mTitleView.setText(R.string.string_loading);
-        } else {
-            mTitleView.setText(mWallet.getName() + " ▼");
+        if (mTitleView != null) {
+            if (mLoading) {
+                mTitleView.setText(R.string.string_loading);
+            } else {
+                mTitleView.setText(mWallet.getName() + " ▼");
+            }
         }
     }
 
