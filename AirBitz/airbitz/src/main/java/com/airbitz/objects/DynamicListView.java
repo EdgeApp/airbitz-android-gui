@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -61,6 +61,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -117,7 +118,7 @@ public class DynamicListView extends ListView {
     };
     private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
     private final int MOVE_DURATION = 150;
-    private final int LINE_THICKNESS = 15;
+    private int LINE_THICKNESS = 5;
     private final int INVALID_ID = -1;
     private long mAboveItemId = INVALID_ID;
     private long mMobileItemId = INVALID_ID;
@@ -139,42 +140,12 @@ public class DynamicListView extends ListView {
     private View listWalletsHeader;
     private View listArchiveHeader;
     private BitmapDrawable mHoverCell;
-    /**
-     * Listens for long clicks on any items in the listview. When a cell has
-     * been selected, the hover cell is created and set up.
-     */
-    private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
-            new AdapterView.OnItemLongClickListener() {
-                public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()
-                            && !(pos==1 && mWalletList.get(2).isArchiveHeader())) { // if there's more than one active wallet
-                        mTotalOffset = 0;
 
-                        int position = pointToPosition(mDownX, mDownY);
-                        int itemNum = position - getFirstVisiblePosition();
-
-                        View selectedView = getChildAt(itemNum);
-                        mMobileItemId = getAdapter().getItemId(position);
-                        mHoverCell = getAndAddHoverView(selectedView);
-                        selectedView.setVisibility(INVISIBLE);
-                        ((WalletAdapter) getAdapter()).setSelectedViewPos(itemNum);
-
-                        mCellIsMobile = true;
-
-                        updateNeighborViewsForID(mMobileItemId);
-
-                        if (mOnListReordered != null) {
-                            mOnListReordered.onListReordering(true);
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-            };
     private Rect mHoverCellCurrentBounds;
     private Rect mHoverCellOriginalBounds;
     private boolean mIsWaitingForScrollFinish = false;
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
+
     /**
      * This scroll listener is added to the listview in order to handle cell swapping
      * when the cell is either at the top or bottom edge of the listview. If the hover
@@ -284,10 +255,10 @@ public class DynamicListView extends ListView {
 
     public void init(Context context) {
         mContext = context;
-        setOnItemLongClickListener(mOnItemLongClickListener);
         setOnScrollListener(mScrollListener);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        mSmoothScrollAmountAtEdge = (int) (SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
+        mSmoothScrollAmountAtEdge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, metrics);
+        LINE_THICKNESS = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, metrics);
     }
 
     public void setHeaders(View wallets, View archive) {
@@ -727,6 +698,41 @@ public class DynamicListView extends ListView {
             walletsHeader.setY(- walletsHeader.getHeight());
         }
     }
+
+    public boolean startDrag(AdapterView<?> arg0, View arg1, int pos, long id) {
+        if (!mWalletList.get(pos).isArchiveHeader() && !mWalletList.get(pos).isHeader()
+                && !(pos==1 && mWalletList.get(2).isArchiveHeader())) { // if there's more than one active wallet
+            mTotalOffset = 0;
+
+            int position = pointToPosition(mDownX, mDownY);
+            int itemNum = position - getFirstVisiblePosition();
+
+            View selectedView = getChildAt(itemNum);
+            mMobileItemId = getAdapter().getItemId(position);
+            mHoverCell = getAndAddHoverView(selectedView);
+            selectedView.setVisibility(INVISIBLE);
+            ((WalletAdapter) getAdapter()).setSelectedViewPos(itemNum);
+
+            mCellIsMobile = true;
+
+            updateNeighborViewsForID(mMobileItemId);
+
+            if (mOnListReordered != null) {
+                mOnListReordered.onListReordering(true);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public float getDownX() {
+        return mDownX;
+    }
+
+    public float getDownY() {
+        return mDownY;
+    }
+
 
     public interface OnListReordering {
         public void onListReordering(boolean started);

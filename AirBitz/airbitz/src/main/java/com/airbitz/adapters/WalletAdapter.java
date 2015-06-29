@@ -53,6 +53,7 @@ import java.util.List;
  */
 public class WalletAdapter extends ArrayAdapter<Wallet> {
 
+    public static final String DRAG_TAG = "DragTag";
     final int INVALID_ID = -1;
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
     HashMap<String, Integer> mArchivedIdMap = new HashMap<String, Integer>();
@@ -220,6 +221,13 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
+            View drag = convertView.findViewById(R.id.drag_container);
+            if (archivePos == 2 && !wallet.isArchived()) {
+                drag.setVisibility(View.GONE);
+            } else {
+                drag.setVisibility(View.VISIBLE);
+            }
+
             titleTextView.setTypeface(mBitcoinTypeface);
             amountTextView.setTypeface(mBitcoinTypeface);
             if (wallet.isLoading()) {

@@ -34,13 +34,17 @@ package com.airbitz.fragments.wallet;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +54,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -144,6 +149,18 @@ public class WalletsFragment extends WalletBaseFragment implements
                 } else {
                     AirbitzApplication.setCurrentWallet(wallet.getUUID());
                     walletChanged(wallet);
+                }
+            }
+        });
+        mWalletListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                View drag = arg1.findViewById(R.id.drag_container);
+                if (drag.getX() <= mWalletListView.getDownX()) {
+                    return mWalletListView.startDrag(arg0, arg1, pos, id);
+                } else {
+                    Wallet wallet = mLatestWalletList.get(pos);
+                    showRenameDialog(wallet);
+                    return true;
                 }
             }
         });
@@ -328,4 +345,49 @@ public class WalletsFragment extends WalletBaseFragment implements
     protected int getAnimDuration() {
         return 200;
     }
+
+    public void showRenameDialog(final Wallet wallet) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View view = inflater.inflate(R.layout.alert_rename_wallet, null);
+        final EditText editText = (EditText) view.findViewById(R.id.wallet_name);
+        editText.setText(wallet.getName());
+        editText.setSelection(wallet.getName().length());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        builder.setTitle(getResources().getString(R.string.fragment_wallets_rename_wallet))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.string_done),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String walletName = editText.getText().toString();
+                                if (TextUtils.isEmpty(walletName)) {
+                                    editText.setError(getString(R.string.fragment_wallets_wallet_name_required));
+                                } else {
+                                    wallet.setName(walletName);
+                                    mCoreApi.renameWallet(wallet);
+                                    mCoreApi.reloadWallets();
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .setNegativeButton(R.string.string_cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+
+        // this changes the colors of the system's UI buttons we're using
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+        dialog.show();
+    }
+
 }

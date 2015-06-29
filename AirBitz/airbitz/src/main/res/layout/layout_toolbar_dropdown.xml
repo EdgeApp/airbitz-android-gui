@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
-    <include layout="@layout/layout_toolbar_title" />
     <include layout="@layout/layout_blocker" />
+
+    <include layout="@layout/layout_toolbar_title" />
 
     <ListView
         android:id="@+id/wallet_choices"

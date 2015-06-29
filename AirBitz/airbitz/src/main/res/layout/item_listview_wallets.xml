@@ -29,4 +29,20 @@
         android:textColor="@color/dark_blue_text"
          />
 
+     <!-- TODO: find a better icon to use -->
+     <FrameLayout
+        android:id="@+id/drag_container"
+         android:layout_height="match_parent"
+         android:layout_width="50dp">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ico_dots"
+            />
+
+    </FrameLayout>
+
 </LinearLayout>

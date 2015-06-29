@@ -47,7 +47,6 @@
             android:layout_marginLeft="6.3dp"
             android:dropDownVerticalOffset="0dp"
             android:gravity="center"
-            android:popupBackground="@drawable/rounded_edge_white_bg"
             android:spinnerMode="dropdown" />
 
     </LinearLayout>
