@@ -273,7 +273,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <include layout="@layout/layout_toolbar_dropdown" />
 

@@ -549,10 +549,10 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void showAddressDialog() {
-        final EditText editText = new EditText(getActivity());
-        editText.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
-        editText.setHintTextColor(getResources().getColor(R.color.text_hint));
-        editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View view = inflater.inflate(R.layout.alert_address_form, null);
+        final EditText editText = (EditText) view.findViewById(R.id.address);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
                 .setCancelable(false)
@@ -569,15 +569,15 @@ public class SendFragment extends WalletBaseFragment implements
                                 dialog.cancel();
                             }
                         });
-        builder.setView(editText);
+        builder.setView(view);
         final AlertDialog dialog = builder.create();
 
         // this changes the colors of the system's UI buttons we're using
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });
         dialog.show();

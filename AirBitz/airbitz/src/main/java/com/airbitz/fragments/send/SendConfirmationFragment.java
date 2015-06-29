@@ -86,7 +86,6 @@ import java.util.List;
  * Created on 2/21/14.
  */
 public class SendConfirmationFragment extends WalletBaseFragment implements
-        NavigationActivity.OnBackPress,
         CoreAPI.OnPasswordCheckListener,
         Calculator.OnCalculatorKey {
     private final String TAG = getClass().getSimpleName();
@@ -112,8 +111,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private TextView mFiatSignTextView;
     private TextView mConversionTextView;
     private HighlightOnPressButton mMaxButton;
-    private TextWatcher mFiatTextWatcher;
-    private TextWatcher mBTCTextWatcher;
 
     private Bundle bundle;
 
@@ -281,7 +278,21 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
-        mBTCTextWatcher = new TextWatcher() {
+        final View.OnFocusChangeListener amountFocusListener = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (view == mBitcoinField || view == mFiatField) {
+                    EditText edittext = (EditText) view;
+                    edittext.selectAll();
+                    mCalculator.setEditText(edittext);
+                    mCalculator.showCalculator();
+                } else {
+                    mCalculator.hideCalculator();
+                }
+            }
+        };
+
+        mBitcoinField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
@@ -297,23 +308,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
             }
-        };
-        mBitcoinField.addTextChangedListener(mBTCTextWatcher);
-
-        mBitcoinField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "Bitcoin field focus changed");
-                if (hasFocus) {
-                    mBitcoinField.selectAll();
-                    mCalculator.setEditText(mBitcoinField);
-                    mCalculator.showCalculator();
-                } else {
-                    mCalculator.hideCalculator();
-                }
-            }
         });
 
+        mBitcoinField.setOnFocusChangeListener(amountFocusListener);
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -323,7 +320,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
-        mFiatTextWatcher = new TextWatcher() {
+        mFiatField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
@@ -339,23 +336,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
             }
-        };
-        mFiatField.addTextChangedListener(mFiatTextWatcher);
-
-        mFiatField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "Fiat field focus changed");
-                if (hasFocus) {
-                    resetFiatAndBitcoinFields();
-                    mCalculator.setEditText(mFiatField);
-                    mCalculator.showCalculator();
-                } else {
-                    mCalculator.hideCalculator();
-                }
-            }
         });
-
+        mFiatField.setOnFocusChangeListener(amountFocusListener);
         mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -491,10 +473,19 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     @Override
     public boolean onBackPress() {
-        if (null != exitHandler) {
-            exitHandler.error();
+        if (mCalculator.getVisibility() == View.VISIBLE) {
+            mCalculator.hideCalculator();
+            return true;
         }
-        return false;
+        if (super.onBackPress()) {
+            return true;
+        } else {
+            if (null != exitHandler) {
+                exitHandler.error();
+            }
+            mActivity.popFragment();
+            return true;
+        }
     }
 
     @Override
@@ -507,11 +498,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mActivity.popFragment();
+                onBackPress();
                 return true;
             case R.id.action_help:
                 mActivity.pushFragment(
-                    new HelpFragment(HelpFragment.SEND_CONFIRMATION), NavigationActivity.Tabs.SEND.ordinal());
+                    new HelpFragment(HelpFragment.SEND_CONFIRMATION),
+                        NavigationActivity.Tabs.SEND.ordinal());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -839,8 +831,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
         mParentLayout.requestFocus(); //Take focus away first
-
-//        mActivity.hideCalculator();
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
