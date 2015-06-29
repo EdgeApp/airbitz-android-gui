@@ -286,6 +286,7 @@ public class TransactionListFragment extends WalletsFragment
                 }
             }
         });
+        positionBalanceBar();
         return mView;
     }
 
@@ -432,14 +433,18 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private void updateBalanceBar() {
+    private void positionBalanceBar() {
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        if(!mOnBitcoinMode) {
+        if (!mOnBitcoinMode) {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + mActivity.getResources().getDimension(R.dimen.currency_switch_height));
         }
         else {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
         }
+    }
+
+    private void updateBalanceBar() {
+        positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();
         updateBalances();
