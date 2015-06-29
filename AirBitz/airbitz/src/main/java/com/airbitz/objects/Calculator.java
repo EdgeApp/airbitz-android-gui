@@ -289,7 +289,7 @@ public class Calculator extends LinearLayout  {
     }
 
     public void showCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
-        if (mAnimating) {
+        if (mAnimating || getVisibility() == View.VISIBLE) {
             return;
         }
         mAnimating = true;
@@ -322,7 +322,7 @@ public class Calculator extends LinearLayout  {
     }
 
     public void hideCalculator(ValueAnimator.AnimatorUpdateListener updateListener) {
-        if (mAnimating) {
+        if (mAnimating || getVisibility() != View.VISIBLE) {
             return;
         }
         mAnimating = true;

@@ -229,6 +229,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
             @Override
             public void afterTextChanged(Editable editable) {
+                mAmountField.setSelection(mAmountField.getText().toString().length());
                 if (!mAutoUpdatingTextFields) {
                     amountChanged();
                 }
@@ -238,7 +239,13 @@ public class RequestFragment extends WalletBaseFragment implements
         mAmountField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mCalculator.getVisibility() != View.VISIBLE) {
+                mAmountField.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAmountField.setSelection(mAmountField.getText().length());
+                    }
+                });
+                if (mCalculator.getVisibility() != View.VISIBLE) {
                     showCalculator();
                 }
             }
@@ -359,6 +366,16 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     @Override
+    public boolean onBackPress() {
+        if (mCalculator.getVisibility() == View.VISIBLE) {
+            hideCalculator();
+            return true;
+        } else {
+            return super.onBackPress();
+        }
+    }
+
+    @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
 
@@ -462,9 +479,6 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         checkFirstUsage();
-        if (mOrigQrHeight == 0f) {
-            mOrigQrHeight = mQRView.getHeight();
-        }
     }
 
     @Override

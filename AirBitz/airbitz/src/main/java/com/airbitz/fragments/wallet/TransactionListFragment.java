@@ -415,20 +415,23 @@ public class TransactionListFragment extends WalletsFragment
         updateSendRequestButtons();
     }
 
+    private void updateSendRequestButtons(boolean enabled, float alpha) {
+        mRequestButton.setClickable(enabled);
+        mRequestButton.setEnabled(enabled);
+        mRequestButton.setAlpha(alpha);
+        mSendButton.setClickable(enabled);
+        mSendButton.setEnabled(enabled);
+        mSendButton.setAlpha(alpha);
+    }
+
     private void updateSendRequestButtons() {
         if (mCoreApi.walletsStillLoading()) {
-            mRequestButton.setClickable(false);
-            mSendButton.setClickable(false);
+            updateSendRequestButtons(false, 0.5f);
             mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
         } else {
-            mRequestButton.setClickable(true);
-            mSendButton.setClickable(true);
-
+            updateSendRequestButtons(true, 1f);
             if (mWallet != null && mWallet.isArchived()) {
-                mRequestButton.setEnabled(false);
-                mRequestButton.setAlpha(0.5f);
-                mSendButton.setEnabled(false);
-                mSendButton.setAlpha(0.5f);
+                updateSendRequestButtons(false, 0.5f);
             }
         }
     }
