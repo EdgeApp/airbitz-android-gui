@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         android:layout_margin="5dp">
         <TextView
-            android:id="@+id/contact_abbrev"
+            android:id="@+id/icon_abbrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:visibility="gone" />
         <ImageView
-            android:id="@+id/contact_icon"
+            android:id="@+id/icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:visibility="gone" />
@@ -30,10 +30,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="12.6dp">
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp">
 
         <TextView
-            android:id="@+id/contact_name"
+            android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,7 +45,7 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/contact_address"
+            android:id="@+id/item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

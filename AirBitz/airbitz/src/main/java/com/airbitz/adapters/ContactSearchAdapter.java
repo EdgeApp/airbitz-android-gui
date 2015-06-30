@@ -53,7 +53,7 @@ public class ContactSearchAdapter extends ArrayAdapter {
     private final Picasso mPicasso;
 
     public ContactSearchAdapter(Context context, List<Contact> contacts) {
-        super(context, R.layout.item_listview_contacts);
+        super(context, R.layout.item_listview_icon_with_text);
         mContext = context;
         mContacts = contacts;
         mPicasso = Picasso.with(mContext);
@@ -75,17 +75,17 @@ public class ContactSearchAdapter extends ArrayAdapter {
         ViewHolderItem viewHolder;
         if (convertView == null || null == convertView.getTag()) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item_listview_contacts, parent, false);
+            convertView = inflater.inflate(R.layout.item_listview_icon_with_text, parent, false);
             viewHolder = new ViewHolderItem();
 
-            viewHolder.contactName = (TextView) convertView.findViewById(R.id.contact_name);
+            viewHolder.contactName = (TextView) convertView.findViewById(R.id.item_name);
             viewHolder.contactName.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
             viewHolder.imageWrapper = convertView.findViewById(R.id.icon_wrapper);
-            viewHolder.contactIcon = (ImageView) convertView.findViewById(R.id.contact_icon);
-            viewHolder.contactAbbrev = (TextView) convertView.findViewById(R.id.contact_abbrev);
+            viewHolder.contactIcon = (ImageView) convertView.findViewById(R.id.icon);
+            viewHolder.contactAbbrev = (TextView) convertView.findViewById(R.id.icon_abbrev);
 
-            viewHolder.contactAddress = (TextView) convertView.findViewById(R.id.contact_address);
+            viewHolder.contactAddress = (TextView) convertView.findViewById(R.id.item_description);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
@@ -107,13 +107,13 @@ public class ContactSearchAdapter extends ArrayAdapter {
         } else {
             viewHolder.contactIcon.setVisibility(View.GONE);
             viewHolder.contactAbbrev.setVisibility(View.VISIBLE);
-            viewHolder.contactAbbrev.setText(formatAbbrev(contact));
+            viewHolder.contactAbbrev.setText(formatAbbrev(contact.getName()));
         }
         return convertView;
     }
 
-    private String formatAbbrev(Contact contact) {
-        return contact.getName().substring(0, 1).toUpperCase();
+    private String formatAbbrev(String name) {
+        return name.substring(0, 1).toUpperCase();
     }
 
     private int nextColor(int position) {
