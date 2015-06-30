@@ -1,64 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
 
-
-    <RelativeLayout
-        android:id="@+id/fragment_category_layout_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp"
-        android:background="#40000000">
-
-        <ImageButton
-            android:id="@+id/layout_airbitz_header_button_back"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_back"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/fragment_category_textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textColor="@android:color/white"
-            android:textSize="16dp" />
-
-
-        <ImageButton
-            android:id="@+id/layout_airbitz_header_button_help"
-            android:layout_width="44.1dp"
-            android:layout_height="44.1dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:padding="12.6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/btn_help"
-            android:visibility="invisible" />
-
-    </RelativeLayout>
-
     <RelativeLayout
         android:id="@+id/layout_sending"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_category_layout_header"
+        android:layout_below="@id/toolbar"
         android:padding="20dp">
-
 
         <TextView
             android:id="@+id/textview_sending"
@@ -83,5 +35,7 @@
             android:src="@drawable/ico_sending_3" />
 
     </RelativeLayout>
+
+    <include layout="@layout/layout_toolbar_title" />
 
 </RelativeLayout>

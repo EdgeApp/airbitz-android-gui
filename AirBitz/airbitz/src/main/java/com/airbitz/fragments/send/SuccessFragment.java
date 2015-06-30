@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -33,6 +33,7 @@ package com.airbitz.fragments.send;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,15 @@ public class SuccessFragment extends BaseFragment {
     public static final String TYPE_SEND = "com.airbitz.fragments.receivedsuccess.send";
     public static final String TYPE_REQUEST = "com.airbitz.fragments.receivedsuccess.request";
     private final String TAG = getClass().getSimpleName();
+
+    private TextView mSendingTextView;
+    private TextView mTitleTextView;
+    private ImageButton mBackButton;
+    private ImageView mLogoImageView;
+    private Bundle mBundle;
+
+    private final int ANIM_STEP = 400;
+
     Runnable mSendAnimationRunner = new Runnable() {
         int count = 0;
 
@@ -67,14 +77,9 @@ public class SuccessFragment extends BaseFragment {
             } else if (count % 3 == 0) {
                 mLogoImageView.setImageResource(R.drawable.ico_sending_3);
             }
-            mHandler.postDelayed(this, 500);
+            mHandler.postDelayed(this, ANIM_STEP);
         }
     };
-    private TextView mSendingTextView;
-    private TextView mTitleTextView;
-    private ImageButton mBackButton;
-    private ImageView mLogoImageView;
-    private Bundle mBundle;
     Runnable mRequestAnimationRunner = new Runnable() {
         int count = 0;
 
@@ -89,7 +94,7 @@ public class SuccessFragment extends BaseFragment {
                 } else if (count % 3 == 0) {
                     mLogoImageView.setImageResource(R.drawable.ico_sending_1);
                 }
-                mHandler.postDelayed(this, 500);
+                mHandler.postDelayed(this, ANIM_STEP);
             } else {
                 mActivity.switchToWallets(mBundle);
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
@@ -117,27 +122,17 @@ public class SuccessFragment extends BaseFragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_received_success, container, false);
         } else {
-
             return mView;
         }
 
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        getBaseActivity().setSupportActionBar(toolbar);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mSendingTextView = (TextView) mView.findViewById(R.id.textview_sending);
-        mTitleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
-
+        mTitleTextView = (TextView) mView.findViewById(R.id.title);
         mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
-
-        mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
-
-        mSendingTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
 
         String fromSource = mBundle.getString(WalletsFragment.FROM_SOURCE);
         if (fromSource.contains(TYPE_REQUEST)) {
@@ -149,7 +144,6 @@ public class SuccessFragment extends BaseFragment {
             mSendingTextView.setText(getString(R.string.received_success_sending));
             mHandler.post(mSendAnimationRunner);
         }
-
         return mView;
     }
 
@@ -159,5 +153,4 @@ public class SuccessFragment extends BaseFragment {
         mHandler.removeCallbacks(mSendAnimationRunner);
         mHandler.removeCallbacks(mRequestAnimationRunner);
     }
-
 }
