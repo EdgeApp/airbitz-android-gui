@@ -29,7 +29,7 @@
                 <RadioButton
                     android:id="@+id/settings_denomination_buttons_bitcoin"
                     android:text="@string/settings_denomination_buttons_bitcoin"
-                    style="@style/SettingsRadioItem" />
+                    style="@style/SettingsRadioItemFirst" />
 
                 <RadioButton
                     android:id="@+id/settings_denomination_buttons_mbitcoin"
