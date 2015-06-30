@@ -577,12 +577,9 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private void startSMS() {
         emailType = false;
-        ContactPickerFragment fragment = new ContactPickerFragment();
-        fragment.setContactSelectionListener(this);
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.SMS);
-        fragment.setArguments(bundle);
-        mActivity.pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        ContactPickerFragment.pushFragment(mActivity, bundle, this);
     }
 
     private void finishSMS(Contact contact) {
@@ -614,12 +611,9 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private void startEmail() {
         emailType = true;
-        ContactPickerFragment fragment = new ContactPickerFragment();
-        fragment.setContactSelectionListener(this);
         Bundle bundle = new Bundle();
         bundle.putString(ContactPickerFragment.TYPE, ContactPickerFragment.EMAIL);
-        fragment.setArguments(bundle);
-        mActivity.pushFragment(fragment, NavigationActivity.Tabs.REQUEST.ordinal());
+        ContactPickerFragment.pushFragment(mActivity, bundle, this);
     }
 
     private void finishEmail(Contact contact, Uri uri) {
