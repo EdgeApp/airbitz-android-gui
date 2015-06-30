@@ -28,7 +28,7 @@
     <LinearLayout
         android:id="@+id/fragment_wallets_addwallet_currency_layout"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">

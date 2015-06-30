@@ -115,7 +115,7 @@ public class WalletAddFragment extends BaseFragment
         });
 
         mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
-        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, mCurrencyList);
+        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, R.layout.item_currency_small, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
         int num = mCoreAPI.coreSettings().getCurrencyNum();
         String defaultCode = mCoreAPI.getCurrencyCode(num);

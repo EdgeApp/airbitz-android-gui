@@ -71,33 +71,25 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        convertView = inflater.inflate(R.layout.item_currency_spinner_dropdown, parent, false);
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
-        textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
-        textView.setText(mCurrencies.get(position));
-        textView.setTypeface(NavigationActivity.latoRegularTypeFace);
-        textView.setSingleLine(false);
-        return convertView;
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResCurrencySpinner, parent, false);
 
         String pair = mCurrencies.get(position);
-        String[] tuple = pair.split(" - ");
 
         TextView code = (TextView) convertView.findViewById(R.id.textview_currency);
-        TextView desc = (TextView) convertView.findViewById(R.id.textview_description);
-        if (tuple.length == 2) {
-            code.setText(tuple[0]);
-            desc.setText(tuple[1]);
+        String[] tuple = pair.split(" - ");
+        if (mResCurrencySpinner == R.layout.item_currency_spinner) {
+            TextView desc = (TextView) convertView.findViewById(R.id.textview_description);
+            if (tuple.length == 2) {
+                code.setText(tuple[0]);
+                desc.setText(tuple[1]);
+            } else {
+                code.setText(tuple[0]);
+                desc.setText("");
+            }
         } else {
             code.setText(tuple[0]);
-            desc.setText("");
         }
         return convertView;
     }
