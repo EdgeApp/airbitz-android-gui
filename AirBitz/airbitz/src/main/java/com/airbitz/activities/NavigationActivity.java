@@ -53,6 +53,7 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -72,6 +73,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -96,11 +98,11 @@ import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.login.TransparentFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
-import com.airbitz.fragments.settings.ImportFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
+import com.airbitz.fragments.settings.ImportFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
@@ -115,6 +117,7 @@ import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -190,6 +193,7 @@ public class NavigationActivity extends ActionBarActivity
     private NavigationBarFragment mNavBarFragment;
     private RelativeLayout mNavBarFragmentLayout;
     private Numberpad mNumberpadView;
+    private View mFragmentContainer;
     private LinearLayout mFragmentLayout;
     private ViewPager mViewPager;
     private int mNavThreadId;
@@ -218,7 +222,7 @@ public class NavigationActivity extends ActionBarActivity
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
     private DrawerLayout mDrawer;
-    private RelativeLayout mDrawerView;
+    private FrameLayout mDrawerView;
     private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
     private ImageView mDrawerAccountArrow;
@@ -242,8 +246,11 @@ public class NavigationActivity extends ActionBarActivity
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
         mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+        mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
+
+        Common.addStatusBarPadding(this, mFragmentContainer);
 
         setTypeFaces();
 
@@ -1943,9 +1950,10 @@ public class NavigationActivity extends ActionBarActivity
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
-        mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
-        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
+        mDrawerView = (FrameLayout) findViewById(R.id.activityDrawerView);
+        Common.addStatusBarPadding(this, mDrawerView);
 
+        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
         mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
         mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {

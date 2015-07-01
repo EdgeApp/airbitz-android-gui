@@ -49,10 +49,13 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.airbitz.R;
 import com.airbitz.api.tABC_CC;
@@ -372,5 +375,24 @@ public class Common {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
+    }
+
+    // Snagged from http://stackoverflow.com/a/29281284
+    public static void addStatusBarPadding(Activity activity, View view) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            view.setPadding(0, getStatusBarHeight(activity), 0, 0);
+        }
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

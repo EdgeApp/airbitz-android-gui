@@ -146,6 +146,8 @@ public class LandingFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_landing, container, false);
 
+        Common.addStatusBarPadding(mActivity, mView);
+
         mBlackoutView = mView.findViewById(R.id.fragment_landing_black);
         mDetailTextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
         mDetailTextView.setTypeface(NavigationActivity.latoRegularTypeFace);

@@ -336,4 +336,20 @@
         <!-- item name="android:textSize">@dimen/calc_button_textsize</item -->
     </style>
 
+    <style name="DrawerButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/transparent_until_pressed</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/gray_text</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
 </resources>

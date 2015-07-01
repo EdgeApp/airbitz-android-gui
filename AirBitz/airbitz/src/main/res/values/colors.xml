@@ -108,4 +108,6 @@
     <color name="contact_color_6">#ff5ee0ec</color>
     <color name="contact_color_7">#ffb400ff</color>
     <color name="contact_color_8">#ff777777</color>
+
+    <color name="statusBarColor">#aa000000</color>
 </resources>
