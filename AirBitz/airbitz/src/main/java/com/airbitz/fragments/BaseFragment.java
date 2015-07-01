@@ -38,8 +38,10 @@ import android.app.Fragment;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.airbitz.AirbitzApplication;
@@ -48,11 +50,34 @@ import com.airbitz.activities.NavigationActivity;
 
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
+
     protected NavigationActivity mActivity;
+    protected Toolbar mToolbar;
+    protected boolean mDrawerEnabled = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    public void setDrawerEnabled(boolean enabled) {
+        mDrawerEnabled = enabled;
+    }
+
+    @Override
+    public void onStart() {
+        View view = getView();
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mActivity.setSupportActionBar(mToolbar);
+            if (mDrawerEnabled) {
+                mToolbar.setNavigationIcon(R.drawable.ic_drawer_black);
+                mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+                updateNavigationIcon();
+            }
+        }
+        super.onStart();
     }
 
     @Override
@@ -147,6 +172,24 @@ public class BaseFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mActivity.mAsyncTasks.pop();
+        }
+    }
+
+    protected void updateNavigationIcon() {
+        if (mToolbar != null) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            mToolbar.setNavigationIcon(R.drawable.ic_drawer_black);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mActivity.isDrawerOpen()) {
+                        mActivity.closeDrawer();
+                    } else {
+                        mActivity.openDrawer();
+                    }
+                }
+            });
         }
     }
 }

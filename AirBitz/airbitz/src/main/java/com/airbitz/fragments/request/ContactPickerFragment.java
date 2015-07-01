@@ -92,6 +92,7 @@ public class ContactPickerFragment
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
     }
 
     @Override

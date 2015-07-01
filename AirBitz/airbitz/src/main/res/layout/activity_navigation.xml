@@ -71,4 +71,5 @@
         android:id="@+id/modal_indefinite_progress"
         layout="@layout/layout_modal_indefinite_progress"
         android:visibility="gone" />
+
 </RelativeLayout>

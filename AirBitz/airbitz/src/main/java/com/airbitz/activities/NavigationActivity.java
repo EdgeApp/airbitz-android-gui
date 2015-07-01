@@ -2046,10 +2046,18 @@ public class NavigationActivity extends ActionBarActivity
         });
     }
 
-    private void openDrawer() {
+    public void openDrawer() {
         mDrawerAccount.setText(AirbitzApplication.getUsername());
         showOthersList(AirbitzApplication.getUsername(), false);
         mDrawer.openDrawer(mDrawerView);
+    }
+
+    public void closeDrawer() {
+        mDrawer.closeDrawer(mDrawerView);
+    }
+
+    public boolean isDrawerOpen() {
+        return mDrawer.isDrawerOpen(mDrawerView);
     }
 
     private void showOthersList(String username, boolean show)

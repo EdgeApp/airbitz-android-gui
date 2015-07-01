@@ -2,9 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="290dp"
     android:layout_height="match_parent"
-    android:layout_gravity="end"
+    android:layout_gravity="start"
     android:layout_marginBottom="@dimen/tabbar_height"
-    android:layout_marginTop="44.1dp"
     android:background="@color/light_gray"
     android:orientation="vertical">
 
@@ -18,8 +17,8 @@
         <TextView
             android:id="@+id/item_drawer_exchange_rate"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/drawer_dark_blue_gray"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimaryDark"
             android:drawableLeft="@drawable/icon_bitcoin_symbol"
             android:drawablePadding="10dp"
             android:ellipsize="end"
@@ -27,7 +26,7 @@
             android:paddingLeft="20dp"
             android:singleLine="true"
             android:text="1000 bits = $ 0.246 USD"
-            android:textColor="@color/light_gray_text"
+            android:textColor="@android:color/white"
             android:textSize="20dp" />
 
         <include layout="@layout/divider_horizontal_dark_gray" />
