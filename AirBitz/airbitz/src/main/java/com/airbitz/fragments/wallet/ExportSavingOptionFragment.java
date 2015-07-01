@@ -109,18 +109,12 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private Button mTodayButton;
     private Button mYesterdayButton;
 
-    private HighlightOnPressButton mPrintButton;
-    private ImageView mPrintImage;
-    private HighlightOnPressButton mSDCardButton;
-    private ImageView mSDCardImage;
-    private HighlightOnPressButton mEmailButton;
-    private ImageView mEmailImage;
-    private HighlightOnPressButton mGoogleDriveButton;
-    private ImageView mGoogleDriveImage;
-    private HighlightOnPressButton mShareButton;
-    private ImageView mShareImage;
-    private HighlightOnPressButton mViewButton;
-    private ImageView mViewImage;
+    private Button mPrintButton;
+    private Button mSDCardButton;
+    private Button mEmailButton;
+    private Button mGoogleDriveButton;
+    private Button mShareButton;
+    private Button mViewButton;
 
     private EditText mPasswordEditText;
 
@@ -146,14 +140,16 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         if (mView != null) {
             return mView;
         }
-        mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
+        final Context contextThemeWrapper = new ContextThemeWrapper(mActivity, R.style.AppTheme_Blue);
+        LayoutInflater i = inflater.cloneInContext(contextThemeWrapper);
 
+        mView = i.inflate(R.layout.fragment_export_saving_options, container, false);
         today = Calendar.getInstance();
 
         mFromButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
         mToButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
 
-        mDatesLayout = (RelativeLayout) mView.findViewById(R.id.fragment_export_date_entries);
+        mDatesLayout = (RelativeLayout) mView.findViewById(R.id.layout_export_data);
         mLastPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_last_period);
         mThisPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_this_period);
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
@@ -165,18 +161,12 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_export_saving_password_edittext);
         mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mPrintButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_print);
-        mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);
-        mSDCardButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
-        mSDCardImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_sd_card);
-        mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_email);
-        mEmailImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_email);
-        mGoogleDriveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
-        mGoogleDriveImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_google_drive);
-        mShareButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_share);
-        mShareImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_share);
-        mViewButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_view);
-        mViewImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_view);
+        mPrintButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_print);
+        mSDCardButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
+        mEmailButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_email);
+        mGoogleDriveButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
+        mShareButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_share);
+        mViewButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_view);
 
         mThisMonthButton = (Button) mView.findViewById(R.id.button_this_month);
         mThisWeekButton = (Button) mView.findViewById(R.id.button_this_week);
@@ -606,37 +596,25 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         if (type == ExportTypes.CSV.ordinal()) {
             setAllButtonViews(View.GONE);
             mSDCardButton.setVisibility(View.VISIBLE);
-            mSDCardImage.setVisibility(View.VISIBLE);
             mShareButton.setVisibility(View.VISIBLE);
-            mShareImage.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
-            mPrintImage.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
             mPrintButton.setVisibility(View.VISIBLE);
-            mPrintImage.setVisibility(View.VISIBLE);
             mSDCardButton.setVisibility(View.VISIBLE);
-            mSDCardImage.setVisibility(View.VISIBLE);
             mViewButton.setVisibility(View.VISIBLE);
-            mViewImage.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
     }
 
     private void setAllButtonViews(int state) {
         mPrintButton.setVisibility(state);
-        mPrintImage.setVisibility(state);
         mSDCardButton.setVisibility(state);
-        mSDCardImage.setVisibility(state);
         mEmailButton.setVisibility(state);
-        mEmailImage.setVisibility(state);
         mGoogleDriveButton.setVisibility(state);
-        mGoogleDriveImage.setVisibility(state);
         mShareButton.setVisibility(state);
-        mShareImage.setVisibility(state);
         mViewButton.setVisibility(state);
-        mViewImage.setVisibility(state);
         mPasswordEditText.setVisibility(state);
     }
 

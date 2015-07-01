@@ -32,7 +32,9 @@
 package com.airbitz.fragments.wallet;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +78,10 @@ public class ExportFragment extends WalletBaseFragment {
         if (mView != null) {
             return mView;
         }
-        mView = inflater.inflate(R.layout.fragment_export, container, false);
+        final Context contextThemeWrapper = new ContextThemeWrapper(mActivity, R.style.AppTheme_Blue);
+        LayoutInflater i = inflater.cloneInContext(contextThemeWrapper);
+
+        mView = i.inflate(R.layout.fragment_export, container, false);
         mCSVButton = (Button) mView.findViewById(R.id.button_csv);
         mQuickenButton = (Button) mView.findViewById(R.id.button_quicken);
         mQuickBooksButton = (Button) mView.findViewById(R.id.button_quickbooks);
