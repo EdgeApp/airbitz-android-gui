@@ -78,8 +78,7 @@ public class ExportFragment extends WalletBaseFragment {
         if (mView != null) {
             return mView;
         }
-        final Context contextThemeWrapper = new ContextThemeWrapper(mActivity, R.style.AppTheme_Blue);
-        LayoutInflater i = inflater.cloneInContext(contextThemeWrapper);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
 
         mView = i.inflate(R.layout.fragment_export, container, false);
         mCSVButton = (Button) mView.findViewById(R.id.button_csv);

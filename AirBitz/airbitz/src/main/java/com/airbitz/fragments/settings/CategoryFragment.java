@@ -84,11 +84,13 @@ public class CategoryFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_category, container, false);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        View mView = i.inflate(R.layout.fragment_category, container, false);
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.settings_category_title);

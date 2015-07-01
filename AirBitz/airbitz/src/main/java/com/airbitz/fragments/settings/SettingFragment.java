@@ -147,7 +147,8 @@ public class SettingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_setting, container, false);
+            LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+            mView = i.inflate(R.layout.fragment_setting, container, false);
         }
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);

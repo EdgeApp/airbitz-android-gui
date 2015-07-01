@@ -35,12 +35,15 @@ import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -94,6 +97,11 @@ public class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    protected LayoutInflater getThemedInflater(LayoutInflater inflater, int theme) {
+        final Context contextThemeWrapper = new ContextThemeWrapper(mActivity, theme);
+        return inflater.cloneInContext(contextThemeWrapper);
     }
 
     // Overriding the fragment transition animations to use variable display width

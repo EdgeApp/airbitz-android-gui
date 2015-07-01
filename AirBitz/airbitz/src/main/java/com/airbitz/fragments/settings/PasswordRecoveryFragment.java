@@ -128,11 +128,13 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        mView = i.inflate(R.layout.fragment_password_recovery, container, false);
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.activity_recovery_title);

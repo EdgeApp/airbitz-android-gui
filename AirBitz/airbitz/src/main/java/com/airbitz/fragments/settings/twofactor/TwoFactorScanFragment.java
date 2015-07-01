@@ -99,11 +99,13 @@ public class TwoFactorScanFragment extends BaseFragment implements
         mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_twofactor_scan, container, false);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        View mView = i.inflate(R.layout.fragment_twofactor_scan, container, false);
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.fragment_twofactor_scan_title);
