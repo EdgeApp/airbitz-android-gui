@@ -110,4 +110,7 @@
     <color name="contact_color_8">#ff777777</color>
 
     <color name="statusBarColor">#aa000000</color>
+
+    <color name="receive_green">#ff80C342</color>
+    <color name="send_blue">#ff006698</color>
 </resources>

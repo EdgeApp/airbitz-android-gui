@@ -45,6 +45,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -60,6 +61,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -122,6 +124,10 @@ import com.airbitz.utils.Common;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,9 +164,7 @@ public class NavigationActivity extends ActionBarActivity
     final Runnable delayedShowNavBar = new Runnable() {
         @Override
         public void run() {
-            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
-            mFragmentLayout.setLayoutParams(getFragmentLayoutParams());
-            mFragmentLayout.invalidate();
+            mActionButton.setVisibility(View.VISIBLE);
         }
     };
 
@@ -190,8 +194,6 @@ public class NavigationActivity extends ActionBarActivity
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
-    private NavigationBarFragment mNavBarFragment;
-    private RelativeLayout mNavBarFragmentLayout;
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
     private LinearLayout mFragmentLayout;
@@ -239,13 +241,74 @@ public class NavigationActivity extends ActionBarActivity
 
     private boolean activityInForeground = false;
 
+    private FloatingActionButton mActionButton;
+    private FloatingActionMenu mActionMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
-        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+
+
+        Resources r = getResources();
+        int menuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
+        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
+
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(R.drawable.ic_menu_add_black);
+        mActionButton = new FloatingActionButton.Builder(this)
+                                                .setContentView(icon)
+                                                .build();
+        mActionButton.setVisibility(View.GONE);
+
+        ImageView requestButton = new ImageView(this);
+        ImageView sendButton = new ImageView(this);
+        ImageView txButton = new ImageView(this);
+        requestButton.setImageResource(R.drawable.ic_request);
+        requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        sendButton.setImageResource(R.drawable.ic_send);
+        sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        txButton.setImageResource(R.drawable.ico_nav_wallets_selected);
+        txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+        SubActionButton receiveAction = itemBuilder.setLayoutParams(menuLayout).setContentView(requestButton).build();
+        SubActionButton sendAction = itemBuilder.setLayoutParams(menuLayout).setContentView(sendButton).build();
+        SubActionButton txAction = itemBuilder.setLayoutParams(menuLayout).setContentView(txButton).build();
+
+        mActionMenu =
+            new FloatingActionMenu.Builder(this)
+                                  .addSubActionView(receiveAction)
+                                  .addSubActionView(sendAction)
+                                  .addSubActionView(txAction)
+                                  .attachTo(mActionButton)
+                                  .build();
+
+        requestButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                switchFragmentThread(Tabs.REQUEST.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                switchFragmentThread(Tabs.SEND.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        txButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                switchFragmentThread(Tabs.WALLET.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
         mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
@@ -295,8 +358,6 @@ public class NavigationActivity extends ActionBarActivity
         mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
         mViewPager.setVisibility(View.GONE);
         setViewPager();
-
-        mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
 
         // Navigation Drawer slideout
         setupDrawer();
@@ -368,7 +429,6 @@ public class NavigationActivity extends ActionBarActivity
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // Disappear if transparent page shows
                 if ((position == 0) && positionOffsetPixels == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
                     mViewPager.setVisibility(View.GONE);
                 }
             }
@@ -377,7 +437,6 @@ public class NavigationActivity extends ActionBarActivity
                 // Disappear if transparent page shows
                 Log.d(TAG, "page selected = " + position);
                 if (position == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
                     mViewPager.setVisibility(View.GONE);
                 }
             }
@@ -419,16 +478,13 @@ public class NavigationActivity extends ActionBarActivity
         } else {
             if (position != Tabs.BD.ordinal()) {
                 AirbitzApplication.setLastNavTab(position);
-                mNavBarFragment.unselectTab(position);
-                mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
-                mNavBarFragment.selectTab(Tabs.BD.ordinal());
                 DisplayLoginOverlay(true, true);
             }
         }
     }
 
     public void switchFragmentThread(int id) {
-        if (mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
+        if (mActionButton.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
             showNavBar();
         }
 
@@ -458,9 +514,6 @@ public class NavigationActivity extends ActionBarActivity
         } else {
             Log.d(TAG, "switchFragmentThread showing frag is null");
         }
-        mNavBarFragment.unselectTab(mNavThreadId);
-        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
-        mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
@@ -547,29 +600,14 @@ public class NavigationActivity extends ActionBarActivity
         return mFragmentLayoutParams;
     }
 
-    int getNavBarStart() {
-        if (mNavBarStart == 0) {
-            int loc[] = new int[2];
-            mNavBarFragmentLayout.getLocationOnScreen(loc);
-            mNavBarStart = loc[1];
-        }
-        return mNavBarStart;
-    }
-
     public void hideNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.VISIBLE) {
-            mFragmentLayoutParams = getFragmentLayoutParams();
-            mNavBarFragmentLayout.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mFragmentLayout.setLayoutParams(rLP);
-            mFragmentLayout.invalidate();
-            int test = getNavBarStart();
+        if (mActionButton.getVisibility() == View.VISIBLE) {
+            mActionButton.setVisibility(View.GONE);
         }
     }
 
     public void showNavBar() {
-        // if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
-        if (mNavBarFragmentLayout.getVisibility() == View.GONE) {
+        if (mActionButton.getVisibility() == View.GONE) {
             mHandler.postDelayed(delayedShowNavBar, 50);
         }
     }
@@ -637,8 +675,6 @@ public class NavigationActivity extends ActionBarActivity
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
-        mNavBarFragment.disableSendRecieveButtons(true);
-
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
@@ -1193,6 +1229,7 @@ public class NavigationActivity extends ActionBarActivity
         resetApp();
         AirbitzApplication.Logout();
         mCoreAPI.logout();
+        mActionButton.setVisibility(View.GONE);
 
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }

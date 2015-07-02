@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/tabbar_height"
             android:background="@drawable/bg_app"
             android:orientation="vertical" />
 
@@ -39,21 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:visibility="gone" />
-
-        <RelativeLayout
-            android:id="@+id/navigationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <fragment
-                android:id="@+id/navigationFragment"
-                android:name="com.airbitz.fragments.NavigationBarFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_navigation_bar" />
-
-        </RelativeLayout>
 
         </RelativeLayout>
 
