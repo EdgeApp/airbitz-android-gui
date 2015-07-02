@@ -5,25 +5,23 @@
     <style name="AppTheme.Blue" parent="AppTheme">
         <item name="toolbarBackgroundColor">@color/colorPrimary</item>
         <item name="toolbarTextColor">@android:color/white</item>
-        <item name="toolbarNavigationIcon">@drawable/ic_drawer</item>
     </style>
  
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
 
-        <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowTitleSize">0dp</item>
 
         <item name="windowActionModeOverlay">true</item>
 
         <!-- toolbar attributes -->
-        <item name="toolbarBackgroundColor">@color/toolbarBackgroundColor</item>
-        <item name="toolbarTextColor">@android:color/black</item>
-        <item name="toolbarNavigationIcon">@drawable/ic_drawer_black</item>
+        <item name="toolbarBackgroundColor">@color/colorPrimary</item>
+        <item name="toolbarTextColor">@android:color/white</item>
     </style>
 
     <style name="ToolBarCommon">
@@ -219,6 +217,7 @@
         <item name="android:textOff"></item>
         <item name="android:textOn"></item>
         <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+        <item name="android:textColor">@color/settings_button_text</item>
     </style>
 
     <style name="SettingsEditText" parent="SettingsItem">
@@ -240,6 +239,7 @@
         <item name="android:paddingBottom">13dp</item>
         <item name="android:paddingTop">13dp</item>
         <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+        <item name="android:textColor">@color/settings_button_text</item>
     </style>
 
     <style name="SettingsRadioItemFirst" parent="SettingsRadioItem">
@@ -252,6 +252,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">left</item>
         <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/settings_button_text</item>
     </style>
 
     <style name="SettingsSplitButton" parent="SettingsItem">

@@ -224,12 +224,6 @@ public class WalletBaseFragment extends BaseFragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (android.R.id.home == item.getItemId()) {
-            if (isMenuExpanded()) {
-                hideWalletList();
-                return true;
-            }
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -310,8 +304,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mActivity.invalidateOptionsMenu();
         mExpanded = true;
 
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        showArrow();
     }
 
     public void hideWalletList() {
@@ -344,5 +337,17 @@ public class WalletBaseFragment extends BaseFragment implements
         mExpanded = false;
 
         updateNavigationIcon();
+
+        showBurger();
+    }
+
+
+    @Override
+    protected void onNavigationClick() {
+        if (isMenuExpanded()) {
+            hideWalletList();
+        } else {
+            super.onNavigationClick();
+        }
     }
 }

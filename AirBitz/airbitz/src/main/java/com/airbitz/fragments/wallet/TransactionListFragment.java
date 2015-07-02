@@ -327,8 +327,6 @@ public class TransactionListFragment extends WalletsFragment
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 hideTitleView();
-                getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
                 mSearchPage = true;
             }
         });
@@ -382,8 +380,6 @@ public class TransactionListFragment extends WalletsFragment
             mTransactionAdapter.setSearch(false);
             startTransactionTask();
             mSearchView.onActionViewCollapsed();
-            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
             return true;
         }
         return false;

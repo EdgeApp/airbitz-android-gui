@@ -36,6 +36,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +47,10 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.balysv.materialmenu.MaterialMenuDrawable.IconState;
+import static com.balysv.materialmenu.MaterialMenuDrawable.Stroke;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -67,6 +72,8 @@ public class BaseFragment extends Fragment {
         mDrawerEnabled = enabled;
     }
 
+    private MaterialMenuDrawable mMaterialMenu;
+
     @Override
     public void onStart() {
         View view = getView();
@@ -74,9 +81,8 @@ public class BaseFragment extends Fragment {
         if (mToolbar != null) {
             mActivity.setSupportActionBar(mToolbar);
             if (mDrawerEnabled) {
-                mToolbar.setNavigationIcon(R.drawable.ic_drawer_black);
-                mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+                mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
+                mToolbar.setNavigationIcon(mMaterialMenu);
                 updateNavigationIcon();
             }
         }
@@ -183,19 +189,33 @@ public class BaseFragment extends Fragment {
         }
     }
 
+    protected void showArrow() {
+        if (mMaterialMenu != null) {
+            mMaterialMenu.animateIconState(IconState.ARROW);
+        }
+    }
+
+    protected void showBurger() {
+        if (mMaterialMenu != null) {
+            mMaterialMenu.animateIconState(IconState.BURGER);
+        }
+    }
+
+    protected void onNavigationClick() {
+        if (mActivity.isDrawerOpen()) {
+            mActivity.closeDrawer();
+        } else {
+            mActivity.openDrawer();
+        }
+    }
+
     protected void updateNavigationIcon() {
         if (mToolbar != null) {
-            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
-            mToolbar.setNavigationIcon(R.drawable.ic_drawer_black);
+            mToolbar.setNavigationIcon(mMaterialMenu);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mActivity.isDrawerOpen()) {
-                        mActivity.closeDrawer();
-                    } else {
-                        mActivity.openDrawer();
-                    }
+                    onNavigationClick();
                 }
             });
         }

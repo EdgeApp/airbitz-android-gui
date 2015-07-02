@@ -32,8 +32,8 @@
     <color name="listitem_normal">#88ffffff</color>
     <color name="selected_highlight">#aaffffff</color>
     <color name="semi_black_text">#99000000</color>
-    <color name="settings_button_text">#CC333333</color>
-    <color name="settings_edit_text">#FFEEEEEE</color>
+    <color name="settings_button_text">#FF000000</color>
+    <color name="settings_edit_text">#FF000000</color>
     <color name="settings_edit_hint">#FF999999</color>
     <color name="settings_edit_text_field">#FF444444</color>
     <color name="mostly_opaque_black">#DD000000</color>
