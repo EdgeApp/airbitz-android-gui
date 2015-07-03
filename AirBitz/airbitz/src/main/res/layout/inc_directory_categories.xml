@@ -2,84 +2,79 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/layout_listview_business"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/actionbar_shadow_bottom"
-        android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="10dp">
+        android:layout_margin="20dp"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <GridLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2">
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_restaurant"
+                android:drawableLeft="@drawable/ic_category_restaurants"
+                android:text="@string/restaurants"
+                style="@style/CategoryButton"
+                />
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_gift_cards"
+                android:drawableLeft="@drawable/ic_category_gift_cards"
+                android:text="@string/gift_cards"
+                style="@style/CategoryButton"
+                />
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_coffee_tea"
+                android:drawableLeft="@drawable/ic_category_coffee_tea"
+                android:text="@string/coffee_and_tea"
+                style="@style/CategoryButton"
+                />
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_electronics"
+                android:drawableLeft="@drawable/ic_category_electronics"
+                android:text="@string/electronics"
+                style="@style/CategoryButton"
+                />
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_atms"
+                android:drawableLeft="@drawable/ic_category_atms"
+                android:text="@string/atms"
+                style="@style/CategoryButton"
+                />
+
+            <com.airbitz.objects.CommonTextView
+                android:id="@+id/button_shopping"
+                android:drawableLeft="@drawable/ic_category_shopping"
+                android:text="@string/shopping"
+                style="@style/CategoryButton"
+                />
+
+        </GridLayout>
+
+        <com.airbitz.objects.CommonTextView
+            android:id="@+id/button_more"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_edge_blue"
-                android:divider="@drawable/gray_white_divider"
-                android:orientation="vertical"
-                android:showDividers="middle">
-
-                <TextView
-                    android:id="@+id/button_restaurant"
-                    style="@style/CategoryItemTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ico_restaurant"
-                    android:paddingLeft="16dp"
-                    android:textSize="14dp"
-                    android:text="@string/restaurant_and_food_trucks" />
-
-                <TextView
-                    android:id="@+id/button_bar"
-                    style="@style/CategoryItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ico_bar"
-                    android:drawablePadding="28dp"
-                    android:paddingLeft="20dp"
-                    android:textSize="14dp"
-                    android:text="@string/bars_and_nightclubs" />
-
-                <TextView
-                    android:id="@+id/button_coffee_tea"
-                    style="@style/CategoryItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ico_coffee"
-                    android:drawablePadding="28dp"
-                    android:paddingLeft="16dp"
-                    android:textSize="14dp"
-                    android:text="@string/coffee_and_tea" />
-
-                <TextView
-                    android:id="@+id/button_more"
-                    style="@style/CategoryItemBottom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ico_more"
-                    android:paddingLeft="16dp"
-                    android:textSize="14dp"
-                    android:text="@string/more_categories" />
-            </LinearLayout>
-
-            <com.airbitz.widgets.NoDefaultSpinner
-                android:id="@+id/spinner_more_categories"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="@android:color/transparent"
-                android:visibility="invisible" />
-        </LinearLayout>
+            style="@style/CategoryButton"
+            android:text="@string/more_categories" />
 
     </LinearLayout>
+
+    <com.airbitz.widgets.NoDefaultSpinner
+        android:id="@+id/spinner_more_categories"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@android:color/transparent"
+        android:visibility="invisible" />
 
 </LinearLayout>
 

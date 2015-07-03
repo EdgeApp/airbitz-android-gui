@@ -353,4 +353,13 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+    <style name="CategoryButton">
+        <item name="android:textColor">@color/category_blue</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

@@ -6,30 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.airbitz.activities.BusinessDirectoryActivity"
-    tools:ignore="MergeRootFrame">
-
-    <!-- Header -->
-
-    <include
-        android:id="@+id/fragment_business_directory_layout_header"
-        layout="@layout/layout_airbitz_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
-
-    <!-- Search Bar -->
-
-    <include
-        android:id="@+id/fragment_business_directory_layout_search"
-        layout="@layout/layout_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_business_directory_layout_header" />
+    tools:ignore="MergeRootFrame"
+    android:background="@color/colorPrimaryFrost">
 
     <FrameLayout
         android:id="@+id/scroll_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_business_directory_layout_search"
+        android:layout_below="@id/toolbar"
         android:foreground="@drawable/actionbar_shadow">
 
             <ListView
@@ -104,5 +88,6 @@
 
     </LinearLayout>
 
+    <include layout="@layout/layout_toolbar_title" />
 
 </RelativeLayout>

@@ -113,4 +113,6 @@
 
     <color name="receive_green">#ff80C342</color>
     <color name="send_blue">#ff006698</color>
+
+    <color name="category_blue">#ff037aff</color>
 </resources>
