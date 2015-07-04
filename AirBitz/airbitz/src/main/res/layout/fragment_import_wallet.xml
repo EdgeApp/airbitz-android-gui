@@ -17,12 +17,12 @@
         android:id="@+id/fragment_import_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_gray_text"
+        android:background="@color/gray_frost"
         android:layout_alignParentBottom="true">
 
         <info.hoang8f.android.segmented.SegmentedGroup
             android:id="@+id/import_bottom_buttons"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_gravity="center_horizontal"
@@ -31,20 +31,23 @@
 
             <RadioButton
                 android:id="@+id/fragment_import_button_address"
-                android:layout_width="74dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_address"
                 style="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/fragment_import_button_photos"
-                android:layout_width="74dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_photos"
                 style="@style/RadioButton" />
             <RadioButton
                 android:id="@+id/fragment_import_button_flash"
-                android:layout_width="74dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_send_flash"
                 style="@style/RadioButton" />

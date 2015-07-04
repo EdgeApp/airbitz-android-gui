@@ -17,7 +17,7 @@
         android:id="@+id/fragment_send_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_gray_text"
+        android:background="@color/gray_frost"
         android:layout_alignParentBottom="true">
 
         <info.hoang8f.android.segmented.SegmentedGroup
