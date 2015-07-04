@@ -46,8 +46,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -75,15 +77,16 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     public static int USERNAME_MIN_LENGTH = 3;
 
     private EditText mUserNameEditText;
-    private HighlightOnPressButton mNextButton;
-    private HighlightOnPressButton mBackButton;
-    private TextView mTitleTextView;
-    private View mUserNameRedRingCover;
+    private Button mNextButton;
+//    private HighlightOnPressButton mBackButton;
+//    private TextView mTitleTextView;
+//    private View mUserNameRedRingCover;
     private CheckUsernameTask mCheckUsernameTask;
     private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,22 +102,28 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        mUserNameRedRingCover = mView.findViewById(R.id.fragment_setup_username_redring);
-        mUserNameRedRingCover.setVisibility(View.GONE);
+//        mUserNameRedRingCover = mView.findViewById(R.id.fragment_setup_username_redring);
+//        mUserNameRedRingCover.setVisibility(View.GONE);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(R.string.fragment_setup_titles);
+//        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+//        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+//        mTitleTextView.setText(R.string.fragment_setup_titles);
 
-        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.fragment_setup_titles);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_next);
+//        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
+//        mBackButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().onBackPressed();
+//            }
+//        });
+
+        mNextButton = (Button) mView.findViewById(R.id.fragment_setup_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,11 +139,11 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if (mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH || mUserNameEditText.getText().toString().trim().length() < USERNAME_MIN_LENGTH) {
-                    mUserNameRedRingCover.setVisibility(View.VISIBLE);
-                } else {
-                    mUserNameRedRingCover.setVisibility(View.GONE);
-                }
+//                if (mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH || mUserNameEditText.getText().toString().trim().length() < USERNAME_MIN_LENGTH) {
+//                    mUserNameRedRingCover.setVisibility(View.VISIBLE);
+//                } else {
+//                    mUserNameRedRingCover.setVisibility(View.GONE);
+//                }
             }
 
             @Override
@@ -154,7 +163,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    if(mUserNameRedRingCover.getVisibility() != View.VISIBLE) {
+//                    if(mUserNameRedRingCover.getVisibility() != View.VISIBLE)
+                    {
                         goNext();
                     }
                     return true;
