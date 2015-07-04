@@ -17,27 +17,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/activityLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/bg_app"
-            android:orientation="vertical" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/postcard_mountain"
+                android:scaleType="centerCrop" />
 
-        <com.airbitz.objects.Calculator
-            android:id="@+id/navigation_calculator_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/activityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" />
 
-        <com.airbitz.objects.Numberpad
-            android:id="@+id/navigation_numberpad_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <com.airbitz.objects.Calculator
+                android:id="@+id/navigation_calculator_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
+
+            <com.airbitz.objects.Numberpad
+                android:id="@+id/navigation_numberpad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

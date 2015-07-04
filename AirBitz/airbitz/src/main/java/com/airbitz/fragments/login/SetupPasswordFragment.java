@@ -36,6 +36,7 @@ import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -45,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,9 +74,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private EditText mPasswordEditText;
     private EditText mWithdrawalPinEditText;
     private EditText mPasswordConfirmationEditText;
-    private HighlightOnPressButton mNextButton;
-    private HighlightOnPressButton mBackButton;
-    private TextView mTitleTextView;
+    private Button mNextButton;
+//    private HighlightOnPressButton mBackButton;
+//    private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
     private LinearLayout mPopupBlank;
     private ImageView mRule1Image, mRule2Image, mRule3Image, mRule4Image;
@@ -99,20 +101,26 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(R.string.fragment_setup_titles);
+//        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+//        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+//        mTitleTextView.setText(R.string.fragment_setup_titles);
+//
+//        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
+//        mBackButton.setVisibility(View.VISIBLE);
+//        mBackButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().onBackPressed();
+//            }
+//        });
 
-        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.fragment_setup_titles);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_next);
+        mNextButton = (Button) mView.findViewById(R.id.fragment_setup_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -421,13 +429,13 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     @Override
     public void onResume() {
         super.onResume();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mPasswordEditText.setSelection(mPasswordEditText.getText().length());
-                mPasswordEditText.requestFocus();
-            }
-        });
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mPasswordEditText.setSelection(mPasswordEditText.getText().length());
+//                mPasswordEditText.requestFocus();
+//            }
+//        });
         enableNextButton(true);
     }
 
