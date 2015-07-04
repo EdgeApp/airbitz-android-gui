@@ -33,10 +33,12 @@ package com.airbitz.fragments.login;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -62,7 +64,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     private char[] mPassword;
     private String mPin;
 
-    private HighlightOnPressButton mNextButton;
+    private Button mNextButton;
     private HighlightOnPressButton mShowButton;
     private boolean mShow = true;
     private LinearLayout mShowContainer;
@@ -90,7 +92,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_next);
+        mNextButton = (Button) mView.findViewById(R.id.fragment_setup_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +100,9 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
                 goNext();
             }
         });
+
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.fragment_setup_titles);
 
         mShowButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_writeitdown_show);
         mShowButton.setOnClickListener(new View.OnClickListener() {
@@ -107,10 +112,6 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
                 enableShow(mShow);
             }
         });
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(R.string.activity_signup_title);
 
         mShowContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_show_container);
         mHideContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_hide_container);

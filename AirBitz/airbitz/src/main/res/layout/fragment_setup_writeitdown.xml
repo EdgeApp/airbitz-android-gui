@@ -3,20 +3,17 @@
     android:id="@+id/activity_signup_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    tools:ignore="MergeRootFrame">
+    android:background="@color/gray_frost"
+    android:animateLayoutChanges="true">
 
-    <include
-        android:id="@+id/layout_title_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
         <RelativeLayout
             android:id="@+id/fragment_setup_writeitdown_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:layout_marginTop="?android:attr/actionBarSize"
             android:layout_below="@+id/layout_title_header">
 
             <LinearLayout
@@ -25,7 +22,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:focusable="true"
-                android:background="@color/lightly_opaque_black"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:focusableInTouchMode="true">
@@ -263,21 +259,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:orientation="horizontal">
 
-                <com.airbitz.objects.HighlightOnPressButton
+                <Button
                     android:id="@+id/fragment_setup_next"
-                    android:layout_width="100dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/setup_button_green"
                     android:text="@string/string_finish"
                     android:textColor="@android:color/white"
                     android:layout_alignParentRight="true"
                     android:textSize="16dp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    style="@style/GreenButton"/>
 
             </RelativeLayout>
 
