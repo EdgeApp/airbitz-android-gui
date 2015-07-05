@@ -288,21 +288,21 @@ public class NavigationActivity extends ActionBarActivity
                                   .attachTo(mActionButton)
                                   .build();
 
-        requestButton.setOnClickListener(new View.OnClickListener() {
+        receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 switchFragmentThread(Tabs.REQUEST.ordinal());
                 mActionMenu.close(true);
             }
         });
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 switchFragmentThread(Tabs.SEND.ordinal());
                 mActionMenu.close(true);
             }
         });
 
-        txButton.setOnClickListener(new View.OnClickListener() {
+        txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 switchFragmentThread(Tabs.WALLET.ordinal());
                 mActionMenu.close(true);
