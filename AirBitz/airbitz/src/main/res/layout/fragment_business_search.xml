@@ -39,14 +39,13 @@
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_form_height"
-        android:background="@android:color/white"
+        android:background="@color/light_gray"
         android:padding="1dp"
         android:elevation="8dp">
 
         <ImageButton
             android:id="@+id/search_button"
             android:src="@drawable/ico_loc"
-            android:background="@drawable/directory_search_button"
             android:layout_width="@dimen/search_form_width"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -54,15 +53,17 @@
             android:layout_margin="1dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="1dp"
+            android:background="@android:color/white" />
 
         <EditText
             android:id="@+id/query"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:layout_marginBottom="1dp"
             android:layout_toLeftOf="@id/search_button"
             android:drawableLeft="@android:drawable/ic_menu_search"
-            android:background="@drawable/directory_search_button"
             android:hint="@string/category_or_business_name_initial"
             style="@style/DirectorySearchText"
             />

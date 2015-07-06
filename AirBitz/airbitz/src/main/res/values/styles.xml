@@ -377,10 +377,9 @@
         <item name="android:padding">10dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:drawablePadding">5dp</item>
-        <item name="android:layout_margin">1dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:imeOptions">actionSearch</item>
-        <item name="android:background">@drawable/directory_search_button</item>
+        <item name="android:background">@android:color/white</item>
     </style>
 </resources>
