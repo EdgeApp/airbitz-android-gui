@@ -110,6 +110,7 @@ public class LandingFragment extends BaseFragment implements
     private View mBlackoutView;
 
     private HighlightOnPressImageButton mBackButton;
+    private Button mSignInButton;
     private Button mCreateAccountButton;
     private Button mExitPinLoginButton;
     private TextView mCurrentUserText;
@@ -343,14 +344,18 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        Button mSignInButton = (Button) mView.findViewById(R.id.fragment_landing_signin_button);
-        mSignInButton.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mSignInButton = (Button) mView.findViewById(R.id.fragment_landing_signin_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.hideSoftKeyboard(mPasswordEditText);
-                mActivity.hideSoftKeyboard(mUserNameEditText);
-                attemptPasswordLogin();
+                if (mUserNameEditText.getVisibility() == View.GONE) {
+                    mUserNameEditText.setVisibility(View.VISIBLE);
+                    mPasswordEditText.setVisibility(View.VISIBLE);
+                } else {
+                    mActivity.hideSoftKeyboard(mPasswordEditText);
+                    mActivity.hideSoftKeyboard(mUserNameEditText);
+                    attemptPasswordLogin();
+                }
             }
         });
 
@@ -366,6 +371,14 @@ public class LandingFragment extends BaseFragment implements
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_three));
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_four));
         setPinViews(0);
+
+        mAccounts.clear();
+        mAccounts.addAll(mCoreAPI.listAccounts());
+        if (mAccounts.isEmpty())
+        {
+            mUserNameEditText.setVisibility(View.GONE);
+            mPasswordEditText.setVisibility(View.GONE);
+        }
 
         mView.setOnTouchListener(mActivity);
 
