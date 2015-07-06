@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    android:background="@drawable/postcard_mountain"
+    android:background="@color/clear_color"
     tools:context="com.airbitz.activities.LandingActivity"
     tools:ignore="MergeRootFrame">
 
@@ -14,12 +14,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="visible">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/postcard_mountain"
-            android:scaleType="centerCrop" />
 
         <ImageView
             android:id="@+id/fragment_landing_logo_imageview"
