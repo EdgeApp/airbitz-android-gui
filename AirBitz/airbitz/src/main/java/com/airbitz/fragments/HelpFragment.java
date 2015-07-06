@@ -131,4 +131,10 @@ public class HelpFragment extends BaseFragment {
 
         return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.hideNavBar();
+    }
 }
