@@ -123,6 +123,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -136,9 +137,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.activity_signup_title);
-        getBaseActivity().setSupportActionBar(mToolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mActivity = (NavigationActivity) getActivity();
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);

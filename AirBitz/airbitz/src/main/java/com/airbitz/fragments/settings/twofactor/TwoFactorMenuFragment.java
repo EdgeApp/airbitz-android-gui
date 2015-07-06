@@ -81,7 +81,6 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     private Button mResetButton;
     private TextView mResetDescription, mResetDate;
     private CoreAPI mCoreAPI;
-    private NavigationActivity mActivity;
 
     OnTwoFactorMenuResult mOnTwoFactorMenuResult;
 
@@ -97,10 +96,10 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -110,9 +109,6 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.fragment_twofactor_menu_title);
-        getBaseActivity().setSupportActionBar(toolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mScanButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_scan_token);
         mScanButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);

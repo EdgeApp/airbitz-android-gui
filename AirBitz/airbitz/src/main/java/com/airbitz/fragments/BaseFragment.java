@@ -62,6 +62,7 @@ public class BaseFragment extends Fragment {
     protected NavigationActivity mActivity;
     protected Toolbar mToolbar;
     protected boolean mDrawerEnabled = true;
+    protected boolean mBackEnabled = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,10 @@ public class BaseFragment extends Fragment {
         mDrawerEnabled = enabled;
     }
 
+    public void setBackEnabled(boolean enabled) {
+        mBackEnabled = enabled;
+    }
+
     private MaterialMenuDrawable mMaterialMenu;
 
     @Override
@@ -79,12 +84,14 @@ public class BaseFragment extends Fragment {
         View view = getView();
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (mToolbar != null) {
+            mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
+            mToolbar.setNavigationIcon(mMaterialMenu);
             mActivity.setSupportActionBar(mToolbar);
             if (mDrawerEnabled) {
-                mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
-                mToolbar.setNavigationIcon(mMaterialMenu);
                 updateNavigationIcon();
                 mActivity.unlockDrawer();
+            } else if (mBackEnabled) {
+                mMaterialMenu.setIconState(IconState.ARROW);
             } else {
                 mActivity.lockDrawer();
             }

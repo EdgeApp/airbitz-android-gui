@@ -78,17 +78,16 @@ public class TwoFactorShowFragment extends BaseFragment
     LinearLayout mRequestView;
     boolean _isOn;
     private CoreAPI mCoreAPI;
-    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -98,12 +97,8 @@ public class TwoFactorShowFragment extends BaseFragment
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.fragment_twofactor_show_title);
-        getBaseActivity().setSupportActionBar(toolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPassword = (EditText) mView.findViewById(R.id.fragment_twofactor_show_password_edittext);
-
         mRequestView = (LinearLayout) mView.findViewById(R.id.fragment_twofactor_request_view);
         mApproveButton = (Button) mView.findViewById(R.id.fragment_twofactor_show_button_approve);
         mApproveButton.setOnClickListener(new View.OnClickListener() {

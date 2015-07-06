@@ -73,17 +73,16 @@ public class SpendingLimitsFragment extends BaseFragment
     private EditText mPINEditText;
     private TextView mPINDenominationTextView;
     private CoreAPI mCoreAPI;
-    private NavigationActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -93,9 +92,6 @@ public class SpendingLimitsFragment extends BaseFragment
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.fragment_spending_limits_title);
-        getBaseActivity().setSupportActionBar(toolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mDailySwitch = (Switch) mView.findViewById(R.id.fragment_spending_limits_toggle_daily_limit);
         mDailySwitch.setTypeface(Typeface.DEFAULT);
