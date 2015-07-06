@@ -2074,7 +2074,6 @@ public class NavigationActivity extends ActionBarActivity
             public void onClick(View v) {
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
-                pushFragment(new SettingFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2148,6 +2147,7 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerLayoutAccount.setVisibility(View.GONE);
             mDrawerLogout.setVisibility(View.GONE);
         }
+        showOthersList(AirbitzApplication.getUsername(), false);
     }
 
     public void lockDrawer() {
