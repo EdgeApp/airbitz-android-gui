@@ -291,21 +291,21 @@ public class NavigationActivity extends ActionBarActivity
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                switchFragmentThread(Tabs.REQUEST.ordinal());
+                onNavBarSelected(Tabs.REQUEST.ordinal());
                 mActionMenu.close(true);
             }
         });
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                switchFragmentThread(Tabs.SEND.ordinal());
+                onNavBarSelected(Tabs.SEND.ordinal());
                 mActionMenu.close(true);
             }
         });
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                switchFragmentThread(Tabs.WALLET.ordinal());
+                onNavBarSelected(Tabs.WALLET.ordinal());
                 mActionMenu.close(true);
             }
         });
@@ -1222,7 +1222,6 @@ public class NavigationActivity extends ActionBarActivity
         resetApp();
         AirbitzApplication.Logout();
         mCoreAPI.logout();
-        mActionButton.setVisibility(View.GONE);
 
         updateDrawer(false);
     }
