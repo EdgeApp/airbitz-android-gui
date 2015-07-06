@@ -159,7 +159,7 @@ public class TransactionListFragment extends WalletsFragment
     private TransactionTask mTransactionTask;
     private SearchTask mSearchTask;
     private Handler mHandler = new Handler();
-    ExecutorService mExecutor = Executors.newFixedThreadPool(100);
+    ExecutorService mExecutor = Executors.newFixedThreadPool(2);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
