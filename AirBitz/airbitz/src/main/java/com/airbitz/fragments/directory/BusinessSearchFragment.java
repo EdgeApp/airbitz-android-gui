@@ -362,9 +362,7 @@ public class BusinessSearchFragment extends BaseFragment implements
             setLoading(false);
 
             mBusinessList.clear();
-            if (businesses == null) {
-                mBusinessList.add(new Business("No Results Found", "", ""));
-            } else {
+            if (businesses != null) {
                 mBusinessList.addAll(businesses);
                 if (mCacheData != null) {
                     for (Business business : mCacheData) {
@@ -415,9 +413,7 @@ public class BusinessSearchFragment extends BaseFragment implements
             mLocationList.add(new LocationSearchResult(getString(R.string.current_location), false));
             mLocationList.add(new LocationSearchResult(getString(R.string.on_the_web), false));
 
-            if (result == null) {
-                mLocationList.add(new LocationSearchResult("No Results Found", false));
-            } else {
+            if (result != null) {
                 if (mCacheData != null) {
                     for (LocationSearchResult location : mCacheData) {
                         if (!mLocationList.contains(location)) {

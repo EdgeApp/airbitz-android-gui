@@ -297,7 +297,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
                     mGiftButton.getText().toString(),
-                    mActivity.getString(R.string.current_location),
+                    mActivity.getString(R.string.on_the_web),
                     "category");
             }
         });

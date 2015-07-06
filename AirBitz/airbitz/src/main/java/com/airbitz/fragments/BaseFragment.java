@@ -80,7 +80,7 @@ public class BaseFragment extends Fragment {
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mActivity.setSupportActionBar(mToolbar);
-            if (mDrawerEnabled && AirbitzApplication.isLoggedIn()) {
+            if (mDrawerEnabled) {
                 mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
                 mToolbar.setNavigationIcon(mMaterialMenu);
                 updateNavigationIcon();
