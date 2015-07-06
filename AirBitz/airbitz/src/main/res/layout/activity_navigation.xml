@@ -31,12 +31,30 @@
                 android:layout_alignParentTop="true"
                 android:orientation="vertical" />
 
+            <FrameLayout
+                android:id="@+id/action_button"
+                android:layout_height="@dimen/action_button_size"
+                android:layout_width="@dimen/action_button_size"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_margin="@dimen/action_button_margin"
+                android:background="@drawable/button_action_selector">
+
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_menu_add_black" />
+
+            </FrameLayout>
+
             <com.airbitz.objects.Calculator
                 android:id="@+id/navigation_calculator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <com.airbitz.objects.Numberpad
                 android:id="@+id/navigation_numberpad_layout"

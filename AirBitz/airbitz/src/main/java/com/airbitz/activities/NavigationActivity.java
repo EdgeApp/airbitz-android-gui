@@ -247,7 +247,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private boolean activityInForeground = false;
 
-    private FloatingActionButton mActionButton;
+    private View mActionButton;
     private FloatingActionMenu mActionMenu;
 
     @Override
@@ -263,12 +263,7 @@ public class NavigationActivity extends ActionBarActivity
         int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
         FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
 
-        ImageView icon = new ImageView(this);
-        icon.setImageResource(R.drawable.ic_menu_add_black);
-        mActionButton = new FloatingActionButton.Builder(this)
-                                                .setContentView(icon)
-                                                .build();
-        mActionButton.setVisibility(View.GONE);
+        mActionButton = findViewById(R.id.action_button);
 
         ImageView requestButton = new ImageView(this);
         ImageView sendButton = new ImageView(this);
@@ -2054,7 +2049,7 @@ public class NavigationActivity extends ActionBarActivity
             public void onClick(View v) {
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
-                pushFragment(new ImportFragment(), Tabs.MORE.ordinal());
+                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
