@@ -153,7 +153,6 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             mMapShim = MapBuilder.createShim(mActivity);
         }
         setHasOptionsMenu(true);
-        setDrawerEnabled(false);
     }
 
     @Override
