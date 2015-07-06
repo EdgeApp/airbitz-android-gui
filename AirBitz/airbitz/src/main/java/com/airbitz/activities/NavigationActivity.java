@@ -649,7 +649,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public void hideNavBar() {
         if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight());
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight() * 4);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -670,7 +670,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public void showNavBar() {
         if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight(), 0f);
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
