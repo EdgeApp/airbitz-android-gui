@@ -381,6 +381,7 @@ public class NavigationActivity extends ActionBarActivity
     public boolean onTouch(View view, MotionEvent event) {
 
         int X = (int) event.getRawX();
+        int deltaX = X - mTouchDown;
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
@@ -389,7 +390,6 @@ public class NavigationActivity extends ActionBarActivity
                 break;
             case MotionEvent.ACTION_UP:
                 Log.d("", "ACTION_UP: " + String.valueOf((int) X));
-                int deltaX = X - mTouchDown;
                 if (deltaX > view.getWidth() / 2) {
                     DisplayLoginOverlay(false, true);
                 } else {
@@ -402,12 +402,12 @@ public class NavigationActivity extends ActionBarActivity
                 break;
             case MotionEvent.ACTION_MOVE:
                 Log.d("", "ACTION_MOVE: " + String.valueOf((int) X) + " mTouchDown:" + mTouchDown);
-                if (X < 0)
-                    X = 0;
+                if (deltaX < 0)
+                    deltaX = 0;
 
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
                 layoutParams.topMargin = 0;
-                layoutParams.leftMargin = X - mTouchDown;
+                layoutParams.leftMargin = deltaX;
                 layoutParams.rightMargin = -layoutParams.leftMargin;
                 layoutParams.bottomMargin = 0;
                 mLandingLayout.setLayoutParams(layoutParams);
@@ -415,12 +415,12 @@ public class NavigationActivity extends ActionBarActivity
                 // Move the bizdir inward as the Landing fragment moves outward
                 layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
                 layoutParams.topMargin = 0;
-                layoutParams.leftMargin = -mFragmentLayout.getWidth() + (X - mTouchDown);
+                layoutParams.leftMargin = -mFragmentLayout.getWidth() + (deltaX);
                 layoutParams.rightMargin = -layoutParams.leftMargin;
                 layoutParams.bottomMargin = 0;
 
                 mFragmentLayout.setLayoutParams(layoutParams);
-                float alpha = (float) (X - mTouchDown) / (float) mFragmentLayout.getWidth();
+                float alpha = (float) (deltaX) / (float) mFragmentLayout.getWidth();
                 mFragmentLayout.setAlpha(alpha);
 
                 break;
