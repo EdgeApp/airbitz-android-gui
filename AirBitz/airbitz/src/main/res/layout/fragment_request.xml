@@ -225,13 +225,6 @@
 
     </LinearLayout>
 
-    <com.airbitz.objects.Calculator
-        android:id="@+id/fragment_request_calculator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="invisible" />
-
     <include layout="@layout/layout_toolbar_dropdown" />
 
 </RelativeLayout>

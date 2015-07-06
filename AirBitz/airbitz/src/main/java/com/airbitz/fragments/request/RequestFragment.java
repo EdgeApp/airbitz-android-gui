@@ -281,7 +281,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mAmountField.setOnEditorActionListener(amountEditorListener);
 
         mBottomContainer = mView.findViewById(R.id.bottom_container);
-        mCalculator = (Calculator) mView.findViewById(R.id.fragment_request_calculator_layout);
+        mCalculator = (Calculator) mActivity.findViewById(R.id.navigation_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mAmountField);
 

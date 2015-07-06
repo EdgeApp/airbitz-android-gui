@@ -213,7 +213,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
 
-        mCalculator = (Calculator) mView.findViewById(R.id.fragment_send_confirmation_calculator_layout);
+        mCalculator = (Calculator) mActivity.findViewById(R.id.navigation_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mBitcoinField);
 

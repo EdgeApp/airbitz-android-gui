@@ -2052,6 +2052,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
                 pushFragment(new ImportFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
@@ -2071,8 +2072,9 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNavBarSelected(Tabs.MORE.ordinal());
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                pushFragment(new SettingFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2134,6 +2136,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void updateDrawer(boolean loggedIn) {
+        closeDrawer();
         if (loggedIn) {
             mDrawerLogin.setVisibility(View.GONE);
             mDrawerExchange.setVisibility(View.VISIBLE);
