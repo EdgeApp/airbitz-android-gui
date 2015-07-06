@@ -129,6 +129,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mActivity = (NavigationActivity) getActivity();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override

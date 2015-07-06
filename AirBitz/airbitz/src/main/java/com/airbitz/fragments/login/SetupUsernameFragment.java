@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -36,12 +36,14 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -49,7 +51,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -84,7 +85,6 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     private CheckUsernameTask mCheckUsernameTask;
     private CoreAPI mCoreAPI;
     private View mView;
-    private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
     private Toolbar mToolbar;
 
@@ -93,7 +93,9 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -186,6 +188,15 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return onBackPress();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private void goNext() {
         mActivity.hideSoftKeyboard(mUserNameEditText);
@@ -212,6 +223,9 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         bundle.putString(SetupPasswordFragment.USERNAME, mUserNameEditText.getText().toString());
         fragment.setArguments(bundle);
         mActivity.pushFragment(fragment);
+
+        // Save username if the user hits back
+        getArguments().putString(USERNAME, mUserNameEditText.getText().toString());
     }
 
     @Override
@@ -226,7 +240,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         super.onResume();
         Bundle bundle = getArguments();
         enableNextButton(true);
-        if(bundle.containsKey(USERNAME)) {
+        if (bundle.containsKey(USERNAME)) {
             mUserNameEditText.setText(bundle.getString(USERNAME));
         }
         mHandler.post(new Runnable() {

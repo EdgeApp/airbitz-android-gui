@@ -137,28 +137,42 @@ public class WalletBaseFragment extends BaseFragment implements
         mWallets = mCoreApi.getCoreActiveWallets();
     }
 
-    @Override
-    public void onWalletsLoaded() {
-        fetchWallets();
+    private void setDefaultWallet() {
         if (mWallet == null) {
             String uuid = AirbitzApplication.getCurrentWallet();
             if (uuid == null) {
-                uuid = mCoreApi.loadWalletUUIDs().get(0);
-                AirbitzApplication.setCurrentWallet(uuid);
+                List<String> uuids = mCoreApi.loadWalletUUIDs();
+                if (uuids.size() > 0) {
+                    uuid = uuids.get(0);
+                    AirbitzApplication.setCurrentWallet(uuid);
+                }
             }
-            mWallet = mCoreApi.getWalletFromUUID(uuid);
+            if (uuid != null) {
+                mWallet = mCoreApi.getWalletFromUUID(uuid);
+            }
         }
-        mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
-        loadWallets();
-        updateTitle();
+    }
+
+    @Override
+    public void onWalletsLoaded() {
+        fetchWallets();
+        setDefaultWallet();
+        if (mWallet != null) {
+            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
+            loadWallets();
+            updateTitle();
+        }
     }
 
     @Override
     public void onWalletUpdated() {
-        mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
         fetchWallets();
-        loadWallets();
-        updateTitle();
+        setDefaultWallet();
+        if (mWallet != null) {
+            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
+            loadWallets();
+            updateTitle();
+        }
     }
 
     @Override

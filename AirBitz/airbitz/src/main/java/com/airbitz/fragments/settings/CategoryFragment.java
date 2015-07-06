@@ -65,7 +65,6 @@ import java.util.HashSet;
 public class CategoryFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
-    private NavigationActivity mActivity;
     private CoreAPI mCoreAPI;
     private Toolbar mToolbar;
 
@@ -85,6 +84,7 @@ public class CategoryFragment extends BaseFragment {
         mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -94,11 +94,6 @@ public class CategoryFragment extends BaseFragment {
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.settings_category_title);
-
-        mActivity = (NavigationActivity) getActivity();
-        mActivity.setSupportActionBar(mToolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mCancelButton = (Button) mView.findViewById(R.id.button_cancel);
         mDoneButton = (Button) mView.findViewById(R.id.button_done);

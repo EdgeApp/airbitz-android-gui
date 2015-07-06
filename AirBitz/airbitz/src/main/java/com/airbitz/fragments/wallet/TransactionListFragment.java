@@ -522,7 +522,9 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-        startTransactionTask();
+        if (mWallet != null) {
+            startTransactionTask();
+        }
     }
 
     @Override

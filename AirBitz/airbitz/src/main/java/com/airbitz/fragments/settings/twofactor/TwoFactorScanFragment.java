@@ -74,7 +74,6 @@ public class TwoFactorScanFragment extends BaseFragment implements
     RelativeLayout mCameraLayout;
     private TextView mTitleTextView;
     private CoreAPI mCoreAPI;
-    private NavigationActivity mActivity;
 
     boolean mSuccess = false;
     boolean mStoreSecret = false;
@@ -96,10 +95,10 @@ public class TwoFactorScanFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -109,9 +108,6 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.fragment_twofactor_scan_title);
-        getBaseActivity().setSupportActionBar(toolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_twofactor_scan_camera_layout);
         return mView;
