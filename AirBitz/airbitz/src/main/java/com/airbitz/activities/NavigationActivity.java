@@ -31,6 +31,10 @@
 
 package com.airbitz.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -162,12 +166,6 @@ public class NavigationActivity extends ActionBarActivity
     public static final String URI_SOURCE = "URI";
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-    final Runnable delayedShowNavBar = new Runnable() {
-        @Override
-        public void run() {
-            mActionButton.setVisibility(View.VISIBLE);
-        }
-    };
 
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -530,7 +528,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void switchFragmentThread(int id) {
-        if (mActionButton.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
+        if (mActionButton.getVisibility() != View.VISIBLE) {
             showNavBar();
         }
 
@@ -646,15 +644,48 @@ public class NavigationActivity extends ActionBarActivity
         return mFragmentLayoutParams;
     }
 
+    private boolean mNavBarAnimating = false;
+    static final int NAV_BAR_ANIMATE = 250;
+
     public void hideNavBar() {
-        if (mActionButton.getVisibility() == View.VISIBLE) {
-            mActionButton.setVisibility(View.GONE);
+        if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight());
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.INVISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 
     public void showNavBar() {
-        if (mActionButton.getVisibility() == View.GONE) {
-            mHandler.postDelayed(delayedShowNavBar, 50);
+        if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight(), 0f);
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 

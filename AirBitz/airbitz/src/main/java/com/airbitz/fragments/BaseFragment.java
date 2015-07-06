@@ -114,6 +114,16 @@ public class BaseFragment extends Fragment {
         mActivity = (NavigationActivity) activity;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBackEnabled) {
+            mActivity.hideNavBar();
+        } else {
+            mActivity.showNavBar();
+        }
+    }
+
     public NavigationActivity getBaseActivity() {
         return mActivity;
     }
