@@ -93,12 +93,5 @@
 
     </LinearLayout>
 
-    <com.airbitz.widgets.NoDefaultSpinner
-        android:id="@+id/spinner_more_categories"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@android:color/transparent"
-        android:visibility="invisible" />
-
 </LinearLayout>
 

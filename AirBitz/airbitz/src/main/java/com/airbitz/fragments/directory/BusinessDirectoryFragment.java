@@ -69,29 +69,18 @@ import android.widget.Toast;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.BusinessSearchAdapter;
-import com.airbitz.adapters.LocationAdapter;
-import com.airbitz.adapters.MoreCategoryAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.Categories;
-import com.airbitz.models.Category;
-import com.airbitz.objects.CurrentLocationManager;
-import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
-import com.airbitz.utils.CacheUtil;
+import com.airbitz.objects.CurrentLocationManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 
 public class BusinessDirectoryFragment extends BaseFragment implements
@@ -119,7 +108,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     Handler mHandler = new Handler();
     View view;
-    private Categories mCategories;
     private LinearLayout mNearYouLayout;
     private View mFragHeader;
     private ViewGroup mBusinessLayout;
@@ -135,14 +123,11 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private TextView mTitleView;
     private ListView mVenueListView;
     private VenueAdapter mVenueAdapter;
-    private Spinner mMoreSpinner;
     private View mSearchLoading;
     private CurrentLocationManager mLocationManager;
     private ViewGroup mViewGroupLoading;
     private TextView mNoResultView;
     private String mNextUrl = "null";
-    private MoreCategoryAdapter mMoreCategoryAdapter;
-    private BusinessCategoryAsyncTask mBusinessCategoryAsynctask;
     private VenuesTask mVenuesTask;
     private boolean mFirstLoad = true;
     private ProgressDialog mMoreCategoriesProgressDialog;
@@ -257,7 +242,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mShoppingButton = (TextView) mBusinessLayout.findViewById(R.id.button_shopping);
         mMoreButton = (TextView) mBusinessLayout.findViewById(R.id.button_more);
         mMoreButton.setClickable(false);
-        mMoreSpinner = (Spinner) mBusinessLayout.findViewById(R.id.spinner_more_categories);
         mSearchLoading = view.findViewById(R.id.business_directory_search_loading);
 
         mNoResultView = (TextView) view.findViewById(R.id.business_fragment_no_result_view);
@@ -268,17 +252,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMoreCategoryAdapter != null) {
-                    mMoreSpinner.setVisibility(View.INVISIBLE);
-                    mMoreSpinner.performClick();
-                } else {
-                    mMoreCategoriesProgressDialog = new ProgressDialog(getActivity());
-                    mMoreCategoriesProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    mMoreCategoriesProgressDialog.setMessage("Retrieving data...");
-                    mMoreCategoriesProgressDialog.setIndeterminate(true);
-                    mMoreCategoriesProgressDialog.setCancelable(false);
-                    mMoreCategoriesProgressDialog.show();
-                }
+                CategoryFragment.pushFragment(mActivity);
             }
         });
 
@@ -413,12 +387,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     @Override
     public void onResume() {
         updateNearYouSticky();
-        if (mCategories != null) {
-            updateMoreSpinner(mCategories);
-        }
-        if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.GONE);
-        }
         if (mSearchLoading != null) {
             mSearchLoading.setVisibility(View.GONE);
         }
@@ -431,117 +399,17 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         } else {
             mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
         }
-        // If we don't have categories, fetch them
-        if (mCategories == null || mCategories.getCountValue() == 0) {
-            try {
-                mBusinessCategoryAsynctask = new BusinessCategoryAsyncTask();
-                mBusinessCategoryAsynctask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "level");
-                mHandler.postDelayed(mProgressTimeout, CATEGORY_TIMEOUT);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         super.onResume();
     }
 
     @Override
-    public void onStop() {
-        if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.GONE);
-        }
-        super.onStop();
-    }
-
-    @Override
     public void onPause() {
-        if (mMoreSpinner != null) {
-            mMoreSpinner.setVisibility(View.GONE);
-        }
         mLocationManager.removeLocationChangeListener(this);
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }
         mFirstLoad = true;
         super.onPause();
-    }
-
-    private void updateMoreSpinner(Categories categories) {
-        if (categories != null) {
-            ArrayList<Category> catArrayList = new ArrayList<Category>();
-
-            for (Category cat : categories.getBusinessCategoryArray()) {
-                if (!cat.getCategoryLevel().equalsIgnoreCase("1")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("2")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("3")
-                        && !cat.getCategoryLevel().equalsIgnoreCase("null")) {
-                    catArrayList.add(cat);
-                }
-            }
-            categories.removeBusinessCategoryArray();
-            categories.setBusinessCategoryArray(catArrayList);
-            mCategories = categories;
-
-            mMoreCategoryAdapter = new MoreCategoryAdapter(getActivity(), mCategories);
-            mMoreSpinner.setAdapter(mMoreCategoryAdapter);
-            mMoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView,
-                                           View view, int position, long l) {
-
-                    if (mFirstLoad) {
-                        mFirstLoad = false;
-                    } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BUSINESS, mMoreCategoryAdapter.getListItemName(position)
-                                .getCategoryName());
-                        bundle.putString(LOCATION, "");
-                        bundle.putString(BUSINESSTYPE, "category");
-                        Fragment fragment = new MapBusinessDirectoryFragment();
-                        fragment.setArguments(bundle);
-                        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.BD.ordinal());
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-            mMoreButton.setClickable(true);
-
-            // If we are displaying a dialog, open up the spinner
-            if (mMoreCategoriesProgressDialog != null && mMoreCategoriesProgressDialog.isShowing()) {
-                if (categories == null) {
-                    if(getActivity() != null) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                getString(R.string.fragment_business_cannot_retrieve_data), Toast.LENGTH_LONG).show();
-                    }
-                }
-                mMoreCategoriesProgressDialog.dismiss();
-                mMoreCategoriesProgressDialog = null;
-
-                mMoreSpinner.setVisibility(View.INVISIBLE);
-                mMoreSpinner.performClick();
-            }
-
-            // Change the more button to open up categories
-            mMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mMoreSpinner.setVisibility(View.INVISIBLE);
-                    mMoreSpinner.performClick();
-                }
-            });
-        } else {
-            mMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(getActivity() != null) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                getString(R.string.fragment_business_no_categories_retreived), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
     }
 
     public void hideLoadingIndicator() {
@@ -553,31 +421,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     public void showLoadingIndicator() {
         if (mViewGroupLoading != null) {
             mViewGroupLoading.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public Categories getMoreBusinessCategory(Categories initial, String link) {
-        while (!link.equalsIgnoreCase("null")) {
-
-            String jSOnString = AirbitzAPI.getApi().getRequest(link);
-            Categories jsonParsingResult = null;
-            try {
-                jsonParsingResult = new Categories(new JSONObject(jSOnString));
-                link = jsonParsingResult.getNextLink();
-                initial.addCategories(jsonParsingResult);
-            } catch (Exception e) {
-                link = "null";
-            }
-        }
-
-        return initial;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (mBusinessCategoryAsynctask != null) {
-            mBusinessCategoryAsynctask.cancel(true);
         }
     }
 
@@ -612,32 +455,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
                 mVenueAdapter.warmupCache(venues);
             }
             mVenueAdapter.notifyDataSetChanged();
-        }
-    }
-
-    class BusinessCategoryAsyncTask extends AsyncTask<String, Integer, Categories> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
-
-        @Override
-        protected Categories doInBackground(String... strings) {
-            Categories jsonParsingResult = null;
-            try {
-                jsonParsingResult = api.getHttpCategories(strings[0]);
-                String nextUrl = jsonParsingResult.getNextLink();
-                mCategories = jsonParsingResult;
-                getMoreBusinessCategory(mCategories, nextUrl);
-            } catch (Exception e) {
-
-            }
-            return jsonParsingResult;
-        }
-
-        @Override
-        protected void onPostExecute(Categories categories) {
-            if (getActivity() == null) {
-                return;
-            }
-            updateMoreSpinner(categories);
         }
     }
 
