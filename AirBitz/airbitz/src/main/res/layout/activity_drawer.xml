@@ -8,33 +8,49 @@
     <RelativeLayout
         android:layout_width="290dp"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:background="@android:color/white">
 
         <LinearLayout
             android:id="@+id/drawer_top_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="4dp"
+            android:clipToPadding="false">
 
-            <TextView
-                android:id="@+id/item_drawer_exchange_rate"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimaryDark"
-                android:drawableLeft="@drawable/icon_bitcoin_symbol"
-                android:drawablePadding="10dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:singleLine="true"
-                android:text="1000 bits = $ 0.246 USD"
-                android:textColor="@android:color/white"
-                android:textSize="20dp" />
+                android:gravity="center"
+                android:elevation="4dp">
 
-            <include layout="@layout/divider_horizontal_dark_gray" />
+                <TextView
+                    android:id="@+id/item_drawer_exchange_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/icon_bitcoin_symbol"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp"/>
+
+                <TextView
+                    android:id="@+id/item_drawer_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/drawer_login_or_signup"
+                    style="@style/GreenButton" />
+
+            </FrameLayout>
 
             <RelativeLayout
+                android:id="@+id/layout_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -67,7 +83,7 @@
                     android:src="@drawable/icon_arrow"/>
                 </RelativeLayout>
 
-            <include layout="@layout/divider_horizontal_dark_gray" />
+            <include layout="@layout/divider_horizontal_light_gray" />
 
         </LinearLayout>
 
@@ -77,68 +93,75 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/drawer_top_layout" >
 
-            <TextView
-                android:id="@+id/item_drawer_buy_sell"
+            <ScrollView
+                android:layout_alignParentTop="true"
+                android:layout_above="@+id/layout_footer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/transparent_until_pressed"
-                android:clickable="true"
-                android:drawableLeft="@drawable/icon_exchange"
-                android:drawablePadding="20dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:paddingBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingTop="20dp"
-                android:singleLine="true"
-                android:text="@string/drawer_buy_sell"
-                android:textColor="@color/gray_text"
-                android:textSize="20dp" />
+                android:layout_height="match_parent">
 
-            <include layout="@layout/divider_horizontal_dark_gray"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/item_drawer_buy_sell" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/item_drawer_import"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/transparent_until_pressed"
-                android:clickable="true"
-                android:drawableLeft="@drawable/icon_gift_box"
-                android:drawablePadding="20dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:paddingBottom="10dp"
-                android:paddingLeft="16dp"
-                android:paddingTop="10dp"
-                android:singleLine="false"
-                android:text="@string/drawer_import"
-                android:textColor="@color/gray_text"
-                android:textSize="20dp"
-                android:layout_below="@id/item_drawer_buy_sell" />
+                    <TextView
+                        android:id="@+id/item_drawer_directory"
+                        android:text="@string/drawer_directory"
+                        android:drawableLeft="@drawable/ic_directory_dark"
+                        style="@style/DrawerButton"/>
 
-            <include layout="@layout/divider_horizontal_dark_gray"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/item_drawer_import" />
+                    <TextView
+                        android:id="@+id/item_drawer_request"
+                        android:text="@string/drawer_receive"
+                        android:drawableLeft="@drawable/ic_request_dark"
+                        style="@style/DrawerButton"/>
+
+                    <TextView
+                        android:id="@+id/item_drawer_send"
+                        android:text="@string/drawer_send"
+                        android:drawableLeft="@drawable/ic_send_dark"
+                        style="@style/DrawerButton"/>
+
+                    <TextView
+                        android:id="@+id/item_drawer_txs"
+                        android:text="@string/drawer_transactions"
+                        android:drawableLeft="@drawable/ic_transactions_dark"
+                        style="@style/DrawerButton"/>
+
+                    <TextView
+                        android:id="@+id/item_drawer_buy_sell"
+                        android:drawableLeft="@drawable/icon_exchange"
+                        android:text="@string/drawer_buy_sell"
+                        android:visibility="gone"
+                        style="@style/DrawerButton"
+                        />
+
+                    <include layout="@layout/divider_horizontal_light_gray" />
+
+                    <TextView
+                        android:id="@+id/item_drawer_import"
+                        android:drawableLeft="@drawable/icon_gift_box"
+                        android:text="@string/drawer_import"
+                        style="@style/DrawerButton" />
+                </LinearLayout>
+
+            </ScrollView>
 
             <LinearLayout
+                android:id="@+id/layout_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/white"
                 android:layout_alignParentBottom="true"
                 android:orientation="vertical">
 
-                <include layout="@layout/divider_horizontal_dark_gray" />
+                <include layout="@layout/divider_horizontal_light_gray" />
 
                 <TextView
                     android:id="@+id/item_drawer_logout"
                     android:drawableLeft="@drawable/icon_logout"
                     android:text="@string/drawer_logout"
                     style="@style/DrawerButton" />
-
-                <include layout="@layout/divider_horizontal_dark_gray" />
 
                 <TextView
                     android:id="@+id/item_drawer_settings"

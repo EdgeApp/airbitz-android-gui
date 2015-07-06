@@ -84,6 +84,9 @@ public class BaseFragment extends Fragment {
                 mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
                 mToolbar.setNavigationIcon(mMaterialMenu);
                 updateNavigationIcon();
+                mActivity.unlockDrawer();
+            } else {
+                mActivity.lockDrawer();
             }
         }
         super.onStart();

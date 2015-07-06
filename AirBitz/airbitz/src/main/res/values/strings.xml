@@ -594,8 +594,13 @@
     <string name="settings_category_title">Categories</string>
 
     <!-- Navigation Drawer -->
-    <string name="drawer_logout">LOGOUT</string>
-    <string name="drawer_settings">SETTINGS</string>
-    <string name="drawer_buy_sell">BUY/SELL BITCOIN</string>
-    <string name="drawer_import">IMPORT GIFT CARD\n(private key)</string>
+    <string name="drawer_login_or_signup">Login or Signup</string>
+    <string name="drawer_directory">Directory</string>
+    <string name="drawer_send">Send</string>
+    <string name="drawer_receive">Receive</string>
+    <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_buy_sell">Buy/Sell</string>
+    <string name="drawer_import">Import</string>
 </resources>

@@ -225,6 +225,12 @@ public class NavigationActivity extends ActionBarActivity
 
     private DrawerLayout mDrawer;
     private FrameLayout mDrawerView;
+    private View mDrawerLogin;
+    private View mDrawerLayoutAccount;
+    private View mDrawerDirectory;
+    private View mDrawerRequest;
+    private View mDrawerSend;
+    private View mDrawerTxs;
     private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
     private ImageView mDrawerAccountArrow;
@@ -267,11 +273,11 @@ public class NavigationActivity extends ActionBarActivity
         ImageView requestButton = new ImageView(this);
         ImageView sendButton = new ImageView(this);
         ImageView txButton = new ImageView(this);
-        requestButton.setImageResource(R.drawable.ic_request);
+        requestButton.setImageResource(R.drawable.ic_request_dark);
         requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
-        sendButton.setImageResource(R.drawable.ic_send);
+        sendButton.setImageResource(R.drawable.ic_send_dark);
         sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
-        txButton.setImageResource(R.drawable.ico_nav_wallets_selected);
+        txButton.setImageResource(R.drawable.ic_transactions_dark);
         txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
@@ -361,7 +367,7 @@ public class NavigationActivity extends ActionBarActivity
 
         // Navigation Drawer slideout
         setupDrawer();
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        updateDrawer(false);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -454,7 +460,6 @@ public class NavigationActivity extends ActionBarActivity
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-
         if (AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if (position != mNavThreadId) {
@@ -462,17 +467,10 @@ public class NavigationActivity extends ActionBarActivity
                     showModalProgress(false);
                 }
                 AirbitzApplication.setLastNavTab(position);
-                if(position != Tabs.MORE.ordinal()) {
-                    switchFragmentThread(position);
-                }
-                else {
-                    openDrawer();
-                }
-            }
-            else if(position == Tabs.MORE.ordinal()) {
+                switchFragmentThread(position);
+            } else if (position == Tabs.MORE.ordinal()) {
                 openDrawer();
-            }
-            else if(!isAtNavStackEntry()) {
+            } else if (!isAtNavStackEntry()) {
                 onBackPressed();
             }
         } else {
@@ -1161,7 +1159,7 @@ public class NavigationActivity extends ActionBarActivity
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        updateDrawer(true);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1231,7 +1229,7 @@ public class NavigationActivity extends ActionBarActivity
         mCoreAPI.logout();
         mActionButton.setVisibility(View.GONE);
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        updateDrawer(false);
     }
 
     Runnable mAttemptLogout = new Runnable() {
@@ -1987,8 +1985,53 @@ public class NavigationActivity extends ActionBarActivity
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
+
         mDrawerView = (FrameLayout) findViewById(R.id.activityDrawerView);
         Common.addStatusBarPadding(this, mDrawerView);
+
+        mDrawerLayoutAccount = findViewById(R.id.layout_account);
+        mDrawerLogin = findViewById(R.id.item_drawer_login);
+        mDrawerLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DisplayLoginOverlay(true);
+            }
+        });
+        mDrawerDirectory = findViewById(R.id.item_drawer_directory);
+        mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.BD.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerRequest = findViewById(R.id.item_drawer_request);
+        mDrawerRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerSend = findViewById(R.id.item_drawer_send);
+        mDrawerSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.SEND.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerTxs = findViewById(R.id.item_drawer_txs);
+        mDrawerTxs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.WALLET.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
 
         mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
         mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
@@ -2009,9 +2052,9 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.closeDrawer(mDrawerView);
-                mDrawerSettings.performClick();
+                onNavBarSelected(Tabs.MORE.ordinal());
                 pushFragment(new ImportFragment(), Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
 
@@ -2028,9 +2071,9 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.closeDrawer(mDrawerView);
+                onNavBarSelected(Tabs.MORE.ordinal());
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-                switchFragmentThread(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
 
@@ -2038,14 +2081,13 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
-                if(mOtherAccountsListView.getVisibility() != View.VISIBLE) {
-                    showOthersList(AirbitzApplication.getUsername(), true);
+                if (!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
+                    if (mOtherAccountsListView.getVisibility() != View.VISIBLE) {
+                        showOthersList(AirbitzApplication.getUsername(), true);
+                    } else {
+                        showOthersList(AirbitzApplication.getUsername(), false);
+                    }
                 }
-                else {
-                    showOthersList(AirbitzApplication.getUsername(), false);
-                }
-            }
             }
         });
         mDrawerAccountArrow = (ImageView) findViewById(R.id.item_drawer_account_arrow);
@@ -2089,6 +2131,28 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onDrawerStateChanged(int newState) {}
         });
+    }
+
+    private void updateDrawer(boolean loggedIn) {
+        if (loggedIn) {
+            mDrawerLogin.setVisibility(View.GONE);
+            mDrawerExchange.setVisibility(View.VISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.VISIBLE);
+            mDrawerLogout.setVisibility(View.VISIBLE);
+        } else {
+            mDrawerLogin.setVisibility(View.VISIBLE);
+            mDrawerExchange.setVisibility(View.INVISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.GONE);
+            mDrawerLogout.setVisibility(View.GONE);
+        }
+    }
+
+    public void lockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    public void unlockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     public void openDrawer() {

@@ -2,6 +2,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:background="@color/dark_gray_text">
-
+    android:background="@color/light_gray">
 </FrameLayout>

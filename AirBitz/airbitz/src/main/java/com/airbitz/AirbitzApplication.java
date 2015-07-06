@@ -91,6 +91,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Logout() {
+        setCurrentWallet(null);
         airbitzLogin = new Login();
     }
 
