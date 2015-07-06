@@ -140,7 +140,7 @@
 
                     <TextView
                         android:id="@+id/item_drawer_import"
-                        android:drawableLeft="@drawable/icon_gift_box"
+                        android:drawableLeft="@drawable/ic_import_dark"
                         android:text="@string/drawer_import"
                         style="@style/DrawerButton" />
                 </LinearLayout>
