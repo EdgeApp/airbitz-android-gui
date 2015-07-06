@@ -70,11 +70,12 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/navigation_view_pager"
+    <LinearLayout
+        android:id="@+id/landing_overlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" />
 
     <include
         android:id="@+id/modal_indefinite_progress"

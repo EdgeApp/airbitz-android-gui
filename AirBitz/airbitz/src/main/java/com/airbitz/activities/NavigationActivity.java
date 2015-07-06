@@ -140,6 +140,7 @@ import java.util.Stack;
 
 public class NavigationActivity extends ActionBarActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
+        View.OnTouchListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnDataSync,
@@ -196,8 +197,9 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mCalcLocked = false;
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
-    private LinearLayout mFragmentLayout;
-    private ViewPager mViewPager;
+    public LinearLayout mFragmentLayout;
+//    private ViewPager mViewPager;
+    private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {
             new BusinessDirectoryFragment(),
@@ -211,6 +213,7 @@ public class NavigationActivity extends ActionBarActivity
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
     private AlertDialog mIncomingDialog;
+    private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -249,6 +252,9 @@ public class NavigationActivity extends ActionBarActivity
 
     private View mActionButton;
     private FloatingActionMenu mActionMenu;
+
+    private ViewGroup mRoot;
+    private int mTouchDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -355,14 +361,72 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
 
-        // Setup top screen - the Landing - that swipes away if no login
-        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
-        mViewPager.setVisibility(View.GONE);
-        setViewPager();
+        mLandingFragment = new LandingFragment();
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, 0);
+        transaction.replace(R.id.landing_overlay, mLandingFragment);
+        transaction.commitAllowingStateLoss();
+
+        mLandingLayout = (LinearLayout) findViewById(R.id.landing_overlay);
 
         // Navigation Drawer slideout
         setupDrawer();
         updateDrawer(false);
+
+        mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
+
+    }
+
+    public boolean onTouch(View view, MotionEvent event) {
+
+        int X = (int) event.getRawX();
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mTouchDown = X;
+                Log.d("", "ACTION_DOWN: " + String.valueOf((int) X));
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("", "ACTION_UP: " + String.valueOf((int) X));
+                int deltaX = X - mTouchDown;
+                if (deltaX > view.getWidth() / 2) {
+                    DisplayLoginOverlay(false, true);
+                } else {
+                    DisplayLoginOverlay(true, true);
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("", "ACTION_MOVE: " + String.valueOf((int) X) + " mTouchDown:" + mTouchDown);
+                if (X < 0)
+                    X = 0;
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = X - mTouchDown;
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+                mLandingLayout.setLayoutParams(layoutParams);
+
+                // Move the bizdir inward as the Landing fragment moves outward
+                layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = -mFragmentLayout.getWidth() + (X - mTouchDown);
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+
+                mFragmentLayout.setLayoutParams(layoutParams);
+                float alpha = (float) (X - mTouchDown) / (float) mFragmentLayout.getWidth();
+                mFragmentLayout.setAlpha(alpha);
+
+                break;
+        }
+        mRoot.invalidate();
+        return true;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -393,55 +457,44 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
-        setViewPager();
-        if (overlay) {
-            mViewPager.setCurrentItem(1, false);
-            if (animate) {
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(250);
-                mViewPager.startAnimation(anim);
-            }
-            mViewPager.setVisibility(View.VISIBLE);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(true);
-            }
+
+        if (!overlay) {
+            // Show FragmentLayout
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = mLandingLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.INVISIBLE);
+
+            // Move the bizdir inward as the Landing fragment moves outward
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(1.0f);
+
         } else {
-            mViewPager.setCurrentItem(0, animate);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(false);
-            }
-            mViewPager.setVisibility(View.GONE);
+            // Go back to showing Landing
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.VISIBLE);
+
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = -mFragmentLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(0.0f);
         }
-    }
-
-    private void setViewPager() {
-        mOverlayFragments.clear();
-//        if(mOverlayFragments.size() == 0) {
-            mOverlayFragments.add(new TransparentFragment());
-            mOverlayFragments.add(new LandingFragment());
-//        }
-
-        NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
-        mViewPager.setAdapter(pageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Disappear if transparent page shows
-                if ((position == 0) && positionOffsetPixels == 0) {
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-
-            public void onPageSelected(int position) {
-                // Disappear if transparent page shows
-                Log.d(TAG, "page selected = " + position);
-                if (position == 0) {
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     private void setTypeFaces() {
@@ -607,7 +660,7 @@ public class NavigationActivity extends ActionBarActivity
 
     @Override
     public void onBackPressed() {
-        if (mViewPager.getVisibility() == View.VISIBLE) {
+        if (mLandingLayout.getVisibility() == View.VISIBLE) {
             View v = findViewById(R.id.modal_indefinite_progress);
             if (v.getVisibility() != View.VISIBLE) {
                 DisplayLoginOverlay(false, true);
@@ -1319,7 +1372,6 @@ public class NavigationActivity extends ActionBarActivity
     public void LoginNow(String username, char[] password) {
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
-        setViewPager();
         mDrawerAccount.setText(username);
     }
 

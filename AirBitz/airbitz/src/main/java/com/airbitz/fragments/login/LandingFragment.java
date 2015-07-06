@@ -52,6 +52,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -124,6 +125,7 @@ public class LandingFragment extends BaseFragment implements
     private Handler mHandler = new Handler();
 
     private int mPinFailedCount;
+
     static final int MAX_PIN_FAILS = 3;
 
     /**
@@ -343,6 +345,8 @@ public class LandingFragment extends BaseFragment implements
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_three));
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_four));
         setPinViews(0);
+
+        mView.setOnTouchListener(mActivity);
 
         return mView;
     }
