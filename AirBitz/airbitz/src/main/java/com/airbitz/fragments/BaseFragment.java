@@ -62,7 +62,12 @@ public class BaseFragment extends Fragment {
     protected NavigationActivity mActivity;
     protected Toolbar mToolbar;
     protected boolean mDrawerEnabled = true;
-    protected boolean mBackEnabled = true;
+    protected boolean mBackEnabled = false;
+    protected int mIconColor;
+
+    public BaseFragment() {
+        mIconColor = Color.WHITE;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +82,10 @@ public class BaseFragment extends Fragment {
         mBackEnabled = enabled;
     }
 
+    public void setIconColor(int color) {
+        mIconColor = color;
+    }
+
     private MaterialMenuDrawable mMaterialMenu;
 
     @Override
@@ -84,7 +93,7 @@ public class BaseFragment extends Fragment {
         View view = getView();
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            mMaterialMenu = new MaterialMenuDrawable(mActivity, Color.WHITE, Stroke.THIN);
+            mMaterialMenu = new MaterialMenuDrawable(mActivity, mIconColor, Stroke.THIN);
             mToolbar.setNavigationIcon(mMaterialMenu);
             mActivity.setSupportActionBar(mToolbar);
             if (mDrawerEnabled) {
@@ -103,6 +112,20 @@ public class BaseFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = (NavigationActivity) activity;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBackEnabled) {
+            mActivity.hideNavBar();
+        } else {
+            mActivity.showNavBar(getNavBarOffset());
+        }
+    }
+
+    protected float getNavBarOffset() {
+        return 1f;
     }
 
     public NavigationActivity getBaseActivity() {

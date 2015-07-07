@@ -34,6 +34,7 @@ package com.airbitz.fragments.request;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -91,8 +92,11 @@ public class ContactPickerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
+
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
+        setBackEnabled(true);
+        setIconColor(Color.BLACK);
     }
 
     @Override

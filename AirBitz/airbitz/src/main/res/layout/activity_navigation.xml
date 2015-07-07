@@ -39,7 +39,8 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center"
                 android:layout_margin="@dimen/action_button_margin"
-                android:background="@drawable/button_action_selector">
+                android:background="@drawable/button_action_selector"
+                android:visibility="invisible">
 
                 <ImageView
                     android:layout_height="wrap_content"

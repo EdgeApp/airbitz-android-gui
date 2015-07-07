@@ -885,6 +885,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mCalculateFeesTask.cancel(true);
         if (mMaxAmountTask != null)
             mMaxAmountTask.cancel(true);
+        mCalculator.hideCalculator();
     }
 
     @Override
