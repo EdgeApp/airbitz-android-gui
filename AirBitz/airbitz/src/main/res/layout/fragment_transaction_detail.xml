@@ -221,7 +221,7 @@
                     android:text="$"
                     android:background="@android:color/transparent"
                     android:ellipsize="none"
-                    android:gravity="center_vertical|left"
+                    android:gravity="center_vertical|right"
                     android:singleLine="true"
                     android:textColor="@color/dark_gray_text"
                     android:textSize="16dp" />
