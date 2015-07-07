@@ -455,7 +455,7 @@ public class RequestFragment extends WalletBaseFragment implements
             super.onCreateOptionsMenu(menu, inflater);
             return;
         }
-        inflater.inflate(R.menu.menu_standard, menu);
+        inflater.inflate(R.menu.menu_request, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -465,6 +465,9 @@ public class RequestFragment extends WalletBaseFragment implements
             return super.onOptionsItemSelected(item);
         }
         switch (item.getItemId()) {
+        case R.id.action_refresh:
+            onRefresh();
+            return true;
         case R.id.action_help:
             mActivity.pushFragment(
                 new HelpFragment(HelpFragment.REQUEST),
@@ -1236,5 +1239,18 @@ public class RequestFragment extends WalletBaseFragment implements
         set.setInterpolator(new AccelerateDecelerateInterpolator());
         set.playTogether(list.toArray(new Animator[list.size()]));
         set.start();
+    }
+
+    public void onRefresh() {
+        if (mWallet != null) {
+            mCoreAPI.connectWatcher(mWallet.getUUID());
+        }
+        mActivity.showModalProgress(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mActivity.showModalProgress(false);
+            }
+        }, 1000);
     }
 }
