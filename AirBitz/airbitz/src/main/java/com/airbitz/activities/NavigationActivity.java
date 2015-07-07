@@ -31,7 +31,10 @@
 
 package com.airbitz.activities;
 
-import android.app.Activity;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -46,6 +49,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -54,12 +58,14 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,6 +79,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -87,40 +94,43 @@ import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.NavigationBarFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
-import com.airbitz.fragments.login.SetupUsernameFragment;
-import com.airbitz.fragments.request.AddressRequestFragment;
-import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.fragments.settings.CategoryFragment;
-import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.request.ImportFragment;
 import com.airbitz.fragments.login.LandingFragment;
-import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.request.RequestFragment;
-import com.airbitz.fragments.request.RequestQRCodeFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
-import com.airbitz.fragments.settings.SettingFragment;
-import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.settings.ImportFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
-import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
+
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -132,8 +142,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class NavigationActivity extends Activity
+public class NavigationActivity extends ActionBarActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
+        View.OnTouchListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnDataSync,
@@ -153,40 +164,8 @@ public class NavigationActivity extends Activity
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
-    public static Typeface montserratBoldTypeFace;
-    public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-    public static Typeface helveticaNeueTypeFace;
-    final Runnable delayedShowNavBar = new Runnable() {
-        @Override
-        public void run() {
-            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
-            mFragmentLayout.setLayoutParams(getFragmentLayoutParams());
-            mFragmentLayout.invalidate();
-        }
-    };
-
-    final Runnable delayedShowCalculator = new Runnable() {
-        @Override
-        public void run() {
-            mCalculatorView.setAlpha(0f);
-            mCalculatorView.setVisibility(View.VISIBLE);
-            mCalculatorView.animate()
-                    .alpha(1f)
-                    .setDuration(200)
-                    .setListener(null);
-            mCalculatorView.setEnabled(true);
-        }
-    };
-
-    final Runnable delayedShowNumberpad = new Runnable() {
-        @Override
-        public void run() {
-            mNumberpadView.setVisibility(View.VISIBLE);
-            mNumberpadView.setEnabled(true);
-        }
-    };
 
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -214,18 +193,17 @@ public class NavigationActivity extends Activity
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
-    private NavigationBarFragment mNavBarFragment;
-    private RelativeLayout mNavBarFragmentLayout;
-    private Calculator mCalculatorView;
     private Numberpad mNumberpadView;
-    private LinearLayout mFragmentLayout;
-    private ViewPager mViewPager;
+    private View mFragmentContainer;
+    public LinearLayout mFragmentLayout;
+//    private ViewPager mViewPager;
+    private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {
             new BusinessDirectoryFragment(),
             new RequestFragment(),
             new SendFragment(),
-            new WalletsFragment(),
+            new TransactionListFragment(),
             new SettingFragment()};
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
@@ -233,6 +211,7 @@ public class NavigationActivity extends Activity
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
     private AlertDialog mIncomingDialog;
+    private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -246,12 +225,19 @@ public class NavigationActivity extends Activity
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
     private DrawerLayout mDrawer;
-    private RelativeLayout mDrawerView;
+    private FrameLayout mDrawerView;
+    private View mDrawerLogin;
+    private View mDrawerLayoutAccount;
+    private View mDrawerDirectory;
+    private View mDrawerRequest;
+    private View mDrawerSend;
+    private View mDrawerTxs;
     private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
     private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
     private TextView mDrawerBuySell;
+    private TextView mDrawerImport;
     private TextView mDrawerSettings;
     private TextView mDrawerLogout;
     private ListView mOtherAccountsListView;
@@ -262,18 +248,77 @@ public class NavigationActivity extends Activity
 
     private boolean activityInForeground = false;
 
+    private View mActionButton;
+    private FloatingActionMenu mActionMenu;
+
+    private ViewGroup mRoot;
+    private int mTouchDown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = initiateCore(this);
-
         setContentView(R.layout.activity_navigation);
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+
+
+        Resources r = getResources();
+        int menuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
+        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
+
+        mActionButton = findViewById(R.id.action_button);
+
+        ImageView requestButton = new ImageView(this);
+        ImageView sendButton = new ImageView(this);
+        ImageView txButton = new ImageView(this);
+        requestButton.setImageResource(R.drawable.ic_request_dark);
+        requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        sendButton.setImageResource(R.drawable.ic_send_dark);
+        sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        txButton.setImageResource(R.drawable.ic_transactions_dark);
+        txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+        SubActionButton receiveAction = itemBuilder.setLayoutParams(menuLayout).setContentView(requestButton).build();
+        SubActionButton sendAction = itemBuilder.setLayoutParams(menuLayout).setContentView(sendButton).build();
+        SubActionButton txAction = itemBuilder.setLayoutParams(menuLayout).setContentView(txButton).build();
+
+        mActionMenu =
+            new FloatingActionMenu.Builder(this)
+                                  .addSubActionView(receiveAction)
+                                  .addSubActionView(sendAction)
+                                  .addSubActionView(txAction)
+                                  .attachTo(mActionButton)
+                                  .build();
+
+        receiveAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        sendAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                onNavBarSelected(Tabs.SEND.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        txAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                onNavBarSelected(Tabs.WALLET.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
+
+        Common.addStatusBarPadding(this, mFragmentContainer);
 
         setTypeFaces();
 
@@ -282,54 +327,79 @@ public class NavigationActivity extends Activity
             mNavStacks[i].push(mNavFragments[i]);
         }
 
-        // for keyboard hide and show
-        final View activityRootView = findViewById(R.id.activity_navigation_root);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            boolean mLastKeyBoardUp = false;
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    keyBoardUp = true;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        hideNavBar();
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
-                        }
-                    }
-                } else {
-                    keyBoardUp = false;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        if (AirbitzApplication.isLoggedIn()) {
-                            showNavBar();
-                        }
-                        else {
-                            if(mNavStacks[mNavThreadId].peek() instanceof BusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof MapBusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof DirectoryDetailFragment ) {
-                                Log.d(TAG, "Keyboard down, not logged in, in directory");
-                                showNavBar();
-                            }
-                        }
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
-                        }
-                    }
-                }
-                mLastKeyBoardUp = keyBoardUp;
-            }
-        });
+        mLandingFragment = new LandingFragment();
 
-        // Setup top screen - the Landing - that swipes away if no login
-        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
-        mViewPager.setVisibility(View.GONE);
-        setViewPager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, 0);
+        transaction.replace(R.id.landing_overlay, mLandingFragment);
+        transaction.commitAllowingStateLoss();
 
-        mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+        mLandingLayout = (LinearLayout) findViewById(R.id.landing_overlay);
 
         // Navigation Drawer slideout
         setupDrawer();
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        updateDrawer(false);
+
+        mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
+
+    }
+
+    public boolean onTouch(View view, MotionEvent event) {
+
+        int X = (int) event.getRawX();
+        int deltaX = X - mTouchDown;
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mTouchDown = X;
+                Log.d("", "ACTION_DOWN: " + String.valueOf((int) X));
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("", "ACTION_UP: " + String.valueOf((int) X));
+                if (deltaX > view.getWidth() / 2) {
+                    DisplayLoginOverlay(false, true);
+                } else {
+                    DisplayLoginOverlay(true, true);
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("", "ACTION_MOVE: " + String.valueOf((int) X) + " mTouchDown:" + mTouchDown);
+                if (deltaX < 0)
+                    deltaX = 0;
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = deltaX;
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+                mLandingLayout.setLayoutParams(layoutParams);
+
+                // Move the bizdir inward as the Landing fragment moves outward
+                layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = -mFragmentLayout.getWidth() + (deltaX);
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+
+                mFragmentLayout.setLayoutParams(layoutParams);
+                float alpha = (float) (deltaX) / (float) mFragmentLayout.getWidth();
+                mFragmentLayout.setAlpha(alpha);
+
+                break;
+        }
+        mRoot.invalidate();
+        return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment frag = mNavStacks[mNavThreadId].peek();
+        if (frag != null) {
+            frag.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void setCoreListeners(NavigationActivity activity) {
@@ -353,72 +423,58 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
-        setViewPager();
-        if (overlay) {
-            mViewPager.setCurrentItem(1, false);
-            if (animate) {
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(250);
-                mViewPager.startAnimation(anim);
-            }
-            mViewPager.setVisibility(View.VISIBLE);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(true);
-            }
+
+        if (!overlay) {
+            // Show FragmentLayout
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = mLandingLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.INVISIBLE);
+
+            // Move the bizdir inward as the Landing fragment moves outward
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(1.0f);
+            showNavBar();
         } else {
-            mViewPager.setCurrentItem(0, animate);
-            if(mOverlayFragments != null && mOverlayFragments.size()==2) {
-                mOverlayFragments.get(1).setUserVisibleHint(false);
-            }
-            mViewPager.setVisibility(View.GONE);
+            // Go back to showing Landing
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.VISIBLE);
+
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = -mFragmentLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(0.0f);
+            hideNavBar();
         }
     }
 
-    private void setViewPager() {
-        mOverlayFragments.clear();
-//        if(mOverlayFragments.size() == 0) {
-            mOverlayFragments.add(new TransparentFragment());
-            mOverlayFragments.add(new LandingFragment());
-//        }
-
-        NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
-        mViewPager.setAdapter(pageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Disappear if transparent page shows
-                if ((position == 0) && positionOffsetPixels == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-
-            public void onPageSelected(int position) {
-                // Disappear if transparent page shows
-                Log.d(TAG, "page selected = " + position);
-                if (position == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
     private void setTypeFaces() {
-        montserratBoldTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Regular.ttf");
-        helveticaNeueTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
     }
 
     /*
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-
         if (AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if (position != mNavThreadId) {
@@ -426,32 +482,22 @@ public class NavigationActivity extends Activity
                     showModalProgress(false);
                 }
                 AirbitzApplication.setLastNavTab(position);
-                if(position != Tabs.MORE.ordinal()) {
-                    switchFragmentThread(position);
-                }
-                else {
-                    openDrawer();
-                }
-            }
-            else if(position == Tabs.MORE.ordinal()) {
+                switchFragmentThread(position);
+            } else if (position == Tabs.MORE.ordinal()) {
                 openDrawer();
-            }
-            else if(!isAtNavStackEntry()) {
+            } else if (!isAtNavStackEntry()) {
                 onBackPressed();
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
                 AirbitzApplication.setLastNavTab(position);
-                mNavBarFragment.unselectTab(position);
-                mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
-                mNavBarFragment.selectTab(Tabs.BD.ordinal());
                 DisplayLoginOverlay(true, true);
             }
         }
     }
 
     public void switchFragmentThread(int id) {
-        if (mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
+        if (mActionButton.getVisibility() != View.VISIBLE) {
             showNavBar();
         }
 
@@ -481,9 +527,6 @@ public class NavigationActivity extends Activity
         } else {
             Log.d(TAG, "switchFragmentThread showing frag is null");
         }
-        mNavBarFragment.unselectTab(mNavThreadId);
-        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
-        mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
@@ -498,6 +541,12 @@ public class NavigationActivity extends Activity
         switchFragmentThread(id);
     }
 
+    public void pushFragment(Fragment fragment, FragmentTransaction transaction) {
+        mNavStacks[mNavThreadId].push(fragment);
+        transaction.replace(R.id.activityLayout, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
     public void pushFragment(Fragment fragment) {
         pushFragment(fragment, mNavThreadId);
     }
@@ -508,9 +557,12 @@ public class NavigationActivity extends Activity
         // Only show visually if we're displaying the thread
         if (mNavThreadId == threadID) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
-                transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+            if (mNavStacks[threadID].size() != 0) {
+                if (fragment instanceof HelpFragment) {
+                    transaction.setCustomAnimations(R.animator.fade_in, 0);
+                } else {
+                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+                }
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -529,13 +581,26 @@ public class NavigationActivity extends Activity
         getFragmentManager().executePendingTransactions();
     }
 
+    public void popFragment(FragmentTransaction transaction) {
+        hideSoftKeyboard(mFragmentLayout);
+        Fragment fragment = mNavStacks[mNavThreadId].pop();
+        getFragmentManager().executePendingTransactions();
+
+        transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
+        transaction.commitAllowingStateLoss();
+    }
+
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if ((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
-            transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+        if (mNavStacks[mNavThreadId].size() != 0) {
+            if (fragment instanceof HelpFragment) {
+                transaction.setCustomAnimations(0, R.animator.fade_out);
+            } else {
+                transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+            }
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
         transaction.commitAllowingStateLoss();
@@ -548,111 +613,69 @@ public class NavigationActivity extends Activity
         return mFragmentLayoutParams;
     }
 
-    int getNavBarStart() {
-        if (mNavBarStart == 0) {
-            int loc[] = new int[2];
-            mNavBarFragmentLayout.getLocationOnScreen(loc);
-            mNavBarStart = loc[1];
-        }
-        return mNavBarStart;
-    }
+    private boolean mNavBarAnimating = false;
+    static final int NAV_BAR_ANIMATE = 250;
 
     public void hideNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.VISIBLE) {
-            mFragmentLayoutParams = getFragmentLayoutParams();
-            mNavBarFragmentLayout.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mFragmentLayout.setLayoutParams(rLP);
-            mFragmentLayout.invalidate();
-            int test = getNavBarStart();
+        if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
+            float dest = getBottom() + mActionButton.getHeight();
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), dest);
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.INVISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 
     public void showNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
-            mHandler.postDelayed(delayedShowNavBar, 50);
+        showNavBar(1f);
+    }
+
+    public void showNavBar(float offset) {
+        float bottom = getBottom();
+        if (!mNavBarAnimating && bottom > 0f) {
+            float dest = bottom - (mActionButton.getHeight() * offset);
+            float y = mActionButton.getY();
+            if (mActionButton.getVisibility() == View.INVISIBLE) {
+                y = bottom + mActionButton.getHeight();
+            }
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", y, dest);
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 
-    public Calculator getCalculatorView() {
-        return mCalculatorView;
-    }
-
-    public Numberpad getNumberpadView() {
-        return mNumberpadView;
-    }
-
-    public boolean isLargeDpi() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return !(metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH);
-    }
-
-    public void lockCalculator() {
-        if (!isLargeDpi()) {
-            return;
-        }
-        mCalcLocked = true;
-        showCalculator();
-    }
-
-    public void unlockCalculator() {
-        if (!mCalcLocked) {
-            return;
-        }
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-        params.setMargins(0, 0, 0, 0);
-        mCalculatorView.setLayoutParams(params);
-        mCalcLocked = false;
-        if (isLargeDpi()) {
-            mCalculatorView.showDoneButton();
-        }
-        hideCalculator();
-    }
-
-    public void hideCalculator() {
-        mHandler.removeCallbacks(delayedShowCalculator);
-        mCalculatorView.setVisibility(View.GONE);
-        mCalculatorView.setEnabled(false);
-    }
-
-    public void showCalculator() {
-        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
-
-        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-
-        // Move calculator above the tab bar
-        params.setMargins(0, 0, 0, tbHeight);
-        mCalculatorView.setLayoutParams(params);
-
-        if (mCalculatorView.getVisibility() != View.VISIBLE) {
-            mHandler.postDelayed(delayedShowCalculator, 100);
-        }
-    }
-
-    public void hideNumberpad() {
-        mHandler.removeCallbacks(delayedShowNumberpad);
-        mNumberpadView.setVisibility(View.GONE);
-        mNumberpadView.setEnabled(false);
-    }
-
-    public void showNumberpad() {
-        mHandler.postDelayed(delayedShowNumberpad, 100);
-    }
-
-    public void onCalculatorButtonClick(View v) {
-        mCalculatorView.onButtonClick(v);
-        if (v.getTag().toString().equals("done")) {
-            hideCalculator();
-        }
+    private float getBottom() {
+        return getWindow().getDecorView().findViewById(android.R.id.content).getBottom();
     }
 
     @Override
     public void onBackPressed() {
-        if (mViewPager.getVisibility() == View.VISIBLE) {
+        if (mLandingLayout.getVisibility() == View.VISIBLE) {
             View v = findViewById(R.id.modal_indefinite_progress);
             if (v.getVisibility() != View.VISIBLE) {
                 DisplayLoginOverlay(false, true);
@@ -668,18 +691,10 @@ public class NavigationActivity extends Activity
                 return;
         }
 
-        if (!mCalcLocked) {
-            hideCalculator();
-        }
-
         showModalProgress(false);
 
-        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
-
         if (isAtNavStackEntry()) {
-            if (!calcVisible || mCalcLocked) {
                 ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
-            }
         } else {
             popFragment();
         }
@@ -721,8 +736,6 @@ public class NavigationActivity extends Activity
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
-        mNavBarFragment.disableSendRecieveButtons(true);
-
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
@@ -780,7 +793,7 @@ public class NavigationActivity extends Activity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-        Fragment frag = new WalletsFragment();
+        Fragment frag = new TransactionListFragment();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
         mNavStacks[Tabs.WALLET.ordinal()].clear();
@@ -939,14 +952,14 @@ public class NavigationActivity extends Activity
         mTxId = txId;
 
         // If in merchant donation mode, stay on QR screen and show amount
-        RequestQRCodeFragment fragment = requestMatchesDonation();
+        RequestFragment fragment = requestMatchesDonation();
         if(fragment != null) {
             showIncomingDialog(walletUUID, txId, false);
             return;
         }
 
         /* If showing QR code, launch receiving screen*/
-        RequestQRCodeFragment f = requestMatchesQR(mUUID, mTxId);
+        RequestFragment f = requestMatchesQR(mUUID, mTxId);
         Log.d(TAG, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
@@ -1019,12 +1032,12 @@ public class NavigationActivity extends Activity
         ShowFadingDialog(message, delay);
     }
 
-    private RequestQRCodeFragment requestMatchesQR(String uuid, String txid) {
+    private RequestFragment requestMatchesQR(String uuid, String txid) {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isShowingQRCodeFor(uuid, txid)) {
             return qr;
         } else {
@@ -1032,12 +1045,12 @@ public class NavigationActivity extends Activity
         }
     }
 
-    private RequestQRCodeFragment requestMatchesDonation() {
+    private RequestFragment requestMatchesDonation() {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isMerchantDonation()) {
             return qr;
         } else {
@@ -1209,7 +1222,7 @@ public class NavigationActivity extends Activity
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        updateDrawer(true);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1278,7 +1291,7 @@ public class NavigationActivity extends Activity
         AirbitzApplication.Logout();
         mCoreAPI.logout();
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        updateDrawer(false);
     }
 
     Runnable mAttemptLogout = new Runnable() {
@@ -1308,7 +1321,7 @@ public class NavigationActivity extends Activity
             case 2:
                 return new SendFragment();
             case 3:
-                return new WalletsFragment();
+                return new TransactionListFragment();
             case 4:
                 return new SettingFragment();
             default:
@@ -1374,7 +1387,6 @@ public class NavigationActivity extends Activity
     public void LoginNow(String username, char[] password) {
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
-        setViewPager();
         mDrawerAccount.setText(username);
     }
 
@@ -1537,7 +1549,7 @@ public class NavigationActivity extends Activity
                     View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
                     TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
                     tv.setText(message);
-                    tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+                    tv.setTypeface(NavigationActivity.latoRegularTypeFace);
                     ProgressBar progress = ((ProgressBar) view.findViewById(R.id.fading_alert_progress));
                     if (!cancelable) {
                         progress.setVisibility(View.VISIBLE);
@@ -2034,9 +2046,55 @@ public class NavigationActivity extends Activity
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
-        mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
-        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
 
+        mDrawerView = (FrameLayout) findViewById(R.id.activityDrawerView);
+        Common.addStatusBarPadding(this, mDrawerView);
+
+        mDrawerLayoutAccount = findViewById(R.id.layout_account);
+        mDrawerLogin = findViewById(R.id.item_drawer_login);
+        mDrawerLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DisplayLoginOverlay(true);
+            }
+        });
+        mDrawerDirectory = findViewById(R.id.item_drawer_directory);
+        mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.BD.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerRequest = findViewById(R.id.item_drawer_request);
+        mDrawerRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerSend = findViewById(R.id.item_drawer_send);
+        mDrawerSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.SEND.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerTxs = findViewById(R.id.item_drawer_txs);
+        mDrawerTxs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.WALLET.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
         mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
         mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
@@ -2044,9 +2102,20 @@ public class NavigationActivity extends Activity
             public void onClick(View v) {
                 if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
-                    pushFragment(new BuySellFragment(), NavigationActivity.Tabs.MORE.ordinal());
+                    pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
                 }
                 switchFragmentThread(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerImport = (TextView) findViewById(R.id.item_drawer_import);
+        mDrawerImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2064,9 +2133,9 @@ public class NavigationActivity extends Activity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.closeDrawer(mDrawerView);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-                switchFragmentThread(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
 
@@ -2074,14 +2143,13 @@ public class NavigationActivity extends Activity
         mDrawerAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
-                if(mOtherAccountsListView.getVisibility() != View.VISIBLE) {
-                    showOthersList(AirbitzApplication.getUsername(), true);
+                if (!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
+                    if (mOtherAccountsListView.getVisibility() != View.VISIBLE) {
+                        showOthersList(AirbitzApplication.getUsername(), true);
+                    } else {
+                        showOthersList(AirbitzApplication.getUsername(), false);
+                    }
                 }
-                else {
-                    showOthersList(AirbitzApplication.getUsername(), false);
-                }
-            }
             }
         });
         mDrawerAccountArrow = (ImageView) findViewById(R.id.item_drawer_account_arrow);
@@ -2127,10 +2195,42 @@ public class NavigationActivity extends Activity
         });
     }
 
-    private void openDrawer() {
+    private void updateDrawer(boolean loggedIn) {
+        closeDrawer();
+        if (loggedIn) {
+            mDrawerLogin.setVisibility(View.GONE);
+            mDrawerExchange.setVisibility(View.VISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.VISIBLE);
+            mDrawerLogout.setVisibility(View.VISIBLE);
+        } else {
+            mDrawerLogin.setVisibility(View.VISIBLE);
+            mDrawerExchange.setVisibility(View.INVISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.GONE);
+            mDrawerLogout.setVisibility(View.GONE);
+        }
+        showOthersList(AirbitzApplication.getUsername(), false);
+    }
+
+    public void lockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    public void unlockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    public void openDrawer() {
         mDrawerAccount.setText(AirbitzApplication.getUsername());
         showOthersList(AirbitzApplication.getUsername(), false);
         mDrawer.openDrawer(mDrawerView);
+    }
+
+    public void closeDrawer() {
+        mDrawer.closeDrawer(mDrawerView);
+    }
+
+    public boolean isDrawerOpen() {
+        return mDrawer.isDrawerOpen(mDrawerView);
     }
 
     private void showOthersList(String username, boolean show)

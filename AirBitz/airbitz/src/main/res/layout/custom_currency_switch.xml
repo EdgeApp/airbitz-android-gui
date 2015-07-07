@@ -29,7 +29,6 @@
 
         <TextView
             android:id="@+id/top_type"
-            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"
@@ -56,7 +55,6 @@
 
         <TextView
             android:id="@+id/bottom_type"
-            style="@style/GrayDropShadow"
             android:layout_width="wrap_content"
             android:layout_height="37.8dp"
             android:layout_alignParentRight="true"
@@ -75,12 +73,11 @@
             android:id="@+id/button_mover"
             android:layout_width="match_parent"
             android:layout_height="37.8dp"
-            android:background="@drawable/bg_btn_green"
+            android:background="@drawable/bg_button_green"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:text="@string/loading"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18dp" />
 
         <ImageView
             android:id="@+id/button_mover_coin"

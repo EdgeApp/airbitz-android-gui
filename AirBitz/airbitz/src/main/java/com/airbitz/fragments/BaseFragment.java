@@ -32,12 +32,25 @@ package com.airbitz.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+
+import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.balysv.materialmenu.MaterialMenuDrawable.IconState;
+import static com.balysv.materialmenu.MaterialMenuDrawable.Stroke;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -45,12 +58,89 @@ import com.airbitz.activities.NavigationActivity;
 
 public class BaseFragment extends Fragment {
     public static Integer DURATION = 300;
-    NavigationActivity mActivity;
 
+    protected NavigationActivity mActivity;
+    protected Toolbar mToolbar;
+    protected boolean mDrawerEnabled = true;
+    protected boolean mBackEnabled = false;
+    protected int mIconColor;
+
+    public BaseFragment() {
+        mIconColor = Color.WHITE;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    public void setDrawerEnabled(boolean enabled) {
+        mDrawerEnabled = enabled;
+    }
+
+    public void setBackEnabled(boolean enabled) {
+        mBackEnabled = enabled;
+    }
+
+    public void setIconColor(int color) {
+        mIconColor = color;
+    }
+
+    private MaterialMenuDrawable mMaterialMenu;
+
+    @Override
+    public void onStart() {
+        View view = getView();
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mMaterialMenu = new MaterialMenuDrawable(mActivity, mIconColor, Stroke.THIN);
+            mToolbar.setNavigationIcon(mMaterialMenu);
+            mActivity.setSupportActionBar(mToolbar);
+            if (mDrawerEnabled) {
+                updateNavigationIcon();
+                mActivity.unlockDrawer();
+            } else if (mBackEnabled) {
+                mMaterialMenu.setIconState(IconState.ARROW);
+            } else {
+                mActivity.lockDrawer();
+            }
+        }
+        super.onStart();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (NavigationActivity) activity;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBackEnabled) {
+            mActivity.hideNavBar();
+        } else {
+            mActivity.showNavBar(getNavBarOffset());
+        }
+    }
+
+    protected float getNavBarOffset() {
+        return 1f;
+    }
+
+    public NavigationActivity getBaseActivity() {
+        return mActivity;
+    }
 
     // For debug builds, watch for memory leaks of all fragments
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
+    }
+
+    protected LayoutInflater getThemedInflater(LayoutInflater inflater, int theme) {
+        final Context contextThemeWrapper = new ContextThemeWrapper(mActivity, theme);
+        return inflater.cloneInContext(contextThemeWrapper);
     }
 
     // Overriding the fragment transition animations to use variable display width
@@ -129,6 +219,38 @@ public class BaseFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mActivity.mAsyncTasks.pop();
+        }
+    }
+
+    protected void showArrow() {
+        if (mMaterialMenu != null) {
+            mMaterialMenu.animateIconState(IconState.ARROW);
+        }
+    }
+
+    protected void showBurger() {
+        if (mMaterialMenu != null) {
+            mMaterialMenu.animateIconState(IconState.BURGER);
+        }
+    }
+
+    protected void onNavigationClick() {
+        if (mActivity.isDrawerOpen()) {
+            mActivity.closeDrawer();
+        } else {
+            mActivity.openDrawer();
+        }
+    }
+
+    protected void updateNavigationIcon() {
+        if (mToolbar != null) {
+            mToolbar.setNavigationIcon(mMaterialMenu);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onNavigationClick();
+                }
+            });
         }
     }
 }

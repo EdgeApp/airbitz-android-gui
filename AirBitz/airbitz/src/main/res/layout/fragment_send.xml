@@ -1,217 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
+    xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <include
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/fragment_send_layout_camera"
         layout="@layout/fragment_camera_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_title_header"
+        android:layout_below="@id/toolbar"
         android:visibility="visible" />
 
-
-    <LinearLayout
-        android:id="@+id/layout_data"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@id/layout_title_header"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
-
-
-
-        <RelativeLayout
-            android:id="@+id/layout_send"
-            android:layout_width="match_parent"
-            android:layout_height="85.05dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:paddingLeft="6.3dp"
-            android:paddingRight="6.3dp"
-            android:paddingTop="0dp">
-
-            <LinearLayout
-                android:id="@+id/layout_from"
-                android:layout_width="match_parent"
-                android:layout_height="35.2dp"
-                android:layout_marginBottom="9.45dp"
-                android:gravity="center_vertical|center_horizontal"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_from"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="70dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="8dp"
-                    android:gravity="center_vertical|right"
-                    android:paddingRight="6.3dp"
-                    android:text="@string/send_from_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <com.airbitz.objects.HighlightOnPressSpinner
-                    android:id="@+id/from_wallet_spinner"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_btn_blue_stretch"
-                    android:dropDownHorizontalOffset="-50dp"
-                    android:dropDownVerticalOffset="0dp"
-                    android:dropDownWidth="300dp"
-                    android:layout_marginRight="20dp"
-                    android:gravity="center"
-                    android:popupBackground="@drawable/rounded_edge_white_bg"
-                    android:spinnerMode="dropdown"
-                    android:textColor="@android:color/white"
-                    android:textSize="16dp" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/layout_to"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_below="@id/layout_from"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textview_to"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
-                    android:gravity="right"
-                    android:paddingRight="6.3dp"
-                    android:text="@string/send_to_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <com.airbitz.objects.LimitedEditText
-                    android:id="@+id/edittext_to"
-                    style="@style/BlackDropShadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/emboss_down"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:hint="@string/fragment_send_send_to_hint"
-                    android:imeOptions="actionDone"
-                    android:inputType="textAutoComplete|textNoSuggestions"
-                    android:paddingLeft="6.3dp"
-                    android:layout_marginRight="20dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/text_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:textSize="14dp" />
-            </LinearLayout>
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textview_scan_qrcode"
-        style="@style/BlackDropShadow"
+    <FrameLayout
+        android:id="@+id/fragment_send_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:shadowDy="4"
-        android:text="@string/send_scan_text"
-        android:textColor="@android:color/white"
-        android:layout_below="@id/layout_data"
-        android:textSize="14dp" />
+        android:background="@color/gray_frost"
+        android:layout_alignParentBottom="true">
+
+        <info.hoang8f.android.segmented.SegmentedGroup
+            android:id="@+id/request_bottom_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal"
+            segmentedgroup:tint_color="@android:color/white"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/fragment_send_button_transfer"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_send_transfer"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/fragment_send_button_address"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_send_address"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/fragment_send_button_photos"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_send_photos"
+                style="@style/RadioButton" />
+            <RadioButton
+                android:id="@+id/fragment_send_button_flash"
+                android:layout_weight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_send_flash"
+                style="@style/RadioButton" />
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/fragment_send_transfer_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/off_white"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_data"
-        android:visibility="visible" >
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fragment_send_buttons"
+        android:orientation="vertical"
+        android:visibility="visible" />
 
-        <RelativeLayout
-            android:id="@+id/fragment_send_bluetooth_scanning_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible" >
 
-            <TextView
-                android:id="@+id/fragment_send_scanning_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="60dp"
-                android:gravity="center"
-                android:textSize="20dp"
-                android:text="Scanning for Bluetooth devices..."
-                android:textColor="@android:color/white"
-                style="@style/BlackDropShadow"/>
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:paddingLeft="50dp"
-                android:paddingRight="50dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:drawablePadding="30dp"
-                android:text="Scan QR code"
-                android:textColor="@android:color/white"
-                android:drawableLeft="@drawable/img_qr_code"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="20dp"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/fragment_send_scanning_button"
-                android:background="@drawable/bg_button_orange" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/dummy_focus"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
-
-    <RelativeLayout
-        android:id="@+id/listview_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_data"
-        android:background="@android:color/transparent"
-        android:visibility="gone">
-
-        <ListView
-            android:id="@+id/listing_listview"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/category_popup"
-            android:padding="12.6dp" />
-
-    </RelativeLayout>
-
+    <include layout="@layout/layout_toolbar_dropdown" />
 </RelativeLayout>

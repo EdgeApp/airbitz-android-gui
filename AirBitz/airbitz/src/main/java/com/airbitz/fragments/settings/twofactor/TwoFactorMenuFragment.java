@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -34,7 +34,11 @@ package com.airbitz.fragments.settings.twofactor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -75,11 +79,8 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 
     private Button mScanButton;
     private Button mResetButton;
-    private HighlightOnPressImageButton mHelpButton;
-    private TextView mTitleTextView;
     private TextView mResetDescription, mResetDate;
     private CoreAPI mCoreAPI;
-    private NavigationActivity mActivity;
 
     OnTwoFactorMenuResult mOnTwoFactorMenuResult;
 
@@ -95,24 +96,22 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
+
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_twofactor_menu, container, false);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        View mView = i.inflate(R.layout.fragment_twofactor_menu, container, false);
 
-        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.fragment_twofactor_menu_title);
 
         mScanButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_scan_token);
-        mScanButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
+        mScanButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
         mScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +120,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         });
 
         mResetButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_request_reset);
-        mResetButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.NORMAL);
+        mResetButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,19 +128,6 @@ public class TwoFactorMenuFragment extends BaseFragment implements
                 mResetTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
         });
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.fragment_twofactor_menu_title);
-
-//        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-//        mHelpButton.setVisibility(View.VISIBLE);
-//        mHelpButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mActivity.pushFragment(new HelpFragment(HelpFragment.SPEND_LIMITS), NavigationActivity.Tabs.MORE.ordinal());
-//            }
-//        });
 
         mResetDate = (TextView) mView.findViewById(R.id.fragment_twofactor_date);
         mResetDescription = (TextView) mView.findViewById(R.id.fragment_twofactor_description);
@@ -175,6 +161,17 @@ public class TwoFactorMenuFragment extends BaseFragment implements
             mResetDate.setVisibility(View.GONE);
             mResetDescription.setVisibility(View.GONE);
             mResetButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

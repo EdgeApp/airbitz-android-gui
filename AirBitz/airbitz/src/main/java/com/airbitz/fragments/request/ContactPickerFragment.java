@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,26 +23,31 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.fragments.request;
 
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -58,29 +63,23 @@ import com.airbitz.adapters.ContactSearchAdapter;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.models.Contact;
-import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tom on 9/25/14.
- */
-public class ContactPickerFragment extends BaseFragment {
+public class ContactPickerFragment
+        extends BaseFragment
+        implements NavigationActivity.OnBackPress {
     public final static String TYPE = "com.airbitz.contact_picker_fragment.type";
     public final static String EMAIL = "com.airbitz.contact_picker_fragment.email";
     public final static String SMS = "com.airbitz.contact_picker_fragment.sms";
     private final String TAG = getClass().getSimpleName();
     private EditText mContactName;
-    private TextView mFragmentTitle;
     private ListView mSearchListView;
-    private HighlightOnPressImageButton mBackButton;
-    private HighlightOnPressImageButton mHelpButton;
     private Bundle mBundle;
     private List<Contact> mContacts = new ArrayList<Contact>();
     private List<Contact> mFilteredContacts = new ArrayList<Contact>();
     private ContactSearchAdapter mSearchAdapter;
-    private NavigationActivity mActivity;
     private View mView;
     // Callback interface for a selection
     private ContactSelection mContactSelection;
@@ -94,47 +93,34 @@ public class ContactPickerFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mActivity = (NavigationActivity) getActivity();
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
+        setIconColor(Color.BLACK);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
-        mFragmentTitle = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        if (mBundle.getString(TYPE).equals(EMAIL)) {
-            mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_email));
-        } else {
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        getBaseActivity().setSupportActionBar(toolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            mFragmentTitle.setText(getString(R.string.fragment_contact_picker_title_sms));
+        mContactName = (EditText) mView.findViewById(R.id.search);
+        if (mBundle.getString(TYPE).equals(EMAIL)) {
+            mContactName.setHint(getString(R.string.fragment_contact_picker_title_email));
+        } else {
+            mContactName.setHint(getString(R.string.fragment_contact_picker_title_sms));
         }
 
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.RECIPIENT), NavigationActivity.Tabs.REQUEST.ordinal());
-            }
-        });
-
-
-        mContactName = (EditText) mView.findViewById(R.id.fragment_contact_picker_edittext_name);
         mSearchListView = (ListView) mView.findViewById(R.id.fragment_contact_picker_listview_search);
         mSearchAdapter = new ContactSearchAdapter(getActivity(), mFilteredContacts);
         mSearchListView.setAdapter(mSearchAdapter);
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-                ((NavigationActivity) getActivity()).showNavBar();
-            }
-        });
 
-        mContactName.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mContactName.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mContactName.setText("");
         mContactName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -152,8 +138,7 @@ public class ContactPickerFragment extends BaseFragment {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE && mActivity != null) {
                     mActivity.hideSoftKeyboard(mContactName);
-                    mActivity.popFragment();
-                    mActivity.getFragmentManager().executePendingTransactions();
+                    ContactPickerFragment.popFragment(mActivity);
                     String name = mContactName.getText().toString();
                     if (mBundle.getString(TYPE).equals(EMAIL)) {
                         mContactSelection.onContactSelection(new Contact(name, name, null, null));
@@ -190,14 +175,37 @@ public class ContactPickerFragment extends BaseFragment {
                 mContactName.setText(contact.getName());
 
                 if (mContactSelection != null) {
-                    ((NavigationActivity) getActivity()).popFragment();
-                    mActivity.getFragmentManager().executePendingTransactions();
+                    ContactPickerFragment.popFragment(mActivity);
                     mContactSelection.onContactSelection(contact);
                 }
             }
         });
-
         return mView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_closeable, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.action_close:
+            mContactName.setText("");
+            return true;
+        case R.id.action_help:
+            mActivity.pushFragment(
+                new HelpFragment(HelpFragment.RECIPIENT),
+                    NavigationActivity.Tabs.REQUEST.ordinal());
+            return true;
+        case android.R.id.home:
+            ContactPickerFragment.popFragment(mActivity);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void updateAutoCompleteArray(String strTerm) {
@@ -206,15 +214,15 @@ public class ContactPickerFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mContactName.requestFocus();
+    public boolean onBackPress() {
+        ContactPickerFragment.popFragment(mActivity);
+        return true;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    public void onResume() {
+        super.onResume();
+        mContactName.requestFocus();
     }
 
     private static final String[] EMAIL_PROJECTION = new String[] {
@@ -229,7 +237,7 @@ public class ContactPickerFragment extends BaseFragment {
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
     };
 
-    private List<Contact> GetMatchedContacts(String term, boolean emailSearch) {
+    private List<Contact> getMatchedContacts(String term, boolean emailSearch) {
         List<Contact> contacts = new ArrayList<Contact>();
 
         long startMillis = System.currentTimeMillis();
@@ -246,7 +254,7 @@ public class ContactPickerFragment extends BaseFragment {
             args = new String[]{term.toUpperCase() + "*"};
         }
 
-        if(emailSearch) {
+        if (emailSearch) {
             Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, EMAIL_PROJECTION, buffer == null ? null : buffer.toString(), args,
                     ContactsContract.Contacts.SORT_KEY_PRIMARY + " ASC");
             if (cursor != null) {
@@ -265,9 +273,8 @@ public class ContactPickerFragment extends BaseFragment {
                     cursor.close();
                 }
             }
-        }
-        else {
-            Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PHONE_PROJECTION, buffer == null ? null : buffer.toString(), args,
+        } else {
+            Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONE_PROJECTION, buffer == null ? null : buffer.toString(), args,
                     ContactsContract.Contacts.SORT_KEY_PRIMARY + " ASC");
             if (cursor != null) {
                 try {
@@ -279,7 +286,7 @@ public class ContactPickerFragment extends BaseFragment {
                         name = cursor.getString(displayNameIndex);
                         number = cursor.getString(indexNumber);
                         String thumbnail = cursor.getString(indexThumbnail);
-                        contacts.add(new Contact(name, null, number, thumbnail));
+                        contacts.add(new Contact(name, null, PhoneNumberUtils.formatNumber(number), thumbnail));
                     }
                 } finally {
                     cursor.close();
@@ -293,7 +300,6 @@ public class ContactPickerFragment extends BaseFragment {
         public void onContactSelection(Contact contact);
     }
 
-
     AutoCompleteContactsTask mAutoCompleteContactsTask = null;
     public class AutoCompleteContactsTask extends AsyncTask<String, Void, Void> {
 
@@ -304,7 +310,7 @@ public class ContactPickerFragment extends BaseFragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            mFilteredContacts.addAll(GetMatchedContacts(params[0], mBundle.getString(TYPE).equals(EMAIL)));
+            mFilteredContacts.addAll(getMatchedContacts(params[0], mBundle.getString(TYPE).equals(EMAIL)));
             return null;
         }
 
@@ -322,4 +328,21 @@ public class ContactPickerFragment extends BaseFragment {
         }
     }
 
+    public static void pushFragment(NavigationActivity mActivity, Bundle bundle, ContactSelection listener) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        ContactPickerFragment fragment = new ContactPickerFragment();
+        fragment.setContactSelectionListener(listener);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        mActivity.popFragment(transaction);
+        mActivity.getFragmentManager().executePendingTransactions();
+    }
 }

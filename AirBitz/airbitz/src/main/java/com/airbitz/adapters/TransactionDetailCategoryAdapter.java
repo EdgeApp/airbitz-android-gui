@@ -82,7 +82,7 @@ public class TransactionDetailCategoryAdapter extends ArrayAdapter {
         final Category category = mCategories.get(position);
         convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
-        textView.setTypeface(BusinessDirectoryFragment.montserratRegularTypeFace);
+        textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
         textView.setText(category.getCategoryName());
         if(category.getCategoryLevel().equals("base")) {
             ImageButton button = (ImageButton) convertView.findViewById(R.id.transaction_detail_item_new);

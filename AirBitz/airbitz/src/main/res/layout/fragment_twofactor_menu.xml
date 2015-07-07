@@ -2,13 +2,9 @@
     android:id="@+id/fragment_twofactor_menu_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    style="@style/SettingsFragment">
 
-    <include
-        android:id="@+id/layout_title_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
     <LinearLayout
         android:id="@+id/fragment_twofactor_menu_buttons"
@@ -16,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
         <TextView
@@ -23,32 +20,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:textColor="@android:color/white"
-            style="@style/BlackDropShadow"
+            android:textColor="@android:color/black"
             android:text="@string/fragment_twofactor_menu_scan_message"/>
 
         <com.airbitz.objects.HighlightOnPressButton
             android:id="@+id/fragment_twofactor_menu_button_scan_token"
-            style="@style/BlackDropShadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="6dp"
             android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_green"
             android:text="@string/fragment_twofactor_menu_button_scan_token"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
+            style="@style/GreenButton" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="10dp"
-            android:textColor="@android:color/white"
-            style="@style/BlackDropShadow"
-            android:text="@string/fragment_twofactor_menu_request_message"/>
+            android:textColor="@android:color/black"
+            android:text="@string/fragment_twofactor_menu_request_message" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -59,32 +49,26 @@
                 android:id="@+id/fragment_twofactor_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                style="@style/BlackDropShadow"
+                android:textColor="@android:color/black"
                 android:layout_centerInParent="true"
-                android:text="@string/fragment_two_factor_menu_requested"/>
+                android:text="@string/fragment_two_factor_menu_requested" />
 
-            <com.airbitz.objects.HighlightOnPressButton
+            <Button
                 android:id="@+id/fragment_twofactor_menu_button_request_reset"
-                style="@style/BlackDropShadow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="6dp"
-                android:background="@drawable/btn_green"
                 android:text="@string/fragment_twofactor_menu_button_request_reset"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="normal" />
+                style="@style/GreenButton" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/fragment_twofactor_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textStyle="bold"
-            style="@style/BlackDropShadow"
-            android:text="Date"/>
+            android:text="Date" />
 
     </LinearLayout>
 </RelativeLayout>

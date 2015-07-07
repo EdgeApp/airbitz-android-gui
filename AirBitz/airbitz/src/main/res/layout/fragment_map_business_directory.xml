@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.airbitz.activities.NavigationActivity"
-    tools:ignore="MergeRootFrame">
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryFrost">
 
-    <!-- Main Content -->
+    <!-- Search Bar -->
 
-    <!-- Map View -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/toolbarTextColor"
+        android:background="?attr/toolbarBackgroundColor"
+        style="@style/ToolBarCommon" >
+
+        <EditText
+            android:id="@+id/query"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/search_button"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:layout_margin="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:hint="@string/category_or_business_name_initial"
+            />
+
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/map_view_layout"
@@ -93,45 +119,4 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <!-- Search ListView -->
-    <RelativeLayout
-        android:layout_below="@+id/map_view_layout"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ListView
-            android:id="@+id/listview_search"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/gray_border"
-            android:dividerHeight="1px"
-            android:visibility="gone" />
-
-        <include layout="@layout/loading_indicator"
-            android:id="@+id/map_business_directory_search_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <!-- Header -->
-
-    <include
-        android:id="@+id/fragment_category_layout_header"
-        layout="@layout/layout_airbitz_header"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
-
-    <!-- Search Bar -->
-
-    <include
-        android:id="@+id/layout_search"
-        layout="@layout/layout_search"
-        android:layout_below="@+id/fragment_category_layout_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-</RelativeLayout>
+</LinearLayout>

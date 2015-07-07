@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,17 +23,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.objects;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -48,26 +56,14 @@ import java.text.DecimalFormat;
  * Created by tom on 5/7/14.
  * from http://innovativenetsolutions.com/2013/01/calculator-app/
  */
-public class Calculator extends LinearLayout {
+public class Calculator extends LinearLayout  {
     // operator types
     public static final String ADD = "+";
     public static final String SUBTRACT = "-";
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
     public static final String PERCENT = "%";
-    public static final String BACK = "back";
     public static final String CLEAR = "C";
-    public static final String CLEARMEMORY = "MC";
-    public static final String ADDTOMEMORY = "M+";
-    public static final String SUBTRACTFROMMEMORY = "M-";
-    public static final String RECALLMEMORY = "MR";
-    public static final String SQUAREROOT = "√";
-    public static final String SQUARED = "x²";
-    public static final String INVERT = "1/x";
-    public static final String TOGGLESIGN = "+/-";
-    public static final String SINE = "sin";
-    public static final String COSINE = "cos";
-    public static final String TANGENT = "tan";
     private static final String DIGITS = "0123456789.";
     DecimalFormat mDF = new DecimalFormat("@###########");
     View mView;
@@ -82,6 +78,19 @@ public class Calculator extends LinearLayout {
     private EditText mEditText;
     private Boolean userIsInTheMiddleOfTypingANumber = false;
     private Button mDone;
+
+    /**
+     * Interface for calculator key responses
+     */
+    private OnCalculatorKey mOnCalculatorKeyListener;
+    public interface OnCalculatorKey {
+        public void OnCalculatorKeyPressed(String tag);
+    }
+
+    public void setCalculatorKeyListener(OnCalculatorKey listener) {
+        mOnCalculatorKeyListener = listener;
+    }
+
 
     // public static final String EQUALS = "=";
 
@@ -104,7 +113,30 @@ public class Calculator extends LinearLayout {
     private void init() {
         mView = inflate(getContext(), R.layout.calculator, this);
         mDone = (Button) mView.findViewById(R.id.imageButtonDone);
+        mView.findViewById(R.id.imageButton0).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton1).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton2).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton3).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton4).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton5).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton6).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton7).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton8).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButton9).setOnClickListener(mOnKeyListener);
+
+        mDone.setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonClear).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonDot).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonPlus).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonPercent).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonMinus).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonMultiply).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonDivide).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonBack).setOnClickListener(mOnKeyListener);
+        mView.findViewById(R.id.imageButtonEquals).setOnClickListener(mOnKeyListener);
     }
+
+    private final String TAG = getClass().getSimpleName();
 
     // This is where the text enters and the results return
     public void setEditText(EditText editText) {
@@ -150,21 +182,6 @@ public class Calculator extends LinearLayout {
     }
 
     public double performOperation(String operator) {
-
-        /*
-        * If you are using Java 7, then you can use switch in place of if statements
-        *
-        *     switch (operator) {
-        *     case CLEARMEMORY:
-        *         calculatorMemory = 0;
-        *         break;
-        *     case ADDTOMEMORY:
-        *         calculatorMemory = calculatorMemory + operand;
-        *         break;
-        *     etc...
-        *     }
-        */
-
         if (operator.equals(CLEAR)) {
             mOperand = 0;
             mWaitingOperator = "";
@@ -172,32 +189,6 @@ public class Calculator extends LinearLayout {
             // mCalculatorMemory = 0;
         } else if (operator.equals(PERCENT)) {
             mOperand = mWaitingOperand * mOperand * 0.01;
-//        } else if (operator.equals(CLEARMEMORY)) {
-//            mCalculatorMemory = 0;
-//        } else if (operator.equals(ADDTOMEMORY)) {
-//            mCalculatorMemory = mCalculatorMemory + mOperand;
-//        } else if (operator.equals(SUBTRACTFROMMEMORY)) {
-//            mCalculatorMemory = mCalculatorMemory - mOperand;
-//        } else if (operator.equals(RECALLMEMORY)) {
-//            mOperand = mCalculatorMemory;
-//        } else if (operator.equals(SQUAREROOT)) {
-//            mOperand = Math.sqrt(mOperand);
-//
-//        } else if (operator.equals(SQUARED)) {
-//            mOperand = mOperand * mOperand;
-//
-//        } else if (operator.equals(INVERT)) {
-//            if (mOperand != 0) {
-//                mOperand = 1 / mOperand;
-//            }
-//        } else if (operator.equals(TOGGLESIGN)) {
-//            mOperand = -mOperand;
-//        } else if (operator.equals(SINE)) {
-//            mOperand = Math.sin(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
-//        } else if (operator.equals(COSINE)) {
-//            mOperand = Math.cos(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
-//        } else if (operator.equals(TANGENT)) {
-//            mOperand = Math.tan(Math.toRadians(mOperand)); // Math.toRadians(mOperand) converts result to degrees
         } else {
             performWaitingOperation();
             mWaitingOperator = operator;
@@ -208,7 +199,6 @@ public class Calculator extends LinearLayout {
     }
 
     protected void performWaitingOperation() {
-
         if (mWaitingOperator.equals(ADD)) {
             mOperand = mWaitingOperand + mOperand;
         } else if (mWaitingOperator.equals(SUBTRACT)) {
@@ -222,67 +212,149 @@ public class Calculator extends LinearLayout {
         }
     }
 
-    public void onButtonClick(View v) {
-        if (mEditText == null)
-            return;
+    public OnClickListener mOnKeyListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mEditText == null)
+                return;
 
-        String buttonTag = v.getTag().toString();
-        Editable editable = mEditText.getText();
-        int start = mEditText.getSelectionStart();
-        // delete the selection, if chars are selected:
-        int end = mEditText.getSelectionEnd();
-        if (end > start && !buttonTag.equals("done")) {
-            editable.delete(start, end);
-        }
-
-        if (buttonTag.equals("back")) {
-            String s = mEditText.getText().toString();
-            if (s.length() == 1) { // 1 character, just set to 0
-                performOperation(Calculator.CLEAR);
-                mEditText.setText("");
-            } else if (s.length() > 1) {
-                mEditText.setText(s.substring(0, s.length() - 1));
+            String buttonTag = view.getTag().toString();
+            Editable editable = mEditText.getText();
+            int start = mEditText.getSelectionStart();
+            // delete the selection, if chars are selected:
+            int end = mEditText.getSelectionEnd();
+            if (end > start && !buttonTag.equals("done")) {
+                editable.delete(start, end);
             }
-        } else if (buttonTag.equals("done")) {
-            mEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-        } else if (DIGITS.contains(buttonTag)) {
 
-            // digit was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                if (buttonTag.equals(".") && mEditText.getText().toString().contains(".")) {
-                    // ERROR PREVENTION
-                    // Eliminate entering multiple decimals
-                } else {
-                    mEditText.append(buttonTag);
+            if (buttonTag.equals("back")) {
+                String s = mEditText.getText().toString();
+                if (s.length() == 1) { // 1 character, just set to 0
+                    performOperation(Calculator.CLEAR);
+                    mEditText.setText("");
+                } else if (s.length() > 1) {
+                    mEditText.setText(s.substring(0, s.length() - 1));
                 }
+            } else if (buttonTag.equals("done")) {
+                mEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+            } else if (DIGITS.contains(buttonTag)) {
+
+                // digit was pressed
+                if (userIsInTheMiddleOfTypingANumber) {
+                    if (buttonTag.equals(".") && mEditText.getText().toString().contains(".")) {
+                        // ERROR PREVENTION
+                        // Eliminate entering multiple decimals
+                    } else {
+                        mEditText.append(buttonTag);
+                    }
+                } else {
+                    if (buttonTag.equals(".")) {
+                        // ERROR PREVENTION
+                        // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
+                        // before the decimal
+                        mEditText.setText(0 + buttonTag);
+                    } else {
+                        mEditText.setText(buttonTag);
+                    }
+                    userIsInTheMiddleOfTypingANumber = true;
+                }
+
             } else {
-                if (buttonTag.equals(".")) {
-                    // ERROR PREVENTION
-                    // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
-                    // before the decimal
-                    mEditText.setText(0 + buttonTag);
-                } else {
-                    mEditText.setText(buttonTag);
+                // operation was pressed
+                if (userIsInTheMiddleOfTypingANumber) {
+                    try {
+                        setOperand(Double.parseDouble(mEditText.getText().toString()));
+                    } catch (NumberFormatException e) { // ignore any non-double
+                    }
+                    userIsInTheMiddleOfTypingANumber = false;
                 }
-                userIsInTheMiddleOfTypingANumber = true;
-            }
 
-        } else {
-            // operation was pressed
-            if (userIsInTheMiddleOfTypingANumber) {
-                try {
-                    setOperand(Double.parseDouble(mEditText.getText().toString()));
-                } catch (NumberFormatException e) { // ignore any non-double
+                performOperation(buttonTag);
+                mEditText.setText(mDF.format(getResult()));
+                if (buttonTag.equals("=")) {
                 }
-                userIsInTheMiddleOfTypingANumber = false;
             }
-
-            performOperation(buttonTag);
-            mEditText.setText(mDF.format(getResult()));
-            if (buttonTag.equals("=")) {
+            if(mOnCalculatorKeyListener != null) {
+                mOnCalculatorKeyListener.OnCalculatorKeyPressed(buttonTag);
             }
         }
+    };
 
+    // Keyboard animation variables
+    static final int KEYBOARD_ANIM = 250;
+    private boolean mAnimating = false;
+
+    public void showCalculator() {
+        showCalculator(null);
     }
 
+    public void showCalculator(final ValueAnimator.AnimatorUpdateListener updateListener) {
+        if (mAnimating || getVisibility() == View.VISIBLE) {
+            return;
+        }
+        mAnimating = true;
+        final ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+        if (null != updateListener) {
+            val.addUpdateListener(updateListener);
+        }
+        ObjectAnimator key = ObjectAnimator.ofFloat(this, "translationY", this.getHeight(), 0f);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(KEYBOARD_ANIM);
+        set.playTogether(key, val);
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+                if (null != updateListener) {
+                    updateListener.onAnimationUpdate(val);
+                }
+                mAnimating = false;
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+            }
+        });
+        set.start();
+    }
+
+    public void hideCalculator() {
+        hideCalculator(null);
+    }
+
+    public void hideCalculator(final ValueAnimator.AnimatorUpdateListener updateListener) {
+        if (mAnimating || getVisibility() != View.VISIBLE) {
+            return;
+        }
+        mAnimating = true;
+        final ValueAnimator val = ValueAnimator.ofFloat(0f, 1f);
+        if (null != updateListener) {
+            val.addUpdateListener(updateListener);
+        }
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(this, "translationY", 0f, this.getHeight());
+        key.setDuration(KEYBOARD_ANIM);
+
+        final AnimatorSet set = new AnimatorSet();
+        set.playTogether(key, val);
+        set.setDuration(KEYBOARD_ANIM);
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                Calculator.this.setVisibility(View.INVISIBLE);
+                if (null != updateListener) {
+                    updateListener.onAnimationUpdate(val);
+                }
+                mAnimating = false;
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                Calculator.this.setVisibility(View.VISIBLE);
+            }
+        });
+        set.start();
+    }
 }

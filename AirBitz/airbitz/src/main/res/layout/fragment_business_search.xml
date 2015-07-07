@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:paddingBottom="20dp"
+    android:clipToPadding="false">
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_below="@+id/search_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="0px"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false" />
+
+    <RelativeLayout
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_below="@+id/search_form"
+            android:indeterminateOnly="true"
+            android:minHeight="100dp"
+            android:maxHeight="100dp" 
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/search_form"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_form_height"
+        android:background="@color/light_gray"
+        android:padding="1dp"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:src="@drawable/ico_loc"
+            android:layout_width="@dimen/search_form_width"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="1dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="1dp"
+            android:background="@android:color/white" />
+
+        <EditText
+            android:id="@+id/query"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="1dp"
+            android:layout_toLeftOf="@id/search_button"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:hint="@string/category_or_business_name_initial"
+            style="@style/DirectorySearchText"
+            />
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/search_button"
+            android:layout_below="@id/query"
+            android:drawableLeft="@android:drawable/ic_menu_mylocation"
+            android:hint="@string/location"
+            style="@style/DirectorySearchText"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

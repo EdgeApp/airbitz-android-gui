@@ -5,7 +5,8 @@
     android:id="@+id/activity_navigation_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/activityDrawer"
@@ -13,45 +14,55 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/activityLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/tabbar_height"
-            android:orientation="vertical" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/postcard_mountain"
+                android:scaleType="centerCrop" />
 
-        <com.airbitz.objects.Calculator
-            android:id="@+id/navigation_calculator_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/activityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" />
 
-        <com.airbitz.objects.Numberpad
-            android:id="@+id/navigation_numberpad_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <FrameLayout
+                android:id="@+id/action_button"
+                android:layout_height="@dimen/action_button_size"
+                android:layout_width="@dimen/action_button_size"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_margin="@dimen/action_button_margin"
+                android:background="@drawable/button_action_selector"
+                android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/navigationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_menu_add_black" />
 
-            <fragment
-                android:id="@+id/navigationFragment"
-                android:name="com.airbitz.fragments.NavigationBarFragment"
+            </FrameLayout>
+
+            <com.airbitz.objects.Calculator
+                android:id="@+id/navigation_calculator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_navigation_bar" />
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible" />
 
-        </RelativeLayout>
+            <com.airbitz.objects.Numberpad
+                android:id="@+id/navigation_numberpad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -60,14 +71,16 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/navigation_view_pager"
+    <LinearLayout
+        android:id="@+id/landing_overlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" />
 
     <include
         android:id="@+id/modal_indefinite_progress"
         layout="@layout/layout_modal_indefinite_progress"
         android:visibility="gone" />
+
 </RelativeLayout>

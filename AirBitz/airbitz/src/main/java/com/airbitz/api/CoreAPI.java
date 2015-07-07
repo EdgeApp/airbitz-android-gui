@@ -2223,10 +2223,6 @@ public class CoreAPI {
             SWIGTYPE_p_int pCount = core.new_intp();
             SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
-Log.d(TAG, "ABC_GetWallets(" + withTransactions + ")");
-for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
-    Log.d(TAG, e.toString());
-}
             tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                     paWalletInfo, pUCount, pError);
 
@@ -2441,7 +2437,7 @@ for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
 
     public Bitmap getQRCodeBitmap(String uuid, String id) {
         byte[] array = getQRCode(uuid, id);
-        return FromBinary(array, (int) Math.sqrt(array.length), 4);
+        return FromBinary(array, (int) Math.sqrt(array.length), 16);
     }
 
     private Bitmap FromBinary(byte[] bits, int width, int scale) {

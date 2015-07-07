@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,15 +23,16 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.fragments.wallet;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +43,9 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -59,7 +63,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.models.Wallet;
@@ -81,15 +85,13 @@ import java.util.List;
 
 import google.com.android.cloudprint.PrintDialogActivity;
 
-/**
- * Created on 2/22/14.
- */
-public class ExportSavingOptionFragment extends BaseFragment
+public class ExportSavingOptionFragment extends WalletBaseFragment
     implements FileSaveLocationDialog.FileSaveLocation {
+
     public static final String EXPORT_TYPE = "com.airbitz.fragments.exportsavingoption.export_type";
     private final String TAG = getClass().getSimpleName();
+
     View mView;
-    private HighlightOnPressSpinner mWalletSpinner;
     private HighlightOnPressButton mFromButton;
     private HighlightOnPressButton mToButton;
 
@@ -97,8 +99,6 @@ public class ExportSavingOptionFragment extends BaseFragment
     private LinearLayout mLastPeriodLayout;
     private LinearLayout mThisPeriodLayout;
 
-    private TextView mTitleTextView;
-    private TextView mAccountTextView;
     private TextView mFromTextView;
     private TextView mToTextView;
 
@@ -109,31 +109,18 @@ public class ExportSavingOptionFragment extends BaseFragment
     private Button mTodayButton;
     private Button mYesterdayButton;
 
-    private HighlightOnPressButton mPrintButton;
-    private ImageView mPrintImage;
-    private HighlightOnPressButton mSDCardButton;
-    private ImageView mSDCardImage;
-    private HighlightOnPressButton mEmailButton;
-    private ImageView mEmailImage;
-    private HighlightOnPressButton mGoogleDriveButton;
-    private ImageView mGoogleDriveImage;
-    private HighlightOnPressButton mShareButton;
-    private ImageView mShareImage;
-    private HighlightOnPressButton mViewButton;
-    private ImageView mViewImage;
-
-    private HighlightOnPressImageButton mBackButton;
-    private HighlightOnPressImageButton mHelpButton;
+    private Button mPrintButton;
+    private Button mSDCardButton;
+    private Button mEmailButton;
+    private Button mGoogleDriveButton;
+    private Button mShareButton;
+    private Button mViewButton;
 
     private EditText mPasswordEditText;
 
     private Bundle mBundle;
 
     private List<Button> mTimeButtons;
-    private List<Wallet> mWalletList;
-    private List<String> mWalletNameList;
-    private Wallet mWallet;
-    private CoreAPI mCoreApi;
     private Calendar today;
     private Calendar mFromDate;
     private Calendar mToDate;
@@ -145,65 +132,39 @@ public class ExportSavingOptionFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         mBundle = getArguments();
         mExportType = mBundle.getInt(EXPORT_TYPE);
-
-        mCoreApi = CoreAPI.getApi();
-        mWalletList = mCoreApi.getCoreWallets(false);
-        String uuid = getArguments().getString(RequestFragment.FROM_UUID);
-        mWallet = mCoreApi.getWalletFromUUID(uuid);
-        mWalletNameList = new ArrayList<String>();
-        for (Wallet wallet : mWalletList) {
-            mWalletNameList.add(wallet.getName());
-        }
+        setHomeEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_export_saving_options, container, false);
-        } else {
-
+        if (mView != null) {
             return mView;
         }
-
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        mView = i.inflate(R.layout.fragment_export_saving_options, container, false);
         today = Calendar.getInstance();
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-
-        mWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.fragment_exportsaving_account_spinner);
         mFromButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
         mToButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
 
-        mAccountTextView = (TextView) mView.findViewById(R.id.textview_account);
-        mDatesLayout = (RelativeLayout) mView.findViewById(R.id.fragment_export_date_entries);
+        mDatesLayout = (RelativeLayout) mView.findViewById(R.id.layout_export_data);
         mLastPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_last_period);
         mThisPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_this_period);
         mFromTextView = (TextView) mView.findViewById(R.id.textview_from);
         mToTextView = (TextView) mView.findViewById(R.id.textview_to);
 
-        mAccountTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mFromTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mToTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mFromTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mToTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_export_saving_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mPrintButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_print);
-        mPrintImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_print);
-        mSDCardButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
-        mSDCardImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_sd_card);
-        mEmailButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_email);
-        mEmailImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_email);
-        mGoogleDriveButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
-        mGoogleDriveImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_google_drive);
-        mShareButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_share);
-        mShareImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_share);
-        mViewButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_button_view);
-        mViewImage = (ImageView) mView.findViewById(R.id.fragment_exportsaving_image_view);
+        mPrintButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_print);
+        mSDCardButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_sd_card);
+        mEmailButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_email);
+        mGoogleDriveButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
+        mShareButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_share);
+        mViewButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_view);
 
         mThisMonthButton = (Button) mView.findViewById(R.id.button_this_month);
         mThisWeekButton = (Button) mView.findViewById(R.id.button_this_week);
@@ -220,35 +181,12 @@ public class ExportSavingOptionFragment extends BaseFragment
         mTimeButtons.add(mThisWeekButton);
         mTimeButtons.add(mThisMonthButton);
 
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(getString(R.string.export_title));
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_request_wallet_spinner, mWalletNameList);
-        dataAdapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
-        mWalletSpinner.setAdapter(dataAdapter);
-        for (int i = 0; i < mWalletList.size(); i++) {
-            if (mWallet.getUUID().equals(mWalletList.get(i).getUUID())) {
-                mWalletSpinner.setSelection(i);
-            }
-        }
-
-        mWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mWallet = mWalletList.get(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
         showExportButtons();
 
         mPrintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
@@ -283,7 +221,7 @@ public class ExportSavingOptionFragment extends BaseFragment
         mSDCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
@@ -312,7 +250,7 @@ public class ExportSavingOptionFragment extends BaseFragment
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                Wallet wallet = mWallet;
                 String dataOrFile;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
@@ -338,7 +276,7 @@ public class ExportSavingOptionFragment extends BaseFragment
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWalletList.get(mWalletSpinner.getSelectedItemPosition());
+                Wallet wallet = mWallet;
                     String filePath = getExportFilePath(wallet, mExportType);
                 if(filePath != null) {
                     Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -359,20 +297,6 @@ public class ExportSavingOptionFragment extends BaseFragment
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
                 }
-            }
-        });
-
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
             }
         });
 
@@ -617,6 +541,30 @@ public class ExportSavingOptionFragment extends BaseFragment
         return mView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_standard, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (super.onOptionsItemSelected(item)) {
+            return true;
+        }
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            ExportSavingOptionFragment.popFragment(mActivity);
+            return true;
+        case R.id.action_help:
+            mActivity.pushFragment(
+                new HelpFragment(HelpFragment.EXPORT_WALLET_OPTIONS), NavigationActivity.Tabs.WALLET.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void writeToFile(File file, String data) {
         try {
             FileWriter out = new FileWriter(file);
@@ -646,60 +594,25 @@ public class ExportSavingOptionFragment extends BaseFragment
         if (type == ExportTypes.CSV.ordinal()) {
             setAllButtonViews(View.GONE);
             mSDCardButton.setVisibility(View.VISIBLE);
-            mSDCardImage.setVisibility(View.VISIBLE);
             mShareButton.setVisibility(View.VISIBLE);
-            mShareImage.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
-            mPrintImage.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
             mPrintButton.setVisibility(View.VISIBLE);
-            mPrintImage.setVisibility(View.VISIBLE);
             mSDCardButton.setVisibility(View.VISIBLE);
-            mSDCardImage.setVisibility(View.VISIBLE);
             mViewButton.setVisibility(View.VISIBLE);
-            mViewImage.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
-//        else if (type == ExportTypes.PDF.ordinal()) {
-//            //TODO
-//        }
-//        else if (type == ExportTypes.Quicken.ordinal()) {
-//            mPrintButton.setVisibility(View.GONE);
-//            mPrintImage.setVisibility(View.GONE);
-//            mViewButton.setVisibility(View.GONE);
-//            mViewImage.setVisibility(View.GONE);
-//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mShareButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mShareButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//        }
-//        else if (type == ExportTypes.Quickbooks.ordinal()) {
-//            mPrintButton.setVisibility(View.GONE);
-//            mPrintImage.setVisibility(View.GONE);
-//            mViewButton.setVisibility(View.GONE);
-//            mViewImage.setVisibility(View.GONE);
-//            mSDCardButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_top_archive));
-//            mShareButton.setBackground(getResources().getDrawable(R.drawable.wallet_list_bottom));
-//            mSDCardButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//            mShareButton.setPadding((int) getResources().getDimension(R.dimen.nine_mm), 0, (int) getResources().getDimension(R.dimen.three_mm), 0);
-//        }
     }
 
     private void setAllButtonViews(int state) {
         mPrintButton.setVisibility(state);
-        mPrintImage.setVisibility(state);
         mSDCardButton.setVisibility(state);
-        mSDCardImage.setVisibility(state);
         mEmailButton.setVisibility(state);
-        mEmailImage.setVisibility(state);
         mGoogleDriveButton.setVisibility(state);
-        mGoogleDriveImage.setVisibility(state);
         mShareButton.setVisibility(state);
-        mShareImage.setVisibility(state);
         mViewButton.setVisibility(state);
-        mViewImage.setVisibility(state);
         mPasswordEditText.setVisibility(state);
     }
 
@@ -908,6 +821,20 @@ public class ExportSavingOptionFragment extends BaseFragment
         }
 
         return filename.replace("/", "_");
+    }
+
+    public static void pushFragment(NavigationActivity mActivity, String uuid, int type) {
+        Fragment fragment = new ExportSavingOptionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(RequestFragment.FROM_UUID, uuid);
+        bundle.putInt(ExportSavingOptionFragment.EXPORT_TYPE, type);
+        fragment.setArguments(bundle);
+
+        mActivity.pushFragment(fragment);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        mActivity.popFragment();
     }
 
     public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF}

@@ -36,7 +36,7 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
-                    android:id="@+id/qr_code_layout"
+                    android:id="@+id/request_qr_code_layout"
                     android:layout_width="480dp"
                     android:layout_height="480dp"
                     android:layout_margin="10dp"
@@ -60,7 +60,7 @@
                     android:layout_marginRight="12.6dp"
                     android:layout_marginTop="9.45dp"
                     android:paddingBottom="6dp"
-                    android:layout_below="@id/qr_code_layout" >
+                    android:layout_below="@id/request_qr_code_layout" >
 
                     <ImageView
                         android:id="@+id/fragment_request_qrcode_ble_image"
@@ -82,13 +82,13 @@
                         android:visibility="gone"/>
 
                     <LinearLayout
-                        android:id="@+id/layout_container"
+                        android:id="@+id/request_bottom"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textview_waiting"
+                            android:id="@+id/request_waiting"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"

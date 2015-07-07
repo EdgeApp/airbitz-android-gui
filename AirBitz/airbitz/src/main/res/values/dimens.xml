@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="button_height">40dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="venue_list_small_height_175">112dp</dimen>
     <dimen name="wallet_list_view_height">70dp</dimen>
@@ -36,9 +38,26 @@
     <dimen name="map_padding">120dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="calc_button_size">50dp</dimen>
-    <dimen name="calc_button_size_big">60dp</dimen>
-    <dimen name="calc_button_margin">3dp</dimen>
-    <dimen name="calc_button_textsize">14dp</dimen>
 
+    <dimen name="btn_radius">2dp</dimen>
+    <dimen name="size_fab">56dp</dimen>
+    <dimen name="wallet_row_height">44.1dp</dimen>
+    <dimen name="max_qr_code_size">300dp</dimen>
+    <dimen name="max_qr_code_margin">5dp</dimen>
+
+    <dimen name="calc_button_radius">0dp</dimen>
+    <dimen name="calc_button_size">60dp</dimen>
+    <dimen name="calc_button_margin">1dp</dimen>
+    <dimen name="calc_button_numsize">24dp</dimen>
+    <dimen name="calc_button_textsize">16dp</dimen>
+
+    <dimen name="action_button_size">72dp</dimen>
+    <dimen name="action_button_content_margin">16dp</dimen>
+    <dimen name="action_button_margin">12dp</dimen>
+    <dimen name="action_menu_radius">96dp</dimen>
+
+    <dimen name="sub_action_button_size">36dp</dimen>
+    <dimen name="sub_action_button_content_margin">6dp</dimen>
+    <dimen name="search_form_height">100dp</dimen>
+    <dimen name="search_form_width">50dp</dimen>
 </resources>

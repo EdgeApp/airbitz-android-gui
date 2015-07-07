@@ -52,12 +52,14 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,7 +75,6 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
-import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
@@ -109,7 +110,9 @@ public class LandingFragment extends BaseFragment implements
     private View mBlackoutView;
 
     private HighlightOnPressImageButton mBackButton;
-    private HighlightOnPressButton mCreateAccountButton;
+    private Button mSignInButton;
+    private Button mCreateAccountButton;
+    private Button mExitPinLoginButton;
     private TextView mCurrentUserText;
     private TextView mForgotTextView;
     private TextView mLandingSubtextView;
@@ -124,6 +127,7 @@ public class LandingFragment extends BaseFragment implements
     private Handler mHandler = new Handler();
 
     private int mPinFailedCount;
+
     static final int MAX_PIN_FAILS = 3;
 
     /**
@@ -146,14 +150,16 @@ public class LandingFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_landing, container, false);
 
+        Common.addStatusBarPadding(mActivity, mView);
+
         mBlackoutView = mView.findViewById(R.id.fragment_landing_black);
         mDetailTextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
-        mDetailTextView.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        mDetailTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mSwipeLayout = (LinearLayout) mView.findViewById(R.id.fragment_landing_swipe_layout);
 
         mUserNameEditText = (EditText) mView.findViewById(R.id.fragment_landing_username_edittext);
-        mUserNameEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mUserNameEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -167,7 +173,7 @@ public class LandingFragment extends BaseFragment implements
 
         mPasswordLayout = mView.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_landing_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -202,9 +208,28 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        mCreateAccountButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_landing_create_account);
-        mCreateAccountButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mCreateAccountButton = (Button) mView.findViewById(R.id.fragment_landing_create_account);
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPinLayout.getVisibility() == View.VISIBLE) {
+                    assert(false); // Should not happen
+//                    mUserNameEditText.setText(mUsername);
+//                    refreshView(false, false);
+//                    mPasswordEditText.requestFocus();
+//                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
+                } else {
+                    if (mActivity.networkIsAvailable()) {
+                        mActivity.startSignUp(mUserNameEditText.getText().toString());
+                    } else {
+                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+                    }
+                }
+            }
+        });
+
+        mExitPinLoginButton = (Button) mView.findViewById(R.id.fragment_landing_exit_pin);
+        mExitPinLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mPinLayout.getVisibility() == View.VISIBLE) {
@@ -213,11 +238,12 @@ public class LandingFragment extends BaseFragment implements
                     mPasswordEditText.requestFocus();
                     mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
-                    if (mActivity.networkIsAvailable()) {
-                        mActivity.startSignUp(mUserNameEditText.getText().toString());
-                    } else {
-                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
-                    }
+                    assert(false); // Should not happen
+//                    if (mActivity.networkIsAvailable()) {
+//                        mActivity.startSignUp(mUserNameEditText.getText().toString());
+//                    } else {
+//                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
+//                    }
                 }
             }
         });
@@ -318,14 +344,18 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        HighlightOnPressButton mSignInButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_landing_signin_button);
-        mSignInButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mSignInButton = (Button) mView.findViewById(R.id.fragment_landing_signin_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivity.hideSoftKeyboard(mPasswordEditText);
-                mActivity.hideSoftKeyboard(mUserNameEditText);
-                attemptPasswordLogin();
+                if (mUserNameEditText.getVisibility() == View.GONE) {
+                    mUserNameEditText.setVisibility(View.VISIBLE);
+                    mPasswordEditText.setVisibility(View.VISIBLE);
+                } else {
+                    mActivity.hideSoftKeyboard(mPasswordEditText);
+                    mActivity.hideSoftKeyboard(mUserNameEditText);
+                    attemptPasswordLogin();
+                }
             }
         });
 
@@ -341,6 +371,16 @@ public class LandingFragment extends BaseFragment implements
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_three));
         mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_four));
         setPinViews(0);
+
+        mAccounts.clear();
+        mAccounts.addAll(mCoreAPI.listAccounts());
+        if (mAccounts.isEmpty())
+        {
+            mUserNameEditText.setVisibility(View.GONE);
+            mPasswordEditText.setVisibility(View.GONE);
+        }
+
+        mView.setOnTouchListener(mActivity);
 
         return mView;
     }
@@ -508,12 +548,11 @@ public class LandingFragment extends BaseFragment implements
 
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
 
+            mSwipeLayout.setVisibility(View.VISIBLE);
             if (isKeyboardUp) {
                 mLandingSubtextView.setVisibility(View.GONE);
-                mSwipeLayout.setVisibility(View.GONE);
             } else {
                 mLandingSubtextView.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.VISIBLE);
             }
             mPinEditText.requestFocus();
         } else {
@@ -527,11 +566,9 @@ public class LandingFragment extends BaseFragment implements
             if (isKeyboardUp) {
                 mDetailTextView.setVisibility(View.GONE);
                 mLandingSubtextView.setVisibility(View.GONE);
-                mSwipeLayout.setVisibility(View.GONE);
             } else {
                 mDetailTextView.setVisibility(View.VISIBLE);
                 mLandingSubtextView.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.VISIBLE);
             }
             showAccountsList(false);
         }

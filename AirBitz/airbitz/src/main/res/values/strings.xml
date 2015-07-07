@@ -15,7 +15,11 @@
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
+    <string name="string_total">TOTAL:</string>
     <string name="string_finish">FINISH</string>
+    <string name="string_help">Help</string>
+    <string name="string_loading">Loading...</string>
+    <string name="string_no_transactions">No transactions</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
@@ -30,8 +34,8 @@
     <string name="nav_bar_more_text">MORE</string>
 
     <!-- Calculator strings -->
-    <string name="calculator_back">&lt;&#160;DEL</string>
-    <string name="calculator_done">DONE</string>
+    <string name="calculator_back">&lt;&#160;Del</string>
+    <string name="calculator_done">Done</string>
 
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
@@ -43,9 +47,13 @@
 
     <!-- Strings for Business Directory fragment -->
     <string name="directory_title">Directory</string>
+    <string name="restaurants">Restaurants</string>
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
-    <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
+    <string name="gift_cards">Gift Cards</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
+    <string name="electronics">Electronics</string>
+    <string name="atms">ATMs</string>
+    <string name="shopping">Shopping</string>
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
@@ -53,6 +61,7 @@
     <string name="category_or_business_name">Business Name or Category</string>
     <string name="city_state_county">City, State/Province, or Country</string>
     <string name="your_location">Your Location</string>
+    <string name="location">Location...</string>
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
     <string name="no_location_found">Unable to get a current location. Please enable Location Services.</string>
@@ -94,17 +103,17 @@
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>
-    <string name="fragment_landing_detail_text">Digital Currency Wallet</string>
+    <string name="fragment_landing_detail_text">Bitcoin Wallet</string>
     <string name="fragment_landing_swipe_text">Swipe to View Business Directory</string>
     <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
     <string name="fragment_landing_username_hint">User Name</string>
     <string name="fragment_landing_password_hint">Password</string>
-    <string name="fragment_landing_signin_button">Log In</string>
-    <string name="fragment_landing_signup_button">Create Account</string>
+    <string name="fragment_landing_signin_button">Sign In</string>
+    <string name="fragment_landing_signup_button">Sign Up</string>
     <string name="fragment_landing_forgot_password">Forgot Password</string>
     <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
-    <string name="fragment_landing_switch_user">Login With Password</string>
+    <string name="fragment_landing_switch_user">Exit PIN Login</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
@@ -239,6 +248,7 @@
     <string name="settings_title_ble">Bluetooth</string>
     <string name="settings_title_ble_send_only">Bluetooth (Send only)</string>
     <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_select_currency">Select a currency</string>
     <string name="settings_title_distance">Default Distance</string>
     <string name="settings_exchange_title">DEFAULT EXCHANGE RATE</string>
     <string name="settings_exchange_text">Default Exchange</string>
@@ -279,6 +289,7 @@
     <string name="fragment_category_transfer">Transfer:</string>
     <string name="fragment_category_exchange">Exchange:</string>
     <string name="fragment_category_deleted">%1$s Deleted</string>
+    <string name="fragment_category_add">Add Category</string>
 
     <!-- Strings for AutoLogoff Dialog -->
     <string name="dialog_title">Set Auto Logoff time</string>
@@ -296,12 +307,20 @@
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
+    <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
     <string name="fragment_send_first_usage">Scan the QR code of payee to send payment</string>
     <string name="fragment_send_first_usage_ble">Bluetooth payment requests are listed here. Tap on a user to send them a payment</string>
+
+    <string name="fragment_send_transfer">Transfer</string>
+    <string name="fragment_send_address">Address</string>
+    <string name="fragment_send_photos">Photos</string>
+    <string name="fragment_send_flash">Flash</string>
+    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+    <string name="fragment_import_address_dialog_title">Sweep Funds From Private Key</string>
+    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
@@ -325,6 +344,8 @@
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
+    <string name="fragment_wallets_add_wallet">Add Wallet</string>
+    <string name="fragment_wallets_rename_wallet">Rename Wallet</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
     <string name="fragment_wallets_list_archive_title">ARCHIVE</string>
     <string name="fragment_wallets_balance_text">Total Balance</string>
@@ -344,16 +365,20 @@
     <string name="fragment_wallet_confirmations">" confirmations"</string>
     <string name="fragment_wallet_request_button">RECEIVE</string>
     <string name="fragment_wallet_send_button">SEND</string>
+    <string name="fragment_wallets_wallet_name_required">Name required</string>
 
     <!-- Strings for Request fragment -->
     <string name="address_request_title">Address Request</string>
     <string name="address_request_message">%1$s has requested a bitcoin address to send money to. Please choose a wallet to receive funds.</string>
+    <string name="fragment_request_copy_title">Copy</string>
+    <string name="fragment_request_email_title">Email</string>
+    <string name="fragment_request_sms_title">SMS</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
     <string name="request_wallet_title">Wallet:</string>
     <string name="request_button_import">IMPORT</string>
-    <string name="request_amount_hint">Amt (Optional)</string>
+    <string name="request_amount_hint">Enter Amount (Optional)</string>
     <string name="request_next">NEXT</string>
     <string name="request_invalid_amount">Invalid Amount</string>
 
@@ -569,7 +594,13 @@
     <string name="settings_category_title">Categories</string>
 
     <!-- Navigation Drawer -->
-    <string name="drawer_logout">LOGOUT</string>
-    <string name="drawer_settings">SETTINGS</string>
-
+    <string name="drawer_login_or_signup">Login or Signup</string>
+    <string name="drawer_directory">Directory</string>
+    <string name="drawer_send">Send</string>
+    <string name="drawer_receive">Receive</string>
+    <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_buy_sell">Buy/Sell</string>
+    <string name="drawer_import">Import</string>
 </resources>

@@ -522,6 +522,7 @@ public class AirbitzAPI {
 
 
         String response = getRequest(API_AUTO_COMPLETE_BUSINESS, createURLParams(params));
+        Log.d(TAG, response);
         try{
             JSONObject jsonResponse = new JSONObject(response);
             return Business.generateBusinessObjectListFromJSON(jsonResponse.getJSONArray("results"));

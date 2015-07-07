@@ -155,6 +155,8 @@ typedef enum eABC_CC
     ABC_CC_InvalidPinWait = 36, ABC_CC_PinExpired = 36,
      /** Two Factor required */
     ABC_CC_InvalidOTP = 37,
+    /** Trying to send too little money. */
+    ABC_CC_SpendDust = 38,
     /** The server says app is obsolete and needs to be upgraded. */
     ABC_CC_Obsolete = 1000
 } tABC_CC;
@@ -215,13 +217,13 @@ typedef struct sABC_AsyncBitCoinInfo
     tABC_Error status;
 
     /** if the event involved a wallet, this is its ID */
-    char *szWalletUUID;
+    const char *szWalletUUID;
 
     /** if the event involved a transaction, this is its ID */
-    char *szTxID;
+    const char *szTxID;
 
     /** String containing a description of the event */
-    char *szDescription;
+    const char *szDescription;
 
     /** amount swept */
     int64_t sweepSatoshi;
@@ -236,13 +238,13 @@ typedef struct sABC_AsyncBitCoinInfo
 typedef struct sABC_Currency
 {
     /** currency ISO 4217 code */
-    const char    *szCode;
+    const char *szCode;
     /** currency ISO 4217 num */
-    int     num;
+    int         num;
     /** currency description */
-    const char    *szDescription;
+    const char *szDescription;
     /** currency countries */
-    const char    *szCountries;
+    const char *szCountries;
 } tABC_Currency;
 
 /**
@@ -255,9 +257,9 @@ typedef struct sABC_Currency
 typedef struct sABC_WalletInfo
 {
     /** wallet UUID */
-    char            *szUUID;
+    const char *szUUID;
     /** wallet name */
-    char            *szName;
+    const char *szName;
     /** wallet ISO 4217 currency code */
     int             currencyNum;
     /** true if the wallet is archived */
@@ -275,9 +277,9 @@ typedef struct sABC_WalletInfo
 typedef struct sABC_QuestionChoice
 {
     /** question */
-    char            *szQuestion;
+    const char *szQuestion;
     /** question category */
-    char            *szCategory;
+    const char *szCategory;
     /** miniumum length of an answer for this question */
     unsigned int    minAnswerLength;
 } tABC_QuestionChoice;
@@ -313,7 +315,7 @@ typedef struct sABC_TxDetails
     /** miners fees in satoshi */
     int64_t amountFeesMinersSatoshi;
     /** login of user who created the transaction **/
-    char *szLogin;
+    const char *szLogin;
     /** amount in currency */
     double amountCurrency;
     /** payer or payee */
@@ -341,9 +343,9 @@ typedef struct sABC_TxOutput
     /** The number of satoshis used in the transaction **/
     int64_t  value;
     /** The coin address **/
-    char     *szAddress;
+    const char *szAddress;
     /** The tx address **/
-    char     *szTxId;
+    const char *szTxId;
     /** The tx index **/
     int64_t  index;
 } tABC_TxOutput;
@@ -357,9 +359,9 @@ typedef struct sABC_TxOutput
 typedef struct sABC_TxInfo
 {
     /** transaction identifier */
-    char *szID;
+    const char *szID;
     /** malleable transaction identifier */
-    char *szMalleableTxId;
+    const char *szMalleableTxId;
     /** time of creation */
     int64_t timeCreation;
     /** count of bitcoin addresses associated with this transaciton */
@@ -382,7 +384,7 @@ typedef struct sABC_TxInfo
 typedef struct sABC_PasswordRule
 {
     /** description of the rule */
-    char *szDescription;
+    const char *szDescription;
     /** has the password passed this requirement */
     bool bPassed;
 } tABC_PasswordRule;
@@ -396,7 +398,7 @@ typedef struct sABC_PasswordRule
 typedef struct sABC_RequestInfo
 {
     /** request identifier */
-    char *szID;
+    const char *szID;
     /** time of creation */
     int64_t timeCreation;
     /** request details */
@@ -425,6 +427,8 @@ typedef struct sABC_SpendTarget
     /** The destination to show to the user. This is often an address,
      * but also could be something else like a wallet name. */
     const char *szName;
+    /** True if this is a signed bip70 payment request. */
+    bool bSigned;
     /** Non-null if the payment request provides a URL
      * to visit once the payment is done. */
     const char *szRet;

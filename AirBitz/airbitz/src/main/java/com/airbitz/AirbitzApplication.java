@@ -62,6 +62,7 @@ public class AirbitzApplication extends Application {
     private static int mLastNavTab = 0;
     private static String mClientId;
     private static String mUserAgent;
+    private static String mWalletUuid;
 
     @Override
     public void onCreate() {
@@ -90,6 +91,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Logout() {
+        setCurrentWallet(null);
         airbitzLogin = new Login();
     }
 
@@ -103,6 +105,14 @@ public class AirbitzApplication extends Application {
         } else {
             return String.valueOf(airbitzLogin.getPassword());
         }
+    }
+
+    public static String getCurrentWallet() {
+        return mWalletUuid;
+    }
+
+    public static void setCurrentWallet(String uuid) {
+        mWalletUuid = uuid;
     }
 
     private static String CLIENT_ID_PREF = "client_id";
@@ -188,6 +198,7 @@ public class AirbitzApplication extends Application {
     private static class Login {
         private String mUsername = null;
         private char[] mPassword = null;
+        private String mWalletUuid = null;
 
         public String getUsername() {
             return mUsername;

@@ -81,7 +81,7 @@ public class ExportAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_business, parent, false);
         TextView nameTextView = (TextView) convertView.findViewById(R.id.textview_business_title);
-        nameTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        nameTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageview_icon);
         nameTextView.setText(mMenus[position]);
 

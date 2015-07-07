@@ -40,16 +40,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -68,29 +74,23 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
 import com.airbitz.objects.BleUtil;
-import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.HighlightOnPressSpinner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
-/**
- * Created on 2/12/14.
- */
 public class SettingFragment extends BaseFragment {
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
@@ -101,20 +101,16 @@ public class SettingFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
     AlertDialog mDefaultExchangeDialog;
     AlertDialog mDistanceDialog;
-    private RelativeLayout mCategoryContainer;
-    private RelativeLayout mSpendingLimitContainer;
-    private RelativeLayout mTwoFactorContainer;
-    private View mNFCSwitchLayout;
-    private View mBLESwitchLayout;
-    private HighlightOnPressImageButton mHelpButton;
-    private TextView mTitleTextView;
+    private Button mCategoryContainer;
+    private Button mSpendingLimitContainer;
+    private Button mTwoFactorContainer;
     private RadioGroup mDenominationGroup;
     private RadioButton mBitcoinButton;
     private RadioButton mmBitcoinButton;
     private RadioButton muBitcoinButton;
-    private HighlightOnPressButton mChangePasswordButton;
-    private HighlightOnPressButton mChangePINButton;
-    private HighlightOnPressButton mChangeRecoveryButton;
+    private Button mChangePasswordButton;
+    private Button mChangePINButton;
+    private Button mChangeRecoveryButton;
     private Switch mSendNameSwitch;
     private Switch mMerchantModeSwitch;
     private Switch mPinReloginSwitch;
@@ -123,13 +119,12 @@ public class SettingFragment extends BaseFragment {
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
-    private HighlightOnPressButton mAutoLogoffButton;
-    private HighlightOnPressButton mDebugButton;
-    private HighlightOnPressSpinner mDefaultCurrencySpinner;
-    private HighlightOnPressButton mDefaultDistanceButton;
+    private Button mAutoLogoffButton;
+    private Button mDebugButton;
+    private Button mDefaultCurrencyButton;
+    private Button mDefaultDistanceButton;
     private TextView mAccountTitle;
-    private HighlightOnPressButton mExchangeButton;
-    private HighlightOnPressButton mLogoutButton;
+    private Button mExchangeButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
     private List<String> mCurrencyItems;
     private List<String> mDistanceItems;
@@ -146,24 +141,22 @@ public class SettingFragment extends BaseFragment {
 
         mCoreAPI = CoreAPI.getApi();
         mActivity = ((NavigationActivity)getActivity());
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_setting, container, false);
+            LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+            mView = i.inflate(R.layout.fragment_setting, container, false);
         }
+
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.settings_title);
+        getBaseActivity().setSupportActionBar(toolbar);
 
         mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
-
-        mHelpButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_help);
-        mHelpButton.setVisibility(View.VISIBLE);
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.settings_title);
-
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
         mBitcoinButton = (RadioButton) mView.findViewById(R.id.settings_denomination_buttons_bitcoin);
@@ -177,30 +170,21 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mChangePasswordButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_change_password);
-        mChangePINButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_pin);
-        mChangeRecoveryButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_recovery);
+        mChangePasswordButton = (Button) mView.findViewById(R.id.settings_button_change_password);
+        mChangePINButton = (Button) mView.findViewById(R.id.settings_button_pin);
+        mChangeRecoveryButton = (Button) mView.findViewById(R.id.settings_button_recovery);
 
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
-        mAutoLogoffButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_auto_logoff);
+        mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
-        mDefaultCurrencySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.settings_button_currency);
-        mDefaultDistanceButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_distance);
+        mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
+        mDefaultDistanceButton = (Button) mView.findViewById(R.id.settings_button_distance);
 
-        mExchangeButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_default_exchange);
+        mExchangeButton = (Button) mView.findViewById(R.id.settings_button_default_exchange);
 
-        mLogoutButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_logout);
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCurrentSettings();
-                ((NavigationActivity) getActivity()).Logout();
-            }
-        });
-
-        mDebugButton = (HighlightOnPressButton) mView.findViewById(R.id.settings_button_debug);
+        mDebugButton = (Button) mView.findViewById(R.id.settings_button_debug);
         mDebugButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,7 +193,7 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mCategoryContainer = (RelativeLayout) mView.findViewById(R.id.category_container);
+        mCategoryContainer = (Button) mView.findViewById(R.id.settings_button_category);
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,7 +202,7 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mSpendingLimitContainer = (RelativeLayout) mView.findViewById(R.id.settings_spending_limits_container);
+        mSpendingLimitContainer = (Button) mView.findViewById(R.id.settings_button_spending_limits);
         mSpendingLimitContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -227,19 +211,12 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mTwoFactorContainer = (RelativeLayout) mView.findViewById(R.id.settings_two_factor_container);
+        mTwoFactorContainer = (Button) mView.findViewById(R.id.settings_button_two_factor_authentication);
         mTwoFactorContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new TwoFactorShowFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
-            }
-        });
-
-        mHelpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.MORE.ordinal());
             }
         });
 
@@ -311,10 +288,9 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        mNFCSwitchLayout = mView.findViewById(R.id.settings_nfc_layout);
         mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
         if(isNFCcapable()) {
-            mNFCSwitchLayout.setVisibility(View.VISIBLE);
+            mNFCSwitch.setVisibility(View.VISIBLE);
             mNFCSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -326,10 +302,9 @@ public class SettingFragment extends BaseFragment {
             });
         }
 
-        mBLESwitchLayout = mView.findViewById(R.id.settings_ble_layout);
         mBLESwitch = (Switch) mView.findViewById(R.id.settings_toggle_ble);
         if(isBLEcapable()) {
-            mBLESwitchLayout.setVisibility(View.VISIBLE);
+            mBLESwitch.setVisibility(View.VISIBLE);
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || !BleUtil.isBleAdvertiseAvailable(getActivity())) {
                 mBLESwitch.setText(getString(R.string.settings_title_ble_send_only));
             }
@@ -352,27 +327,18 @@ public class SettingFragment extends BaseFragment {
             }
         });
 
-        final List<String> mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
-        CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, mCurrencyList);
-        mDefaultCurrencySpinner.setAdapter(mCurrencyAdapter);
-        int num = mCoreAPI.coreSettings().getCurrencyNum();
-        String defaultCode = mCoreAPI.getCurrencyCode(num);
-        for(int i=0; i<mCurrencyList.size(); i++) {
-            if(mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
-                mDefaultCurrencySpinner.setSelection(i);
-                break;
-            }
-        }
-        mDefaultCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mCurrencyNum = mCoreAPI.coreSettings().getCurrencyNum();
+        String defaultCode = mCoreAPI.getCurrencyCode(mCurrencyNum);
+        mDefaultCurrencyButton.setText(defaultCode);
+        mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String code = mCurrencyList.get(position).substring(0, 3);
-                mCurrencyNum = mCoreAPI.getCurrencyNumberFromCode(code);
-                saveCurrentSettings();
-            }
+            public void onClick(View view) {
+                String code = mCoreAPI.getCurrencyCode(mCurrencyNum);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+                CurrencyFragment fragment = new CurrencyFragment();
+                fragment.setSelected(code);
+                ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
+            }
         });
 
         mDefaultDistanceButton.setOnClickListener(new View.OnClickListener() {
@@ -394,6 +360,24 @@ public class SettingFragment extends BaseFragment {
         setUserNameState(mSendNameSwitch.isChecked());
 
         return mView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_standard, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.action_help:
+            ((NavigationActivity) getActivity()).pushFragment(
+                new HelpFragment(HelpFragment.SETTINGS), NavigationActivity.Tabs.MORE.ordinal());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void loadSettings(tABC_AccountSettings settings) {
@@ -424,11 +408,11 @@ public class SettingFragment extends BaseFragment {
         // Pin Relogin
         mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
         // NFC
-        if(mNFCSwitchLayout.getVisibility() == View.VISIBLE) {
+        if(mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());
         }
         // BLE
-        if(mBLESwitchLayout.getVisibility() == View.VISIBLE) {
+        if(mBLESwitch.getVisibility() == View.VISIBLE) {
             mBLESwitch.setChecked(getBLEPref());
         }
 

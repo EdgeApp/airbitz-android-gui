@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<declare-styleable name="MyCustomView">
+  <attr name="toolbarBackgroundColor" />
+  <attr name="toolbarTextColor" />
+  <attr name="toolbarNavigationIcon" />
+</declare-styleable>

@@ -73,7 +73,7 @@ public class DebugFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.fragment_debug, container, false);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
         mTitleTextView.setText(getString(R.string.fragment_debug_title));
 
         mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);

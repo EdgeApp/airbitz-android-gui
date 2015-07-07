@@ -1,831 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    style="@style/SettingsFragment">
 
-    <include
-        layout="@layout/layout_title_header"
+    <ScrollView 
         android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
-
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_title_header">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/settings_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:id="@+id/settings_denomination_title"
+                android:text="@string/settings_denomination_title"
+                style="@style/SettingsTitle" />
+
+            <RadioGroup
+                android:id="@+id/settings_denomination_denomination_group"
+                style="@style/SettingsGroup">
+
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_bitcoin"
+                    android:text="@string/settings_denomination_buttons_bitcoin"
+                    style="@style/SettingsRadioItemFirst" />
+
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_mbitcoin"
+                    android:text="@string/settings_denomination_buttons_mbitcoin"
+                    style="@style/SettingsRadioItem" />
+
+                <RadioButton
+                    android:id="@+id/settings_denomination_buttons_ubitcoin"
+                    android:text="@string/settings_denomination_buttons_ubitcoin"
+                    style="@style/SettingsRadioItem" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/settings_account_title"
+                android:text="@string/settings_account_title"
+                style="@style/SettingsTitle" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:id="@+id/credentials_buttons"
+                style="@style/SettingsGroup">
 
-                <TextView
-                    android:id="@+id/settings_denomination_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="28dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/settings_denomination_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp" />
-
-                <RadioGroup
-                    android:id="@+id/settings_denomination_denomination_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_bitcoin"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:background="@drawable/wallet_list_top_archive"
-                        android:button="@null"
-                        android:checked="true"
-                        android:drawablePadding="15dp"
-                        android:drawableRight="@drawable/radio_button"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
-                        android:text="@string/settings_denomination_buttons_bitcoin"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
-
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_mbitcoin"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:background="@drawable/wallet_list_standard"
-                        android:button="@null"
-                        android:drawablePadding="20dp"
-                        android:drawableRight="@drawable/radio_button"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
-                        android:text="@string/settings_denomination_buttons_mbitcoin"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
-
-                    <RadioButton
-                        android:id="@+id/settings_denomination_buttons_ubitcoin"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:background="@drawable/wallet_list_bottom"
-                        android:button="@null"
-                        android:drawableRight="@drawable/radio_button"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
-                        android:text="@string/settings_denomination_buttons_ubitcoin"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/settings_account_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="28dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/settings_account_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp" />
-
-                <LinearLayout
-                    android:id="@+id/credentials_buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical">
-
-                    <com.airbitz.objects.HighlightOnPressButton
+                <FrameLayout style="@style/SettingsRowFirst">
+                    <Button
                         android:id="@+id/settings_button_change_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_top_archive"
-                        android:drawableRight="@drawable/arrow_right"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
                         android:text="@string/settings_button_change_password"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
+                        style="@style/SettingsButton" />
+                </FrameLayout>
 
-                    <com.airbitz.objects.HighlightOnPressButton
+                <FrameLayout style="@style/SettingsRow">
+                    <Button
                         android:id="@+id/settings_button_pin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_standard"
-                        android:drawableRight="@drawable/arrow_right"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
                         android:text="@string/settings_button_pin"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
+                        style="@style/SettingsButton" />
+                </FrameLayout>
 
-                    <com.airbitz.objects.HighlightOnPressButton
+                <FrameLayout style="@style/SettingsRow">
+                    <Button
                         android:id="@+id/settings_button_recovery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_bottom"
-                        android:drawableRight="@drawable/arrow_right"
-                        android:gravity="left"
-                        android:paddingBottom="13dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="13dp"
-                        android:paddingTop="13dp"
                         android:text="@string/settings_button_recovery"
-                        android:textColor="@color/settings_button_text"
-                        android:textSize="13dp" />
-
-                </LinearLayout>
-
+                        style="@style/SettingsButton" />
+                </FrameLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/settings_user_title"
+                android:text="@string/settings_user_title"
+                style="@style/SettingsTitle" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:id="@+id/user_buttons"
+                style="@style/SettingsGroup">
 
-                <TextView
-                    android:id="@+id/settings_user_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="28dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/settings_user_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                <FrameLayout style="@style/SettingsRowFirst">
+                    <Switch
+                        android:id="@+id/settings_toggle_send_user_info"
+                        android:text="@string/settings_button_send_user_info"
+                        style="@style/SettingsSwitch" />
+                </FrameLayout>
 
-                <LinearLayout
-                    android:id="@+id/user_buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical">
+                <FrameLayout style="@style/SettingsRow">
+                    <com.airbitz.objects.LimitedEditText
+                        android:id="@+id/settings_edit_first_name"
+                        android:hint="@string/settings_edit_first_name"
+                        android:background="@null"
+                        style="@style/SettingsEditText" />
+                </FrameLayout>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_top_archive"
-                        android:orientation="horizontal">
+                <FrameLayout style="@style/SettingsRow">
+                    <com.airbitz.objects.LimitedEditText
+                        android:id="@+id/settings_edit_last_name"
+                        android:hint="@string/settings_edit_last_name"
+                        android:background="@null"
+                        style="@style/SettingsEditText" />
+                </FrameLayout>
 
-                        <Switch
-                            android:id="@+id/settings_toggle_send_user_info"
-                            android:layout_width="match_parent"
-                            android:layout_height="34dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:background="@android:color/transparent"
-                            android:checked="false"
-                            android:switchMinWidth="0dp"
-                            android:text="@string/settings_button_send_user_info"
-                            android:textColor="@color/settings_button_text"
-                            android:textOff=""
-                            android:textOn=""
-                            android:textSize="13dp"
-                            android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_standard"
-                        android:orientation="horizontal">
-
-                        <com.airbitz.objects.LimitedEditText
-                            android:id="@+id/settings_edit_first_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginRight="6dp"
-                            android:layout_marginTop="6dp"
-                            android:background="@drawable/emboss_white"
-                            android:enabled="false"
-                            android:gravity="left|center_vertical"
-                            android:hint="@string/settings_edit_first_name"
-                            android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="8dp"
-                            android:singleLine="true"
-                            android:textColor="@color/settings_edit_text_field"
-                            android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="17dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_standard"
-                        android:orientation="horizontal">
-
-                        <com.airbitz.objects.LimitedEditText
-                            android:id="@+id/settings_edit_last_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginRight="6dp"
-                            android:layout_marginTop="6dp"
-                            android:background="@drawable/emboss_white"
-                            android:enabled="false"
-                            android:gravity="left|center_vertical"
-                            android:hint="@string/settings_edit_last_name"
-                            android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="8dp"
-                            android:singleLine="true"
-                            android:textColor="@color/settings_edit_text_field"
-                            android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="17dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_bottom"
-                        android:orientation="horizontal">
-
-                        <com.airbitz.objects.LimitedEditText
-                            android:id="@+id/settings_edit_nick_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginRight="6dp"
-                            android:layout_marginTop="6dp"
-                            android:background="@drawable/emboss_white"
-                            android:enabled="false"
-                            android:gravity="left|center_vertical"
-                            android:hint="@string/settings_edit_nick_name"
-                            android:inputType="textNoSuggestions|textCapWords"
-                            android:paddingLeft="8dp"
-                            android:singleLine="true"
-                            android:textColor="@color/settings_edit_text_field"
-                            android:textColorHint="@color/settings_edit_hint"
-                            android:textSize="17dp" />
-                    </LinearLayout>
-
-                </LinearLayout>
+                <FrameLayout style="@style/SettingsRow">
+                    <com.airbitz.objects.LimitedEditText
+                        android:id="@+id/settings_edit_nick_name"
+                        android:hint="@string/settings_edit_nick_name"
+                        android:background="@null"
+                        style="@style/SettingsEditText" />
+                </FrameLayout>
 
             </LinearLayout>
 
-
+            <TextView
+                android:id="@+id/settings_general_title"
+                android:text="@string/settings_options_title"
+                style="@style/SettingsTitle" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/settings_general_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="28dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/settings_options_title"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                android:id="@+id/misc_views"
+                style="@style/SettingsGroup">
 
                 <LinearLayout
-                    android:id="@+id/misc_views"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    style="@style/SettingsRowFirst">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo"
-                        android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/settings_title_auto_logoff"
+                        android:text="@string/settings_title_auto_logoff"
+                        style="@style/SettingsSplitText" />
 
-                        <TextView
-                            android:id="@+id/settings_title_auto_logoff"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:gravity="left"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_title_auto_logoff"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_auto_logoff"
-                            android:layout_width="100dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:gravity="center"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_btn_blue_stretch"
-                            android:textSize="16dp"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/settings_title_currency"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:gravity="left"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_title_currency"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressSpinner
-                            android:id="@+id/settings_button_currency"
-                            android:layout_width="100dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_btn_blue_stretch"
-                            android:gravity="center"
-                            android:popupBackground="@drawable/rounded_edge_white_bg"
-                            android:spinnerMode="dialog" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/settings_title_distance"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:gravity="left"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_title_distance"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_distance"
-                            android:layout_width="100dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:gravity="center"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_btn_blue_stretch"
-                            android:textSize="16dp"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_top_archive"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/settings_title_default_exchange"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:gravity="start"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="15dp"
-                            android:text="@string/settings_exchange_text"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_default_exchange"
-                            android:layout_width="100dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:gravity="center"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_btn_blue_stretch"
-                            android:textSize="16dp"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:id="@+id/category_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo_archived">
-
-                        <TextView
-                            android:id="@+id/settings_title_categories"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:clickable="false"
-                            android:drawablePadding="15dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:gravity="left"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_button_change_categories"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_category"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@drawable/arrow_right"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:id="@+id/settings_spending_limits_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo_archived">
-
-                        <TextView
-                            android:id="@+id/settings_title_spending_limits"
-                            android:layout_width="160dp"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:clickable="false"
-                            android:drawablePadding="15dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:gravity="start"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_button_change_spending_limits"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_spending_limits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@drawable/arrow_right"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:id="@+id/settings_two_factor_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/wallet_list_solo_archived">
-
-                        <TextView
-                            android:id="@+id/settings_title_two_factor_authentication"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:clickable="false"
-                            android:drawablePadding="15dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:gravity="start"
-                            android:paddingBottom="13dp"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="13dp"
-                            android:paddingTop="13dp"
-                            android:text="@string/settings_button_two_factor_authentication"
-                            android:textColor="@color/settings_button_text"
-                            android:textSize="13dp" />
-
-                        <com.airbitz.objects.HighlightOnPressButton
-                            android:id="@+id/settings_button_two_factor_authentication"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@drawable/arrow_right"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal">
-
-                        <Switch
-                            android:id="@+id/settings_toggle_merchant_mode"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentRight="true"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@android:color/transparent"
-                            android:checked="false"
-                            android:gravity="center_vertical"
-                            android:switchMinWidth="0dp"
-                            android:text="@string/settings_title_merchant_mode"
-                            android:textColor="@color/settings_button_text"
-                            android:textOff=""
-                            android:textOn=""
-                            android:textSize="13dp"
-                            android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@+id/settings_nfc_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="3dp"
-                            android:background="@android:color/transparent"
-                            android:orientation="vertical" />
-
-                        <Switch
-                            android:id="@+id/settings_toggle_nfc"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/wallet_list_solo_archived"
-                            android:layout_alignParentRight="true"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="9.45dp"
-                            android:checked="false"
-                            android:gravity="center_vertical"
-                            android:switchMinWidth="0dp"
-                            android:text="@string/settings_title_nfc"
-                            android:textColor="@color/settings_button_text"
-                            android:textOff=""
-                            android:textOn=""
-                            android:textSize="13dp"
-                            android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/settings_ble_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:visibility="gone"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="3dp"
-                            android:background="@android:color/transparent"
-                            android:orientation="vertical" />
-
-                        <Switch
-                            android:id="@+id/settings_toggle_ble"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/wallet_list_solo_archived"
-                            android:layout_alignParentRight="true"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="9.45dp"
-                            android:layout_gravity="center_vertical"
-                            android:checked="false"
-                            android:gravity="center_vertical"
-                            android:switchMinWidth="0dp"
-                            android:text="@string/settings_title_ble"
-                            android:textColor="@color/settings_button_text"
-                            android:textOff=""
-                            android:textOn=""
-                            android:textSize="13dp"
-                            android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="44.1dp"
-                        android:background="@drawable/wallet_list_solo_archived"
-                        android:orientation="horizontal">
-
-                        <Switch
-                            android:id="@+id/settings_toggle_pin_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentRight="true"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="9.45dp"
-                            android:background="@android:color/transparent"
-                            android:checked="false"
-                            android:gravity="center_vertical"
-                            android:switchMinWidth="0dp"
-                            android:text="@string/settings_title_pin_login"
-                            android:textColor="@color/settings_button_text"
-                            android:textOff=""
-                            android:textOn=""
-                            android:textSize="13dp"
-                            android:thumb="@drawable/btn_toggle_thumb"
-                            android:track="@drawable/toggle_selector" />
-
-                    </RelativeLayout>
+                    <Button
+                        android:id="@+id/settings_button_auto_logoff"
+                        style="@style/SettingsSplitButton" />
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/settings_title_currency"
+                        android:text="@string/settings_title_currency"
+                        style="@style/SettingsSplitText" />
+
+                    <Button
+                        android:id="@+id/settings_button_currency"
+                        style="@style/SettingsSplitButton" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/settings_title_distance"
+                        android:text="@string/settings_title_distance"
+                        style="@style/SettingsSplitText" />
+
+                    <Button
+                        android:id="@+id/settings_button_distance"
+                        style="@style/SettingsSplitButton" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/settings_title_default_exchange"
+                        android:text="@string/settings_exchange_text"
+                        style="@style/SettingsSplitText" />
+
+                    <Button
+                        android:id="@+id/settings_button_default_exchange"
+                        style="@style/SettingsSplitButton" />
+                </LinearLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Button
+                        android:id="@+id/settings_button_category"
+                        android:text="@string/settings_button_change_categories"
+                        style="@style/SettingsButton" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Button
+                        android:id="@+id/settings_button_spending_limits"
+                        android:text="@string/settings_button_change_spending_limits"
+                        style="@style/SettingsButton" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Button
+                        android:id="@+id/settings_button_two_factor_authentication"
+                        android:text="@string/settings_button_two_factor_authentication"
+                        style="@style/SettingsButton" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Switch
+                        android:id="@+id/settings_toggle_merchant_mode"
+                        android:text="@string/settings_title_merchant_mode"
+                        style="@style/SettingsSwitch" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Switch
+                        android:id="@+id/settings_toggle_nfc"
+                        android:text="@string/settings_title_nfc"
+                        style="@style/SettingsSwitch" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Switch
+                        android:id="@+id/settings_toggle_ble"
+                        android:text="@string/settings_title_ble"
+                        style="@style/SettingsSwitch" />
+                </FrameLayout>
+
+                <FrameLayout style="@style/SettingsRow">
+                    <Switch
+                        android:id="@+id/settings_toggle_pin_login"
+                        android:text="@string/settings_title_pin_login"
+                        style="@style/SettingsSwitch" />
+                </FrameLayout>
+
             </LinearLayout>
 
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/settings_button_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_button_orange"
-                android:padding="5dp"
-                android:text="@string/settings_button_logout"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
-
-            <com.airbitz.objects.HighlightOnPressButton
+            <Button
                 android:id="@+id/settings_button_debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_button_orange"
+                android:background="@color/btn_blue"
                 android:padding="5dp"
+                android:textAllCaps="false"
                 android:text="@string/settings_button_debug"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
-
-            <com.airbitz.objects.HighlightOnPressButton
-                android:id="@+id/settings_button_plugin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_button_orange"
-                android:padding="5dp"
-                android:text="Plugin"
                 android:textColor="@android:color/white"
                 android:textSize="18dp"
                 android:textStyle="normal" />
@@ -833,4 +251,6 @@
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+    <include layout="@layout/layout_toolbar_header" />
+
+</FrameLayout>

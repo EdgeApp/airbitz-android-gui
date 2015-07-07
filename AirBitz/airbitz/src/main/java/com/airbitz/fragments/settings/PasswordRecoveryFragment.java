@@ -31,18 +31,24 @@
 
 package com.airbitz.fragments.settings;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -92,11 +98,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private boolean mReturnFromTwoFactorScan = false;
     private boolean mTwoFactorSuccess = false;
     private String mTwoFactorSecret;
-    private ImageButton mBackButton;
     private EditText mPasswordEditText;
-    private TextView mTitleTextView;
     private Button mDoneSignUpButton;
-    private Button mSkipStepButton;
 
     private LinearLayout mPasswordRecoveryListView;
     private ArrayList<QuestionView> mQuestionViews;
@@ -116,6 +119,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,45 +127,33 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_password_recovery, container, false);
+        LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
+        mView = i.inflate(R.layout.fragment_password_recovery, container, false);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        mSkipStepButton = (Button) mView.findViewById(R.id.activity_recovery_skip_button);
-        mSkipStepButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-        mSkipStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowSkipQuestionsAlert();
-            }
-        });
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.activity_recovery_title);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
+        mPasswordEditText.setTypeface(Typeface.DEFAULT);
         mDoneSignUpButton = (Button) mView.findViewById(R.id.activity_recovery_complete_button);
-        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPress();
-            }
-        });
 
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
             if (mMode == CHANGE_QUESTIONS) {
-                mSkipStepButton.setVisibility(View.GONE);
                 mPasswordEditText.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
-                mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
             } else if (mMode == FORGOT_PASSWORD) {
-                mSkipStepButton.setVisibility(View.INVISIBLE);
                 mPasswordEditText.setVisibility(View.GONE);
-                mBackButton.setVisibility(View.VISIBLE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.string_done));
             } else {
                 // defaults for signup
@@ -172,11 +164,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mNumericQuestions = new ArrayList<String>();
         mMustQuestions = new ArrayList<String>();
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.activity_recovery_title);
-
-        mDoneSignUpButton.setTypeface(NavigationActivity.helveticaNeueTypeFace);
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -189,6 +176,16 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return onBackPress();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         String[] answers = {"", "", "", "", "", ""};
@@ -197,7 +194,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
-                mTitleTextView.setText(getString(R.string.activity_recovery_title));
+                mToolbar.setTitle(getString(R.string.activity_recovery_title));
                 String questionString = getArguments().getString(QUESTIONS);
                 if (questionString != null) {
                     String[] questions = questionString.split("\n");
@@ -206,7 +203,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             }
         } else { // coming back from signup page
             answers = mAnswers.split("\n");
-            mTitleTextView.setText(getString(R.string.activity_recovery_title));
+            mToolbar.setTitle(getString(R.string.activity_recovery_title));
             String questionString = getArguments().getString(QUESTIONS);
             if (questionString != null) {
                 String[] questions = questionString.split("\n");
@@ -687,8 +684,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             inflater.inflate(R.layout.item_password_recovery, this);
 
             mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
-            final View redRing = findViewById(R.id.item_recovery_answer_redring);
-            mText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
             mText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
             mText.setText(answer);
@@ -750,30 +745,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     if (hasFocus) {
                         mActivity.showSoftKeyboard(mText);
                     }
-                }
-            });
-
-
-            mText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                    try {
-                        if (!mText.getText().toString().isEmpty() && mText.getText().toString().length() < mCharLimit) {
-                            redRing.setVisibility(View.VISIBLE);
-                        } else {
-                            redRing.setVisibility(View.GONE);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
                 }
             });
 

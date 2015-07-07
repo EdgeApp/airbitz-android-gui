@@ -45,7 +45,6 @@ public class QRCamera implements
     CameraSurfacePreview mPreview;
     FrameLayout mPreviewFrame, mPreviewObscura;
     View mCameraLayout;
-    ImageButton mFlashButton, mGalleryButton, mBluetoothButton;
     Handler mHandler = new Handler();
     boolean mFlashOn = false;
     boolean mPreviewing = false;
@@ -78,43 +77,43 @@ public class QRCamera implements
         mPreviewFrame = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_preview);
         mPreviewObscura = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_obscura);
 
-        mFlashButton = (ImageButton) mCameraLayout.findViewById(R.id.button_flash);
-        mFlashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mCamera == null) {
-                    return;
-                }
-                if (!mFlashOn) {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
-                    mFlashOn = true;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(parameters);
-                } else {
-                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
-                    mFlashOn = false;
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-            }
-        });
+//        mFlashButton = (ImageButton) mCameraLayout.findViewById(R.id.button_flash);
+//        mFlashButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(mCamera == null) {
+//                    return;
+//                }
+//                if (!mFlashOn) {
+//                    mFlashButton.setImageResource(R.drawable.btn_flash_on);
+//                    mFlashOn = true;
+//                    Camera.Parameters parameters = mCamera.getParameters();
+//                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//                    mCamera.setParameters(parameters);
+//                } else {
+//                    mFlashButton.setImageResource(R.drawable.btn_flash_off);
+//                    mFlashOn = false;
+//                    Camera.Parameters parameters = mCamera.getParameters();
+//                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+//                    mCamera.setParameters(parameters);
+//                }
+//            }
+//        });
 
-        mGalleryButton = (ImageButton) mCameraLayout.findViewById(R.id.button_gallery);
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PickAPicture();
-            }
-        });
-
-        mBluetoothButton = (ImageButton) mCameraLayout.findViewById(R.id.button_bluetooth);
+//        mGalleryButton = (ImageButton) mCameraLayout.findViewById(R.id.button_gallery);
+//        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                PickAPicture();
+//            }
+//        });
+//
+//        mBluetoothButton = (ImageButton) mCameraLayout.findViewById(R.id.button_bluetooth);
     }
 
-    public ImageButton getBluetoothButton() {
-        return mBluetoothButton;
-    }
+//    public ImageButton getBluetoothButton() {
+//        return mBluetoothButton;
+//    }
 
     Runnable cameraStartRunner = new Runnable() {
         @Override
@@ -186,7 +185,6 @@ public class QRCamera implements
                 mCamera.setParameters(params);
             }
         }
-        checkCameraFlash();
         mPreviewing = true;
     }
 
@@ -213,15 +211,6 @@ public class QRCamera implements
         }
     }
 
-    private void checkCameraFlash() {
-        if(hasCameraFlash()) {
-            mFlashButton.setVisibility(View.VISIBLE);
-        }
-        else {
-            mFlashButton.setVisibility(View.GONE);
-        }
-    }
-
     public boolean hasCameraFlash() {
         if (mCamera == null) {
             return false;
@@ -235,6 +224,25 @@ public class QRCamera implements
             return false;
         }
         return true;
+    }
+
+    public boolean isFlashOn() {
+        return mFlashOn;
+    }
+
+    public void setFlashOn(boolean on) {
+        if(on) {
+            mFlashOn = true;
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            mCamera.setParameters(parameters);
+        }
+        else {
+            mFlashOn = false;
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(parameters);
+        }
     }
 
     // delegated from the containing fragment
@@ -263,7 +271,7 @@ public class QRCamera implements
         mFragment.startActivityForResult(in, RESULT_LOAD_IMAGE);
     }
 
-    private String AttemptDecodeBytes(byte[] bytes, Camera camera) {
+    public String AttemptDecodeBytes(byte[] bytes, Camera camera) {
         Result rawResult = null;
         Reader reader = new QRCodeReader();
         int w = camera.getParameters().getPreviewSize().width;
@@ -288,7 +296,7 @@ public class QRCamera implements
         }
     }
 
-    private String AttemptDecodePicture(Bitmap thumbnail) {
+    public String AttemptDecodePicture(Bitmap thumbnail) {
         if (thumbnail == null) {
             Log.d(TAG, "No picture selected");
         } else {

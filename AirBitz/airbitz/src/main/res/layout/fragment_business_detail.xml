@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-    <include
-        android:id="@+id/fragment_business_detail_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_title" />
 
     <RelativeLayout
         android:id="@+id/layout_banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@id/fragment_business_detail_header"
+        android:layout_below="@id/toolbar"
         android:background="#80000000">
 
         <android.support.v4.view.ViewPager
@@ -105,8 +101,6 @@
             android:id="@+id/layout_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edge_blue"
-            android:divider="@drawable/gray_white_divider"
             android:orientation="vertical"
             android:showDividers="middle">
 
@@ -130,14 +124,15 @@
 
             <Button
                 android:id="@+id/button_web"
-                style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ico_website"
                 android:ellipsize="end"
                 android:paddingLeft="@dimen/content_padding"
                 android:singleLine="true"
-                tools:text="Web" />
+                style="@style/CategoryItemDetail"
+                tools:text="Web"
+                />
 
             <Button
                 android:id="@+id/button_share"
@@ -156,7 +151,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:background="@color/light_gray"
                 android:textColor="@color/blue_text"
                 android:textSize="@dimen/text_size_h4"
                 android:drawablePadding="@dimen/content_padding_2"
@@ -192,7 +186,6 @@
                 style="@style/CategoryItemDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_gray"
                 android:drawableRight="@null"
                 android:padding="@dimen/content_padding_1_5"
                 android:textColor="@android:color/black"

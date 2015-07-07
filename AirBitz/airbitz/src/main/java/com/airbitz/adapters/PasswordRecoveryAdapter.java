@@ -74,7 +74,7 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> {
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_dropdown_question);
         textView.setText(mQuestions.get(position));
-        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        textView.setTypeface(NavigationActivity.latoRegularTypeFace);
         final TextView finalTextView = textView;
         textView.post(new Runnable() {
             @Override
@@ -92,7 +92,7 @@ public class PasswordRecoveryAdapter extends ArrayAdapter<String> {
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_question);
         textView.setText(mQuestions.get(position));
-        textView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        textView.setTypeface(NavigationActivity.latoRegularTypeFace);
         return convertView;
     }
 }

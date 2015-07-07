@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- New Colors from iOS v1.5 design -->
+    <color name="clear_color">#00FFFFFF</color>
+    <color name="dark_text">#ff0C578C</color>
+    <color name="dark_text_link">#FF007aFF</color>
+    <color name="bright_text">#ffffffff</color>
+    <color name="button_green">#ff80C342</color>
+    <color name="button_blue">#ff2291CF</color>
+    <color name="button_green_faded">#5580c342</color>
+    <color name="button_blue_faded">#55006698</color>
+    <color name="dark_text_field_background">#FF404040</color>
+    <color name="dark_text_field_text_hint">#FFbbbbbb</color>
+    <color name="dark_text_field_text">#FFFFFFFF</color>
+
+    <!-- Do not use colors below -->
+
+
     <color name="green_text">#6fb600</color>
     <color name="green_text_dark">#409000</color>
     <color name="blue_text">#0179b8</color>
+    <color name="blue_header_text">#0140ff</color>
     <color name="blue_radio_button">#2797d1</color>
     <color name="dark_blue_text">#006699</color>
     <color name="gray_border">#969fa8</color>
@@ -15,28 +32,29 @@
     <color name="listitem_normal">#88ffffff</color>
     <color name="selected_highlight">#aaffffff</color>
     <color name="semi_black_text">#99000000</color>
-    <color name="settings_button_text">#CC333333</color>
-    <color name="settings_edit_text">#FFEEEEEE</color>
+    <color name="settings_button_text">#FF000000</color>
+    <color name="settings_edit_text">#FF000000</color>
     <color name="settings_edit_hint">#FF999999</color>
     <color name="settings_edit_text_field">#FF444444</color>
     <color name="mostly_opaque_black">#DD000000</color>
     <color name="lightly_opaque_black">#20000000</color>
     <color name="off_white">#FFEDEDED</color>
-    <color name="wallet_list_header">#44000000</color>
     <color name="header_search">#2291cf</color>
     <color name="text_yellow">#FFFFFF34</color>
 
     <color name="green_frost">#ff228822</color>
     <color name="red_frost">#ffaa3333</color>
-    <color name="gray_frost">#ff777777</color>
-    <color name="white_frost">#aa777777</color>
+    <color name="gray_frost">#cc000000</color>
+    <color name="white_frost">#ddFFFFFF</color>
 
 
     <color name="identifier_white">#FFFFFF</color>
     <color name="identifier_off_text">#444444</color>
     <color name="red">#FF0000</color>
     <color name="max_orange">#FFFFA634</color>
-    <color name="text_hint">#99DDDDDD</color>
+    <color name="text_hint">#99000000</color>
+    <color name="text_off_white">#FFDDDDDD</color>
+    <color name="text_dark_gray">#FF444444</color>
     <color name="white_haze">#10FFFFFF</color>
 
     <color name="black_shadow">#99000000</color>
@@ -55,4 +73,46 @@
     <color name="drawer_dark_blue_gray">#333344</color>
     <color name="navbar_text_disabled">#ffaaaaaa</color>
 
+    <color name="settings_group">#99ffffff</color>
+
+    <color name="btn_blue">#ff006698</color>
+    <color name="btn_blue_pressed">#99006698</color>
+
+    <color name="btn_red">#ffd02e32</color>
+    <color name="btn_red_pressed">#99d02e32</color>
+
+    <color name="colorPrimary">#ff2291CF</color>
+    <color name="colorPrimaryDark">#ff006698</color>
+    <color name="colorPrimaryFrost">#ccffffff</color>
+    <color name="toolbarBackgroundColor">#eeffffff</color>
+    <color name="toolbarBlockerColor">#99000000</color>
+
+    <color name="wallet_list_header">#ff2291CF</color>
+
+    <color name="calc_background">#ccffffff</color>
+    <color name="calc_button_white">#ffffffff</color>
+    <color name="calc_button_white_pressed">#ccffffff</color>
+    <color name="calc_button_green">#ff80C342</color>
+    <color name="calc_button_green_pressed">#cc80C342</color>
+    <color name="calc_button_orange">#ffffa634</color>
+    <color name="calc_button_orange_pressed">#ccffa634</color>
+    <color name="calc_button_grey">#ff999999</color>
+    <color name="calc_button_grey_pressed">#cc999999</color>
+
+
+    <color name="contact_color_1">#ffec6a5e</color>
+    <color name="contact_color_2">#ffff9c00</color>
+    <color name="contact_color_3">#fff4d347</color>
+    <color name="contact_color_4">#ff7ccc52</color>
+    <color name="contact_color_5">#ff66aee4</color>
+    <color name="contact_color_6">#ff5ee0ec</color>
+    <color name="contact_color_7">#ffb400ff</color>
+    <color name="contact_color_8">#ff777777</color>
+
+    <color name="statusBarColor">#aa000000</color>
+
+    <color name="receive_green">#ff80C342</color>
+    <color name="send_blue">#ff006698</color>
+
+    <color name="category_blue">#ff037aff</color>
 </resources>

@@ -1,37 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="46dp"
-    android:background="@drawable/wallet_list_standard"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="10dp">
-
-    <com.airbitz.objects.LimitedEditText
-        android:id="@+id/category_field"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toLeftOf="@+id/category_delete"
-        android:background="@drawable/emboss_white"
-        android:imeOptions="actionDone"
-        android:inputType="textVisiblePassword|textNoSuggestions"
-        android:paddingLeft="12.6dp"
-        android:textColor="@color/settings_edit_text_field"
-        android:textSize="17dp" />
-
-    <com.airbitz.objects.HighlightOnPressButton
+    <Button
         android:id="@+id/category_delete"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="12.6dp"
-        android:background="@drawable/btn_delete_category" />
+        android:background="@android:drawable/ic_menu_close_clear_cancel" />
 
-    <View
-        android:id="@+id/fragment_category_list_item_dummy_focus"
-        android:layout_width="0px"
-        android:layout_height="0px" />
+    <com.airbitz.objects.CategoryWidget
+        android:id="@+id/category_widget"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" 
+        android:layout_toLeftOf="@id/category_widget"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>
