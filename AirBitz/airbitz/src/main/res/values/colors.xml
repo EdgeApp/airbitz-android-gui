@@ -3,6 +3,7 @@
     <!-- New Colors from iOS v1.5 design -->
     <color name="clear_color">#00FFFFFF</color>
     <color name="dark_text">#ff0C578C</color>
+    <color name="dark_text_hint">#990C578C</color>
     <color name="dark_text_link">#FF007aFF</color>
     <color name="bright_text">#ffffffff</color>
     <color name="button_green">#ff80C342</color>
@@ -32,7 +33,7 @@
     <color name="listitem_normal">#88ffffff</color>
     <color name="selected_highlight">#aaffffff</color>
     <color name="semi_black_text">#99000000</color>
-    <color name="settings_button_text">#FF000000</color>
+    <color name="settings_button_text">#ff0C578C</color>
     <color name="settings_edit_text">#FF000000</color>
     <color name="settings_edit_hint">#FF999999</color>
     <color name="settings_edit_text_field">#FF444444</color>

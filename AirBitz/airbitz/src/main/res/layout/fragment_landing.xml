@@ -60,6 +60,7 @@
                     android:layout_height="37.8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="6.3dp"
+                    android:gravity="center_vertical"
                     android:hint="@string/fragment_landing_username_hint"
                     android:inputType="textVisiblePassword|textNoSuggestions"
                     android:nextFocusDown="@+id/fragment_landing_password_edittext"

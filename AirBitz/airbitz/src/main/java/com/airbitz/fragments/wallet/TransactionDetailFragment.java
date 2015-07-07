@@ -74,6 +74,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -106,8 +107,6 @@ import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
-import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.RoundedTransformation;
@@ -137,7 +136,7 @@ public class TransactionDetailFragment extends BaseFragment
     private final String TAG = getClass().getSimpleName();
     private final int MIN_AUTOCOMPLETE = 5;
 
-    private HighlightOnPressButton mDoneButton;
+    private Button mDoneButton;
     private HighlightOnPressSpinner mCategorySpinner;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
@@ -241,7 +240,7 @@ public class TransactionDetailFragment extends BaseFragment
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mFiatValueEdittext);
 
-        mDoneButton = (HighlightOnPressButton) mView.findViewById(R.id.transaction_detail_button_done);
+        mDoneButton = (Button) mView.findViewById(R.id.transaction_detail_button_done);
 
         mTitleTextView = (TextView) mView.findViewById(R.id.title);
         mTitleTextView.setText(R.string.transaction_details_title);
