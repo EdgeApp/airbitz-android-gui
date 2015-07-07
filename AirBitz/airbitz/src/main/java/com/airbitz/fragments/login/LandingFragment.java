@@ -260,6 +260,8 @@ public class LandingFragment extends BaseFragment implements
         mAccounts = new ArrayList<String>();
         mAccountsAdapter = new AccountsAdapter(getActivity(), mAccounts);
         mAccountsListView.setAdapter(mAccountsAdapter);
+        mAccountsListView.bringToFront();
+        mAccountsListView.invalidate();
         mAccountsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -410,6 +412,8 @@ public class LandingFragment extends BaseFragment implements
                 mOtherAccountsListView.setLayoutParams(params);
             }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
+            mOtherAccountsListView.bringToFront();
+            mOtherAccountsListView.invalidate();
             mOtherAccountsAdapter.setButtonTouchedListener(this);
         }
         else {

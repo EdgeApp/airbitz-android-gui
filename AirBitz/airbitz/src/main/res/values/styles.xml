@@ -126,9 +126,9 @@
 
     <style name="BlackDropShadow">
         <item name="android:shadowColor">@color/black_shadow</item>
-        <item name="android:shadowRadius">1</item>
-        <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">5.0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
     </style>
 
     <style name="GrayDropShadow">
