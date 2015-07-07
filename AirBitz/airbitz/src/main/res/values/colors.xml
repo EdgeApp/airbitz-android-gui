@@ -6,6 +6,7 @@
     <color name="dark_text_hint">#990C578C</color>
     <color name="dark_text_link">#FF007aFF</color>
     <color name="bright_text">#ffffffff</color>
+    <color name="bright_text_hint">#ffdddddd</color>
     <color name="button_green">#ff80C342</color>
     <color name="button_blue">#ff2291CF</color>
     <color name="button_green_faded">#5580c342</color>

@@ -378,7 +378,7 @@
     <string name="request_title">Request Bitcoin</string>
     <string name="request_wallet_title">Wallet:</string>
     <string name="request_button_import">IMPORT</string>
-    <string name="request_amount_hint">Enter Amount (Optional)</string>
+    <string name="request_amount_hint">Amount (Optional)</string>
     <string name="request_next">NEXT</string>
     <string name="request_invalid_amount">Invalid Amount</string>
 
@@ -388,6 +388,7 @@
     <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email.</string>
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
+    <string name="request_qr_loading_address">Loading bitcoin address…</string>
     <string name="request_qr_title">Request Bitcoin</string>
     <string name="request_qr_ble_advertise_start_failed">Bluetooth advertising failed to start.</string>
     <string name="request_qr_ble_invalid_value">Bluetooth sender sent an invalid name. Try again.</string>
