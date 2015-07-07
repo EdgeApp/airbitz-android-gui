@@ -48,8 +48,8 @@
     <dimen name="calc_button_radius">0dp</dimen>
     <dimen name="calc_button_size">60dp</dimen>
     <dimen name="calc_button_margin">1dp</dimen>
-    <dimen name="calc_button_numsize">24dp</dimen>
-    <dimen name="calc_button_textsize">16dp</dimen>
+    <dimen name="calc_button_numsize">18dp</dimen>
+    <dimen name="calc_button_textsize">18dp</dimen>
 
     <dimen name="action_button_size">72dp</dimen>
     <dimen name="action_button_content_margin">16dp</dimen>
