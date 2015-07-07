@@ -1993,9 +1993,11 @@ public class CoreAPI {
                     }
                 }
                 tABC_Error error = new tABC_Error();
+                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
                 for (Integer currency : currencies) {
-                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                            currency, error);
+                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(), currency, error);
                 }
             }
         }
