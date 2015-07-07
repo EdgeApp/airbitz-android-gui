@@ -503,6 +503,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 mSavedSatoshi = null;
             }
         }
+        hideCalculator();
     }
 
     @Override
