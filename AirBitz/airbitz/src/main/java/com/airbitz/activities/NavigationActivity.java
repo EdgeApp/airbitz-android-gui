@@ -327,38 +327,6 @@ public class NavigationActivity extends ActionBarActivity
             mNavStacks[i].push(mNavFragments[i]);
         }
 
-        // for keyboard hide and show
-        final View activityRootView = findViewById(R.id.activity_navigation_root);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            boolean mLastKeyBoardUp = false;
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    keyBoardUp = true;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        hideNavBar();
-                    }
-                } else {
-                    keyBoardUp = false;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        if (AirbitzApplication.isLoggedIn()) {
-                            showNavBar();
-                        }
-                        else {
-                            if(mNavStacks[mNavThreadId].peek() instanceof BusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof MapBusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof DirectoryDetailFragment ) {
-                                Log.d(TAG, "Keyboard down, not logged in, in directory");
-                                showNavBar();
-                            }
-                        }
-                    }
-                }
-                mLastKeyBoardUp = keyBoardUp;
-            }
-        });
-
         mLandingFragment = new LandingFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -474,7 +442,7 @@ public class NavigationActivity extends ActionBarActivity
             layoutParams.bottomMargin = 0;
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(1.0f);
-
+            showNavBar();
         } else {
             // Go back to showing Landing
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
@@ -492,6 +460,7 @@ public class NavigationActivity extends ActionBarActivity
             layoutParams.bottomMargin = 0;
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(0.0f);
+            hideNavBar();
         }
     }
 
@@ -649,7 +618,8 @@ public class NavigationActivity extends ActionBarActivity
 
     public void hideNavBar() {
         if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight() * 4);
+            float dest = getBottom() + mActionButton.getHeight();
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), dest);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -669,8 +639,18 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void showNavBar() {
-        if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
+        showNavBar(1f);
+    }
+
+    public void showNavBar(float offset) {
+        float bottom = getBottom();
+        if (!mNavBarAnimating && bottom > 0f) {
+            float dest = bottom - (mActionButton.getHeight() * offset);
+            float y = mActionButton.getY();
+            if (mActionButton.getVisibility() == View.INVISIBLE) {
+                y = bottom + mActionButton.getHeight();
+            }
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", y, dest);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -687,6 +667,10 @@ public class NavigationActivity extends ActionBarActivity
             });
             key.start();
         }
+    }
+
+    private float getBottom() {
+        return getWindow().getDecorView().findViewById(android.R.id.content).getBottom();
     }
 
     @Override

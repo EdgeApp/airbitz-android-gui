@@ -120,8 +120,12 @@ public class BaseFragment extends Fragment {
         if (mBackEnabled) {
             mActivity.hideNavBar();
         } else {
-            mActivity.showNavBar();
+            mActivity.showNavBar(getNavBarOffset());
         }
+    }
+
+    protected float getNavBarOffset() {
+        return 1f;
     }
 
     public NavigationActivity getBaseActivity() {

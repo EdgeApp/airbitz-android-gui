@@ -127,8 +127,7 @@ public class HelpFragment extends BaseFragment {
             }
         });
 
-        ((NavigationActivity) getActivity()).hideSoftKeyboard(v);
-
+        mActivity.hideSoftKeyboard(v);
         return v;
     }
 
