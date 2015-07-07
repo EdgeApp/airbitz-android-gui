@@ -638,10 +638,8 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String html = fillTemplate(R.raw.email_template, name);
-
         intent.putExtra(Intent.EXTRA_STREAM, uris);
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
-        intent.putExtra(Intent.EXTRA_HTML_TEXT, html);
         startActivity(Intent.createChooser(intent, "email"));
 
         mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
