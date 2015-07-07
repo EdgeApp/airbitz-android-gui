@@ -100,7 +100,7 @@ public class CategoryFragment extends BaseFragment
         mTitleView.setText(R.string.more_categories);
 
         mLoading = view.findViewById(R.id.empty);
-        mListView = (ListView) view.findViewById(R.id.list);
+        mListView = (ListView) view.findViewById(R.id.category_list);
         if (mMoreCategoryAdapter != null) {
             mListView.setAdapter(mMoreCategoryAdapter);
         }

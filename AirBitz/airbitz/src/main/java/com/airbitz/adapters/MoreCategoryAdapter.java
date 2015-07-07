@@ -105,8 +105,8 @@ public class MoreCategoryAdapter extends BaseAdapter {
 
         TextView textView = (TextView) convertView.findViewById(R.id.textview_category);
         textView.setText(mListCategory.get(position).getCategoryName());
-        Typeface latoBlackTypeFace = Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Bla.ttf");
-        textView.setTypeface(latoBlackTypeFace);
+        Typeface latoRegularTypeFace = Typeface.createFromAsset(mContext.getAssets(), "font/Lato-Regular.ttf");
+        textView.setTypeface(latoRegularTypeFace);
 
         return convertView;
     }

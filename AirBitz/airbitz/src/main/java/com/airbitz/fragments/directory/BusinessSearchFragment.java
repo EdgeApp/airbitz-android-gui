@@ -31,7 +31,6 @@
 
 package com.airbitz.fragments.directory;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -51,9 +50,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
@@ -115,7 +112,7 @@ public class BusinessSearchFragment extends BaseFragment implements
         mQueryField = (EditText) view.findViewById(R.id.query);
         mLocationField = (EditText) view.findViewById(R.id.location);
         mLocationField.setText(R.string.current_location);
-        mSearchListView = (ListView) view.findViewById(R.id.list);
+        mSearchListView = (ListView) view.findViewById(R.id.category_list);
         mLoading = view.findViewById(R.id.empty);
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
