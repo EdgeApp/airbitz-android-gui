@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:background="@color/clear_color"
+    android:clipChildren="false"
     tools:context="com.airbitz.activities.LandingActivity"
     tools:ignore="MergeRootFrame">
 
@@ -125,7 +126,6 @@
                     android:id="@+id/fragment_landing_current_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/BlackDropShadow"
                     android:text="@string/fragment_landing_please_enter_pin"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -270,9 +270,9 @@
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:padding="6.3dp"
-                style="@style/BlackDropShadow"
                 android:text="@string/fragment_landing_swipe_text"
                 android:textColor="@android:color/white"
+                style="@style/BlackDropShadow"
                 android:textSize="14dp" />
 
             <ImageView
