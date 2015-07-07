@@ -353,11 +353,6 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     @Override
-    protected float getNavBarOffset() {
-        return 1.5f;
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {

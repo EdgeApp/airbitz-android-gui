@@ -482,11 +482,6 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     @Override
-    protected float getNavBarOffset() {
-        return 1.75f;
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         getActivity().getWindow().setSoftInputMode(
