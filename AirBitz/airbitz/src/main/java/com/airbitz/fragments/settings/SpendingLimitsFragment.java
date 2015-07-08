@@ -33,7 +33,6 @@ package com.airbitz.fragments.settings;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -86,12 +85,14 @@ public class SpendingLimitsFragment extends BaseFragment
     }
 
     @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.fragment_spending_limits_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         View mView = i.inflate(R.layout.fragment_spending_limits, container, false);
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.fragment_spending_limits_title);
 
         mDailySwitch = (Switch) mView.findViewById(R.id.fragment_spending_limits_toggle_daily_limit);
         mDailySwitch.setTypeface(Typeface.DEFAULT);
@@ -157,17 +158,17 @@ public class SpendingLimitsFragment extends BaseFragment
     private void adjustTextColors() {
         if(mDailySwitch.isChecked()) {
             mDailyDenominationTextView.setTextColor(getResources().getColor(android.R.color.white));
-            mDailyEditText.setTextColor(getResources().getColor(android.R.color.white));
+            mDailyEditText.setEnabled(true);
         } else {
             mDailyDenominationTextView.setTextColor(getResources().getColor(R.color.text_hint));
-            mDailyEditText.setTextColor(getResources().getColor(R.color.text_hint));
+            mDailyEditText.setEnabled(false);
         }
         if(mPINSwitch.isChecked()) {
             mPINDenominationTextView.setTextColor(getResources().getColor(android.R.color.white));
-            mPINEditText.setTextColor(getResources().getColor(android.R.color.white));
+            mPINEditText.setEnabled(true);
         } else {
             mPINDenominationTextView.setTextColor(getResources().getColor(R.color.text_hint));
-            mPINEditText.setTextColor(getResources().getColor(R.color.text_hint));
+            mPINEditText.setEnabled(false);
         }
 
     }

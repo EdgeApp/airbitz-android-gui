@@ -255,6 +255,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <include layout="@layout/layout_toolbar_header" />
+    <include layout="@layout/layout_toolbar_title" />
 
 </FrameLayout>

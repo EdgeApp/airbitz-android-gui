@@ -34,7 +34,6 @@ package com.airbitz.fragments.settings.twofactor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -103,12 +102,14 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     }
 
     @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.fragment_twofactor_menu_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         View mView = i.inflate(R.layout.fragment_twofactor_menu, container, false);
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.fragment_twofactor_menu_title);
 
         mScanButton = (Button) mView.findViewById(R.id.fragment_twofactor_menu_button_scan_token);
         mScanButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);

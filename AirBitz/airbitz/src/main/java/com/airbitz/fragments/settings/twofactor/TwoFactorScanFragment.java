@@ -36,7 +36,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,12 +101,14 @@ public class TwoFactorScanFragment extends BaseFragment implements
     }
 
     @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.fragment_twofactor_scan_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         View mView = i.inflate(R.layout.fragment_twofactor_scan, container, false);
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.fragment_twofactor_scan_title);
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_twofactor_scan_camera_layout);
         return mView;

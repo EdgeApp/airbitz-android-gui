@@ -4,7 +4,7 @@
     android:animateLayoutChanges="true"
     style="@style/SettingsFragment">
 
-    <include layout="@layout/layout_toolbar_header" />
+    <include layout="@layout/layout_toolbar_title" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,13 +24,12 @@
 
             <com.airbitz.objects.LimitedEditText
                 android:id="@+id/fragment_spending_limits_password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:hint="@string/fragment_landing_password_hint"
-                android:inputType="textPassword"
-                android:paddingLeft="12.6dp"
-                android:paddingRight="12.6dp"
-                style="@style/EditText" />
+                android:inputType="textPassword" />
 
             <Switch
                     android:id="@+id/fragment_spending_limits_toggle_daily_limit"
@@ -62,12 +61,11 @@
                 <EditText
                     android:id="@+id/fragment_spending_limits_daily_edittext"
                     android:hint="@string/fragment_spending_limits_hint_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:paddingLeft="12.6dp"
-                    android:paddingRight="12.6dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    style="@style/EditText" />
+                    android:layout_marginTop="10dp" />
 
                 <TextView
                     android:id="@+id/fragment_spending_limits_daily_denomination"
@@ -81,8 +79,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text_hint"
-                    android:text="@string/fragment_spending_limits_denomination"
-                    style="@style/EditText" />
+                    android:text="@string/fragment_spending_limits_denomination" />
             </RelativeLayout>
 
             <Switch
@@ -103,14 +100,13 @@
 
                 <EditText
                     android:id="@+id/fragment_spending_limits_pin_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:hint="@string/fragment_spending_limits_hint_text"
                     android:singleLine="true"
-                    android:inputType="numberDecimal"
-                    android:paddingLeft="12.6dp"
-                    android:paddingRight="12.6dp"
-                    style="@style/EditText" />
+                    android:inputType="numberDecimal" />
 
                 <TextView
                     android:id="@+id/fragment_spending_limits_pin_denomination"
@@ -124,8 +120,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text_hint"
-                    android:text="@string/fragment_spending_limits_denomination" 
-                    style="@style/EditText" />
+                    android:text="@string/fragment_spending_limits_denomination" />
             </RelativeLayout>
 
             <Button

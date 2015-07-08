@@ -40,6 +40,8 @@ import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.airbitz.R;
+
 public class LimitedEditText extends EditText {
     public LimitedEditText(Context context) {
         super(context);
@@ -47,7 +49,7 @@ public class LimitedEditText extends EditText {
     }
 
     public LimitedEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, R.attr.editTextStyle);
         init();
     }
 

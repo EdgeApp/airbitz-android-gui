@@ -39,7 +39,6 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -119,7 +118,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
-    private Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,12 +134,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         mView = i.inflate(R.layout.fragment_password_recovery, container, false);
-
-        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.activity_recovery_title);
-        getBaseActivity().setSupportActionBar(mToolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.activity_password_recovery_password_edittext);
         mPasswordEditText.setTypeface(Typeface.DEFAULT);
@@ -186,6 +178,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     @Override
+    public String getTitle() {
+        if (mMode == SIGN_UP || mMode == CHANGE_QUESTIONS) {
+            return mActivity.getString(R.string.activity_recovery_title);
+        } else {
+            return mActivity.getString(R.string.activity_recovery_title);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         String[] answers = {"", "", "", "", "", ""};
@@ -194,7 +195,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
-                mToolbar.setTitle(getString(R.string.activity_recovery_title));
                 String questionString = getArguments().getString(QUESTIONS);
                 if (questionString != null) {
                     String[] questions = questionString.split("\n");
@@ -203,7 +203,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             }
         } else { // coming back from signup page
             answers = mAnswers.split("\n");
-            mToolbar.setTitle(getString(R.string.activity_recovery_title));
             String questionString = getArguments().getString(QUESTIONS);
             if (questionString != null) {
                 String[] questions = questionString.split("\n");

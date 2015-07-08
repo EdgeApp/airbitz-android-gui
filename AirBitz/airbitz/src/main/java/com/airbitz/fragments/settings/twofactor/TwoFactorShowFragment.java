@@ -35,7 +35,6 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -91,12 +90,14 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.fragment_twofactor_show_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         View mView = i.inflate(R.layout.fragment_twofactor_show, container, false);
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.fragment_twofactor_show_title);
 
         mPassword = (EditText) mView.findViewById(R.id.fragment_twofactor_show_password_edittext);
         mRequestView = (LinearLayout) mView.findViewById(R.id.fragment_twofactor_request_view);

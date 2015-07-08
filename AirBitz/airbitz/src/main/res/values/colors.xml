@@ -89,8 +89,8 @@
     <color name="toolbarBackgroundColor">#eeffffff</color>
     <color name="toolbarBlockerColor">#99000000</color>
 
-    <color name="editText">#cc000000</color>
-    <color name="editTextSemi">#aa000000</color>
+    <color name="editText">#ee000000</color>
+    <color name="editTextSemi">#ff000000</color>
 
     <color name="wallet_list_header">#ff2291CF</color>
 

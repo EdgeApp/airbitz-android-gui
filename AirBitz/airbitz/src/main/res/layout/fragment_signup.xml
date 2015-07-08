@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     style="@style/SettingsFragment">
 
-    <include layout="@layout/layout_toolbar_header" />
+    <include layout="@layout/layout_toolbar_title" />
 
     <RelativeLayout
         android:id="@+id/fragment_signup_widget_container"

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     style="@style/SettingsFragment">
 
-    <include layout="@layout/layout_toolbar_header" />
+    <include layout="@layout/layout_toolbar_title" />
 
     <include
         android:id="@+id/fragment_twofactor_scan_camera_layout"

@@ -83,6 +83,8 @@ public class CurrencyFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override

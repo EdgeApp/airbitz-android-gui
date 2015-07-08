@@ -39,7 +39,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -107,9 +106,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     private CreateAccountTask mCreateAccountTask;
     private CoreAPI mCoreAPI;
     private View mView;
-    private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
-    private Toolbar mToolbar;
 
     /**
      * Represents an asynchronous account creation task
@@ -135,10 +132,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             return mView;
         }
 
-        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.activity_signup_title);
-
-        mActivity = (NavigationActivity) getActivity();
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         mParentLayout = (RelativeLayout) mView.findViewById(R.id.activity_signup_parent_layout);
@@ -292,6 +285,21 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         }
     };
 
+    @Override
+    public String getTitle() {
+        mMode = getArguments().getInt(MODE);
+        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
+            return mActivity.getString(R.string.activity_signup_title_change_password);
+        } else if (mMode == CHANGE_PASSWORD) {
+            return mActivity.getString(R.string.activity_signup_title_change_password);
+        } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+            return mActivity.getString(R.string.activity_signup_title_change_password_via_questions);
+        } else if (mMode == CHANGE_PIN) {
+            return mActivity.getString(R.string.activity_signup_title_change_pin);
+        }
+        return mActivity.getString(R.string.activity_signup_title);
+    }
+
     private void setupUI(Bundle bundle) {
         if (bundle == null) {
             return;
@@ -312,8 +320,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mPasswordConfirmationEditText.setHint(getResources().getString(R.string.activity_signup_new_password_confirm));
             mPasswordConfirmationEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             mNextButton.setText(getResources().getString(R.string.string_done));
-            // change title
-            mToolbar.setTitle(R.string.activity_signup_title_change_password);
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
@@ -324,7 +330,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mUserNameEditText.setTypeface(Typeface.DEFAULT);
-            mToolbar.setTitle(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordEditText.setTypeface(Typeface.DEFAULT);
@@ -332,15 +337,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mPasswordConfirmationEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordConfirmationEditText.setTypeface(Typeface.DEFAULT);
             mNextButton.setText(getResources().getString(R.string.string_done));
-            // change title
-            mToolbar.setTitle(R.string.activity_signup_title_change_password);
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
         }
         else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-            // change mUsername label, title
-            mToolbar.setTitle(R.string.activity_signup_title_change_password_via_questions);
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
             mPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mPasswordEditText.setTypeface(Typeface.DEFAULT);
@@ -368,8 +369,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mWithdrawalPinEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mWithdrawalPinEditText.setTypeface(Typeface.DEFAULT);
             mNextButton.setText(getResources().getString(R.string.string_done));
-            // change title
-            mToolbar.setTitle(R.string.activity_signup_title_change_pin);
             mUserNameEditText.requestFocus();
         }
     }

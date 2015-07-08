@@ -40,6 +40,8 @@ import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.airbitz.R;
+
 public class MinEditText extends LimitedEditText {
 
     private int mMinLength;
@@ -49,7 +51,7 @@ public class MinEditText extends LimitedEditText {
     }
 
     public MinEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, R.attr.editTextStyle);
     }
 
     public MinEditText(Context context, AttributeSet attrs, int defStyle) {

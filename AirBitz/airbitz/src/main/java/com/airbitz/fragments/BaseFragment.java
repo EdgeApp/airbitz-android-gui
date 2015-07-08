@@ -41,12 +41,14 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuDrawable.IconState;
@@ -88,6 +90,10 @@ public class BaseFragment extends Fragment {
 
     private MaterialMenuDrawable mMaterialMenu;
 
+    protected String getTitle() {
+        return null;
+    }
+
     @Override
     public void onStart() {
         View view = getView();
@@ -96,6 +102,15 @@ public class BaseFragment extends Fragment {
             mMaterialMenu = new MaterialMenuDrawable(mActivity, mIconColor, Stroke.THIN);
             mToolbar.setNavigationIcon(mMaterialMenu);
             mActivity.setSupportActionBar(mToolbar);
+            if (!TextUtils.isEmpty(getTitle())) {
+                TextView title = (TextView) view.findViewById(R.id.title);
+                if (title != null) {
+                    mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+                    title.setText(getTitle());
+                } else {
+                    mToolbar.setTitle(getTitle());
+                }
+            }
             if (mDrawerEnabled) {
                 updateNavigationIcon();
                 mActivity.unlockDrawer();

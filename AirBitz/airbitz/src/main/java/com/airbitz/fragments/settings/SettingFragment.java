@@ -47,7 +47,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -145,15 +144,16 @@ public class SettingFragment extends BaseFragment {
     }
 
     @Override
+    protected String getTitle() {
+        return mActivity.getString(R.string.settings_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
             mView = i.inflate(R.layout.fragment_setting, container, false);
         }
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.settings_title);
-        getBaseActivity().setSupportActionBar(toolbar);
 
         mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
