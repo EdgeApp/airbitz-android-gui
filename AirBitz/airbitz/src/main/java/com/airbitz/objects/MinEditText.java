@@ -32,13 +32,12 @@
 package com.airbitz.objects;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.widget.EditText;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.airbitz.R;
 
@@ -52,10 +51,39 @@ public class MinEditText extends LimitedEditText {
 
     public MinEditText(Context context, AttributeSet attrs) {
         super(context, attrs, R.attr.editTextStyle);
+        init(context, attrs);
     }
 
     public MinEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MinEditText, 0, 0);
+        try {
+            mMinLength = a.getInt(R.styleable.MinEditText_minLength, 0);
+        } finally {
+            a.recycle();
+        }
+        this.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().length() < mMinLength) {
+                    setBackgroundResource(R.drawable.edit_text_error);
+                } else {
+                    setBackgroundResource(R.drawable.edit_text_dark);
+                }
+            }
+        });
     }
 
     public void setMinLength(int min) {

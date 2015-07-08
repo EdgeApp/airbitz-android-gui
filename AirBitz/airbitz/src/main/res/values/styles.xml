@@ -31,6 +31,7 @@
         <!-- override edit text style -->
         <item name="editTextStyle">@style/EditTextStyle</item>
         <item name="editTextBackground">@drawable/edit_text_dark</item>
+        <item name="editTextError">@drawable/edit_text_dark</item>
         <item name="editTextControlNormal">@color/editText</item>
         <item name="editTextControlActivated">@color/editTextSemi</item>
         <item name="editTextDisabledAlpha">0.5</item>

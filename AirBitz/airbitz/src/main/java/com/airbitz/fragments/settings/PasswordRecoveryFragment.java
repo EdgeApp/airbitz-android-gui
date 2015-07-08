@@ -69,6 +69,7 @@ import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
+import com.airbitz.objects.MinEditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -667,7 +668,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         int mPosition;
         private int mCharLimit = 0;
         private Spinner mSpinner;
-        private EditText mText;
+        private MinEditText mText;
         private PasswordRecoveryAdapter mAdapter;
         private List<String> currentQuestionList;
         private QuestionView me = this;
@@ -682,7 +683,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.item_password_recovery, this);
 
-            mText = (EditText) findViewById(R.id.item_recovery_answer_edittext);
+            mText = (MinEditText) findViewById(R.id.item_recovery_answer_edittext);
             mText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
             mText.setText(answer);
@@ -712,6 +713,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                         if (mMustCategory.containsKey(chosenQuestion))
                             mCharLimit = mMustCategory.get(chosenQuestion);
                     }
+                    mText.setMinLength(mCharLimit);
 
                     if (mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
                         QuestionView qv = mQuestionViews.get(mPosition);

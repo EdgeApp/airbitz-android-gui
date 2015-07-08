@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<declare-styleable name="MyCustomView">
-  <attr name="toolbarBackgroundColor" />
-  <attr name="toolbarTextColor" />
-  <attr name="toolbarNavigationIcon" />
+<resources>
+    <attr name="toolbarBackgroundColor" />
+    <attr name="toolbarTextColor" />
+    <attr name="toolbarNavigationIcon" />
 
-  <attr name="editTextControlNormal" />
-  <attr name="editTextControlActivated" />
-  <attr name="editTextDisabledAlpha" />
-</declare-styleable>
+    <attr name="editTextError" />
+    <attr name="editTextControlNormal" />
+    <attr name="editTextControlActivated" />
+    <attr name="editTextDisabledAlpha" />
+    <declare-styleable name="MinEditText">
+        <attr name="minLength" format="integer" />
+    </declare-styleable>
+</resources>

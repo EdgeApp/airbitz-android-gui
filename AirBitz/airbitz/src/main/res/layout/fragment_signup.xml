@@ -18,7 +18,7 @@
         android:paddingLeft="14dp"
         android:paddingRight="14dp">
 
-        <com.airbitz.objects.MinEditText
+        <com.airbitz.objects.LimitedEditText
             android:id="@+id/activity_signup_username_edittext"
             android:hint="@string/activity_signup_username_hint"
             android:layout_marginTop="25.4dp"
