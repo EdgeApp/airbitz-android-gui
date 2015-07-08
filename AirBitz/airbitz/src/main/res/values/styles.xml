@@ -49,6 +49,7 @@
     <style name="EditTextStyle" parent="android:style/Widget.EditText">
         <item name="android:textColor">@drawable/edit_text_color</item>
         <item name="android:background">@drawable/edit_text_dark</item>
+        <item name="android:textCursorDrawable">@drawable/bold_cursor</item>
     </style>
 
     <style name="CategoryItem">
