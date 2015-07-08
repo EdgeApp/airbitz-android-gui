@@ -233,7 +233,6 @@
     </style>
 
     <style name="SettingsEditText" parent="SettingsItem">
-        <item name="android:enabled">false</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:inputType">textNoSuggestions|textCapWords</item>
         <item name="android:singleLine">true</item>

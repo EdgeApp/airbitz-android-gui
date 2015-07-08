@@ -96,6 +96,7 @@
                         android:id="@+id/settings_edit_first_name"
                         android:hint="@string/settings_edit_first_name"
                         android:background="@null"
+                        android:enabled="false"
                         style="@style/SettingsEditText" />
                 </FrameLayout>
 
@@ -104,6 +105,7 @@
                         android:id="@+id/settings_edit_last_name"
                         android:hint="@string/settings_edit_last_name"
                         android:background="@null"
+                        android:enabled="false"
                         style="@style/SettingsEditText" />
                 </FrameLayout>
 
@@ -112,6 +114,7 @@
                         android:id="@+id/settings_edit_nick_name"
                         android:hint="@string/settings_edit_nick_name"
                         android:background="@null"
+                        android:enabled="false"
                         style="@style/SettingsEditText" />
                 </FrameLayout>
 
