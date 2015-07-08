@@ -73,8 +73,6 @@ public class CategoryFragment extends BaseFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        setDrawerEnabled(false);
-        setBackEnabled(true);
 
         if (mMoreCategoryAdapter == null) {
             try {
