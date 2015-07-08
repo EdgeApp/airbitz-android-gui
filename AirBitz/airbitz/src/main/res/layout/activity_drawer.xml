@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/transparent_until_pressed"
                     android:clickable="true"
-                    android:drawableLeft="@drawable/user_account_secure"
+                    android:drawableLeft="@drawable/ic_user_account_secure_dark"
                     android:drawablePadding="20dp"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
@@ -113,7 +113,7 @@
                     <TextView
                         android:id="@+id/item_drawer_request"
                         android:text="@string/drawer_receive"
-                        android:drawableLeft="@drawable/ic_request_dark"
+                        android:drawableLeft="@drawable/ic_receive_dark"
                         style="@style/DrawerButton"/>
 
                     <TextView
@@ -130,7 +130,7 @@
 
                     <TextView
                         android:id="@+id/item_drawer_buy_sell"
-                        android:drawableLeft="@drawable/icon_exchange"
+                        android:drawableLeft="@drawable/ic_exchange_dark"
                         android:text="@string/drawer_buy_sell"
                         android:visibility="gone"
                         style="@style/DrawerButton"
@@ -159,13 +159,13 @@
 
                 <TextView
                     android:id="@+id/item_drawer_logout"
-                    android:drawableLeft="@drawable/icon_logout"
+                    android:drawableLeft="@drawable/ic_logout_dark"
                     android:text="@string/drawer_logout"
                     style="@style/DrawerButton" />
 
                 <TextView
                     android:id="@+id/item_drawer_settings"
-                    android:drawableLeft="@drawable/icon_settings"
+                    android:drawableLeft="@drawable/ic_settings_dark"
                     android:text="@string/drawer_settings"
                     style="@style/DrawerButton" />
 
