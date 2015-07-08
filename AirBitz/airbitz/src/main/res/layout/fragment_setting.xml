@@ -174,20 +174,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    style="@style/SettingsRow">
-
-                    <TextView
-                        android:id="@+id/settings_title_default_exchange"
-                        android:text="@string/settings_exchange_text"
-                        style="@style/SettingsSplitText" />
-
-                    <Button
-                        android:id="@+id/settings_button_default_exchange"
-                        style="@style/SettingsSplitButton" />
-                </LinearLayout>
-
                 <FrameLayout style="@style/SettingsRow">
                     <Button
                         android:id="@+id/settings_button_category"
@@ -236,6 +222,30 @@
                         android:text="@string/settings_title_pin_login"
                         style="@style/SettingsSwitch" />
                 </FrameLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/settings_general_title"
+                android:text="@string/settings_exchange_title"
+                style="@style/SettingsTitle" />
+
+            <LinearLayout style="@style/SettingsGroup">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRowFirst">
+
+                    <TextView
+                        android:id="@+id/settings_title_default_exchange"
+                        android:text="@string/settings_exchange_text"
+                        style="@style/SettingsSplitText" />
+
+                    <Button
+                        android:id="@+id/settings_button_default_exchange"
+                        style="@style/SettingsSplitButton" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
