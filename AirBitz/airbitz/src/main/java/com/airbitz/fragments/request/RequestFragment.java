@@ -295,6 +295,10 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         });
 
+        if (SettingFragment.getMerchantModePref()) {
+            showCalculator();
+        }
+        
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
         mConverterTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);
