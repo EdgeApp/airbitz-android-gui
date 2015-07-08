@@ -174,16 +174,12 @@ public class RequestFragment extends WalletBaseFragment implements
     private Button mEmailButton;
     private Button mCopyButton;
 
-    private Button mFiatSelect;
-    private Button mBitcoinSelect;
-
     private boolean emailType = false;
     private ImageView mQRView;
     private View mQRProgress;
     private Bitmap mQRBitmap;
     private CreateBitmapTask mCreateBitmapTask;
     private AlertDialog mPartialDialog;
-    private SegmentedGroup mFiatSelectors;
 
     private float mOrigQrHeight;
     private float mQrPadding;
@@ -218,6 +214,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mView = inflater.inflate(R.layout.fragment_request, container, false);
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
         mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mAmountField.requestFocus();
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -331,23 +328,26 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         });
 
-        mFiatSelectors = (SegmentedGroup) mView.findViewById(R.id.request_fiat_btc_select);
-        mFiatSelect = (Button) mFiatSelectors.findViewById(R.id.layout_double_selector_left);
-        mFiatSelect.setSelected(true);
-        mFiatSelect.setOnClickListener(new View.OnClickListener() {
+        mDenominationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 swapStart();
             }
         });
 
-        mBitcoinSelect = (Button) mFiatSelectors.findViewById(R.id.layout_double_selector_right);
-        mBitcoinSelect.setOnClickListener(new View.OnClickListener() {
+        mOtherAmountTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 swapStart();
             }
         });
+        mOtherDenominationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swapStart();
+            }
+        });
+
         updateMode();
 
         // Prevent OS keyboard from showing
@@ -416,11 +416,6 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private void updateMode() {
         mDenominationTextView.setVisibility(View.VISIBLE);
-        if (mAmountIsBitcoin) {
-            mFiatSelectors.check(mBitcoinSelect.getId());
-        } else {
-            mFiatSelectors.check(mFiatSelect.getId());
-        }
     }
 
     private void updateAmount() {
@@ -524,8 +519,6 @@ public class RequestFragment extends WalletBaseFragment implements
         mSavedSatoshi = null;
         mSavedCurrency = null;
 
-        mFiatSelect.setText(mCoreAPI.getCurrencyAcronym(mWallet.getCurrencyNum()));
-        mBitcoinSelect.setText(mCoreAPI.getDefaultBTCDenomination());
         mAutoUpdatingTextFields = false;
 
         updateConversion();
