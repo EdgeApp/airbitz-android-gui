@@ -59,7 +59,6 @@ public class HelpFragment extends BaseFragment {
     public static final int IMPORT_WALLET = R.raw.info_import_wallet;
     public static final int RECIPIENT = R.raw.info_recipient;
     public static final int REQUEST = R.raw.info_request;
-    public static final int REQUEST_QR = R.raw.info_request_qr;
     public static final int SEND = R.raw.info_send;
     public static final int SEND_CONFIRMATION = R.raw.info_send_confirmation;
     public static final int SEND_CONFIRMATION_INSUFFICIENT_FUNDS = R.raw.info_insufficient_funds;
