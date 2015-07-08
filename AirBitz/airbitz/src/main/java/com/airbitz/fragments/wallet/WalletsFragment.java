@@ -292,20 +292,26 @@ public class WalletsFragment extends WalletBaseFragment implements
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
         }
+        long totalSatoshis = 0;
+        int currencyNum = mCoreApi.coreSettings().getCurrencyNum();
+        for (Wallet w : walletList) {
+            totalSatoshis += w.getBalanceSatoshi();
+        }
+
         mWalletAdapter.swapWallets();
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
+        mWalletAdapter.setCurrencyNum(currencyNum);
         mWalletAdapter.setArchiveButtonState(!archiveClosed);
         mWalletListView.setArchiveClosed(archiveClosed);
         mWalletAdapter.notifyDataSetChanged();
 
         if (mHeaderTotal != null && null != mWallet) {
-            long totalSatoshis = mWallet.getBalanceSatoshi();
-            mFiatSelect.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+            mFiatSelect.setText(mCoreApi.currencyCodeLookup(currencyNum));
             mBitcoinSelect.setText(mCoreApi.getDefaultBTCDenomination());
             if (mOnBitcoinMode) {
                 mHeaderTotal.setText(mCoreApi.formatSatoshi(totalSatoshis, true));
             } else {
-                mHeaderTotal.setText(mCoreApi.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true));
+                mHeaderTotal.setText(mCoreApi.FormatCurrency(totalSatoshis, currencyNum, false, true));
             }
         }
     }

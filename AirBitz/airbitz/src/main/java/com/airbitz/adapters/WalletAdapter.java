@@ -70,6 +70,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private ImageView mArchiveButton;
     private boolean mArchiveOpen = false;
     private Typeface mBitcoinTypeface;
+    private int mCurrencyNum;
 
     private OnHeaderButtonPress mHeaderButtonListener;
     public interface OnHeaderButtonPress {
@@ -239,7 +240,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 amountTextView.setText(mCoreAPI.formatSatoshi(wallet.getBalanceSatoshi(), true));
             } else {
                 long satoshi = wallet.getBalanceSatoshi();
-                String temp = mCoreAPI.FormatCurrency(satoshi, wallet.getCurrencyNum(), false, true);
+                String temp = mCoreAPI.FormatCurrency(satoshi, mCurrencyNum, false, true);
                 amountTextView.setText(temp);
             }
 
@@ -289,5 +290,9 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    public void setCurrencyNum(int currencyNum) {
+        mCurrencyNum = currencyNum;
     }
 }
