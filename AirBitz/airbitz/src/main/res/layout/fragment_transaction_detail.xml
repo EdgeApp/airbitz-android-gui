@@ -349,14 +349,6 @@
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/fragment_transactiondetail_dummy_focus"
-            android:layout_width="0px"
-            android:layout_height="0px"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -373,12 +365,5 @@
             android:text="@string/transaction_details_done_title"
             style="@style/GreenButton"/>
     </LinearLayout>
-
-    <com.airbitz.objects.Calculator
-        android:id="@+id/fragment_transaction_detail_calculator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
 
 </RelativeLayout>

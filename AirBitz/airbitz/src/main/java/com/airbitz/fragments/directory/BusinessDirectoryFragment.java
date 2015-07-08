@@ -386,6 +386,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        mActivity.hideSoftKeyboard(getView());
         updateNearYouSticky();
         if (mSearchLoading != null) {
             mSearchLoading.setVisibility(View.GONE);
