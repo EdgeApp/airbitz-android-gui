@@ -27,6 +27,12 @@
 
         <!-- override default styles --> 
         <item name="android:buttonStyle">@style/ButtonStyle</item>
+
+        <!-- override edit text style -->
+        <item name="editTextBackground">@drawable/edit_text_dark</item>
+        <item name="editTextControlNormal">@color/editText</item>
+        <item name="editTextControlActivated">@color/editTextSemi</item>
+        <item name="editTextDisabledAlpha">0.5</item>
     </style>
 
     <style name="ToolBarCommon">
@@ -291,6 +297,7 @@
         <item name="android:textColorHint">@color/dark_text_hint</item>
         <item name="android:textCursorDrawable">@drawable/bold_cursor</item>
         <item name="android:textSize">18dp</item>
+        <item name="android:background">@drawable/edit_text_dark</item>
     </style>
 
     <style name="Button">

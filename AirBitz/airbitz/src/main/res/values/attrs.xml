@@ -3,4 +3,8 @@
   <attr name="toolbarBackgroundColor" />
   <attr name="toolbarTextColor" />
   <attr name="toolbarNavigationIcon" />
+
+  <attr name="editTextControlNormal" />
+  <attr name="editTextControlActivated" />
+  <attr name="editTextDisabledAlpha" />
 </declare-styleable>
