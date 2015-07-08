@@ -53,7 +53,7 @@ public class CategoryAdapter extends ArrayAdapter<String> implements Filterable 
     private List<String> mCurrencies;
 
     public CategoryAdapter(Context context, List<String> currencies) {
-        super(context, R.layout.item_currency_spinner, currencies);
+        super(context, R.layout.item_category_spinner, currencies);
         mContext = context;
         mCurrencies = currencies;
     }
@@ -68,7 +68,7 @@ public class CategoryAdapter extends ArrayAdapter<String> implements Filterable 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(R.layout.item_category_spinner, parent, false);
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textview_currency);
+        TextView textView = (TextView) convertView.findViewById(R.id.textview);
         textView.setText(mCurrencies.get(position));
         textView.setTypeface(NavigationActivity.latoRegularTypeFace);
         textView.setSingleLine(false);
