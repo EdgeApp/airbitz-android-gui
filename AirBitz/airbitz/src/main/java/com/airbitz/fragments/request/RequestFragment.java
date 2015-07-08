@@ -753,7 +753,11 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public void amountChanged() {
-        mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+        if (mAmountIsBitcoin) {
+            mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+        } else {
+            mAmountSatoshi = parseFiatToSatoshi();
+        }
         updateConversion();
         createNewQRBitmap();
     }
