@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@string/drawer_login_or_signup"
+                    android:text="@string/drawer_signin_or_signup"
                     style="@style/GreenButton" />
 
             </FrameLayout>

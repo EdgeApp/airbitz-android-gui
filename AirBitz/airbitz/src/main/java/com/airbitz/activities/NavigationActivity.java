@@ -2044,6 +2044,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawer.closeDrawer(mDrawerView);
                 DisplayLoginOverlay(true);
             }
         });
