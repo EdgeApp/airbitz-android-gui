@@ -365,6 +365,8 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mPasswordEditText.setVisibility(View.GONE);
             mPasswordConfirmationEditText.setVisibility(View.GONE);
             mWithdrawalPinEditText.setHint(getResources().getString(R.string.activity_signup_new_pin));
+            mWithdrawalPinEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mWithdrawalPinEditText.setTypeface(Typeface.DEFAULT);
             mNextButton.setText(getResources().getString(R.string.string_done));
             // change title
             mToolbar.setTitle(R.string.activity_signup_title_change_pin);

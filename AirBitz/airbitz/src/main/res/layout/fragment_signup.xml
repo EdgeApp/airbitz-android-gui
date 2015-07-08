@@ -67,7 +67,7 @@
                 android:text="@string/activity_signup_pin_label"
                 android:textSize="14dp" />
 
-            <EditText
+            <com.airbitz.objects.LimitedEditText
                 android:id="@+id/activity_signup_withdrawal_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
