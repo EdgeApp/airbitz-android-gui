@@ -46,7 +46,7 @@
     </style>
 
     <style name="EditTextStyle" parent="android:style/Widget.EditText">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@drawable/edit_text_color</item>
         <item name="android:background">@drawable/edit_text_dark</item>
     </style>
 
