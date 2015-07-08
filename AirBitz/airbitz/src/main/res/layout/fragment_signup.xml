@@ -20,9 +20,10 @@
 
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/activity_signup_username_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/activity_signup_username_hint"
-            android:layout_marginTop="25.4dp"
-            style="@style/EditText" />
+            android:layout_marginTop="25.4dp" />
 
         <TextView
             android:id="@+id/activity_signup_password_help"
@@ -39,15 +40,17 @@
 
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/fragment_setup_password_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/activity_signup_password_hint"
-            android:layout_below="@id/activity_signup_password_help"
-            style="@style/EditText" />
+            android:layout_below="@id/activity_signup_password_help" />
 
         <com.airbitz.objects.LimitedEditText
             android:id="@+id/activity_signup_repassword_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/activity_signup_password_confirm_hint"
-            android:layout_below="@id/fragment_setup_password_edittext"
-            style="@style/EditText" />
+            android:layout_below="@id/fragment_setup_password_edittext" />
 
         <LinearLayout
             android:id="@+id/activity_signup_withdrawal_layout"
@@ -70,7 +73,7 @@
             <com.airbitz.objects.LimitedEditText
                 android:id="@+id/activity_signup_withdrawal_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="@string/activity_signup_pin_hint"
                 android:layout_weight="1"
@@ -78,8 +81,7 @@
                 android:paddingLeft="12.6dp"
                 android:paddingRight="12.6dp"
                 android:inputType="numberPassword"
-                android:imeOptions="actionDone"
-                style="@style/EditText" />
+                android:imeOptions="actionDone" />
 
         </LinearLayout>
 
@@ -106,7 +108,8 @@
         android:padding="6.3dp"
         android:paddingTop="9.45dp"
         android:visibility="gone"
-        android:weightSum="7">
+        android:weightSum="7"
+        android:elevation="10dp">
 
         <TextView
             android:layout_width="match_parent"
