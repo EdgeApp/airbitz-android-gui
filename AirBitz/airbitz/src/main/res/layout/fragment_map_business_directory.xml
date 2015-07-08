@@ -24,13 +24,13 @@
             android:textSize="20dp"
             android:singleLine="true"
             android:padding="10dp"
-            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:drawableLeft="@drawable/ic_search_light"
+            android:background="@null"
             android:layout_weight="1"
             android:drawablePadding="5dp"
             android:layout_margin="1dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionSearch"
             android:hint="@string/category_or_business_name_initial"
             />
 
