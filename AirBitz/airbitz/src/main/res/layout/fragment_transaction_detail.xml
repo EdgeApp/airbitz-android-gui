@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    android:background="@color/white_frost"
+    android:background="@color/colorPrimaryFrost"
     android:transitionName="transaction_details"
     android:orientation="vertical">
 
     <include layout="@layout/layout_toolbar_title" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_below="@id/toolbar"
@@ -34,7 +34,7 @@
 
                 <TextView
                     android:id="@+id/transaction_detail_textview_date"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="4dp"
@@ -52,8 +52,8 @@
 
                     <EditText
                         android:id="@+id/transaction_detail_edittext_name"
-                        style="@style/EditText"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:layout_marginRight="40dp"
                         android:layout_marginEnd="40dp"
@@ -69,7 +69,7 @@
 
                     <TextView
                         android:id="@+id/transaction_detail_textview_to_wallet"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:layout_below="@+id/transaction_detail_edittext_name"
@@ -115,14 +115,14 @@
 
         <LinearLayout
             android:id="@+id/transactiondetail_middle_layout"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/transaction_detail_btc_layout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
@@ -179,7 +179,7 @@
 
             <LinearLayout
                 android:id="@+id/transaction_detail_fiat_layout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"
@@ -188,8 +188,8 @@
 
                 <EditText
                     android:id="@+id/transaction_detail_edittext_dollar_value"
-                    style="@style/EditText"
-                    android:layout_width="110dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="fill_vertical"
                     android:layout_marginLeft="0dp"
                     android:layout_marginRight="0dp"
@@ -232,7 +232,7 @@
 
         <LinearLayout
             android:id="@+id/transactiondetail_lower_layout"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:layout_marginTop="6dp"
@@ -240,7 +240,7 @@
 
             <TextView
                 android:id="@+id/transaction_detail_textview_category"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="4dp"
@@ -254,7 +254,7 @@
 
             <LinearLayout
                 android:id="@+id/transaction_detail_edittext_category_layout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:orientation="horizontal">
 
@@ -295,7 +295,7 @@
 
             <LinearLayout
                 android:id="@+id/transaction_detail_category_popup_layout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="80"
                 android:orientation="vertical"
@@ -303,7 +303,7 @@
 
                 <ListView
                     android:id="@+id/listview_category"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="170dp"
                     android:layout_marginTop="-1dp"
                     android:background="@drawable/category_popup"
@@ -328,22 +328,19 @@
 
             <LinearLayout
                 android:id="@+id/transaction_detail_layout_edittext_notes"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="35"
                 android:orientation="vertical">
 
                 <com.airbitz.objects.LimitedEditText
                     android:id="@+id/transaction_detail_edittext_notes"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="left"
                     android:imeOptions="actionDone"
                     android:inputType="textNoSuggestions|textAutoCorrect|textCapSentences"
-                    android:padding="8dp"
-                    android:text="testing notes field"
-                    android:singleLine="true"
-                    style="@style/EditText" />
+                    android:padding="8dp" />
 
             </LinearLayout>
 
