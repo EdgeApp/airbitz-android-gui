@@ -1916,11 +1916,14 @@ public class CoreAPI {
         stopFileSyncUpdates();
         stopWatchers();
 
-        exchangeRateThread.shutdown();
-        exchangeRateThread = null;
-
-        dataSyncThread.shutdown();
-        dataSyncThread = null;
+        if (null != exchangeRateThread) {
+            exchangeRateThread.shutdown();
+            exchangeRateThread = null;
+        }
+        if (null != dataSyncThread) {
+            dataSyncThread.shutdown();
+            dataSyncThread = null;
+        }
     }
 
     public void restoreConnectivity() {
