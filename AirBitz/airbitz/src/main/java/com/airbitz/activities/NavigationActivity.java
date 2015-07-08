@@ -358,6 +358,7 @@ public class NavigationActivity extends ActionBarActivity
                 Log.d("", "ACTION_UP: " + String.valueOf((int) X));
                 if (deltaX > view.getWidth() / 2) {
                     DisplayLoginOverlay(false, true);
+                    hideSoftKeyboard(view);
                 } else {
                     DisplayLoginOverlay(true, true);
                 }
