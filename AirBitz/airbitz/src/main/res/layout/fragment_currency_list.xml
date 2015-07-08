@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryFrost">
 
     <ListView
         android:id="@+id/listview_currency"
@@ -13,13 +14,18 @@
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/btn_blue"
+        android:background="@color/colorPrimary"
         style="@style/ToolBarCommon">
 
         <EditText
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/text_off_white"
+            android:drawableLeft="@drawable/ic_search_light"
+            android:drawablePadding="10dp"
             android:hint="@string/settings_select_currency" />
 
     </android.support.v7.widget.Toolbar>

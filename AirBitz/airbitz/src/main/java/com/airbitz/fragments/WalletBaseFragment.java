@@ -253,7 +253,9 @@ public class WalletBaseFragment extends BaseFragment implements
 
     protected void walletChanged(Wallet newWallet) {
         mWallet = newWallet;
-        AirbitzApplication.setCurrentWallet(mWallet.getUUID());
+        if (!newWallet.isArchived()) {
+            AirbitzApplication.setCurrentWallet(mWallet.getUUID());
+        }
         updateTitle();
         hideWalletList();
     }

@@ -146,7 +146,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                 } else if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
                 } else {
-                    AirbitzApplication.setCurrentWallet(wallet.getUUID());
                     walletChanged(wallet);
                 }
             }
