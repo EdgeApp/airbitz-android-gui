@@ -2142,6 +2142,7 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
         mDrawerAccountArrow = (ImageView) findViewById(R.id.item_drawer_account_arrow);
+        mDrawerAccountArrow.setVisibility(View.INVISIBLE);
 
         mOtherAccounts = new ArrayList<String>();
         mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts, true);
@@ -2191,6 +2192,12 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerExchange.setVisibility(View.VISIBLE);
             mDrawerLayoutAccount.setVisibility(View.VISIBLE);
             mDrawerLogout.setVisibility(View.VISIBLE);
+            List<String> users = otherAccounts(AirbitzApplication.getUsername());
+            if (users.size() > 0) {
+                mDrawerAccountArrow.setVisibility(View.VISIBLE);
+            } else {
+                mDrawerAccountArrow.setVisibility(View.INVISIBLE);
+            }
         } else {
             mDrawerLogin.setVisibility(View.VISIBLE);
             mDrawerExchange.setVisibility(View.INVISIBLE);
@@ -2275,6 +2282,7 @@ public class NavigationActivity extends ActionBarActivity
                                 }
                                 showOthersList("", false);
                                 showOthersList(AirbitzApplication.getUsername(), true);
+                                updateDrawer(true);
                                 dialog.dismiss();
                             }
                         })
