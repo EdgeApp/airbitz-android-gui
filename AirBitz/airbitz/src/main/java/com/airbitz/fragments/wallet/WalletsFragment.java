@@ -294,7 +294,9 @@ public class WalletsFragment extends WalletBaseFragment implements
         long totalSatoshis = 0;
         int currencyNum = mCoreApi.coreSettings().getCurrencyNum();
         for (Wallet w : walletList) {
-            totalSatoshis += w.getBalanceSatoshi();
+            if (!w.isArchived()) {
+                totalSatoshis += w.getBalanceSatoshi();
+            }
         }
 
         mWalletAdapter.swapWallets();
