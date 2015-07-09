@@ -112,11 +112,13 @@ public class TransactionListFragment extends WalletsFragment
     private RelativeLayout mBalanceSwitchLayout;
     private RelativeLayout mSwitchView;
     private SwipeRefreshLayout mSwipeLayout;
+    private boolean mBarIsAnimating = false;
 
     AnimatorListenerAdapter mEndListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animator) {
             updateBalanceBar();
+            mBarIsAnimating = false;
         }
 
         @Override
@@ -493,6 +495,10 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     private void animateBar() {
+        if (mBarIsAnimating) {
+            return;
+        }
+        mBarIsAnimating = true;
         AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
         if (mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
