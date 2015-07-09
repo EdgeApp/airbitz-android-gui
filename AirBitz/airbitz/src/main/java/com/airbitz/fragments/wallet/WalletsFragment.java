@@ -152,11 +152,14 @@ public class WalletsFragment extends WalletBaseFragment implements
         });
         mWalletListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                Wallet wallet = mLatestWalletList.get(pos);
+                if (wallet.isHeader() || wallet.isArchiveHeader()) {
+                    return true;
+                }
                 View drag = arg1.findViewById(R.id.drag_container);
                 if (drag.getX() <= mWalletListView.getDownX()) {
                     return mWalletListView.startDrag(arg0, arg1, pos, id);
                 } else {
-                    Wallet wallet = mLatestWalletList.get(pos);
                     showRenameDialog(wallet);
                     return true;
                 }
@@ -237,8 +240,10 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     public void onListReordering(boolean started) {
-        mCoreApi.setWalletOrder(mLatestWalletList);
-        mCoreApi.reloadWallets();
+        if (!started) {
+            mCoreApi.setWalletOrder(mLatestWalletList);
+            mCoreApi.reloadWallets();
+        }
     }
 
     @Override
