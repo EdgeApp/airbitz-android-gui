@@ -7,23 +7,15 @@
     android:orientation="vertical"
     android:background="@color/colorPrimaryFrost">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:textColor="@android:color/white"
-        android:background="?attr/colorPrimaryDark"
-        style="@style/ToolBarCommon" />
+    <include layout="@layout/layout_toolbar_title" />
 
     <com.airbitz.objects.LimitedEditText
         android:id="@+id/fragment_wallets_addwallet_name_edittext"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="9.45dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:hint="@string/fragment_wallets_addwallet_name_hint"
-        android:imeOptions="actionDone"
-        style="@style/EditText" />
+        android:imeOptions="actionDone" />
 
     <LinearLayout
         android:id="@+id/fragment_wallets_addwallet_currency_layout"

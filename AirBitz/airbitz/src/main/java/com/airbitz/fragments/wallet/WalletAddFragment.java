@@ -35,7 +35,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -83,6 +82,8 @@ public class WalletAddFragment extends BaseFragment
         mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -90,12 +91,6 @@ public class WalletAddFragment extends BaseFragment
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_wallets_add, container, false);
         }
-
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.fragment_wallets_add_wallet);
-        getBaseActivity().setSupportActionBar(toolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mAddWalletNameEditText = (EditText) mView.findViewById(R.id.fragment_wallets_addwallet_name_edittext);
         mAddWalletCancelButton = (Button) mView.findViewById(R.id.fragment_wallets_addwallet_cancel_button);
@@ -149,6 +144,11 @@ public class WalletAddFragment extends BaseFragment
             }
         });
         return mView;
+    }
+
+    @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.fragment_wallets_add_wallet);
     }
 
     @Override
