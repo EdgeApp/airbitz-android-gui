@@ -60,6 +60,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,8 +76,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
-import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -100,7 +99,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private EditText mAuthorizationEdittext;
     String mDelayedMessage;
 
-    private TextView mTitleTextView;
     private TextView mToTextView;
     private TextView mSlideTextView;
     private TextView mAuthorizationTextView;
@@ -110,7 +108,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private TextView mFiatDenominationTextView;
     private TextView mFiatSignTextView;
     private TextView mConversionTextView;
-    private HighlightOnPressButton mMaxButton;
+    private Button mMaxButton;
 
     private Bundle bundle;
 
@@ -204,10 +202,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
-        // mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        // mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
-        // mTitleTextView.setText(R.string.send_confirmation_title);
-
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
@@ -224,7 +218,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBTCDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_btc_denomination);
         mFiatDenominationTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_denomination);
         mFiatSignTextView = (TextView) mView.findViewById(R.id.send_confirmation_fiat_sign);
-        mMaxButton = (HighlightOnPressButton) mView.findViewById(R.id.button_max);
+        mMaxButton = (Button) mView.findViewById(R.id.button_max);
 
         mToEdittext = (TextView) mView.findViewById(R.id.textview_to_name);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
@@ -282,10 +276,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (view == mBitcoinField || view == mFiatField) {
-                    EditText edittext = (EditText) view;
-                    edittext.selectAll();
-                    mCalculator.setEditText(edittext);
-                    mCalculator.showCalculator();
+                    if (hasFocus) {
+                        EditText edittext = (EditText) view;
+                        edittext.selectAll();
+                        mCalculator.setEditText(edittext);
+                        mCalculator.showCalculator();
+                    }
                 } else {
                     mCalculator.hideCalculator();
                 }
@@ -857,9 +853,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
-//            if (mActivity.isLargeDpi()) {
-//                mFiatField.requestFocus();
-//            }
         }
 
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
@@ -881,10 +874,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onPause() {
         super.onPause();
         mSavedBitcoin = mAmountToSendSatoshi;
-        if (mCalculateFeesTask != null)
+        if (null != mCalculateFeesTask) {
             mCalculateFeesTask.cancel(true);
-        if (mMaxAmountTask != null)
+        }
+        if (null != mMaxAmountTask) {
             mMaxAmountTask.cancel(true);
+        }
         mCalculator.hideCalculator();
     }
 
