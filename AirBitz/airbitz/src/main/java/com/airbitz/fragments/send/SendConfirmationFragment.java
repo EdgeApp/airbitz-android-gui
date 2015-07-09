@@ -712,6 +712,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mAmountFiat);
             mSendOrTransferTask.execute();
+            mCalculator.hideCalculator();
         }
         resetSlider();
     }

@@ -192,7 +192,9 @@
                 android:layout_below="@+id/layout_to"
                 android:text="@string/send_confirmation_max_button_title"
                 android:textSize="10dp"
-                style="GreenButton" />
+                android:background="@drawable/bg_button_green"
+                android:layout_marginRight="12.6dp"
+                android:padding="1dp"/>
 
         </RelativeLayout>
 
