@@ -84,7 +84,7 @@
             android:layout_width="37.8dp"
             android:layout_height="37.8dp"
             android:padding="9.45dp"
-            android:src="@drawable/ico_coin_btc_white" />
+            android:src="@null" />
 
         <TextView
             android:id="@+id/button_mover_type"

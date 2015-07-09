@@ -113,20 +113,16 @@ public class TransactionListFragment extends WalletsFragment
     private RelativeLayout mSwitchView;
     private SwipeRefreshLayout mSwipeLayout;
 
-    Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
+    AnimatorListenerAdapter mEndListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animator) {
             updateBalanceBar();
         }
 
         @Override
-        public void onAnimationCancel(Animator animator) { }
-
-        @Override
-        public void onAnimationStart(Animator animator) { }
-
-        @Override
-        public void onAnimationRepeat(Animator animator) { }
+        public void onAnimationStart(Animator animator) {
+            mMoverCoin.setImageResource(0);
+        }
     };
     Runnable animateSwitchUp = new Runnable() {
         @Override
@@ -134,7 +130,7 @@ public class TransactionListFragment extends WalletsFragment
             ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY",
                     (mActivity.getResources().getDimension(R.dimen.currency_switch_height)), 0);
             animator.setDuration(100);
-            animator.addListener(endListener);
+            animator.addListener(mEndListener);
             animator.start();
         }
     };
@@ -144,7 +140,7 @@ public class TransactionListFragment extends WalletsFragment
             ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0,
                     (mActivity.getResources().getDimension(R.dimen.currency_switch_height)));
             animator.setDuration(100);
-            animator.addListener(endListener);
+            animator.addListener(mEndListener);
             animator.start();
         }
     };
@@ -439,12 +435,10 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     private void positionBalanceBar() {
-        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        if (!mOnBitcoinMode) {
-            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + mActivity.getResources().getDimension(R.dimen.currency_switch_height));
-        }
-        else {
+        if (mOnBitcoinMode) {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
+        } else {
+            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + mActivity.getResources().getDimension(R.dimen.currency_switch_height));
         }
     }
 

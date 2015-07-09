@@ -85,7 +85,7 @@ public class WalletBaseFragment extends BaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoreApi = CoreAPI.getApi();
-
+        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         String uuid = AirbitzApplication.getCurrentWallet();
         if (uuid != null) {
             mLoading = false;
@@ -231,8 +231,6 @@ public class WalletBaseFragment extends BaseFragment implements
         mCoreApi.setOnWalletLoadedListener(this);
         mCoreApi.addExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(this);
-
-        mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
     }
 
     @Override
