@@ -151,6 +151,14 @@ public class WalletBaseFragment extends BaseFragment implements
                 mWallet = mCoreApi.getWalletFromUUID(uuid);
             }
         }
+        // If the user archives the selected wallet:
+        //     change the default wallet for other screens
+        if (mWallet != null && mWallet.isArchived()) {
+            List<String> uuids = mCoreApi.loadWalletUUIDs();
+            if (uuids.size() > 0) {
+                AirbitzApplication.setCurrentWallet(uuids.get(0));
+            }
+        }
     }
 
     @Override

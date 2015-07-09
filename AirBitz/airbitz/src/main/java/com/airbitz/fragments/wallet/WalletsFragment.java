@@ -242,6 +242,8 @@ public class WalletsFragment extends WalletBaseFragment implements
     public void onListReordering(boolean started) {
         if (!started) {
             mCoreApi.setWalletOrder(mLatestWalletList);
+            // Update current wallet incase it became archived
+            mWallet = mCoreApi.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
             mCoreApi.reloadWallets();
         }
     }
