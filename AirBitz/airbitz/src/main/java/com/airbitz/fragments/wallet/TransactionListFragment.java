@@ -187,6 +187,7 @@ public class TransactionListFragment extends WalletsFragment
 
         mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions, mCombinedPhotos);
         mTransactionAdapter.setLoading(true);
+        mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mListHeaderView == null) {
             mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_header, null, false);
