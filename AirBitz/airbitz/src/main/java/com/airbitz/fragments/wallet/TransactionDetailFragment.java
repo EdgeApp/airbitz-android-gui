@@ -131,6 +131,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TransactionDetailFragment extends BaseFragment
         implements CurrentLocationManager.OnCurrentLocationChange,
+        NavigationActivity.OnBackPress,
         TransactionDetailCategoryAdapter.OnNewCategory,
         Calculator.OnCalculatorKey {
     private final String TAG = getClass().getSimpleName();
@@ -192,6 +193,7 @@ public class TransactionDetailFragment extends BaseFragment
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
     private CheckReminderNotification mReminderTask = null;
+    private SaveTransactionAsyncTask mSaveTask;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
     private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_btn_green,
@@ -592,11 +594,17 @@ public class TransactionDetailFragment extends BaseFragment
             showAdvancedDetails(true);
             return true;
         case android.R.id.home:
-            mActivity.popFragment();
-            return true;
+            return onBackPress();
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onBackPress() {
+        saveTransaction();
+        mActivity.popFragment();
+        return true;
     }
 
     private void setupOriginalCategories() {
@@ -718,6 +726,8 @@ public class TransactionDetailFragment extends BaseFragment
 
 
     private void goDone() {
+        saveTransaction();
+
         mReminderTask = new CheckReminderNotification(mWallet);
         mReminderTask.execute();
 
@@ -1259,15 +1269,21 @@ public class TransactionDetailFragment extends BaseFragment
         if (mNearBusinessSearchAsyncTask != null) {
             mNearBusinessSearchAsyncTask.cancel(true);
         }
-
-        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
-        SaveTransactionAsyncTask task = new SaveTransactionAsyncTask(mTransaction, mBizId, mPayeeEditText.getText().toString(), category, mNoteEdittext.getText().toString(),
-                mFiatValueEdittext.getText().toString());
-        task.execute();
+        if (mSaveTask != null) {
+            mSaveTask.cancel(true);
+            mSaveTask = null;
+        }
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
         mCategoryAdapter.setOnNewCategoryListener(null);
+    }
+
+    private void saveTransaction() {
+        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        mSaveTask = new SaveTransactionAsyncTask(mTransaction, mBizId,
+                mPayeeEditText.getText().toString(), category,
+                mNoteEdittext.getText().toString(), mFiatValueEdittext.getText().toString());
+        mSaveTask.execute();
     }
 
     private void startOnlineBusinessSearch(String term) {
@@ -1311,8 +1327,7 @@ public class TransactionDetailFragment extends BaseFragment
 
         @Override
         protected void onPostExecute(tABC_CC result) {
-            if (result!=tABC_CC.ABC_CC_Ok)
-            {
+            if (result != tABC_CC.ABC_CC_Ok) {
                 mActivity.ShowFadingDialog(getString(R.string.transaction_details_transaction_save_failed));
             }
             onCancelled();
