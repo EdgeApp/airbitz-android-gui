@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:background="@android:color/darker_gray" />
+            android:background="@android:color/black" />
 
         <FrameLayout
             android:id="@+id/layout_camera_obscura"

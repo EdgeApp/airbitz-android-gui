@@ -262,7 +262,7 @@ public class SendFragment extends WalletBaseFragment implements
             cursor.close();
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
-            String info = mQRCamera.AttemptDecodePicture(thumbnail);
+            String info = mQRCamera.attemptDecodePicture(thumbnail);
             stopCamera();
             onScanResult(info);
         }
