@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -62,7 +63,6 @@ import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.login.ViewPagerFragment;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
 import com.airbitz.models.Hour;
@@ -90,9 +90,10 @@ public class DirectoryDetailFragment extends BaseFragment
 
     View mView;
     private boolean locationEnabled;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mLayout;
     private TextView mAboutField;
     private CurrentLocationManager mLocationManager;
-    private TextView mTitleTextView;
     private BusinessDetail mBusinessDetail;
     private ViewPager mImagePager;
     private List<ImageView> mImageViewList = new ArrayList<ImageView>();
@@ -139,9 +140,10 @@ public class DirectoryDetailFragment extends BaseFragment
             return mView;
         }
 
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        getBaseActivity().setSupportActionBar(toolbar);
+        mLayout = (CollapsingToolbarLayout) mView.findViewById(R.id.collapse);
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        getBaseActivity().setSupportActionBar(mToolbar);
         getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -227,11 +229,8 @@ public class DirectoryDetailFragment extends BaseFragment
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
         mAboutField.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.title);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.latoBlackTypeFace);
         if (!TextUtils.isEmpty(mBusinessName)) {
-            mTitleTextView.setText(mBusinessName);
-            mTitleTextView.setVisibility(View.VISIBLE);
+            mLayout.setTitle(mBusinessName);
         }
         return mView;
     }
@@ -255,10 +254,7 @@ public class DirectoryDetailFragment extends BaseFragment
     class TapGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.d(TAG, "image clicked");
-            ViewPagerFragment fragment = new ViewPagerFragment();
-            fragment.setImages(getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
-            mActivity.pushFragment(fragment);
+            ViewPagerFragment.pushFragment(mActivity, getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
             return true;
         }
     }
@@ -382,10 +378,9 @@ public class DirectoryDetailFragment extends BaseFragment
                 }
 
                 if ((mBusinessDetail.getName().length() == 0) || mBusinessDetail.getName() == null) {
-                    mTitleTextView.setVisibility(View.GONE);
+                    mLayout.setTitle("");
                 } else {
-                    mTitleTextView.setText(mBusinessDetail.getName());
-                    mTitleTextView.setVisibility(View.VISIBLE);
+                    mLayout.setTitle(mBusinessDetail.getName());
                 }
 
                 if (TextUtils.isEmpty(mBusinessDetail.getDescription())) {

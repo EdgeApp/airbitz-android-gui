@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,16 +23,18 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.fragments.login;
+package com.airbitz.fragments.directory;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -58,10 +60,9 @@ import com.airbitz.widgets.TouchImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created on 10/27/14.
- */
-public class ViewPagerFragment extends BaseFragment {
+public class ViewPagerFragment extends BaseFragment
+    implements NavigationActivity.OnBackPress {
+
     final String TAG = getClass().getSimpleName();
 
     private HighlightOnPressImageButton mQuitButton;
@@ -94,7 +95,7 @@ public class ViewPagerFragment extends BaseFragment {
         mQuitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                onBackPress();
             }
         });
 
@@ -166,6 +167,12 @@ public class ViewPagerFragment extends BaseFragment {
         mCounterView.setText("1/" + mImageViews.size());
 
         return mView;
+    }
+
+    @Override
+    public boolean onBackPress() {
+        ViewPagerFragment.popFragment(mActivity);
+        return true;
     }
 
     @Override
@@ -289,5 +296,22 @@ public class ViewPagerFragment extends BaseFragment {
         }
         out.setPixels(pix, 0, w, 0, 0, w, h);
         return out;
+    }
+
+    public static void pushFragment(NavigationActivity mActivity, List<TouchImageView> images, int currentItem) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        ViewPagerFragment fragment = new ViewPagerFragment();
+        fragment.setImages(images, currentItem);
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        mActivity.popFragment(transaction);
+        mActivity.getFragmentManager().executePendingTransactions();
     }
 }
