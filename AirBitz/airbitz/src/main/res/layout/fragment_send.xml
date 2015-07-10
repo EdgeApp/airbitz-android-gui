@@ -77,7 +77,7 @@
         android:layout_height="match_parent"
         android:background="@color/off_white"
         android:layout_below="@id/toolbar"
-        android:visibility="gone"/>
+        android:visibility="invisible"/>
 
     <RelativeLayout
         android:id="@+id/fragment_send_bluetooth_layout"

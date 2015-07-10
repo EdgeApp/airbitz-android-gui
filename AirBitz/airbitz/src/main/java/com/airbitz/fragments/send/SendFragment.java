@@ -553,7 +553,7 @@ public class SendFragment extends WalletBaseFragment implements
         final View view = inflater.inflate(R.layout.alert_address_form, null);
         final EditText editText = (EditText) view.findViewById(R.id.address);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_done),
@@ -618,7 +618,7 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     private boolean hideOtherWallets() {
-        if (mOtherWalletsListView.getVisibility() == View.GONE) {
+        if (mOtherWalletsListView.getVisibility() == View.INVISIBLE) {
             return false;
         }
 
@@ -641,7 +641,7 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     private void finishHideOthers() {
-        mOtherWalletsListView.setVisibility(View.GONE);
+        mOtherWalletsListView.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
         mExpanded = false;
 
