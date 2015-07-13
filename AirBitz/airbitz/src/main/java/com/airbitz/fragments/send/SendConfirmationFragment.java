@@ -172,7 +172,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     private CoreAPI.SpendTarget mSpendTarget = null;
 
-
     public interface OnExitHandler {
         public void error();
         public void success(String txId);
@@ -272,22 +271,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
-        final View.OnFocusChangeListener amountFocusListener = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (view == mBitcoinField || view == mFiatField) {
-                    if (hasFocus) {
-                        EditText edittext = (EditText) view;
-                        edittext.selectAll();
-                        mCalculator.setEditText(edittext);
-                        mCalculator.showCalculator();
-                    }
-                } else {
-                    mCalculator.hideCalculator();
-                }
-            }
-        };
-
         mBitcoinField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -306,13 +289,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
-        mBitcoinField.setOnFocusChangeListener(amountFocusListener);
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
-                mCalculator.showCalculator();
+                showCalculator();
             }
         });
 
@@ -333,12 +315,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 }
             }
         });
-        mFiatField.setOnFocusChangeListener(amountFocusListener);
         mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mCalculator.setEditText(mFiatField);
-                mCalculator.showCalculator();
+                showCalculator();
             }
         });
 
@@ -462,15 +443,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
-        mView.requestFocus();
-
         return mView;
     }
 
     @Override
     public boolean onBackPress() {
         if (mCalculator.getVisibility() == View.VISIBLE) {
-            mCalculator.hideCalculator();
+            hideCalculator();
             return true;
         }
         if (super.onBackPress()) {
@@ -573,8 +552,16 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     public void OnCalculatorKeyPressed(String tag) {
         if (tag.equals("done")) {
-            mCalculator.hideCalculator();
+            hideCalculator();
         }
+    }
+
+    private void showCalculator() {
+        mCalculator.showCalculator();
+    }
+
+    private void hideCalculator() {
+        mCalculator.hideCalculator();
     }
 
     private void calculateFees() {
@@ -712,7 +699,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
             mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mAmountFiat);
             mSendOrTransferTask.execute();
-            mCalculator.hideCalculator();
+            hideCalculator();
         }
         resetSlider();
     }
@@ -770,9 +757,15 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if(mFundsSent) {
+        if (mFundsSent) {
             return;
         }
+        // NOTE: We set focus listeners here to prevent the keyboard from
+        // showing after a send when the fragment are being popped from the stack
+        mBitcoinField.setOnFocusChangeListener(mAmountFocusListener);
+        mFiatField.setOnFocusChangeListener(mAmountFocusListener);
+        mView.requestFocus();
+
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         bundle = this.getArguments();
@@ -881,7 +874,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (null != mMaxAmountTask) {
             mMaxAmountTask.cancel(true);
         }
-        mCalculator.hideCalculator();
+        hideCalculator();
     }
 
     @Override
@@ -1052,4 +1045,21 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
     };
+
+    final View.OnFocusChangeListener mAmountFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus) {
+            if (view == mBitcoinField || view == mFiatField) {
+                if (hasFocus) {
+                    EditText edittext = (EditText) view;
+                    edittext.selectAll();
+                    mCalculator.setEditText(edittext);
+                    showCalculator();
+                }
+            } else {
+                hideCalculator();
+            }
+        }
+    };
+
 }

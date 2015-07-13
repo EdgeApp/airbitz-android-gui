@@ -519,12 +519,11 @@ public class TransactionDetailFragment extends BaseFragment
         mFiatValueEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                showUpperLayout(!hasFocus);
                 if (hasFocus) {
                     mFiatValue = mFiatValueEdittext.getText().toString(); // global save
                     mCalculator.setEditText(mFiatValueEdittext);
                     mFiatValueEdittext.selectAll();
-                    mCalculator.showCalculator();
+                    showCalculator();
                 } else {
                     hideCalculator();
                 }
@@ -555,14 +554,6 @@ public class TransactionDetailFragment extends BaseFragment
                 return false;
             }
         });
-
-
-        // mHelpButton.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View view) {
-        //         ((NavigationActivity) getActivity()).pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS), NavigationActivity.Tabs.WALLET.ordinal());
-        //     }
-        // });
 
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -639,6 +630,11 @@ public class TransactionDetailFragment extends BaseFragment
         if (tag.equals("done")) {
             hideCalculator();
         }
+    }
+
+    private void showCalculator() {
+        mCalculator.showCalculator();
+        showUpperLayout(false);
     }
 
     private void hideCalculator() {
@@ -1276,6 +1272,7 @@ public class TransactionDetailFragment extends BaseFragment
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mCategoryAdapter.setOnNewCategoryListener(null);
+        hideCalculator();
     }
 
     private void saveTransaction() {
