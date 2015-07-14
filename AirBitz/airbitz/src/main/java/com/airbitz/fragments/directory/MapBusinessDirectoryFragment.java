@@ -196,9 +196,9 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         });
         mMapShim.setCameraChangeListener(new MapBuilder.OnCameraChangeListener() {
             public void onCameraChange(MapLatLng sw, MapLatLng ne, MapLatLng ll) {
-                String southWest = "" + sw.getLatitude() + "%2C" + sw.getLongitude();
-                String northEast = "" + ne.getLatitude() + "%2C" + ne.getLongitude();
-                String bound = southWest + "%7C" + northEast;
+                String southWest = "" + sw.getLatitude() + "," + sw.getLongitude();
+                String northEast = "" + ne.getLatitude() + "," + ne.getLongitude();
+                String bound = southWest + "|" + northEast;
                 String userLatLong = "";
                 if (mCurrentLocation != null) {
                     userLatLong = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
