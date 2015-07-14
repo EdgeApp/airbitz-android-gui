@@ -129,25 +129,11 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private TextView mNoResultView;
     private String mNextUrl = "null";
     private VenuesTask mVenuesTask;
-    private boolean mFirstLoad = true;
-    private ProgressDialog mMoreCategoriesProgressDialog;
-    private Handler mVenueHandler = new Handler();
     private Location mCurrentLocation = null;
-
-    Runnable mProgressTimeout = new Runnable() {
-        @Override
-        public void run() {
-            if (mMoreCategoriesProgressDialog != null && mMoreCategoriesProgressDialog.isShowing()) {
-                mMoreCategoriesProgressDialog.dismiss();
-            }
-            mMoreCategoriesProgressDialog = null;
-        }
-    };
 
     Runnable mLocationTimeout = new Runnable() {
         @Override
         public void run() {
-            hideLoadingIndicator();
             queryWithoutLocation();
         }
     };
@@ -367,7 +353,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     @Override
     public void OnCurrentLocationChange(Location location) {
         mHandler.removeCallbacks(mLocationTimeout);
-        if (location != null && location.getAccuracy() < LOCATION_ACCURACY_METERS) {
+        if (location != null
+                && (mCurrentLocation == null
+                    || location.getAccuracy() < LOCATION_ACCURACY_METERS)) {
             mCurrentLocation = location;
             String latLon = "";
             if (location != null) {
@@ -375,7 +363,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             }
             Log.d(TAG, "LocationManager Location = " + latLon);
 
-            mVenueHandler.removeCallbacks(null);
             if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
                 mVenuesTask.cancel(true);
             }
@@ -386,6 +373,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     @Override
     public void onResume() {
+        super.onResume();
         mActivity.hideSoftKeyboard(getView());
         updateNearYouSticky();
         if (mSearchLoading != null) {
@@ -400,17 +388,15 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         } else {
             mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
         }
-        super.onResume();
     }
 
     @Override
     public void onPause() {
+        super.onPause();
         mLocationManager.removeLocationChangeListener(this);
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }
-        mFirstLoad = true;
-        super.onPause();
     }
 
     public void hideLoadingIndicator() {
