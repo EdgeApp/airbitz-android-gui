@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -9,15 +10,40 @@
         android:background="?attr/toolbarBackgroundColor"
         style="@style/ToolBarCommon" >
 
-        <Button
-            android:id="@+id/title"
-            android:textColor="?attr/toolbarTextColor"
-            android:background="@null"
-            android:textSize="18dp"
-            android:textAllCaps="false"
-            android:layout_gravity="center"
+        <RelativeLayout
+            android:id="@+id/title_frame"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" >
 
+            <TextView
+                android:id="@+id/title"
+                android:textColor="?attr/toolbarTextColor"
+                android:background="@null"
+                android:textSize="16dp"
+                android:textAllCaps="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_below="@+id/title"
+                android:textColor="?attr/toolbarTextColor"
+                android:background="@null"
+                android:textSize="12dp"
+                android:textAllCaps="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!--
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/wallet_dropdown"
+                android:layout_alignParentRight="true"
+                / -->
+
+        </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 </merge>

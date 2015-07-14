@@ -94,6 +94,10 @@ public class BaseFragment extends Fragment {
         return null;
     }
 
+    protected String getSubtitle() {
+        return null;
+    }
+
     @Override
     public void onStart() {
         View view = getView();

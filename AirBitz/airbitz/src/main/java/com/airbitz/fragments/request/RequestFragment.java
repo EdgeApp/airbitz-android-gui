@@ -208,6 +208,11 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     @Override
+    protected String getSubtitle() {
+        return mActivity.getString(R.string.fragment_request_subtitle);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Resources r = getResources();
 
@@ -298,7 +303,7 @@ public class RequestFragment extends WalletBaseFragment implements
         if (SettingFragment.getMerchantModePref()) {
             showCalculator();
         }
-        
+
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);
         mConverterTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mDenominationTextView = (TextView) mView.findViewById(R.id.request_selected_denomination);

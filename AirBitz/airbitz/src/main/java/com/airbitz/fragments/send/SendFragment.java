@@ -140,6 +140,11 @@ public class SendFragment extends WalletBaseFragment implements
     private CoreAPI mCoreApi;
 
     @Override
+    protected String getSubtitle() {
+        return mActivity.getString(R.string.fragment_request_subtitle);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mCoreApi = CoreAPI.getApi();
 

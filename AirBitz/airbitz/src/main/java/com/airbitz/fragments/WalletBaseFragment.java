@@ -38,6 +38,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,7 +73,9 @@ public class WalletBaseFragment extends BaseFragment implements
     protected Wallet mWallet;
     protected ListView mWalletList;
     protected View mWalletsContainer;
+    protected View mTitleFrame;
     protected TextView mTitleView;
+    protected TextView mSubtitleView;
     protected CoreAPI mCoreApi;
     protected boolean mHomeEnabled = true;
     protected boolean mDrawerEnabled = false;
@@ -115,10 +118,12 @@ public class WalletBaseFragment extends BaseFragment implements
             }
         });
 
+        mTitleFrame = view.findViewById(R.id.title_frame);
         mTitleView = (TextView) view.findViewById(R.id.title);
+        mSubtitleView = (TextView) view.findViewById(R.id.subtitle);
         updateTitle();
         if (mDropDownEnabled) {
-            mTitleView.setOnClickListener(new View.OnClickListener() {
+            mTitleFrame.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     toggleWallets();
                 }
@@ -254,7 +259,13 @@ public class WalletBaseFragment extends BaseFragment implements
             if (mLoading) {
                 mTitleView.setText(R.string.string_loading);
             } else {
-                mTitleView.setText(mWallet.getName() + " ▼");
+                mTitleView.setText(mWallet.getName());
+            }
+        }
+        if (mSubtitleView != null) {
+            if (!TextUtils.isEmpty(getSubtitle())) {
+                mSubtitleView.setText(getSubtitle());
+                mSubtitleView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -277,11 +288,11 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public void hideTitleView() {
-        mTitleView.setVisibility(View.GONE);
+        mTitleFrame.setVisibility(View.GONE);
     }
 
     public void showTitleView() {
-        mTitleView.setVisibility(View.VISIBLE);
+        mTitleFrame.setVisibility(View.VISIBLE);
     }
 
     public void toggleWallets() {

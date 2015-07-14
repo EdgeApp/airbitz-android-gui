@@ -166,6 +166,11 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     @Override
+    protected String getSubtitle() {
+        return mActivity.getString(R.string.fragment_wallet_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
         if (bundle != null && bundle.getBoolean(WalletsFragment.CREATE)) {
