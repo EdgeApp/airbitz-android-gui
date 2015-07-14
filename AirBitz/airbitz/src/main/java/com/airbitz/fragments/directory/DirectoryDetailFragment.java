@@ -131,6 +131,8 @@ public class DirectoryDetailFragment extends BaseFragment
         mBusinessName = getArguments().getString(BIZNAME);
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
