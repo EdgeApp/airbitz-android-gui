@@ -308,13 +308,8 @@ public class TransactionDetailFragment extends BaseFragment
             @Override
             public void onClick(View view) {
                 if (mBizId != 0) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(DirectoryDetailFragment.BIZID, String.valueOf(mBizId));
-                    bundle.putString("", mPayeeEditText.getText().toString());
-                    bundle.putString("", mBizDistance);
-                    Fragment fragment = new DirectoryDetailFragment();
-                    fragment.setArguments(bundle);
-                    ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
+                    DirectoryDetailFragment.pushFragment(mActivity,
+                        String.valueOf(mBizId), mPayeeEditText.getText().toString(), mBizDistance);
                 }
             }
         });
