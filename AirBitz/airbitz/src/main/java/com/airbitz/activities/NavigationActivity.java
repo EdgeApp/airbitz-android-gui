@@ -228,18 +228,18 @@ public class NavigationActivity extends ActionBarActivity
     private FrameLayout mDrawerView;
     private View mDrawerLogin;
     private View mDrawerLayoutAccount;
-    private View mDrawerDirectory;
-    private View mDrawerRequest;
-    private View mDrawerSend;
-    private View mDrawerTxs;
     private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
     private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
-    private TextView mDrawerBuySell;
-    private TextView mDrawerImport;
-    private TextView mDrawerSettings;
-    private TextView mDrawerLogout;
+    private Button mDrawerDirectory;
+    private Button mDrawerRequest;
+    private Button mDrawerSend;
+    private Button mDrawerTxs;
+    private Button mDrawerBuySell;
+    private Button mDrawerImport;
+    private Button mDrawerSettings;
+    private Button mDrawerLogout;
     private ListView mOtherAccountsListView;
     private AccountsAdapter mOtherAccountsAdapter;
     private List<String> mOtherAccounts;
@@ -295,6 +295,7 @@ public class NavigationActivity extends ActionBarActivity
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mActionMenu.close(true);
             }
@@ -302,6 +303,7 @@ public class NavigationActivity extends ActionBarActivity
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mActionMenu.close(true);
             }
@@ -309,6 +311,7 @@ public class NavigationActivity extends ActionBarActivity
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
                 mActionMenu.close(true);
             }
@@ -1214,6 +1217,7 @@ public class NavigationActivity extends ActionBarActivity
         }
 
         updateDrawer(true);
+        resetDrawerButtons(mDrawerTxs);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -2050,37 +2054,41 @@ public class NavigationActivity extends ActionBarActivity
                 DisplayLoginOverlay(true);
             }
         });
-        mDrawerDirectory = findViewById(R.id.item_drawer_directory);
+        mDrawerDirectory = (Button) findViewById(R.id.item_drawer_directory);
         mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerDirectory);
                 onNavBarSelected(Tabs.BD.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
 
-        mDrawerRequest = findViewById(R.id.item_drawer_request);
+        mDrawerRequest = (Button) findViewById(R.id.item_drawer_request);
         mDrawerRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
 
-        mDrawerSend = findViewById(R.id.item_drawer_send);
+        mDrawerSend = (Button) findViewById(R.id.item_drawer_send);
         mDrawerSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
 
-        mDrawerTxs = findViewById(R.id.item_drawer_txs);
+        mDrawerTxs = (Button) findViewById(R.id.item_drawer_txs);
         mDrawerTxs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2088,10 +2096,11 @@ public class NavigationActivity extends ActionBarActivity
 
         mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
         mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
-        mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
+        mDrawerBuySell = (Button) findViewById(R.id.item_drawer_buy_sell);
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerBuySell);
                 if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
                     pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
@@ -2101,10 +2110,11 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
 
-        mDrawerImport = (TextView) findViewById(R.id.item_drawer_import);
+        mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerImport);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
                 pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
@@ -2112,19 +2122,21 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
 
-        mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
+        mDrawerLogout = (Button) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(null);
                 mDrawer.closeDrawer(mDrawerView);
                 Logout();
             }
         });
 
-        mDrawerSettings = (TextView) findViewById(R.id.item_drawer_settings);
+        mDrawerSettings = (Button) findViewById(R.id.item_drawer_settings);
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(mDrawerSettings);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
@@ -2186,6 +2198,20 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onDrawerStateChanged(int newState) {}
         });
+    }
+
+    private void resetDrawerButtons(Button button) {
+        mDrawerDirectory.setSelected(false);
+        mDrawerRequest.setSelected(false);
+        mDrawerSend.setSelected(false);
+        mDrawerTxs.setSelected(false);
+        mDrawerBuySell.setSelected(false);
+        mDrawerImport.setSelected(false);
+        mDrawerSettings.setSelected(false);
+        mDrawerLogout.setSelected(false);
+        if (button != null) {
+            button.setSelected(true);
+        }
     }
 
     private void updateDrawer(boolean loggedIn) {

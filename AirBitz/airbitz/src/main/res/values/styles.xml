@@ -375,7 +375,7 @@
     <style name="DrawerButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/transparent_until_pressed</item>
+        <item name="android:background">@drawable/drawer_button</item>
         <item name="android:clickable">true</item>
         <item name="android:drawablePadding">20dp</item>
         <item name="android:ellipsize">end</item>
