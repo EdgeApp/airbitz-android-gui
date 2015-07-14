@@ -291,7 +291,7 @@ public class TransactionListFragment extends WalletsFragment
                 }
             }
         });
-        positionBalanceBar();
+        updateBalanceBar();
         return mView;
     }
 
@@ -416,6 +416,30 @@ public class TransactionListFragment extends WalletsFragment
         updateSendRequestButtons();
     }
 
+    private boolean walletsStillLoading() {
+        if (mWallets == null || mWallets.size() == 0) {
+            return true;
+        }
+        for (Wallet w : mWallets) {
+            if (w.isLoading()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateSendRequestButtons() {
+        if (walletsStillLoading()) {
+            updateSendRequestButtons(false, 0.5f);
+            // mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
+        } else {
+            updateSendRequestButtons(true, 1f);
+            if (mWallet != null && mWallet.isArchived()) {
+                updateSendRequestButtons(false, 0.5f);
+            }
+        }
+    }
+
     private void updateSendRequestButtons(boolean enabled, float alpha) {
         mRequestButton.setClickable(enabled);
         mRequestButton.setEnabled(enabled);
@@ -425,17 +449,6 @@ public class TransactionListFragment extends WalletsFragment
         mSendButton.setAlpha(alpha);
     }
 
-    private void updateSendRequestButtons() {
-        if (mCoreApi.walletsStillLoading()) {
-            updateSendRequestButtons(false, 0.5f);
-            mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
-        } else {
-            updateSendRequestButtons(true, 1f);
-            if (mWallet != null && mWallet.isArchived()) {
-                updateSendRequestButtons(false, 0.5f);
-            }
-        }
-    }
 
     private void positionBalanceBar() {
         if (mOnBitcoinMode) {

@@ -299,7 +299,9 @@ public class CoreAPI {
         public void run() {
             mCoreSettings = null;
             startWatchers();
-            mOnDataSync.OnDataSync();
+            if (null != mOnDataSync) {
+                mOnDataSync.OnDataSync();
+            }
         }
     };
 
@@ -2264,31 +2266,6 @@ public class CoreAPI {
             return mCoreWallets;
         }
     }
-
-    public boolean walletsStillLoading() {
-        if(!AirbitzApplication.isLoggedIn()) {
-            return true;
-        }
-
-        List<Wallet> wallets = getCoreActiveWallets();
-        if(wallets == null) {
-            return true;
-        }
-        for(Wallet wallet : wallets) {
-            if(wallet != null) {
-                reloadWallet(wallet);
-                if(wallet.isLoading()) {
-                    return true;
-                }
-            }
-            else {
-                Log.d(TAG, "wallet null");
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public List<Wallet> getCoreActiveWallets() {
         List<Wallet> wallets = getCoreWallets(false);

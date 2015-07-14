@@ -189,8 +189,10 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void onExchangeRatesChange() {
-        fetchWallets();
-        loadWallets();
+        if (!mLoading) {
+            fetchWallets();
+            loadWallets();
+        }
     }
 
     protected void loadWallets() {

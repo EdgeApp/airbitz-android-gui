@@ -707,7 +707,12 @@ public class LandingFragment extends BaseFragment implements
         protected tABC_Error doInBackground(Object... params) {
             mUsername = (String) params[0];
             mPassword = (char[]) params[1];
-            return mCoreAPI.SignIn(mUsername, mPassword);
+            tABC_Error error = mCoreAPI.SignIn(mUsername, mPassword);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+                AirbitzApplication.Login(mUsername, mPassword);
+                mCoreAPI.setupAccountSettings();
+            }
+            return error;
         }
 
         @Override
