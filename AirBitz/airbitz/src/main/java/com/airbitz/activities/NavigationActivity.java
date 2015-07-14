@@ -726,6 +726,7 @@ public class NavigationActivity extends ActionBarActivity
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
+        updateDrawer(AirbitzApplication.isLoggedIn());
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
