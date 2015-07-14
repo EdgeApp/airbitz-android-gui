@@ -34,6 +34,7 @@ package com.airbitz.fragments.directory;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -64,7 +65,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -76,6 +76,7 @@ import com.airbitz.fragments.HelpFragment;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.SearchResult;
 import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.utils.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -412,15 +413,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     private void checkLocationManager() {
-        locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
-        if (!locationEnabled) {
-            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
-                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-                AirbitzApplication.setLocationWarn(false);
-            }
-        } else {
-            AirbitzApplication.setLocationWarn(true);
-        }
+        locationEnabled = CurrentLocationManager.locationEnabled(mActivity);
+        Common.disabledNotification(mActivity, android.R.id.content);
     }
 
     private void showDirectoryDetailFragment(String id, String name, String distance) {

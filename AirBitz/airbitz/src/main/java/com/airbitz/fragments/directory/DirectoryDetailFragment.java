@@ -70,6 +70,7 @@ import com.airbitz.models.Image;
 import com.airbitz.models.Location;
 import com.airbitz.models.Social;
 import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.utils.Common;
 import com.airbitz.widgets.TouchImageView;
 import com.squareup.picasso.Picasso;
 
@@ -149,14 +150,7 @@ public class DirectoryDetailFragment extends BaseFragment
 
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
-        if(!locationEnabled) {
-            if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
-                Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-                AirbitzApplication.setLocationWarn(false);
-            }
-        } else {
-            AirbitzApplication.setLocationWarn(true);
-        }
+        Common.disabledNotification(mActivity, mView);
 
         Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 

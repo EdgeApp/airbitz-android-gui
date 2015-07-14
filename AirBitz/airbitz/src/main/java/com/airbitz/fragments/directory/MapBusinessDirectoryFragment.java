@@ -65,7 +65,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -75,15 +74,16 @@ import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
+import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.models.Business;
 import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.models.LocationSearchResult;
 import com.airbitz.models.SearchResult;
+import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
+import com.airbitz.utils.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -330,10 +330,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                     mMapShim.animateCamera(currentLatLng);
                 } else {
                     Log.d(TAG, getString(R.string.no_location_found));
-                    if(getActivity() != null) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                getString(R.string.no_location_found), Toast.LENGTH_SHORT).show();
-                    }
+                    Common.noLocationSnack(mActivity, getView());
                 }
             }
         });
@@ -391,10 +388,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                 @Override
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                        if(getActivity() != null) {
-                            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                    Toast.LENGTH_LONG).show();
-                        }
+                        Common.networkTimeoutSnack(mActivity, getView());
                         mGetVenuesAsyncTask.cancel(true);
                     }
                 }
@@ -411,10 +405,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                 public void run() {
                     if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                         mGetVenuesAsyncTask.cancel(true);
-                        if(getActivity() != null) {
-                            Toast.makeText(getActivity(), getString(R.string.fragment_directory_detail_timeout_retrieving_data),
-                                    Toast.LENGTH_LONG).show();
-                        }
+                        Common.networkTimeoutSnack(mActivity, getView());
                     }
                 }
             }, CATEGORY_TIMEOUT);

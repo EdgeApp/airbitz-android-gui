@@ -102,6 +102,7 @@ import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.BusinessSearchResult;
 import com.airbitz.models.Category;
 import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.utils.Common;
 import com.airbitz.models.ProfileImage;
 import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
@@ -228,14 +229,11 @@ public class TransactionDetailFragment extends BaseFragment
         getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPicasso = Picasso.with(getActivity());
+
+
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationEnabled = false;
-            Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
-        } else {
-            locationEnabled = true;
-        }
+        locationEnabled = CurrentLocationManager.locationEnabled(mActivity);
+        Common.disabledNotification(mActivity, android.R.id.content);
 
         mCalculator = (Calculator) mActivity.findViewById(R.id.navigation_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);

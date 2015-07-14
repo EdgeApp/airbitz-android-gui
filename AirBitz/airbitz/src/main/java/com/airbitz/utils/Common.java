@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
@@ -52,14 +53,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
+import com.airbitz.objects.CurrentLocationManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -394,5 +400,62 @@ public class Common {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    static final int NOTIFICATION_DURATION = 5000;
+
+    public static void disabledNotification(final Activity activity, int viewRes) {
+        disabledNotification(activity, activity.findViewById(viewRes));
+    }
+
+    public static void disabledNotification(final Activity activity, View view) {
+        boolean enabled = CurrentLocationManager.locationEnabled(activity);
+        if (!enabled) {
+            if (AirbitzApplication.getLocationWarn() && activity != null) {
+                Snackbar bar = Snackbar.make(view,
+                            R.string.fragment_business_enable_location_services, Snackbar.LENGTH_LONG)
+                        .setDuration(NOTIFICATION_DURATION)
+                        .setActionTextColor(Color.YELLOW)
+                        .setAction(R.string.location_enable, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    activity.startActivity(intent);
+                                }
+                            });
+                View snackview = bar.getView();
+                TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                bar.show();
+                AirbitzApplication.setLocationWarn(false);
+            }
+        } else {
+            AirbitzApplication.setLocationWarn(true);
+        }
+    }
+
+    public static void networkTimeoutSnack(final Activity activity, View view) {
+        if (null == activity || null == view) {
+            return;
+        }
+        Snackbar bar = Snackbar.make(view,
+                    R.string.fragment_directory_detail_timeout_retrieving_data, Snackbar.LENGTH_LONG)
+                .setDuration(NOTIFICATION_DURATION);
+        View snackview = bar.getView();
+        TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        bar.show();
+    }
+
+    public static void noLocationSnack(final Activity activity, View view) {
+        if (null == activity || null == view) {
+            return;
+        }
+        Snackbar bar = Snackbar.make(view, R.string.no_location_found, Snackbar.LENGTH_LONG)
+                .setDuration(NOTIFICATION_DURATION);
+        View snackview = bar.getView();
+        TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        bar.show();
     }
 }
