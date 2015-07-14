@@ -88,7 +88,6 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     String TAG = getClass().getSimpleName();
 
-    static int CATEGORY_TIMEOUT = 15000;
     static int LOCATION_TIMEOUT = 10000;
     static float LOCATION_ACCURACY_METERS = 100.0f;
 
@@ -96,15 +95,12 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     public static final String BUSINESS = "BUSINESS";
     public static final String BUSINESSTYPE = "BUSINESSTYPE";
 
-    static final int MAX_VENUES = 500;
+    static final int MAX_VENUES = 200;
     static final int PAGE_SIZE = 20;
     static final int VENUE_LOAD_AHEAD = 3;
 
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-
-    private static String mLocationWords = "";
-    private static String mBusinessType = "business";
 
     Handler mHandler = new Handler();
     View view;
@@ -119,7 +115,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private TextView mShoppingButton;
     private TextView mMoreButton;
     private boolean locationEnabled = false;
-    private List<BusinessSearchResult> mVenuesLoaded;
+    private List<BusinessSearchResult> mVenues;
     private TextView mTitleView;
     private ListView mVenueListView;
     private VenueAdapter mVenueAdapter;
@@ -127,7 +123,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private CurrentLocationManager mLocationManager;
     private ViewGroup mViewGroupLoading;
     private TextView mNoResultView;
-    private String mNextUrl = "null";
+    private String mNextUrl = null;
     private VenuesTask mVenuesTask;
     private Location mCurrentLocation = null;
 
@@ -141,8 +137,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (mVenuesLoaded == null) {
-            mVenuesLoaded = new ArrayList<BusinessSearchResult>();
+        if (mVenues == null) {
+            mVenues = new ArrayList<BusinessSearchResult>();
         }
         if (mLocationManager == null) {
             mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
@@ -184,16 +180,16 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mVenueListView.addFooterView(mViewGroupLoading);
 
         // Setup venues adapter and listview
-        mVenueAdapter = new VenueAdapter(getActivity(), mVenuesLoaded);
+        mVenueAdapter = new VenueAdapter(getActivity(), mVenues);
         mVenueListView.setAdapter(mVenueAdapter);
         mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int newIdx = i - 1;
-                if(newIdx >= 0 && newIdx < mVenuesLoaded.size()) {
-                    showDirectoryDetailFragment(mVenuesLoaded.get(newIdx).getId(),
-                            mVenuesLoaded.get(newIdx).getName(),
-                            mVenuesLoaded.get(newIdx).getDistance());
+                if (newIdx >= 0 && newIdx < mVenues.size()) {
+                    showDirectoryDetailFragment(mVenues.get(newIdx).getId(),
+                            mVenues.get(newIdx).getName(),
+                            mVenues.get(newIdx).getDistance());
                 }
             }
         });
@@ -208,9 +204,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-                if (!mNextUrl.equalsIgnoreCase("null")) {
+                if (!TextUtils.isEmpty(mNextUrl)) {
                     if (firstVisibleItem + visibleItemCount + VENUE_LOAD_AHEAD >= totalItemCount && totalItemCount != 0) {
-                        if (mVenuesTask == null && mVenuesLoaded.size() <= MAX_VENUES) {
+                        if (mVenuesTask == null && mVenues.size() <= MAX_VENUES) {
                             mVenuesTask = new VenuesTask(getActivity(), null);
                             mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mNextUrl);
                         }
@@ -329,45 +325,15 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         }
     }
 
-    private void updateNearYouSticky() {
-        int firstVisibleItem = mVenueListView.getFirstVisiblePosition();
-        View first = mVenueListView.getChildAt(1); // first item not the header
-        if(first != null && firstVisibleItem==0) {
-            mNearYouLayout.setY(first.getY() + mFragHeader.getMeasuredHeight());
-        }
-        else if(firstVisibleItem > 0) {
-            mNearYouLayout.setY(mVenueListView.getY() + mFragHeader.getMeasuredHeight());
-        }
-        mNearYouLayout.invalidate();
-    }
-
-    public void queryWithoutLocation() {
-        Log.d(TAG, "Query without location");
-        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            mVenuesTask.cancel(true);
-        }
-        mVenuesTask = new VenuesTask(getActivity(), ""); // pass in empty lat/lng
-        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
     @Override
     public void OnCurrentLocationChange(Location location) {
         mHandler.removeCallbacks(mLocationTimeout);
         if (location != null
                 && (mCurrentLocation == null
+                    || mVenues.size() == 0
                     || location.getAccuracy() < LOCATION_ACCURACY_METERS)) {
             mCurrentLocation = location;
-            String latLon = "";
-            if (location != null) {
-                latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
-            }
-            Log.d(TAG, "LocationManager Location = " + latLon);
-
-            if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
-                mVenuesTask.cancel(true);
-            }
-            mVenuesTask = new VenuesTask(getActivity(), latLon);
-            mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            queryByLocation();
         }
     }
 
@@ -399,6 +365,40 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         }
     }
 
+    private void updateNearYouSticky() {
+        int firstVisibleItem = mVenueListView.getFirstVisiblePosition();
+        View first = mVenueListView.getChildAt(1); // first item not the header
+        if (first != null && firstVisibleItem==0) {
+            mNearYouLayout.setY(first.getY() + mFragHeader.getMeasuredHeight());
+        } else if (firstVisibleItem > 0) {
+            mNearYouLayout.setY(mVenueListView.getY() + mFragHeader.getMeasuredHeight());
+        }
+        mNearYouLayout.invalidate();
+    }
+
+    private void queryByLocation() {
+        String latLon = "";
+        if (mCurrentLocation != null) {
+            latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+        }
+        Log.d(TAG, "LocationManager Location = " + latLon);
+
+        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mVenuesTask.cancel(true);
+        }
+        mVenuesTask = new VenuesTask(getActivity(), latLon);
+        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mNextUrl);
+    }
+
+    public void queryWithoutLocation() {
+        Log.d(TAG, "Query without location");
+        if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mVenuesTask.cancel(true);
+        }
+        mVenuesTask = new VenuesTask(getActivity(), ""); // pass in empty lat/lng
+        mVenuesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mNextUrl);
+    }
+
     public void hideLoadingIndicator() {
         if (mViewGroupLoading != null) {
             mViewGroupLoading.setVisibility(View.GONE);
@@ -413,7 +413,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     private void checkLocationManager() {
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
-        if(!locationEnabled) {
+        if (!locationEnabled) {
             if(AirbitzApplication.getLocationWarn() && getActivity() != null) {
                 Toast.makeText(getActivity(), getString(R.string.fragment_business_enable_location_services), Toast.LENGTH_SHORT).show();
                 AirbitzApplication.setLocationWarn(false);
@@ -437,7 +437,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             mSearchLoading.setVisibility(View.GONE);
         }
         if (!venues.isEmpty()) {
-            mVenuesLoaded.addAll(venues);
+            mVenues.addAll(venues);
             if (venues.size() <= PAGE_SIZE) {
                 mVenueAdapter.warmupCache(venues);
             }
@@ -459,10 +459,10 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            if (mLatLng != null && !mLatLng.isEmpty()) {
-                return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
-            } else if (params.length > 0 && !params[0].equalsIgnoreCase("null")) {
+            if (params.length > 0 && !TextUtils.isEmpty(params[0])) {
                 return mApi.getRequest(params[0]);
+            } else if (mLatLng != null && !mLatLng.isEmpty()) {
+                return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
             } else {
                 return mApi.getSearchByTerm("", String.valueOf(PAGE_SIZE), "", "1");
             }
@@ -494,7 +494,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             } else {
                 hideLoadingIndicator();
             }
-            if (mVenuesLoaded.size() >= MAX_VENUES) {
+            if (mVenues.size() >= MAX_VENUES) {
                 hideLoadingIndicator();
             }
             mVenuesTask = null;

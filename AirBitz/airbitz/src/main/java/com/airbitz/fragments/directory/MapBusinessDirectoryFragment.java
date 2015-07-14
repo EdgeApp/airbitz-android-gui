@@ -102,6 +102,8 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     private static String mLocationWords = "";
     private final String TAG = getClass().getSimpleName();
 
+    static int CATEGORY_TIMEOUT = 15000;
+
     private int mActivePointerId = INVALID_POINTER_ID;
     private int aPosBottom = -10000;
     private int dragBarHeight = 0;
@@ -396,7 +398,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                         mGetVenuesAsyncTask.cancel(true);
                     }
                 }
-            }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
+            }, CATEGORY_TIMEOUT);
         } else {
             if (mGetVenuesAsyncTask != null && mGetVenuesAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
                 mGetVenuesAsyncTask.cancel(true);
@@ -415,7 +417,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                         }
                     }
                 }
-            }, BusinessDirectoryFragment.CATEGORY_TIMEOUT);
+            }, CATEGORY_TIMEOUT);
         }
     }
 
