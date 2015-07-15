@@ -69,16 +69,15 @@
 
                 <TextView
                     android:id="@+id/fragment_spending_limits_daily_denomination"
-                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/text_hint"
+                    android:textColor="@drawable/edit_text_color"
                     android:text="@string/fragment_spending_limits_denomination" />
             </RelativeLayout>
 
@@ -110,16 +109,15 @@
 
                 <TextView
                     android:id="@+id/fragment_spending_limits_pin_denomination"
-                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/text_hint"
+                    android:textColor="@drawable/edit_text_color"
                     android:text="@string/fragment_spending_limits_denomination" />
             </RelativeLayout>
 

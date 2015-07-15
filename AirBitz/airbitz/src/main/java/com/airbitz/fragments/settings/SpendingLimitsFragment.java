@@ -99,7 +99,7 @@ public class SpendingLimitsFragment extends BaseFragment
         mDailyEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_daily_edittext);
         mDailyEditText.setTypeface(Typeface.DEFAULT);
         mDailyDenominationTextView = (TextView) mView.findViewById(R.id.fragment_spending_limits_daily_denomination);
-        mDailyDenominationTextView.setTypeface(Typeface.DEFAULT);
+        mDailyDenominationTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mDailySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +112,7 @@ public class SpendingLimitsFragment extends BaseFragment
         mPINEditText = (EditText) mView.findViewById(R.id.fragment_spending_limits_pin_edittext);
         mPINEditText.setTypeface(Typeface.DEFAULT);
         mPINDenominationTextView = (TextView) mView.findViewById(R.id.fragment_spending_limits_pin_denomination);
-        mPINDenominationTextView.setTypeface(Typeface.DEFAULT);
+        mPINDenominationTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         mPINSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,21 +156,20 @@ public class SpendingLimitsFragment extends BaseFragment
     }
 
     private void adjustTextColors() {
-        if(mDailySwitch.isChecked()) {
-            mDailyDenominationTextView.setTextColor(getResources().getColor(android.R.color.white));
+        if (mDailySwitch.isChecked()) {
+            mDailyDenominationTextView.setEnabled(true);
             mDailyEditText.setEnabled(true);
         } else {
-            mDailyDenominationTextView.setTextColor(getResources().getColor(R.color.text_hint));
+            mDailyDenominationTextView.setEnabled(false);
             mDailyEditText.setEnabled(false);
         }
-        if(mPINSwitch.isChecked()) {
-            mPINDenominationTextView.setTextColor(getResources().getColor(android.R.color.white));
+        if (mPINSwitch.isChecked()) {
+            mPINDenominationTextView.setEnabled(true);
             mPINEditText.setEnabled(true);
         } else {
-            mPINDenominationTextView.setTextColor(getResources().getColor(R.color.text_hint));
+            mPINDenominationTextView.setEnabled(false);
             mPINEditText.setEnabled(false);
         }
-
     }
 
     @Override
