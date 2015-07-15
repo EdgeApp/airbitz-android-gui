@@ -469,10 +469,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void setTypeFaces() {
-        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Regular.ttf");
-        latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
     }
 
     /*
