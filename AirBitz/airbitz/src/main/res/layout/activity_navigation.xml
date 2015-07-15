@@ -66,4 +66,10 @@
         layout="@layout/layout_modal_indefinite_progress"
         android:visibility="gone" />
 
+    <!-- Hack to setup the window attributes for Camera. This prevents a
+         flicker on camera screen. This view is never actually used -->
+    <SurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="0px" />
+
 </RelativeLayout>
