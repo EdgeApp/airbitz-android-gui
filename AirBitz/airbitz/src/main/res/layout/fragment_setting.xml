@@ -53,26 +53,21 @@
                 android:id="@+id/credentials_buttons"
                 style="@style/SettingsGroup">
 
-                <FrameLayout style="@style/SettingsRowFirst">
-                    <Button
-                        android:id="@+id/settings_button_change_password"
-                        android:text="@string/settings_button_change_password"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_change_password"
+                    android:text="@string/settings_button_change_password"
+                    style="@style/SettingsButton" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Button
-                        android:id="@+id/settings_button_pin"
-                        android:text="@string/settings_button_pin"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_pin"
+                    android:text="@string/settings_button_pin"
+                    style="@style/SettingsButton" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Button
-                        android:id="@+id/settings_button_recovery"
-                        android:text="@string/settings_button_recovery"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_recovery"
+                    android:text="@string/settings_button_recovery"
+                    style="@style/SettingsButton" />
+
             </LinearLayout>
 
             <TextView
@@ -84,39 +79,31 @@
                 android:id="@+id/user_buttons"
                 style="@style/SettingsGroup">
 
-                <FrameLayout style="@style/SettingsRowFirst">
-                    <Switch
-                        android:id="@+id/settings_toggle_send_user_info"
-                        android:text="@string/settings_button_send_user_info"
-                        style="@style/SettingsSwitch" />
-                </FrameLayout>
+                <Switch
+                    android:id="@+id/settings_toggle_send_user_info"
+                    android:text="@string/settings_button_send_user_info"
+                    style="@style/SettingsSwitch" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <com.airbitz.objects.LimitedEditText
-                        android:id="@+id/settings_edit_first_name"
-                        android:hint="@string/settings_edit_first_name"
-                        android:background="@null"
-                        android:enabled="false"
-                        style="@style/SettingsEditText" />
-                </FrameLayout>
+                <com.airbitz.objects.LimitedEditText
+                    android:id="@+id/settings_edit_first_name"
+                    android:hint="@string/settings_edit_first_name"
+                    android:background="@null"
+                    android:enabled="false"
+                    style="@style/SettingsEditText" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <com.airbitz.objects.LimitedEditText
-                        android:id="@+id/settings_edit_last_name"
-                        android:hint="@string/settings_edit_last_name"
-                        android:background="@null"
-                        android:enabled="false"
-                        style="@style/SettingsEditText" />
-                </FrameLayout>
+                <com.airbitz.objects.LimitedEditText
+                    android:id="@+id/settings_edit_last_name"
+                    android:hint="@string/settings_edit_last_name"
+                    android:background="@null"
+                    android:enabled="false"
+                    style="@style/SettingsEditText" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <com.airbitz.objects.LimitedEditText
-                        android:id="@+id/settings_edit_nick_name"
-                        android:hint="@string/settings_edit_nick_name"
-                        android:background="@null"
-                        android:enabled="false"
-                        style="@style/SettingsEditText" />
-                </FrameLayout>
+                <com.airbitz.objects.LimitedEditText
+                    android:id="@+id/settings_edit_nick_name"
+                    android:hint="@string/settings_edit_nick_name"
+                    android:background="@null"
+                    android:enabled="false"
+                    style="@style/SettingsEditText" />
 
             </LinearLayout>
 
@@ -131,7 +118,7 @@
 
                 <LinearLayout
                     android:orientation="horizontal"
-                    style="@style/SettingsRowFirst">
+                    style="@style/SettingsRow">
 
                     <TextView
                         android:id="@+id/settings_title_auto_logoff"
@@ -159,8 +146,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
+                <LinearLayout android:orientation="horizontal"
                     style="@style/SettingsRow">
 
                     <TextView
@@ -174,54 +160,40 @@
 
                 </LinearLayout>
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Button
-                        android:id="@+id/settings_button_category"
-                        android:text="@string/settings_button_change_categories"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_category"
+                    android:text="@string/settings_button_change_categories"
+                    style="@style/SettingsButton" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Button
-                        android:id="@+id/settings_button_spending_limits"
-                        android:text="@string/settings_button_change_spending_limits"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_spending_limits"
+                    android:text="@string/settings_button_change_spending_limits"
+                    style="@style/SettingsButton" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Button
-                        android:id="@+id/settings_button_two_factor_authentication"
-                        android:text="@string/settings_button_two_factor_authentication"
-                        style="@style/SettingsButton" />
-                </FrameLayout>
+                <Button
+                    android:id="@+id/settings_button_two_factor_authentication"
+                    android:text="@string/settings_button_two_factor_authentication"
+                    style="@style/SettingsButton" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Switch
-                        android:id="@+id/settings_toggle_merchant_mode"
-                        android:text="@string/settings_title_merchant_mode"
-                        style="@style/SettingsSwitch" />
-                </FrameLayout>
+                <Switch
+                    android:id="@+id/settings_toggle_merchant_mode"
+                    android:text="@string/settings_title_merchant_mode"
+                    style="@style/SettingsSwitch" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Switch
-                        android:id="@+id/settings_toggle_nfc"
-                        android:text="@string/settings_title_nfc"
-                        style="@style/SettingsSwitch" />
-                </FrameLayout>
+                <Switch
+                    android:id="@+id/settings_toggle_nfc"
+                    android:text="@string/settings_title_nfc"
+                    style="@style/SettingsSwitch" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Switch
-                        android:id="@+id/settings_toggle_ble"
-                        android:text="@string/settings_title_ble"
-                        style="@style/SettingsSwitch" />
-                </FrameLayout>
+                <Switch
+                    android:id="@+id/settings_toggle_ble"
+                    android:text="@string/settings_title_ble"
+                    style="@style/SettingsSwitch" />
 
-                <FrameLayout style="@style/SettingsRow">
-                    <Switch
-                        android:id="@+id/settings_toggle_pin_login"
-                        android:text="@string/settings_title_pin_login"
-                        style="@style/SettingsSwitch" />
-                </FrameLayout>
+                <Switch
+                    android:id="@+id/settings_toggle_pin_login"
+                    android:text="@string/settings_title_pin_login"
+                    style="@style/SettingsSwitch" />
 
             </LinearLayout>
 

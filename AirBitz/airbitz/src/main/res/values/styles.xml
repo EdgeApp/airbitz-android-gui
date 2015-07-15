@@ -188,12 +188,14 @@
     </style>
 
     <style name="SettingsGroup">
-        <item name="android:background">@color/settings_group</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">20dp</item>
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/setting_item_divider</item>
+        <item name="android:dividerPadding">8dp</item>
+        <item name="android:showDividers">middle</item>
     </style>
 
     <style name="SettingsTextAppearance" parent="@android:style/TextAppearance">
@@ -203,15 +205,12 @@
     </style>
 
     <style name="SettingsRow">
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
         <item name="android:minHeight">48dip</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@drawable/setting_item_background</item>
     </style>
 
     <style name="SettingsRowFirst" parent="SettingsRow">
@@ -232,6 +231,9 @@
         <item name="android:drawableRight">@drawable/arrow_right</item>
         <item name="android:textColor">@color/settings_button_text</item>
         <item name="android:layout_gravity">center_vertical</item>
+
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="SettingsSwitch" parent="SettingsItem">
@@ -244,6 +246,8 @@
         <item name="android:textOn"></item>
         <item name="android:textAppearance">@style/SettingsTextAppearance</item>
         <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="SettingsEditText" parent="SettingsItem">
@@ -251,6 +255,9 @@
         <item name="android:inputType">textNoSuggestions|textCapWords</item>
         <item name="android:singleLine">true</item>
         <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="SettingsRadioItem" parent="SettingsRow">
