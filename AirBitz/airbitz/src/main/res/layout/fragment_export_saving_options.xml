@@ -118,6 +118,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_below="@id/layout_export_data"
+                android:inputType="textPassword"
                 android:visibility="gone"
                 style="@style/EditText" />
 
