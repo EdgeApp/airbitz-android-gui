@@ -53,7 +53,8 @@
             <RelativeLayout
                 android:id="@+id/layout_account"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary">
 
                 <TextView
                     android:id="@+id/item_drawer_account"
@@ -61,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/transparent_until_pressed"
                     android:clickable="true"
-                    android:drawableLeft="@drawable/ic_user_account_secure_dark"
+                    android:drawableLeft="@drawable/ic_user_account_secure_light"
                     android:drawablePadding="20dp"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
@@ -71,7 +72,7 @@
                     android:paddingTop="20dp"
                     android:singleLine="true"
                     android:text="Account"
-                    android:textColor="@color/gray_text"
+                    android:textColor="@color/white_frost"
                     android:textSize="20dp" />
 
                 <ImageView
@@ -80,8 +81,8 @@
                     android:layout_height="22dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/icon_arrow"/>
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_arrow_drop_down_white_24dp"/>
                 </RelativeLayout>
 
             <include layout="@layout/divider_horizontal_light_gray" />
