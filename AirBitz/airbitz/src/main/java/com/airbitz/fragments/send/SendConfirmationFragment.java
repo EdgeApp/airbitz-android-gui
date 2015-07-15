@@ -186,6 +186,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     }
 
     @Override
+    protected String getSubtitle() {
+        return mActivity.getString(R.string.fragment_send_subtitle);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -659,6 +664,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                  mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_pin_message));
              }
              mAuthorizationEdittext.requestFocus();
+            resetSlider();
         } else if (mPasswordRequired) {
              mActivity.showModalProgress(true);
              mCoreApi.SetOnPasswordCheckListener(this, mAuthorizationEdittext.getText().toString());
@@ -677,6 +683,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         else {
             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_title));
             mAuthorizationEdittext.requestFocus();
+            resetSlider();
         }
     }
 
