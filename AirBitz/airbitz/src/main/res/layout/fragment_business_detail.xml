@@ -15,7 +15,6 @@
         <LinearLayout
             android:id="@+id/layout_data"
             android:padding="@dimen/content_padding_1_5"
-            android:layout_marginLeft="32dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
