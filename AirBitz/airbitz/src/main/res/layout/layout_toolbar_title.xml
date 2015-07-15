@@ -10,40 +10,51 @@
         android:background="?attr/toolbarBackgroundColor"
         style="@style/ToolBarCommon" >
 
-        <RelativeLayout
-            android:id="@+id/title_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/title"
-                android:textColor="?attr/toolbarTextColor"
-                android:background="@null"
-                android:textSize="16dp"
-                android:textAllCaps="false"
+            <RelativeLayout
+                android:id="@+id/title_frame"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_below="@+id/title"
-                android:textColor="?attr/toolbarTextColor"
-                android:background="@null"
-                android:textSize="12dp"
-                android:textAllCaps="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/title"
+                    android:textColor="?attr/toolbarTextColor"
+                    android:background="@null"
+                    android:textSize="16dp"
+                    android:textAllCaps="false"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-            <!--
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/wallet_dropdown"
-                android:layout_alignParentRight="true"
-                / -->
+                <TextView
+                    android:id="@+id/subtitle"
+                    android:layout_below="@+id/title"
+                    android:textColor="?attr/toolbarTextColor"
+                    android:background="@null"
+                    android:textSize="12dp"
+                    android:textAllCaps="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/dropdown_icon"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:src="@drawable/wallet_dropdown"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/subtitle"
+                    android:layout_alignBottom="@id/subtitle"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
     </android.support.v7.widget.Toolbar>
 </merge>

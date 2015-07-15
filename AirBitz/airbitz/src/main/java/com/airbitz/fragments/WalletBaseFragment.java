@@ -45,6 +45,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -76,6 +77,7 @@ public class WalletBaseFragment extends BaseFragment implements
     protected View mTitleFrame;
     protected TextView mTitleView;
     protected TextView mSubtitleView;
+    protected ImageView mDropdownIcon;
     protected CoreAPI mCoreApi;
     protected boolean mHomeEnabled = true;
     protected boolean mDrawerEnabled = false;
@@ -121,6 +123,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mTitleFrame = view.findViewById(R.id.title_frame);
         mTitleView = (TextView) view.findViewById(R.id.title);
         mSubtitleView = (TextView) view.findViewById(R.id.subtitle);
+        mDropdownIcon = (ImageView) view.findViewById(R.id.dropdown_icon);
         updateTitle();
         if (mDropDownEnabled) {
             mTitleFrame.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +137,9 @@ public class WalletBaseFragment extends BaseFragment implements
             } else {
                 finishHideWallets();
             }
+            mDropdownIcon.setVisibility(View.VISIBLE);
+        } else {
+            mDropdownIcon.setVisibility(View.GONE);
         }
         updateTitle();
     }
@@ -264,11 +270,9 @@ public class WalletBaseFragment extends BaseFragment implements
                 mTitleView.setText(mWallet.getName());
             }
         }
-        if (mSubtitleView != null) {
-            if (!TextUtils.isEmpty(getSubtitle())) {
-                mSubtitleView.setText(getSubtitle());
-                mSubtitleView.setVisibility(View.VISIBLE);
-            }
+        if (mSubtitleView != null && !TextUtils.isEmpty(getSubtitle())) {
+            mSubtitleView.setText(getSubtitle());
+            mSubtitleView.setVisibility(View.VISIBLE);
         }
     }
 
