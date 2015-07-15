@@ -49,7 +49,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -80,6 +79,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,7 +91,7 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_CC;
-import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.send.SendFragment;
@@ -108,7 +108,6 @@ import com.airbitz.models.SearchResult;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
-import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
@@ -127,10 +126,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created on 2/20/14.
- */
-public class TransactionDetailFragment extends BaseFragment
+public class TransactionDetailFragment extends WalletBaseFragment
         implements CurrentLocationManager.OnCurrentLocationChange,
         NavigationActivity.OnBackPress,
         TransactionDetailCategoryAdapter.OnNewCategory,
@@ -139,10 +135,9 @@ public class TransactionDetailFragment extends BaseFragment
     private final int MIN_AUTOCOMPLETE = 5;
 
     private Button mDoneButton;
-    private HighlightOnPressSpinner mCategorySpinner;
+    private Spinner mCategorySpinner;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
-    private TextView mTitleTextView;
     private TextView mNotesTextView;
     private TextView mToFromName;
     private EditText mPayeeEditText;
@@ -214,6 +209,14 @@ public class TransactionDetailFragment extends BaseFragment
         mCoreAPI = CoreAPI.getApi();
 
         setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setDropdownEnabled(false);
+        setBackEnabled(true);
+    }
+
+    @Override
+    public String getSubtitle() {
+        return mActivity.getString(R.string.transaction_details_title);
     }
 
     @Override
@@ -222,15 +225,14 @@ public class TransactionDetailFragment extends BaseFragment
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
 
-        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        getBaseActivity().setSupportActionBar(toolbar);
-        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view ) {
+                showUpperLayout(true);
+                showMiddleLayout(true);
+            }
+        });
 
         mPicasso = Picasso.with(getActivity());
-
-
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
         locationEnabled = CurrentLocationManager.locationEnabled(mActivity);
         Common.disabledNotification(mActivity, android.R.id.content);
@@ -240,9 +242,6 @@ public class TransactionDetailFragment extends BaseFragment
         mCalculator.setEditText(mFiatValueEdittext);
 
         mDoneButton = (Button) mView.findViewById(R.id.transaction_detail_button_done);
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.title);
-        mTitleTextView.setText(R.string.transaction_details_title);
 
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
@@ -288,7 +287,7 @@ public class TransactionDetailFragment extends BaseFragment
 
         mDoneButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
-        mCategorySpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.transaction_detail_button_category);
+        mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
         CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
         mCategorySpinner.setAdapter(mCategoryAdapter);
         mCategorySpinner.setSelection(0);
@@ -738,7 +737,7 @@ public class TransactionDetailFragment extends BaseFragment
 
     private void updateCategoryBackground(int position) {
         int newBackground = mCategoryBackgrounds[position];
-        if(mCategorySpinner != null) {
+        if (mCategorySpinner != null) {
             mCategorySpinner.setBackgroundResource(newBackground);
         }
         currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
@@ -1103,7 +1102,7 @@ public class TransactionDetailFragment extends BaseFragment
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(mCoreAPI.currencySymbolLookup(mWallet.getCurrencyNum()));
+        mFiatDenominationLabel.setText(mCoreAPI.currencyCodeLookup(mWallet.getCurrencyNum()));
 
         mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
 

@@ -128,12 +128,12 @@ public class WalletBaseFragment extends BaseFragment implements
                     toggleWallets();
                 }
             });
-        }
-        setupWalletViews(view);
-        if (mExpanded) {
-            finishShowWallets();
-        } else {
-            finishHideWallets();
+            setupWalletViews(view);
+            if (mExpanded) {
+                finishShowWallets();
+            } else {
+                finishHideWallets();
+            }
         }
         updateTitle();
     }
@@ -201,9 +201,11 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void loadWallets() {
-        WalletChoiceAdapter adapter = new WalletChoiceAdapter(mActivity, mWallets);
-        adapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
-        mWalletList.setAdapter(adapter);
+        if (mDropDownEnabled) {
+            WalletChoiceAdapter adapter = new WalletChoiceAdapter(mActivity, mWallets);
+            adapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
+            mWalletList.setAdapter(adapter);
+        }
     }
 
     protected void setupWalletViews(View view) {
