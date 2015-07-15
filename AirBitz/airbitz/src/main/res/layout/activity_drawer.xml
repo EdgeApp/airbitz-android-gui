@@ -114,7 +114,7 @@
 
                     <Button
                         android:id="@+id/item_drawer_request"
-                        android:text="@string/drawer_receive"
+                        android:text="@string/drawer_request"
                         android:drawableLeft="@drawable/ic_receive_dark"
                         style="@style/DrawerButton"/>
 

@@ -317,6 +317,7 @@
     <string name="fragment_send_first_usage">Scan the QR code of payee to send payment</string>
     <string name="fragment_send_first_usage_ble">Bluetooth payment requests are listed here. Tap on a user to send them a payment</string>
 
+    <string name="fragment_send_subtitle">Send</string>
     <string name="fragment_send_transfer">Transfer</string>
     <string name="fragment_send_address">Address</string>
     <string name="fragment_send_photos">Photos</string>
@@ -602,7 +603,7 @@
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_directory">Directory</string>
     <string name="drawer_send">Send</string>
-    <string name="drawer_receive">Receive</string>
+    <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>

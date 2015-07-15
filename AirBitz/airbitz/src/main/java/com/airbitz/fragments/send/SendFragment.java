@@ -141,7 +141,7 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     protected String getSubtitle() {
-        return mActivity.getString(R.string.fragment_request_subtitle);
+        return mActivity.getString(R.string.fragment_send_subtitle);
     }
 
     @Override
