@@ -60,6 +60,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private Context mContext;
     private List<Wallet> mWalletList;
     private int selectedViewPos = -1;
+    private int mSelectedWalletPos = -1;
     private boolean hoverFirstHeader = false;
     private boolean hoverSecondHeader = false;
     private int nextId = 0;
@@ -106,6 +107,10 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     public void setSelectedViewPos(int position) {
         selectedViewPos = position;
+    }
+
+    public void setSelectedWallet(int position) {
+        mSelectedWalletPos = position;
     }
 
     public void setIsBitcoin(boolean isBitcoin) {
@@ -180,11 +185,14 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Wallet wallet = mWalletList.get(position);
-        if (mWalletList.get(position).isHeader() || mWalletList.get(position).isArchiveHeader()) {
+        if (mWalletList.get(position).isHeader()) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
-            TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_header_text);
-            final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_header_image);
+        } else if (mWalletList.get(position).isArchiveHeader()) {
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_listview_wallets_archive_header, parent, false);
+            TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_archive_header_text);
+            final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_archive_header_image);
             if (mWalletList.get(position).isArchiveHeader()) {
                 imageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -224,7 +232,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             View drag = convertView.findViewById(R.id.drag_container);
             if (archivePos == 2 && !wallet.isArchived()) {
-                drag.setVisibility(View.GONE);
+                drag.setVisibility(View.INVISIBLE);
             } else {
                 drag.setVisibility(View.VISIBLE);
             }
@@ -244,7 +252,12 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 amountTextView.setText(temp);
             }
 
-            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
+            convertView.setBackgroundResource(R.drawable.wallet_list_standard);
+            if (mSelectedWalletPos == position) {
+                convertView.setSelected(true);
+            } else {
+                convertView.setSelected(false);
+            }
         }
         if (archivePos < position && closeAfterArchive) {
             convertView.setVisibility(View.GONE);

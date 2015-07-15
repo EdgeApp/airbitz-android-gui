@@ -56,6 +56,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
@@ -72,8 +73,6 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.hoang8f.android.segmented.SegmentedGroup;
-
 public class WalletsFragment extends WalletBaseFragment implements
     DynamicListView.OnListReordering,
     WalletAdapter.OnHeaderButtonPress {
@@ -86,7 +85,6 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     private View mWalletsHeader;
     private View mArchiveHeader;
-    private ImageView mWalletsHeaderImage;
     private ImageView mArchiveMovingHeaderImage;
     private DynamicListView mWalletListView;
     private WalletAdapter mWalletAdapter;
@@ -94,9 +92,9 @@ public class WalletsFragment extends WalletBaseFragment implements
     private boolean mArchiveClosed = false;
 
     private TextView mHeaderTotal;
-    private SegmentedGroup mModeSelector;
-    private Button mFiatSelect;
-    private Button mBitcoinSelect;
+    private Switch mModeSelector;
+    private TextView mFiatSelect;
+    private TextView mBitcoinSelect;
 
     @Override
     protected void setupWalletViews(View view) {
@@ -107,9 +105,6 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         mWalletsHeader = view.findViewById(R.id.fragment_wallets_wallets_header);
         mWalletsHeader.setVisibility(View.GONE);
-
-        mWalletsHeaderImage = (ImageView) view.findViewById(R.id.item_listview_wallets_header_image);
-        mWalletsHeaderImage.setVisibility(View.GONE);
 
         mArchiveHeader = view.findViewById(R.id.fragment_wallets_archive_header);
         mArchiveHeader.setVisibility(View.GONE);
@@ -122,7 +117,7 @@ public class WalletsFragment extends WalletBaseFragment implements
             }
         });
 
-        mArchiveMovingHeaderImage = (ImageView) view.findViewById(R.id.item_listview_wallets_archive_header_image);
+        mArchiveMovingHeaderImage = (ImageView) mArchiveHeader.findViewById(R.id.item_listview_wallets_archive_header_image);
         mArchiveMovingHeaderImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,6 +141,9 @@ public class WalletsFragment extends WalletBaseFragment implements
                 } else if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
                 } else {
+                    a.setSelectedWallet(i);
+                    view.setSelected(true);
+
                     walletChanged(wallet);
                 }
             }
@@ -165,24 +163,21 @@ public class WalletsFragment extends WalletBaseFragment implements
                 }
             }
         });
-        mHeaderTotal = (TextView) view.findViewById(R.id.total);
+        mHeaderTotal = (TextView) mWalletsHeader.findViewById(R.id.total);
 
-        mModeSelector = (SegmentedGroup) view.findViewById(R.id.fiat_btc_select);
-        mFiatSelect = (Button) mModeSelector.findViewById(R.id.fiat);
-        mFiatSelect.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener modeListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleMode();
             }
-        });
+        };
+        mModeSelector = (Switch) mWalletsHeader.findViewById(R.id.fiat_btc_select);
+        mFiatSelect = (TextView) mWalletsHeader.findViewById(R.id.fiat);
+        mBitcoinSelect = (TextView) mWalletsHeader.findViewById(R.id.bitcoin);
 
-        mBitcoinSelect = (Button) mModeSelector.findViewById(R.id.bitcoin);
-        mBitcoinSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleMode();
-            }
-        });
+        mModeSelector.setOnClickListener(modeListener);
+        mFiatSelect.setOnClickListener(modeListener);
+        mBitcoinSelect.setOnClickListener(modeListener);
         updateModeButtons();
     }
 
@@ -195,11 +190,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     }
 
     private void updateModeButtons() {
-        if (mOnBitcoinMode) {
-            mModeSelector.check(mBitcoinSelect.getId());
-        } else {
-            mModeSelector.check(mFiatSelect.getId());
-        }
+        mModeSelector.setChecked(mOnBitcoinMode);
     }
 
     @Override
