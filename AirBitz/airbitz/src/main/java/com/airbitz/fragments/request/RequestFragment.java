@@ -391,17 +391,6 @@ public class RequestFragment extends WalletBaseFragment implements
         updateAmount();
     }
 
-    private long parseFiatToSatoshi() {
-        String fiat = mAmountField.getText().toString();
-        try {
-            double currency = Double.parseDouble(fiat);
-            return mCoreAPI.CurrencyToSatoshi(currency, mWallet.getCurrencyNum());
-        } catch (NumberFormatException e) {
-            /* Sshhhhh */
-        }
-        return 0;
-    }
-
     private void updateConversion() {
         if (mAmountIsBitcoin) {
             long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
@@ -410,7 +399,7 @@ public class RequestFragment extends WalletBaseFragment implements
             mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
             mOtherAmountTextView.setText(currency);
         } else {
-            long satoshi = parseFiatToSatoshi();
+            long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
             mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
             mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
             mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
@@ -440,8 +429,7 @@ public class RequestFragment extends WalletBaseFragment implements
             String fiat = mAmountField.getText().toString();
             try {
                 if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
-                    double currency = Double.parseDouble(fiat);
-                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, wallet.getCurrencyNum());
+                    mAmountSatoshi = mCoreApi.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
                 } else {
                     Log.d(TAG, "Too much fiat");
                 }
@@ -758,7 +746,7 @@ public class RequestFragment extends WalletBaseFragment implements
         if (mAmountIsBitcoin) {
             mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
         } else {
-            mAmountSatoshi = parseFiatToSatoshi();
+            mAmountSatoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
         }
         updateConversion();
         createNewQRBitmap();
@@ -1144,8 +1132,7 @@ public class RequestFragment extends WalletBaseFragment implements
             String fiat = mAmountField.getText().toString();
             try {
                 if (!mCoreAPI.TooMuchFiat(fiat, mWallet.getCurrencyNum())) {
-                    double currency = Double.parseDouble(fiat);
-                    mAmountSatoshi = mCoreAPI.CurrencyToSatoshi(currency, mWallet.getCurrencyNum());
+                    mAmountSatoshi = mCoreApi.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {

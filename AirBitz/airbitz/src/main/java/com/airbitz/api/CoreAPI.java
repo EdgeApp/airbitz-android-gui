@@ -1625,7 +1625,10 @@ public class CoreAPI {
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = userDecimalPlaces();
 
-        String cleanAmount = amount.replaceAll(",", "");
+        DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
+        // Strip separators, core does not like them
+        String cleanAmount = amount.replace(String.valueOf(set.getGroupingSeparator()), "")
+                                   .replace(set.getDecimalSeparator(), '.');
         return ParseAmount(cleanAmount, decimalPlaces);
     }
 
@@ -1721,6 +1724,19 @@ public class CoreAPI {
         tABC_AccountSettings settings = coreSettings();
         if(settings != null) {
             return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        }
+        return 0;
+    }
+
+    public long parseFiatToSatoshi(String amount, int currencyNum) {
+        try {
+            DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
+            String cleanAmount = amount.replace(String.valueOf(set.getGroupingSeparator()), "")
+                                       .replace(set.getDecimalSeparator(), '.');
+            double currency = Double.parseDouble(cleanAmount);
+            return CurrencyToSatoshi(currency, currencyNum);
+        } catch (NumberFormatException e) {
+            /* Sshhhhh */
         }
         return 0;
     }

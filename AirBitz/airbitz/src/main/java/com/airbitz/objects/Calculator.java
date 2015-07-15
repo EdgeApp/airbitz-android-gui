@@ -51,6 +51,8 @@ import android.widget.LinearLayout;
 import com.airbitz.R;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * Created by tom on 5/7/14.
@@ -263,7 +265,7 @@ public class Calculator extends LinearLayout  {
                 // operation was pressed
                 if (userIsInTheMiddleOfTypingANumber) {
                     try {
-                        setOperand(Double.parseDouble(mEditText.getText().toString()));
+                        setOperand(cleanNumber(mEditText.getText().toString()));
                     } catch (NumberFormatException e) { // ignore any non-double
                     }
                     userIsInTheMiddleOfTypingANumber = false;
@@ -279,6 +281,14 @@ public class Calculator extends LinearLayout  {
             }
         }
     };
+
+    private double cleanNumber(String number) {
+        DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
+        String cleaned =
+            number.replace(String.valueOf(set.getGroupingSeparator()), "")
+                  .replace(set.getDecimalSeparator(), '.');
+        return Double.parseDouble(cleaned);
+    }
 
     // Keyboard animation variables
     static final int KEYBOARD_ANIM = 250;
