@@ -74,6 +74,11 @@ public class ExportFragment extends WalletBaseFragment {
     }
 
     @Override
+    public String getSubtitle() {
+        return mActivity.getString(R.string.export_subtitle);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView != null) {
             return mView;

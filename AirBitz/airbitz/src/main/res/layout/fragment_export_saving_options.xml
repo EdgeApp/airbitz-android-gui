@@ -227,42 +227,42 @@
                 android:layout_below="@id/layout_export_this_period"
                 style="@style/SettingsGroup">
 
-                <FrameLayout style="@style/SettingsRowFirst">
+                <FrameLayout style="@style/SettingsRowFirst" android:id="@+id/fragment_print_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_print"
                         android:text="@string/export_saving_print_label"
                         style="@style/SettingsButton" />
                 </FrameLayout>
 
-                <FrameLayout style="@style/SettingsRow">
+                <FrameLayout style="@style/SettingsRow" android:id="@+id/fragment_sd_card_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_sd_card"
                         android:text="@string/export_saving_save_SD_label"
                         style="@style/SettingsButton" />
                 </FrameLayout>
 
-                <FrameLayout style="@style/SettingsRow">
+                <FrameLayout style="@style/SettingsRow" android:id="@+id/fragment_email_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_email"
                         android:text="@string/export_saving_email_label"
                         style="@style/SettingsButton" />
                 </FrameLayout>
 
-                <FrameLayout style="@style/SettingsRow">
+                <FrameLayout style="@style/SettingsRow" android:id="@+id/fragment_google_drive_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_google_drive"
                         android:text="@string/export_saving_google_drive_label"
                         style="@style/SettingsButton" />
                 </FrameLayout>
 
-                <FrameLayout style="@style/SettingsRow">
+                <FrameLayout style="@style/SettingsRow" android:id="@+id/fragment_share_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_share"
                         android:text="@string/export_saving_share_label"
                         style="@style/SettingsButton" />
                 </FrameLayout>
 
-                <FrameLayout style="@style/SettingsRow">
+                <FrameLayout style="@style/SettingsRow" android:id="@+id/fragment_view_row">
                     <Button
                         android:id="@+id/fragment_exportsaving_button_view"
                         android:text="@string/export_saving_view_label"

@@ -102,6 +102,13 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private TextView mFromTextView;
     private TextView mToTextView;
 
+    private View mPrintRow;
+    private View mSdRow;
+    private View mEmailRow;
+    private View mGoogleRow;
+    private View mShareRow;
+    private View mViewRow;
+
     private Button mThisWeekButton;
     private Button mLastWeekButton;
     private Button mThisMonthButton;
@@ -136,6 +143,11 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     }
 
     @Override
+    public String getSubtitle() {
+        return mActivity.getString(R.string.export_subtitle);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView != null) {
             return mView;
@@ -165,6 +177,13 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mGoogleDriveButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_google_drive);
         mShareButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_share);
         mViewButton = (Button) mView.findViewById(R.id.fragment_exportsaving_button_view);
+
+        mPrintRow = mView.findViewById(R.id.fragment_print_row);
+        mSdRow = mView.findViewById(R.id.fragment_sd_card_row);
+        mEmailRow = mView.findViewById(R.id.fragment_email_row);
+        mGoogleRow = mView.findViewById(R.id.fragment_google_drive_row);
+        mShareRow = mView.findViewById(R.id.fragment_share_row);
+        mViewRow = mView.findViewById(R.id.fragment_view_row);
 
         mThisMonthButton = (Button) mView.findViewById(R.id.button_this_month);
         mThisWeekButton = (Button) mView.findViewById(R.id.button_this_week);
@@ -593,27 +612,27 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         int type = mBundle.getInt(EXPORT_TYPE);
         if (type == ExportTypes.CSV.ordinal()) {
             setAllButtonViews(View.GONE);
-            mSDCardButton.setVisibility(View.VISIBLE);
-            mShareButton.setVisibility(View.VISIBLE);
-            mPrintButton.setVisibility(View.VISIBLE);
+            mSdRow.setVisibility(View.VISIBLE);
+            mShareRow.setVisibility(View.VISIBLE);
+            mPrintRow.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
-            mPrintButton.setVisibility(View.VISIBLE);
-            mSDCardButton.setVisibility(View.VISIBLE);
-            mViewButton.setVisibility(View.VISIBLE);
+            mPrintRow.setVisibility(View.VISIBLE);
+            mSdRow.setVisibility(View.VISIBLE);
+            mViewRow.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
         }
     }
 
     private void setAllButtonViews(int state) {
-        mPrintButton.setVisibility(state);
-        mSDCardButton.setVisibility(state);
-        mEmailButton.setVisibility(state);
-        mGoogleDriveButton.setVisibility(state);
-        mShareButton.setVisibility(state);
-        mViewButton.setVisibility(state);
         mPasswordEditText.setVisibility(state);
+        mPrintRow.setVisibility(state);
+        mSdRow.setVisibility(state);
+        mEmailRow.setVisibility(state);
+        mGoogleRow.setVisibility(state);
+        mShareRow.setVisibility(state);
+        mViewRow.setVisibility(state);
     }
 
     private void HighlightTimeButton(int pos) {
