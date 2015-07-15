@@ -2217,6 +2217,7 @@ public class NavigationActivity extends ActionBarActivity
     private void updateDrawer(boolean loggedIn) {
         closeDrawer();
         if (loggedIn) {
+            mDrawerAccount.setText(AirbitzApplication.getUsername());
             mDrawerLogin.setVisibility(View.GONE);
             mDrawerExchange.setVisibility(View.VISIBLE);
             mDrawerLayoutAccount.setVisibility(View.VISIBLE);
