@@ -429,6 +429,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         mMapShim.onResume();
+        mActivity.hideSoftKeyboard(getView());
 
         if (!mVenues.isEmpty()) {
             List<BusinessSearchResult> venues =
