@@ -35,7 +35,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -128,6 +127,8 @@ import com.airbitz.utils.Common;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -210,7 +211,7 @@ public class NavigationActivity extends ActionBarActivity
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
-    private AlertDialog mIncomingDialog;
+    private Dialog mIncomingDialog;
     private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
         @Override
@@ -1132,7 +1133,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void showIncomingBitcoinDialog() {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
                     .setTitle(getResources().getString(R.string.received_bitcoin_title))
                     .setCancelable(false)
@@ -1160,7 +1161,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void showRemotePasswordChangeDialog() {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(getResources().getString(R.string.remote_password_change_message))
                     .setTitle(getResources().getString(R.string.remote_password_change_title))
                     .setCancelable(false)
@@ -1172,7 +1173,7 @@ public class NavigationActivity extends ActionBarActivity
                                 }
                             }
                     );
-            AlertDialog dialog = builder.create();
+            Dialog dialog = builder.create();
             dialog.show();
         }
     }
@@ -1391,7 +1392,7 @@ public class NavigationActivity extends ActionBarActivity
         }
     };
 
-    AlertDialog mMessageDialog;
+    Dialog mMessageDialog;
     Runnable mMessageDialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -1425,7 +1426,7 @@ public class NavigationActivity extends ActionBarActivity
             if (mMessageDialog != null) {
                 mMessageDialog.dismiss();
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(false)
@@ -1446,10 +1447,10 @@ public class NavigationActivity extends ActionBarActivity
         ShowOkMessageDialog(title, message);
     }
 
-    private AlertDialog mExitDialog;
+    private Dialog mExitDialog;
     public void ShowExitMessageDialog(String title, String message) {
         if (!this.isFinishing() && mExitDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(false)
@@ -1474,7 +1475,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public void ShowMessageDialogBackPress(String title, String reason) {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
                     .setTitle(title)
                     .setCancelable(false)
@@ -1485,7 +1486,7 @@ public class NavigationActivity extends ActionBarActivity
                                 }
                             }
                     );
-            AlertDialog alert = builder.create();
+            Dialog alert = builder.create();
             alert.show();
         }
     }
@@ -1521,11 +1522,14 @@ public class NavigationActivity extends ActionBarActivity
         ShowFadingDialog(message, null, timeout, cancelable);
     }
 
-    private Dialog mFadingDialog = null;
+    private MaterialDialog mFadingDialog = null;
     public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
+        ShowFadingDialog(null, message, thumbnail, timeout, cancelable);
+    }
+
+    public void ShowFadingDialog(final String title, final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         if (!this.isFinishing()) {
             NavigationActivity.this.runOnUiThread(new Runnable() {
-
                 @Override
                 public void run() {
                     if (timeout == 0) {
@@ -1535,33 +1539,18 @@ public class NavigationActivity extends ActionBarActivity
                     if (mFadingDialog != null) {
                         mFadingDialog.dismiss();
                     }
-                    mFadingDialog = new Dialog(NavigationActivity.this);
-                    mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    mFadingDialog =
+                        new MaterialDialog.Builder(NavigationActivity.this)
+                                .content(message)
+                                .contentColorRes(android.R.color.white)
+                                .backgroundColorRes(R.color.colorPrimary).build();
                     mFadingDialog.setCancelable(cancelable);
-                    mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                    View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
-                    TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
-                    tv.setText(message);
-                    tv.setTypeface(NavigationActivity.latoRegularTypeFace);
-                    ProgressBar progress = ((ProgressBar) view.findViewById(R.id.fading_alert_progress));
+                    mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    // mFadingDialog.getContentView().setTypeface(NavigationActivity.latoRegularTypeFace);
+                    mFadingDialog.setTitle("Alert");
                     if (!cancelable) {
-                        progress.setVisibility(View.VISIBLE);
+                        mFadingDialog.setProgress(-1);
                     }
-                    if (thumbnail != null) {
-                        view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
-                        if (!thumbnail.isEmpty()) {
-                            ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
-                        }
-                    }
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mFadingDialog != null) {
-                                mFadingDialog.dismiss();
-                            }
-                        }
-                    });
-                    mFadingDialog.setContentView(view);
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
                     fadeOut.setDuration(2000);
@@ -1581,8 +1570,17 @@ public class NavigationActivity extends ActionBarActivity
                         }
                     });
 
-                    view.setAnimation(fadeOut);
                     mFadingDialog.show();
+                    View view = mFadingDialog.getView();
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mFadingDialog != null) {
+                                mFadingDialog.dismiss();
+                            }
+                        }
+                    });
+                    view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
             });
@@ -1621,7 +1619,7 @@ public class NavigationActivity extends ActionBarActivity
             if (mMessageDialog != null) {
                 mMessageDialog.dismiss();
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
                     .setTitle(title)
                     .setCancelable(false)
@@ -1644,7 +1642,7 @@ public class NavigationActivity extends ActionBarActivity
             mMessageDialog = builder.create();
             mMessageDialog.show();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(reason)
                 .setTitle(title)
                 .setCancelable(false)
@@ -1891,7 +1889,7 @@ public class NavigationActivity extends ActionBarActivity
     private Dialog mPasswordSetDialog;
     private void showPasswordSetAlert() {
             if (!NavigationActivity.this.isFinishing() && mPasswordSetDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
                 builder.setMessage(getString(R.string.password_set_message))
                         .setTitle(getString(R.string.password_set_title))
                         .setCancelable(false)
@@ -1949,12 +1947,12 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    AlertDialog mOTPAlertDialog;
+    Dialog mOTPAlertDialog;
     final Runnable mShowOTPRequired = new Runnable() {
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
                     builder.setMessage(getString(R.string.twofactor_required_message))
                             .setTitle(getString(R.string.twofactor_required_title))
                             .setCancelable(false)
@@ -1982,7 +1980,7 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+                    AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
                     builder.setMessage(getString(R.string.twofactor_invalid_message))
                             .setTitle(getString(R.string.twofactor_invalid_title))
                             .setCancelable(false)
@@ -2015,12 +2013,12 @@ public class NavigationActivity extends ActionBarActivity
         mOTPAlertDialog = null;
     }
 
-    AlertDialog mOTPResetRequestDialog;
+    Dialog mOTPResetRequestDialog;
     @Override
     public void onOTPResetRequest() {
         if (!NavigationActivity.this.isFinishing() && mOTPResetRequestDialog == null) {
             String message = String.format(getString(R.string.twofactor_reset_message), AirbitzApplication.getUsername());
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
             builder.setMessage(message)
                     .setTitle(getString(R.string.twofactor_reset_title))
                     .setCancelable(false)
@@ -2298,7 +2296,7 @@ public class NavigationActivity extends ActionBarActivity
     @Override
     public void onButtonTouched(final String account) {
         String message = String.format(getString(R.string.fragment_landing_account_delete_message), account);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(message)
                 .setTitle(getString(R.string.fragment_landing_account_delete_title))
                 .setCancelable(false)
@@ -2321,7 +2319,7 @@ public class NavigationActivity extends ActionBarActivity
                                 dialog.dismiss();
                             }
                         });
-        AlertDialog confirmDialog = builder.create();
+        Dialog confirmDialog = builder.create();
         confirmDialog.show();
     }
 }

@@ -432,4 +432,9 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textColorHint">@color/text_hint</item>
     </style>
+
+    <style name="DenominationSwitch">
+        <item name="android:thumb">@drawable/radio_button</item>
+        <item name="android:switchMinWidth">0dp</item>
+    </style>
 </resources>
