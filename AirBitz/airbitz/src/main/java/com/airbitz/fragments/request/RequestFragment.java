@@ -183,7 +183,6 @@ public class RequestFragment extends WalletBaseFragment implements
     private View mQRProgress;
     private Bitmap mQRBitmap;
     private CreateBitmapTask mCreateBitmapTask;
-    private AlertDialog mPartialDialog;
 
     private float mOrigQrHeight;
     private float mQrPadding;
@@ -192,16 +191,6 @@ public class RequestFragment extends WalletBaseFragment implements
 
     // currency swap variables
     static final int SWAP_DURATION = 200;
-
-    final Runnable dialogKiller = new Runnable() {
-        @Override
-        public void run() {
-            if (mPartialDialog != null) {
-                mPartialDialog.dismiss();
-                mPartialDialog = null;
-            }
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -740,7 +729,6 @@ public class RequestFragment extends WalletBaseFragment implements
             mOriginalAmountSatoshi = mAmountSatoshi;
         }
         mAmountSatoshi = newAmount;
-
         mRequestedTextView.setText(
                 String.format(getResources().getString(R.string.bitcoing_requested),
                         mCoreAPI.formatSatoshi(mOriginalAmountSatoshi, true))
@@ -772,7 +760,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
         // Create a new request and qr code
         mID = null;
-        mCreateBitmapTask = new CreateBitmapTask();
+        mCreateBitmapTask = new CreateBitmapTask(mWallet, mAmountSatoshi);
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -798,24 +786,31 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public class CreateBitmapTask extends AsyncTask<Void, Void, Boolean> {
 
+        private Wallet wallet;
+        private long satoshis;
+
+        public CreateBitmapTask(Wallet wallet, long satoshis) {
+            this.satoshis = satoshis;
+            this.wallet = wallet;
+        }
+
         @Override
         protected void onPreExecute() {
-//            mActivity.showModalProgress(true);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
             if(mID == null) {
-                mID = mCoreAPI.createReceiveRequestFor(mWallet, "", "", mAmountSatoshi);
-                mAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mID);
+                mID = mCoreAPI.createReceiveRequestFor(wallet, "", "", satoshis);
+                mAddress = mCoreAPI.getRequestAddress(wallet.getUUID(), mID);
                 mQRBitmap = null;
             }
             if (mQRBitmap == null) {
                 try {
                     // data in barcode is like bitcoin:address?amount=0.001
                     Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
-                    mQRBitmap = mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mID);
+                    mQRBitmap = mCoreAPI.getQRCodeBitmap(wallet.getUUID(), mID);
                     mQRBitmap = Common.AddWhiteBorder(mQRBitmap);
                     Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                     mRequestURI = mCoreAPI.getRequestURI();
