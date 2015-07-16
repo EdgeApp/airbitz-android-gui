@@ -849,6 +849,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         mQRProgress.setVisibility(View.GONE);
                     }
                     mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
+                    alignQrCode();
                 }
             }
         }
