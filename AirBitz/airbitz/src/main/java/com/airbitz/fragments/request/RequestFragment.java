@@ -474,6 +474,9 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         checkFirstUsage();
+        if (SettingFragment.getMerchantModePref()) {
+            showCalculator();
+        }
     }
 
     @Override
