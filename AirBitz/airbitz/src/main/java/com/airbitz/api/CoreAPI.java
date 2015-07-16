@@ -59,6 +59,7 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1625,11 +1626,17 @@ public class CoreAPI {
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = userDecimalPlaces();
 
-        DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
-        // Strip separators, core does not like them
-        String cleanAmount = amount.replace(String.valueOf(set.getGroupingSeparator()), "")
-                                   .replace(set.getDecimalSeparator(), '.');
-        return ParseAmount(cleanAmount, decimalPlaces);
+        try {
+            Number cleanAmount =
+                new DecimalFormat().parse(amount, new ParsePosition(0));
+            if (null == cleanAmount) {
+                return 0L;
+            }
+            return ParseAmount(cleanAmount.toString(), decimalPlaces);
+        } catch (Exception e) {
+            // Shhhhh
+        }
+        return 0L;
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
@@ -1730,10 +1737,12 @@ public class CoreAPI {
 
     public long parseFiatToSatoshi(String amount, int currencyNum) {
         try {
-            DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
-            String cleanAmount = amount.replace(String.valueOf(set.getGroupingSeparator()), "")
-                                       .replace(set.getDecimalSeparator(), '.');
-            double currency = Double.parseDouble(cleanAmount);
+             Number cleanAmount =
+                new DecimalFormat().parse(amount, new ParsePosition(0));
+             if (null == cleanAmount) {
+                 return 0;
+             }
+            double currency = cleanAmount.doubleValue();
             return CurrencyToSatoshi(currency, currencyNum);
         } catch (NumberFormatException e) {
             /* Sshhhhh */

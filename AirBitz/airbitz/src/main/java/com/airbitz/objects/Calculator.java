@@ -51,6 +51,7 @@ import android.widget.LinearLayout;
 import com.airbitz.R;
 
 import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
@@ -66,7 +67,7 @@ public class Calculator extends LinearLayout  {
     public static final String DIVIDE = "/";
     public static final String PERCENT = "%";
     public static final String CLEAR = "C";
-    private static final String DIGITS = "0123456789.";
+    private String DIGITS = "0123456789";
     DecimalFormat mDF = new DecimalFormat("@###########");
     View mView;
     // 3 + 6 = 9
@@ -80,6 +81,7 @@ public class Calculator extends LinearLayout  {
     private EditText mEditText;
     private Boolean userIsInTheMiddleOfTypingANumber = false;
     private Button mDone;
+    private String mDecimalCharacter;
 
     /**
      * Interface for calculator key responses
@@ -92,7 +94,6 @@ public class Calculator extends LinearLayout  {
     public void setCalculatorKeyListener(OnCalculatorKey listener) {
         mOnCalculatorKeyListener = listener;
     }
-
 
     // public static final String EQUALS = "=";
 
@@ -113,6 +114,10 @@ public class Calculator extends LinearLayout  {
 
     // constructor
     private void init() {
+        DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
+        mDecimalCharacter = String.valueOf(set.getDecimalSeparator());
+        DIGITS += mDecimalCharacter;
+
         mView = inflate(getContext(), R.layout.calculator, this);
         mDone = (Button) mView.findViewById(R.id.imageButtonDone);
         mView.findViewById(R.id.imageButton0).setOnClickListener(mOnKeyListener);
@@ -128,7 +133,12 @@ public class Calculator extends LinearLayout  {
 
         mDone.setOnClickListener(mOnKeyListener);
         mView.findViewById(R.id.imageButtonClear).setOnClickListener(mOnKeyListener);
-        mView.findViewById(R.id.imageButtonDot).setOnClickListener(mOnKeyListener);
+
+        Button view = (Button) mView.findViewById(R.id.imageButtonDot);
+        view.setOnClickListener(mOnKeyListener);
+        view.setTag(mDecimalCharacter);
+        view.setText(mDecimalCharacter);
+
         mView.findViewById(R.id.imageButtonPlus).setOnClickListener(mOnKeyListener);
         mView.findViewById(R.id.imageButtonPercent).setOnClickListener(mOnKeyListener);
         mView.findViewById(R.id.imageButtonMinus).setOnClickListener(mOnKeyListener);
@@ -243,14 +253,15 @@ public class Calculator extends LinearLayout  {
 
                 // digit was pressed
                 if (userIsInTheMiddleOfTypingANumber) {
-                    if (buttonTag.equals(".") && mEditText.getText().toString().contains(".")) {
+                    if (buttonTag.equals(mDecimalCharacter) && mEditText.getText().toString().contains(mDecimalCharacter)) {
                         // ERROR PREVENTION
                         // Eliminate entering multiple decimals
                     } else {
-                        mEditText.append(buttonTag);
+                        // EditText.append() doesn't work with a single comma...I think
+                        mEditText.setText(mEditText.getText().toString() + buttonTag);
                     }
                 } else {
-                    if (buttonTag.equals(".")) {
+                    if (buttonTag.equals(mDecimalCharacter)) {
                         // ERROR PREVENTION
                         // This will avoid error if only the decimal is hit before an operator, by placing a leading zero
                         // before the decimal
@@ -266,7 +277,8 @@ public class Calculator extends LinearLayout  {
                 if (userIsInTheMiddleOfTypingANumber) {
                     try {
                         setOperand(cleanNumber(mEditText.getText().toString()));
-                    } catch (NumberFormatException e) { // ignore any non-double
+                    } catch (NumberFormatException e) {
+                        // ignore any non-double
                     }
                     userIsInTheMiddleOfTypingANumber = false;
                 }
@@ -283,11 +295,8 @@ public class Calculator extends LinearLayout  {
     };
 
     private double cleanNumber(String number) {
-        DecimalFormatSymbols set = new DecimalFormatSymbols(Locale.getDefault());
-        String cleaned =
-            number.replace(String.valueOf(set.getGroupingSeparator()), "")
-                  .replace(set.getDecimalSeparator(), '.');
-        return Double.parseDouble(cleaned);
+        DecimalFormat df = new DecimalFormat();
+        return df.parse(number, new ParsePosition(0)).doubleValue();
     }
 
     // Keyboard animation variables

@@ -529,12 +529,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mSpendTarget.setSpendAmount(mAmountToSendSatoshi);
             mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mWalletForConversions.getCurrencyNum(), false, false));
         } else {
-            try {
-                currency = Double.valueOf(mFiatField.getText().toString());
-            } catch (NumberFormatException e) {
-                currency = 0.0;
-            }
-            satoshi = mCoreApi.CurrencyToSatoshi(currency, mWalletForConversions.getCurrencyNum());
+            satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mWalletForConversions.getCurrencyNum());
             mAmountToSendSatoshi = satoshi;
             mSpendTarget.setSpendAmount(satoshi);
             mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
