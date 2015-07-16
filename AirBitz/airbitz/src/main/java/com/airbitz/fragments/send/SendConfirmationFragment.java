@@ -270,6 +270,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     mActivity.showSoftKeyboard(mAuthorizationEdittext);
+                    hideCalculator();
                 } else {
                     mAutoUpdatingTextFields = false;
                 }
@@ -562,6 +563,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     }
 
     private void showCalculator() {
+        mActivity.hideSoftKeyboard(getView());
         mCalculator.showCalculator();
     }
 
