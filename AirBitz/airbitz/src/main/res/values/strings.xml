@@ -568,9 +568,10 @@
     <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
     <string name="received_bitcoin_fading_message">You received Bitcoin!\n%1$s (~%2$s)\n</string>
     <string name="received_bitcoin_fading_message_teaching">Use the Payee, Category, and Notes field to optionally tag your transaction</string>
-    <string name="received_partial_bitcoin_title">Partial Payment Received</string>
-    <string name="received_partial_bitcoin_message">Warning: Partial Payment Received</string>
+    <string name="received_partial_bitcoin_title">** Warning **</string>
+    <string name="received_partial_bitcoin_message">Partial Payment Received</string>
     <string name="bitcoing_remaining">%1$s Remaining…</string>
+    <string name="bitcoing_requested">%1$s Requested…</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
     <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>

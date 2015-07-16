@@ -62,13 +62,24 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/request_waiting"
+                android:id="@+id/amount_requested"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:layout_marginTop="6dp"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/request_qr_waiting_for_payment"
+                android:textColor="@color/dark_gray_text"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/amount_received"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_marginTop="6dp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
                 android:textColor="@color/dark_gray_text"
                 android:textSize="18dp" />
 
@@ -130,106 +141,151 @@
         android:layout_height="76dp"
         android:textColor="?attr/toolbarTextColor"
         android:background="?attr/toolbarBackgroundColor"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
         style="@style/ToolBarCommon" >
 
-        <RelativeLayout
-            android:id="@+id/fragment_request_top"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="15dp"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/layout_btc_fields"
-                android:paddingTop="2dp"
-                android:paddingBottom="4dp"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:layout_width="250dp"
+            <RelativeLayout
+                android:id="@+id/fragment_request_top"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_centerHorizontal="true">
+                android:layout_marginBottom="0dp">
+
+                <LinearLayout
+                    android:id="@+id/layout_btc_fields"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="4dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/request_selected_denomination"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="right"
+                        android:textColor="@android:color/white"
+                        android:textSize="20dp"
+                        android:text="USD"
+                        android:layout_marginRight="15dp"
+                        android:visibility="visible"
+                        android:textStyle="normal"
+                        android:onClick="onClick"
+                        android:clickable="true"                    />
+
+                    <EditText
+                        android:id="@+id/request_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:layout_weight="20"
+                        android:background="@null"
+                        android:layout_gravity="center_vertical"
+                        android:hint="@string/request_amount_hint"
+                        android:textCursorDrawable="@drawable/bold_cursor_white"
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/colorPrimaryFrost" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_below="@+id/layout_btc_fields"
+                    android:layout_width="250dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_centerHorizontal="true" />
+
+                <LinearLayout
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_below="@id/layout_btc_fields"
+                    android:orientation="horizontal"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/request_not_selected_denomination"
+                        android:layout_marginRight="15dp"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="mBTC"
+                        android:textColor="@color/bright_text_hint"
+                        android:textSize="18dp"
+                        android:onClick="onClickRequestSwapCurrency"
+                        android:clickable="true"/>
+
+                    <TextView
+                        android:id="@+id/request_not_selected_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="20"
+                        android:singleLine="true"
+                        android:text="104.25"
+                        android:textColor="@color/bright_text_hint"
+                        android:textSize="18dp"
+                        android:onClick="onClick"
+                        android:clickable="true"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/partial_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray_text"
+                android:visibility="invisible"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/partial_icon"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/warning" />
 
                 <TextView
-                    android:id="@+id/request_selected_denomination"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="right"
-                    android:textColor="@android:color/white"
-                    android:textSize="20dp"
-                    android:text="USD"
-                    android:layout_marginRight="15dp"
-                    android:visibility="visible"
-                    android:textStyle="normal"
-                    android:onClick="onClick"
-                    android:clickable="true"                    />
-
-                <EditText
-                    android:id="@+id/request_amount"
+                    android:id="@+id/partial_title"
+                    android:layout_toRightOf="@id/partial_icon"
+                    android:layout_alignTop="@id/partial_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:layout_weight="20"
-                    android:background="@null"
-                    android:layout_gravity="center_vertical"
-                    android:hint="@string/request_amount_hint"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@color/colorPrimaryFrost" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_below="@+id/layout_btc_fields"
-                android:layout_width="250dp"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_centerHorizontal="true" />
-
-            <LinearLayout
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginBottom="3dp"
-                android:layout_below="@id/layout_btc_fields"
-                android:orientation="horizontal"
-                android:layout_centerHorizontal="true">
+                    android:text="@string/received_partial_bitcoin_title" />
 
                 <TextView
-                    android:id="@+id/request_not_selected_denomination"
-                    android:layout_marginRight="15dp"
-                    android:gravity="right"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="60dp"
+                    android:id="@+id/partial_message"
+                    android:layout_toRightOf="@id/partial_icon"
+                    android:layout_below="@id/partial_title"
+                    android:layout_alignBottom="@id/partial_icon"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="mBTC"
-                    android:textColor="@color/bright_text_hint"
-                    android:textSize="18dp"
-                    android:onClick="onClickRequestSwapCurrency"
-                    android:clickable="true"/>
+                    android:textColor="@android:color/white"
+                    android:text="@string/received_partial_bitcoin_message" />
+            </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/request_not_selected_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="20"
-                    android:singleLine="true"
-                    android:text="104.25"
-                    android:textColor="@color/bright_text_hint"
-                    android:textSize="18dp"
-                    android:onClick="onClick"
-                    android:clickable="true"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        </FrameLayout>
 
     </android.support.v7.widget.Toolbar>
 

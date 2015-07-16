@@ -163,6 +163,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private Handler mHandler;
     private TextView mBitcoinAddress;
     private long mAmountSatoshi;
+    private long mOriginalAmountSatoshi;
     private String mID;
     private String mAddress;
     private String mContentURL;
@@ -173,6 +174,9 @@ public class RequestFragment extends WalletBaseFragment implements
     private Button mSMSButton;
     private Button mEmailButton;
     private Button mCopyButton;
+    private View mPartialNotification;
+    private TextView mRequestedTextView;
+    private TextView mRemainingTextView;
 
     private boolean emailType = false;
     private ImageView mQRView;
@@ -300,6 +304,9 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         });
 
+        mPartialNotification = mView.findViewById(R.id.partial_payment);
+        mRequestedTextView = (TextView) mView.findViewById(R.id.amount_requested);
+        mRemainingTextView = (TextView) mView.findViewById(R.id.amount_received);
         if (SettingFragment.getMerchantModePref()) {
             showCalculator();
         }
@@ -474,9 +481,6 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         checkFirstUsage();
-        if (SettingFragment.getMerchantModePref()) {
-            showCalculator();
-        }
     }
 
     @Override
@@ -732,16 +736,23 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public void updateWithAmount(long newAmount) {
         mAutoUpdatingTextFields = true;
+        if (mOriginalAmountSatoshi == 0) {
+            mOriginalAmountSatoshi = mAmountSatoshi;
+        }
         mAmountSatoshi = newAmount;
-        mAmountField.setText(
+
+        mRequestedTextView.setText(
+                String.format(getResources().getString(R.string.bitcoing_requested),
+                        mCoreAPI.formatSatoshi(mOriginalAmountSatoshi, true))
+        );
+        mRemainingTextView.setVisibility(View.VISIBLE);
+        mRemainingTextView.setText(
                 String.format(getResources().getString(R.string.bitcoing_remaining),
                         mCoreAPI.formatSatoshi(mAmountSatoshi, true))
         );
 
         createNewQRBitmap();
-
-        // Alert the user
-        alertPartialPayment();
+        showPartialPayment();
         mAutoUpdatingTextFields = false;
     }
 
@@ -763,26 +774,6 @@ public class RequestFragment extends WalletBaseFragment implements
         mID = null;
         mCreateBitmapTask = new CreateBitmapTask();
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void alertPartialPayment() {
-        if(mPartialDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-            builder.setMessage(getResources().getString(R.string.received_partial_bitcoin_message))
-                    .setTitle(getResources().getString(R.string.received_partial_bitcoin_title))
-                    .setCancelable(true)
-                    .setNeutralButton(getResources().getString(R.string.string_ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    mPartialDialog.cancel();
-                                    mPartialDialog = null;
-                                }
-                            }
-                    );
-            mPartialDialog = builder.create();
-            mPartialDialog.show();
-            mHandler.postDelayed(dialogKiller, PARTIAL_PAYMENT_TIMEOUT);
-        }
     }
 
     /*
@@ -1114,6 +1105,52 @@ public class RequestFragment extends WalletBaseFragment implements
         }
         mQRView.getLayoutParams().height = newHeight;
         mQRView.requestLayout();
+    }
+
+    private void showPartialPayment() {
+        if (mPartialNotification.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        ObjectAnimator key = ObjectAnimator.ofFloat(mPartialNotification, "translationX", -mPartialNotification.getWidth(), 0f);
+        key.setDuration(250);
+        key.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                mPartialNotification.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mPartialNotification.setVisibility(View.VISIBLE);
+            }
+        });
+        key.start();
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                hidePartialPayment();
+            }
+        }, PARTIAL_PAYMENT_TIMEOUT);
+    }
+
+    private void hidePartialPayment() {
+        if (mPartialNotification.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+        ObjectAnimator key = ObjectAnimator.ofFloat(mPartialNotification, "translationX", 0f, mPartialNotification.getWidth());
+        key.setDuration(250);
+        key.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                mPartialNotification.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mPartialNotification.setVisibility(View.VISIBLE);
+            }
+        });
+        key.start();
     }
 
     private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
