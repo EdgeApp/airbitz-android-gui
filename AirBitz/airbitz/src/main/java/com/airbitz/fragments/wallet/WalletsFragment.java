@@ -34,7 +34,6 @@ package com.airbitz.fragments.wallet;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -69,6 +68,10 @@ import com.airbitz.fragments.HelpFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressImageButton;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -357,41 +360,37 @@ public class WalletsFragment extends WalletBaseFragment implements
         editText.setText(wallet.getName());
         editText.setSelection(wallet.getName().length());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setTitle(getResources().getString(R.string.fragment_wallets_rename_wallet))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_done),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String walletName = editText.getText().toString();
-                                if (TextUtils.isEmpty(walletName)) {
-                                    editText.setError(getString(R.string.fragment_wallets_wallet_name_required));
-                                } else {
-                                    wallet.setName(walletName);
-                                    mCoreApi.renameWallet(wallet);
-                                    mCoreApi.reloadWallets();
-                                    dialog.dismiss();
-                                }
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.title(getResources().getString(R.string.fragment_wallets_rename_wallet))
+               .titleColorRes(R.color.colorPrimaryDark)
+               .cancelable(false)
+               .customView(view, false)
+               .positiveText(getResources().getString(R.string.string_done))
+               .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .negativeColor(getResources().getColor(R.color.colorPrimaryDark))
+               .theme(Theme.LIGHT)
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        String walletName = editText.getText().toString();
+                        if (TextUtils.isEmpty(walletName)) {
+                            editText.setError(getString(R.string.fragment_wallets_wallet_name_required));
+                        } else {
+                            if (wallet.getUUID().equals(mWallet.getUUID())) {
+                                mWallet = wallet;
                             }
-                        })
-                .setNegativeButton(R.string.string_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        builder.setView(view);
-        final AlertDialog dialog = builder.create();
-
-        // this changes the colors of the system's UI buttons we're using
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-            }
-        });
-        dialog.show();
+                            wallet.setName(walletName);
+                            mCoreApi.renameWallet(wallet);
+                            mCoreApi.reloadWallets();
+                            dialog.dismiss();
+                            updateTitle();
+                        }
+                    }
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
     }
-
 }
