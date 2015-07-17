@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_frost"
-    android:paddingBottom="20dp"
     android:clipToPadding="false">
 
     <ListView
@@ -13,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:dividerHeight="0px"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:clipToPadding="false" />
 
     <RelativeLayout
