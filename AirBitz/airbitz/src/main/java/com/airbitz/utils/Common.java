@@ -32,7 +32,6 @@
 package com.airbitz.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -66,6 +65,8 @@ import com.airbitz.R;
 import com.airbitz.api.tABC_CC;
 import com.airbitz.api.tABC_Error;
 import com.airbitz.objects.CurrentLocationManager;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -260,7 +261,7 @@ public class Common {
     }
 
     public static void alertBadWalletName(Activity activity) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
         builder.setMessage(activity.getResources().getString(R.string.error_invalid_wallet_name_description))
                 .setTitle(activity.getString(R.string.error_invalid_wallet_name_title))
                 .setCancelable(false)
@@ -271,8 +272,7 @@ public class Common {
                             }
                         }
                 );
-        AlertDialog alert = builder.create();
-        alert.show();
+        builder.show();
     }
 
     public static String errorMap(Context context, tABC_CC code) {

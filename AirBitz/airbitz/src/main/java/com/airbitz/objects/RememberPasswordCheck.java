@@ -31,7 +31,6 @@
 
 package com.airbitz.objects;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,6 +50,8 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.login.SignUpFragment;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class RememberPasswordCheck {
         input.setTransformationMethod(new PasswordTransformationMethod());
         input.setImeOptions(EditorInfo.IME_ACTION_GO);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
         builder.setMessage(mActivity.getString(R.string.password_check_remember_message))
                 .setTitle(mActivity.getString(R.string.password_check_remember_title))
                 .setView(input)
@@ -117,7 +118,7 @@ public class RememberPasswordCheck {
         if (correct) {
             mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), FADING_TIMEOUT, true);
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
             builder.setMessage(mActivity.getString(R.string.password_check_incorrect_password_message))
                     .setTitle(mActivity.getString(R.string.password_check_incorrect_password_title))
                     .setCancelable(false)
