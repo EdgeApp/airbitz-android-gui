@@ -61,4 +61,6 @@
     <dimen name="sub_action_button_content_margin">6dp</dimen>
     <dimen name="search_form_height">100dp</dimen>
     <dimen name="search_form_width">50dp</dimen>
+
+    <dimen name="segemented_space">1dp</dimen>
 </resources>

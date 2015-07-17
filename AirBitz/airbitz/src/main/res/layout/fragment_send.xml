@@ -13,63 +13,40 @@
         android:layout_below="@id/toolbar"
         android:visibility="visible" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fragment_send_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/gray_frost"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        style="@style/SegmentedGroup">
 
-        <info.hoang8f.android.segmented.SegmentedGroup
-            android:id="@+id/request_bottom_buttons"
+        <Button
+            android:id="@+id/fragment_send_button_transfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_gravity="center_horizontal"
-            segmentedgroup:tint_color="@android:color/white"
-            android:orientation="horizontal">
+            android:text="@string/fragment_send_transfer"
+            style="@style/SegmentedButton" />
 
-            <RadioButton
-                android:id="@+id/fragment_send_button_transfer"
-                android:layout_weight="1"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_transfer"
-                style="@style/RadioButton" />
+        <Button
+            android:id="@+id/fragment_send_button_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_address"
+            style="@style/SegmentedButton" />
 
-            <RadioButton
-                android:id="@+id/fragment_send_button_address"
-                android:layout_weight="1"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_address"
-                style="@style/RadioButton" />
+        <Button
+            android:id="@+id/fragment_send_button_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_photos"
+            style="@style/SegmentedButton" />
 
-            <RadioButton
-                android:id="@+id/fragment_send_button_photos"
-                android:layout_weight="1"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_photos"
-                style="@style/RadioButton" />
-            <RadioButton
-                android:id="@+id/fragment_send_button_flash"
-                android:layout_weight="1"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_flash"
-                style="@style/RadioButton" />
-        </info.hoang8f.android.segmented.SegmentedGroup>
+        <Button
+            android:id="@+id/fragment_send_button_flash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_flash"
+            style="@style/SegmentedButton" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/fragment_send_transfer_list"

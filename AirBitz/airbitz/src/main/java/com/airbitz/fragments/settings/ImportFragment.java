@@ -76,16 +76,15 @@ import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.objects.QRCamera;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
-import info.hoang8f.android.segmented.SegmentedGroup;
-
-/**
- * Created on 3/3/14.
- */
 public class ImportFragment extends WalletBaseFragment implements
         CoreAPI.OnWalletSweep,
         QRCamera.OnScanResult
@@ -93,7 +92,9 @@ public class ImportFragment extends WalletBaseFragment implements
     public static String URI = "com.airbitz.importfragment.uri";
 
     private final String TAG = getClass().getSimpleName();
-    private Button mAddressButton, mFlashButton, mGalleryButton;
+    private Button mAddressButton;
+    private Button mGalleryButton;
+    private View mFlashButton;
     private NfcAdapter mNfcAdapter;
     private QRCamera mQRCamera;
     private CoreAPI mCoreAPI;
@@ -152,31 +153,27 @@ public class ImportFragment extends WalletBaseFragment implements
         mBusyText = (TextView) mView.findViewById(R.id.fragment_import_busy_text);
         mBusyText.setTypeface(NavigationActivity.latoBlackTypeFace);
 
-        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.import_bottom_buttons);
-        mFlashButton = (Button) buttons.findViewById(R.id.fragment_import_button_flash);
+        mFlashButton = mView.findViewById(R.id.fragment_import_button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 mQRCamera.setFlashOn(!mQRCamera.isFlashOn());
             }
         });
 
-        mGalleryButton = (Button) buttons.findViewById(R.id.fragment_import_button_photos);
+        mGalleryButton = (Button) mView.findViewById(R.id.fragment_import_button_photos);
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(in, QRCamera.RESULT_LOAD_IMAGE);
             }
         });
 
-        mAddressButton = (Button) buttons.findViewById(R.id.fragment_import_button_address);
+        mAddressButton = (Button) mView.findViewById(R.id.fragment_import_button_address);
         mAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 showAddressDialog();
             }
         });
@@ -254,6 +251,7 @@ public class ImportFragment extends WalletBaseFragment implements
     public void onPause() {
         super.onPause();
         showBusyLayout(false);
+        mQRCamera.setOnScanResultListener(null);
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
         mCoreAPI.setOnWalletSweepListener(null);
@@ -270,8 +268,9 @@ public class ImportFragment extends WalletBaseFragment implements
         if (result != null) {
             Log.d(TAG, "HiddenBits found");
             attemptSubmit(result);
+        } else {
+            showMessageAndStartCameraDialog(R.string.import_title, R.string.fragment_send_send_bitcoin_unscannable);
         }
-        mQRCamera.setOnScanResultListener(null);
     }
 
     @Override
@@ -306,10 +305,9 @@ public class ImportFragment extends WalletBaseFragment implements
                     Log.d(TAG, "HiddenBits token error");
                 }
             }
-        }
-        else {
+        } else {
             showBusyLayout(false);
-            mActivity.ShowFadingDialog(getString(R.string.import_wallet_private_key_invalid));
+            showMessageAndStartCameraDialog(R.string.import_title, R.string.import_wallet_private_key_invalid);
         }
     }
 
@@ -420,40 +418,47 @@ public class ImportFragment extends WalletBaseFragment implements
     }
 
     public void showAddressDialog() {
-        final EditText editText = new EditText(getActivity());
-        if(mSweptAddress != null) {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View view = inflater.inflate(R.layout.alert_address_form, null);
+        final EditText editText = (EditText) view.findViewById(R.id.address);
+        if (mSweptAddress != null) {
             editText.setText(mSweptAddress);
         }
-        editText.setHint(getResources().getString(R.string.fragment_send_send_to_hint));
-        editText.setHintTextColor(getResources().getColor(R.color.text_hint));
-        editText.setTextColor(getResources().getColor(R.color.text_dark_gray));
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setTitle(getResources().getString(R.string.fragment_import_address_dialog_title))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_done),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                attemptSubmit(editText.getText().toString().trim());
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(Html.fromHtml("<b>" + getResources().getString(R.string.string_cancel) + "</b>"),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        builder.setView(editText);
-        final AlertDialog dialog = builder.create();
 
-        // this changes the colors of the system's UI buttons we're using
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_header_text));
-            }
-        });
-        dialog.show();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.title(getResources().getString(R.string.fragment_import_address_dialog_title))
+               .customView(view, false)
+               .cancelable(false)
+               .positiveText(getResources().getString(R.string.string_done))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .theme(Theme.LIGHT)
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        attemptSubmit(editText.getText().toString().trim());
+                        dialog.dismiss();
+                    }
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
+    }
+
+    public void showMessageAndStartCameraDialog(int title, int message) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.content(message)
+               .title(title)
+               .cancelable(false)
+               .theme(Theme.LIGHT)
+               .neutralText(getResources().getString(R.string.string_ok))
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        startCamera();
+                        dialog.cancel();
+                    }
+               });
+        builder.show();
     }
 }

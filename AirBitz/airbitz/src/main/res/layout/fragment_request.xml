@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_alignParentBottom="true">
+        android:layout_above="@+id/request_bottom_buttons">
 
         <LinearLayout
             android:id="@+id/request_bottom"
@@ -95,42 +95,37 @@
                 android:text="@string/request_qr_loading_address"
                 android:textColor="@color/dark_gray_text"
                 android:textSize="14dp" />
-
-                <info.hoang8f.android.segmented.SegmentedGroup
-                    android:id="@+id/request_bottom_buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    app:tint_color="@color/colorPrimaryDark"
-                    app:checked_text_color="@color/colorPrimaryDark"
-                    android:weightSum="90"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/fragment_triple_selector_left"
-                        android:layout_weight="30"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fragment_request_copy_title"
-                        style="@style/RadioButton" />
-
-                    <RadioButton
-                        android:id="@+id/fragment_triple_selector_center"
-                        android:layout_weight="30"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fragment_request_email_title"
-                        style="@style/RadioButton" />
-
-                    <RadioButton
-                        android:id="@+id/fragment_triple_selector_right"
-                        android:layout_weight="30"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fragment_request_sms_title"
-                        style="@style/RadioButton" />
-            </info.hoang8f.android.segmented.SegmentedGroup>
-
+                
         </LinearLayout>
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/request_bottom_buttons"
+        android:layout_alignParentBottom="true"
+        style="@style/SegmentedGroup">
+
+        <Button
+            android:id="@+id/fragment_triple_selector_left"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_request_copy_title"
+            style="@style/SegmentedButton"
+            />
+
+        <Button
+            android:id="@+id/fragment_triple_selector_center"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_request_email_title"
+            style="@style/SegmentedButton"
+            />
+
+        <Button
+            android:id="@+id/fragment_triple_selector_right"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_request_sms_title"
+            style="@style/SegmentedButton"
+            />
+
+    </LinearLayout>
 
     <include layout="@layout/layout_toolbar_dropdown_request" />
 

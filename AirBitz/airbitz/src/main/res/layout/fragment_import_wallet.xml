@@ -13,47 +13,33 @@
         android:layout_below="@id/toolbar"
         android:visibility="visible" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fragment_import_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/gray_frost"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        style="@style/SegmentedGroup">
 
-        <info.hoang8f.android.segmented.SegmentedGroup
-            android:id="@+id/import_bottom_buttons"
+        <Button
+            android:id="@+id/fragment_import_button_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_gravity="center_horizontal"
-            segmentedgroup:tint_color="@color/text_off_white"
-            android:orientation="horizontal">
+            android:text="@string/fragment_send_address"
+            style="@style/SegmentedButton" />
 
-            <RadioButton
-                android:id="@+id/fragment_import_button_address"
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_address"
-                style="@style/RadioButton" />
+        <Button
+            android:id="@+id/fragment_import_button_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_photos"
+            style="@style/SegmentedButton" />
 
-            <RadioButton
-                android:id="@+id/fragment_import_button_photos"
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_photos"
-                style="@style/RadioButton" />
-            <RadioButton
-                android:id="@+id/fragment_import_button_flash"
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_send_flash"
-                style="@style/RadioButton" />
-        </info.hoang8f.android.segmented.SegmentedGroup>
+        <Button
+            android:id="@+id/fragment_import_button_flash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_flash"
+            style="@style/SegmentedButton" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/fragment_import_bluetooth_layout"

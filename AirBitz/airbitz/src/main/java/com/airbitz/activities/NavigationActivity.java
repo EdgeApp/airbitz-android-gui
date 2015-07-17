@@ -686,7 +686,7 @@ public class NavigationActivity extends ActionBarActivity
         showModalProgress(false);
 
         if (isAtNavStackEntry()) {
-                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+            ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
         } else {
             popFragment();
         }
@@ -1452,7 +1452,6 @@ public class NavigationActivity extends ActionBarActivity
         if (!this.isFinishing() && mExitDialog == null) {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(message)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.string_yes),
                             new DialogInterface.OnClickListener() {
@@ -1469,6 +1468,10 @@ public class NavigationActivity extends ActionBarActivity
                                 }
                             });
             mExitDialog = builder.create();
+
+            if (title != null) {
+                mExitDialog.setTitle(title);
+            }
             mExitDialog.show();
         }
     }
@@ -1477,7 +1480,6 @@ public class NavigationActivity extends ActionBarActivity
         if (!this.isFinishing()) {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setNeutralButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
@@ -1487,6 +1489,9 @@ public class NavigationActivity extends ActionBarActivity
                             }
                     );
             Dialog alert = builder.create();
+            if (title != null) {
+                alert.setTitle(title);
+            }
             alert.show();
         }
     }
@@ -1546,8 +1551,6 @@ public class NavigationActivity extends ActionBarActivity
                                 .backgroundColorRes(R.color.colorPrimary).build();
                     mFadingDialog.setCancelable(cancelable);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                    // mFadingDialog.getContentView().setTypeface(NavigationActivity.latoRegularTypeFace);
-                    mFadingDialog.setTitle("Alert");
                     if (!cancelable) {
                         mFadingDialog.setProgress(-1);
                     }
@@ -1621,7 +1624,6 @@ public class NavigationActivity extends ActionBarActivity
             }
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
@@ -1640,11 +1642,13 @@ public class NavigationActivity extends ActionBarActivity
                                 }
                             });
             mMessageDialog = builder.create();
+            if (title != null) {
+                mMessageDialog.setTitle(title);
+            }
             mMessageDialog.show();
         }
         AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(reason)
-                .setTitle(title)
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -1663,6 +1667,9 @@ public class NavigationActivity extends ActionBarActivity
                             }
                         });
         mMessageDialog = builder.create();
+        if (title != null) {
+            mMessageDialog.setTitle(title);
+        }
         mMessageDialog.show();
     }
 

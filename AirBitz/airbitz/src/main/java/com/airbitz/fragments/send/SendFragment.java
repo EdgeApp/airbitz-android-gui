@@ -90,15 +90,13 @@ import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.objects.QRCamera;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import info.hoang8f.android.segmented.SegmentedGroup;
-
-
-/**
- * Created on 2/22/14.
- */
 public class SendFragment extends WalletBaseFragment implements
         BluetoothListView.OnPeripheralSelected,
         CoreAPI.OnWalletLoaded,
@@ -123,7 +121,10 @@ public class SendFragment extends WalletBaseFragment implements
 
     private Handler mHandler;
     private boolean hasCheckedFirstUsage;
-    private Button mTransferButton, mAddressButton, mFlashButton, mGalleryButton;
+    private Button mTransferButton;
+    private Button mAddressButton;
+    private Button mGalleryButton;
+    private View mFlashButton;
     private ListView mOtherWalletsListView;
     private RelativeLayout mListviewContainer;
     private RelativeLayout mCameraLayout;
@@ -154,65 +155,35 @@ public class SendFragment extends WalletBaseFragment implements
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
         mQRCamera = new QRCamera(this, mCameraLayout);
 
-//        final RelativeLayout header = (RelativeLayout) mView.findViewById(R.id.fragment_send_header);
-//        mHelpButton = (HighlightOnPressButton) header.findViewById(R.id.layout_wallet_select_header_right);
-//        mHelpButton.setVisibility(View.VISIBLE);
-//        mHelpButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mActivity.pushFragment(new HelpFragment(HelpFragment.SEND), NavigationActivity.Tabs.SEND.ordinal());
-//            }
-//        });
-
-//        pickWalletSpinner = (HighlightOnPressSpinner) header.findViewById(R.id.layout_wallet_select_header_spinner);
-//        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                mFromWallet = mWallets.get(i);
-//                AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
-//                updateWalletOtherList();
-////                goAutoCompleteWalletListing();
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//            }
-//        });
-
-        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
-        mFlashButton = (Button) buttons.findViewById(R.id.fragment_send_button_flash);
+        mFlashButton = mView.findViewById(R.id.fragment_send_button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 mQRCamera.setFlashOn(!mQRCamera.isFlashOn());
             }
         });
 
-        mGalleryButton = (Button) buttons.findViewById(R.id.fragment_send_button_photos);
+        mGalleryButton = (Button) mView.findViewById(R.id.fragment_send_button_photos);
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(in, QRCamera.RESULT_LOAD_IMAGE);
             }
         });
 
-        mTransferButton = (Button) buttons.findViewById(R.id.fragment_send_button_transfer);
+        mTransferButton = (Button) mView.findViewById(R.id.fragment_send_button_transfer);
         mTransferButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 showOtherWallets();
             }
         });
 
-        mAddressButton = (Button) buttons.findViewById(R.id.fragment_send_button_address);
+        mAddressButton = (Button) mView.findViewById(R.id.fragment_send_button_address);
         mAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 showAddressDialog();
             }
         });
@@ -420,21 +391,21 @@ public class SendFragment extends WalletBaseFragment implements
         }
     }
 
-    public void ShowMessageAndStartCameraDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
-        builder.setMessage(message)
-                .setTitle(title)
-                .setCancelable(false)
-                .setNeutralButton(getResources().getString(R.string.string_ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                startCamera();
-                                dialog.cancel();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
+    public void showMessageAndStartCameraDialog(int title, int message) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.content(message)
+               .title(title)
+               .cancelable(false)
+               .theme(Theme.LIGHT)
+               .neutralText(getResources().getString(R.string.string_ok))
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        startCamera();
+                        dialog.cancel();
+                    }
+               });
+        builder.show();
     }
 
     //************** Bluetooth support
@@ -498,7 +469,7 @@ public class SendFragment extends WalletBaseFragment implements
         if (result != null) {
             newSpend(result);
         } else {
-            ShowMessageAndStartCameraDialog(getString(R.string.send_title), getString(R.string.fragment_send_send_bitcoin_unscannable));
+            showMessageAndStartCameraDialog(R.string.send_title, R.string.fragment_send_send_bitcoin_unscannable);
         }
     }
 
@@ -542,9 +513,9 @@ public class SendFragment extends WalletBaseFragment implements
             if (result) {
                 GotoSendConfirmation(target);
             } else {
-                ((NavigationActivity) getActivity()).ShowOkMessageDialog(
-                        getResources().getString(R.string.fragment_send_failure_title),
-                        getString(R.string.fragment_send_confirmation_invalid_bitcoin_address));
+                showMessageAndStartCameraDialog(
+                    R.string.fragment_send_failure_title,
+                    R.string.fragment_send_confirmation_invalid_bitcoin_address);
             }
         }
 
@@ -558,34 +529,23 @@ public class SendFragment extends WalletBaseFragment implements
         final View view = inflater.inflate(R.layout.alert_address_form, null);
         final EditText editText = (EditText) view.findViewById(R.id.address);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(getResources().getString(R.string.fragment_send_address_dialog_title))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.string_done),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                checkAndSendAddress(editText.getText().toString());
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(Html.fromHtml("<b>"+getResources().getString(R.string.string_cancel)+"</b>"),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        builder.setView(view);
-        final AlertDialog dialog = builder.create();
-
-        // this changes the colors of the system's UI buttons we're using
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-            }
-        });
-        dialog.show();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.title(getResources().getString(R.string.fragment_send_address_dialog_title))
+               .customView(view, false)
+               .cancelable(false)
+               .positiveText(getResources().getString(R.string.string_done))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        checkAndSendAddress(editText.getText().toString());
+                        dialog.dismiss();
+                    }
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
     }
 
     private boolean toggleOtherWallets() {

@@ -117,11 +117,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import info.hoang8f.android.segmented.SegmentedGroup;
-
-/**
- * Created on 2/13/14.
- */
 public class RequestFragment extends WalletBaseFragment implements
         ContactPickerFragment.ContactSelection,
         NfcAdapter.CreateNdefMessageCallback,
@@ -307,28 +302,24 @@ public class RequestFragment extends WalletBaseFragment implements
         mOtherAmountTextView = (TextView) mView.findViewById(R.id.request_not_selected_value);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
-        final SegmentedGroup buttons = (SegmentedGroup) mView.findViewById(R.id.request_bottom_buttons);
-        mCopyButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_left);
+        mCopyButton = (Button) mView.findViewById(R.id.fragment_triple_selector_left);
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 copyToClipboard();
             }
         });
-        mEmailButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_center);
+        mEmailButton = (Button) mView.findViewById(R.id.fragment_triple_selector_center);
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 startEmail();
             }
         });
-        mSMSButton = (Button) buttons.findViewById(R.id.fragment_triple_selector_right);
+        mSMSButton = (Button) mView.findViewById(R.id.fragment_triple_selector_right);
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttons.clearCheck();
                 startSMS();
             }
         });
