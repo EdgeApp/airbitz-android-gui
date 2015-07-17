@@ -129,6 +129,7 @@ import net.hockeyapp.android.UpdateManager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -1544,16 +1545,19 @@ public class NavigationActivity extends ActionBarActivity
                     if (mFadingDialog != null) {
                         mFadingDialog.dismiss();
                     }
-                    mFadingDialog =
+                    MaterialDialog.Builder builder =
                         new MaterialDialog.Builder(NavigationActivity.this)
                                 .content(message)
                                 .contentColorRes(android.R.color.white)
-                                .backgroundColorRes(R.color.colorPrimary).build();
+                                .theme(Theme.DARK)
+                                .backgroundColorRes(R.color.colorPrimary);
+                    if (!cancelable) {
+                        builder.progress(true, 0);
+                    }
+                    mFadingDialog = builder.build();
                     mFadingDialog.setCancelable(cancelable);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                    if (!cancelable) {
-                        mFadingDialog.setProgress(-1);
-                    }
+
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
                     fadeOut.setDuration(2000);
