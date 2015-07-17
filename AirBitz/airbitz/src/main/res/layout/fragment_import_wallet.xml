@@ -49,29 +49,5 @@
         android:orientation="vertical"
         android:visibility="visible" />
 
-
-    <RelativeLayout
-        android:id="@+id/fragment_import_busy_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_title_header"
-        android:background="@color/white_frost"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/fragment_import_busy_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="80dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:textColor="@color/dark_blue_text"
-            android:textSize="18dp"
-            android:background="@drawable/blue_triangle" />
-
-    </RelativeLayout>
-
     <include layout="@layout/layout_toolbar_dropdown" />
 </RelativeLayout>

@@ -102,9 +102,8 @@ public class ImportFragment extends WalletBaseFragment implements
     private Handler mHandler = new Handler();
     private NavigationActivity mActivity;
     private LinearLayout mImportLayout;
-    private RelativeLayout mBusyLayout;
     private RelativeLayout mCameraLayout;
-    private TextView mBusyText;
+    private MaterialDialog mDialog;
 
     private String mTweet, mToken, mMessage, mZeroMessage;
     String mSweptID;
@@ -114,11 +113,12 @@ public class ImportFragment extends WalletBaseFragment implements
     Runnable sweepNotFoundRunner = new Runnable() {
         @Override
         public void run() {
-            showBusyLayout(false);
+            showBusyLayout(null, false);
             if(isVisible()) {
                 clearSweepAddress();
                 mSweptAmount = -1;
-                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.import_wallet_timeout_message));
+                mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
+                    getString(R.string.import_wallet_timeout_message));
             }
         }
     };
@@ -148,10 +148,6 @@ public class ImportFragment extends WalletBaseFragment implements
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_layout_camera);
 
-        mBusyLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_busy_layout);
-        mBusyText = (TextView) mView.findViewById(R.id.fragment_import_busy_text);
-        mBusyText.setTypeface(NavigationActivity.latoBlackTypeFace);
-
         mFlashButton = mView.findViewById(R.id.fragment_import_button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,14 +176,23 @@ public class ImportFragment extends WalletBaseFragment implements
         return mView;
     }
 
-    private void showBusyLayout(boolean on) {
+    private void showBusyLayout(String address, boolean on) {
         if(on) {
-            mBusyLayout.setVisibility(View.VISIBLE);
             stopCamera();
+            MaterialDialog.Builder builder =
+                new MaterialDialog.Builder(mActivity)
+                        .content(String.format(getString(R.string.import_wallet_busy_text), address))
+                        .cancelable(false)
+                        .progress(true, 0)
+                        .progressIndeterminateStyle(false);
+            mDialog = builder.build();
+            mDialog.show();
         }
         else {
-            mBusyLayout.setVisibility(View.GONE);
             startCamera();
+            if (null != mDialog) {
+                mDialog.dismiss();
+            }
         }
     }
 
@@ -249,7 +254,7 @@ public class ImportFragment extends WalletBaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        showBusyLayout(false);
+        showBusyLayout(null, false);
         mQRCamera.setOnScanResultListener(null);
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
@@ -286,8 +291,7 @@ public class ImportFragment extends WalletBaseFragment implements
 
         String entry = token != null ? token : uriString;
 
-        mBusyText.setText(String.format(getString(R.string.import_wallet_busy_text), entry));
-        showBusyLayout(true);
+        showBusyLayout(entry, true);
         mSweptAddress = mCoreAPI.SweepKey(mWallet.getUUID(), entry);
 
         if(mSweptAddress != null && !mSweptAddress.isEmpty()) {
@@ -305,7 +309,7 @@ public class ImportFragment extends WalletBaseFragment implements
                 }
             }
         } else {
-            showBusyLayout(false);
+            showBusyLayout(null, false);
             showMessageAndStartCameraDialog(R.string.import_title, R.string.import_wallet_private_key_invalid);
         }
     }
@@ -366,7 +370,7 @@ public class ImportFragment extends WalletBaseFragment implements
 
         @Override
         protected void onCancelled() {
-            showBusyLayout(false);
+            showBusyLayout(null, false);
         }
     }
 
@@ -374,7 +378,7 @@ public class ImportFragment extends WalletBaseFragment implements
     public void OnWalletSweep(String txID, long amount) {
         Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
-        showBusyLayout(false);
+        showBusyLayout(null, false);
 
         mSweptID = txID;
         mSweptAmount = amount;
@@ -407,7 +411,7 @@ public class ImportFragment extends WalletBaseFragment implements
             Log.d(TAG, "Both API and OnWalletSweep are finished");
 
             mHandler.removeCallbacks(sweepNotFoundRunner);
-            showBusyLayout(false);
+            showBusyLayout(null, false);
 
             mActivity.showHiddenBitsTransaction(mSweptID, mWallet.getUUID(), mSweptAmount,
                     mMessage, mZeroMessage, mTweet);
