@@ -57,6 +57,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.models.Wallet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WalletBaseFragment extends BaseFragment implements
@@ -99,6 +100,9 @@ public class WalletBaseFragment extends BaseFragment implements
             mLoading = true;
         }
         setHasOptionsMenu(true);
+        if (null == mWallets) {
+            mWallets = new ArrayList<Wallet>();
+        }
     }
 
     @Override
@@ -145,7 +149,11 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     protected void fetchWallets() {
-        mWallets = mCoreApi.getCoreActiveWallets();
+        List<Wallet> tmp = mCoreApi.getCoreActiveWallets();
+        if (tmp != null) {
+            mWallets.clear();
+            mWallets.addAll(tmp);
+        }
     }
 
     private void setDefaultWallet() {
@@ -185,13 +193,7 @@ public class WalletBaseFragment extends BaseFragment implements
 
     @Override
     public void onWalletUpdated() {
-        fetchWallets();
-        setDefaultWallet();
-        if (mWallet != null) {
-            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
-            loadWallets();
-            updateTitle();
-        }
+        mCoreApi.reloadWallets();
     }
 
     @Override
@@ -206,11 +208,10 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
+    private WalletChoiceAdapter mAdapter;
     protected void loadWallets() {
         if (mDropDownEnabled) {
-            WalletChoiceAdapter adapter = new WalletChoiceAdapter(mActivity, mWallets);
-            adapter.setDropDownViewResource(R.layout.item_request_wallet_spinner_dropdown);
-            mWalletList.setAdapter(adapter);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -223,6 +224,8 @@ public class WalletBaseFragment extends BaseFragment implements
                 walletChanged(mWallets.get(i));
             }
         });
+        mAdapter = new WalletChoiceAdapter(mActivity, mWallets);
+        mWalletList.setAdapter(mAdapter);
         mWalletsContainer = mWalletList;
     }
 

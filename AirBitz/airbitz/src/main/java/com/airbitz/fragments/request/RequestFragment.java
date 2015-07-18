@@ -293,6 +293,8 @@ public class RequestFragment extends WalletBaseFragment implements
         mRemainingTextView = (TextView) mView.findViewById(R.id.amount_received);
         if (SettingFragment.getMerchantModePref()) {
             showCalculator();
+        } else {
+            mCalculator.forceHide();
         }
 
         mConverterTextView = (TextView) mView.findViewById(R.id.textview_converter);

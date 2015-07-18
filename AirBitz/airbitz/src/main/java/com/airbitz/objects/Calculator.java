@@ -339,6 +339,13 @@ public class Calculator extends LinearLayout  {
         set.start();
     }
 
+    public void forceHide() {
+        ObjectAnimator key =
+            ObjectAnimator.ofFloat(this, "translationY", 0f, this.getHeight());
+        key.setDuration(0);
+        key.start();
+    }
+
     public void hideCalculator() {
         hideCalculator(null);
     }
