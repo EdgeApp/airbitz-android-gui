@@ -27,7 +27,7 @@
         android:layout_centerVertical="true"
         android:singleLine="true"
         android:text="@string/fragment_send_other_wallet_header_title"
-        android:textSize="18dp"
+        android:textSize="14dp"
         android:layout_toRightOf="@id/item_send_wallet_spinner_arrow"
         android:textColor="@android:color/white" />
 

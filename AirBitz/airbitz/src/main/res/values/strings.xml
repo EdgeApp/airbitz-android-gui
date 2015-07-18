@@ -324,7 +324,7 @@
     <string name="fragment_send_flash">Flash</string>
     <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
     <string name="fragment_import_address_dialog_title">Sweep Funds From Private Key</string>
-    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds</string>
+    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds to:</string>
 
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
