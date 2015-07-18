@@ -204,6 +204,8 @@ public class LandingFragment extends BaseFragment implements
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.hideSoftKeyboard(mPinEditText);
+                mActivity.hideSoftKeyboard(mPasswordEditText);
                 getActivity().onBackPressed();
             }
         });
