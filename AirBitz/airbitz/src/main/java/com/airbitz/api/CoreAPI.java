@@ -302,6 +302,7 @@ public class CoreAPI {
             startWatchers();
             if (null != mOnDataSync) {
                 mOnDataSync.OnDataSync();
+                reloadWallets();
             }
         }
     };
@@ -2244,7 +2245,7 @@ public class CoreAPI {
 
     private List<Wallet> mCoreWallets = null;
     public List<Wallet> getCoreWallets(boolean withTransactions) {
-        if(mCoreWallets == null) {
+        if (mCoreWallets == null) {
             List<Wallet> wallets = new ArrayList<Wallet>();
 
             SWIGTYPE_p_long lp = core.new_longp();
@@ -2272,22 +2273,17 @@ public class CoreAPI {
                     in.setUUID(wi.getUUID());
                     in.setAttributes(wi.getAttributes());
                     in.setCurrencyNum(wi.getCurrencyNum());
-                    if (withTransactions) {
-                        in.setTransactions(loadAllTransactions(in));
-                    }
+                    in.setTransactions(loadAllTransactions(in));
                     wallets.add(in);
                 }
                 core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
-                if(withTransactions) {
-                    mCoreWallets = wallets;
-                }
+                mCoreWallets = wallets;
                 return wallets;
             } else {
                 Log.d(TAG, "getCoreWallets failed.");
             }
             return null;
-        }
-        else {
+        } else {
             return mCoreWallets;
         }
     }

@@ -273,7 +273,11 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     protected void fetchWallets() {
-        mWallets = mCoreApi.getCoreWallets(false);
+        List<Wallet> tmp = mCoreApi.getCoreWallets(false);
+        if (tmp != null) {
+            mWallets.clear();
+            mWallets.addAll(tmp);
+        }
     }
 
     private void setupLatestWalletListView() {
