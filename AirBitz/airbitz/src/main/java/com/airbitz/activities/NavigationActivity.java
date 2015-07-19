@@ -937,6 +937,7 @@ public class NavigationActivity extends ActionBarActivity
         // If in merchant donation mode, stay on QR screen and show amount
         RequestFragment fragment = requestMatchesDonation();
         if(fragment != null) {
+            AudioPlayer.play(this, R.raw.bitcoin_received);
             showIncomingDialog(walletUUID, txId, false);
             return;
         }
