@@ -238,7 +238,7 @@
     <string name="settings_button_two_factor_authentication">2 Factor (Enhanced Security)</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change PIN</string>
-    <string name="settings_button_recovery">Recovery Questions</string>
+    <string name="settings_button_recovery">Change Recovery Questions</string>
     <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
