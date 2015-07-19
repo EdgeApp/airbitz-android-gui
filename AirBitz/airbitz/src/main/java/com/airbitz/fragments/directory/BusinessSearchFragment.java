@@ -252,6 +252,7 @@ public class BusinessSearchFragment extends BaseFragment implements
                     mBusinessType = business.getType();
 
                     if ("business".equalsIgnoreCase(mBusinessType)) {
+                        mActivity.hideSoftKeyboard(mQueryField);
                         DirectoryDetailFragment.pushFragment(mActivity, business.getId(), business.getName(), null);
                     } else {
                         CacheUtil.writeCachedBusinessSearchData(getActivity(),
