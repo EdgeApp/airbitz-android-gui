@@ -1744,7 +1744,12 @@ public class CoreAPI {
                  return 0;
              }
             double currency = cleanAmount.doubleValue();
-            return CurrencyToSatoshi(currency, currencyNum);
+            long satoshi = CurrencyToSatoshi(currency, currencyNum);
+
+            // Round up to nearest 1 bits, .001 mBTC, .00001 BTC
+            satoshi = 100 * (satoshi / 100);
+            return satoshi;
+
         } catch (NumberFormatException e) {
             /* Sshhhhh */
         }
