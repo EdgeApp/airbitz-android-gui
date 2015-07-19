@@ -644,7 +644,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mUsername = email;
             mPassword = password;
             mPin = pin;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), 2000000, false);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), R.integer.alert_hold_time_forever, false);
         }
 
         @Override

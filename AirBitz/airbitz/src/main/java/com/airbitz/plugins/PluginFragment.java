@@ -169,7 +169,7 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
             }
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    ((NavigationActivity) getActivity()).ShowFadingDialog(message, null, 5000, true);
+                    ((NavigationActivity) getActivity()).ShowFadingDialog(message, null, R.integer.alert_hold_time_default, true);
                 }
             });
         }

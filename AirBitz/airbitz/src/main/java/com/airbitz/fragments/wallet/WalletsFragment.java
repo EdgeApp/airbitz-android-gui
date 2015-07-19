@@ -142,7 +142,7 @@ public class WalletsFragment extends WalletBaseFragment implements
                 Wallet wallet = a.getList().get(i);
                 if (wallet.isHeader()) {
                 } else if (wallet.isArchiveHeader()) {
-                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), 2000);
+                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), R.integer.alert_hold_time_help_popups);
                 } else {
                     a.setSelectedWallet(i);
                     view.setSelected(true);

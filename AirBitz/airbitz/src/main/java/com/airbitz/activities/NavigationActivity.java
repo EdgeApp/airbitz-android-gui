@@ -33,7 +33,6 @@ package com.airbitz.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -57,21 +56,16 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
@@ -82,26 +76,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.fragments.directory.DirectoryDetailFragment;
-import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
 import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.login.SignUpFragment;
-import com.airbitz.fragments.login.TransparentFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
@@ -130,7 +119,6 @@ import net.hockeyapp.android.UpdateManager;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
@@ -1011,7 +999,6 @@ public class NavigationActivity extends ActionBarActivity
                     wallet.getCurrencyNum(), true);
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
-        int delay = 4000;
         if(withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
             int count = prefs.getInt(INCOMING_COUNT, 1);
@@ -1021,10 +1008,9 @@ public class NavigationActivity extends ActionBarActivity
                 editor.putInt(INCOMING_COUNT, count);
                 editor.apply();
                 message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
-                delay = 5000;
             }
         }
-        ShowFadingDialog(message, delay);
+        ShowFadingDialog(message, R.integer.alert_hold_time_payment_received);
     }
 
     private RequestFragment requestMatchesQR(String uuid, String txid) {
@@ -1518,7 +1504,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void ShowFadingDialog(String message) {
-        ShowFadingDialog(message, 3000);
+        ShowFadingDialog(message, R.integer.alert_hold_time_default);
     }
 
     public void ShowFadingDialog(String message, int timeout) {
@@ -1561,7 +1547,7 @@ public class NavigationActivity extends ActionBarActivity
 
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
-                    fadeOut.setDuration(2000);
+                    fadeOut.setDuration(R.integer.alert_fadeout_time_default);
                     fadeOut.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationEnd(Animation animation) {
@@ -1708,7 +1694,7 @@ public class NavigationActivity extends ActionBarActivity
         protected void onPreExecute() {
             NavigationActivity.this.ShowFadingDialog(
                     getString(R.string.fragment_signup_creating_wallet),
-                    200000, false);
+                    R.integer.alert_hold_time_forever, false);
         }
 
         @Override

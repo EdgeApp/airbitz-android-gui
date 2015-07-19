@@ -516,7 +516,7 @@ public class RequestFragment extends WalletBaseFragment implements
         int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
         if(count <= 2) {
             count++;
-            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), 5000);
+            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), R.integer.alert_hold_time_help_popups);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(FIRST_USAGE_COUNT, count);
             editor.apply();
@@ -1031,10 +1031,10 @@ public class RequestFragment extends WalletBaseFragment implements
                 Contact nameInContacts = findMatchingContact(displayName);
                 displayName += "\nConnected";
                 if(nameInContacts != null) {
-                    mActivity.ShowFadingDialog(displayName, nameInContacts.getThumbnail(), 2000, true);
+                    mActivity.ShowFadingDialog(displayName, nameInContacts.getThumbnail(), R.integer.alert_hold_time_default, true);
                 }
                 else {
-                    mActivity.ShowFadingDialog(displayName, "", 2000, true); // Show the default icon
+                    mActivity.ShowFadingDialog(displayName, "", R.integer.alert_hold_time_default, true); // Show the default icon
                 }
 
                 mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
