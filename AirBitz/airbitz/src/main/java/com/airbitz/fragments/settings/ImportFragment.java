@@ -46,6 +46,9 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -329,7 +332,7 @@ public class ImportFragment extends WalletBaseFragment implements
             return uri.toString().substring(scheme.length()+3);
         }
         else {
-            Log.d("ImportFragment", "HiddenBits failed for: "+uriIn);
+            Log.d("ImportFragment", "HiddenBits failed for: " + uriIn);
             return null;
         }
     }
@@ -464,4 +467,35 @@ public class ImportFragment extends WalletBaseFragment implements
                });
         builder.show();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (isMenuExpanded()) {
+            super.onCreateOptionsMenu(menu, inflater);
+            return;
+        }
+        inflater.inflate(R.menu.menu_standard, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (isMenuExpanded()) {
+            return super.onOptionsItemSelected(item);
+        }
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return true;
+//                return hideOtherWallets();
+            case R.id.action_help:
+                mActivity.pushFragment(
+                        new HelpFragment(HelpFragment.IMPORT_WALLET),
+                        NavigationActivity.Tabs.MORE.ordinal());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 }
