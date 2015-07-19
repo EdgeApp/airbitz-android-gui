@@ -768,7 +768,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         // showing after a send when the fragment are being popped from the stack
         mBitcoinField.setOnFocusChangeListener(mAmountFocusListener);
         mFiatField.setOnFocusChangeListener(mAmountFocusListener);
-        mView.requestFocus();
+//        mView.requestFocus();
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -824,7 +824,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
-        mParentLayout.requestFocus(); //Take focus away first
+//        mParentLayout.requestFocus(); //Take focus away first
 
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
@@ -851,6 +851,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
+            mFiatField.requestFocus();
+            showCalculator();
         }
 
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
