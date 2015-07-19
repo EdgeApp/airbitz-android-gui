@@ -23,9 +23,11 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:textColor="@android:color/white"
-            android:textColorHint="@color/text_off_white"
+            android:textColorHint="@color/dark_text_field_text_hint"
+            android:textCursorDrawable="@null"
             android:drawableLeft="@drawable/ic_search_light"
             android:drawablePadding="10dp"
+            style="@style/DirectorySearchText"
             android:hint="@string/settings_select_currency" />
 
     </android.support.v7.widget.Toolbar>
