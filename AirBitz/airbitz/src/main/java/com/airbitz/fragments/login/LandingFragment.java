@@ -170,6 +170,22 @@ public class LandingFragment extends BaseFragment implements
                 }
             }
         });
+        mUserNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                showAccountsList(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         mPasswordLayout = mView.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_landing_password_edittext);
