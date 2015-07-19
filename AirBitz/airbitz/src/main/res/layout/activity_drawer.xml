@@ -142,6 +142,7 @@
                     <Button
                         android:id="@+id/item_drawer_import"
                         android:drawableLeft="@drawable/ic_import_dark"
+                        android:singleLine="false"
                         android:text="@string/drawer_import"
                         style="@style/DrawerButton" />
                 </LinearLayout>
