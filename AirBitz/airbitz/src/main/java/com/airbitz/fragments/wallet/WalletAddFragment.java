@@ -234,6 +234,14 @@ public class WalletAddFragment extends BaseFragment
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mAddWalletNameEditText.requestFocus();
+        mActivity.showSoftKeyboard(mAddWalletNameEditText);
+    }
+
     public static void pushFragment(NavigationActivity mActivity) {
         FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
