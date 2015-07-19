@@ -639,7 +639,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         String enteredPIN = mAuthorizationEdittext.getText().toString();
         if(mPinRequired && enteredPIN.isEmpty()) {
-            mActivity.ShowFadingDialog(getString(R.string.fragment_send_confirmation_please_enter_pin), R.integer.alert_hold_time_default);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_confirmation_please_enter_pin), getResources().getInteger(R.integer.alert_hold_time_default));
             mAuthorizationEdittext.requestFocus();
             resetSlider();
             return;

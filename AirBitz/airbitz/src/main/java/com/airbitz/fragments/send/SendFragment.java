@@ -262,7 +262,7 @@ public class SendFragment extends WalletBaseFragment implements
         int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
         if(count <= 2) {
             count++;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage), R.integer.alert_hold_time_help_popups);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(FIRST_USAGE_COUNT, count);
             editor.apply();
@@ -417,7 +417,7 @@ public class SendFragment extends WalletBaseFragment implements
         int count = prefs.getInt(FIRST_BLE_USAGE_COUNT, 1);
         if(count <= 2) {
             count++;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage_ble), R.integer.alert_hold_time_help_popups);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage_ble), getResources().getInteger(R.integer.alert_hold_time_help_popups));
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(FIRST_BLE_USAGE_COUNT, count);
             editor.apply();

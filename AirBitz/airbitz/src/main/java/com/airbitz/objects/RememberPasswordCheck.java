@@ -101,7 +101,7 @@ public class RememberPasswordCheck {
     }
 
     private void showPasswordCheckSkip() {
-        mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_skip), R.integer.alert_hold_time_default, true);
+        mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_skip), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
     }
 
     private void showPasswordCheckChange() {
@@ -114,7 +114,8 @@ public class RememberPasswordCheck {
 
     private void handlePasswordResults(boolean correct) {
         if (correct) {
-            mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), R.integer.alert_hold_time_default, true);
+
+            mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
         } else {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
             builder.setMessage(mActivity.getString(R.string.password_check_incorrect_password_message))
@@ -160,7 +161,7 @@ public class RememberPasswordCheck {
 
         @Override
         protected void onPreExecute() {
-            mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_checking), R.integer.alert_hold_time_default, true);
+            mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_checking), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
         }
 
         @Override

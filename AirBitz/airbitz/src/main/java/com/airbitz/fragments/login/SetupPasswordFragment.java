@@ -459,7 +459,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
         CreateAccountTask(char[] password) {
             mPassword = password;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), R.integer.alert_hold_time_forever, false);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), getResources().getInteger(R.integer.alert_hold_time_forever), false);
         }
 
         @Override

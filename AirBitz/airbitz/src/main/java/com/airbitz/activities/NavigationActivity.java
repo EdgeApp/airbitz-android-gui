@@ -1010,7 +1010,8 @@ public class NavigationActivity extends ActionBarActivity
                 message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
             }
         }
-        ShowFadingDialog(message, R.integer.alert_hold_time_payment_received);
+
+        ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_payment_received));
     }
 
     private RequestFragment requestMatchesQR(String uuid, String txid) {
@@ -1504,7 +1505,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void ShowFadingDialog(String message) {
-        ShowFadingDialog(message, R.integer.alert_hold_time_default);
+        ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_default));
     }
 
     public void ShowFadingDialog(String message, int timeout) {
@@ -1547,7 +1548,7 @@ public class NavigationActivity extends ActionBarActivity
 
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
-                    fadeOut.setDuration(R.integer.alert_fadeout_time_default);
+                    fadeOut.setDuration(getResources().getInteger(R.integer.alert_fadeout_time_default));
                     fadeOut.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationEnd(Animation animation) {
@@ -1694,7 +1695,7 @@ public class NavigationActivity extends ActionBarActivity
         protected void onPreExecute() {
             NavigationActivity.this.ShowFadingDialog(
                     getString(R.string.fragment_signup_creating_wallet),
-                    R.integer.alert_hold_time_forever, false);
+                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
         }
 
         @Override
