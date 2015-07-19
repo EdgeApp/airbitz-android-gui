@@ -171,6 +171,7 @@ public class ContactPickerFragment
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mActivity.hideSoftKeyboard(mContactName);
                 Contact contact = (Contact) mSearchAdapter.getItem(i);
                 mContactName.setText(contact.getName());
 
