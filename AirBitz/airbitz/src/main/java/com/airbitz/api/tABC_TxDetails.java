@@ -59,10 +59,6 @@ public class tABC_TxDetails {
     return new SWIGTYPE_p_int64_t(coreJNI.tABC_TxDetails_amountFeesMinersSatoshi_get(swigCPtr, this), true);
   }
 
-  public void setSzLogin(String value) {
-    coreJNI.tABC_TxDetails_szLogin_set(swigCPtr, this, value);
-  }
-
   public String getSzLogin() {
     return coreJNI.tABC_TxDetails_szLogin_get(swigCPtr, this);
   }

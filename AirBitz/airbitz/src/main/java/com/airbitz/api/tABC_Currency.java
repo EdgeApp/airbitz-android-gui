@@ -35,10 +35,6 @@ public class tABC_Currency {
     }
   }
 
-  public void setSzCode(String value) {
-    coreJNI.tABC_Currency_szCode_set(swigCPtr, this, value);
-  }
-
   public String getSzCode() {
     return coreJNI.tABC_Currency_szCode_get(swigCPtr, this);
   }
@@ -51,16 +47,8 @@ public class tABC_Currency {
     return coreJNI.tABC_Currency_num_get(swigCPtr, this);
   }
 
-  public void setSzDescription(String value) {
-    coreJNI.tABC_Currency_szDescription_set(swigCPtr, this, value);
-  }
-
   public String getSzDescription() {
     return coreJNI.tABC_Currency_szDescription_get(swigCPtr, this);
-  }
-
-  public void setSzCountries(String value) {
-    coreJNI.tABC_Currency_szCountries_set(swigCPtr, this, value);
   }
 
   public String getSzCountries() {

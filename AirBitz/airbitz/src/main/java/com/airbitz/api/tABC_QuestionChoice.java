@@ -35,16 +35,8 @@ public class tABC_QuestionChoice {
     }
   }
 
-  public void setSzQuestion(String value) {
-    coreJNI.tABC_QuestionChoice_szQuestion_set(swigCPtr, this, value);
-  }
-
   public String getSzQuestion() {
     return coreJNI.tABC_QuestionChoice_szQuestion_get(swigCPtr, this);
-  }
-
-  public void setSzCategory(String value) {
-    coreJNI.tABC_QuestionChoice_szCategory_set(swigCPtr, this, value);
   }
 
   public String getSzCategory() {

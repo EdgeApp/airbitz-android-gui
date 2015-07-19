@@ -35,16 +35,8 @@ public class tABC_TxInfo {
     }
   }
 
-  public void setSzID(String value) {
-    coreJNI.tABC_TxInfo_szID_set(swigCPtr, this, value);
-  }
-
   public String getSzID() {
     return coreJNI.tABC_TxInfo_szID_get(swigCPtr, this);
-  }
-
-  public void setSzMalleableTxId(String value) {
-    coreJNI.tABC_TxInfo_szMalleableTxId_set(swigCPtr, this, value);
   }
 
   public String getSzMalleableTxId() {

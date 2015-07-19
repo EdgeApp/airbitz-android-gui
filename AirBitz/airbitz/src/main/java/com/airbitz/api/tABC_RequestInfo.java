@@ -35,10 +35,6 @@ public class tABC_RequestInfo {
     }
   }
 
-  public void setSzID(String value) {
-    coreJNI.tABC_RequestInfo_szID_set(swigCPtr, this, value);
-  }
-
   public String getSzID() {
     return coreJNI.tABC_RequestInfo_szID_get(swigCPtr, this);
   }

@@ -51,16 +51,8 @@ public class tABC_TxOutput {
     return new SWIGTYPE_p_int64_t(coreJNI.tABC_TxOutput_value_get(swigCPtr, this), true);
   }
 
-  public void setSzAddress(String value) {
-    coreJNI.tABC_TxOutput_szAddress_set(swigCPtr, this, value);
-  }
-
   public String getSzAddress() {
     return coreJNI.tABC_TxOutput_szAddress_get(swigCPtr, this);
-  }
-
-  public void setSzTxId(String value) {
-    coreJNI.tABC_TxOutput_szTxId_set(swigCPtr, this, value);
   }
 
   public String getSzTxId() {

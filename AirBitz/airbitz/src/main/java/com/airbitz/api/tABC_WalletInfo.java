@@ -35,16 +35,8 @@ public class tABC_WalletInfo {
     }
   }
 
-  public void setSzUUID(String value) {
-    coreJNI.tABC_WalletInfo_szUUID_set(swigCPtr, this, value);
-  }
-
   public String getSzUUID() {
     return coreJNI.tABC_WalletInfo_szUUID_get(swigCPtr, this);
-  }
-
-  public void setSzName(String value) {
-    coreJNI.tABC_WalletInfo_szName_set(swigCPtr, this, value);
   }
 
   public String getSzName() {

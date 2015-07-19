@@ -35,10 +35,6 @@ public class tABC_PasswordRule {
     }
   }
 
-  public void setSzDescription(String value) {
-    coreJNI.tABC_PasswordRule_szDescription_set(swigCPtr, this, value);
-  }
-
   public String getSzDescription() {
     return coreJNI.tABC_PasswordRule_szDescription_get(swigCPtr, this);
   }
