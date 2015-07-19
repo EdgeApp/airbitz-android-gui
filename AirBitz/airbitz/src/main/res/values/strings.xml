@@ -273,6 +273,7 @@
     <string name="settings_nfc_turn_on_message">NFC is used to enable tap-to-pay with supported merchants. Would you like to turn it on now?</string>
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
     <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
+    <string name="settings_currency_change_note_popup">Note: Default Currency setting is only used for new wallets and to show total balance of account. Create a new wallet to change the fiat currency shown in each transaction.</string>
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>

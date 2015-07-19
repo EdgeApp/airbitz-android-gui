@@ -152,6 +152,7 @@ public class CurrencyFragment extends BaseFragment {
                 }
 
                 mActivity.popFragment();
+                mActivity.ShowFadingDialog(getString(R.string.settings_currency_change_note_popup),getResources().getInteger(R.integer.alert_hold_time_help_popups));
             }
         });
         return view;
