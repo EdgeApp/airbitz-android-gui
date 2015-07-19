@@ -127,6 +127,7 @@ public class LandingFragment extends BaseFragment implements
     private Handler mHandler = new Handler();
 
     private int mPinFailedCount;
+    private boolean mPinLoginMode;
 
     static final int MAX_PIN_FAILS = 3;
 
@@ -505,7 +506,6 @@ public class LandingFragment extends BaseFragment implements
                 mPinEditText.setText("");
                 Log.d(TAG, "showing pin login for " + mUsername);
                 refreshView(true, true, true);
-                mHandler.postDelayed(delayedShowPinKeyboard, 100);
                 return;
             }
         }
@@ -514,13 +514,6 @@ public class LandingFragment extends BaseFragment implements
         }
 
         Log.d(TAG, "showing password login for " + mUsername);
-        if(mUsername.isEmpty()) {
-            mHandler.postDelayed(delayedShowUsernameKeyboard, 100);
-        }
-        else {
-            mUserNameEditText.setText(mUsername);
-            mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
-        }
         refreshView(false, false, true);
     }
 
@@ -532,6 +525,9 @@ public class LandingFragment extends BaseFragment implements
         mActivity.hideSoftKeyboard(mPasswordEditText);
     }
 
+    public void refreshView() {
+        refreshView(mPinLoginMode, mPinLoginMode);
+    }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp) {
         refreshView(isPinLogin, isKeyboardUp, false);
@@ -552,6 +548,8 @@ public class LandingFragment extends BaseFragment implements
                     });
         }
         if (isPinLogin) {
+            mHandler.postDelayed(delayedShowPinKeyboard, 300);
+            mPinLoginMode = true;
             mPinFailedCount = 0;
 
             showOthersList(false);
@@ -578,6 +576,18 @@ public class LandingFragment extends BaseFragment implements
             }
             mPinEditText.requestFocus();
         } else {
+            if(mUsername.isEmpty()) {
+                mHandler.postDelayed(delayedShowUsernameKeyboard, 300);
+            }
+            else {
+                if (mUserNameEditText.getText().length() == 0) {
+                    mUserNameEditText.setText(mUsername);
+                }
+
+                mHandler.postDelayed(delayedShowPasswordKeyboard, 300);
+            }
+
+            mPinLoginMode = false;
             mPinLayout.setVisibility(View.GONE);
             mPasswordLayout.setVisibility(View.VISIBLE);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_signup_button));

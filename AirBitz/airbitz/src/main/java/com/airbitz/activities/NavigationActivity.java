@@ -467,6 +467,7 @@ public class NavigationActivity extends ActionBarActivity
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(0.0f);
             hideNavBar();
+            mLandingFragment.refreshView();
         }
     }
 
