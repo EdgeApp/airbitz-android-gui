@@ -439,7 +439,8 @@
     </style>
 
     <style name="DirectorySearchText">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/dark_text_field_text_hint</item>
         <item name="android:textSize">20dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:padding">10dp</item>
@@ -448,7 +449,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:imeOptions">actionSearch</item>
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@color/clear_color</item>
     </style>
 
     <style name="TxDetailsEditText">

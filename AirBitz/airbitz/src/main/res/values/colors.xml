@@ -12,7 +12,7 @@
     <color name="button_green_faded">#5580c342</color>
     <color name="button_blue_faded">#55006698</color>
     <color name="dark_text_field_background">#FF404040</color>
-    <color name="dark_text_field_text_hint">#FFbbbbbb</color>
+    <color name="dark_text_field_text_hint">#FFdddddd</color>
     <color name="dark_text_field_text">#FFFFFFFF</color>
 
     <!-- Do not use colors below -->
