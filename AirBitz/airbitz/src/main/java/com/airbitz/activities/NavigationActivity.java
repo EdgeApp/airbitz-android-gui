@@ -1145,7 +1145,7 @@ public class NavigationActivity extends ActionBarActivity
                     );
             mIncomingDialog = builder.create();
             mIncomingDialog.show();
-            mHandler.postDelayed(dialogKiller, 5000);
+            mHandler.postDelayed(dialogKiller, getResources().getInteger(R.integer.alert_hold_time_payment_received));
         }
     }
 
