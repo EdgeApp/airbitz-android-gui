@@ -117,7 +117,10 @@ public class ImportFragment extends WalletBaseFragment implements
         @Override
         public void run() {
             showBusyLayout(null, false);
-            if(isVisible()) {
+            if (mQRCamera != null) {
+                mQRCamera.startScanning();
+            }
+            if (isVisible()) {
                 clearSweepAddress();
                 mSweptAmount = -1;
                 mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
@@ -181,7 +184,6 @@ public class ImportFragment extends WalletBaseFragment implements
 
     private void showBusyLayout(String address, boolean on) {
         if(on) {
-            stopCamera();
             MaterialDialog.Builder builder =
                 new MaterialDialog.Builder(mActivity)
                         .content(String.format(getString(R.string.import_wallet_busy_text), address))
@@ -190,9 +192,10 @@ public class ImportFragment extends WalletBaseFragment implements
                         .progressIndeterminateStyle(false);
             mDialog = builder.build();
             mDialog.show();
-        }
-        else {
-            startCamera();
+            if (mQRCamera != null) {
+                mQRCamera.stopScanning();
+            }
+        } else {
             if (null != mDialog) {
                 mDialog.dismiss();
             }
@@ -201,7 +204,6 @@ public class ImportFragment extends WalletBaseFragment implements
 
     private void scanQRCodes() {
         mCameraLayout.setVisibility(View.VISIBLE);
-        startCamera();
 
         final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
         mNfcAdapter = nfcManager.getDefaultAdapter();
@@ -212,11 +214,6 @@ public class ImportFragment extends WalletBaseFragment implements
         else {
 //            mQRCodeTextView.setText(getString(R.string.send_scan_text));
         }
-    }
-
-    private void stopScanningQRCodes() {
-        mCameraLayout.setVisibility(View.GONE);
-        stopCamera();
     }
 
     public void stopCamera() {
@@ -240,17 +237,15 @@ public class ImportFragment extends WalletBaseFragment implements
 
         Bundle args = getArguments();
 
+        startCamera();
         if(args != null && args.getString(URI) != null && getHiddenBitsToken(args.getString(URI)) != null) {
             mSweptAddress = args.getString(URI);
-            stopScanningQRCodes();
             showAddressDialog();
-        }
-        else {
+        } else {
             scanQRCodes();
         }
 
         mCoreAPI.setOnWalletSweepListener(this);
-
         clearSweepAddress();
     }
 
@@ -258,20 +253,14 @@ public class ImportFragment extends WalletBaseFragment implements
     public void onPause() {
         super.onPause();
         showBusyLayout(null, false);
-        mQRCamera.setOnScanResultListener(null);
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
         mCoreAPI.setOnWalletSweepListener(null);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        stopCamera();
-    }
-
-    @Override
     public void onScanResult(String result) {
+        Log.d(TAG, "OnScanResult " + result);
         if (result != null) {
             Log.d(TAG, "HiddenBits found");
             attemptSubmit(result);
@@ -461,7 +450,9 @@ public class ImportFragment extends WalletBaseFragment implements
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onNeutral(MaterialDialog dialog) {
-                        startCamera();
+                        if (mQRCamera != null) {
+                            mQRCamera.startScanning();
+                        }
                         dialog.cancel();
                     }
                });

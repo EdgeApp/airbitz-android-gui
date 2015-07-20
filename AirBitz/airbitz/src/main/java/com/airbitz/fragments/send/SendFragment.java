@@ -228,18 +228,7 @@ public class SendFragment extends WalletBaseFragment implements
     // delegated from the containing fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-
-            String info = mQRCamera.attemptDecodePicture(thumbnail);
-            stopCamera();
-            onScanResult(info);
+            mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -331,10 +320,10 @@ public class SendFragment extends WalletBaseFragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            mQRCamera.startCamera();
+            mQRCamera.startScanning();
         } else {
             if (mQRCamera != null) {
-                mQRCamera.stopCamera();
+                mQRCamera.stopScanning();
             }
         }
     }
@@ -357,7 +346,6 @@ public class SendFragment extends WalletBaseFragment implements
         if(mBluetoothListView != null) {
             mBluetoothListView.close();
         }
-        mQRCamera.setOnScanResultListener(null);
         mCoreApi.setOnWalletLoadedListener(null);
         hasCheckedFirstUsage = false;
     }
@@ -400,7 +388,7 @@ public class SendFragment extends WalletBaseFragment implements
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onNeutral(MaterialDialog dialog) {
-                        startCamera();
+                        mQRCamera.startScanning();
                         dialog.cancel();
                     }
                });
