@@ -139,6 +139,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private String mUUID = null;
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
+    private boolean mInPartialPayment = false;
 
     private TextView mConverterTextView;
     private TextView mDenominationTextView;
@@ -170,7 +171,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private Button mEmailButton;
     private Button mCopyButton;
     private View mPartialNotification;
-    private TextView mRequestedTextView;
+    private TextView mReceivedTextView;
     private TextView mRemainingTextView;
 
     private boolean emailType = false;
@@ -220,7 +221,12 @@ public class RequestFragment extends WalletBaseFragment implements
             @Override
             public void afterTextChanged(Editable editable) {
                 mAmountField.setSelection(mAmountField.getText().toString().length());
+                mInPartialPayment = false;
                 if (!mAutoUpdatingTextFields) {
+                    mReceivedTextView.setText(getResources().getString(R.string.request_qr_waiting_for_payment));
+                    mRemainingTextView.setVisibility(View.GONE);
+                    mRemainingTextView.setText("");
+
                     amountChanged();
                 }
             }
@@ -289,7 +295,7 @@ public class RequestFragment extends WalletBaseFragment implements
         });
 
         mPartialNotification = mView.findViewById(R.id.partial_payment);
-        mRequestedTextView = (TextView) mView.findViewById(R.id.amount_requested);
+        mReceivedTextView = (TextView) mView.findViewById(R.id.amount_requested);
         mRemainingTextView = (TextView) mView.findViewById(R.id.amount_received);
         if (SettingFragment.getMerchantModePref()) {
             showCalculator();
@@ -462,6 +468,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        mInPartialPayment = false;
         checkFirstUsage();
     }
 
@@ -487,6 +494,9 @@ public class RequestFragment extends WalletBaseFragment implements
 
     @Override
     protected void onExchangeRatesChange() {
+        if (mInPartialPayment)
+            return;
+
         if (mWallet != null) {
             updateAmount();
         }
@@ -718,17 +728,18 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public void updateWithAmount(long newAmount) {
         mAutoUpdatingTextFields = true;
+        mInPartialPayment = true;
         if (mOriginalAmountSatoshi == 0) {
             mOriginalAmountSatoshi = mAmountSatoshi;
         }
         mAmountSatoshi = newAmount;
-        mRequestedTextView.setText(
-                String.format(getResources().getString(R.string.bitcoing_requested),
-                        mCoreAPI.formatSatoshi(mOriginalAmountSatoshi, true))
+        mReceivedTextView.setText(
+                String.format(getResources().getString(R.string.bitcoin_received),
+                        mCoreAPI.formatSatoshi(mOriginalAmountSatoshi - mAmountSatoshi, true))
         );
         mRemainingTextView.setVisibility(View.VISIBLE);
         mRemainingTextView.setText(
-                String.format(getResources().getString(R.string.bitcoing_remaining),
+                String.format(getResources().getString(R.string.bitcoin_remaining),
                         mCoreAPI.formatSatoshi(mAmountSatoshi, true))
         );
 

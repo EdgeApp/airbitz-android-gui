@@ -530,7 +530,7 @@
     <string name="received_bitcoin_fading_message_teaching">Utilice el beneficiario, la categoría, y el campo de notas para, opcionalmente, etiqueta tu transacción</string>
     <string name="received_partial_bitcoin_title">Parcial Pago Recibido</string>
     <string name="received_partial_bitcoin_message">ADVERTENCIA: Parcial Pago Recibido</string>
-    <string name="bitcoing_remaining">%1$s Restante…</string>
+    <string name="bitcoin_remaining">%1$s Restante…</string>
     <string name="received_bitcoin_positive">Detalles</string>
     <string name="received_bitcoin_negative">Ignorar</string>
     <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>
