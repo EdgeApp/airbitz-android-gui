@@ -349,6 +349,7 @@
     </style>
 
     <style name="SegmentedButton" parent="BlueButton">
+        <item name="android:background">@drawable/button_primary_color</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">4dp</item>
         <item name="android:padding">5dp</item>

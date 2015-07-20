@@ -354,7 +354,7 @@ public class BusinessSearchFragment extends BaseFragment implements
 
         @Override
         protected void onPostExecute(List<Business> businesses) {
-            if (mActivity == null) {
+            if (getActivity() == null) {
                 return;
             }
             setLoading(false);
@@ -402,7 +402,7 @@ public class BusinessSearchFragment extends BaseFragment implements
 
         @Override
         protected void onPostExecute(List<LocationSearchResult> result) {
-            if (mActivity == null) {
+            if (getActivity() == null) {
                 return;
             }
             setLoading(false);

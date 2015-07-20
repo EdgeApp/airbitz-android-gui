@@ -2132,9 +2132,13 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int tmp = mNavThreadId;
                 resetDrawerButtons(mDrawerSettings);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
+                if (Tabs.MORE.ordinal() == tmp) {
+                    switchFragmentThread(Tabs.MORE.ordinal());
+                }
                 mDrawer.closeDrawer(mDrawerView);
             }
         });

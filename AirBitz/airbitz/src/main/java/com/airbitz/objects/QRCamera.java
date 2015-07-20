@@ -99,6 +99,14 @@ public class QRCamera implements
         }
     };
 
+    public void startScanning() {
+        mCameraHandler.sendEmptyMessage(PREVIEW_ON);
+    }
+
+    public void stopScanning() {
+        mCameraHandler.sendEmptyMessage(PREVIEW_OFF);
+    }
+
     public void startCamera() {
         mHandler.post(mCameraStartRunner);
     }
@@ -214,7 +222,6 @@ public class QRCamera implements
             Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
             String info = attemptDecodePicture(thumbnail);
-            stopCamera();
             if (mOnScanResult != null) {
                 mOnScanResult.onScanResult(info);
             }
@@ -231,7 +238,6 @@ public class QRCamera implements
     private void receivedQrCode(final String info) {
         mHandler.post(new Runnable() {
             public void run() {
-                stopCamera();
                 if (mOnScanResult != null) {
                     mOnScanResult.onScanResult(info);
                 }
@@ -249,6 +255,8 @@ public class QRCamera implements
     private static final int CANCEL_AUTO_FOCUS = 8;
     private static final int FLASH_ON = 9;
     private static final int FLASH_OFF = 10;
+    private static final int PREVIEW_ON = 11;
+    private static final int PREVIEW_OFF = 12;
 
     private class CameraHandler extends Handler {
         CameraHandler(Looper looper) {
@@ -328,6 +336,16 @@ public class QRCamera implements
                         break;
                     }
 
+                    case PREVIEW_ON:
+                        Log.d(TAG, "PREVIEW_ON");
+                        mPreviewing = true;
+                        break;
+
+                    case PREVIEW_OFF:
+                        Log.d(TAG, "PREVIEW_OFF");
+                        mPreviewing = false;
+                        break;
+
                     default:
                         throw new RuntimeException("Invalid CameraProxy message=" + msg.what);
                 }
@@ -405,6 +423,7 @@ public class QRCamera implements
         if (!mPreviewing) {
             return;
         }
+        Log.d(TAG, "onPreviewFrame " + mPreviewing);
         obscuraDown();
         tryBytes(bytes, camera);
     }
