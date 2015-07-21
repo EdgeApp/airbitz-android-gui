@@ -160,11 +160,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         toolbar.setTitle("");
         getBaseActivity().setSupportActionBar(toolbar);
 
-        latoBlackTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Bold.ttf");
-        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Bla.ttf");
-        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-RegIta.ttf");
-        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/HelveticaNeue.ttf");
+        latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
         mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);
