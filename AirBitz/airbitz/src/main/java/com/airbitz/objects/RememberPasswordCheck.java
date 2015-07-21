@@ -31,6 +31,7 @@
 
 package com.airbitz.objects;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,7 +41,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
-import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -67,16 +69,16 @@ public class RememberPasswordCheck {
     }
 
     public void showPasswordCheckAlert() {
-        final EditText input = new EditText(mActivity);
-        input.setHint(R.string.password_check_current_password);
-        input.setSingleLine(true);
+        LayoutInflater inflater = mActivity.getLayoutInflater();
+        final View view = inflater.inflate(R.layout.alert_remember_password, null);
+
+        final EditText input = (EditText) view.findViewById(R.id.password);
         input.setTransformationMethod(new PasswordTransformationMethod());
         input.setImeOptions(EditorInfo.IME_ACTION_GO);
 
-        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
-        builder.setMessage(mActivity.getString(R.string.password_check_remember_message))
-                .setTitle(mActivity.getString(R.string.password_check_remember_title))
-                .setView(input)
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(mActivity.getString(R.string.password_check_remember_title))
+                .setView(view)
                 .setCancelable(false)
                 .setPositiveButton(mActivity.getResources().getString(R.string.password_check_check_my_password),
                         new DialogInterface.OnClickListener() {
@@ -161,7 +163,9 @@ public class RememberPasswordCheck {
 
         @Override
         protected void onPreExecute() {
-            mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_checking), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
+            String msg = mActivity.getResources().getString(R.string.password_check_checking);
+            int timeout = mActivity.getResources().getInteger(R.integer.alert_hold_time_default);
+            mActivity.ShowFadingDialog(msg, timeout, false);
         }
 
         @Override
