@@ -938,7 +938,7 @@ public class NavigationActivity extends ActionBarActivity
         RequestFragment fragment = requestMatchesDonation();
         if(fragment != null) {
             AudioPlayer.play(this, R.raw.bitcoin_received);
-            showIncomingDialog(walletUUID, txId, false);
+            fragment.showDonation(mUUID, mTxId);
             return;
         }
 

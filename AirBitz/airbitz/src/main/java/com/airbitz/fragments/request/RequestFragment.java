@@ -109,6 +109,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.Calculator;
+import com.airbitz.objects.DessertView;
 import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
@@ -170,7 +171,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private Button mSMSButton;
     private Button mEmailButton;
     private Button mCopyButton;
-    private View mPartialNotification;
+    private DessertView mDessertView;
     private TextView mReceivedTextView;
     private TextView mRemainingTextView;
 
@@ -294,7 +295,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         });
 
-        mPartialNotification = mView.findViewById(R.id.partial_payment);
+        mDessertView = (DessertView) mView.findViewById(R.id.dropdown_alert);
         mReceivedTextView = (TextView) mView.findViewById(R.id.amount_requested);
         mRemainingTextView = (TextView) mView.findViewById(R.id.amount_received);
         if (SettingFragment.getMerchantModePref()) {
@@ -727,6 +728,23 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     }
 
+    public void showDonation(String uuid, String txId) {
+        Transaction tx = mCoreApi.getTransaction(uuid, txId);
+        showDonation(tx.getAmountSatoshi());
+    }
+
+    public void showDonation(long amount) {
+        mDessertView.setOkIcon();
+        mDessertView.getLine1().setText(R.string.string_payment_received);
+        mDessertView.getLine2().setText(mCoreAPI.formatSatoshi(amount, true));
+        mDessertView.getLine3().setVisibility(View.VISIBLE);
+        mDessertView.getLine3().setText(
+            mCoreApi.FormatCurrency(amount, mWallet.getCurrencyNum(), false, true));
+        mDessertView.show();
+
+        createNewQRBitmap();
+    }
+
     public void updateWithAmount(long newAmount) {
         mAutoUpdatingTextFields = true;
         mInPartialPayment = true;
@@ -734,6 +752,7 @@ public class RequestFragment extends WalletBaseFragment implements
             mOriginalAmountSatoshi = mAmountSatoshi;
         }
         mAmountSatoshi = newAmount;
+
         mReceivedTextView.setText(
                 String.format(getResources().getString(R.string.bitcoin_received),
                         mCoreAPI.formatSatoshi(mOriginalAmountSatoshi - mAmountSatoshi, true))
@@ -744,8 +763,13 @@ public class RequestFragment extends WalletBaseFragment implements
                         mCoreAPI.formatSatoshi(mAmountSatoshi, true))
         );
 
+        mDessertView.setWarningIcon();
+        mDessertView.getLine1().setText(R.string.received_partial_bitcoin_title);
+        mDessertView.getLine2().setText(R.string.received_partial_bitcoin_message);
+        mDessertView.getLine3().setVisibility(View.GONE);
+        mDessertView.show();
+
         createNewQRBitmap();
-        showPartialPayment();
         mAutoUpdatingTextFields = false;
     }
 
@@ -1105,52 +1129,6 @@ public class RequestFragment extends WalletBaseFragment implements
         }
         mQRView.getLayoutParams().height = newHeight;
         mQRView.requestLayout();
-    }
-
-    private void showPartialPayment() {
-        if (mPartialNotification.getVisibility() == View.VISIBLE) {
-            return;
-        }
-        ObjectAnimator key = ObjectAnimator.ofFloat(mPartialNotification, "translationX", -mPartialNotification.getWidth(), 0f);
-        key.setDuration(250);
-        key.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mPartialNotification.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mPartialNotification.setVisibility(View.VISIBLE);
-            }
-        });
-        key.start();
-
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                hidePartialPayment();
-            }
-        }, PARTIAL_PAYMENT_TIMEOUT);
-    }
-
-    private void hidePartialPayment() {
-        if (mPartialNotification.getVisibility() == View.INVISIBLE) {
-            return;
-        }
-        ObjectAnimator key = ObjectAnimator.ofFloat(mPartialNotification, "translationX", 0f, mPartialNotification.getWidth());
-        key.setDuration(250);
-        key.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mPartialNotification.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mPartialNotification.setVisibility(View.VISIBLE);
-            }
-        });
-        key.start();
     }
 
     private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {

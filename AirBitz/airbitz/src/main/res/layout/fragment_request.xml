@@ -243,42 +243,10 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/partial_payment"
+            <com.airbitz.objects.DessertView
+                android:id="@+id/dropdown_alert"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/dark_gray_text"
-                android:visibility="invisible"
-                android:padding="20dp">
-
-                <ImageView
-                    android:id="@+id/partial_icon"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/warning" />
-
-                <TextView
-                    android:id="@+id/partial_title"
-                    android:layout_toRightOf="@id/partial_icon"
-                    android:layout_alignTop="@id/partial_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:text="@string/received_partial_bitcoin_title" />
-
-                <TextView
-                    android:id="@+id/partial_message"
-                    android:layout_toRightOf="@id/partial_icon"
-                    android:layout_below="@id/partial_title"
-                    android:layout_alignBottom="@id/partial_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:text="@string/received_partial_bitcoin_message" />
-            </RelativeLayout>
+                android:layout_height="wrap_content" />
 
         </FrameLayout>
 
