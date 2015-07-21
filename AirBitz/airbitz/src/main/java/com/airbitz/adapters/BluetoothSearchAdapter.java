@@ -124,7 +124,7 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         if (s.length() > 10) {
             return s.substring(10);
         } else {
-            return s.substring(0, 10);
+            return s;
         }
     }
 
