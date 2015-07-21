@@ -423,7 +423,6 @@ public class QRCamera implements
         if (!mPreviewing) {
             return;
         }
-        Log.d(TAG, "onPreviewFrame " + mPreviewing);
         obscuraDown();
         tryBytes(bytes, camera);
     }
