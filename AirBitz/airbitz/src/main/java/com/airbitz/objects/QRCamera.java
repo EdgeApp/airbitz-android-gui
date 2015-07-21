@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -200,12 +201,15 @@ public class QRCamera implements
     }
 
     public void setFlashOn(boolean on) {
-        if (on) {
-            mFlashOn = true;
-            mCameraHandler.sendEmptyMessage(FLASH_ON);
-        } else {
-            mFlashOn = false;
-            mCameraHandler.sendEmptyMessage(FLASH_OFF);
+        // You have camera in your device
+        if (hasCameraFlash()) {
+            if (on) {
+                mFlashOn = true;
+                mCameraHandler.sendEmptyMessage(FLASH_ON);
+            } else {
+                mFlashOn = false;
+                mCameraHandler.sendEmptyMessage(FLASH_OFF);
+            }
         }
     }
 
