@@ -490,6 +490,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         }
         hideCalculator();
+        stopAirbitzAdvertise();
     }
 
     @Override
