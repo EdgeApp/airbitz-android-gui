@@ -40,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Wallet;
 
@@ -68,6 +69,7 @@ public class WalletChoiceAdapter extends ArrayAdapter {
         titleTextView.setText(wallet.getName());
 
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
+        amountTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
         amountTextView.setText(mCoreAPI.formatSatoshi(wallet.getBalanceSatoshi(), true));
         return convertView;
     }

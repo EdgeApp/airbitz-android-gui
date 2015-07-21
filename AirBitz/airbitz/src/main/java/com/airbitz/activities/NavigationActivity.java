@@ -1547,6 +1547,9 @@ public class NavigationActivity extends ActionBarActivity
                     mFadingDialog.setCancelable(cancelable);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+                    TextView tv = mFadingDialog.getContentView();
+                    tv.setTypeface(NavigationActivity.latoRegularTypeFace);
+
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
                     fadeOut.setDuration(getResources().getInteger(R.integer.alert_fadeout_time_default));
