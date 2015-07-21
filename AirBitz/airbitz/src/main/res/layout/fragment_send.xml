@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
-    xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include
         android:id="@+id/fragment_send_layout_camera"
-        layout="@layout/fragment_camera_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:visibility="visible" />
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        layout="@layout/fragment_camera_scan"
+        />
 
     <LinearLayout
         android:id="@+id/fragment_send_buttons"
         android:layout_alignParentBottom="true"
+        android:background="@color/gray_frost"
         style="@style/SegmentedGroup">
 
         <Button
@@ -48,6 +50,13 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/fragment_send_bluetooth_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fragment_send_buttons"
+        android:visibility="visible" />
+
     <ListView
         android:id="@+id/fragment_send_transfer_list"
         android:layout_width="match_parent"
@@ -55,15 +64,6 @@
         android:background="@color/off_white"
         android:layout_below="@id/toolbar"
         android:visibility="invisible"/>
-
-    <RelativeLayout
-        android:id="@+id/fragment_send_bluetooth_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/fragment_send_buttons"
-        android:orientation="vertical"
-        android:visibility="visible" />
-
 
     <include layout="@layout/layout_toolbar_dropdown" />
 </RelativeLayout>

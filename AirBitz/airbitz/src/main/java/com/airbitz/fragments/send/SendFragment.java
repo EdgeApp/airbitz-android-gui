@@ -71,6 +71,7 @@ import android.widget.RelativeLayout;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.adapters.WalletChoiceAdapter;
 import com.airbitz.adapters.WalletOtherAdapter;
 import com.airbitz.adapters.WalletPickerAdapter;
@@ -329,6 +330,9 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void updateWalletOtherList() {
+        if (null == mWallets) {
+            return;
+        }
         mOtherWalletsList.clear();
         for (Wallet wallet : mWallets) {
             if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
@@ -431,15 +435,32 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     public void onPeripheralSelected(BleDevice device) {
+        showConnecting(device);
         stopBluetoothSearch();
         mBluetoothListView.setOnPeripheralSelectedListener(null);
         mBluetoothListView.setOnBitcoinURIReceivedListener(this);
         mBluetoothListView.connectGatt(device);
     }
 
+    private MaterialDialog mBleDialog = null;
+    private void showConnecting(BleDevice device) {
+        if (null != mBleDialog) {
+            mBleDialog.dismiss();
+            mBleDialog = null;
+        }
+        String name = BluetoothSearchAdapter.formatDevice(device);
+        MaterialDialog.Builder builder =
+            new MaterialDialog.Builder(mActivity)
+                    .content(String.format(mActivity.getString(R.string.fragment_send_connecting_to_device), name))
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(false);
+        mBleDialog = builder.build();
+        mBleDialog.show();
+    }
+
     @Override
     public void onBitcoinURIReceived(final String bitcoinAddress) {
-        if(mBluetoothListView != null) {
+        if (mBluetoothListView != null) {
             mBluetoothListView.setOnBitcoinURIReceivedListener(null);
         }
         mHandler.post(new Runnable() {
@@ -497,6 +518,11 @@ public class SendFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPostExecute(final Boolean result) {
+            // If this spend came from BLE
+            if (null != mBleDialog) {
+                mBleDialog.dismiss();
+                mBleDialog = null;
+            }
             if (result) {
                 GotoSendConfirmation(target);
             } else {
