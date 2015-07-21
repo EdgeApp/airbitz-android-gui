@@ -184,7 +184,7 @@ public class LandingFragment extends BaseFragment implements
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mUsername = s.toString();
             }
         });
 
