@@ -16,6 +16,7 @@
     <LinearLayout
         android:id="@+id/fragment_import_buttons"
         android:layout_alignParentBottom="true"
+        android:background="@color/gray_frost"
         style="@style/SegmentedGroup">
 
         <Button
