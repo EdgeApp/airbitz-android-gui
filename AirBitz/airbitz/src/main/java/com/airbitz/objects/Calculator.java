@@ -277,7 +277,7 @@ public class Calculator extends LinearLayout  {
                 if (userIsInTheMiddleOfTypingANumber) {
                     try {
                         setOperand(cleanNumber(mEditText.getText().toString()));
-                    } catch (NumberFormatException e) {
+                    } catch (Exception e) {
                         // ignore any non-double
                     }
                     userIsInTheMiddleOfTypingANumber = false;
