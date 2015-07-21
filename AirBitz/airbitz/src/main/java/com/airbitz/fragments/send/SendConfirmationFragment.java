@@ -69,13 +69,16 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.WalletBaseFragment;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
+import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -92,7 +95,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private final int INVALID_ENTRY_COUNT_MAX = 3;
     private final int INVALID_ENTRY_WAIT_MILLIS = 30000;
     private final int CALC_SEND_FEES_DELAY_MILLIS = 400;
-    private final int DUST_AMOUNT = 5340;
     private static final String INVALID_ENTRY_PREF = "fragment_send_confirmation_invalid_entries";
 
     private TextView mToEdittext;
@@ -571,23 +573,36 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mHandler.postDelayed(delayCalcFees, CALC_SEND_FEES_DELAY_MILLIS);
     }
 
-    private void UpdateFeeFields(Long fees) {
+    private void UpdateFeeFields(Long fees, tABC_Error error) {
         mAutoUpdatingTextFields = true;
         int color = Color.WHITE;
-        if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
-            color = getResources().getColor(R.color.max_orange);
-            mMaxButton.setBackgroundResource(R.drawable.bg_button_orange);
+        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+            if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+                color = getResources().getColor(R.color.max_orange);
+                mMaxButton.setBackgroundResource(R.drawable.bg_button_orange);
+            } else {
+                color = Color.WHITE;
+                mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
+            }
+            if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
+                mConversionTextView.setTextColor(color);
+                mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                mConversionTextView.setBackgroundResource(android.R.color.transparent);
+                mBitcoinField.setTextColor(color);
+                mFiatField.setTextColor(color);
+
+                String coinFeeString = "+ " + mCoreApi.formatSatoshi(fees, false);
+                mBTCDenominationTextView.setText(coinFeeString + " " + mCoreApi.getDefaultBTCDenomination());
+
+                double fiatFee = mCoreApi.SatoshiToCurrency(fees, mWalletForConversions.getCurrencyNum());
+                String fiatFeeString = "+ " + mCoreApi.formatCurrency(fiatFee, mWalletForConversions.getCurrencyNum(), false);
+                mFiatDenominationTextView.setText(fiatFeeString + " " + mCoreApi.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
+                mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
+
+                mSlideLayout.setVisibility(View.VISIBLE);
+            }
         } else {
-            color = Color.WHITE;
-            mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
-        }
-        if (fees < 0) {
-            if(mAmountToSendSatoshi > DUST_AMOUNT) {
-                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_funds));
-            }
-            else {
-                mConversionTextView.setText(mActivity.getResources().getString(R.string.fragment_send_confirmation_insufficient_amount));
-            }
+            mConversionTextView.setText(Common.errorMap(mActivity, error));
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
@@ -596,24 +611,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
-
             mSlideLayout.setVisibility(View.INVISIBLE);
-        } else if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
-            mConversionTextView.setTextColor(color);
-            mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            mConversionTextView.setBackgroundResource(android.R.color.transparent);
-            mBitcoinField.setTextColor(color);
-            mFiatField.setTextColor(color);
-
-            String coinFeeString = "+ " + mCoreApi.formatSatoshi(fees, false);
-            mBTCDenominationTextView.setText(coinFeeString + " " + mCoreApi.getDefaultBTCDenomination());
-
-            double fiatFee = mCoreApi.SatoshiToCurrency(fees, mWalletForConversions.getCurrencyNum());
-            String fiatFeeString = "+ " + mCoreApi.formatCurrency(fiatFee, mWalletForConversions.getCurrencyNum(), false);
-            mFiatDenominationTextView.setText(fiatFeeString + " " + mCoreApi.getCurrencyAcronym(mWalletForConversions.getCurrencyNum()));
-            mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mWalletForConversions.getCurrencyNum()));
-
-            mSlideLayout.setVisibility(View.VISIBLE);
         }
         mAutoUpdatingTextFields = false;
     }
@@ -687,8 +685,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private void continueChecks() {
         if (mAmountToSendSatoshi == 0) {
             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_no_satoshi_message));
-        } else if (mAmountToSendSatoshi < DUST_AMOUNT) {
-            showDustAlert();
         } else {
             // show the sending screen
             SuccessFragment mSuccessFragment = new SuccessFragment();
@@ -706,16 +702,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             hideCalculator();
         }
         resetSlider();
-    }
-
-    private void showDustAlert() {
-        double dustFiat = mCoreApi.SatoshiToCurrency(DUST_AMOUNT, mSourceWallet.getCurrencyNum());
-        String alertMessage = getString(R.string.fragment_send_confirmation_dust_alert);
-        if(dustFiat != 0) {
-           alertMessage += " " + String.format(getString(R.string.fragment_send_confirmation_dust_alert_more),
-               mCoreApi.formatSatoshi((long) DUST_AMOUNT), mCoreApi.formatCurrency(dustFiat, mSourceWallet.getCurrencyNum(), true));
-        }
-        mActivity.ShowFadingDialog(alertMessage);
     }
 
     final Runnable invalidEntryTimer = new Runnable() {
@@ -951,6 +937,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     }
 
     public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
+        tABC_Error error;
+
+        CalculateFeesTask() {
+            error = new tABC_Error();
+        }
 
         @Override
         protected void onPreExecute() {
@@ -961,7 +952,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         protected Long doInBackground(Void... params) {
             Log.d(TAG, "Fee calculation started");
             String dest = mIsUUID ? mWalletForConversions.getUUID() : mUUIDorURI;
-            return mSpendTarget.calcSendFees(mSourceWallet.getUUID());
+            return mSpendTarget.calcSendFees(mSourceWallet.getUUID(), error);
         }
 
         @Override
@@ -970,7 +961,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             if (isAdded()) {
                 mCalculateFeesTask = null;
                 mFees = fees;
-                UpdateFeeFields(fees);
+                UpdateFeeFields(fees, error);
                 mSlideLayout.setEnabled(true);
             }
         }

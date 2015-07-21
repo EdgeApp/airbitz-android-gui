@@ -314,6 +314,9 @@ public class Common {
         else if (code == tABC_CC.ABC_CC_InsufficientFunds) {
             return context.getString(R.string.server_error_insufficient_funds);
         }
+        else if (code == tABC_CC.ABC_CC_SpendDust) {
+            return context.getString(R.string.fragment_send_confirmation_insufficient_amount);
+        }
         else if (code == tABC_CC.ABC_CC_Synchronizing) {
             return context.getString(R.string.server_error_synchronizing);
         }

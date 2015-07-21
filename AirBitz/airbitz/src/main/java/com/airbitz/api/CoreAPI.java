@@ -3277,7 +3277,10 @@ public class CoreAPI {
 
         public long calcSendFees(String walletUUID) {
             tABC_Error error = new tABC_Error();
+            return calcSendFees(walletUUID, error);
+        }
 
+        public long calcSendFees(String walletUUID, tABC_Error error) {
             SWIGTYPE_p_uint64_t total = core.new_uint64_tp();
 
             core.ABC_SpendGetFee(AirbitzApplication.getUsername(), walletUUID, _pSpend, total, error);
