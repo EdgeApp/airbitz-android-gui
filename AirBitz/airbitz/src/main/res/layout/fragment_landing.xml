@@ -268,7 +268,7 @@
 
             <TextView
                 android:id="@+id/fragment_landing_swipe_textview"
-                android:layout_width="220dp"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:padding="6.3dp"
                 android:text="@string/fragment_landing_swipe_text"
