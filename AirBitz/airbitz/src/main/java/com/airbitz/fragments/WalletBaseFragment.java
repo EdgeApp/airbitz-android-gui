@@ -54,7 +54,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletChoiceAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.models.Wallet;
 
 import java.util.ArrayList;

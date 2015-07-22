@@ -92,6 +92,7 @@ import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
+import com.airbitz.fragments.request.OnAddressRequestListener;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
@@ -142,7 +143,7 @@ public class NavigationActivity extends ActionBarActivity
         CoreAPI.OnRemotePasswordChange,
         CoreAPI.OnOTPError,
         CoreAPI.OnOTPResetRequest,
-        AddressRequestFragment.OnAddressRequest,
+        OnAddressRequestListener,
         TwoFactorScanFragment.OnTwoFactorQRScanResult,
         AccountsAdapter.OnButtonTouched {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
@@ -734,7 +735,11 @@ public class NavigationActivity extends ActionBarActivity
         if(intent != null) {
             Uri data = intent.getData();
             if(data != null) {
+                Log.d(TAG, "Process URI from here 1");
                 processUri(data);
+                // XXX: replace intent that launched the app
+                // it is a result of this dirty "god" activity
+                setIntent(new Intent());
             }
         }
 
@@ -862,7 +867,9 @@ public class NavigationActivity extends ActionBarActivity
         } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
         }
-        else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
+        else if("bitcoin-ret".equals(scheme)
+                || "x-callback-url".equals(scheme)
+                || "airbitz-ret".equals(scheme)) {
             handleRequestForPaymentUri(uri);
         }
         else if (ImportFragment.getHiddenBitsToken(uri.toString()) != null) {

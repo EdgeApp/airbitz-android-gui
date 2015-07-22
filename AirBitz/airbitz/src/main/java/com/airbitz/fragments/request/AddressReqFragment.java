@@ -45,6 +45,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.WalletBaseFragment;
+import com.airbitz.models.Wallet;
 import com.airbitz.utils.Common;
 
 import java.io.UnsupportedEncodingException;
@@ -52,7 +53,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-public class AddressRequestFragment extends WalletBaseFragment {
+public class AddressReqFragment extends WalletBaseFragment {
 
     public static final String URI = "com.airbitz.addressrequest.uri";
 
@@ -72,20 +73,17 @@ public class AddressRequestFragment extends WalletBaseFragment {
     private String _cancelUrl;
 
     // Callback when finished
-    private OnAddressRequestListener mOnAddressRequest;
-    public void setOnAddressRequestListener(OnAddressRequestListener listener) {
+    private OnAddressRequest mOnAddressRequest;
+    public interface OnAddressRequest {
+        public void onAddressRequest();
+    }
+    public void setOnAddressRequestListener(OnAddressRequest listener) {
         mOnAddressRequest = listener;
     }
 
     @Override
     public String getSubtitle() {
         return mActivity.getString(R.string.address_request_title);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setBackEnabled(true);
     }
 
     @Override
@@ -121,6 +119,11 @@ public class AddressRequestFragment extends WalletBaseFragment {
         mInstruction.setText(String.format(getString(R.string.address_request_message), strName));
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     private void parseUri(Uri uri) {
         if (uri != null) {
             Map<String, String> map;
@@ -140,11 +143,6 @@ public class AddressRequestFragment extends WalletBaseFragment {
             strCategory = "";
             strNotes = "";
         }
-    }
-
-    @Override
-    public boolean onBackPress() {
-        return true;
     }
 
     private void goOkay() {
