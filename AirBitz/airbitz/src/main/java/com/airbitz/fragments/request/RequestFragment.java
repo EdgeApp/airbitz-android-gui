@@ -950,6 +950,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void stopAirbitzAdvertise() {
+        mHandler.removeCallbacks(mContinuousReAdvertiseRunnable);
         if (mGattServer != null) {
             mGattServer.clearServices();
             mGattServer.close();
