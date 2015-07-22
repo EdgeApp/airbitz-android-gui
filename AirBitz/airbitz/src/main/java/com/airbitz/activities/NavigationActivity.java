@@ -881,6 +881,7 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin-ret or x-callback-url Uri's coming from OS
      */
     private void handleRequestForPaymentUri(Uri uri) {
+        resetDrawerButtons(mDrawerRequest);
         AddressRequestFragment fragment = new AddressRequestFragment();
         fragment.setOnAddressRequestListener(this);
         Bundle bundle = new Bundle();
@@ -916,23 +917,13 @@ public class NavigationActivity extends ActionBarActivity
      */
     private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
-
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
+        resetDrawerButtons(mDrawerSend);
 
-        if (mNavThreadId != Tabs.SEND.ordinal()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
-            bundle.putString(URI_DATA, dataUri.toString());
-            switchFragmentThread(Tabs.SEND.ordinal(), bundle);
-        } else {
-            CoreAPI.SpendTarget target = mCoreAPI.getNewSpendTarget();
-            switchFragmentThread(Tabs.SEND.ordinal());
-            SendConfirmationFragment fragment = new SendConfirmationFragment();
-            fragment.setSpendTarget(target);
-            Bundle bundle = new Bundle();
-            bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
-            fragment.setArguments(bundle);
-        }
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
+        bundle.putString(URI_DATA, dataUri.toString());
+        switchFragmentThread(Tabs.SEND.ordinal(), bundle);
     }
 
     @Override

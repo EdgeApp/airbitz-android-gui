@@ -99,7 +99,6 @@ import java.util.List;
 
 public class SendFragment extends WalletBaseFragment implements
         BluetoothListView.OnPeripheralSelected,
-        CoreAPI.OnWalletLoaded,
         BluetoothListView.OnBitcoinURIReceived,
         QRCamera.OnScanResult
 {
@@ -292,8 +291,6 @@ public class SendFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
 
-        mCoreApi.setOnWalletLoadedListener(this);
-
         hasCheckedFirstUsage = false;
         if (mHandler == null) {
             mHandler = new Handler();
@@ -350,7 +347,6 @@ public class SendFragment extends WalletBaseFragment implements
         if(mBluetoothListView != null) {
             mBluetoothListView.close();
         }
-        mCoreApi.setOnWalletLoadedListener(null);
         hasCheckedFirstUsage = false;
     }
 
@@ -484,8 +480,6 @@ public class SendFragment extends WalletBaseFragment implements
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-        mWallets = mCoreApi.getCoreActiveWallets();
-
         mFromWallet = mWallet;
         Bundle bundle = getArguments();
         if (bundle != null) {
