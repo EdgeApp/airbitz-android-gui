@@ -54,6 +54,43 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/toolbar_search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="left|center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/search_close_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingStart="8dip"
+                    android:paddingEnd="8dip"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_close_light"
+                    android:focusable="true" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toolbar_search" 
+                    android:hint="@string/string_search"
+                    android:singleLine="true"
+                    android:minWidth="10dp"
+                    android:background="@null"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/bold_cursor_white"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/search_close_btn"
+                    />
+
+            </RelativeLayout>
+
         </FrameLayout>
 
     </android.support.v7.widget.Toolbar>

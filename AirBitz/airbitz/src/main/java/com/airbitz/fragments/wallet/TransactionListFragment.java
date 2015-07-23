@@ -99,7 +99,6 @@ public class TransactionListFragment extends WalletsFragment
 
     private MenuItem mSearchItem;
     private SearchView mSearchView;
-    private boolean mSearchPage = false;
     private View mRequestButton;
     private View mSendButton;
     private ImageView mMoverCoin;
@@ -182,7 +181,6 @@ public class TransactionListFragment extends WalletsFragment
 
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_list, container, false);
-            mSearchPage = false;
         }
 
         mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_wallet_swipe_layout);
@@ -305,47 +303,11 @@ public class TransactionListFragment extends WalletsFragment
         if (isMenuExpanded()) {
             super.onCreateOptionsMenu(menu, inflater);
             return;
+        } else if (isSearching()) {
+            inflater.inflate(R.menu.menu_empty, menu);
+            return;
         }
         inflater.inflate(R.menu.menu_transaction_list, menu);
-
-        mSearchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) mSearchItem.getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextChange(String text) {
-                try {
-                    if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
-                        mSearchTask.cancel(true);
-                    }
-                    if (TextUtils.isEmpty(text)) {
-                        updateTransactionsListView(mAllTransactions);
-                    } else {
-                        mSearchTask = new SearchTask();
-                        mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, text);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-        });
-        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                hideTitleView();
-                mSearchPage = true;
-            }
-        });
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            public boolean onClose() {
-                hideSearch();
-                return true;
-            }
-        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -356,12 +318,32 @@ public class TransactionListFragment extends WalletsFragment
         }
         switch (item.getItemId()) {
         case android.R.id.home:
-            return hideSearch();
+            return onBackPress();
+        case R.id.action_search:
+            showSearch();
+            return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS));
             return true;
         default:
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onSearchQuery(String query) {
+        try {
+            if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
+                mSearchTask.cancel(true);
+            }
+            if (TextUtils.isEmpty(query)) {
+                updateTransactionsListView(mAllTransactions);
+            } else {
+                mSearchTask = new SearchTask();
+                mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -373,6 +355,16 @@ public class TransactionListFragment extends WalletsFragment
         return hideSearch();
     }
 
+    @Override
+    public boolean hideSearch() {
+        if (super.hideSearch()) {
+            mTransactionAdapter.setSearch(false);
+            startTransactionTask();
+            return true;
+        }
+        return false;
+    }
+
     private void buildFragments(Bundle bundle) {
         if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)
                 || bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
@@ -380,19 +372,6 @@ public class TransactionListFragment extends WalletsFragment
             details.setArguments(bundle);
             mActivity.pushFragment(details, NavigationActivity.Tabs.WALLET.ordinal());
         }
-    }
-
-    private boolean hideSearch() {
-        if (mSearchPage) {
-            mSearchPage = false;
-            showTitleView();
-
-            mTransactionAdapter.setSearch(false);
-            startTransactionTask();
-            mSearchView.onActionViewCollapsed();
-            return true;
-        }
-        return false;
     }
 
     private void startTransactionTask() {

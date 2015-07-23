@@ -38,13 +38,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -75,10 +78,14 @@ public class WalletBaseFragment extends BaseFragment implements
     protected ListView mWalletList;
     protected View mWalletsContainer;
     protected View mTitleFrame;
+    protected View mSearchLayout;
+    protected EditText mSearch;
+    protected View mCloseSearch;
     protected TextView mTitleView;
     protected TextView mSubtitleView;
     protected ImageView mDropdownIcon;
     protected CoreAPI mCoreApi;
+    protected boolean mSearching = false;
     protected boolean mHomeEnabled = true;
     protected boolean mDrawerEnabled = false;
     protected boolean mDropDownEnabled = true;
@@ -125,6 +132,36 @@ public class WalletBaseFragment extends BaseFragment implements
 
         mTitleFrame = view.findViewById(R.id.title_frame);
         mTitleView = (TextView) view.findViewById(R.id.title);
+        mSearchLayout = view.findViewById(R.id.toolbar_search_layout);
+        if (mSearchLayout != null) {
+            mSearch = (EditText) view.findViewById(R.id.toolbar_search);
+            mSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    onSearchQuery(editable.toString());
+                }
+            });
+            mCloseSearch = view.findViewById(R.id.search_close_btn);
+            if (mCloseSearch != null) {
+                mCloseSearch.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(mSearch.getText())) {
+                            hideSearch();
+                        } else {
+                            mSearch.setText("");
+                        }
+                    }
+                });
+            }
+        }
         mSubtitleView = (TextView) view.findViewById(R.id.subtitle);
         mDropdownIcon = (ImageView) view.findViewById(R.id.dropdown_icon);
         updateTitle();
@@ -145,6 +182,9 @@ public class WalletBaseFragment extends BaseFragment implements
             mDropdownIcon.setVisibility(View.GONE);
         }
         updateTitle();
+    }
+
+    protected void onSearchQuery(String query) {
     }
 
     protected void fetchWallets() {
@@ -303,6 +343,39 @@ public class WalletBaseFragment extends BaseFragment implements
         mTitleFrame.setVisibility(View.VISIBLE);
     }
 
+    public boolean isSearching() {
+        return mSearching;
+    }
+
+    public boolean showSearch() {
+        if (mSearchLayout.getVisibility() != View.VISIBLE) {
+            showArrow();
+            mSearchLayout.setVisibility(View.VISIBLE);
+            mTitleFrame.setVisibility(View.INVISIBLE);
+            mSearch.requestFocus();
+            mActivity.showSoftKeyboard(mSearch);
+
+            mSearching = true;
+            mActivity.invalidateOptionsMenu();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hideSearch() {
+        if (mSearchLayout.getVisibility() == View.VISIBLE) {
+            showBurger();
+            mSearchLayout.setVisibility(View.GONE);
+            mTitleFrame.setVisibility(View.VISIBLE);
+            mActivity.hideSoftKeyboard(mSearchLayout);
+
+            mSearching = false;
+            mActivity.invalidateOptionsMenu();
+            return true;
+        }
+        return false;
+    }
+
     public void toggleWallets() {
         if (isMenuExpanded()) {
             hideWalletList();
@@ -389,6 +462,8 @@ public class WalletBaseFragment extends BaseFragment implements
     protected void onNavigationClick() {
         if (isMenuExpanded()) {
             hideWalletList();
+        } else if (isSearching()) {
+            hideSearch();
         } else {
             super.onNavigationClick();
         }
