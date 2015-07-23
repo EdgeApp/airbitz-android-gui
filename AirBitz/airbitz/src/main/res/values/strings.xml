@@ -506,6 +506,8 @@
     <string name="bluetoothlistview_scan_failed">Bluetooth scan failed. Try again.</string>
     <string name="bluetoothlistview_address_mismatch_title">Bitcoin address mismatch</string>
     <string name="bluetoothlistview_address_mismatch_message">The bitcoin address of the device you connected with:%1$s does not match the address that was initially advertised:%2$s</string>
+    <string name="ble_invalid_request">Invalid Bluetooth Request</string>
+    <string name="ble_invalid_contact_support">Please have Requestor contact support</string>
 
     <!-- Errors -->
     <string name="error_invalid_credentials">Invalid User Name or Password</string>

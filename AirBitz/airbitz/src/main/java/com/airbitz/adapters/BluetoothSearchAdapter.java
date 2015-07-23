@@ -82,30 +82,28 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
 
         BleDevice device = mDevices.get(position);
 
+        ImageView thumbnail = (ImageView) convertView.findViewById(R.id.bluetooth_item_imageview);
         TextView nameView = (TextView) convertView.findViewById(R.id.bluetooth_item_name);
         nameView.setTypeface(NavigationActivity.latoRegularTypeFace);
         TextView addressView = (TextView) convertView.findViewById(R.id.bluetooth_item_address);
         addressView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        String partialAddress = null;
-        String name = null;
-        if(device.getDevice().getName().length() > 10) {
-            partialAddress = device.getDevice().getName().substring(0, 10);
-            name = device.getDevice().getName().substring(10);
-        }
+        String partialAddress = device.getPartialAddress();
+        String name = device.getName();
         Contact nameInContacts = null;
-        if(name != null) {
+        if (!device.hasErrors()) {
             nameInContacts = findMatchingContact(name);
             if(nameInContacts != null && nameInContacts.getThumbnail() != null && !nameInContacts.getThumbnail().isEmpty()) {
-                ImageView thumbnail = ((ImageView) convertView.findViewById(R.id.bluetooth_item_imageview));
                 thumbnail.setImageURI(Uri.parse(nameInContacts.getThumbnail()));
+            } else {
+                thumbnail.setImageResource(R.drawable.ble_icon);
             }
             nameView.setText(name);
             addressView.setText(partialAddress);
-        }
-        else {
-            nameView.setText("Unknown");
-            addressView.setText("Error in advertiser string");
+        } else {
+            thumbnail.setImageResource(R.drawable.warning);
+            nameView.setText(R.string.ble_invalid_request);
+            addressView.setText(R.string.ble_invalid_contact_support);
         }
 
         ImageView rssiView = (ImageView) convertView.findViewById(R.id.bluetooth_item_rssi_image);

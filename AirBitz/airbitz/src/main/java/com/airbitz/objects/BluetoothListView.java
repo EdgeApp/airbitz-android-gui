@@ -179,9 +179,13 @@ public class BluetoothListView extends ListView {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mOnPeripheralSelectedListener != null) {
                     BleDevice selectedDevice = mPeripherals.get(i);
-                    mSelectedAdvertisedName = selectedDevice.getDevice().getName();
-                    mSearchAdapter.selectItem(view);
-                    mOnPeripheralSelectedListener.onPeripheralSelected(selectedDevice);
+                    if (!selectedDevice.hasErrors()) {
+                        mSelectedAdvertisedName = selectedDevice.getDevice().getName();
+                        mSearchAdapter.selectItem(view);
+                        mOnPeripheralSelectedListener.onPeripheralSelected(selectedDevice);
+                    } else {
+                        // report error
+                    }
                 }
             }
         });
@@ -210,6 +214,7 @@ public class BluetoothListView extends ListView {
     //************** Callback for notification of bitcoin received
     public interface OnBitcoinURIReceived {
         public void onBitcoinURIReceived(String bitcoinAddress);
+        public void onBitcoinURIMismatch(String response, String partialAddress, String partialAdvertisedAddress);
     }
     public void setOnBitcoinURIReceivedListener(OnBitcoinURIReceived listener) {
         mOnBitcoinURIReceivedListener = listener;
@@ -346,9 +351,11 @@ public class BluetoothListView extends ListView {
 
     // Attempt GATT connection
     public void connectGatt(BleDevice result) {
-        Log.d(TAG, "connectGatt");
+Log.d(TAG, "connectGatt");
         BluetoothDevice device = result.getDevice();
+Log.d(TAG, "device.connectGatt");
         mBluetoothGatt = device.connectGatt(mActivity, false, mGattCallback);
+Log.d(TAG, "refreshDeviceCache");
         refreshDeviceCache(mBluetoothGatt);
     }
 
@@ -394,6 +401,7 @@ public class BluetoothListView extends ListView {
                         //make sure partial bitcoin address that was advertised is contained within the actual full bitcoin address
                         String[] separate = response.split(":");
                         String partialAddress;
+                        Log.d(TAG, "got here 1");
                         if(separate.length > 1) {
                             partialAddress = separate[1] != null && separate[1].length() >= 10 ?
                                     separate[1].substring(0, 10) : "";
@@ -402,13 +410,14 @@ public class BluetoothListView extends ListView {
                             partialAdvertisedAddress = mSelectedAdvertisedName != null && mSelectedAdvertisedName.length() >= 10 ?
                                     mSelectedAdvertisedName.substring(0, 10) : "";
 
+                            Log.d(TAG, "got here 2");
                             if (mSelectedAdvertisedName == null || partialAddress.isEmpty() ||
                                     !partialAdvertisedAddress.equals(partialAddress)) {
-                                String message = String.format(getResources().getString(R.string.bluetoothlistview_address_mismatch_message),
-                                        partialAddress, partialAdvertisedAddress);
-                                mActivity.ShowOkMessageDialog(getResources().getString(R.string.bluetoothlistview_address_mismatch_title),
-                                        message);
+
+                                Log.d(TAG, "got here 3");
+                                mOnBitcoinURIReceivedListener.onBitcoinURIMismatch(response, partialAddress, partialAdvertisedAddress);
                             } else {
+                                Log.d(TAG, "mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response)");
                                 mOnBitcoinURIReceivedListener.onBitcoinURIReceived(response);
                             }
                         }

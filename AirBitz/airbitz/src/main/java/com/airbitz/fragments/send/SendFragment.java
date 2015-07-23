@@ -215,6 +215,7 @@ public class SendFragment extends WalletBaseFragment implements
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             if (SettingFragment.getBLEPref()) {
                 mBluetoothListView = new BluetoothListView(mActivity);
+                mBluetoothListView.setOnBitcoinURIReceivedListener(this);
                 mBluetoothLayout.addView(mBluetoothListView, 0);
             }
             else {
@@ -434,7 +435,6 @@ public class SendFragment extends WalletBaseFragment implements
         showConnecting(device);
         stopBluetoothSearch();
         mBluetoothListView.setOnPeripheralSelectedListener(null);
-        mBluetoothListView.setOnBitcoinURIReceivedListener(this);
         mBluetoothListView.connectGatt(device);
     }
 
@@ -444,7 +444,7 @@ public class SendFragment extends WalletBaseFragment implements
             mBleDialog.dismiss();
             mBleDialog = null;
         }
-        String name = BluetoothSearchAdapter.formatDevice(device);
+        String name = device.getName();
         MaterialDialog.Builder builder =
             new MaterialDialog.Builder(mActivity)
                     .content(String.format(mActivity.getString(R.string.fragment_send_connecting_to_device), name))
@@ -456,13 +456,28 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     public void onBitcoinURIReceived(final String bitcoinAddress) {
-        if (mBluetoothListView != null) {
-            mBluetoothListView.setOnBitcoinURIReceivedListener(null);
-        }
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 checkAndSendAddress(bitcoinAddress);
+            }
+        });
+    }
+
+    @Override
+    public void onBitcoinURIMismatch(String response, final String partialAddress, final String partialAdvertisedAddress){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mBleDialog != null) {
+                    mBleDialog.dismiss();
+                }
+                String title =
+                    mActivity.getString(R.string.bluetoothlistview_address_mismatch_title);
+                String message = String.format(getResources().getString(
+                    R.string.bluetoothlistview_address_mismatch_message),
+                    partialAddress, partialAdvertisedAddress);
+                mActivity.ShowOkMessageDialog(title, message);
             }
         });
     }
