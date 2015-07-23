@@ -300,6 +300,22 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (isMenuExpanded()) {
+            super.onCreateOptionsMenu(menu, inflater);
+            return;
+        } else if (isSearching()) {
+            inflater.inflate(R.menu.menu_empty, menu);
+            return;
+        }
+        onAddOptions(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    protected void onAddOptions(Menu menu, MenuInflater inflater) {
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }

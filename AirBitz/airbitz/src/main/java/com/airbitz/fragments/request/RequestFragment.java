@@ -438,13 +438,8 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isMenuExpanded()) {
-            super.onCreateOptionsMenu(menu, inflater);
-            return;
-        }
+    protected void onAddOptions(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_request, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

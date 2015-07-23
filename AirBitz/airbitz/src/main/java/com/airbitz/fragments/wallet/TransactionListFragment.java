@@ -299,16 +299,8 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isMenuExpanded()) {
-            super.onCreateOptionsMenu(menu, inflater);
-            return;
-        } else if (isSearching()) {
-            inflater.inflate(R.menu.menu_empty, menu);
-            return;
-        }
+    protected void onAddOptions(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_transaction_list, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
