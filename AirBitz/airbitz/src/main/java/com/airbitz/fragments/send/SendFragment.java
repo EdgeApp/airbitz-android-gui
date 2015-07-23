@@ -130,7 +130,6 @@ public class SendFragment extends WalletBaseFragment implements
     private RelativeLayout mBluetoothLayout;
     private BluetoothListView mBluetoothListView;
     private List<Wallet> mOtherWalletsList;//NAMES
-    private List<Wallet> mWallets;//Actual wallets
     private Wallet mFromWallet;
     private String mReturnURL;
     private WalletOtherAdapter mOtherWalletsAdapter;
@@ -329,6 +328,7 @@ public class SendFragment extends WalletBaseFragment implements
 
     public void updateWalletOtherList() {
         if (null == mWallets) {
+            mTransferButton.setVisibility(View.GONE);
             return;
         }
         mOtherWalletsList.clear();
@@ -336,6 +336,11 @@ public class SendFragment extends WalletBaseFragment implements
             if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mOtherWalletsList.add(wallet);
             }
+        }
+        if (mOtherWalletsList.size() == 0) {
+            mTransferButton.setVisibility(View.GONE);
+        } else {
+            mTransferButton.setVisibility(View.VISIBLE);
         }
         mOtherWalletsAdapter.notifyDataSetChanged();
     }
