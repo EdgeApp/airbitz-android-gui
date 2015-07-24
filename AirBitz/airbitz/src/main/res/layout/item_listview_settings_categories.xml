@@ -10,7 +10,8 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_alignParentRight="true"
-        android:background="@android:drawable/ic_menu_close_clear_cancel" />
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_close" />
 
     <com.airbitz.objects.CategoryWidget
         android:id="@+id/category_widget"

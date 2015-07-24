@@ -249,8 +249,9 @@
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:gravity="center"
+                    android:dropDownVerticalOffset="35dp"
                     android:layout_marginRight="20dp"
-                    android:popupBackground="@drawable/emboss_down"
+                    android:popupBackground="@drawable/category_background"
                     android:spinnerMode="dropdown" />
 
                 <com.airbitz.objects.LimitedEditText
