@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -90,7 +91,7 @@ public class SettingsCategoryAdapter extends ArrayAdapter<String> {
             }
         });
 
-        Button deleteButton = (Button) convertView.findViewById(R.id.category_delete);
+        ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.category_delete);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

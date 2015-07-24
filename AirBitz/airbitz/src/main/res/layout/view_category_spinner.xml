@@ -12,7 +12,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:gravity="center"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="5dp"
         android:textColor="@android:color/white"
         android:popupBackground="@drawable/category_background"
         android:dropDownVerticalOffset="35dp"
