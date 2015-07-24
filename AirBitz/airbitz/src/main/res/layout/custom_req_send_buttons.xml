@@ -24,13 +24,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:background="@drawable/ico_nav_request_selected"/>
+                android:background="@drawable/ic_request"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,13 +62,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:background="@drawable/ico_nav_send_selected"/>
+                android:background="@drawable/ic_send"/>4250
 
             <TextView
                 android:layout_width="wrap_content"
