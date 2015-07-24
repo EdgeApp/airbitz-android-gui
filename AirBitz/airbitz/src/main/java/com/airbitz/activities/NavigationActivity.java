@@ -1922,7 +1922,9 @@ public class NavigationActivity extends ActionBarActivity
         frag.setArguments(bundle);
         mNavStacks[Tabs.MORE.ordinal()].clear();
         mNavStacks[Tabs.MORE.ordinal()].add(frag);
-        switchFragmentThread(Tabs.WALLET.ordinal());
+        switchFragmentThread(Tabs.MORE.ordinal());
+
+        resetDrawerButtons(mDrawerSettings);
     }
 
     private void checkDailyLimitPref() {
