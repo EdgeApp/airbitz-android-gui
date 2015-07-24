@@ -42,10 +42,12 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -105,6 +107,7 @@ public class WalletBaseFragment extends BaseFragment implements
         } else {
             mLoading = true;
         }
+        mSearching = false;
         setHasOptionsMenu(true);
         if (null == mWallets) {
             mWallets = new ArrayList<Wallet>();
@@ -149,6 +152,17 @@ public class WalletBaseFragment extends BaseFragment implements
                     onSearchQuery(editable.toString());
                 }
             });
+            mSearch.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            mSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        mActivity.hideSoftKeyboard(mSearch);
+                        return true;
+                    }
+                    return false;
+                }
+            });
             mCloseSearch = view.findViewById(R.id.search_close_btn);
             if (mCloseSearch != null) {
                 mCloseSearch.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +196,11 @@ public class WalletBaseFragment extends BaseFragment implements
             mDropdownIcon.setVisibility(View.GONE);
         }
         updateTitle();
+        if (mSearching) {
+            showSearch();
+        } else {
+            hideSearch();
+        }
     }
 
     protected void onSearchQuery(String query) {
