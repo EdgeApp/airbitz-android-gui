@@ -438,20 +438,30 @@ public class SendFragment extends WalletBaseFragment implements
         mBluetoothListView.connectGatt(device);
     }
 
-    private MaterialDialog mBleDialog = null;
+    private MaterialDialog mDialog = null;
     private void showConnecting(BleDevice device) {
-        if (null != mBleDialog) {
-            mBleDialog.dismiss();
-            mBleDialog = null;
-        }
         String name = device.getName();
+        String msg = String.format(mActivity.getString(R.string.fragment_send_connecting_to_device), name);
+        showDialog(msg);
+    }
+
+    private void showProcessing() {
+        String msg = mActivity.getString(R.string.loading);
+        showDialog(msg);
+    }
+
+    private void showDialog(String message) {
+        if (null != mDialog) {
+            mDialog.dismiss();
+            mDialog = null;
+        }
         MaterialDialog.Builder builder =
             new MaterialDialog.Builder(mActivity)
-                    .content(String.format(mActivity.getString(R.string.fragment_send_connecting_to_device), name))
+                    .content(message)
                     .progress(true, 0)
                     .progressIndeterminateStyle(false);
-        mBleDialog = builder.build();
-        mBleDialog.show();
+        mDialog = builder.build();
+        mDialog.show();
     }
 
     @Override
@@ -469,8 +479,8 @@ public class SendFragment extends WalletBaseFragment implements
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (mBleDialog != null) {
-                    mBleDialog.dismiss();
+                if (mDialog != null) {
+                    mDialog.dismiss();
                 }
                 String title =
                     mActivity.getString(R.string.bluetoothlistview_address_mismatch_title);
@@ -486,6 +496,7 @@ public class SendFragment extends WalletBaseFragment implements
     public void onScanResult(String result) {
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
+            showProcessing();
             newSpend(result);
         } else {
             showMessageAndStartCameraDialog(R.string.send_title, R.string.fragment_send_send_bitcoin_unscannable);
@@ -528,16 +539,16 @@ public class SendFragment extends WalletBaseFragment implements
         @Override
         protected void onPostExecute(final Boolean result) {
             // If this spend came from BLE
-            if (null != mBleDialog) {
-                mBleDialog.dismiss();
-                mBleDialog = null;
-            }
             if (result) {
                 GotoSendConfirmation(target);
             } else {
                 showMessageAndStartCameraDialog(
                     R.string.fragment_send_failure_title,
                     R.string.fragment_send_confirmation_invalid_bitcoin_address);
+            }
+            if (null != mDialog) {
+                mDialog.dismiss();
+                mDialog = null;
             }
         }
 
