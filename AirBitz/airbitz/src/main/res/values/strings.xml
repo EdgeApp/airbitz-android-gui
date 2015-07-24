@@ -369,7 +369,7 @@
     <string name="fragment_wallet_unconfirmed">Pending</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
-    <string name="fragment_wallet_request_button">RECEIVE</string>
+    <string name="fragment_wallet_request_button">REQUEST</string>
     <string name="fragment_wallet_send_button">SEND</string>
     <string name="fragment_wallets_wallet_name_required">Name required</string>
 
