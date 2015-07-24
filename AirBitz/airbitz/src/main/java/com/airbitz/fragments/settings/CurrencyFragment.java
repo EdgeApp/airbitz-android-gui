@@ -77,6 +77,7 @@ public class CurrencyFragment extends BaseFragment {
     private List<String> mCodes;
     private ListView mListView;
     private EditText mSearch;
+    private View mSearchClose;
     private String mSelected;
 
     @Override
@@ -126,6 +127,16 @@ public class CurrencyFragment extends BaseFragment {
                     }
                 }
                 mAdapter.notifyDataSetChanged();
+            }
+        });
+        mSearchClose = view.findViewById(R.id.search_close_btn);
+        mSearchClose.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (TextUtils.isEmpty(mSearch.getText())) {
+                    mActivity.hideSoftKeyboard(mSearch);
+                } else {
+                    mSearch.setText("");
+                }
             }
         });
 

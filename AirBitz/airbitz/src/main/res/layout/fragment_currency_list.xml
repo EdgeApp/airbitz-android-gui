@@ -17,18 +17,35 @@
         android:background="@color/colorPrimary"
         style="@style/ToolBarCommon">
 
-        <EditText
-            android:id="@+id/search"
+        <RelativeLayout
+            android:id="@+id/toolbar_search_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:textColor="@android:color/white"
-            android:textColorHint="@color/dark_text_field_text_hint"
-            android:textCursorDrawable="@null"
-            android:drawableLeft="@drawable/ic_search_light"
-            android:drawablePadding="10dp"
-            style="@style/DirectorySearchText"
-            android:hint="@string/settings_select_currency" />
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/search_close_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="8dip"
+                android:paddingEnd="8dip"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_close_light"
+                android:focusable="true" />
+
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_search_light"
+                android:drawablePadding="10dp"
+                android:layout_toLeftOf="@id/search_close_btn"
+                android:hint="@string/settings_select_currency"
+                style="@style/ToolbarSearchEditText" />
+
+        </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
