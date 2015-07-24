@@ -78,16 +78,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/toolbar_search" 
                     android:hint="@string/string_search"
-                    android:singleLine="true"
-                    android:minWidth="10dp"
-                    android:background="@null"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/white"
-                    android:textCursorDrawable="@drawable/bold_cursor_white"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/search_close_btn"
-                    />
+                    style="@style/ToolbarSearchEditText" />
 
             </RelativeLayout>
 
