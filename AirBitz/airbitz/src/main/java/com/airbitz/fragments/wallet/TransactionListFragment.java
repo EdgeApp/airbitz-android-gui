@@ -269,18 +269,14 @@ public class TransactionListFragment extends WalletsFragment
         mListTransaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!isAdded()) {
+                if (!isAdded()) {
                     return;
                 }
 
                 int newIdx = i - 1;
-                // if (mSearchLayout.getVisibility() == View.VISIBLE) {
-                //     newIdx = i;
-                // }
-
                 mActivity.hideSoftKeyboard(mSendButton);
                 // Make sure this is not the header view and offset i by 1
-                if (i >= 0) {
+                if (i >= 0 && i < mTransactions.size()) {
                     Transaction trans = mTransactions.get(newIdx);
                     mTransactionAdapter.selectItem(view, newIdx);
 
@@ -295,6 +291,7 @@ public class TransactionListFragment extends WalletsFragment
             }
         });
         updateBalanceBar();
+        updateSendRequestButtons();
         return mView;
     }
 
