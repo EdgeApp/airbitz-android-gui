@@ -279,6 +279,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         mCategoryListView = (ListView) mView.findViewById(R.id.listview_category);
         mCategories = new ArrayList<Category>();
+        mOriginalCategories = new ArrayList<Category>();
 
         mDateTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
@@ -593,7 +594,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private void setupOriginalCategories() {
         // Initialize category items
         mCategories.clear();
-        mOriginalCategories = new ArrayList<Category>();
+        mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
         List<String> catStrings = mCoreAPI.loadCategories();
         for(String cat : catStrings) {
@@ -1268,6 +1269,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void saveTransaction() {
+        if (mTransaction == null) {
+            return;
+        }
         String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
         mSaveTask = new SaveTransactionAsyncTask(mTransaction, mBizId,
                 mPayeeEditText.getText().toString(), category,
