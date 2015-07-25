@@ -102,27 +102,27 @@
     <LinearLayout
         android:id="@+id/request_bottom_buttons"
         android:layout_alignParentBottom="true"
-        style="@style/SegmentedGroup">
+        style="@style/SegmentedGroupWhite">
 
         <Button
             android:id="@+id/fragment_triple_selector_left"
             android:layout_height="wrap_content"
             android:text="@string/fragment_request_copy_title"
-            style="@style/SegmentedButton"
+            style="@style/SegmentedButtonWhite"
             />
 
         <Button
             android:id="@+id/fragment_triple_selector_center"
             android:layout_height="wrap_content"
             android:text="@string/fragment_request_email_title"
-            style="@style/SegmentedButton"
+            style="@style/SegmentedButtonWhite"
             />
 
         <Button
             android:id="@+id/fragment_triple_selector_right"
             android:layout_height="wrap_content"
             android:text="@string/fragment_request_sms_title"
-            style="@style/SegmentedButton"
+            style="@style/SegmentedButtonWhite"
             />
 
     </LinearLayout>

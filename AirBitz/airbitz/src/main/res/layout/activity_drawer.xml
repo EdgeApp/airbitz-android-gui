@@ -29,7 +29,6 @@
                     android:id="@+id/item_drawer_exchange_rate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:drawableLeft="@drawable/icon_bitcoin_symbol"
                     android:drawablePadding="10dp"
                     android:ellipsize="end"
                     android:gravity="center_vertical"

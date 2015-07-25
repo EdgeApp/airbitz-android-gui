@@ -330,12 +330,39 @@
         <item name="android:textSize">17dp</item>
     </style>
 
+    <style name="ButtonDarkText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/dark_text_link</item>
+        <item name="android:textSize">17dp</item>
+    </style>
+
     <style name="GreenButton" parent="Button">
         <item name="android:background">@drawable/bg_button_green</item>
     </style>
 
     <style name="BlueButton" parent="Button">
         <item name="android:background">@drawable/bg_button_blue</item>
+    </style>
+
+    <style name="ClearButtonWhite" parent="ButtonDarkText">
+        <item name="android:background">@color/clear_color</item>
+    </style>
+
+    <style name="ClearButton" parent="Button">
+        <item name="android:background">@color/clear_color</item>
+    </style>
+
+    <style name="SegmentedGroupWhite">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:divider">@drawable/segmented_divider_white</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:padding">@dimen/segemented_space</item>
+        <item name="android:showDividers">middle</item>
     </style>
 
     <style name="SegmentedGroup">
@@ -349,15 +376,24 @@
         <item name="android:showDividers">middle</item>
     </style>
 
-    <style name="SegmentedButton" parent="BlueButton">
-        <item name="android:background">@drawable/button_primary_color</item>
+    <style name="SegmentedButtonWhite" parent="ClearButtonWhite">
+        <item name="android:background">@color/clear_color</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">4dp</item>
         <item name="android:padding">5dp</item>
         <item name="android:paddingBottom">2dp</item>
         <item name="android:paddingTop">2dp</item>
         <item name="android:minHeight">32dip</item>
-        <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="SegmentedButton" parent="ClearButton">
+        <item name="android:background">@color/clear_color</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:minHeight">32dip</item>
     </style>
 
     <style name="RedButton" parent="Button">
