@@ -31,7 +31,6 @@
 
 package com.airbitz.objects;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,6 +44,8 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class UserReview {
         setupPrefs();
         mEditor.putBoolean(ALREADY_NOTIFIED, true);
         mEditor.apply();
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
             builder.setMessage(activity.getString(R.string.user_review_message))
                     .setTitle(activity.getString(R.string.user_review_title))
                     .setCancelable(false)
@@ -150,7 +151,7 @@ public class UserReview {
     }
 
     public static void ShowUserDislikeDialog(final NavigationActivity activity) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
         builder.setMessage(activity.getString(R.string.user_review_ok_message))
                 .setTitle(activity.getString(R.string.user_review_title))
                 .setCancelable(false)
@@ -176,7 +177,7 @@ public class UserReview {
 
 
     public static void ShowUserLikesAirbitzDialog(final NavigationActivity activity) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
         builder.setMessage(activity.getString(R.string.user_review_play_store))
                 .setTitle(activity.getString(R.string.user_review_title))
                 .setCancelable(false)

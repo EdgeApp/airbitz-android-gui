@@ -1,58 +1,22 @@
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/fragment_twofactor_scan_layout_camera"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_twofactor_scan_layout_camera"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible">
+
+    <FrameLayout
+        android:id="@+id/layout_camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/black" />
 
-        <FrameLayout
-            android:id="@+id/layout_camera_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/darker_gray">
+    <FrameLayout
+        android:id="@+id/layout_camera_obscura"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="visible"/>
 
-        </FrameLayout>
-
-        <ImageButton
-            android:id="@+id/button_flash"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginRight="20dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/btn_flash_off" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_centerVertical="true" >
-
-            <ImageButton
-                android:id="@+id/button_bluetooth"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@android:color/transparent"
-                android:layout_marginBottom="20dp"
-                android:layout_centerHorizontal="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_ble_icon"
-                android:visibility="gone"/>
-
-            <ImageButton
-                android:id="@+id/button_gallery"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/button_bluetooth"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/gallery_button" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
+</RelativeLayout>

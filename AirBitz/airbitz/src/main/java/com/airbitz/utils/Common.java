@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,33 +23,50 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.api.tABC_Error;
+import com.airbitz.objects.CurrentLocationManager;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -244,7 +261,7 @@ public class Common {
     }
 
     public static void alertBadWalletName(Activity activity) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
         builder.setMessage(activity.getResources().getString(R.string.error_invalid_wallet_name_description))
                 .setTitle(activity.getString(R.string.error_invalid_wallet_name_title))
                 .setCancelable(false)
@@ -255,11 +272,18 @@ public class Common {
                             }
                         }
                 );
-        AlertDialog alert = builder.create();
-        alert.show();
+        builder.show();
     }
 
     public static String errorMap(Context context, tABC_CC code) {
+        return errorMap(context, code, new tABC_Error());
+    }
+
+    public static String errorMap(Context context, tABC_Error error) {
+        return errorMap(context, error.getCode(), error);
+    }
+
+    public static String errorMap(Context context, tABC_CC code, tABC_Error error) {
         if (code == tABC_CC.ABC_CC_AccountAlreadyExists) {
             return context.getString(R.string.server_error_account_already_exists);
         }
@@ -290,14 +314,23 @@ public class Common {
         else if (code == tABC_CC.ABC_CC_InsufficientFunds) {
             return context.getString(R.string.server_error_insufficient_funds);
         }
+        else if (code == tABC_CC.ABC_CC_SpendDust) {
+            return context.getString(R.string.fragment_send_confirmation_insufficient_amount);
+        }
         else if (code == tABC_CC.ABC_CC_Synchronizing) {
             return context.getString(R.string.server_error_synchronizing);
         }
         else if (code == tABC_CC.ABC_CC_NonNumericPin) {
             return context.getString(R.string.server_error_non_numeric_pin);
         }
-        else if (code == tABC_CC.ABC_CC_PinExpired) {
-            return context.getString(R.string.server_error_pin_expired);
+        else if (code == tABC_CC.ABC_CC_InvalidPinWait) {
+            if (null != error) {
+                String description = error.getSzDescription();
+                if (!"0".equals(description)) {
+                    return context.getString(R.string.server_error_invalid_pin_wait, description);
+                }
+            }
+            return context.getString(R.string.server_error_bad_pin);
         }
         else {
             return context.getString(R.string.server_error_other);
@@ -312,7 +345,34 @@ public class Common {
         p.setColor(Color.WHITE);
         canvas.drawPaint(p);
         canvas.drawBitmap(inBitmap, (int) (inBitmap.getWidth() * BORDER_THICKNESS), (int) (inBitmap.getHeight() * BORDER_THICKNESS), null);
-        return imageBitmap;
+        return getRoundedCornerBitmap(imageBitmap);
+    }
+
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        BitmapShader shader;
+        shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setShader(shader);
+
+        RectF rectF = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        // rect contains the bounds of the shape
+        // radius is the radius in pixels of the rounded corners
+        // paint contains the shader that will texture the shape
+        canvas.drawRoundRect(rectF, 16, 16, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
     }
 
     public static Map<String, String> splitQuery(Uri uri) throws UnsupportedEncodingException {
@@ -324,5 +384,81 @@ public class Common {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
+    }
+
+    // Snagged from http://stackoverflow.com/a/29281284
+    public static void addStatusBarPadding(Activity activity, View view) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            view.setPadding(0, getStatusBarHeight(activity), 0, 0);
+        }
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    static final int NOTIFICATION_DURATION = 5000;
+
+    public static void disabledNotification(final Activity activity, int viewRes) {
+        disabledNotification(activity, activity.findViewById(viewRes));
+    }
+
+    public static void disabledNotification(final Activity activity, View view) {
+        boolean enabled = CurrentLocationManager.locationEnabled(activity);
+        if (!enabled) {
+            if (AirbitzApplication.getLocationWarn() && activity != null) {
+                Snackbar bar = Snackbar.make(view,
+                            R.string.fragment_business_enable_location_services, Snackbar.LENGTH_LONG)
+                        .setDuration(NOTIFICATION_DURATION)
+                        .setActionTextColor(Color.YELLOW)
+                        .setAction(R.string.location_enable, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    activity.startActivity(intent);
+                                }
+                            });
+                View snackview = bar.getView();
+                TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                bar.show();
+                AirbitzApplication.setLocationWarn(false);
+            }
+        } else {
+            AirbitzApplication.setLocationWarn(true);
+        }
+    }
+
+    public static void networkTimeoutSnack(final Activity activity, View view) {
+        if (null == activity || null == view) {
+            return;
+        }
+        Snackbar bar = Snackbar.make(view,
+                    R.string.fragment_directory_detail_timeout_retrieving_data, Snackbar.LENGTH_LONG)
+                .setDuration(NOTIFICATION_DURATION);
+        View snackview = bar.getView();
+        TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        bar.show();
+    }
+
+    public static void noLocationSnack(final Activity activity, View view) {
+        if (null == activity || null == view) {
+            return;
+        }
+        Snackbar bar = Snackbar.make(view, R.string.no_location_found, Snackbar.LENGTH_LONG)
+                .setDuration(NOTIFICATION_DURATION);
+        View snackview = bar.getView();
+        TextView textView = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        bar.show();
     }
 }

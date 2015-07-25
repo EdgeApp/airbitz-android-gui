@@ -5,7 +5,8 @@
     android:id="@+id/activity_navigation_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/activityDrawer"
@@ -13,45 +14,38 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/activityLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/tabbar_height"
-            android:orientation="vertical" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/postcard_mountain"
+                android:scaleType="centerCrop" />
 
-        <com.airbitz.objects.Calculator
-            android:id="@+id/navigation_calculator_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/activityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" />
 
-        <com.airbitz.objects.Numberpad
-            android:id="@+id/navigation_numberpad_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
+            <include layout="@layout/inc_action_menu" />
 
-        <RelativeLayout
-            android:id="@+id/navigationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <fragment
-                android:id="@+id/navigationFragment"
-                android:name="com.airbitz.fragments.NavigationBarFragment"
+            <com.airbitz.objects.Calculator
+                android:id="@+id/navigation_calculator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_navigation_bar" />
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible" />
 
-        </RelativeLayout>
+            <com.airbitz.objects.Numberpad
+                android:id="@+id/navigation_numberpad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -60,14 +54,22 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/navigation_view_pager"
+    <LinearLayout
+        android:id="@+id/landing_overlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" />
 
     <include
         android:id="@+id/modal_indefinite_progress"
         layout="@layout/layout_modal_indefinite_progress"
         android:visibility="gone" />
+
+    <!-- Hack to setup the window attributes for Camera. This prevents a
+         flicker on camera screen. This view is never actually used -->
+    <SurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="0px" />
+
 </RelativeLayout>

@@ -3,16 +3,13 @@
     android:id="@+id/activity_signup_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    tools:ignore="MergeRootFrame">
+    style="@style/SettingsFragment"
+    android:animateLayoutChanges="true">
 
-    <include
-        android:id="@+id/layout_title_header"
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    <include layout="@layout/layout_toolbar_header" />
 
-        <RelativeLayout
+
+    <RelativeLayout
             android:id="@+id/fragment_setup_username_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,7 +24,7 @@
                 android:paddingRight="20dp"
                 android:orientation="vertical"
                 android:focusable="true"
-                android:background="@color/lightly_opaque_black"
+                android:layout_marginTop="?android:attr/actionBarSize"
                 android:focusableInTouchMode="true">
 
                 <TextView
@@ -39,39 +36,17 @@
                     android:paddingLeft="6.3dp"
                     android:paddingRight="6.3dp"
                     android:text="@string/fragment_setup_username_label"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp" />
+                    style="@style/SettingsTitle"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.airbitz.objects.LimitedEditText
+                    <com.airbitz.objects.MinEditText
                         android:id="@+id/fragment_setup_username_edittext"
-                        android:layout_width="match_parent"
-                        android:layout_height="37.8dp"
-                        android:layout_marginTop="25.4dp"
-                        android:background="@drawable/emboss_down"
-                        android:ems="10"
                         android:hint="@string/activity_signup_username_hint"
-                        android:inputType="text"
-                        android:imeOptions="actionNext"
-                        android:paddingLeft="12.6dp"
-                        android:paddingRight="12.6dp"
-                        android:textColor="@android:color/white"
-                        android:textColorHint="@color/text_hint"
-                        android:textCursorDrawable="@drawable/bold_cursor_white"
-                        android:textSize="14dp" />
-
-                    <View
-                        android:id="@+id/fragment_setup_username_redring"
-                        android:layout_width="match_parent"
-                        android:layout_height="37.8dp"
-                        android:layout_marginBottom="12.6dp"
-                        android:layout_marginTop="25.2dp"
-                        android:background="@drawable/edit_text_red_ring"
-                        android:focusable="false"
-                        android:visibility="invisible" />
+                        android:layout_marginTop="25.4dp"
+                        style="@style/EditText" />
 
                     </RelativeLayout>
 
@@ -85,8 +60,7 @@
                     android:paddingLeft="6.3dp"
                     android:paddingRight="6.3dp"
                     android:text="@string/fragment_setup_username_text"
-                    android:textColor="@android:color/white"
-                    android:textSize="16dp" />
+                    style="@style/SettingsTitle"/>
 
             </LinearLayout>
 
@@ -95,32 +69,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:orientation="horizontal">
 
-                <com.airbitz.objects.HighlightOnPressButton
-                    android:id="@+id/fragment_setup_back"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/setup_button_light_gray"
-                    android:text="@string/string_back"
-                    android:textColor="@android:color/white"
-                    android:layout_alignParentLeft="true"
-                    android:textSize="16dp"
-                    android:visibility="visible" />
+                <!--<com.airbitz.objects.HighlightOnPressButton-->
+                    <!--android:id="@+id/fragment_setup_back"-->
+                    <!--android:layout_width="100dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@drawable/setup_button_light_gray"-->
+                    <!--android:text="@string/string_back"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:textSize="16dp"-->
+                    <!--android:visibility="visible" />-->
 
-                <com.airbitz.objects.HighlightOnPressButton
+                <Button
                     android:id="@+id/fragment_setup_next"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/setup_button_dark_gray"
+                    android:layout_centerHorizontal="true"
                     android:text="@string/string_next"
-                    android:textColor="@android:color/white"
-                    android:layout_alignParentRight="true"
-                    android:textSize="16dp"
-                    android:visibility="visible" />
+                    style="@style/BlueButton" />
+
+                <!--<com.airbitz.objects.HighlightOnPressButton-->
+                    <!--android:layout_width="100dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@drawable/setup_button_dark_gray"-->
+                    <!--android:text="@string/string_next"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:textSize="16dp"-->
+                    <!--android:visibility="visible" />-->
 
             </RelativeLayout>
 

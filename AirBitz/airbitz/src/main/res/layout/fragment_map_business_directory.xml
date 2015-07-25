@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.airbitz.activities.NavigationActivity"
-    tools:ignore="MergeRootFrame">
-
-    <!-- Header -->
-
-    <include
-        android:id="@+id/fragment_category_layout_header"
-        layout="@layout/layout_airbitz_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    android:background="@color/colorPrimaryFrost">
 
     <!-- Search Bar -->
 
-    <include
-        android:id="@+id/layout_search"
-        layout="@layout/layout_search"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="?attr/toolbarTextColor"
+        android:background="?attr/toolbarBackgroundColor"
+        style="@style/ToolBarCommon" >
 
-    <!-- Main Content -->
+        <EditText
+            android:id="@+id/query"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/search_button"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:drawableLeft="@drawable/ic_search_light"
+            android:background="@null"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:layout_margin="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/category_or_business_name_initial"
+            />
 
-    <!-- Map View -->
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/map_view_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_below="@+id/layout_search"
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/map_container"
@@ -107,15 +118,5 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
-
-    <!-- Search ListView -->
-    <ListView
-        android:id="@+id/listview_search"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/gray_border"
-        android:dividerHeight="1px"
-        android:visibility="gone" />
-
 
 </LinearLayout>

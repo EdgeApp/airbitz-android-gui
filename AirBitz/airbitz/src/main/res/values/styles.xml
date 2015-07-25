@@ -1,9 +1,62 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Blue" parent="AppTheme">
+        <item name="toolbarBackgroundColor">@color/colorPrimary</item>
+        <item name="toolbarTextColor">@android:color/white</item>
+    </style>
+ 
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+        <!-- item name="colorControlNormal">#a5a5a5</item -->
+
+        <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTitleSize">0dp</item>
+
+        <item name="windowActionModeOverlay">true</item>
+
+        <!-- toolbar attributes -->
+        <item name="toolbarBackgroundColor">@color/colorPrimary</item>
+        <item name="toolbarTextColor">@android:color/white</item>
+
+        <!-- override default styles --> 
+        <item name="buttonStyle">@style/ButtonStyle</item>
+
+        <!-- override edit text style -->
+        <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="editTextBackground">@drawable/edit_text_dark</item>
+        <item name="editTextError">@drawable/edit_text_dark</item>
+        <item name="editTextControlNormal">@color/editText</item>
+        <item name="editTextControlActivated">@color/editTextSemi</item>
+        <item name="editTextDisabledAlpha">0.5</item>
+
+        <item name="md_dark_theme">false</item>
+        <item name="md_title_color">@color/colorPrimary</item>
+        <item name="md_positive_color">@color/colorPrimary</item>
+        <item name="md_neutral_color">@color/colorPrimary</item>
+        <item name="md_negative_color">@color/colorPrimary</item>
+    </style>
+
+    <style name="ToolBarCommon">
+    </style>
+
+    <style name="ButtonStyle" parent="android:style/Widget.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">48dip</item>
+    </style>
+
+    <style name="EditTextStyle" parent="android:style/Widget.EditText">
+        <item name="android:textColor">@drawable/edit_text_color</item>
+        <item name="android:background">@drawable/edit_text_dark</item>
+        <item name="android:textCursorDrawable">@drawable/bold_cursor</item>
     </style>
 
     <style name="CategoryItem">
@@ -87,11 +140,11 @@
         <item name="android:paddingBottom">@dimen/content_padding</item>
     </style>
 
-    <style name="AlertDialogCustom" parent="android:Theme.Holo.Light.Dialog">
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="AlertDialogCustomLight" parent="android:Theme.Holo.Light.Dialog">
+    <style name="AlertDialogCustomLight" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:gravity">center</item>
         <item name="android:layout_width">200dp</item>
     </style>
@@ -105,9 +158,9 @@
 
     <style name="BlackDropShadow">
         <item name="android:shadowColor">@color/black_shadow</item>
-        <item name="android:shadowRadius">1</item>
-        <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">5.0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
     </style>
 
     <style name="GrayDropShadow">
@@ -119,10 +172,348 @@
 
     <style name="LandingEditText">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="android:textColor">@color/dark_text_field_text</item>
+        <item name="android:textColorHint">@color/dark_text_field_text_hint</item>
         <item name="android:textCursorDrawable">@drawable/bold_cursor_white</item>
         <item name="android:background">@drawable/emboss_down</item>
     </style>
 
+    <style name="SettingsFragment">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:animateLayoutChanges">true</item>
+    </style>
+
+    <style name="SettingsTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingLeft">14dp</item>
+        <item name="android:textColor">@color/dark_gray_text</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="SettingsGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/setting_item_divider</item>
+        <item name="android:dividerPadding">8dp</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="SettingsTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textSize">13dp</item>
+        <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="SettingsRow">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="SettingsRowFirst" parent="SettingsRow">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="SettingsItem">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:paddingTop">13dp</item>
+    </style>
+
+    <style name="SettingsButton" parent="SettingsItem">
+        <item name="android:background">@drawable/settings_button</item>
+        <item name="android:drawableRight">@drawable/arrow_right</item>
+        <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:layout_gravity">center_vertical</item>
+
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="SettingsSwitch" parent="SettingsItem">
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:checked">false</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:switchMinWidth">0dp</item>
+        <item name="android:textOff"></item>
+        <item name="android:textOn"></item>
+        <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+        <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="SettingsEditText" parent="SettingsItem">
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:inputType">textNoSuggestions|textCapWords</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="SettingsRadioItem" parent="SettingsRow">
+        <item name="android:button">@null</item>
+        <item name="android:checked">true</item>
+        <item name="android:drawablePadding">15dp</item>
+        <item name="android:drawableRight">@drawable/radio_button</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+    </style>
+
+    <style name="SettingsRadioItemFirst" parent="SettingsRadioItem">
+        <item name="android:textColor">@color/settings_button_text</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="SettingsSplitText" parent="SettingsItem">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/settings_button_text</item>
+    </style>
+
+    <style name="SettingsSplitButton" parent="SettingsItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:gravity">right</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/settings_button</item>
+        <item name="android:textColor">@color/blue_text</item>
+    </style>
+
+    <style name="SettingsSpinner" parent="SettingsSplitButton" />
+
+    <style name="EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">textVisiblePassword</item>
+        <item name="android:paddingLeft">12.6dp</item>
+        <item name="android:paddingRight">12.6dp</item>
+        <item name="android:textColor">@color/dark_text</item>
+        <item name="android:textColorHint">@color/dark_text_hint</item>
+        <item name="android:textCursorDrawable">@drawable/bold_cursor</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:background">@drawable/edit_text_dark</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">17dp</item>
+    </style>
+
+    <style name="ButtonDarkText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/dark_text_link</item>
+        <item name="android:textSize">17dp</item>
+    </style>
+
+    <style name="GreenButton" parent="Button">
+        <item name="android:background">@drawable/bg_button_green</item>
+    </style>
+
+    <style name="BlueButton" parent="Button">
+        <item name="android:background">@drawable/bg_button_blue</item>
+    </style>
+
+    <style name="ClearButtonWhite" parent="ButtonDarkText">
+        <item name="android:background">@color/clear_color</item>
+    </style>
+
+    <style name="ClearButton" parent="Button">
+        <item name="android:background">@color/clear_color</item>
+    </style>
+
+    <style name="SegmentedGroupWhite">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:divider">@drawable/segmented_divider_white</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:padding">@dimen/segemented_space</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="SegmentedGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:divider">@drawable/segmented_divider</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:padding">@dimen/segemented_space</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="SegmentedButtonWhite" parent="ClearButtonWhite">
+        <item name="android:background">@color/clear_color</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:minHeight">32dip</item>
+    </style>
+
+    <style name="SegmentedButton" parent="ClearButton">
+        <item name="android:background">@color/clear_color</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:minHeight">32dip</item>
+    </style>
+
+    <style name="RedButton" parent="Button">
+        <item name="android:background">@drawable/bg_button_red</item>
+    </style>
+
+    <style name="OrangeButton" parent="Button">
+        <item name="android:background">@drawable/bg_button_orange</item>
+    </style>
+
+    <!-- Calculator Styles -->
+    <style name="CalcButton">
+        <item name="android:layout_height">@dimen/calc_button_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_margin">@dimen/calc_button_margin</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/calc_button_numsize</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CalcButtonText">
+        <item name="android:layout_height">@dimen/calc_button_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_margin">@dimen/calc_button_margin</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/calc_button_textsize</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="WhiteCalc" parent="CalcButton">
+        <item name="android:background">@drawable/calc_btn_white</item>
+    </style>
+
+    <style name="GreyCalc" parent="CalcButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/calc_btn_gray</item>
+    </style>
+
+    <style name="GreenCalc" parent="CalcButtonText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/calc_btn_green</item>
+    </style>
+
+    <style name="OrangeCalc" parent="CalcButtonText">
+        <item name="android:background">@drawable/calc_btn_orange</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="DrawerButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/drawer_button</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/gray_text</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="CategoryButton">
+        <item name="android:textColor">@color/category_blue</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:background">@color/colorPrimaryFrost</item>
+    </style>
+
+    <style name="DirectorySearchText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/dark_text_field_text_hint</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:background">@color/clear_color</item>
+    </style>
+
+    <style name="ToolbarSearchEditText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:minWidth">10dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textCursorDrawable">@drawable/bold_cursor_white</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="TxDetailsEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+    <style name="DenominationSwitch">
+        <item name="android:thumb">@drawable/radio_button</item>
+        <item name="android:switchMinWidth">0dp</item>
+    </style>
 </resources>

@@ -1,0 +1,7 @@
+<resources>
+    <integer name="alert_hold_time_default">4000</integer>
+    <integer name="alert_hold_time_payment_received">10000</integer>
+    <integer name="alert_hold_time_help_popups">6000</integer>
+    <integer name="alert_hold_time_forever">999999</integer>
+    <integer name="alert_fadeout_time_default">2000</integer>
+</resources>

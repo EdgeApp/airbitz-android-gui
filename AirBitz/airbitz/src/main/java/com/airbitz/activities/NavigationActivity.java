@@ -2,11 +2,11 @@
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms are permitted provided that 
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
@@ -25,14 +25,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -46,6 +47,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -56,69 +58,70 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import com.airbitz.adapters.NavigationAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.fragments.directory.DirectoryDetailFragment;
-import com.airbitz.fragments.directory.MapBusinessDirectoryFragment;
-import com.airbitz.fragments.login.SetupUsernameFragment;
-import com.airbitz.fragments.request.AddressRequestFragment;
-import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.fragments.settings.CategoryFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.request.ImportFragment;
-import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.NavigationBarFragment;
-import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.fragments.login.LandingFragment;
+import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.request.AddressRequestFragment;
+import com.airbitz.fragments.request.OnAddressRequestListener;
 import com.airbitz.fragments.request.RequestFragment;
-import com.airbitz.fragments.request.RequestQRCodeFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
-import com.airbitz.fragments.settings.SettingFragment;
-import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.fragments.login.TransparentFragment;
+import com.airbitz.fragments.settings.ImportFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
+import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
-import com.airbitz.objects.Calculator;
 import com.airbitz.objects.Numberpad;
+import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
+import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.utils.Common;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -130,8 +133,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class NavigationActivity extends Activity
+public class NavigationActivity extends ActionBarActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
+        View.OnTouchListener,
         CoreAPI.OnIncomingBitcoin,
         CoreAPI.OnExchangeRatesChange,
         CoreAPI.OnDataSync,
@@ -139,7 +143,7 @@ public class NavigationActivity extends Activity
         CoreAPI.OnRemotePasswordChange,
         CoreAPI.OnOTPError,
         CoreAPI.OnOTPResetRequest,
-        AddressRequestFragment.OnAddressRequest,
+        OnAddressRequestListener,
         TwoFactorScanFragment.OnTwoFactorQRScanResult,
         AccountsAdapter.OnButtonTouched {
     private final int DIALOG_TIMEOUT_MILLIS = 120000;
@@ -151,53 +155,8 @@ public class NavigationActivity extends Activity
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
-    public static Typeface montserratBoldTypeFace;
-    public static Typeface montserratRegularTypeFace;
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
-    public static Typeface helveticaNeueTypeFace;
-    final Runnable delayedShowNavBar = new Runnable() {
-        @Override
-        public void run() {
-            mNavBarFragmentLayout.setVisibility(View.VISIBLE);
-            mFragmentLayout.setLayoutParams(getFragmentLayoutParams());
-            mFragmentLayout.invalidate();
-        }
-    };
-
-    final Runnable delayedShowCalculator = new Runnable() {
-        @Override
-        public void run() {
-            mCalculatorView.setAlpha(0f);
-            mCalculatorView.setVisibility(View.VISIBLE);
-            mCalculatorView.animate()
-                    .alpha(1f)
-                    .setDuration(200)
-                    .setListener(null);
-            mCalculatorView.setEnabled(true);
-        }
-    };
-
-    final Runnable delayedShowNumberpad = new Runnable() {
-        @Override
-        public void run() {
-            mNumberpadView.setVisibility(View.VISIBLE);
-            mNumberpadView.setEnabled(true);
-        }
-    };
-
-    final Runnable delayedEnableReceiveSendButtons = new Runnable() {
-        @Override
-        public void run() {
-            if(mCoreAPI.walletsStillLoading()) {
-                mNavBarFragment.disableSendRecieveButtons(true);
-                mHandler.postDelayed(delayedEnableReceiveSendButtons, 200);
-            }
-            else {
-                mNavBarFragment.disableSendRecieveButtons(false);
-            }
-        }
-    };
 
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -225,25 +184,25 @@ public class NavigationActivity extends Activity
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
-    private NavigationBarFragment mNavBarFragment;
-    private RelativeLayout mNavBarFragmentLayout;
-    private Calculator mCalculatorView;
     private Numberpad mNumberpadView;
-    private LinearLayout mFragmentLayout;
-    private ViewPager mViewPager;
+    private View mFragmentContainer;
+    public LinearLayout mFragmentLayout;
+//    private ViewPager mViewPager;
+    private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {
             new BusinessDirectoryFragment(),
             new RequestFragment(),
             new SendFragment(),
-            new WalletsFragment(),
+            new TransactionListFragment(),
             new SettingFragment()};
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
-    private AlertDialog mIncomingDialog;
+    private Dialog mIncomingDialog;
+    private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -257,36 +216,103 @@ public class NavigationActivity extends Activity
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
     private DrawerLayout mDrawer;
-    private RelativeLayout mDrawerView;
+    private FrameLayout mDrawerView;
+    private View mDrawerLogin;
+    private View mDrawerLayoutAccount;
+    private RelativeLayout mDrawerBuySellLayout;
     private TextView mDrawerAccount;
+    private ImageView mDrawerAccountArrow;
     private TextView mDrawerExchange;
-    private TextView mDrawerBuySell;
-    private TextView mDrawerSettings;
-    private TextView mDrawerLogout;
+    private Button mDrawerDirectory;
+    private Button mDrawerRequest;
+    private Button mDrawerSend;
+    private Button mDrawerTxs;
+    private Button mDrawerBuySell;
+    private Button mDrawerImport;
+    private Button mDrawerSettings;
+    private Button mDrawerLogout;
     private ListView mOtherAccountsListView;
     private AccountsAdapter mOtherAccountsAdapter;
     private List<String> mOtherAccounts;
 
+    private RememberPasswordCheck mPasswordCheck;
+
+    private boolean activityInForeground = false;
+
+    private View mActionButton;
+    private FloatingActionMenu mActionMenu;
+
+    private ViewGroup mRoot;
+    private int mTouchDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCoreAPI = initiateCore(this);
-
-        mCoreAPI.setOnOTPErrorListener(this);
-        mCoreAPI.setOTPResetRequestListener(this);
-        mCoreAPI.setOnIncomingBitcoinListener(this);
-        mCoreAPI.setOnDataSyncListener(this);
-        mCoreAPI.setOnBlockHeightChangeListener(this);
-        mCoreAPI.setOnOnRemotePasswordChangeListener(this);
-
         setContentView(R.layout.activity_navigation);
-        getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_app));
-        mNavBarFragmentLayout = (RelativeLayout) findViewById(R.id.navigationLayout);
+
+
+        Resources r = getResources();
+        int menuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
+        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
+
+        mActionButton = findViewById(R.id.action_button);
+
+        ImageView requestButton = new ImageView(this);
+        ImageView sendButton = new ImageView(this);
+        ImageView txButton = new ImageView(this);
+        requestButton.setImageResource(R.drawable.ic_request_dark);
+        requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        sendButton.setImageResource(R.drawable.ic_send_dark);
+        sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        txButton.setImageResource(R.drawable.ic_transactions_dark);
+        txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+        SubActionButton receiveAction = itemBuilder.setLayoutParams(menuLayout).setContentView(requestButton).build();
+        SubActionButton sendAction = itemBuilder.setLayoutParams(menuLayout).setContentView(sendButton).build();
+        SubActionButton txAction = itemBuilder.setLayoutParams(menuLayout).setContentView(txButton).build();
+
+        mActionMenu =
+            new FloatingActionMenu.Builder(this)
+                                  .addSubActionView(receiveAction)
+                                  .addSubActionView(sendAction)
+                                  .addSubActionView(txAction)
+                                  .attachTo(mActionButton)
+                                  .build();
+
+        receiveAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                resetDrawerButtons(mDrawerRequest);
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        sendAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                resetDrawerButtons(mDrawerSend);
+                onNavBarSelected(Tabs.SEND.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        txAction.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                resetDrawerButtons(mDrawerTxs);
+                onNavBarSelected(Tabs.WALLET.ordinal());
+                mActionMenu.close(true);
+            }
+        });
+
+        mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mCalculatorView = (Calculator) findViewById(R.id.navigation_calculator_layout);
         mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
+
+        Common.addStatusBarPadding(this, mFragmentContainer);
 
         setTypeFaces();
 
@@ -295,58 +321,93 @@ public class NavigationActivity extends Activity
             mNavStacks[i].push(mNavFragments[i]);
         }
 
-        // for keyboard hide and show
-        final View activityRootView = findViewById(R.id.activity_navigation_root);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            boolean mLastKeyBoardUp = false;
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                    keyBoardUp = true;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        hideNavBar();
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).hideDoneCancel();
-                        }
-                    }
-                } else {
-                    keyBoardUp = false;
-                    if(keyBoardUp != mLastKeyBoardUp) {
-                        if (AirbitzApplication.isLoggedIn()) {
-                            showNavBar();
-                        }
-                        else {
-                            if(mNavStacks[mNavThreadId].peek() instanceof BusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof MapBusinessDirectoryFragment ||
-                                    mNavStacks[mNavThreadId].peek() instanceof DirectoryDetailFragment ) {
-                                Log.d(TAG, "Keyboard down, not logged in, in directory");
-                                showNavBar();
-                            }
-                        }
-                        if (mNavStacks[mNavThreadId].peek() instanceof CategoryFragment) {
-                            ((CategoryFragment) mNavStacks[mNavThreadId].get(mNavStacks[mNavThreadId].size() - 1)).showDoneCancel();
-                        }
-                    }
-                }
-                mLastKeyBoardUp = keyBoardUp;
-            }
-        });
+        mLandingFragment = new LandingFragment();
 
-        // Setup top screen - the Landing - that swipes away if no login
-        mViewPager = (ViewPager) findViewById(R.id.navigation_view_pager);
-        mViewPager.setVisibility(View.GONE);
-        setViewPager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, 0);
+        transaction.replace(R.id.landing_overlay, mLandingFragment);
+        transaction.commitAllowingStateLoss();
 
-        mNavBarFragment = (NavigationBarFragment) getFragmentManager().findFragmentById(R.id.navigationFragment);
+        mLandingLayout = (LinearLayout) findViewById(R.id.landing_overlay);
 
         // Navigation Drawer slideout
         setupDrawer();
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        updateDrawer(false);
+
+        mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
+
+    }
+
+    public boolean onTouch(View view, MotionEvent event) {
+
+        int X = (int) event.getRawX();
+        int deltaX = X - mTouchDown;
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mTouchDown = X;
+                Log.d("", "ACTION_DOWN: " + String.valueOf((int) X));
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d("", "ACTION_UP: " + String.valueOf((int) X));
+                if (deltaX > view.getWidth() / 2) {
+                    DisplayLoginOverlay(false, true);
+                    hideSoftKeyboard(view);
+                } else {
+                    DisplayLoginOverlay(true, true);
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("", "ACTION_MOVE: " + String.valueOf((int) X) + " mTouchDown:" + mTouchDown);
+                if (deltaX < 0)
+                    deltaX = 0;
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = deltaX;
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+                mLandingLayout.setLayoutParams(layoutParams);
+
+                // Move the bizdir inward as the Landing fragment moves outward
+                layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+                layoutParams.topMargin = 0;
+                layoutParams.leftMargin = -mFragmentLayout.getWidth() + (deltaX);
+                layoutParams.rightMargin = -layoutParams.leftMargin;
+                layoutParams.bottomMargin = 0;
+
+                mFragmentLayout.setLayoutParams(layoutParams);
+                float alpha = (float) (deltaX) / (float) mFragmentLayout.getWidth();
+                mFragmentLayout.setAlpha(alpha);
+
+                break;
+        }
+        mRoot.invalidate();
+        return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment frag = mNavStacks[mNavThreadId].peek();
+        if (frag != null) {
+            frag.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void setCoreListeners(NavigationActivity activity) {
+        mCoreAPI.setOnOTPErrorListener(activity);
+        mCoreAPI.setOTPResetRequestListener(activity);
+        mCoreAPI.setOnIncomingBitcoinListener(activity);
+        mCoreAPI.setOnDataSyncListener(activity);
+        mCoreAPI.setOnBlockHeightChangeListener(activity);
+        mCoreAPI.setOnOnRemotePasswordChangeListener(activity);
     }
 
     public static CoreAPI initiateCore(Context context) {
-        CoreAPI api = CoreAPI.getApi();
+        CoreAPI api = CoreAPI.getApi(context);
         String seed = CoreAPI.getSeedData();
         api.Initialize(context, seed, seed.length());
         return api;
@@ -357,66 +418,57 @@ public class NavigationActivity extends Activity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
-        setViewPager();
-        if (overlay) {
-            mViewPager.setCurrentItem(1, false);
-            if (animate) {
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(250);
-                mViewPager.startAnimation(anim);
-            }
-            mViewPager.setVisibility(View.VISIBLE);
+
+        if (!overlay) {
+            // Show FragmentLayout
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = mLandingLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.INVISIBLE);
+
+            // Move the bizdir inward as the Landing fragment moves outward
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(1.0f);
+            showNavBar();
         } else {
-            mViewPager.setCurrentItem(0, animate);
-            mViewPager.setVisibility(View.GONE);
+            // Go back to showing Landing
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            layoutParams.bottomMargin = 0;
+            mLandingLayout.setLayoutParams(layoutParams);
+            mLandingLayout.setVisibility(View.VISIBLE);
+
+            layoutParams = (RelativeLayout.LayoutParams) mFragmentLayout.getLayoutParams();
+            layoutParams.topMargin = 0;
+            layoutParams.leftMargin = -mFragmentLayout.getWidth();
+            layoutParams.rightMargin = -layoutParams.leftMargin;
+            layoutParams.bottomMargin = 0;
+            mFragmentLayout.setLayoutParams(layoutParams);
+            mFragmentLayout.setAlpha(0.0f);
+            hideNavBar();
+            mLandingFragment.refreshView();
         }
     }
 
-    private void setViewPager() {
-        mOverlayFragments.clear();
-//        if(mOverlayFragments.size() == 0) {
-            mOverlayFragments.add(new TransparentFragment());
-            mOverlayFragments.add(new LandingFragment());
-//        }
-
-        NavigationAdapter pageAdapter = new NavigationAdapter(getFragmentManager(), mOverlayFragments);
-        mViewPager.setAdapter(pageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Disappear if transparent page shows
-                if ((position == 0) && positionOffsetPixels == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-
-            public void onPageSelected(int position) {
-                // Disappear if transparent page shows
-                Log.d(TAG, "page selected = " + position);
-                if (position == 0) {
-                    hideSoftKeyboard(mNavBarFragmentLayout);
-                    mViewPager.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
     private void setTypeFaces() {
-        montserratBoldTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Bold.ttf");
-        montserratRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Montserrat-Regular.ttf");
         latoBlackTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getAssets(), "font/Lato-Regular.ttf");
-        helveticaNeueTypeFace = Typeface.createFromAsset(getAssets(), "font/HelveticaNeue.ttf");
     }
 
     /*
         Implements interface to receive navigation changes from the bottom nav bar
      */
     public void onNavBarSelected(int position) {
-
         if (AirbitzApplication.isLoggedIn()) {
             hideSoftKeyboard(mFragmentLayout);
             if (position != mNavThreadId) {
@@ -424,32 +476,22 @@ public class NavigationActivity extends Activity
                     showModalProgress(false);
                 }
                 AirbitzApplication.setLastNavTab(position);
-                if(position != Tabs.MORE.ordinal()) {
-                    switchFragmentThread(position);
-                }
-                else {
-                    mDrawer.openDrawer(mDrawerView);
-                }
-            }
-            else if(position == Tabs.MORE.ordinal()) {
-                mDrawer.openDrawer(mDrawerView);
-            }
-            else if(!isAtNavStackEntry()) {
+                switchFragmentThread(position);
+            } else if (position == Tabs.MORE.ordinal()) {
+                openDrawer();
+            } else if (!isAtNavStackEntry()) {
                 onBackPressed();
             }
         } else {
             if (position != Tabs.BD.ordinal()) {
                 AirbitzApplication.setLastNavTab(position);
-                mNavBarFragment.unselectTab(position);
-                mNavBarFragment.unselectTab(Tabs.BD.ordinal()); // to reset mLastTab
-                mNavBarFragment.selectTab(Tabs.BD.ordinal());
                 DisplayLoginOverlay(true, true);
             }
         }
     }
 
     public void switchFragmentThread(int id) {
-        if (mNavBarFragmentLayout.getVisibility() != View.VISIBLE && AirbitzApplication.isLoggedIn()) {
+        if (mActionButton.getVisibility() != View.VISIBLE) {
             showNavBar();
         }
 
@@ -479,9 +521,6 @@ public class NavigationActivity extends Activity
         } else {
             Log.d(TAG, "switchFragmentThread showing frag is null");
         }
-        mNavBarFragment.unselectTab(mNavThreadId);
-        mNavBarFragment.unselectTab(id); // just needed for resetting mLastTab
-        mNavBarFragment.selectTab(id);
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
@@ -496,6 +535,12 @@ public class NavigationActivity extends Activity
         switchFragmentThread(id);
     }
 
+    public void pushFragment(Fragment fragment, FragmentTransaction transaction) {
+        mNavStacks[mNavThreadId].push(fragment);
+        transaction.replace(R.id.activityLayout, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
     public void pushFragment(Fragment fragment) {
         pushFragment(fragment, mNavThreadId);
     }
@@ -506,9 +551,12 @@ public class NavigationActivity extends Activity
         // Only show visually if we're displaying the thread
         if (mNavThreadId == threadID) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            if (mNavStacks[threadID].size() != 0 && !(fragment instanceof HelpFragment)) {
-                transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+            if (mNavStacks[threadID].size() != 0) {
+                if (fragment instanceof HelpFragment) {
+                    transaction.setCustomAnimations(R.animator.fade_in, 0);
+                } else {
+                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+                }
             }
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
@@ -527,13 +575,26 @@ public class NavigationActivity extends Activity
         getFragmentManager().executePendingTransactions();
     }
 
+    public void popFragment(FragmentTransaction transaction) {
+        hideSoftKeyboard(mFragmentLayout);
+        Fragment fragment = mNavStacks[mNavThreadId].pop();
+        getFragmentManager().executePendingTransactions();
+
+        transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
+        transaction.commitAllowingStateLoss();
+    }
+
     public void popFragment() {
         hideSoftKeyboard(mFragmentLayout);
         Fragment fragment = mNavStacks[mNavThreadId].pop();
         getFragmentManager().executePendingTransactions();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if ((mNavStacks[mNavThreadId].size() != 0) && !(fragment instanceof HelpFragment)) {
-            transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+        if (mNavStacks[mNavThreadId].size() != 0) {
+            if (fragment instanceof HelpFragment) {
+                transaction.setCustomAnimations(0, R.animator.fade_out);
+            } else {
+                transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+            }
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
         transaction.commitAllowingStateLoss();
@@ -546,111 +607,58 @@ public class NavigationActivity extends Activity
         return mFragmentLayoutParams;
     }
 
-    int getNavBarStart() {
-        if (mNavBarStart == 0) {
-            int loc[] = new int[2];
-            mNavBarFragmentLayout.getLocationOnScreen(loc);
-            mNavBarStart = loc[1];
-        }
-        return mNavBarStart;
-    }
+    private boolean mNavBarAnimating = false;
+    static final int NAV_BAR_ANIMATE = 250;
 
     public void hideNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.VISIBLE) {
-            mFragmentLayoutParams = getFragmentLayoutParams();
-            mNavBarFragmentLayout.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mFragmentLayout.setLayoutParams(rLP);
-            mFragmentLayout.invalidate();
-            int test = getNavBarStart();
+        if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight() * 4);
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.INVISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 
     public void showNavBar() {
-        if (mNavBarFragmentLayout.getVisibility() == View.GONE && !keyBoardUp) {
-            mHandler.postDelayed(delayedShowNavBar, 50);
+        if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
+            key.setDuration(NAV_BAR_ANIMATE);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator aniamtor) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mActionButton.setVisibility(View.VISIBLE);
+                    mNavBarAnimating = true;
+                }
+            });
+            key.start();
         }
     }
 
-    public Calculator getCalculatorView() {
-        return mCalculatorView;
-    }
-
-    public Numberpad getNumberpadView() {
-        return mNumberpadView;
-    }
-
-    public boolean isLargeDpi() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return !(metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH);
-    }
-
-    public void lockCalculator() {
-        if (!isLargeDpi()) {
-            return;
-        }
-        mCalcLocked = true;
-        showCalculator();
-    }
-
-    public void unlockCalculator() {
-        if (!mCalcLocked) {
-            return;
-        }
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-        params.setMargins(0, 0, 0, 0);
-        mCalculatorView.setLayoutParams(params);
-        mCalcLocked = false;
-        if (isLargeDpi()) {
-            mCalculatorView.showDoneButton();
-        }
-        hideCalculator();
-    }
-
-    public void hideCalculator() {
-        mHandler.removeCallbacks(delayedShowCalculator);
-        mCalculatorView.setVisibility(View.GONE);
-        mCalculatorView.setEnabled(false);
-    }
-
-    public void showCalculator() {
-        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mFragmentLayout.getWindowToken(), 0);
-
-        int tbHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) mCalculatorView.getLayoutParams();
-
-        // Move calculator above the tab bar
-        params.setMargins(0, 0, 0, tbHeight);
-        mCalculatorView.setLayoutParams(params);
-
-        if (mCalculatorView.getVisibility() != View.VISIBLE) {
-            mHandler.postDelayed(delayedShowCalculator, 100);
-        }
-    }
-
-    public void hideNumberpad() {
-        mHandler.removeCallbacks(delayedShowNumberpad);
-        mNumberpadView.setVisibility(View.GONE);
-        mNumberpadView.setEnabled(false);
-    }
-
-    public void showNumberpad() {
-        mHandler.postDelayed(delayedShowNumberpad, 100);
-    }
-
-    public void onCalculatorButtonClick(View v) {
-        mCalculatorView.onButtonClick(v);
-        if (v.getTag().toString().equals("done")) {
-            hideCalculator();
-        }
+    private float getBottom() {
+        return getWindow().getDecorView().findViewById(android.R.id.content).getBottom();
     }
 
     @Override
     public void onBackPressed() {
-        if (mViewPager.getVisibility() == View.VISIBLE) {
+        if (mLandingLayout.getVisibility() == View.VISIBLE) {
             View v = findViewById(R.id.modal_indefinite_progress);
             if (v.getVisibility() != View.VISIBLE) {
                 DisplayLoginOverlay(false, true);
@@ -666,18 +674,10 @@ public class NavigationActivity extends Activity
                 return;
         }
 
-        if (!mCalcLocked) {
-            hideCalculator();
-        }
-
         showModalProgress(false);
 
-        boolean calcVisible = (mCalculatorView.getVisibility() == View.VISIBLE);
-
         if (isAtNavStackEntry()) {
-            if (!calcVisible || mCalcLocked) {
-                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
-            }
+            ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
         } else {
             popFragment();
         }
@@ -707,20 +707,19 @@ public class NavigationActivity extends Activity
         }
         //******************* end HockeyApp support
 
-        checkLoginExpired();
-
         //Look for Connection change events
         registerReceiver(ConnectivityChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
-        if (!AirbitzApplication.isLoggedIn()) {
+        if (loginExpired() || !AirbitzApplication.isLoggedIn()) {
             DisplayLoginOverlay(true);
             mNavThreadId = Tabs.BD.ordinal();
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.restoreConnectivity();
         }
+        updateDrawer(AirbitzApplication.isLoggedIn());
         switchFragmentThread(mNavThreadId);
 
         AirbitzAlertReceiver.CancelNextAlertAlarm(this, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
@@ -736,13 +735,23 @@ public class NavigationActivity extends Activity
         if(intent != null) {
             Uri data = intent.getData();
             if(data != null) {
+                Log.d(TAG, "Process URI from here 1");
                 processUri(data);
+                // XXX: replace intent that launched the app
+                // it is a result of this dirty "god" activity
+                setIntent(new Intent());
             }
         }
 
-        mHandler.post(delayedEnableReceiveSendButtons);
+        if (null != mPasswordCheck) {
+            mPasswordCheck.onResume();
+        }
 
         mCoreAPI.addExchangeRateChangeListener(this);
+
+        setCoreListeners(this);
+
+        activityInForeground = true;
 
         super.onResume();
     }
@@ -750,6 +759,10 @@ public class NavigationActivity extends Activity
     @Override
     public void onPause() {
         super.onPause();
+
+        setCoreListeners(null);
+
+        activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
@@ -757,7 +770,9 @@ public class NavigationActivity extends Activity
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
-        mHandler.removeCallbacks(delayedEnableReceiveSendButtons);
+        if (null != mPasswordCheck) {
+            mPasswordCheck.onPause();
+        }
         mCoreAPI.removeExchangeRateChangeListener(this);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
@@ -766,7 +781,7 @@ public class NavigationActivity extends Activity
      * this only gets called from sent funds, or a request comes through
      */
     public void switchToWallets(Bundle bundle) {
-        Fragment frag = new WalletsFragment();
+        Fragment frag = new TransactionListFragment();
         bundle.putBoolean(WalletsFragment.CREATE, true);
         frag.setArguments(bundle);
         mNavStacks[Tabs.WALLET.ordinal()].clear();
@@ -844,10 +859,17 @@ public class NavigationActivity extends Activity
         }
 
         String scheme =uri.getScheme();
-        if ("bitcoin".equals(scheme)) {
+        if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
+            List<String> path = uri.getPathSegments();
+            if (2 == path.size()) {
+                launchBuySell(path.get(1), path.get(0));
+            }
+        } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
         }
-        else if("bitcoin-ret".equals(scheme) || "x-callback-url".equals(scheme)) {
+        else if("bitcoin-ret".equals(scheme)
+                || "x-callback-url".equals(scheme)
+                || "airbitz-ret".equals(scheme)) {
             handleRequestForPaymentUri(uri);
         }
         else if (ImportFragment.getHiddenBitsToken(uri.toString()) != null) {
@@ -859,6 +881,7 @@ public class NavigationActivity extends Activity
      * Handle bitcoin-ret or x-callback-url Uri's coming from OS
      */
     private void handleRequestForPaymentUri(Uri uri) {
+        resetDrawerButtons(mDrawerRequest);
         AddressRequestFragment fragment = new AddressRequestFragment();
         fragment.setOnAddressRequestListener(this);
         Bundle bundle = new Bundle();
@@ -873,34 +896,34 @@ public class NavigationActivity extends Activity
         mDataUri = null;
     }
 
+    private void launchBuySell(String country, String provider) {
+        BuySellFragment buySell = null;
+        if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
+            mNavStacks[Tabs.MORE.ordinal()].clear();
+
+            buySell = new BuySellFragment();
+            pushFragmentNoAnimation(buySell, NavigationActivity.Tabs.MORE.ordinal());
+        } else {
+            buySell = (BuySellFragment) mNavStacks[Tabs.MORE.ordinal()].get(0);
+        }
+        switchFragmentThread(Tabs.MORE.ordinal());
+        mDrawer.closeDrawer(mDrawerView);
+
+        buySell.launchPluginByCountry(country, provider);
+    }
+
     /*
      * Handle bitcoin:<address> Uri's coming from OS
      */
     private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
-
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
+        resetDrawerButtons(mDrawerSend);
 
-        if (mNavThreadId != Tabs.SEND.ordinal()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
-            bundle.putString(URI_DATA, dataUri.toString());
-            switchFragmentThread(Tabs.SEND.ordinal(), bundle);
-        } else {
-            CoreAPI.BitcoinURIInfo info = mCoreAPI.CheckURIResults(dataUri.toString());
-            if (info != null && info.address != null) {
-                switchFragmentThread(Tabs.SEND.ordinal());
-                Fragment fragment = new SendConfirmationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SendFragment.IS_UUID, false);
-                bundle.putString(SendFragment.UUID, info.address);
-                bundle.putLong(SendFragment.AMOUNT_SATOSHI, info.amountSatoshi);
-                bundle.putString(SendFragment.LABEL, info.label);
-                bundle.putString(SendFragment.FROM_WALLET_UUID, mCoreAPI.getCoreWallets(false).get(0).getUUID());
-                fragment.setArguments(bundle);
-                pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
-            }
-        }
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
+        bundle.putString(URI_DATA, dataUri.toString());
+        switchFragmentThread(Tabs.SEND.ordinal(), bundle);
     }
 
     @Override
@@ -910,14 +933,15 @@ public class NavigationActivity extends Activity
         mTxId = txId;
 
         // If in merchant donation mode, stay on QR screen and show amount
-        RequestQRCodeFragment fragment = requestMatchesDonation();
+        RequestFragment fragment = requestMatchesDonation();
         if(fragment != null) {
-            showIncomingDialog(walletUUID, txId, false);
+            AudioPlayer.play(this, R.raw.bitcoin_received);
+            fragment.showDonation(mUUID, mTxId);
             return;
         }
 
         /* If showing QR code, launch receiving screen*/
-        RequestQRCodeFragment f = requestMatchesQR(mUUID, mTxId);
+        RequestFragment f = requestMatchesQR(mUUID, mTxId);
         Log.d(TAG, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
@@ -974,7 +998,6 @@ public class NavigationActivity extends Activity
                     wallet.getCurrencyNum(), true);
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
-        int delay = 4000;
         if(withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
             int count = prefs.getInt(INCOMING_COUNT, 1);
@@ -984,18 +1007,18 @@ public class NavigationActivity extends Activity
                 editor.putInt(INCOMING_COUNT, count);
                 editor.apply();
                 message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
-                delay = 5000;
             }
         }
-        ShowFadingDialog(message, delay);
+
+        ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_payment_received));
     }
 
-    private RequestQRCodeFragment requestMatchesQR(String uuid, String txid) {
+    private RequestFragment requestMatchesQR(String uuid, String txid) {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isShowingQRCodeFor(uuid, txid)) {
             return qr;
         } else {
@@ -1003,12 +1026,12 @@ public class NavigationActivity extends Activity
         }
     }
 
-    private RequestQRCodeFragment requestMatchesDonation() {
+    private RequestFragment requestMatchesDonation() {
         Fragment f = mNavStacks[mNavThreadId].peek();
-        if (!(f instanceof RequestQRCodeFragment)) {
+        if (!(f instanceof RequestFragment)) {
             return null;
         }
-        RequestQRCodeFragment qr = (RequestQRCodeFragment) f;
+        RequestFragment qr = (RequestFragment) f;
         if (qr.isMerchantDonation()) {
             return qr;
         } else {
@@ -1016,7 +1039,7 @@ public class NavigationActivity extends Activity
         }
     }
 
-    public void onSentFunds(String walletUUID, String txId) {
+    public void onSentFunds(String walletUUID, String txId, String returnUrl) {
         Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
@@ -1029,6 +1052,7 @@ public class NavigationActivity extends Activity
         bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, txId);
         bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
         Log.d(TAG, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
@@ -1097,7 +1121,7 @@ public class NavigationActivity extends Activity
 
     private void showIncomingBitcoinDialog() {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
                     .setTitle(getResources().getString(R.string.received_bitcoin_title))
                     .setCancelable(false)
@@ -1119,13 +1143,13 @@ public class NavigationActivity extends Activity
                     );
             mIncomingDialog = builder.create();
             mIncomingDialog.show();
-            mHandler.postDelayed(dialogKiller, 5000);
+            mHandler.postDelayed(dialogKiller, getResources().getInteger(R.integer.alert_hold_time_payment_received));
         }
     }
 
     private void showRemotePasswordChangeDialog() {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(getResources().getString(R.string.remote_password_change_message))
                     .setTitle(getResources().getString(R.string.remote_password_change_title))
                     .setCancelable(false)
@@ -1137,12 +1161,12 @@ public class NavigationActivity extends Activity
                                 }
                             }
                     );
-            AlertDialog dialog = builder.create();
+            Dialog dialog = builder.create();
             dialog.show();
         }
     }
 
-    public void UserJustLoggedIn(boolean fullLogin) {
+    public void UserJustLoggedIn(boolean passwordLogin) {
         showNavBar();
         checkDailyLimitPref();
         mCoreAPI.setupAccountSettings();
@@ -1157,14 +1181,30 @@ public class NavigationActivity extends Activity
             switchFragmentThread(Tabs.WALLET.ordinal());
         }
         checkFirstWalletSetup();
-        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && fullLogin) {
+        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
             mCoreAPI.PinSetup();
         }
         DisplayLoginOverlay(false, true);
 
-        new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        boolean checkPassword = false;
+        // if the user has a password, increment PIN login count
+        if (mCoreAPI.PasswordExists()) {
+            checkPassword = mCoreAPI.incrementPinCount();
+        }
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        if(!passwordLogin && !mCoreAPI.PasswordExists()) {
+            showPasswordSetAlert();
+        }
+        else if (!passwordLogin && checkPassword) {
+            mPasswordCheck = new RememberPasswordCheck(this);
+            mPasswordCheck.showPasswordCheckAlert();
+        }
+        else {
+            new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        updateDrawer(true);
+        resetDrawerButtons(mDrawerTxs);
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1229,16 +1269,17 @@ public class NavigationActivity extends Activity
         mHandler.postDelayed(mAttemptLogout, 100);
         DisplayLoginOverlay(true);
 
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        resetApp();
+        AirbitzApplication.Logout();
+        mCoreAPI.logout();
+
+        updateDrawer(false);
     }
 
     Runnable mAttemptLogout = new Runnable() {
         @Override
         public void run() {
             if(mAsyncTasks.isEmpty()) {
-                AirbitzApplication.Logout();
-                mCoreAPI.logout();
-                resetApp();
                 startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
             }
             else {
@@ -1246,8 +1287,6 @@ public class NavigationActivity extends Activity
             }
         }
     };
-
-
 
     private void resetApp() {
         for(int i=0; i<mNavFragments.length; i++) {
@@ -1264,7 +1303,7 @@ public class NavigationActivity extends Activity
             case 2:
                 return new SendFragment();
             case 3:
-                return new WalletsFragment();
+                return new TransactionListFragment();
             case 4:
                 return new SettingFragment();
             default:
@@ -1295,16 +1334,18 @@ public class NavigationActivity extends Activity
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    private void checkLoginExpired() {
+    private boolean loginExpired() {
         if (AirbitzApplication.getmBackgroundedTime() == 0 || !AirbitzApplication.isLoggedIn())
-            return;
+            return true;
 
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
         Log.d(TAG, "delta logout time = " + milliDelta);
         if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
             Logout();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -1328,7 +1369,6 @@ public class NavigationActivity extends Activity
     public void LoginNow(String username, char[] password) {
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
-        setViewPager();
         mDrawerAccount.setText(username);
     }
 
@@ -1340,7 +1380,7 @@ public class NavigationActivity extends Activity
         }
     };
 
-    AlertDialog mMessageDialog;
+    Dialog mMessageDialog;
     Runnable mMessageDialogKiller = new Runnable() {
         @Override
         public void run() {
@@ -1374,7 +1414,7 @@ public class NavigationActivity extends Activity
             if (mMessageDialog != null) {
                 mMessageDialog.dismiss();
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(false)
@@ -1395,12 +1435,11 @@ public class NavigationActivity extends Activity
         ShowOkMessageDialog(title, message);
     }
 
-    private AlertDialog mExitDialog;
+    private Dialog mExitDialog;
     public void ShowExitMessageDialog(String title, String message) {
         if (!this.isFinishing() && mExitDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(message)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.string_yes),
                             new DialogInterface.OnClickListener() {
@@ -1417,15 +1456,18 @@ public class NavigationActivity extends Activity
                                 }
                             });
             mExitDialog = builder.create();
+
+            if (title != null) {
+                mExitDialog.setTitle(title);
+            }
             mExitDialog.show();
         }
     }
 
     public void ShowMessageDialogBackPress(String title, String reason) {
         if (!this.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setNeutralButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
@@ -1434,7 +1476,10 @@ public class NavigationActivity extends Activity
                                 }
                             }
                     );
-            AlertDialog alert = builder.create();
+            Dialog alert = builder.create();
+            if (title != null) {
+                alert.setTitle(title);
+            }
             alert.show();
         }
     }
@@ -1459,7 +1504,7 @@ public class NavigationActivity extends Activity
     }
 
     public void ShowFadingDialog(String message) {
-        ShowFadingDialog(message, 3000);
+        ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_default));
     }
 
     public void ShowFadingDialog(String message, int timeout) {
@@ -1470,11 +1515,14 @@ public class NavigationActivity extends Activity
         ShowFadingDialog(message, null, timeout, cancelable);
     }
 
-    private Dialog mFadingDialog = null;
+    private MaterialDialog mFadingDialog = null;
     public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
+        ShowFadingDialog(null, message, thumbnail, timeout, cancelable);
+    }
+
+    public void ShowFadingDialog(final String title, final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         if (!this.isFinishing()) {
             NavigationActivity.this.runOnUiThread(new Runnable() {
-
                 @Override
                 public void run() {
                     if (timeout == 0) {
@@ -1484,36 +1532,25 @@ public class NavigationActivity extends Activity
                     if (mFadingDialog != null) {
                         mFadingDialog.dismiss();
                     }
-                    mFadingDialog = new Dialog(NavigationActivity.this);
-                    mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    MaterialDialog.Builder builder =
+                        new MaterialDialog.Builder(NavigationActivity.this)
+                                .content(message)
+                                .contentColorRes(android.R.color.white)
+                                .theme(Theme.DARK)
+                                .backgroundColorRes(R.color.colorPrimary);
+                    if (!cancelable) {
+                        builder.progress(true, 0);
+                    }
+                    mFadingDialog = builder.build();
                     mFadingDialog.setCancelable(cancelable);
-                    mFadingDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                    View view = NavigationActivity.this.getLayoutInflater().inflate(R.layout.fading_alert, null);
-                    TextView tv = ((TextView) view.findViewById(R.id.fading_alert_text));
-                    tv.setText(message);
-                    tv.setTypeface(NavigationActivity.helveticaNeueTypeFace);
-                    ProgressBar progress = ((ProgressBar)view.findViewById(R.id.fading_alert_progress));
-                    if(!cancelable) {
-                        progress.setVisibility(View.VISIBLE);
-                    }
-                    if(thumbnail != null) {
-                        view.findViewById(R.id.fading_alert_image_layout).setVisibility(View.VISIBLE);
-                        if(!thumbnail.isEmpty()) {
-                            ((ImageView) view.findViewById(R.id.fading_alert_image)).setImageURI(Uri.parse(thumbnail));
-                        }
-                    }
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(mFadingDialog != null) {
-                                mFadingDialog.dismiss();
-                            }
-                        }
-                    });
-                    mFadingDialog.setContentView(view);
+                    mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+                    TextView tv = mFadingDialog.getContentView();
+                    tv.setTypeface(NavigationActivity.latoRegularTypeFace);
+
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
-                    fadeOut.setDuration(2000);
+                    fadeOut.setDuration(getResources().getInteger(R.integer.alert_fadeout_time_default));
                     fadeOut.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationEnd(Animation animation) {
@@ -1530,8 +1567,17 @@ public class NavigationActivity extends Activity
                         }
                     });
 
-                    view.setAnimation(fadeOut);
                     mFadingDialog.show();
+                    View view = mFadingDialog.getView();
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mFadingDialog != null) {
+                                mFadingDialog.dismiss();
+                            }
+                        }
+                    });
+                    view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
             });
@@ -1540,7 +1586,7 @@ public class NavigationActivity extends Activity
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
         if (amount > 0 && !txid.isEmpty()) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
             ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
                     getString(R.string.import_wallet_swept_funds_message));
         }
@@ -1554,7 +1600,7 @@ public class NavigationActivity extends Activity
     public void showHiddenBitsTransaction(String txid, String uuid, long amount,
                 String message, String zeroMessage, String tweet) {
         if(txid != null) {
-            onSentFunds(uuid, txid);
+            onSentFunds(uuid, txid, "");
         }
 
         if (amount == 0 && !zeroMessage.isEmpty()) {
@@ -1570,9 +1616,8 @@ public class NavigationActivity extends Activity
             if (mMessageDialog != null) {
                 mMessageDialog.dismiss();
             }
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(reason)
-                    .setTitle(title)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
@@ -1591,11 +1636,13 @@ public class NavigationActivity extends Activity
                                 }
                             });
             mMessageDialog = builder.create();
+            if (title != null) {
+                mMessageDialog.setTitle(title);
+            }
             mMessageDialog.show();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(reason)
-                .setTitle(title)
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
@@ -1614,6 +1661,9 @@ public class NavigationActivity extends Activity
                             }
                         });
         mMessageDialog = builder.create();
+        if (title != null) {
+            mMessageDialog.setTitle(title);
+        }
         mMessageDialog.show();
     }
 
@@ -1647,7 +1697,7 @@ public class NavigationActivity extends Activity
         protected void onPreExecute() {
             NavigationActivity.this.ShowFadingDialog(
                     getString(R.string.fragment_signup_creating_wallet),
-                    200000, false);
+                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
         }
 
         @Override
@@ -1837,6 +1887,46 @@ public class NavigationActivity extends Activity
         }
     }
 
+    private Dialog mPasswordSetDialog;
+    private void showPasswordSetAlert() {
+            if (!NavigationActivity.this.isFinishing() && mPasswordSetDialog == null) {
+                AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
+                builder.setMessage(getString(R.string.password_set_message))
+                        .setTitle(getString(R.string.password_set_title))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.password_set_skip),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        mPasswordSetDialog = null;
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.string_ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        mPasswordSetDialog = null;
+                                        launchChangePassword();
+                                    }
+                                });
+                mPasswordSetDialog = builder.create();
+                mPasswordSetDialog.show();
+        }
+    }
+
+    private void launchChangePassword() {
+        Bundle bundle = new Bundle();
+
+        Fragment frag = new SettingFragment();
+        bundle.putBoolean(SettingFragment.START_CHANGE_PASSWORD, true);
+        frag.setArguments(bundle);
+        mNavStacks[Tabs.MORE.ordinal()].clear();
+        mNavStacks[Tabs.MORE.ordinal()].add(frag);
+        switchFragmentThread(Tabs.MORE.ordinal());
+
+        resetDrawerButtons(mDrawerSettings);
+    }
+
     private void checkDailyLimitPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
 
@@ -1851,35 +1941,61 @@ public class NavigationActivity extends Activity
 
     //********************  OTP support
     @Override
-    public void onOTPError() {
-        mHandler.post(showOTPErrorDialog);
+    public void onOTPError(String secret) {
+        if(secret != null) {
+            mHandler.post(mShowOTPSkew);
+        }
+        else {
+            mHandler.post(mShowOTPRequired);
+        }
     }
 
-    AlertDialog mOTPAlertDialog;
-    final Runnable showOTPErrorDialog = new Runnable() {
+    Dialog mOTPAlertDialog;
+    final Runnable mShowOTPRequired = new Runnable() {
         @Override
         public void run() {
             if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
-                builder.setMessage(getString(R.string.twofactor_required_message))
-                        .setTitle(getString(R.string.twofactor_required_title))
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.twofactor_enable),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                        launchTwoFactorScan();
-                                    }
-                                })
-                        .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        mOTPAlertDialog = null;
-                                    }
-                                });
-                mOTPAlertDialog = builder.create();
-                mOTPAlertDialog.show();
+                    AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
+                    builder.setMessage(getString(R.string.twofactor_required_message))
+                            .setTitle(getString(R.string.twofactor_required_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.twofactor_enable),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                            launchTwoFactorScan();
+                                        }
+                                    })
+                            .setNegativeButton(getResources().getString(R.string.twofactor_remind_later),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
+            }
+        }
+    };
+
+    final Runnable mShowOTPSkew = new Runnable() {
+        @Override
+        public void run() {
+            if (!NavigationActivity.this.isFinishing() && mOTPAlertDialog == null) {
+                    AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
+                    builder.setMessage(getString(R.string.twofactor_invalid_message))
+                            .setTitle(getString(R.string.twofactor_invalid_title))
+                            .setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.string_ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            mOTPAlertDialog = null;
+                                        }
+                                    });
+                    mOTPAlertDialog = builder.create();
+                    mOTPAlertDialog.show();
             }
         }
     };
@@ -1900,12 +2016,12 @@ public class NavigationActivity extends Activity
         mOTPAlertDialog = null;
     }
 
-    AlertDialog mOTPResetRequestDialog;
+    Dialog mOTPResetRequestDialog;
     @Override
     public void onOTPResetRequest() {
         if (!NavigationActivity.this.isFinishing() && mOTPResetRequestDialog == null) {
             String message = String.format(getString(R.string.twofactor_reset_message), AirbitzApplication.getUsername());
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(NavigationActivity.this, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
             builder.setMessage(message)
                     .setTitle(getString(R.string.twofactor_reset_title))
                     .setCancelable(false)
@@ -1924,32 +2040,109 @@ public class NavigationActivity extends Activity
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
         mDrawer = (DrawerLayout) findViewById(R.id.activityDrawer);
-        mDrawerView = (RelativeLayout) findViewById(R.id.activityDrawerView);
-        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
 
-        mDrawerBuySell = (TextView) findViewById(R.id.item_drawer_buy_sell);
-        mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
+        mDrawerView = (FrameLayout) findViewById(R.id.activityDrawerView);
+        Common.addStatusBarPadding(this, mDrawerView);
+
+        mDrawerLayoutAccount = findViewById(R.id.layout_account);
+        mDrawerLogin = findViewById(R.id.item_drawer_login);
+        mDrawerLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Buy/Sell pressed");
+                mDrawer.closeDrawer(mDrawerView);
+                DisplayLoginOverlay(true);
+            }
+        });
+        mDrawerDirectory = (Button) findViewById(R.id.item_drawer_directory);
+        mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerDirectory);
+                onNavBarSelected(Tabs.BD.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
             }
         });
 
-        mDrawerLogout = (TextView) findViewById(R.id.item_drawer_logout);
+        mDrawerRequest = (Button) findViewById(R.id.item_drawer_request);
+        mDrawerRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerRequest);
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerSend = (Button) findViewById(R.id.item_drawer_send);
+        mDrawerSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerSend);
+                onNavBarSelected(Tabs.SEND.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerTxs = (Button) findViewById(R.id.item_drawer_txs);
+        mDrawerTxs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerTxs);
+                onNavBarSelected(Tabs.WALLET.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
+        mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
+        mDrawerBuySell = (Button) findViewById(R.id.item_drawer_buy_sell);
+        mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerBuySell);
+                if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
+                    mNavStacks[Tabs.MORE.ordinal()].clear();
+                    pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
+                }
+                switchFragmentThread(Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
+        mDrawerImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDrawerButtons(mDrawerImport);
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerLogout = (Button) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetDrawerButtons(null);
                 mDrawer.closeDrawer(mDrawerView);
                 Logout();
             }
         });
 
-        mDrawerSettings = (TextView) findViewById(R.id.item_drawer_settings);
+        mDrawerSettings = (Button) findViewById(R.id.item_drawer_settings);
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int tmp = mNavThreadId;
+                resetDrawerButtons(mDrawerSettings);
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                if (Tabs.MORE.ordinal() == tmp) {
+                    switchFragmentThread(Tabs.MORE.ordinal());
+                }
                 mDrawer.closeDrawer(mDrawerView);
-                switchFragmentThread(Tabs.MORE.ordinal());
             }
         });
 
@@ -1957,14 +2150,17 @@ public class NavigationActivity extends Activity
         mDrawerAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOtherAccountsListView.getVisibility() != View.VISIBLE) {
-                    showOthersList(AirbitzApplication.getUsername(), true);
-                }
-                else {
-                    showOthersList(AirbitzApplication.getUsername(), false);
+                if (!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
+                    if (mOtherAccountsListView.getVisibility() != View.VISIBLE) {
+                        showOthersList(AirbitzApplication.getUsername(), true);
+                    } else {
+                        showOthersList(AirbitzApplication.getUsername(), false);
+                    }
                 }
             }
         });
+        mDrawerAccountArrow = (ImageView) findViewById(R.id.item_drawer_account_arrow);
+        mDrawerAccountArrow.setVisibility(View.INVISIBLE);
 
         mOtherAccounts = new ArrayList<String>();
         mOtherAccountsAdapter = new AccountsAdapter(this, mOtherAccounts, true);
@@ -2007,23 +2203,83 @@ public class NavigationActivity extends Activity
         });
     }
 
+    private void resetDrawerButtons(Button button) {
+        mDrawerDirectory.setSelected(false);
+        mDrawerRequest.setSelected(false);
+        mDrawerSend.setSelected(false);
+        mDrawerTxs.setSelected(false);
+        mDrawerBuySell.setSelected(false);
+        mDrawerImport.setSelected(false);
+        mDrawerSettings.setSelected(false);
+        mDrawerLogout.setSelected(false);
+        if (button != null) {
+            button.setSelected(true);
+        }
+    }
+
+    private void updateDrawer(boolean loggedIn) {
+        closeDrawer();
+        if (loggedIn) {
+            mDrawerAccount.setText(AirbitzApplication.getUsername());
+            mDrawerLogin.setVisibility(View.GONE);
+            mDrawerExchange.setVisibility(View.VISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.VISIBLE);
+            mDrawerLogout.setVisibility(View.VISIBLE);
+            List<String> users = otherAccounts(AirbitzApplication.getUsername());
+            if (users.size() > 0) {
+                mDrawerAccountArrow.setVisibility(View.VISIBLE);
+            } else {
+                mDrawerAccountArrow.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            mDrawerLogin.setVisibility(View.VISIBLE);
+            mDrawerExchange.setVisibility(View.INVISIBLE);
+            mDrawerLayoutAccount.setVisibility(View.GONE);
+            mDrawerLogout.setVisibility(View.GONE);
+        }
+        showOthersList(AirbitzApplication.getUsername(), false);
+    }
+
+    public void lockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    public void unlockDrawer() {
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    public void openDrawer() {
+        mDrawerAccount.setText(AirbitzApplication.getUsername());
+        showOthersList(AirbitzApplication.getUsername(), false);
+        mDrawer.openDrawer(mDrawerView);
+    }
+
+    public void closeDrawer() {
+        mDrawer.closeDrawer(mDrawerView);
+    }
+
+    public boolean isDrawerOpen() {
+        return mDrawer.isDrawerOpen(mDrawerView);
+    }
+
     private void showOthersList(String username, boolean show)
     {
         mOtherAccounts.clear();
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
-            if(mOtherAccountsAdapter.getCount() > 4) {
-                View item = mOtherAccountsAdapter.getView(0, null, mOtherAccountsListView);
-                item.measure(0, 0);
-                ViewGroup.LayoutParams params = mOtherAccountsListView.getLayoutParams();
-                params.height = 4 * item.getMeasuredHeight();
-                mOtherAccountsListView.setLayoutParams(params);
-            }
             mOtherAccountsListView.setVisibility(View.VISIBLE);
+            mDrawerBuySellLayout.setVisibility(View.GONE);
+            mDrawerAccountArrow.animate()
+                    .rotation(180)
+                    .start();
         }
         else {
             mOtherAccountsListView.setVisibility(View.GONE);
+            mDrawerBuySellLayout.setVisibility(View.VISIBLE);
+            mDrawerAccountArrow.animate()
+                    .rotation(0)
+                    .start();
         }
     }
 
@@ -2047,7 +2303,7 @@ public class NavigationActivity extends Activity
     @Override
     public void onButtonTouched(final String account) {
         String message = String.format(getString(R.string.fragment_landing_account_delete_message), account);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(message)
                 .setTitle(getString(R.string.fragment_landing_account_delete_title))
                 .setCancelable(false)
@@ -2059,6 +2315,7 @@ public class NavigationActivity extends Activity
                                 }
                                 showOthersList("", false);
                                 showOthersList(AirbitzApplication.getUsername(), true);
+                                updateDrawer(true);
                                 dialog.dismiss();
                             }
                         })
@@ -2069,7 +2326,7 @@ public class NavigationActivity extends Activity
                                 dialog.dismiss();
                             }
                         });
-        AlertDialog confirmDialog = builder.create();
+        Dialog confirmDialog = builder.create();
         confirmDialog.show();
     }
 }

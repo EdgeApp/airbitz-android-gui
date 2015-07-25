@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -34,6 +34,7 @@ package com.airbitz.fragments;
 import android.app.Fragment;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -58,7 +59,6 @@ public class HelpFragment extends BaseFragment {
     public static final int IMPORT_WALLET = R.raw.info_import_wallet;
     public static final int RECIPIENT = R.raw.info_recipient;
     public static final int REQUEST = R.raw.info_request;
-    public static final int REQUEST_QR = R.raw.info_request_qr;
     public static final int SEND = R.raw.info_send;
     public static final int SEND_CONFIRMATION = R.raw.info_send_confirmation;
     public static final int SEND_CONFIRMATION_INSUFFICIENT_FUNDS = R.raw.info_insufficient_funds;
@@ -92,6 +92,8 @@ public class HelpFragment extends BaseFragment {
             tv.setMovementMethod(LinkMovementMethod.getInstance());
             tv.setVisibility(View.VISIBLE);
             tv.setText(mHtml);
+            Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
+            tv.setTypeface(type);
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
@@ -124,8 +126,13 @@ public class HelpFragment extends BaseFragment {
             }
         });
 
-        ((NavigationActivity) getActivity()).hideSoftKeyboard(v);
-
+        mActivity.hideSoftKeyboard(v);
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.hideNavBar();
     }
 }

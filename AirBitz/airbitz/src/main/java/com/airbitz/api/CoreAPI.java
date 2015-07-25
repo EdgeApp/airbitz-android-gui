@@ -60,10 +60,13 @@ import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Currency;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +74,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tom on 6/20/14.
@@ -101,6 +107,15 @@ public class CoreAPI {
 
     private CoreAPI() { }
 
+    public static CoreAPI getApi(Context context) {
+        mContext = context;
+        if (mInstance == null) {
+            mInstance = new CoreAPI();
+            Log.d(TAG, "New CoreAPI");
+        }
+        return mInstance;
+    }
+
     public static CoreAPI getApi() {
         if (mInstance == null) {
             mInstance = new CoreAPI();
@@ -109,15 +124,17 @@ public class CoreAPI {
         return mInstance;
     }
 
-    private Context mContext;
+    private static Context mContext;
 
     public native String getStringAtPtr(long pointer);
     public native byte[] getBytesAtPtr(long pointer, int length);
+    public native int[] getCoreCurrencyNumbers();
+    public native String getCurrencyCode(int currencyNumber);
+    public native String getCurrencyDescription(int currencyNumber);
     public native long get64BitLongAtPtr(long pointer);
     public native void set64BitLongAtPtr(long pointer, long value);
     public native int FormatAmount(long satoshi, long ppchar, long decimalplaces, boolean addSign, long perror);
     public native int satoshiToCurrency(String jarg1, String jarg2, long satoshi, long currencyp, int currencyNum, long error);
-    public native int coreDataSyncAll(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncAccount(String jusername, String jpassword, long jerrorp);
     public native int coreDataSyncWallet(String jusername, String jpassword, String juuid, long jerrorp);
     public native int coreSweepKey(String jusername, String jpassword, String juuid, String wif, long ppchar, long jerrorp);
@@ -145,8 +162,16 @@ public class CoreAPI {
             }
             core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
             initialized = true;
+
+            // Fetch General Info
+            new Thread(new Runnable() {
+                public void run() {
+                    generalInfoUpdate();
+                }
+            }).start();
+
+            initCurrencies();
         }
-        mContext = context;
     }
 
     public void setupAccountSettings() {
@@ -258,7 +283,9 @@ public class CoreAPI {
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() {
             mCoreSettings = null;
-            mOnBlockHeightChange.onBlockHeightChange();
+            if (null != mOnBlockHeightChange) {
+                mOnBlockHeightChange.onBlockHeightChange();
+            }
         }
     };
 
@@ -274,7 +301,10 @@ public class CoreAPI {
         public void run() {
             mCoreSettings = null;
             startWatchers();
-            mOnDataSync.OnDataSync();
+            if (null != mOnDataSync) {
+                mOnDataSync.OnDataSync();
+                reloadWallets();
+            }
         }
     };
 
@@ -311,33 +341,13 @@ public class CoreAPI {
     };
 
     //***************** Wallet handling
-    public List<Wallet> loadWallets() {
-        return loadWallets(true);
+    OnWalletLoaded mOnWalletLoadedListener = null;
+    public void setOnWalletLoadedListener(OnWalletLoaded listener) {
+        mOnWalletLoadedListener = listener;
+        reloadWallets();
     }
-
-    public List<Wallet> loadWallets(boolean withTransactions) {
-        List<Wallet> list = new ArrayList<Wallet>();
-        List<Wallet> coreList = getCoreWallets(withTransactions);
-
-        if(coreList==null)
-            coreList = new ArrayList<Wallet>();
-        Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
-        headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
-        list.add(headerWallet);//Wallet HEADER
-        // Loop through and find non-archived wallets first
-        for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.getName()!=null)
-                list.add(wallet);
-        }
-        Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        list.add(archiveWallet); //Archive HEADER
-        // Loop through and find archived wallets now
-        for (Wallet wallet : coreList) {
-            if (wallet.isArchived() && wallet.getName()!=null)
-                list.add(wallet);
-        }
-        return list;
+    public interface OnWalletLoaded {
+        void onWalletsLoaded();
     }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
@@ -377,20 +387,6 @@ public class CoreAPI {
             wallet.setBalanceSatoshi(info.getBalanceSatoshi());
             wallet.setCurrencyNum(info.getCurrencyNum());
         }
-    }
-
-    public Wallet getWalletFromName(String walletName) {
-        Wallet wallet = null;
-        List<Wallet> wallets = loadWallets();
-        for(Wallet w: wallets) {
-            if (w != null && w.getName().contains(walletName)) {
-                    wallet = w;
-            }
-        }
-        if(wallet!=null) {
-            wallet = getWalletFromUUID(wallet.getUUID());
-        }
-        return wallet;
     }
 
     public Wallet getWalletFromUUID(String uuid) {
@@ -467,6 +463,39 @@ public class CoreAPI {
         return false;
     }
 
+    ReloadWalletTask mReloadWalletTask = null;
+    public void reloadWallets() {
+        if(mReloadWalletTask == null) {
+            mReloadWalletTask = new ReloadWalletTask();
+            mReloadWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    /**
+     * Reload the wallet list on async thread and alert any listener
+     */
+    public class ReloadWalletTask extends AsyncTask<Void, Void, List<Wallet>> {
+
+        @Override
+        protected List<Wallet> doInBackground(Void... params) {
+            mCoreWallets = null;
+            return getCoreWallets(true);
+        }
+
+        @Override
+        protected void onPostExecute(List<Wallet> walletList) {
+            mCoreWallets = walletList;
+            if (mOnWalletLoadedListener != null) {
+                Log.d(TAG, "wallets loaded");
+                mOnWalletLoadedListener.onWalletsLoaded();
+            }
+            else {
+                Log.d(TAG, "no wallet loaded listener");
+            }
+            mReloadWalletTask = null;
+        }
+    }
+
     //************ Account Recovery
 
     // Blocking call, wrap in AsyncTask
@@ -476,22 +505,154 @@ public class CoreAPI {
         return pError;
     }
 
-    //************ Settings handling
-    private String[] mFauxCurrencyAcronyms = {
-        "AUD", "CAD", "CNY", "CUP", "EUR", "GBP", "HKD", "MXN", "NZD", "PHP", "USD"
-    };
-    private String[] mFauxCurrencyDenomination = {
-        "$", "$", "¥", "₱", "€", "£", "$", "$", "$", "₱", "$"
-    };
-    private int[] mFauxCurrencyNumbers = {
-        36, 124, 156, 192, 978, 826, 344, 484, 554, 608, 840
-    };
+    //************ Currency handling
+    private int[] mCurrencyNumbers;
+    private Map<Integer, String> mCurrencySymbolCache = new HashMap<>();
+    private Map<Integer, String> mCurrencyCodeCache = new HashMap<>();
+    private Map<Integer, String> mCurrencyDescriptionCache = new HashMap<>();
 
-    private String[] mBTCDenominations = {"BTC", "mBTC", "μBTC"};
-    private String[] mBTCSymbols = {"฿ ", "m฿ ", "μ฿ "};
+    public String currencyCodeLookup(int currencyNum)
+    {
+        String cached = mCurrencyCodeCache.get(currencyNum);
+        if (cached != null) {
+            return cached;
+        }
+
+        String code = getCurrencyCode(currencyNum);
+        if(code != null) {
+            mCurrencyCodeCache.put(currencyNum, code);
+            return code;
+        }
+
+        return "";
+    }
+
+    public String currencyDescriptionLookup(int currencyNum)
+    {
+        String cached = mCurrencyDescriptionCache.get(currencyNum);
+        if (cached != null) {
+            return cached;
+        }
+
+        String description = getCurrencyDescription(currencyNum);
+        if(description != null) {
+            mCurrencyDescriptionCache.put(currencyNum, description);
+            return description;
+        }
+
+        return "";
+    }
+
+    public String currencySymbolLookup(int currencyNum)
+    {
+        String cached = mCurrencySymbolCache.get(currencyNum);
+        if (cached != null) {
+            return cached;
+        }
+
+        try {
+            String code = currencyCodeLookup(currencyNum);
+            String symbol  = Currency.getInstance(code).getSymbol();
+            if(symbol != null) {
+                mCurrencySymbolCache.put(currencyNum, symbol);
+                return symbol;
+            }
+            else {
+                Log.d(TAG, "Bad currency code: " + code);
+                return "";
+            }
+        }
+        catch (Exception e) {
+            return "";
+        }
+    }
+
+    public String getUserCurrencyAcronym() {
+        tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return currencyCodeLookup(840);
+        }
+        else {
+            return currencyCodeLookup(settings.getCurrencyNum());
+        }
+    }
+
+    public String getUserCurrencySymbol() {
+        tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return currencySymbolLookup(840);
+        }
+        else {
+            return currencySymbolLookup(settings.getCurrencyNum());
+        }
+    }
+
+    public String getCurrencyDenomination(int currencyNum) {
+        return currencySymbolLookup(currencyNum);
+    }
+
+    public int[] getCurrencyNumberArray() {
+        ArrayList<Integer> intKeys = new ArrayList<Integer>(mCurrencyCodeCache.keySet());
+        int[] ints = new int[intKeys.size()];
+        int i = 0;
+        for (Integer n : intKeys) {
+            ints[i++] = n;
+        }
+        return ints;
+    }
+
+    public String getCurrencyAcronym(int currencyNum) {
+        return currencyCodeLookup(currencyNum);
+    }
+
+    public List<String> getCurrencyCodeAndDescriptionArray() {
+        initCurrencies();
+        List<String> strings = new ArrayList<>();
+        // Populate all codes and lists and the return list
+        for(Integer number : mCurrencyNumbers) {
+            String code = currencyCodeLookup(number);
+            String description = currencyDescriptionLookup(number);
+            String symbol = currencySymbolLookup(number);
+            strings.add(code + " - " + description);
+        }
+        return strings;
+    }
+
+    public List<String> getCurrencyCodeArray() {
+        initCurrencies();
+        List<String> strings = new ArrayList<>();
+        // Populate all codes and lists and the return list
+        for(Integer number : mCurrencyNumbers) {
+            String code = currencyCodeLookup(number);
+            strings.add(code);
+        }
+        return strings;
+    }
+
+    public void initCurrencies() {
+        if(mCurrencyNumbers == null) {
+            mCurrencyNumbers = getCoreCurrencyNumbers();
+            mCurrencySymbolCache = new HashMap<>();
+            mCurrencyCodeCache = new HashMap<>();
+            mCurrencyDescriptionCache = new HashMap<>();
+            for(Integer number : mCurrencyNumbers) {
+                currencyCodeLookup(number);
+                currencyDescriptionLookup(number);
+                currencySymbolLookup(number);
+            }
+        }
+    }
+
+    //************ Settings handling
+    private String[] mBTCDenominations = {"BTC", "mBTC", "bits"};
+    private String[] mBTCSymbols = {"Ƀ ", "mɃ ", "ƀ "};
 
     public String GetUserPIN() {
-        return coreSettings().getSzPIN();
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return coreSettings().getSzPIN();
+        }
+        return "";
     }
 
     public tABC_CC SetPin(String pin) {
@@ -509,12 +670,19 @@ public class CoreAPI {
             return prefs.getBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), true);
         }
         else {
-            return coreSettings().getBDailySpendLimit();
+            tABC_AccountSettings settings = coreSettings();
+            if(settings != null) {
+                return coreSettings().getBDailySpendLimit();
+            }
+            return false;
         }
     }
 
     public void SetDailySpendLimitSetting(boolean set) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setBDailySpendLimit(set);
         saveAccountSettings(settings);
 
@@ -530,8 +698,12 @@ public class CoreAPI {
             return prefs.getLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), 0);
         }
         else {
-            SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
-            return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+            tABC_AccountSettings settings = coreSettings();
+            if(settings != null) {
+                SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
+                return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+            }
+            return 0;
         }
     }
 
@@ -539,6 +711,9 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setDailySpendLimitSatoshis(limit);
         saveAccountSettings(settings);
 
@@ -549,24 +724,38 @@ public class CoreAPI {
     }
 
     public boolean GetPINSpendLimitSetting() {
-        return coreSettings().getBSpendRequirePin();
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return coreSettings().getBSpendRequirePin();
+        }
+        return true;
     }
 
     public void SetPINSpendLimitSetting(boolean set) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setBSpendRequirePin(set);
         saveAccountSettings(settings);
     }
 
     public long GetPINSpendLimit() {
-        SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
-        return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
+            return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
+        }
+        return 0;
     }
 
     public void SetPINSpendSatoshis(long spendLimit) {
         SWIGTYPE_p_int64_t limit = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setSpendRequirePinSatoshis(limit);
         saveAccountSettings(settings);
     }
@@ -591,6 +780,9 @@ public class CoreAPI {
 
     public String getDefaultBTCDenomination() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return "";
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
@@ -601,6 +793,9 @@ public class CoreAPI {
 
     public String getUserBTCSymbol() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return "";
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
@@ -609,76 +804,6 @@ public class CoreAPI {
         return mBTCSymbols[bitcoinDenomination.getDenominationType()];
     }
 
-    public String getUserCurrencyAcronym() {
-        return mFauxCurrencyAcronyms[SettingsCurrencyIndex()];
-    }
-
-    public String getUserCurrencyDenomination() {
-        return mFauxCurrencyDenomination[SettingsCurrencyIndex()];
-    }
-
-    public String getCurrencyDenomination(int currencyNum) {
-        return mFauxCurrencyDenomination[CurrencyIndex(currencyNum)];
-    }
-
-    public int[] getCurrencyNumbers() {
-        return mFauxCurrencyNumbers;
-    }
-
-    public String getCurrencyAcronym(int currencyNum) {
-        return mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
-    }
-
-    public String[] getCurrencyAcronyms() {
-        //TEMP fix
-        return mFauxCurrencyAcronyms;
-
-//        String[] arrayCurrencies = null;
-//        tABC_Error Error = new tABC_Error();
-//
-//        SWIGTYPE_p_int pCount = core.new_intp();
-//
-//        SWIGTYPE_p_long lp = core.new_longp();
-//        SWIGTYPE_p_p_sABC_Currency pCurrency = core.longp_to_ppCurrency(lp);
-//
-//        tABC_CC result = core.ABC_GetCurrencies(pCurrency, pCount, Error);
-//
-//        if (result == tABC_CC.ABC_CC_Ok) {
-//            int mCount = core.intp_value(pCount);
-//            arrayCurrencies = new String[mCount];
-//
-//            long base = core.longp_value(lp);
-//            for (int i = 0; i < 1; i++) //mCount; i++) //FIXME error when i > 0
-//            {
-//                long start = core.longp_value(new pLong(base + i * 4));
-//                tABC_Currency txd = new Currency(start);
-//                arrayCurrencies[i] = txd.getSzCode();
-//            }
-//        }
-//        return arrayCurrencies;
-    }
-
-    private class Currency extends tABC_Currency {
-        String mCode = null;
-        int mNum = -1;
-        String mCountries;
-        String mDescription;
-
-        public Currency(long pv) {
-            super(pv, false);
-            if(pv!=0) {
-                mCode = super.getSzCode();
-                mNum = super.getNum();
-                mCountries = super.getSzCountries();
-                mDescription = super.getSzDescription();
-            }
-        }
-
-        public String getCode() { return mCode; }
-        public int getmNum() { return mNum; }
-        public String getCountries() { return mCountries; }
-        public String getDescription() { return mDescription; }
-    }
 
     private tABC_AccountSettings mCoreSettings;
     public tABC_AccountSettings coreSettings() {
@@ -704,6 +829,7 @@ public class CoreAPI {
             }
             return mCoreSettings;
         } else {
+
             String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
             Log.d(TAG, "Load settings failed - "+message);
         }
@@ -727,77 +853,31 @@ public class CoreAPI {
         }
     }
 
-    public List<ExchangeRateSource> getExchangeRateSources(tABC_ExchangeRateSources sources) {
-        List<tABC_ExchangeRateSource> list = new ArrayList<tABC_ExchangeRateSource>();
-        ExchangeRateSources temp = new ExchangeRateSources(sources.getCPtr(sources));
-        return temp.getSources();
+    public List<String> getExchangeRateSources() {
+        List<String> sources = new ArrayList<>();
+        sources.add("Bitstamp");
+        sources.add("BraveNewCoin");
+        sources.add("Coinbase");
+        return sources;
     }
 
-    private class ExchangeRateSources extends tABC_ExchangeRateSources {
-        long mNumSources = 0;
-        long mChoiceStart = 0;
-        List<ExchangeRateSource> sources;
 
-        public ExchangeRateSources (long pv) {
-            super(pv, false);
-            if(pv!=0) {
-                mNumSources = super.getNumSources();
-            }
+    public boolean incrementPinCount() {
+        tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return false;
         }
-
-        public long getNumSources() { return mNumSources; }
-
-        public List<ExchangeRateSource> getSources() {
-            sources = new ArrayList<ExchangeRateSource>();
-            SWIGTYPE_p_p_sABC_ExchangeRateSource start = super.getASources();
-            for(int i=0; i< mNumSources; i++) {
-                ExchangeRateSources fake = new ExchangeRateSources(ppExchangeRateSource.getPtr(start, i * 4));
-                mChoiceStart = fake.getNumSources();
-                sources.add(new ExchangeRateSource(mChoiceStart));
-            }
-            return sources;
+        int pinLoginCount = settings.getPinLoginCount();
+        pinLoginCount++;
+        settings.setPinLoginCount(pinLoginCount);
+        saveAccountSettings(settings);
+        if (pinLoginCount == 3
+                || pinLoginCount == 10
+                || pinLoginCount == 40
+                || pinLoginCount == 100) {
+            return true;
         }
-
-        public void setSources(ExchangeRateSource[] sources) {
-
-        }
-    }
-
-    public class ExchangeRateSource extends tABC_ExchangeRateSource {
-        String mSource = null;
-        long mCurrencyNum = -1;
-
-        public ExchangeRateSource(long pv) {
-            super(pv, false);
-            if (pv != 0) {
-                mSource = super.getSzSource();
-                mCurrencyNum = super.getCurrencyNum();
-            }
-        }
-
-        public String getSource() {
-            return mSource;
-        }
-
-        public long getmCurrencyNum() {
-            return mCurrencyNum;
-        }
-    }
-
-    private static class ppExchangeRateSource extends SWIGTYPE_p_p_sABC_ExchangeRateSource {
-        public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p) { return getCPtr(p); }
-        public static long getPtr(SWIGTYPE_p_p_sABC_ExchangeRateSource p, long i) { return getCPtr(p)+i; }
-    }
-
-    public void addExchangeRateSource(String name, int currencyNumber) {
-        ExchangeRateSource newSource = (ExchangeRateSource) new tABC_ExchangeRateSource();
-        newSource.setSzSource(name);
-        newSource.setCurrencyNum(currencyNumber);
-
-        tABC_ExchangeRateSources sources = coreSettings().getExchangeRateSources();
-        List<ExchangeRateSource> list = getExchangeRateSources(coreSettings().getExchangeRateSources());
-        list.add(newSource);
-//        sources.setASources();
+        return false;
     }
 
     //***************** Questions
@@ -843,6 +923,9 @@ public class CoreAPI {
 
     private void incRecoveryReminder(int val) {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         int reminderCount = settings.getRecoveryReminderCount();
         reminderCount += val;
         settings.setRecoveryReminderCount(reminderCount);
@@ -850,23 +933,26 @@ public class CoreAPI {
     }
 
     public boolean needsRecoveryReminder(Wallet wallet) {
-        int reminderCount = coreSettings().getRecoveryReminderCount();
-        if (reminderCount >= RECOVERY_REMINDER_COUNT) {
-            // We reminded them enough
-            return false;
-        }
 
-        if (wallet.getBalanceSatoshi() < 10000000) {
-            // they do not have enough money to care
-            return false;
-        }
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int reminderCount = coreSettings().getRecoveryReminderCount();
+            if (reminderCount >= RECOVERY_REMINDER_COUNT) {
+                // We reminded them enough
+                return false;
+            }
 
-        if (hasRecoveryQuestionsSet()) {
-            // Recovery questions already set
-            clearRecoveryReminder();
-            return false;
-        }
+            if (wallet.getBalanceSatoshi() < 10000000) {
+                // they do not have enough money to care
+                return false;
+            }
 
+            if (hasRecoveryQuestionsSet()) {
+                // Recovery questions already set
+                clearRecoveryReminder();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -1345,7 +1431,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.i(TAG, "Error: CoreBridge.searchTransactionsIn: "+Error.getSzDescription());
+            Log.i(TAG, "Error: CoreBridge.searchTransactionsIn: " + Error.getSzDescription());
         }
         return listTransactions;
     }
@@ -1386,9 +1472,13 @@ public class CoreAPI {
     //************************* Currency formatting
 
     public String formatDefaultCurrency(double in) {
-        String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
-        String out = String.format("%.3f", in);
-        return pre+out;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
+            String out = String.format("%.3f", in);
+            return pre+out;
+        }
+        return "";
     }
 
 
@@ -1398,7 +1488,7 @@ public class CoreAPI {
 
     public String formatCurrency(double in, int currencyNum, boolean withSymbol, int decimalPlaces) {
         String pre;
-        String denom = mFauxCurrencyDenomination[findCurrencyIndex(currencyNum)]+" ";
+        String denom = currencySymbolLookup(currencyNum) + " ";
         if (in < 0)
         {
             in = Math.abs(in);
@@ -1421,8 +1511,8 @@ public class CoreAPI {
     }
 
     private int findCurrencyIndex(int currencyNum) {
-        for(int i=0; i< mFauxCurrencyNumbers.length; i++) {
-            if(currencyNum == mFauxCurrencyNumbers[i])
+        for(int i=0; i< mCurrencyNumbers.length; i++) {
+            if(currencyNum == mCurrencyNumbers[i])
                 return i;
         }
         Log.d(TAG, "CurrencyIndex not found, using default");
@@ -1432,6 +1522,9 @@ public class CoreAPI {
     public int userDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return 2;
+        }
         tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
         if(bitcoinDenomination != null) {
             int label = bitcoinDenomination.getDenominationType();
@@ -1504,7 +1597,7 @@ public class CoreAPI {
             currencyNum = settings.getCurrencyNum();
             mCurrencyIndex = currencyNum;
         }
-        int[] currencyNumbers = getCurrencyNumbers();
+        int[] currencyNumbers = getCurrencyNumberArray();
 
         for(int i=0; i<currencyNumbers.length; i++) {
             if(currencyNumbers[i] == currencyNum)
@@ -1519,7 +1612,7 @@ public class CoreAPI {
 
     public int CurrencyIndex(int currencyNum) {
         int index = -1;
-        int[] currencyNumbers = getCurrencyNumbers();
+        int[] currencyNumbers = getCurrencyNumberArray();
 
         for(int i=0; i<currencyNumbers.length; i++) {
             if(currencyNumbers[i] == currencyNum)
@@ -1535,38 +1628,71 @@ public class CoreAPI {
     public long denominationToSatoshi(String amount) {
         int decimalPlaces = userDecimalPlaces();
 
-        String cleanAmount = amount.replaceAll(",", "");
-        return ParseAmount(cleanAmount, decimalPlaces);
+        try {
+            Number cleanAmount =
+                new DecimalFormat().parse(amount, new ParsePosition(0));
+            if (null == cleanAmount) {
+                return 0L;
+            }
+            return ParseAmount(cleanAmount.toString(), decimalPlaces);
+        } catch (Exception e) {
+            // Shhhhh
+        }
+        return 0L;
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
-        long satoshi = 100;
-        int denomIndex = 0;
-        if(denomination != null) {
-            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
-                satoshi = (long) SATOSHI_PER_BTC;
-                denomIndex = 0;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
-                satoshi = (long) SATOSHI_PER_mBTC;
-                denomIndex = 1;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
-                satoshi = (long) SATOSHI_PER_uBTC;
-                denomIndex = 2;
-            }
-        }
-//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
-        double o = SatoshiToCurrency(satoshi, currencyNum);
-        String currency = formatCurrency(o, currencyNum, true, 3);
 
-        String currencyLabel = mFauxCurrencyAcronyms[CurrencyIndex(currencyNum)];
-        return "1 "+mBTCDenominations[denomIndex]+" = " + currency + " " + currencyLabel;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
+            long satoshi = 100;
+            int denomIndex = 0;
+            int fiatDecimals = 2;
+            String amtBTCDenom = "1 ";
+            if(denomination != null) {
+                if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                    satoshi = (long) SATOSHI_PER_BTC;
+                    denomIndex = 0;
+                    fiatDecimals = 2;
+                    amtBTCDenom = "1 ";
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                    satoshi = (long) SATOSHI_PER_mBTC;
+                    denomIndex = 1;
+                    fiatDecimals = 3;
+                    amtBTCDenom = "1 ";
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                    satoshi = (long) SATOSHI_PER_uBTC;
+                    denomIndex = 2;
+                    fiatDecimals = 3;
+                    amtBTCDenom = "1000 ";
+                }
+            }
+//        String currency = FormatCurrency(satoshi, currencyNum, false, false);
+            double o = SatoshiToCurrency(satoshi, currencyNum);
+            if (denomIndex == 2)
+            {
+                // unit of 'bits' is so small it's useless to show it's conversion rate
+                // Instead show "1000 bits = $0.253 USD"
+                o = o * 1000;
+            }
+            String currency = formatCurrency(o, currencyNum, true, fiatDecimals);
+
+            String currencyLabel = currencyCodeLookup(currencyNum);
+            return amtBTCDenom + mBTCDenominations[denomIndex] + " = " + currency + " " + currencyLabel;
+        }
+        return "";
+
     }
 
     public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
     {
-        int currencyNumber = coreSettings().getCurrencyNum();
-        return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int currencyNumber = coreSettings().getCurrencyNum();
+            return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
+        }
+        return "";
     }
 
     public String FormatCurrency(long satoshi, int currencyNum, boolean btc, boolean withSymbol)
@@ -1585,8 +1711,12 @@ public class CoreAPI {
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {
-        int num = coreSettings().getCurrencyNum();
-        return SatoshiToCurrency(satoshi, num);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            int num = coreSettings().getCurrencyNum();
+            return SatoshiToCurrency(satoshi, num);
+        }
+        return 0;
     }
 
     public double SatoshiToCurrency(long satoshi, int currencyNum) {
@@ -1600,7 +1730,31 @@ public class CoreAPI {
     }
 
     public long DefaultCurrencyToSatoshi(double currency) {
-        return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        }
+        return 0;
+    }
+
+    public long parseFiatToSatoshi(String amount, int currencyNum) {
+        try {
+             Number cleanAmount =
+                new DecimalFormat().parse(amount, new ParsePosition(0));
+             if (null == cleanAmount) {
+                 return 0;
+             }
+            double currency = cleanAmount.doubleValue();
+            long satoshi = CurrencyToSatoshi(currency, currencyNum);
+
+            // Round up to nearest 1 bits, .001 mBTC, .00001 BTC
+            satoshi = 100 * (satoshi / 100);
+            return satoshi;
+
+        } catch (NumberFormatException e) {
+            /* Sshhhhh */
+        }
+        return 0;
     }
 
     public long CurrencyToSatoshi(double currency, int currencyNum) {
@@ -1624,17 +1778,21 @@ public class CoreAPI {
         } catch(NumberFormatException e) { // ignore any non-double
         }
 
-        tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
-        if(denomination != null) {
-            if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
-                val = val * SATOSHI_PER_BTC;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
-                val = val * SATOSHI_PER_mBTC;
-            } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
-                val = val * SATOSHI_PER_uBTC;
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
+            if(denomination != null) {
+                if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
+                    val = val * SATOSHI_PER_BTC;
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
+                    val = val * SATOSHI_PER_mBTC;
+                } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_UBTC) {
+                    val = val * SATOSHI_PER_uBTC;
+                }
             }
+            return val > MAX_SATOSHI;
         }
-        return val > MAX_SATOSHI;
+        return false;
     }
 
     public boolean TooMuchFiat(String fiat, int currencyNum) {
@@ -1763,114 +1921,15 @@ public class CoreAPI {
         public void setError(String error) { this.error = error; }
     }
 
-    //this is a blocking call
-    public TxResult InitiateTransferOrSend(Wallet sourceWallet, String destinationAddress, long satoshi, String label) {
-        TxResult txResult = new TxResult();
-
-        tABC_Error error = new tABC_Error();
-        Wallet destinationWallet = getWalletFromUUID(destinationAddress);
-        if (satoshi > 0) {
-            double value = SatoshiToCurrency(satoshi, sourceWallet.getCurrencyNum());
-
-            //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
-            tABC_TxDetails details = new tABC_TxDetails();
-            tABC_CC result;
-
-            set64BitLongAtPtr(tABC_TxDetails.getCPtr(details) + 0, satoshi);
-
-            //the true fee values will be set by the core
-            SWIGTYPE_p_int64_t feesAB = core.new_int64_tp();
-            set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(feesAB), 1700);
-            details.setAmountFeesAirbitzSatoshi(feesAB);
-            SWIGTYPE_p_int64_t feesMiner = core.new_int64_tp();
-            set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(feesMiner), 10000);
-            details.setAmountFeesMinersSatoshi(feesMiner);
-
-            details.setAmountCurrency(value);
-            if (label == null) {
-                details.setSzName("");
-            } else {
-                details.setSzName(label);
-            }
-            details.setSzNotes("");
-            details.setSzCategory("");
-            details.setAttributes(0x2); //for our own use (not used by the core)
-
-            SWIGTYPE_p_long txid = core.new_longp();
-            SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
-
-            if (null != destinationWallet && destinationWallet.getUUID() != null) {
-                tABC_TransferDetails Transfer = new tABC_TransferDetails();
-                Transfer.setSzSrcWalletUUID(sourceWallet.getUUID());
-                Transfer.setSzSrcName(destinationWallet.getName());
-                Transfer.setSzSrcCategory("Transfer:Wallet:" + destinationWallet.getName());
-
-                Transfer.setSzDestWalletUUID(destinationWallet.getUUID());
-                Transfer.setSzDestName(sourceWallet.getName());
-                Transfer.setSzDestCategory("Transfer:Wallet:" + sourceWallet.getName());
-
-                result = core.ABC_InitiateTransfer(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), Transfer, details, pTxId, error);
-            } else {
-                result = core.ABC_InitiateSendRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                        sourceWallet.getUUID(), destinationAddress, details, pTxId, error);
-            }
-
-            if (result != tABC_CC.ABC_CC_Ok) {
-                Log.d(TAG, "InitiateTransferOrSend:  " + error.getSzDescription() + " " + error.getSzSourceFile() + " " +
-                        error.getSzSourceFunc() + " " + error.getNSourceLine());
-                txResult.setError(error.getSzDescription());
-            } else {
-                Log.d(TAG, "Core InitiateTransferOrSend successful");
-                txResult.setTxId(getStringAtPtr(core.longp_value(txid)));
-            }
-        } else {
-            Log.d(TAG, "Initiate transfer - no funds to send");
-            txResult.setError("Initiate transfer - no funds to send");
-        }
-        return txResult;
-    }
-
-    public long calcSendFees(String walletUUID, String sendTo, long sendAmount, boolean transferOnly)
-    {
-        long totalFees;
-        tABC_Error error = new tABC_Error();
-        tABC_TxDetails details = new tABC_TxDetails();
-        tABC_CC result;
-
-        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+0, sendAmount);
-        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+8, 0);
-        set64BitLongAtPtr(tABC_TxDetails.getCPtr(details)+16, 0);
-
-        details.setAmountCurrency(0);
-        details.setSzName("");
-        details.setSzNotes("");
-        details.setSzCategory("");
-        details.setAttributes(0); //for our own use (not used by the core)
-
-        SWIGTYPE_p_int64_t fees = core.new_int64_tp();
-
-        result = core.ABC_CalcSendFees(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                walletUUID, sendTo, transferOnly, details, fees, error);
-
-        if (result != tABC_CC.ABC_CC_Ok)
-        {
-            if (error.getCode() != tABC_CC.ABC_CC_InsufficientFunds)
-            {
-                Log.d(TAG, "CalcSendFees error: "+error.getSzDescription());
-            }
-            return -1; // Insufficient funds or error
-        }
-        totalFees = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(fees));
-        return totalFees;
-    }
-
     //*************** Asynchronous Updating
     Handler mPeriodicTaskHandler = new Handler();
-    private List<ExchangeRateSource> mExchangeRateSources;
 
     // Callback interface for adding and removing location change listeners
     private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
     private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
+
+    private ThreadPoolExecutor exchangeRateThread;
+    private ThreadPoolExecutor dataSyncThread;
 
     public interface OnExchangeRatesChange {
         public void OnExchangeRatesChange();
@@ -1878,6 +1937,10 @@ public class CoreAPI {
 
     public void startAllAsyncUpdates() {
         startWatchers();
+
+        exchangeRateThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        dataSyncThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
         startExchangeRateUpdates();
         startFileSyncUpdates();
     }
@@ -1886,6 +1949,15 @@ public class CoreAPI {
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
         stopWatchers();
+
+        if (null != exchangeRateThread) {
+            exchangeRateThread.shutdown();
+            exchangeRateThread = null;
+        }
+        if (null != dataSyncThread) {
+            dataSyncThread.shutdown();
+            dataSyncThread = null;
+        }
     }
 
     public void restoreConnectivity() {
@@ -1912,7 +1984,9 @@ public class CoreAPI {
             mUpdateExchangeRateTask = new UpdateExchangeRateTask();
 
             Log.d(TAG, "Exchange Rate Update initiated.");
-            mUpdateExchangeRateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if (exchangeRateThread != null) {
+                mUpdateExchangeRateTask.executeOnExecutor(exchangeRateThread);
+            }
         }
     }
 
@@ -1943,7 +2017,7 @@ public class CoreAPI {
     }
 
     // Exchange Rate updates may have delay the first call
-    public void updateAllExchangeRates()
+    private void updateAllExchangeRates()
     {
         if (AirbitzApplication.isLoggedIn())
         {
@@ -1956,9 +2030,11 @@ public class CoreAPI {
                     }
                 }
                 tABC_Error error = new tABC_Error();
+                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
                 for (Integer currency : currencies) {
-                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                            currency, error);
+                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(), currency, error);
                 }
             }
         }
@@ -2019,9 +2095,9 @@ public class CoreAPI {
     public void syncAllData()
     {
         if (AirbitzApplication.isLoggedIn()) {
-            if(mSyncDataTask==null) {
+            if(mSyncDataTask == null && null != dataSyncThread) {
                 mSyncDataTask = new SyncDataTask();
-                mSyncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                mSyncDataTask.executeOnExecutor(dataSyncThread);
                 Log.d(TAG, "File sync initiated.");
             }
         }
@@ -2056,7 +2132,7 @@ public class CoreAPI {
     }
 
 
-    public interface OnOTPError { public void onOTPError(); }
+    public interface OnOTPError { public void onOTPError(String secret); }
     private OnOTPError mOnOTPError;
     public void setOnOTPErrorListener(OnOTPError listener) {
         mOnOTPError = listener;
@@ -2088,12 +2164,13 @@ public class CoreAPI {
                 ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
                         AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
 
-                mOTPError = tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP;
+                if(tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
+                    if (mOnOTPError != null && AirbitzApplication.isLoggedIn()) {
+                        mOnOTPError.onOTPError(GetTwoFactorSecret());
+                    }
+                }
             }
 
-            if (mOTPError && mOnOTPError != null) {
-                mOnOTPError.onOTPError();
-            }
 
             List<String> uuids = loadWalletUUIDs();
             for (String uuid : uuids) {
@@ -2172,24 +2249,26 @@ public class CoreAPI {
         return uuids;
     }
 
+    private List<Wallet> mCoreWallets = null;
     public List<Wallet> getCoreWallets(boolean withTransactions) {
-        List<Wallet> mWallets = new ArrayList<Wallet>();
+        if (mCoreWallets == null) {
+            List<Wallet> wallets = new ArrayList<Wallet>();
 
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
 
-        tABC_Error pError = new tABC_Error();
+            tABC_Error pError = new tABC_Error();
 
-        SWIGTYPE_p_int pCount = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+            SWIGTYPE_p_int pCount = core.new_intp();
+            SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
-        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                paWalletInfo, pUCount, pError);
+            tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    paWalletInfo, pUCount, pError);
 
-        if(result == tABC_CC.ABC_CC_Ok) {
-            int ptrToInfo = core.longp_value(lp);
-            int count = core.intp_value(pCount);
-            ppWalletInfo base = new ppWalletInfo(ptrToInfo);
+            if(result == tABC_CC.ABC_CC_Ok) {
+                int ptrToInfo = core.longp_value(lp);
+                int count = core.intp_value(pCount);
+                ppWalletInfo base = new ppWalletInfo(ptrToInfo);
 
                 for (int i = 0; i < count; i++) {
                     pLong temp = new pLong(base.getPtr(base, i * 4));
@@ -2200,43 +2279,20 @@ public class CoreAPI {
                     in.setUUID(wi.getUUID());
                     in.setAttributes(wi.getAttributes());
                     in.setCurrencyNum(wi.getCurrencyNum());
-                    if (withTransactions) {
-                        in.setTransactions(loadAllTransactions(in));
-                    }
-                    mWallets.add(in);
-            }
-            core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
-            return mWallets;
-        } else {
-            Log.d(TAG, "getCoreWallets failed.");
-        }
-        return null;
-    }
-
-    public boolean walletsStillLoading() {
-        if(!AirbitzApplication.isLoggedIn()) {
-            return true;
-        }
-
-        List<Wallet> wallets = getCoreActiveWallets();
-        if(wallets == null) {
-            return true;
-        }
-        for(Wallet wallet : wallets) {
-            if(wallet != null) {
-                reloadWallet(wallet);
-                if(wallet.isLoading()) {
-                    return true;
+                    in.setTransactions(loadAllTransactions(in));
+                    wallets.add(in);
                 }
+                core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
+                mCoreWallets = wallets;
+                return wallets;
+            } else {
+                Log.d(TAG, "getCoreWallets failed.");
             }
-            else {
-                Log.d(TAG, "wallet null");
-                return true;
-            }
+            return null;
+        } else {
+            return mCoreWallets;
         }
-        return false;
     }
-
 
     public List<Wallet> getCoreActiveWallets() {
         List<Wallet> wallets = getCoreWallets(false);
@@ -2323,7 +2379,7 @@ public class CoreAPI {
         SWIGTYPE_p_unsigned_int pWCount = core.int_to_uint(pWidth);
 
         tABC_Error error = new tABC_Error();
-        tABC_CC cc = core.ABC_QrEncode(mTwoFactorSecret, ppData, pWCount, error);
+        tABC_CC cc = core.ABC_QrEncode(GetTwoFactorSecret(), ppData, pWCount, error);
         if (cc == tABC_CC.ABC_CC_Ok) {
             int width = core.intp_value(pWidth);
             return getBytesAtPtr(core.longp_value(lp), width*width);
@@ -2390,7 +2446,7 @@ public class CoreAPI {
 
     public Bitmap getQRCodeBitmap(String uuid, String id) {
         byte[] array = getQRCode(uuid, id);
-        return FromBinary(array, (int) Math.sqrt(array.length), 4);
+        return FromBinary(array, (int) Math.sqrt(array.length), 16);
     }
 
     private Bitmap FromBinary(byte[] bits, int width, int scale) {
@@ -2504,9 +2560,7 @@ public class CoreAPI {
     public void startWatchers() {
         List<String> wallets = loadWalletUUIDs();
         for (String uuid : wallets) {
-            if (uuid!=null && !mWatcherTasks.containsKey(uuid)) {
-                startWatcher(uuid);
-            }
+            startWatcher(uuid);
         }
         if (mDataFetched) {
             connectWatchers();
@@ -2514,18 +2568,24 @@ public class CoreAPI {
     }
 
     private void startWatcher(String uuid) {
-        tABC_Error error = new tABC_Error();
-        core.ABC_WatcherStart(AirbitzApplication.getUsername(),
-                              AirbitzApplication.getPassword(),
-                              uuid, error);
-        printABCError(error);
+        if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_WatcherStart(AirbitzApplication.getUsername(),
+                                AirbitzApplication.getPassword(),
+                                uuid, error);
+            printABCError(error);
+            Log.d(TAG, "Started watcher for " + uuid);
 
-        Thread thread = new Thread(new WatcherRunnable(uuid));
-        mWatcherTasks.put(uuid, thread);
-        thread.start();
+            Thread thread = new Thread(new WatcherRunnable(uuid));
+            mWatcherTasks.put(uuid, thread);
+            thread.start();
 
-        watchAddresses(uuid);
-        Log.d(TAG, "Started watcher for "+uuid);
+            watchAddresses(uuid);
+
+            if (mDataFetched) {
+                connectWatcher(uuid);
+            }
+        }
     }
 
     public void connectWatchers() {
@@ -2549,25 +2609,17 @@ public class CoreAPI {
         }
     }
 
-    private void watchAddresses(String uuid) {
-        Thread thread = new Thread(new WatchAddressesRunnable(uuid));
+    private void watchAddresses(final String uuid) {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                tABC_Error error = new tABC_Error();
+                core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        uuid, error);
+                printABCError(error);
+            }
+        });
         thread.start();
-    }
-
-    private class WatchAddressesRunnable implements Runnable {
-        private final String uuid;
-
-        WatchAddressesRunnable(final String uuid) {
-            this.uuid = uuid;
-        }
-
-        public void run() {
-            tABC_Error error = new tABC_Error();
-            core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(),
-                    uuid, error);
-            printABCError(error);
-        }
     }
 
     /*
@@ -2616,19 +2668,6 @@ public class CoreAPI {
     }
 
 
-    public long maxSpendable(String walletUUID, String destAddress, boolean bTransfer)
-    {
-        tABC_Error Error = new tABC_Error();
-        SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
-        SWIGTYPE_p_uint64_t result = new SWIGTYPE_p_uint64_t(satoshi.getCPtr(satoshi), false);
-        SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
-        core.ABC_MaxSpendable(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID,
-            destAddress, bTransfer, result, Error);
-        long out = get64BitLongAtPtr(l.getCPtr(l));
-        Log.d(TAG, "Max spendable: "+out);
-        return out;
-    }
-
     public tABC_CC ChangePassword(String password) {
         tABC_Error Error = new tABC_Error();
 
@@ -2672,59 +2711,9 @@ public class CoreAPI {
         return cc;
     }
 
-    public BitcoinURIInfo CheckURIResults(String results)
-    {
-        tABC_Error Error = new tABC_Error();
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_BitcoinURIInfo pUri = core.longPtr_to_ppBitcoinURIInfo(lp);
-
-        core.ABC_ParseBitcoinURI(results, pUri, Error);
-
-        BitcoinURIInfo uri = new BitcoinURIInfo(core.longp_value(lp));
-
-        if (uri.getPtr(uri) != 0)
-        {
-            String uriAddress = uri.getSzAddress();
-            long amountSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(uri.getAmountSatoshi()));
-
-            if (uriAddress!=null) {
-                Log.d(TAG, "BitcoinURI address: "+uriAddress);
-                Log.d(TAG, "BitcoinURI amount: " + amountSatoshi);
-
-                String label = uri.getSzLabel();
-                String message = uri.getSzMessage();
-                if (message!=null) {
-                    Log.d(TAG, "BitcoinURI message: "+message);
-                }
-            }
-            else {
-                Log.d(TAG, "BitcoinURI not a bitcoin address");
-            }
-        }
-        else {
-            Log.d(TAG, "BitcoinURI not a bitcoin address!");
-        }
-
-        return uri;
-    }
-
-    public class BitcoinURIInfo extends tABC_BitcoinURIInfo {
-        public String address;
-        public String label;
-        public String message;
-        public long amountSatoshi;
-        public BitcoinURIInfo(long pv) {
-            super(pv, false);
-            if (pv != 0) {
-                address = super.getSzAddress();
-                label = super.getSzLabel();
-                amountSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(super.getAmountSatoshi()));
-                message = super.getSzMessage();
-            }
-        }
-        public long getPtr(tABC_BitcoinURIInfo p) {
-            return getCPtr(p);
-        }
+    private boolean isValidCategory(String category) {
+        return category.startsWith("Expense") || category.startsWith("Exchange") ||
+                category.startsWith("Income") || category.startsWith("Transfer");
     }
 
     //************** PIN relogin
@@ -2746,10 +2735,10 @@ public class CoreAPI {
         }
     }
 
-    public tABC_CC PinLogin(String username, String pin) {
+    public tABC_Error PinLogin(String username, String pin) {
         tABC_Error pError = new tABC_Error();
         tABC_CC result = core.ABC_PinLogin(username, pin, pError);
-        return result;
+        return pError;
     }
 
     public void PinSetup() {
@@ -2760,10 +2749,14 @@ public class CoreAPI {
     }
 
     public tABC_CC PinSetupBlocking() {
-        String username = AirbitzApplication.getUsername();
-        String pin = coreSettings().getSzPIN();
-        tABC_Error pError = new tABC_Error();
-        return core.ABC_PinSetup(username, pin, pError);
+        tABC_AccountSettings settings = coreSettings();
+        if(settings != null) {
+            String username = AirbitzApplication.getUsername();
+            String pin = settings.getSzPIN();
+            tABC_Error pError = new tABC_Error();
+            return core.ABC_PinSetup(username, pin, pError);
+        }
+        return tABC_CC.ABC_CC_Error;
     }
 
     final Runnable delayedPinSetup = new Runnable() {
@@ -2796,34 +2789,91 @@ public class CoreAPI {
         tABC_CC result = core.ABC_PinLoginDelete(username, pError);
     }
 
+    OnPasswordCheckListener mOnPasswordCheckListener = null;
+    public void SetOnPasswordCheckListener(OnPasswordCheckListener listener, String password) {
+        mOnPasswordCheckListener = listener;
+        mPeriodicTaskHandler.post(new PasswordOKAsync(password));
+    }
+    public interface OnPasswordCheckListener {
+        void onPasswordCheck(boolean passwordOkay);
+    }
+
+    private class PasswordOKAsync implements Runnable {
+        private final String mPassword;
+
+        PasswordOKAsync(final String password) {
+            this.mPassword = password;
+        }
+
+        public void run() {
+            boolean check = false;
+            if(mPassword == null || mPassword.isEmpty()) {
+                check = !PasswordExists();
+            }
+            else {
+                check = PasswordOK(AirbitzApplication.getUsername(), mPassword);
+            }
+
+            if(mOnPasswordCheckListener != null) {
+                mOnPasswordCheckListener.onPasswordCheck(check);
+                mOnPasswordCheckListener = null;
+            }
+        }
+    }
+
     public boolean PasswordOK(String username, String password) {
+        boolean check = false;
+        if(password == null || password.isEmpty()) {
+            check = !PasswordExists();
+        }
+        else {
+            tABC_Error pError = new tABC_Error();
+            SWIGTYPE_p_long lp = core.new_longp();
+            SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+
+            tABC_CC result = core.ABC_PasswordOk(username, password, okay, pError);
+            if(result.equals(tABC_CC.ABC_CC_Ok)) {
+                check = getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+            } else {
+                Log.d(TAG, "Password OK error:"+pError.getSzDescription());
+            }
+        }
+
+        return check;
+    }
+
+    public boolean PasswordExists() {
         tABC_Error pError = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_bool okay = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+        SWIGTYPE_p_bool exists = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
-        tABC_CC result = core.ABC_PasswordOk(username, password, okay, pError);
-        if(result.equals(tABC_CC.ABC_CC_Ok)) {
+        tABC_CC result = core.ABC_PasswordExists(AirbitzApplication.getUsername(), exists, pError);
+        if(pError.getCode().equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
-            Log.d(TAG, "Password OK error:"+pError.getSzDescription());
-            return false;
+            Log.d(TAG, "Password Exists error:"+pError.getSzDescription());
+            return true;
         }
     }
 
     public void SetupDefaultCurrency() {
         tABC_AccountSettings settings = coreSettings();
+        if(settings == null) {
+            return;
+        }
         settings.setCurrencyNum(getLocaleDefaultCurrencyNum());
         saveAccountSettings(settings);
     }
 
     public int getLocaleDefaultCurrencyNum() {
+        initCurrencies();
         Locale locale = Locale.getDefault();
 
         java.util.Currency currency = java.util.Currency.getInstance(locale);
 
-        List<String> supported = Arrays.asList(mFauxCurrencyAcronyms);
-        if(supported.contains(currency.getCurrencyCode())) {
-            int number = getNumericCode(currency.getCurrencyCode());
+        Map<Integer, String> supported = mCurrencyCodeCache;
+        if (supported.containsValue(currency.getCurrencyCode())) {
+            int number = getCurrencyNumberFromCode(currency.getCurrencyCode());
             Log.d(TAG, "number country code: "+number);
             return number;
         } else {
@@ -2831,16 +2881,18 @@ public class CoreAPI {
         }
     }
 
-    private int getNumericCode(String currencyCode) {
+    public int getCurrencyNumberFromCode(String currencyCode) {
+        initCurrencies();
+
         int index = -1;
-        for(int i=0; i<mFauxCurrencyAcronyms.length; i++) {
-            if(mFauxCurrencyAcronyms[i].contains(currencyCode)) {
+        for(int i=0; i< mCurrencyNumbers.length; i++) {
+            if(currencyCode.equals(currencyCodeLookup(mCurrencyNumbers[i]))) {
                 index = i;
                 break;
             }
         }
         if(index != -1) {
-            return mFauxCurrencyNumbers[index];
+            return mCurrencyNumbers[index];
         }
         return 840;
     }
@@ -2875,6 +2927,7 @@ public class CoreAPI {
     public void logout() {
         stopAllAsyncUpdates();
         mCoreSettings = null;
+        mCoreWallets = null;
 
         ClearCacheKeys();
     }
@@ -2914,7 +2967,6 @@ public class CoreAPI {
 
     //*********************** Two Factor Authentication
     boolean mTwoFactorOn = false;
-    String mTwoFactorSecret;
 
     public boolean isTwoFactorOn() {
         return mTwoFactorOn;
@@ -2928,7 +2980,7 @@ public class CoreAPI {
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
         tABC_CC cc = core.ABC_OtpAuthGet(AirbitzApplication.getUsername(),
-            AirbitzApplication.getPassword(), pbool, ptimeout, error);
+                AirbitzApplication.getPassword(), pbool, ptimeout, error);
 
         mTwoFactorOn = core.intp_value(lp)==1;
         return cc;
@@ -2940,18 +2992,14 @@ public class CoreAPI {
         return core.ABC_OtpKeySet(username, secret, error);
     }
 
-    public String TwoFactorSecret() {
-        return mTwoFactorSecret;
-    }
-
     // Blocking
-    public tABC_CC GetTwoFactorSecret(String username) {
+    public String GetTwoFactorSecret() {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_OtpKeyGet(username, ppChar, error);
-        mTwoFactorSecret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
-        return cc;
+        tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
+        String secret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        return secret;
     }
 
     public boolean isTwoFactorResetPending(String username) {
@@ -2984,7 +3032,6 @@ public class CoreAPI {
                     AirbitzApplication.getPassword(), error);
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = false;
-                mTwoFactorSecret = null;
                 core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
             }
         }
@@ -2997,6 +3044,17 @@ public class CoreAPI {
         return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), error);
     }
+
+    public String mTwoFactorDate;
+    public tABC_CC GetTwoFactorDate() {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        tABC_CC cc = core.ABC_OtpResetDate(ppChar, error);
+        mTwoFactorDate = error.getCode() == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
+        return cc;
+    }
+
 
     public List<String> listAccounts() {
         tABC_Error error = new tABC_Error();
@@ -3046,5 +3104,200 @@ public class CoreAPI {
             }
         }
         return Common.errorMap(mContext, error.getCode());
+    }
+
+    public String pluginDataGet(String pluginId, String key) {
+        tABC_Error pError = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        core.ABC_PluginDataGet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            pluginId, key, ppChar, pError);
+        if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp));
+        } else {
+            return null;
+        }
+    }
+
+    public boolean pluginDataSet(String pluginId, String key, String value) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataSet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                pluginId, key, value, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public boolean pluginDataRemove(String pluginId, String key) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataRemove(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, key, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public boolean pluginDataClear(String pluginId) {
+        tABC_Error pError = new tABC_Error();
+        core.ABC_PluginDataClear(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, pError);
+        return pError.getCode() == tABC_CC.ABC_CC_Ok;
+    }
+
+    public String getRawTransaction(String walletUUID, String txid) {
+        tABC_Error pError = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        core.ABC_GetRawTransaction(
+                AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                walletUUID, txid, ppChar, pError);
+        if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp));
+        } else {
+            return null;
+        }
+    }
+
+    //*************** new SpendTarget API
+
+    public SpendTarget getNewSpendTarget() {
+        return new SpendTarget();
+    }
+    public class SpendTarget {
+        SWIGTYPE_p_long _lpSpend;
+        SWIGTYPE_p_p_sABC_SpendTarget _pSpendSWIG;
+        tABC_SpendTarget _pSpend;
+        tABC_Error pError;
+
+        public SpendTarget() {
+            _lpSpend = core.new_longp();
+            _pSpendSWIG = core.longPtr_to_ppSpendTarget(_lpSpend);
+            _pSpend = null;
+            pError = new tABC_Error();
+        }
+
+        public void dealloc() {
+            if (_pSpend != null) {
+                _pSpend = null;
+                pError = null;
+            }
+        }
+
+        public tABC_SpendTarget getSpend() {
+            return _pSpend;
+        }
+
+        public long getSpendAmount() {
+            return get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(_pSpend.getAmount()));
+        }
+
+        public void setSpendAmount(long amount) {
+            SWIGTYPE_p_uint64_t ua = core.new_uint64_tp();
+            set64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(ua), amount);
+            _pSpend.setAmount(ua);
+        }
+
+        public boolean newSpend(String text) {
+            tABC_Error pError = new tABC_Error();
+            core.ABC_SpendNewDecode(text, _pSpendSWIG, pError);
+            _pSpend = new Spend(core.longp_value(_lpSpend));
+            return pError.getCode() == tABC_CC.ABC_CC_Ok;
+        }
+
+        public boolean newTransfer(String walletUUID) {
+            SWIGTYPE_p_uint64_t amount = core.new_uint64_tp();
+            set64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(amount), 0);
+            core.ABC_SpendNewTransfer(AirbitzApplication.getUsername(),
+                    walletUUID, amount, _pSpendSWIG, pError);
+            _pSpend = new Spend(core.longp_value(_lpSpend));
+            return pError.getCode() == tABC_CC.ABC_CC_Ok;
+        }
+
+        public boolean spendNewInternal(String address, String label, String category,
+                                        String notes, long amountSatoshi) {
+            SWIGTYPE_p_uint64_t amountS = core.new_uint64_tp();
+            set64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(amountS), amountSatoshi);
+
+            core.ABC_SpendNewInternal(address, label,
+                    category, notes, amountS, _pSpendSWIG, pError);
+            _pSpend = new Spend(core.longp_value(_lpSpend));
+            return pError.getCode() == tABC_CC.ABC_CC_Ok;
+        }
+
+        public String approve(String walletUUID, double fiatAmount) {
+            String id = null;
+            SWIGTYPE_p_long txid = core.new_longp();
+            SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
+
+            core.ABC_SpendApprove(AirbitzApplication.getUsername(), walletUUID,
+                    _pSpend, pTxId, pError);
+            if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+                id = getStringAtPtr(core.longp_value(txid));
+                updateTransaction(walletUUID, id, fiatAmount);
+            }
+
+            return id;
+        }
+
+        public void updateTransaction(String walletUUID, String txId, double fiatAmount) {
+            String categoryText = "Transfer:Wallet:";
+            Wallet destWallet = null;
+            Wallet srcWallet = getWalletFromUUID(walletUUID);
+            if (_pSpend != null) {
+                destWallet = getWalletFromUUID(_pSpend.getSzDestUUID());
+            }
+
+            Transaction tx = getTransaction(walletUUID, txId);
+            if (null != tx) {
+                if (destWallet != null) {
+                    tx.setName(destWallet.getName());
+                    tx.setCategory(categoryText + destWallet.getName());
+                }
+                if (fiatAmount > 0) {
+                    tx.setAmountFiat(fiatAmount);
+                }
+                storeTransaction(tx);
+            }
+
+            // This was a transfer
+            if (destWallet != null) {
+                Transaction destTx = getTransaction(destWallet.getUUID(), txId);
+                if (null != destTx) {
+                    destTx.setName(srcWallet.getName());
+                    destTx.setCategory(categoryText + srcWallet.getName());
+                    storeTransaction(destTx);
+                }
+            }
+        }
+
+        public long maxSpendable(String walletUUID) {
+            tABC_Error error = new tABC_Error();
+
+            SWIGTYPE_p_uint64_t result = core.new_uint64_tp();
+
+            core.ABC_SpendGetMax(AirbitzApplication.getUsername(), walletUUID, _pSpend, result, pError);
+            long actual = get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(result));
+            return actual;
+        }
+
+        public long calcSendFees(String walletUUID) {
+            tABC_Error error = new tABC_Error();
+            return calcSendFees(walletUUID, error);
+        }
+
+        public long calcSendFees(String walletUUID, tABC_Error error) {
+            SWIGTYPE_p_uint64_t total = core.new_uint64_tp();
+
+            core.ABC_SpendGetFee(AirbitzApplication.getUsername(), walletUUID, _pSpend, total, error);
+
+            long fees = get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(total));
+            return error.getCode() == tABC_CC.ABC_CC_Ok ? fees : -1;
+        }
+
+        public class Spend extends tABC_SpendTarget {
+            public Spend(long pv) {
+                super(pv, false);
+                }
+            public long getPtr(tABC_SpendTarget p) {
+                return getCPtr(p);
+            }
+        }
+
     }
 }

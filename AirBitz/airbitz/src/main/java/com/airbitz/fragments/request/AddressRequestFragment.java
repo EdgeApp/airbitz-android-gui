@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -39,18 +39,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.WalletPickerAdapter;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.fragments.BaseFragment;
-import com.airbitz.models.Wallet;
-import com.airbitz.models.WalletPickerEnum;
-import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
-import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.utils.Common;
 
 import java.io.UnsupportedEncodingException;
@@ -58,21 +52,15 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+public class AddressRequestFragment extends WalletBaseFragment {
 
-public class AddressRequestFragment extends BaseFragment {
     public static final String URI = "com.airbitz.addressrequest.uri";
 
     private final String TAG = getClass().getSimpleName();
 
-    private HighlightOnPressImageButton mHelpButton;
-    private HighlightOnPressButton mOKButton;
-    private HighlightOnPressButton mCancelButton;
-    private List<Wallet> mWallets;
-    private Wallet mWallet;
-    private HighlightOnPressSpinner pickWalletSpinner;
-    private TextView mTitleTextView;
+    private Button mOKButton;
+    private Button mCancelButton;
     private TextView mInstruction;
-    private CoreAPI mCoreAPI;
     private View mView;
 
     private Uri mUri;
@@ -84,32 +72,28 @@ public class AddressRequestFragment extends BaseFragment {
     private String _cancelUrl;
 
     // Callback when finished
-    private OnAddressRequest mOnAddressRequest;
-    public interface OnAddressRequest {
-        public void onAddressRequest();
-    }
-    public void setOnAddressRequestListener(OnAddressRequest listener) {
+    private OnAddressRequestListener mOnAddressRequest;
+    public void setOnAddressRequestListener(OnAddressRequestListener listener) {
         mOnAddressRequest = listener;
+    }
+
+    @Override
+    public String getSubtitle() {
+        return mActivity.getString(R.string.address_request_title);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
-        loadNonArchivedWallets();
+        setBackEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_address_request, container, false);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.address_request_title);
-
         mInstruction = (TextView) mView.findViewById(R.id.textview_instruction);
-
-        mCancelButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_address_request_button_cancel);
+        mCancelButton = (Button) mView.findViewById(R.id.fragment_address_request_button_cancel);
         mCancelButton.setVisibility(View.VISIBLE);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +102,7 @@ public class AddressRequestFragment extends BaseFragment {
             }
         });
 
-        mOKButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_address_request_button_ok);
+        mOKButton = (Button) mView.findViewById(R.id.fragment_address_request_button_ok);
         mOKButton.setVisibility(View.VISIBLE);
         mOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,21 +110,6 @@ public class AddressRequestFragment extends BaseFragment {
                 goOkay();
             }
         });
-
-        pickWalletSpinner = (HighlightOnPressSpinner) mView.findViewById(R.id.new_wallet_spinner);
-        final WalletPickerAdapter dataAdapter = new WalletPickerAdapter(getActivity(), mWallets, WalletPickerEnum.Request);
-        pickWalletSpinner.setAdapter(dataAdapter);
-
-        pickWalletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mWallet = mWallets.get(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-
         return mView;
     }
 
@@ -150,18 +119,6 @@ public class AddressRequestFragment extends BaseFragment {
         mUri = Uri.parse(getArguments().getString(URI));
         parseUri(mUri);
         mInstruction.setText(String.format(getString(R.string.address_request_message), strName));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    private void loadNonArchivedWallets() {
-        mWallets = mCoreAPI.getCoreActiveWallets();
-        if (pickWalletSpinner != null && pickWalletSpinner.getAdapter() != null) {
-            ((WalletPickerAdapter) pickWalletSpinner.getAdapter()).notifyDataSetChanged();
-        }
     }
 
     private void parseUri(Uri uri) {
@@ -185,6 +142,11 @@ public class AddressRequestFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public boolean onBackPress() {
+        return true;
+    }
+
     private void goOkay() {
         createRequest();
 
@@ -206,7 +168,7 @@ public class AddressRequestFragment extends BaseFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
-                mCoreAPI.finalizeRequest(mWallet.getUUID(), mRequestID);
+                mCoreApi.finalizeRequest(mWallet.getUUID(), mRequestID);
             }
             else {
                 Uri errorUri = Uri.parse(_errorUrl);
@@ -254,12 +216,12 @@ public class AddressRequestFragment extends BaseFragment {
         mRequestAddress = "";
         mRequestURI = "";
 
-        mRequestID = mCoreAPI.createReceiveRequestFor(mWallet, strName, strNotes, strCategory, 0, 0);
+        mRequestID = mCoreApi.createReceiveRequestFor(mWallet, strName, strNotes, strCategory, 0, 0);
         if(mRequestID != null) {
-            mCoreAPI.getQRCodeBitmap(mWallet.getUUID(), mRequestID);
-            mRequestURI = mCoreAPI.getRequestURI();
+            mCoreApi.getQRCodeBitmap(mWallet.getUUID(), mRequestID);
+            mRequestURI = mCoreApi.getRequestURI();
             mRequestURI = mRequestURI.replace("?", "&");
-            mRequestAddress = mCoreAPI.getRequestAddress(mWallet.getUUID(), mRequestID);
+            mRequestAddress = mCoreApi.getRequestAddress(mWallet.getUUID(), mRequestID);
         }
     }
 }

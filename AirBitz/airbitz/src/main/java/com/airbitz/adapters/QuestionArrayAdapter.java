@@ -65,10 +65,10 @@ public class QuestionArrayAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_forgot_password_questions, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.questionText);
-        textView.setTypeface(NavigationActivity.montserratBoldTypeFace);
+        textView.setTypeface(NavigationActivity.latoBlackTypeFace);
         textView.setText(mValues.get(position));
         EditText editText = (EditText) convertView.findViewById(R.id.answer);
-        editText.setTypeface(NavigationActivity.montserratRegularTypeFace);
+        editText.setTypeface(NavigationActivity.latoRegularTypeFace);
         return convertView;
     }
 }

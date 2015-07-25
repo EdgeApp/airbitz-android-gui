@@ -115,7 +115,7 @@ public class OfflineWalletFragment extends BaseFragment implements GestureDetect
                 new float[]{0, 1}, Shader.TileMode.CLAMP);
         mAddressTextView.getPaint().setShader(textShader);
 
-        mAddressTextView.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mAddressTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mScrollView = (ScrollView) mView.findViewById(R.id.layout_scroll);
 
@@ -132,8 +132,8 @@ public class OfflineWalletFragment extends BaseFragment implements GestureDetect
         mCopyButton = (Button) mView.findViewById(R.id.button_copy_address);
         mPrintButton = (Button) mView.findViewById(R.id.button_external_storage);
 
-        mCopyButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
-        mPrintButton.setTypeface(NavigationActivity.montserratRegularTypeFace, Typeface.BOLD);
+        mCopyButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
+        mPrintButton.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.BOLD);
 
         mQRCodeImage = (ImageView) mView.findViewById(R.id.imageview_qrcode);
         mBackButton = (ImageButton) mView.findViewById(R.id.layout_airbitz_header_button_back);
@@ -141,9 +141,9 @@ public class OfflineWalletFragment extends BaseFragment implements GestureDetect
 
         TextView titleTextView = (TextView) mView.findViewById(R.id.fragment_category_textview_title);
 
-        titleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mAddressField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);
-        mPrivateKeyField.setTypeface(NavigationActivity.helveticaNeueTypeFace, Typeface.ITALIC);
+        titleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+        mAddressField.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.ITALIC);
+        mPrivateKeyField.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.ITALIC);
         mRootLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

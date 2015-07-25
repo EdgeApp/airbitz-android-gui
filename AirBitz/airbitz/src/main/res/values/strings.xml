@@ -8,18 +8,25 @@
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
+    <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
+    <string name="string_total">TOTAL:</string>
     <string name="string_finish">FINISH</string>
+    <string name="string_help">Help</string>
+    <string name="string_refresh">Refresh</string>
+    <string name="string_loading">Loading...</string>
+    <string name="string_no_transactions">No transactions</string>
     <string name="string_back_button">Back button returns to the previous screen</string>
     <string name="string_help_button">Help button shows help for this screen</string>
     <string name="string_add_button">Add button adds a new wallet</string>
     <string name="string_payment_received">** Payment Received **</string>
     <string name="string_exit_app_question">"Would you like to exit Airbitz?"</string>
+    <string name="string_too_short">too short</string>
 
     <!-- Nav Bar strings -->
     <string name="nav_bar_directory_text">DIRECTORY</string>
@@ -29,8 +36,8 @@
     <string name="nav_bar_more_text">MORE</string>
 
     <!-- Calculator strings -->
-    <string name="calculator_back">&lt;&#160;DEL</string>
-    <string name="calculator_done">DONE</string>
+    <string name="calculator_back">&lt;&#160;Del</string>
+    <string name="calculator_done">Done</string>
 
     <!-- Connectivity -->
     <string name="string_connection_problem_title">Connection Problem</string>
@@ -42,18 +49,25 @@
 
     <!-- Strings for Business Directory fragment -->
     <string name="directory_title">Directory</string>
+    <string name="restaurants">Restaurants</string>
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
-    <string name="bars_and_nightclubs">Bars &amp; Nightclubs</string>
+    <string name="gift_cards">Gift Cards</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
+    <string name="electronics">Electronics</string>
+    <string name="atms">ATMs</string>
+    <string name="shopping">Shopping</string>
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
     <string name="on_the_web">On the Web</string>
+    <string name="category_or_business_name_initial">Search</string>
     <string name="category_or_business_name">Business Name or Category</string>
     <string name="city_state_county">City, State/Province, or Country</string>
     <string name="your_location">Your Location</string>
+    <string name="location">Location...</string>
     <string name="near_you">Near You</string>
     <string name="no_results_found">No Results Found</string>
     <string name="no_location_found">Unable to get a current location. Please enable Location Services.</string>
+    <string name="location_enable">Enable</string>
     <string name="fragment_business_no_results">No Results Found</string>
     <string name="fragment_business_cannot_retrieve_data">Can not retrieve data</string>
     <string name="fragment_business_enable_location_services">Enable location services for better results</string>
@@ -87,28 +101,29 @@
     <string name="server_error_bad_pin">Invalid PIN</string>
     <string name="server_error_bad_pin_login">Invalid PIN. Please log in.</string>
     <string name="server_error_pin_expired">PIN has expired. Please log in.</string>
+    <string name="server_error_invalid_pin_wait">Too many failed login attempts. Please try again in %1$s seconds.</string>
     <string name="server_error_other">An error has occurred.</string>
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the Airbitz logo</string>
-    <string name="fragment_landing_detail_text">Digital Currency Wallet</string>
+    <string name="fragment_landing_detail_text">Bitcoin Wallet</string>
     <string name="fragment_landing_swipe_text">Swipe to View Business Directory</string>
     <string name="fragment_landing_arrow_description">Bouncing Arrow</string>
     <string name="fragment_landing_username_hint">User Name</string>
     <string name="fragment_landing_password_hint">Password</string>
-    <string name="fragment_landing_signin_button">Log In</string>
-    <string name="fragment_landing_signup_button">Create Account</string>
+    <string name="fragment_landing_signin_button">Sign In</string>
+    <string name="fragment_landing_signup_button">Sign Up</string>
     <string name="fragment_landing_forgot_password">Forgot Password</string>
     <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
-    <string name="fragment_landing_switch_user">Login With Password</string>
+    <string name="fragment_landing_switch_user">Exit PIN Login</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_text">This user does not have any recovery questions set!</string>
     <string name="fragment_landing_account_delete_title">Delete Account</string>
-    <string name="fragment_landing_account_delete_message">Delete %1$s on this device only?</string>
+    <string name="fragment_landing_account_delete_message">Delete %1$s on this device only? This will remove the 2FA and PIN access from this device. If 2FA is enabled on this account, you will be unable to access this account for 7 days from new devices</string>
 
     <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>
@@ -134,7 +149,7 @@
     <string name="activity_signup_pin_hint">Create PIN</string>
     <string name="activity_signup_new_pin">New PIN</string>
     <string name="activity_signup_password_requirements">Password Requirements</string>
-    <string name="activity_signup_password_help">Password must have an upper and lower case letter, a number and a minimum 10 characters</string>
+    <string name="activity_signup_password_help">Password must have an upper and lower case letter, a number, and a minimum 10 characters</string>
     <string name="activity_signup_popup_uppercase">Must have at least one upper case letter</string>
     <string name="activity_signup_popup_lowercase">Must have at least one lower case letter</string>
     <string name="activity_signup_popup_number">Must have at least one number</string>
@@ -147,8 +162,12 @@
     <string name="activity_signup_password_change_bad">Password could not be changed.</string>
     <string name="activity_signup_enter_username">You must enter a user name</string>
     <string name="activity_signup_incorrect_password">Incorrect password.</string>
+    <string name="activity_signup_incorrect_current_password">Incorrect current password.</string>
+    <string name="activity_signup_password_fails">Your password…</string>
     <string name="activity_signup_insufficient_password">Insufficient Password.</string>
     <string name="activity_signup_passwords_dont_match">Password does not match re-entered password.</string>
+    <string name="activity_signup_insufficient_username_title">Sign Up</string>
+    <string name="activity_signup_insufficient_username_message">Sign Up failed:\nUsername must be at least 3 characters.</string>
     <string name="activity_signup_insufficient_pin">PIN must be 4 digits</string>
     <string name="activity_signup_create_wallet_fail">Create default wallet failed</string>
     <string name="activity_signup_time_to_crack">Time to crack:&#160;</string>
@@ -162,7 +181,7 @@
 
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>
-    <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your Airbitz account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
+    <string name="fragment_setup_username_text">Example: \"coinmaster\". This is not your email or real name.\n\nThis is the username to login into your Airbitz account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
     <string name="fragment_setup_password_title">Set a Password and PIN</string>
     <string name="fragment_setup_password_text">The Password is used to authenticate your account and to change sensitive settings.</string>
     <string name="fragment_setup_pin_title">Choose a PIN</string>
@@ -200,6 +219,8 @@
     <string name="activity_recovery_warning_dirty_change_message">Warning: You are about to exit password recovery and questions &amp; answers have not yet been set. Exit anyway?</string>
     <string name="activity_recovery_warning_dirty_forgot_title">Password Recovery</string>
     <string name="activity_recovery_warning_dirty_forgot_message">Warning: You are about to exit password recovery and all progress will be lost. Exit anyway?</string>
+    <string name="fragment_recovery_mismatch_title">Password Mismatch</string>
+    <string name="fragment_recovery_mismatch_message">Please enter your correct password.</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
@@ -209,7 +230,7 @@
     <string name="settings_denomination_title">BITCOIN DENOMINATION</string>
     <string name="settings_denomination_buttons_bitcoin">Bitcoin</string>
     <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0.001 Bitcoin)</string>
-    <string name="settings_denomination_buttons_ubitcoin">μBitcoin = (0.000001 Bitcoin)</string>
+    <string name="settings_denomination_buttons_ubitcoin">bits = (0.000001 Bitcoin)</string>
     <string name="settings_account_title">ACCOUNT</string>
     <string name="settings_options_title">OPTIONS</string>
     <string name="settings_button_change_categories">Change Categories</string>
@@ -217,7 +238,7 @@
     <string name="settings_button_two_factor_authentication">2 Factor (Enhanced Security)</string>
     <string name="settings_button_change_password">Change password</string>
     <string name="settings_button_pin">Change PIN</string>
-    <string name="settings_button_recovery">Recovery Questions</string>
+    <string name="settings_button_recovery">Change Recovery Questions</string>
     <string name="settings_user_title">NAME</string>
     <string name="settings_button_send_user_info">Send name on payment request</string>
     <string name="settings_edit_first_name">First Name (optional)</string>
@@ -230,9 +251,10 @@
     <string name="settings_title_ble">Bluetooth</string>
     <string name="settings_title_ble_send_only">Bluetooth (Send only)</string>
     <string name="settings_title_currency">Default Currency</string>
+    <string name="settings_select_currency">Select a currency</string>
     <string name="settings_title_distance">Default Distance</string>
-    <string name="settings_exchange_title">DEFAULT EXCHANGE</string>
-    <string name="settings_title_usd">US dollar</string>
+    <string name="settings_exchange_title">DEFAULT EXCHANGE RATE</string>
+    <string name="settings_exchange_text">Default Exchange</string>
     <string name="settings_title_canadian">Canadian dollar</string>
     <string name="settings_title_euro">Euro</string>
     <string name="settings_title_peso">Mexican Peso</string>
@@ -248,9 +270,10 @@
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
     <string name="settings_nfc_turn_on_title">Activate NFC</string>
-    <string name="settings_nfc_turn_on_message">The Android NFC setting is off. It needs to be on to use NFC. Would you like to turn it on now?</string>
+    <string name="settings_nfc_turn_on_message">NFC is used to enable tap-to-pay with supported merchants. Would you like to turn it on now?</string>
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
-    <string name="settings_ble_turn_on_message">The Android Bluetooth setting is off. It needs to be on to use Bluetooth. Would you like to turn it on now?</string>
+    <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
+    <string name="settings_currency_change_note_popup">Note: Default Currency setting is only used for new wallets and to show total balance of account. Create a new wallet to change the fiat currency shown in each transaction.</string>
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
@@ -270,6 +293,7 @@
     <string name="fragment_category_transfer">Transfer:</string>
     <string name="fragment_category_exchange">Exchange:</string>
     <string name="fragment_category_deleted">%1$s Deleted</string>
+    <string name="fragment_category_add">Add Category</string>
 
     <!-- Strings for AutoLogoff Dialog -->
     <string name="dialog_title">Set Auto Logoff time</string>
@@ -281,23 +305,33 @@
     <string name="send_to_title">To:</string>
     <string name="send_scan_text">Scan QR Code or use photo</string>
     <string name="send_scan_text_nfc">Scan QR Code or tap NFC device</string>
+    <string name="fragment_send_connecting_to_device">Connecting to %1$s</string>
     <string name="fragment_send_incorrect_pin_message">You must enter the correct PIN in order to proceed</string>
     <string name="fragment_send_incorrect_pin_title">Invalid PIN</string>
     <string name="fragment_send_incorrect_password_message">You must enter the correct Password in order to proceed</string>
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_send_to_hint">Bitcoin address or wallet</string>
+    <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
     <string name="fragment_send_first_usage">Scan the QR code of payee to send payment</string>
     <string name="fragment_send_first_usage_ble">Bluetooth payment requests are listed here. Tap on a user to send them a payment</string>
 
+    <string name="fragment_send_subtitle">Send</string>
+    <string name="fragment_send_transfer">Transfer</string>
+    <string name="fragment_send_address">Address</string>
+    <string name="fragment_send_photos">Photos</string>
+    <string name="fragment_send_flash">Flash</string>
+    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+    <string name="fragment_import_address_dialog_title">Sweep Funds From Private Key</string>
+    <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds to:</string>
+
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
-    <string name="send_confirmation_from_title">Send From:</string>
-    <string name="send_confirmation_to_title">Send To:</string>
+    <string name="send_confirmation_from_title">From:</string>
+    <string name="send_confirmation_to_title">To:</string>
     <string name="send_confirmation_max_button_title">Max</string>
     <string name="send_confirmation_enter_send_pin">Enter 4 Digit PIN</string>
     <string name="send_confirmation_enter_send_password">Password</string>
@@ -316,6 +350,8 @@
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
+    <string name="fragment_wallets_add_wallet">Add Wallet</string>
+    <string name="fragment_wallets_rename_wallet">Rename Wallet</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
     <string name="fragment_wallets_list_archive_title">ARCHIVE</string>
     <string name="fragment_wallets_balance_text">Total Balance</string>
@@ -325,6 +361,7 @@
     <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
     <string name="fragment_wallets_created_wallet">%1$s created</string>
     <string name="fragment_wallets_created_wallet_failed">Failed to create wallet</string>
+    <string name="fragment_wallets_archive_help">To archive a wallet, tap and hold the 3 dots to the right of a wallet and drag it below the [ARCHIVE] header</string>
 
     <!-- Strings for Wallet fragment -->
     <string name="fragment_wallet_title">Transactions</string>
@@ -332,18 +369,23 @@
     <string name="fragment_wallet_unconfirmed">Pending</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
-    <string name="fragment_wallet_request_button">RECEIVE</string>
+    <string name="fragment_wallet_request_button">REQUEST</string>
     <string name="fragment_wallet_send_button">SEND</string>
+    <string name="fragment_wallets_wallet_name_required">Name required</string>
 
     <!-- Strings for Request fragment -->
     <string name="address_request_title">Address Request</string>
     <string name="address_request_message">%1$s has requested a bitcoin address to send money to. Please choose a wallet to receive funds.</string>
+    <string name="fragment_request_subtitle">Request</string>
+    <string name="fragment_request_copy_title">Copy</string>
+    <string name="fragment_request_email_title">Email</string>
+    <string name="fragment_request_sms_title">SMS</string>
 
     <!-- Strings for Request fragment -->
     <string name="request_title">Request Bitcoin</string>
     <string name="request_wallet_title">Wallet:</string>
     <string name="request_button_import">IMPORT</string>
-    <string name="request_amount_hint">Amt (Optional)</string>
+    <string name="request_amount_hint">Amount (Optional)</string>
     <string name="request_next">NEXT</string>
     <string name="request_invalid_amount">Invalid Amount</string>
 
@@ -353,6 +395,7 @@
     <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email.</string>
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
+    <string name="request_qr_loading_address">Loading bitcoin address…</string>
     <string name="request_qr_title">Request Bitcoin</string>
     <string name="request_qr_ble_advertise_start_failed">Bluetooth advertising failed to start.</string>
     <string name="request_qr_ble_invalid_value">Bluetooth sender sent an invalid name. Try again.</string>
@@ -397,6 +440,7 @@
 
     <!-- Strings for Export fragment -->
     <string name="export_title">Export</string>
+    <string name="export_subtitle">Export</string>
     <string name="export_account_this_week">This Week</string>
     <string name="export_account_last_week">Last Week</string>
     <string name="export_account_this_month">This Month</string>
@@ -462,6 +506,8 @@
     <string name="bluetoothlistview_scan_failed">Bluetooth scan failed. Try again.</string>
     <string name="bluetoothlistview_address_mismatch_title">Bitcoin address mismatch</string>
     <string name="bluetoothlistview_address_mismatch_message">The bitcoin address of the device you connected with:%1$s does not match the address that was initially advertised:%2$s</string>
+    <string name="ble_invalid_request">Invalid Bluetooth Request</string>
+    <string name="ble_invalid_contact_support">Please have Requestor contact support</string>
 
     <!-- Errors -->
     <string name="error_invalid_credentials">Invalid User Name or Password</string>
@@ -502,10 +548,13 @@
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
     <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
+    <string name="fragment_two_factor_menu_requested">Two factor reset has been requested.</string>
     <string name="twofactor_required_title">Two Factor Authentication On</string>
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
     <string name="twofactor_remind_later">Remind Me Later</string>
     <string name="twofactor_enable">Enable</string>
+    <string name="twofactor_invalid_title">Two Factor Invalid</string>
+    <string name="twofactor_invalid_message">The Two Factor Authentication token on this device is invalid. Either the token was changed by a different device or your clock is skewed. Please check your system time to ensure it is correct.</string>
     <string name="twofactor_unable_import_token">We are sorry we are unable to import the token at this time.</string>
 
     <string name="fragment_two_factor_scan_unable_import_title">Unable to import token</string>
@@ -520,12 +569,13 @@
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
     <string name="received_bitcoin_title">Received Bitcoin</string>
-    <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see them</string>
+    <string name="received_bitcoin_message">You received Bitcoin. Tap Details to see transaction</string>
     <string name="received_bitcoin_fading_message">You received Bitcoin!\n%1$s (~%2$s)\n</string>
     <string name="received_bitcoin_fading_message_teaching">Use the Payee, Category, and Notes field to optionally tag your transaction</string>
-    <string name="received_partial_bitcoin_title">Partial Payment Received</string>
-    <string name="received_partial_bitcoin_message">Warning: Partial Payment Received</string>
-    <string name="bitcoing_remaining">%1$s Remaining…</string>
+    <string name="received_partial_bitcoin_title">** Warning **</string>
+    <string name="received_partial_bitcoin_message">Partial Payment Received</string>
+    <string name="bitcoin_remaining">%1$s Remaining…</string>
+    <string name="bitcoin_received">%1$s Received</string>
     <string name="received_bitcoin_positive">Details</string>
     <string name="received_bitcoin_negative">Ignore</string>
     <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>
@@ -533,11 +583,36 @@
     <string name="action_settings">Settings</string>
     <string name="wait_until_wallets_loaded">Please wait until your wallets are loaded.</string>
 
+    <!-- Remember Password Checks -->
+    <string name="password_check_incorrect_password_title">Incorrect Password.</string>
+    <string name="password_check_incorrect_password_message">Incorrect Password. Try again?</string>
+    <string name="password_check_skip">Please create a new account and transfer your funds if you forgot your password.</string>
+    <string name="password_check_remember_title">Remember your password?</string>
+    <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or if your PIN is incorrectly entered 3 times.\nEnter it below to make sure:</string>
+    <string name="password_check_check_my_password">Check MY Password</string>
+    <string name="password_check_check_later">Later</string>
+    <string name="password_check_great_job">Great job remembering your password.</string>
+    <string name="password_check_checking">Checking password…</string>
+    <string name="password_check_current_password">Current password</string>
+
+    <!-- Password Set -->
+    <string name="password_set_title">No password set</string>
+    <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
+    <string name="password_set_skip">Skip</string>
+
+    <string name="buysell_title">Buy/Sell</string>
+
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
     <!-- Navigation Drawer -->
-    <string name="drawer_logout">LOGOUT</string>
-    <string name="drawer_settings">SETTINGS</string>
-
+    <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
+    <string name="drawer_directory">Directory</string>
+    <string name="drawer_send">Send</string>
+    <string name="drawer_request">Request</string>
+    <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_buy_sell">Buy/Sell</string>
+    <string name="drawer_import">Import Gift Card\n(Private Key)</string>
 </resources>

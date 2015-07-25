@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -50,6 +50,7 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
+    private static String LOCATION_MODE = "com.airbitz.application.locationmode";
     public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
     public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
@@ -61,6 +62,7 @@ public class AirbitzApplication extends Application {
     private static int mLastNavTab = 0;
     private static String mClientId;
     private static String mUserAgent;
+    private static String mWalletUuid;
 
     @Override
     public void onCreate() {
@@ -89,6 +91,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static void Logout() {
+        setCurrentWallet(null);
         airbitzLogin = new Login();
     }
 
@@ -102,6 +105,14 @@ public class AirbitzApplication extends Application {
         } else {
             return String.valueOf(airbitzLogin.getPassword());
         }
+    }
+
+    public static String getCurrentWallet() {
+        return mWalletUuid;
+    }
+
+    public static void setCurrentWallet(String uuid) {
+        mWalletUuid = uuid;
     }
 
     private static String CLIENT_ID_PREF = "client_id";
@@ -172,9 +183,22 @@ public class AirbitzApplication extends Application {
         editor.apply();
     }
 
+    public static boolean getLocationWarn() {
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        boolean state = prefs.getBoolean(LOCATION_MODE, true);
+        return state;
+    }
+
+    public static void setLocationWarn(boolean state) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(LOCATION_MODE, state);
+        editor.apply();
+    }
+
     private static class Login {
         private String mUsername = null;
         private char[] mPassword = null;
+        private String mWalletUuid = null;
 
         public String getUsername() {
             return mUsername;

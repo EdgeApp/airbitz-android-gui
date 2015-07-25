@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -36,15 +36,18 @@ import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,6 +60,7 @@ import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,19 +75,16 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private EditText mPasswordEditText;
     private EditText mWithdrawalPinEditText;
     private EditText mPasswordConfirmationEditText;
-    private HighlightOnPressButton mNextButton;
-    private HighlightOnPressButton mBackButton;
-    private TextView mTitleTextView;
+    private Button mNextButton;
+//    private HighlightOnPressButton mBackButton;
+//    private TextView mTitleTextView;
     private LinearLayout mPopupContainer;
     private LinearLayout mPopupBlank;
-    private ImageView mSwitchImage1;
-    private ImageView mSwitchImage2;
-    private ImageView mSwitchImage3;
-    private ImageView mSwitchImage4;
+    private ImageView mRule1Image, mRule2Image, mRule3Image, mRule4Image;
+    private TextView mRule1Text, mRule2Text, mRule3Text, mRule4Text;
     private TextView mTimeTextView;
     private CoreAPI mCoreAPI;
     private View mView;
-    private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
 
     @Override
@@ -91,7 +92,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         super.onCreate(savedInstanceState);
 
         mCoreAPI = CoreAPI.getApi();
-        mActivity = (NavigationActivity) getActivity();
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -100,20 +103,26 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.montserratBoldTypeFace);
-        mTitleTextView.setText(R.string.fragment_setup_titles);
+//        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
+//        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
+//        mTitleTextView.setText(R.string.fragment_setup_titles);
+//
+//        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
+//        mBackButton.setVisibility(View.VISIBLE);
+//        mBackButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().onBackPressed();
+//            }
+//        });
 
-        mBackButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.fragment_setup_titles);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mNextButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_next);
+        mNextButton = (Button) mView.findViewById(R.id.fragment_setup_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,15 +131,20 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         });
 
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_repassword_edittext);
-        mPasswordConfirmationEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mPasswordConfirmationEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mSwitchImage1 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
-        mSwitchImage2 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
-        mSwitchImage3 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_3);
-        mSwitchImage4 = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_4);
+        mRule1Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
+        mRule2Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
+        mRule3Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_3);
+        mRule4Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_4);
+
+        mRule1Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_1);
+        mRule2Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_2);
+        mRule3Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_3);
+        mRule4Text = (TextView) mView.findViewById(R.id.fragment_setup_password_switch_text_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.fragment_setup_password_time_textview);
 
@@ -177,7 +191,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         });
 
         mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.fragment_password_pin_edittext);
-        mWithdrawalPinEditText.setTypeface(NavigationActivity.helveticaNeueTypeFace);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
         mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         final TextWatcher mPINTextWatcher = new TextWatcher() {
@@ -206,6 +220,16 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             }
         });
         return mView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return onBackPress();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     Animator.AnimatorListener endListener = new Animator.AnimatorListener() {
@@ -266,41 +290,45 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
-    private boolean checkPasswordRules(String password) {
+    private List<String> checkPasswordRules(String password) {
         List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<String> ruleFails = new ArrayList<>();
 
         if (rules.isEmpty()) {
-            return false;
+            return ruleFails;
         }
 
-        boolean bNewPasswordFieldsAreValid = true;
         for (int i = 0; i < rules.size(); i++) {
             tABC_PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
             if (!passed) {
-                bNewPasswordFieldsAreValid = false;
+                ruleFails.add(pRule.getSzDescription());
             }
 
             int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
             switch (i) {
                 case 0:
-                    mSwitchImage1.setImageResource(resource);
+                    mRule1Image.setImageResource(resource);
+                    mRule1Text.setText(pRule.getSzDescription());
                     break;
                 case 1:
-                    mSwitchImage2.setImageResource(resource);
+                    mRule2Image.setImageResource(resource);
+                    mRule2Text.setText(pRule.getSzDescription());
                     break;
                 case 2:
-                    mSwitchImage3.setImageResource(resource);
+                    mRule3Image.setImageResource(resource);
+                    mRule3Text.setText(pRule.getSzDescription());
                     break;
                 case 3:
-                    mSwitchImage4.setImageResource(resource);
+                    mRule4Image.setImageResource(resource);
+                    mRule4Text.setText(pRule.getSzDescription());
                     break;
                 default:
                     break;
             }
         }
         mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
-        return bNewPasswordFieldsAreValid;
+        return ruleFails;
     }
 
     private void goNext() {
@@ -331,10 +359,18 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
+        if(mPasswordEditText.getText().toString().isEmpty()) {
+            return true;
+        }
         boolean bNewPasswordFieldsAreValid = true;
-            if (!checkPasswordRules(mPasswordEditText.getText().toString())) {
+            List<String> fails = checkPasswordRules(mPasswordEditText.getText().toString());
+            if (!fails.isEmpty()) {
                 bNewPasswordFieldsAreValid = false;
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_password));
+                String message = getResources().getString(R.string.activity_signup_password_fails);
+                for(String fail : fails) {
+                    message += "\n" + fail + ".";
+                }
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_password), message);
             } else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString())) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
@@ -387,9 +423,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             return;
         }
 
+        char[] password = null;
         Editable pass = mPasswordEditText.getText();
-        char[] password = new char[pass.length()];
-        pass.getChars(0, pass.length(), password, 0);
+        if(!pass.toString().isEmpty()) {
+            password = new char[pass.length()];
+            pass.getChars(0, pass.length(), password, 0);
+        }
 
         // Reset errors.
         mPasswordEditText.setError(null);
@@ -402,13 +441,13 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     @Override
     public void onResume() {
         super.onResume();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mPasswordEditText.setSelection(mPasswordEditText.getText().length());
-                mPasswordEditText.requestFocus();
-            }
-        });
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mPasswordEditText.setSelection(mPasswordEditText.getText().length());
+//                mPasswordEditText.requestFocus();
+//            }
+//        });
         enableNextButton(true);
     }
 
@@ -416,16 +455,21 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     public class CreateAccountTask extends AsyncTask<Void, Void, String> {
 
         private final char[] mPassword;
+        private String mPasswordString;
 
         CreateAccountTask(char[] password) {
             mPassword = password;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), 2000000, false);
+            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), getResources().getInteger(R.integer.alert_hold_time_forever), false);
         }
 
         @Override
         protected String doInBackground(Void... params) {
+            mPasswordString = null;
+            if(mPassword != null) {
+                mPasswordString = String.valueOf(mPassword);
+            }
             return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
-                    String.valueOf(mPassword), mWithdrawalPinEditText.getText().toString());
+                    mPasswordString , mWithdrawalPinEditText.getText().toString());
         }
 
         @Override
@@ -435,7 +479,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                     SetupWriteItDownFragment fragment = new SetupWriteItDownFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(SetupWriteItDownFragment.USERNAME, getArguments().getString(USERNAME));
-                    bundle.putString(SetupWriteItDownFragment.PASSWORD, String.valueOf(mPassword));
+                    bundle.putString(SetupWriteItDownFragment.PASSWORD, mPasswordString);
                     bundle.putString(SetupWriteItDownFragment.PIN, mWithdrawalPinEditText.getText().toString());
                     fragment.setArguments(bundle);
                     mActivity.pushFragment(fragment);

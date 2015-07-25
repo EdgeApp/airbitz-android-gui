@@ -361,7 +361,7 @@
     <string name="request_qr_title">Solicitud Bitcoin</string>
     <string name="request_qr_ble_advertise_start_failed">Publicidad Bluetooth no se pudo iniciar.</string>
     <string name="request_qr_ble_invalid_value">El remitente del bluetooth envió un nombre inválido. Intente de nuevo.</string>
-    <string name="request_qr_ble_invalid_service">Airbitz no puede publicitar el servicio Bluetooth. Compruebe por favor su dispositivo's Bluetooth.</string>
+    <string name="request_qr_ble_invalid_service">Airbitz no puede publicitar el servicio Bluetooth. Compruebe por favor su dispositivo\'s Bluetooth.</string>
     <string name="request_qr_ble_invalid_uri">Recibió una solicitud de bitcoin inválida. Puede intentar otra vez.</string>
     <string name="request_qr_ble_copied">Solicitud se copia en el portapapeles.</string>
     <string name="request_qr_first_usage">Presente código QR al remitente y que los análisis para enviar tu pago</string>
@@ -530,7 +530,7 @@
     <string name="received_bitcoin_fading_message_teaching">Utilice el beneficiario, la categoría, y el campo de notas para, opcionalmente, etiqueta tu transacción</string>
     <string name="received_partial_bitcoin_title">Parcial Pago Recibido</string>
     <string name="received_partial_bitcoin_message">ADVERTENCIA: Parcial Pago Recibido</string>
-    <string name="bitcoing_remaining">%1$s Restante…</string>
+    <string name="bitcoin_remaining">%1$s Restante…</string>
     <string name="received_bitcoin_positive">Detalles</string>
     <string name="received_bitcoin_negative">Ignorar</string>
     <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>

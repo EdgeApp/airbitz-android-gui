@@ -1,263 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#aaffffff"
-    android:orientation="vertical">
+    android:padding="@dimen/calc_button_margin"
+    android:background="@color/calc_background">
 
     <LinearLayout
         android:id="@+id/row1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="6dp"
         android:orientation="horizontal">
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton1"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_1"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="1" />
+            android:text="1"
+            android:tag="1"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton2"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_2"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="2" />
+            android:text="2"
+            android:tag="2" 
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton3"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_3"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="3" />
+            android:text="3"
+            android:tag="3"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonPlus"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_plus"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="+" />
+            android:text="+"
+            android:tag="+" 
+            style="@style/GreyCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonPercent"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_percent"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="%" />
+            android:text="%"
+            android:tag="%" 
+            style="@style/GreyCalc" />
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/row1"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
         android:orientation="horizontal">
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton4"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_4"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="4" />
+            android:text="4"
+            android:tag="4"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton5"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_5"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="5" />
+            android:text="5"
+            android:tag="5"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton6"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_6"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="6" />
+            android:text="6"
+            android:tag="6"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonMinus"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_minus"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="-" />
+            android:text="-"
+            android:tag="-"
+            style="@style/GreyCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonMultiply"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_multi"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="*" />
+            android:text="*"
+            android:tag="*"
+            style="@style/GreyCalc" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row3"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/row2"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
         android:orientation="horizontal">
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton7"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_7"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="7" />
+            android:text="7"
+            android:tag="7"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton8"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_8"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="8" />
+            android:text="8"
+            android:tag="8"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton9"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_9"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="9" />
+            android:text="9"
+            android:tag="9"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonDivide"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_division"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="/" />
+            android:text="/"
+            android:tag="/"
+            style="@style/GreyCalc" />
 
         <Button
             android:id="@+id/imageButtonBack"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
+            android:tag="back" 
             android:text="@string/calculator_back"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/calc_button_textsize"
-            android:textStyle="bold"
-            android:background="@drawable/btn_calc_back"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="back" />
+            style="@style/OrangeCalc" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/row3"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
         android:orientation="horizontal">
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonClear"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_c"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="C" />
+            android:text="C"
+            android:tag="C" 
+            style="@style/GreyCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButton0"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_0"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="0" />
+            android:text="0"
+            android:tag="0"
+            style="@style/WhiteCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonDot"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_dot"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="." />
+            android:text="."
+            android:tag="."
+            style="@style/GreyCalc" />
 
-        <ImageButton
+        <Button
             android:id="@+id/imageButtonEquals"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
-            android:background="@drawable/btn_calc_equals"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="=" />
+            android:text="="
+            android:tag="="
+            style="@style/GreyCalc" />
 
         <Button
             android:id="@+id/imageButtonDone"
-            android:layout_width="@dimen/calc_button_size"
-            android:layout_height="@dimen/calc_button_size"
-            android:layout_margin="@dimen/calc_button_margin"
-            android:layout_weight="1"
             android:text="@string/calculator_done"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/calc_button_textsize"
-            android:textStyle="bold"
-            android:background="@drawable/btn_calc_done"
-            android:onClick="onCalculatorButtonClick"
-            android:tag="done" />
+            android:tag="done"
+            style="@style/GreenCalc" />
+
     </LinearLayout>
 
 </RelativeLayout>

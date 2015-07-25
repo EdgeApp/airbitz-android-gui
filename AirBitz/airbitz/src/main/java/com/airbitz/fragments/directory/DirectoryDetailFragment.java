@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,26 +23,29 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
 package com.airbitz.fragments.directory;
 
-import android.content.Context;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,13 +56,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.login.ViewPagerFragment;
 import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Category;
 import com.airbitz.models.Hour;
@@ -67,6 +70,7 @@ import com.airbitz.models.Image;
 import com.airbitz.models.Location;
 import com.airbitz.models.Social;
 import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.utils.Common;
 import com.airbitz.widgets.TouchImageView;
 import com.squareup.picasso.Picasso;
 
@@ -76,21 +80,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by Thomas Baker on 4/22/14.
- */
-public class DirectoryDetailFragment extends BaseFragment {
+public class DirectoryDetailFragment extends BaseFragment
+    implements NavigationActivity.OnBackPress {
+
+    static final String TAG = DirectoryDetailFragment.class.getSimpleName();
 
     public static final String BIZID = "bizId";
     public static final String BIZNAME = "bizName";
     public static final String BIZDISTANCE = "bizDistance";
-    private static final String TAG = DirectoryDetailFragment.class.getSimpleName();
+
     View mView;
     private boolean locationEnabled;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mLayout;
     private TextView mAboutField;
     private CurrentLocationManager mLocationManager;
-    private TextView mTitleTextView;
-    private ImageButton mBackButton;
     private BusinessDetail mBusinessDetail;
     private ViewPager mImagePager;
     private List<ImageView> mImageViewList = new ArrayList<ImageView>();
@@ -118,8 +122,6 @@ public class DirectoryDetailFragment extends BaseFragment {
     private TextView mDiscountTextView;
     private TextView mDistanceTextView;
     private GetBusinessDetailTask mTask;
-    private NavigationActivity mActivity;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,8 +130,9 @@ public class DirectoryDetailFragment extends BaseFragment {
         mBusinessId = getArguments().getString(BIZID);
         mBusinessName = getArguments().getString(BIZNAME);
         mBusinessDistance = getArguments().getString(BIZDISTANCE);
-
-        mActivity = ((NavigationActivity) getActivity());
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
@@ -140,16 +143,16 @@ public class DirectoryDetailFragment extends BaseFragment {
             return mView;
         }
 
+        mLayout = (CollapsingToolbarLayout) mView.findViewById(R.id.collapse);
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mLocationManager = CurrentLocationManager.getLocationManager(getActivity());
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationEnabled = false;
-            if(getActivity() != null) {
-                mActivity.ShowFadingDialog(getString(R.string.fragment_business_enable_location_services));
-            }
-        } else {
-            locationEnabled = true;
-        }
+        locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
+        Common.disabledNotification(mActivity, mView);
 
         Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
@@ -222,35 +225,32 @@ public class DirectoryDetailFragment extends BaseFragment {
         mAboutField = (TextView) mView.findViewById(R.id.edittext_about);
         mAboutField.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
 
-        // Header
-        mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-
-
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(BusinessDirectoryFragment.montserratBoldTypeFace);
-
         if (!TextUtils.isEmpty(mBusinessName)) {
-            mTitleTextView.setText(mBusinessName);
-            mTitleTextView.setVisibility(View.VISIBLE);
+            mLayout.setTitle(mBusinessName);
         }
-
         return mView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            return onBackPress();
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onBackPress() {
+        DirectoryDetailFragment.popFragment(mActivity);
+        return true;
     }
 
     class TapGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.d(TAG, "image clicked");
-            ViewPagerFragment fragment = new ViewPagerFragment();
-            fragment.setImages(getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
-            ((NavigationActivity) getActivity()).pushFragment(fragment);
+            ViewPagerFragment.pushFragment(mActivity, getTouchImageViewList(mBusinessDetail), mImagePager.getCurrentItem());
             return true;
         }
     }
@@ -303,7 +303,7 @@ public class DirectoryDetailFragment extends BaseFragment {
 
         @Override
         protected void onCancelled() {
-            ((NavigationActivity) mActivity).showModalProgress(false);
+            mActivity.showModalProgress(false);
             super.onCancelled();
         }
 
@@ -374,10 +374,9 @@ public class DirectoryDetailFragment extends BaseFragment {
                 }
 
                 if ((mBusinessDetail.getName().length() == 0) || mBusinessDetail.getName() == null) {
-                    mTitleTextView.setVisibility(View.GONE);
+                    mLayout.setTitle("");
                 } else {
-                    mTitleTextView.setText(mBusinessDetail.getName());
-                    mTitleTextView.setVisibility(View.VISIBLE);
+                    mLayout.setTitle(mBusinessDetail.getName());
                 }
 
                 if (TextUtils.isEmpty(mBusinessDetail.getDescription())) {
@@ -387,26 +386,6 @@ public class DirectoryDetailFragment extends BaseFragment {
                     mAboutField.setVisibility(View.VISIBLE);
                 }
 
-                //set drawables round if others are missing
-                //Address
-                if (mAddressButton.getVisibility() == View.VISIBLE) {
-                    if (mPhoneButton.getVisibility() == View.GONE && mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
-                        mAddressButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
-                    }
-                }
-
-                //Phone Number
-                if (mPhoneButton.getVisibility() == View.VISIBLE) {
-                    if (mWebButton.getVisibility() == View.GONE && mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
-                        if (mAddressButton.getVisibility() == View.GONE) {
-                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
-                        } else {
-                            mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
-                        }
-                    } else if (mAddressButton.getVisibility() == View.GONE) {
-                        mPhoneButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
-                    }
-                }
                 mPhoneButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -423,19 +402,6 @@ public class DirectoryDetailFragment extends BaseFragment {
                         }
                     }
                 });
-
-                //Web Button
-                if (mWebButton.getVisibility() == View.VISIBLE) {
-                    if (mHourContainer.getVisibility() == View.GONE && mAboutField.getVisibility() == View.GONE) {
-                        if (mAddressButton.getVisibility() == View.GONE && mPhoneButton.getVisibility() == View.GONE) {
-                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_both);
-                        } else {
-                            mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_bottom);
-                        }
-                    } else if (mAddressButton.getVisibility() == View.GONE && mPhoneButton.getVisibility() == View.GONE) {
-                        mWebButton.setBackgroundResource(R.drawable.transparent_until_pressed_top);
-                    }
-                }
                 mWebButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -527,7 +493,6 @@ public class DirectoryDetailFragment extends BaseFragment {
                         }
                     });
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 mAddressButton.setVisibility(View.GONE);
@@ -543,7 +508,7 @@ public class DirectoryDetailFragment extends BaseFragment {
                             Toast.LENGTH_LONG).show();
                 }
             }
-            ((NavigationActivity) mActivity).showModalProgress(false);
+            mActivity.showModalProgress(false);
         }
 
         private void launchBrowser(String url) {
@@ -622,5 +587,26 @@ public class DirectoryDetailFragment extends BaseFragment {
         share.putExtra(Intent.EXTRA_TEXT, text);
 
         startActivity(Intent.createChooser(share, "share link"));
+    }
+
+    public static void pushFragment(NavigationActivity mActivity, String id, String name, String distance) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(DirectoryDetailFragment.BIZID, id);
+        bundle.putString(DirectoryDetailFragment.BIZNAME, name);
+        bundle.putString(DirectoryDetailFragment.BIZDISTANCE, distance);
+        Fragment fragment = new DirectoryDetailFragment();
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        mActivity.popFragment(transaction);
+        mActivity.getFragmentManager().executePendingTransactions();
     }
 }

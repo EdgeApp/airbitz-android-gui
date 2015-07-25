@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog_help"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="10dp"
-    android:background="@drawable/advanced_details_bg"
-    android:clickable="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:padding="3dp"
-    android:visibility="visible">
+    android:background="@color/colorPrimaryFrost">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="63dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
-
-    <Button
-        android:id="@+id/dialog_help_close_button"
-        android:layout_width="31.5dp"
-        android:layout_height="31.5dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_x_rnd" />
-
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/dialog_help"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/logo"
-        android:background="@android:color/white">
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="3dp"
+        android:visibility="visible">
 
-        <TextView
-            android:id="@+id/dialog_help_textview"
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="63dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_help_logo" />
+
+        <Button
+            android:id="@+id/dialog_help_close_button"
+            android:layout_width="31.5dp"
+            android:layout_height="31.5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ic_close" />
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:bufferType="spannable"
-            android:paddingBottom="6.3dp"
-            android:paddingLeft="9.45dp"
-            android:paddingRight="9.45dp"
-            android:paddingTop="9.45dp"
-            android:visibility="gone" />
+            android:layout_below="@+id/logo"
+            android:background="@android:color/white">
 
-        <WebView
-            android:id="@+id/dialog_help_webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="6.3dp"
-            android:paddingLeft="9.45dp"
-            android:paddingRight="9.45dp"
-            android:paddingTop="9.45dp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/dialog_help_textview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:bufferType="spannable"
+                android:paddingBottom="6.3dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
+                android:paddingTop="9.45dp"
+                android:visibility="gone" />
 
-    </FrameLayout>
+            <WebView
+                android:id="@+id/dialog_help_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="6.3dp"
+                android:paddingLeft="9.45dp"
+                android:paddingRight="9.45dp"
+                android:paddingTop="9.45dp"
+                android:visibility="gone" />
 
-</RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
+</FrameLayout>
