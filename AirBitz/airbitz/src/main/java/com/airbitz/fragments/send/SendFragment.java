@@ -259,13 +259,12 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
+        if (mFromWallet == null) {
+            return;
+        }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
-        if (mFromWallet == null) {
-            mFromWallet = mWallets.get(0);
-            AirbitzApplication.setCurrentWallet(mFromWallet.getUUID());
-        }
         bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
         fragment.setArguments(bundle);
         if (mActivity != null)
