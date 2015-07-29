@@ -342,6 +342,10 @@
         <item name="android:background">@drawable/bg_button_green</item>
     </style>
 
+    <style name="GrayButton" parent="Button">
+        <item name="android:background">@drawable/bg_button_gray</item>
+    </style>
+
     <style name="BlueButton" parent="Button">
         <item name="android:background">@drawable/bg_button_blue</item>
     </style>

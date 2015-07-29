@@ -337,10 +337,20 @@
         android:layout_alignParentBottom="true">
 
         <Button
+            android:id="@+id/transaction_detail_button_advanced"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/transaction_details_advanced_title"
+            style="@style/GrayButton"/>
+
+        <Button
             android:id="@+id/transaction_detail_button_done"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/transaction_details_done_title"
             style="@style/GreenButton"/>
     </LinearLayout>

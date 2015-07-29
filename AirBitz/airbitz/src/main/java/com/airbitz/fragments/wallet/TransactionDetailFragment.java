@@ -135,6 +135,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private final int MIN_AUTOCOMPLETE = 5;
 
     private Button mDoneButton;
+    private Button mAdvancedButton;
     private Spinner mCategorySpinner;
     private TextView mDateTextView;
     private RelativeLayout mPayeeNameLayout;
@@ -242,6 +243,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCalculator.setEditText(mFiatValueEdittext);
 
         mDoneButton = (Button) mView.findViewById(R.id.transaction_detail_button_done);
+        mAdvancedButton = (Button) mView.findViewById(R.id.transaction_detail_button_advanced);
 
         mNotesTextView = (TextView) mView.findViewById(R.id.transaction_detail_textview_notes);
         mPayeeNameLayout = (RelativeLayout) mView.findViewById(R.id.transaction_detail_layout_name);
@@ -287,6 +289,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mBitcoinValueTextview.setTypeface(NavigationActivity.latoRegularTypeFace, Typeface.NORMAL);
 
         mDoneButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
+        mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
         CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
@@ -554,6 +557,12 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 goDone();
             }
         });
+        mAdvancedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAdvancedDetails(true);
+            }
+        });
 
         if (mFromSend || mFromRequest) {
             mPayeeEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -564,7 +573,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_transaction_details, menu);
+        inflater.inflate(R.menu.menu_standard, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -573,9 +582,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
         switch (item.getItemId()) {
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTION_DETAILS));
-            return true;
-        case R.id.action_advanced:
-            showAdvancedDetails(true);
             return true;
         case android.R.id.home:
             return onBackPress();
