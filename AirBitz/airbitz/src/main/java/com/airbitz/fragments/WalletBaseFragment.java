@@ -100,18 +100,29 @@ public class WalletBaseFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
         mCoreApi = CoreAPI.getApi();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        String uuid = AirbitzApplication.getCurrentWallet();
-        if (uuid != null) {
-            mLoading = false;
-            mWallet = mCoreApi.getWalletFromUUID(uuid);
-        } else {
-            mLoading = true;
-        }
+        mLoading = true;
         mSearching = false;
-        setHasOptionsMenu(true);
+        // Check for cached wallets
+        if (null == mWallets) {
+            mWallets = mCoreApi.getCoreActiveWallets();
+        }
+        // Create empty list
         if (null == mWallets) {
             mWallets = new ArrayList<Wallet>();
         }
+        String uuid = AirbitzApplication.getCurrentWallet();
+        // Search cache for current wallet
+        if (uuid != null && null != mWallets) {
+            for (Wallet w : mWallets) {
+                if (!w.getUUID().equals(uuid)) {
+                    continue;
+                }
+                mWallet = w;
+                mLoading = false;
+                break;
+            }
+        }
+        setHasOptionsMenu(true);
     }
 
     @Override
