@@ -477,7 +477,6 @@ public class CoreAPI {
 
         @Override
         protected List<Wallet> doInBackground(Void... params) {
-            mCoreWallets = null;
             return getCoreWallets(true);
         }
 
