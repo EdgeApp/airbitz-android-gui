@@ -866,7 +866,7 @@ public class SettingFragment extends BaseFragment {
     }
 
     private void saveBLEPref(boolean state) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
         editor.putBoolean(BLE_PREF, state);
         editor.apply();
     }
