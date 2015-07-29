@@ -501,7 +501,7 @@
         <item name="android:minWidth">10dp</item>
         <item name="android:background">@null</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textColorHint">@color/colorPrimaryFrost</item>
         <item name="android:textCursorDrawable">@drawable/bold_cursor_white</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentLeft">true</item>
