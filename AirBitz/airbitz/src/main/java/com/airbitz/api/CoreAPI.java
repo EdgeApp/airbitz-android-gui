@@ -1991,11 +1991,22 @@ public class CoreAPI {
 
     private UpdateExchangeRateTask mUpdateExchangeRateTask;
     public class UpdateExchangeRateTask extends AsyncTask<Void, Void, Void> {
-        UpdateExchangeRateTask() { }
+        Set<Integer> currencies;
+        UpdateExchangeRateTask() {
+            List<Wallet> walletList = getCoreWallets(false);
+            Set<Integer> currencies = new HashSet();
+            if (walletList != null) {
+                for (Wallet wallet : walletList) {
+                    if (wallet.getCurrencyNum() != -1) {
+                        currencies.add(wallet.getCurrencyNum());
+                    }
+                }
+            }
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            updateAllExchangeRates();
+            updateAllExchangeRates(currencies);
             return null;
         }
 
@@ -2016,18 +2027,9 @@ public class CoreAPI {
     }
 
     // Exchange Rate updates may have delay the first call
-    private void updateAllExchangeRates()
-    {
-        if (AirbitzApplication.isLoggedIn())
-        {
-            List<Wallet> walletList = getCoreWallets(false);
-            Set<Integer> currencies = new HashSet();
-            if(walletList != null) {
-                for (Wallet wallet : walletList) {
-                    if (wallet.getCurrencyNum() != -1) {
-                        currencies.add(wallet.getCurrencyNum());
-                    }
-                }
+    private void updateAllExchangeRates(Set<Integer> currencies) {
+        if (AirbitzApplication.isLoggedIn()) {
+            if (currencies != null) {
                 tABC_Error error = new tABC_Error();
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                     AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
