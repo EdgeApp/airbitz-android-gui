@@ -653,9 +653,12 @@ public class LandingFragment extends BaseFragment implements
                 error.setCode(tABC_CC.ABC_CC_Error);
                 return error;
             }
-            else {
-                return mCoreAPI.PinLogin(mUsername, mPin);
+            tABC_Error error = mCoreAPI.PinLogin(mUsername, mPin);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+                AirbitzApplication.Login(mUsername, mPassword);
+                mCoreAPI.setupAccountSettings();
             }
+            return error;
         }
 
         @Override
