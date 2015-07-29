@@ -276,7 +276,7 @@ public class TransactionListFragment extends WalletsFragment
                 int newIdx = i - 1;
                 mActivity.hideSoftKeyboard(mSendButton);
                 // Make sure this is not the header view and offset i by 1
-                if (i >= 0 && i < mTransactions.size()) {
+                if (i >= 0 && i < mTransactions.size() + 1) {
                     Transaction trans = mTransactions.get(newIdx);
                     mTransactionAdapter.selectItem(view, newIdx);
 
