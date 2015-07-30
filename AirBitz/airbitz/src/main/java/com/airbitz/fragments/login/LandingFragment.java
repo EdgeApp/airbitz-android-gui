@@ -206,6 +206,7 @@ public class LandingFragment extends BaseFragment implements
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     attemptPasswordLogin();
+                    mActivity.hideSoftKeyboard(mPasswordEditText);
                     return true;
                 }
                 return false;
@@ -766,6 +767,7 @@ public class LandingFragment extends BaseFragment implements
 
         saveUsername(mUsername);
         if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+            mActivity.hideSoftKeyboard(mPasswordEditText);
             Editable pass = mPasswordEditText.getText();
             mPasswordEditText.setText("");
             char[] password = new char[pass.length()];
