@@ -767,6 +767,8 @@ public class NavigationActivity extends ActionBarActivity
 
         activityInForeground = true;
 
+        hideSoftKeyboard(mFragmentContainer);
+
         super.onResume();
     }
 

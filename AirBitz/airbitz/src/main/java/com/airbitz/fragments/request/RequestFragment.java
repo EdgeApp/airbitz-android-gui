@@ -35,7 +35,6 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -123,21 +122,14 @@ public class RequestFragment extends WalletBaseFragment implements
         NfcAdapter.CreateNdefMessageCallback,
         Calculator.OnCalculatorKey
 {
-    public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
-    public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
-    public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
-    public static final String BITCOIN_ID = "com.airbitz.request.bitcoinid";
-    public static final String BITCOIN_ADDRESS = "com.airbitz.request.bitcoinaddress";
+
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
 
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.firstusagecount";
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
-    public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
 
     private final String TAG = getClass().getSimpleName();
-    int mFromIndex = 0;
-    private String mUUID = null;
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
     private boolean mInPartialPayment = false;
@@ -146,14 +138,12 @@ public class RequestFragment extends WalletBaseFragment implements
     private TextView mDenominationTextView;
     private TextView mOtherDenominationTextView;
     private TextView mOtherAmountTextView;
-    private View mBottomContainer;
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
 
     private Long mSavedSatoshi;
     private String mSavedCurrency;
-    private int mSavedIndex;
     private boolean mAmountIsBitcoin = false;
 
     private NavigationActivity mActivity;
@@ -209,7 +199,6 @@ public class RequestFragment extends WalletBaseFragment implements
         mView = inflater.inflate(R.layout.fragment_request, container, false);
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
         mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mAmountField.requestFocus();
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -277,7 +266,6 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mAmountField.setOnEditorActionListener(amountEditorListener);
 
-        mBottomContainer = mView.findViewById(R.id.bottom_container);
         mCalculator = (Calculator) mActivity.findViewById(R.id.navigation_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mAmountField);
