@@ -32,6 +32,7 @@
 package com.airbitz;
 
 import android.app.Application;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -43,6 +44,7 @@ import com.airbitz.objects.AirbitzRequestHandler;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Stack;
 import java.util.UUID;
 
 /**
@@ -68,6 +70,8 @@ public class AirbitzApplication extends Application {
     private static String mUserAgent;
     private static String mWalletUuid;
     private static Picasso mPicasso;
+    private static Stack<Fragment>[] mFragmentStack = null;
+    private static int mStackThreadId = -1;
 
     @Override
     public void onCreate() {
@@ -206,6 +210,17 @@ public class AirbitzApplication extends Application {
         SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
         editor.putBoolean(LOCATION_MODE, state);
         editor.apply();
+    }
+
+    /*
+     * Save or get the fragment stack is used when switching orientation
+     */
+    public static void setFragmentStack(Stack<Fragment>[] fragmentStack) {
+        mFragmentStack = fragmentStack;
+    }
+
+    public static Stack<Fragment>[] getFragmentStack() {
+        return mFragmentStack;
     }
 
     private static class Login {

@@ -197,7 +197,7 @@ public class NavigationActivity extends ActionBarActivity
             new TransactionListFragment(),
             new SettingFragment()};
     // These stacks are the five "threads" of fragments represented in mNavFragments
-    private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
+    private Stack<Fragment>[] mNavStacks = null;
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
@@ -316,9 +316,14 @@ public class NavigationActivity extends ActionBarActivity
 
         setTypeFaces();
 
-        for (int i = 0; i < mNavFragments.length; i++) {
-            mNavStacks[i] = new Stack<Fragment>();
-            mNavStacks[i].push(mNavFragments[i]);
+        mNavStacks = AirbitzApplication.getFragmentStack();
+        AirbitzApplication.setFragmentStack(null);
+        if(mNavStacks == null) {
+            mNavStacks = new Stack[mNavFragments.length];
+            for (int i = 0; i < mNavFragments.length; i++) {
+                mNavStacks[i] = new Stack<Fragment>();
+                mNavStacks[i].push(mNavFragments[i]);
+            }
         }
 
         mLandingFragment = new LandingFragment();
@@ -337,6 +342,15 @@ public class NavigationActivity extends ActionBarActivity
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // store the fragment stack in case of an orientation change
+        AirbitzApplication.setFragmentStack(mNavStacks);
+        AirbitzApplication.setLastNavTab(mNavThreadId);
+    }
+
 
     public boolean onTouch(View view, MotionEvent event) {
 
