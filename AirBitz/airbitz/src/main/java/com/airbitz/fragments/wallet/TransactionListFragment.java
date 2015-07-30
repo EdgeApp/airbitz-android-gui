@@ -351,6 +351,11 @@ public class TransactionListFragment extends WalletsFragment
         return false;
     }
 
+    @Override
+    protected boolean getForceDefaultWallet() {
+        return false;
+    }
+
     private void buildFragments(Bundle bundle) {
         if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)
                 || bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
@@ -385,20 +390,8 @@ public class TransactionListFragment extends WalletsFragment
         updateSendRequestButtons();
     }
 
-    private boolean walletsStillLoading() {
-        if (mWallets == null || mWallets.size() == 0) {
-            return true;
-        }
-        for (Wallet w : mWallets) {
-            if (w.isLoading()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void updateSendRequestButtons() {
-        if (walletsStillLoading()) {
+        if (mLoading) {
             updateSendRequestButtons(false, 0.5f);
             // mActivity.ShowFadingDialog(getString(R.string.wait_until_wallets_loaded));
         } else {
@@ -496,15 +489,6 @@ public class TransactionListFragment extends WalletsFragment
         super.onExchangeRatesChange();
         if (!mLoading) {
             updateBalances();
-        }
-    }
-
-    @Override
-    public void onWalletUpdated() {
-        super.onWalletUpdated();
-        if (mWallet != null) {
-            mCoreApi.reloadWallet(mWallet);
-            startTransactionTask();
         }
     }
 
