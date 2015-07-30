@@ -263,7 +263,7 @@ public class NavigationActivity extends ActionBarActivity
         ImageView requestButton = new ImageView(this);
         ImageView sendButton = new ImageView(this);
         ImageView txButton = new ImageView(this);
-        requestButton.setImageResource(R.drawable.ic_request_dark);
+        requestButton.setImageResource(R.drawable.ic_receive_dark);
         requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
         sendButton.setImageResource(R.drawable.ic_send_dark);
         sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
