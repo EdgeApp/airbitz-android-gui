@@ -301,9 +301,9 @@ public class CoreAPI {
         public void run() {
             mCoreSettings = null;
             startWatchers();
+            reloadWallets();
             if (null != mOnDataSync) {
                 mOnDataSync.OnDataSync();
-                reloadWallets();
             }
         }
     };
@@ -478,8 +478,7 @@ public class CoreAPI {
 
         @Override
         protected List<Wallet> doInBackground(Void... params) {
-            mCoreWallets = null;
-            return getCoreWallets(true);
+            return getWallets();
         }
 
         @Override
@@ -1992,11 +1991,22 @@ public class CoreAPI {
 
     private UpdateExchangeRateTask mUpdateExchangeRateTask;
     public class UpdateExchangeRateTask extends AsyncTask<Void, Void, Void> {
-        UpdateExchangeRateTask() { }
+        Set<Integer> currencies;
+        UpdateExchangeRateTask() {
+            List<Wallet> wallets = getCoreWallets(false);
+            Set<Integer> currencies = new HashSet();
+            if (wallets != null) {
+                for (Wallet wallet : wallets) {
+                    if (wallet.getCurrencyNum() != -1) {
+                        currencies.add(wallet.getCurrencyNum());
+                    }
+                }
+            }
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            updateAllExchangeRates();
+            updateAllExchangeRates(currencies);
             return null;
         }
 
@@ -2017,21 +2027,12 @@ public class CoreAPI {
     }
 
     // Exchange Rate updates may have delay the first call
-    private void updateAllExchangeRates()
-    {
-        if (AirbitzApplication.isLoggedIn())
-        {
-            List<Wallet> walletList = getCoreWallets(false);
-            Set<Integer> currencies = new HashSet();
-            if(walletList != null) {
-                for (Wallet wallet : walletList) {
-                    if (wallet.getCurrencyNum() != -1) {
-                        currencies.add(wallet.getCurrencyNum());
-                    }
-                }
-                tABC_Error error = new tABC_Error();
-                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
+    private void updateAllExchangeRates(Set<Integer> currencies) {
+        if (AirbitzApplication.isLoggedIn()) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
+            if (null != currencies) {
                 for (Integer currency : currencies) {
                     core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                         AirbitzApplication.getPassword(), currency, error);
@@ -2249,49 +2250,47 @@ public class CoreAPI {
         return uuids;
     }
 
+    private List<Wallet> getWallets() {
+        List<Wallet> wallets = new ArrayList<Wallet>();
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
+
+        tABC_Error pError = new tABC_Error();
+
+        SWIGTYPE_p_int pCount = core.new_intp();
+        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
+
+        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                paWalletInfo, pUCount, pError);
+
+        if(result == tABC_CC.ABC_CC_Ok) {
+            int ptrToInfo = core.longp_value(lp);
+            int count = core.intp_value(pCount);
+            ppWalletInfo base = new ppWalletInfo(ptrToInfo);
+
+            for (int i = 0; i < count; i++) {
+                pLong temp = new pLong(base.getPtr(base, i * 4));
+                long start = core.longp_value(temp);
+                WalletInfo wi = new WalletInfo(start);
+                Wallet in = new Wallet(wi.getName());
+                in.setBalanceSatoshi(wi.getBalance());
+                in.setUUID(wi.getUUID());
+                in.setAttributes(wi.getAttributes());
+                in.setCurrencyNum(wi.getCurrencyNum());
+                in.setTransactions(loadAllTransactions(in));
+                wallets.add(in);
+            }
+            core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
+            return wallets;
+        } else {
+            return null;
+        }
+    }
+
     private List<Wallet> mCoreWallets = null;
     public List<Wallet> getCoreWallets(boolean withTransactions) {
-        if (mCoreWallets == null) {
-            List<Wallet> wallets = new ArrayList<Wallet>();
-
-            SWIGTYPE_p_long lp = core.new_longp();
-            SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
-
-            tABC_Error pError = new tABC_Error();
-
-            SWIGTYPE_p_int pCount = core.new_intp();
-            SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
-
-            tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    paWalletInfo, pUCount, pError);
-
-            if(result == tABC_CC.ABC_CC_Ok) {
-                int ptrToInfo = core.longp_value(lp);
-                int count = core.intp_value(pCount);
-                ppWalletInfo base = new ppWalletInfo(ptrToInfo);
-
-                for (int i = 0; i < count; i++) {
-                    pLong temp = new pLong(base.getPtr(base, i * 4));
-                    long start = core.longp_value(temp);
-                    WalletInfo wi = new WalletInfo(start);
-                    Wallet in = new Wallet(wi.getName());
-                    in.setBalanceSatoshi(wi.getBalance());
-                    in.setUUID(wi.getUUID());
-                    in.setAttributes(wi.getAttributes());
-                    in.setCurrencyNum(wi.getCurrencyNum());
-                    in.setTransactions(loadAllTransactions(in));
-                    wallets.add(in);
-                }
-                core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
-                mCoreWallets = wallets;
-                return wallets;
-            } else {
-                Log.d(TAG, "getCoreWallets failed.");
-            }
-            return null;
-        } else {
-            return mCoreWallets;
-        }
+        return mCoreWallets;
     }
 
     public List<Wallet> getCoreActiveWallets() {

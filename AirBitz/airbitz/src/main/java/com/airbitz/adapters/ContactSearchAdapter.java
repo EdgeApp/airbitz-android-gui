@@ -40,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.models.Contact;
@@ -56,7 +57,7 @@ public class ContactSearchAdapter extends ArrayAdapter {
         super(context, R.layout.item_listview_icon_with_text);
         mContext = context;
         mContacts = contacts;
-        mPicasso = Picasso.with(mContext);
+        mPicasso = AirbitzApplication.getPicasso();
     }
 
     @Override

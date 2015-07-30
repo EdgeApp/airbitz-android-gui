@@ -21,6 +21,7 @@
             android:id="@+id/fiat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="22dp" />
 
@@ -36,6 +37,7 @@
             android:id="@+id/bitcoin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="22dp" />
 
@@ -45,6 +47,8 @@
         android:id="@+id/total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:layout_centerVertical="true"
         android:textColor="@android:color/white"
         android:textStyle="normal"

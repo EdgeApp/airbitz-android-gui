@@ -91,6 +91,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     private ImageView mArchiveMovingHeaderImage;
     private DynamicListView mWalletListView;
     private WalletAdapter mWalletAdapter;
+    private View mProgress;
     private List<Wallet> mLatestWalletList = new ArrayList<Wallet>();
     private boolean mArchiveClosed = false;
 
@@ -130,7 +131,9 @@ public class WalletsFragment extends WalletBaseFragment implements
             }
         });
 
+        mProgress = view.findViewById(R.id.progress_horizontal);
         mWalletListView = (DynamicListView) view.findViewById(R.id.fragment_wallets_listview);
+        mWalletListView.setEmptyView(mProgress);
         mWalletListView.setVisibility(View.GONE);
         mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

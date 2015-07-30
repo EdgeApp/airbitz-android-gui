@@ -100,18 +100,18 @@ public class WalletBaseFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
         mCoreApi = CoreAPI.getApi();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
-        String uuid = AirbitzApplication.getCurrentWallet();
-        if (uuid != null) {
-            mLoading = false;
-            mWallet = mCoreApi.getWalletFromUUID(uuid);
-        } else {
-            mLoading = true;
-        }
+        mLoading = true;
         mSearching = false;
-        setHasOptionsMenu(true);
+        // Check for cached wallets
+        if (null == mWallets) {
+            mWallets = mCoreApi.getCoreActiveWallets();
+        }
+        // Create empty list
         if (null == mWallets) {
             mWallets = new ArrayList<Wallet>();
         }
+        setDefaultWallet();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -214,36 +214,50 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
+    protected boolean getForceDefaultWallet() {
+        return true;
+    }
+
     private void setDefaultWallet() {
-        if (mWallet == null) {
+        if (mWallet == null || getForceDefaultWallet()) {
             String uuid = AirbitzApplication.getCurrentWallet();
             if (uuid == null) {
-                List<String> uuids = mCoreApi.loadWalletUUIDs();
-                if (uuids.size() > 0) {
-                    uuid = uuids.get(0);
+                if (mWallets != null && mWallets.size() > 0) {
+                    uuid = mWallets.get(0).getUUID();
                     AirbitzApplication.setCurrentWallet(uuid);
                 }
             }
-            if (uuid != null) {
-                mWallet = mCoreApi.getWalletFromUUID(uuid);
+            if (uuid != null && null != mWallets) {
+                for (Wallet w : mWallets) {
+                    if (!w.getUUID().equals(uuid)) {
+                        continue;
+                    }
+                    mWallet = w;
+                    break;
+                }
             }
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
         if (mWallet != null && mWallet.isArchived()) {
-            List<String> uuids = mCoreApi.loadWalletUUIDs();
-            if (uuids.size() > 0) {
-                AirbitzApplication.setCurrentWallet(uuids.get(0));
+            if (mWallets != null && mWallets.size() > 0) {
+                String uuid = mWallets.get(0).getUUID();
+                AirbitzApplication.setCurrentWallet(uuid);
             }
+        }
+        if (mWallet != null) {
+            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
         }
     }
 
     @Override
     public void onWalletsLoaded() {
         fetchWallets();
+        if (mLoading) {
+            mWallet = null;
+        }
         setDefaultWallet();
         if (mWallet != null) {
-            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
             loadWallets();
             updateTitle();
         }
