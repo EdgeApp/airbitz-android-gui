@@ -45,6 +45,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -249,6 +250,10 @@ public class NavigationActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(getResources().getBoolean(R.bool.portrait_only)){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
 
@@ -346,9 +351,11 @@ public class NavigationActivity extends ActionBarActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // store the fragment stack in case of an orientation change
-        AirbitzApplication.setFragmentStack(mNavStacks);
-        AirbitzApplication.setLastNavTab(mNavThreadId);
+        if(!getResources().getBoolean(R.bool.portrait_only)){
+            // store the fragment stack in case of an orientation change
+            AirbitzApplication.setFragmentStack(mNavStacks);
+            AirbitzApplication.setLastNavTab(mNavThreadId);
+        }
     }
 
 
