@@ -952,11 +952,12 @@ public class NavigationActivity extends ActionBarActivity
             return;
         }
 
-        String scheme =uri.getScheme();
+        String scheme = uri.getScheme();
         if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
-            if (2 == path.size()) {
-                launchBuySell(path.get(1), path.get(0));
+            if (2 <= path.size()) {
+                Log.d(TAG, uri.toString());
+                launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
             handleBitcoinUri(uri);
@@ -989,7 +990,7 @@ public class NavigationActivity extends ActionBarActivity
         mDataUri = null;
     }
 
-    private void launchBuySell(String country, String provider) {
+    private void launchBuySell(String country, String provider, Uri uri) {
         BuySellFragment buySell = null;
         if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
             mNavStacks[Tabs.MORE.ordinal()].clear();
@@ -1002,7 +1003,11 @@ public class NavigationActivity extends ActionBarActivity
         switchFragmentThread(Tabs.MORE.ordinal());
         mDrawer.closeDrawer(mDrawerView);
 
-        buySell.launchPluginByCountry(country, provider);
+        FragmentManager manager = getFragmentManager();
+        if (manager != null) {
+            manager.executePendingTransactions();
+        }
+        buySell.launchPluginByCountry(country, provider, uri);
     }
 
     /*
@@ -2351,6 +2356,8 @@ public class NavigationActivity extends ActionBarActivity
             button.setSelected(true);
         }
         mActionMenu.close(true);
+        mDrawerBuySell.setVisibility(
+            mCoreAPI.isTestNet() ? View.VISIBLE : View.GONE);
     }
 
     private void updateDrawer(boolean loggedIn) {

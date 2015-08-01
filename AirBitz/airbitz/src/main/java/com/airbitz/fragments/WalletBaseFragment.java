@@ -83,7 +83,6 @@ public class WalletBaseFragment extends BaseFragment implements
     protected View mSearchLayout;
     protected EditText mSearch;
     protected View mCloseSearch;
-    protected TextView mTitleView;
     protected TextView mSubtitleView;
     protected ImageView mDropdownIcon;
     protected CoreAPI mCoreApi;

@@ -64,6 +64,7 @@ public class BaseFragment extends Fragment {
 
     protected NavigationActivity mActivity;
     protected Toolbar mToolbar;
+    protected TextView mTitleView;
     protected boolean mDrawerEnabled = true;
     protected boolean mBackEnabled = false;
     protected boolean mPositionNavBar = true;
@@ -96,6 +97,15 @@ public class BaseFragment extends Fragment {
         return null;
     }
 
+    protected void setTitle(String title) {
+        if (null != mTitleView) {
+            mTitleView.setVisibility(View.VISIBLE);
+            mTitleView.setText(title);
+        } else {
+            mToolbar.setTitle(title);
+        }
+    }
+
     protected String getSubtitle() {
         return null;
     }
@@ -108,11 +118,11 @@ public class BaseFragment extends Fragment {
             mMaterialMenu = new MaterialMenuDrawable(mActivity, mIconColor, Stroke.THIN);
             mToolbar.setNavigationIcon(mMaterialMenu);
             mActivity.setSupportActionBar(mToolbar);
-            if (!TextUtils.isEmpty(getTitle())) {
-                TextView title = (TextView) view.findViewById(R.id.title);
-                if (title != null) {
+            if (null != getTitle()) {
+                mTitleView = (TextView) view.findViewById(R.id.title);
+                if (mTitleView != null) {
                     mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-                    title.setText(getTitle());
+                    mTitleView.setText(getTitle());
                 } else {
                     mToolbar.setTitle(getTitle());
                 }

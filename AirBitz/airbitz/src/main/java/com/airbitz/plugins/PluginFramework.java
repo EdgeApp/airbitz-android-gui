@@ -79,30 +79,20 @@ public class PluginFramework {
             mPlugins = new LinkedList<Plugin>();
 
             Plugin plugin;
-            if (api.isTestNet()) {
-                plugin = new Plugin();
-                plugin.pluginId = "com.glidera.us";
-                plugin.sourceFile = "file:///android_asset/glidera.html";
-                plugin.name = "Glidera USA";
-                plugin.provider = "glidera";
-                plugin.country = "US";
-                plugin.env.put("COUNTRY_CODE", "US");
-                plugin.env.put("COUNTRY_NAME", "United States");
-                plugin.env.put("CURRENCY_CODE", "840");
-                plugin.env.put("CURRENCY_ABBREV", "USD");
-                mPlugins.add(plugin);
-            }
-
             plugin = new Plugin();
-            plugin.pluginId = "com.glidera.ca";
+            plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera Canada";
+            plugin.name = "Glidera USA";
             plugin.provider = "glidera";
-            plugin.country = "CA";
-            plugin.env.put("COUNTRY_CODE", "CA");
-            plugin.env.put("COUNTRY_NAME", "Canada");
-            plugin.env.put("CURRENCY_CODE", "124");
-            plugin.env.put("CURRENCY_ABBREV", "CAD");
+            plugin.country = "US";
+            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+            plugin.env.put("COUNTRY_CODE", "US");
+            plugin.env.put("COUNTRY_NAME", "United States");
+            plugin.env.put("CURRENCY_CODE", "840");
+            plugin.env.put("CURRENCY_ABBREV", "USD");
+            plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
+            plugin.env.put("GLIDERA_CLIENT_SECRET", AirbitzApplication.getContext().getString(R.string.glidera_client_secret));
+            plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             mPlugins.add(plugin);
         }
     }
@@ -253,6 +243,9 @@ public class PluginFramework {
                 @Override
                 public String doInBackground(Void... v) {
                     List<Wallet> coreWallets = api.getCoreActiveWallets();
+                    if (null == coreWallets) {
+                        return jsonError().toString();
+                    }
                     ToArray wallets = new ToArray();
                     try {
                         for (Wallet w : coreWallets) {
@@ -343,12 +336,8 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String getConfig(String key) {
-            if ("GLIDERA_PARTNER_TOKEN".equals(key)) {
-                String token = AirbitzApplication.getContext().getString(R.string.glidera_partner_key);
-                return token;
-            } else {
-                return plugin.env.get(key);
-            }
+            Log.d(TAG, "key/value " + key + ":" + plugin.env.get(key));
+            return plugin.env.get(key);
         }
 
         @JavascriptInterface

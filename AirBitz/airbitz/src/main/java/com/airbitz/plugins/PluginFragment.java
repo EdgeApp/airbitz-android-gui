@@ -31,9 +31,14 @@
 
 package com.airbitz.plugins;
 
+import android.app.FragmentTransaction;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -58,14 +63,18 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
     private final String TAG = getClass().getSimpleName();
 
     private WebView mWebView;
+    private boolean mPopped = false;
     private TextView mTitleTextView;
-    private View mView;
+    private ViewGroup mView;
     private PluginFramework mFramework;
     private Plugin mPlugin;
     private Stack mNav;
+    private Uri mUri;
+    private String mUrl;
 
     private int previousHeight;
     private int mToolbarHeight;
+    private String mTitle;
     private LinearLayout.LayoutParams frameLayoutParams;
 
     private SendConfirmationFragment mSendConfirmation;
@@ -79,29 +88,31 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
+
+    public void setUri(Uri uri) {
+        this.mUri = uri;
+    }
+
+    @Override
+    protected String getTitle() {
+        return mActivity.getString(R.string.loading);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (mView != null) {
             return mView;
         }
-        mView = inflater.inflate(R.layout.fragment_plugin, container, false);
+        mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setVisibility(View.INVISIBLE);
-
-        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).onBackPressed();
-            }
-        });
-
         mFramework.buildPluginView(mPlugin, mWebView);
-        mWebView.loadUrl(mPlugin.sourceFile);
         mWebView.setBackgroundColor(0x00000000);
 
         mToolbarHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
@@ -115,6 +126,52 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         frameLayoutParams = (LinearLayout.LayoutParams) mView.getLayoutParams();
 
         return mView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                return onBackPress();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CoreAPI.getApi().reloadWallets();
+
+        if (mPopped && mWebView != null) {
+            mView.addView(mWebView);
+        }
+
+        if (!TextUtils.isEmpty(mTitle)) {
+            setTitle(mTitle);
+        }
+        if (TextUtils.isEmpty(mUrl)) {
+            mUrl = mPlugin.sourceFile;
+            if (mUri != null) {
+                mUrl = mPlugin.sourceFile + "?" + mUri.getEncodedQuery();
+            }
+            mWebView.loadUrl(mUrl);
+        }
+        Log.d(TAG, "URL: " + mUrl);
+        if (mUri != null) {
+            Log.d(TAG, "URI: " + mUri.toString());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (null != mView) {
+            // Remove view to prevent retry crash onBackPressed
+            mView.removeView(mWebView);
+            mPopped = true;
+        }
     }
 
     private void resizeWebView() {
@@ -138,11 +195,11 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         return (r.bottom - r.top);
     }
 
-
     @Override
     public boolean onBackPress() {
         if (mNav.size() == 0) {
-            return false;
+            PluginFragment.popFragment(mActivity);
+            return true;
         }
         if (mSendConfirmation != null) {
             popFragment();
@@ -161,6 +218,11 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         });
     }
 
+    @Override
+    protected void setTitle(String title) {
+        mTitle = title;
+        super.setTitle(title);
+    }
 
     private UiHandler handler = new UiHandler() {
         public void showAlert(final String title, final String message) {
@@ -256,8 +318,22 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         }
     };
 
-    private void setTitle(String title) {
-        mTitleTextView.setVisibility(View.VISIBLE);
-        mTitleTextView.setText(title);
+    public static void pushFragment(NavigationActivity mActivity, Plugin plugin, Uri uri) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        Bundle bundle = new Bundle();
+        PluginFragment fragment = new PluginFragment(plugin);
+        fragment.setUri(uri);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment, transaction);
+    }
+
+    public static void popFragment(NavigationActivity mActivity) {
+        FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+
+        mActivity.popFragment(transaction);
+        mActivity.getFragmentManager().executePendingTransactions();
     }
 }
