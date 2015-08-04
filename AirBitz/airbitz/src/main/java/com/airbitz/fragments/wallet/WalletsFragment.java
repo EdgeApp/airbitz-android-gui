@@ -52,6 +52,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -178,10 +179,13 @@ public class WalletsFragment extends WalletBaseFragment implements
             }
         };
         mModeSelector = (Switch) mWalletsHeader.findViewById(R.id.fiat_btc_select);
+        mModeSelector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                toggleMode();
+            }
+        });
         mFiatSelect = (TextView) mWalletsHeader.findViewById(R.id.fiat);
         mBitcoinSelect = (TextView) mWalletsHeader.findViewById(R.id.bitcoin);
-
-        mModeSelector.setOnClickListener(modeListener);
         mFiatSelect.setOnClickListener(modeListener);
         mBitcoinSelect.setOnClickListener(modeListener);
         updateModeButtons();
