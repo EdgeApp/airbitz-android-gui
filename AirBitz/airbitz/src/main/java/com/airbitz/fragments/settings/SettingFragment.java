@@ -816,7 +816,7 @@ public class SettingFragment extends BaseFragment {
     }
 
     private void saveNFCPref(boolean state) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
         editor.putBoolean(NFC_PREF, state);
         editor.apply();
     }
