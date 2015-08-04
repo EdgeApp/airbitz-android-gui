@@ -890,6 +890,10 @@ public class RequestFragment extends WalletBaseFragment implements
     // start Advertise
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startAirbitzAdvertise(String data) {
+        if (data == null) {
+            return;
+        }
+
         BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter adapter = manager.getAdapter();
 
