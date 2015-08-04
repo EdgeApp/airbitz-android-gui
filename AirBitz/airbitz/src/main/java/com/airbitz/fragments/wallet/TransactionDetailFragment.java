@@ -292,8 +292,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
-        mCategorySpinner.setAdapter(mCategoryAdapter);
+        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mCategorySpinner.setAdapter(spinnerAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -710,7 +710,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             UpdateView(mTransaction);
         }
 
-        if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
+        if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
             Log.d(TAG, "Getting original categories");
             setupOriginalCategories();
         }
