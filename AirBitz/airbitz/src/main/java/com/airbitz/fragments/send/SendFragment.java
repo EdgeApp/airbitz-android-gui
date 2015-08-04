@@ -326,20 +326,11 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void updateWalletOtherList() {
-        if (null == mWallets) {
-            mTransferButton.setVisibility(View.GONE);
-            return;
-        }
         mOtherWalletsList.clear();
         for (Wallet wallet : mWallets) {
             if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
                 mOtherWalletsList.add(wallet);
             }
-        }
-        if (mOtherWalletsList.size() == 0) {
-            mTransferButton.setVisibility(View.GONE);
-        } else {
-            mTransferButton.setVisibility(View.VISIBLE);
         }
         mOtherWalletsAdapter.notifyDataSetChanged();
     }
@@ -590,6 +581,13 @@ public class SendFragment extends WalletBaseFragment implements
 
     private boolean showOtherWallets() {
         if (mOtherWalletsListView.getVisibility() == View.VISIBLE) {
+            return false;
+        }
+
+        if (mOtherWalletsList == null || 0 == mOtherWalletsList.size()) {
+            mActivity.ShowFadingDialog(
+                getString(R.string.fragment_send_create_wallet_to_transfer),
+                getResources().getInteger(R.integer.alert_hold_time_help_popups));
             return false;
         }
 
