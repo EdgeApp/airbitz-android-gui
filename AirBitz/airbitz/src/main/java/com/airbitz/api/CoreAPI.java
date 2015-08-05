@@ -1883,6 +1883,9 @@ public class CoreAPI {
                     String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM %1$Tp", now));
 
             details.setSzNotes(notes);
+            if (null == details.getSzCategory()) {
+                details.setSzCategory("");
+            }
 
             tABC_Error Error = new tABC_Error();
             // Update the Details
