@@ -283,6 +283,8 @@ public class TransactionListFragment extends WalletsFragment
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
 
+                    mResetState = false;
+                    mPreserveWallet = true;
                     mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
@@ -348,11 +350,6 @@ public class TransactionListFragment extends WalletsFragment
             startTransactionTask();
             return true;
         }
-        return false;
-    }
-
-    @Override
-    protected boolean getForceDefaultWallet() {
         return false;
     }
 

@@ -214,34 +214,34 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
-    protected boolean getForceDefaultWallet() {
-        return true;
+    protected void setDefaultWallet() {
+        String uuid = AirbitzApplication.getCurrentWallet();
+        setDefaultWallet(uuid);
     }
 
-    private void setDefaultWallet() {
-        if (mWallet == null || getForceDefaultWallet()) {
-            String uuid = AirbitzApplication.getCurrentWallet();
-            if (uuid == null) {
-                if (mWallets != null && mWallets.size() > 0) {
-                    uuid = mWallets.get(0).getUUID();
-                    AirbitzApplication.setCurrentWallet(uuid);
-                }
+    protected void setDefaultWallet(String uuid) {
+        if (uuid == null) {
+            if (mWallets != null && mWallets.size() > 0) {
+                uuid = mWallets.get(0).getUUID();
+                AirbitzApplication.setCurrentWallet(uuid);
             }
-            if (uuid != null && null != mWallets) {
-                for (Wallet w : mWallets) {
-                    if (!w.getUUID().equals(uuid)) {
-                        continue;
-                    }
-                    mWallet = w;
-                    break;
+        }
+        if (uuid != null && null != mWallets) {
+            for (Wallet w : mWallets) {
+                if (!w.getUUID().equals(uuid)) {
+                    continue;
                 }
+                mWallet = w;
+                break;
             }
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
-        if (mWallet != null && mWallet.isArchived()) {
+        if (mWallet != null
+                && mWallet.isArchived()
+                && mWallet.getUUID().equals(AirbitzApplication.getCurrentWallet())) {
             if (mWallets != null && mWallets.size() > 0) {
-                String uuid = mWallets.get(0).getUUID();
+                uuid = mWallets.get(0).getUUID();
                 AirbitzApplication.setCurrentWallet(uuid);
             }
         }

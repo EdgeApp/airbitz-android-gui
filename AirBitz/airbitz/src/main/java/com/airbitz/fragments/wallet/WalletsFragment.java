@@ -100,6 +100,8 @@ public class WalletsFragment extends WalletBaseFragment implements
     private Switch mModeSelector;
     private TextView mFiatSelect;
     private TextView mBitcoinSelect;
+    protected boolean mPreserveWallet = false;
+    protected boolean mResetState = true;
 
     @Override
     protected void setupWalletViews(View view) {
@@ -249,6 +251,14 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
     }
 
+    protected void setDefaultWallet() {
+        String uuid = AirbitzApplication.getCurrentWallet();
+        if (mWallet != null && mPreserveWallet) {
+            uuid = mWallet.getUUID();
+        }
+        setDefaultWallet(uuid);
+    }
+
     @Override
     protected void loadWallets() {
         updateWalletList(mArchiveClosed);
@@ -268,6 +278,8 @@ public class WalletsFragment extends WalletBaseFragment implements
         mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
 
         setupLatestWalletListView();
+
+        mResetState = true;
     }
 
     @Override
@@ -276,6 +288,9 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, mArchiveClosed).apply();
+        if (mResetState) {
+            mPreserveWallet = false;
+        }
     }
 
     @Override
