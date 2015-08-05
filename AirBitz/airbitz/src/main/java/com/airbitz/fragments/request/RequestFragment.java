@@ -161,7 +161,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private TextView mBitcoinAddress;
     private long mAmountSatoshi;
     private long mOriginalAmountSatoshi;
-    private String mID;
+    private String mId;
     private String mAddress;
     private String mContentURL;
     private String mRequestURI;
@@ -601,7 +601,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
         startActivity(Intent.createChooser(intent, "SMS"));
 
-        mCoreAPI.finalizeRequest(contact, "SMS", mID, mWallet);
+        mCoreAPI.finalizeRequest(contact, "SMS", mId, mWallet);
     }
 
     private void startEmail() {
@@ -633,7 +633,7 @@ public class RequestFragment extends WalletBaseFragment implements
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
         startActivity(Intent.createChooser(intent, "email"));
 
-        mCoreAPI.finalizeRequest(contact, "Email", mID, mWallet);
+        mCoreAPI.finalizeRequest(contact, "Email", mId, mWallet);
     }
 
     private void showNoQRAttached(final Contact contact) {
@@ -788,7 +788,6 @@ public class RequestFragment extends WalletBaseFragment implements
             mCreateBitmapTask.cancel(true);
         }
         // Create a new request and qr code
-        mID = null;
         mCreateBitmapTask = new CreateBitmapTask(mWallet, mAmountSatoshi);
         mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -817,6 +816,10 @@ public class RequestFragment extends WalletBaseFragment implements
 
         private Wallet wallet;
         private long satoshis;
+        private String requestId;
+        private String address;
+        private String uri;
+        private Bitmap qrBitmap;
 
         public CreateBitmapTask(Wallet wallet, long satoshis) {
             this.satoshis = satoshis;
@@ -830,30 +833,29 @@ public class RequestFragment extends WalletBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
-            if(mID == null) {
-                mID = mCoreAPI.createReceiveRequestFor(wallet, "", "", satoshis);
-                mAddress = mCoreAPI.getRequestAddress(wallet.getUUID(), mID);
-                mQRBitmap = null;
-            }
-            if (mQRBitmap == null) {
-                try {
-                    // data in barcode is like bitcoin:address?amount=0.001
-                    Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
-                    mQRBitmap = mCoreAPI.getQRCodeBitmap(wallet.getUUID(), mID);
-                    mQRBitmap = Common.AddWhiteBorder(mQRBitmap);
-                    Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
-                    mRequestURI = mCoreAPI.getRequestURI();
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            requestId = mCoreAPI.createReceiveRequestFor(wallet, "", "", satoshis);
+            address = mCoreAPI.getRequestAddress(wallet.getUUID(), requestId);
+            try {
+                // data in barcode is like bitcoin:address?amount=0.001
+                Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
+                qrBitmap = mCoreAPI.getQRCodeBitmap(wallet.getUUID(), requestId);
+                qrBitmap = Common.AddWhiteBorder(qrBitmap);
+                Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
+                uri = mCoreAPI.getRequestURI();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
-            if(isAdded()) {
+            mId = requestId;
+            mAddress = address;
+            mQRBitmap = qrBitmap;
+            mRequestURI = uri;
+            if (isAdded()) {
                 onCancelled();
                 if(success) {
                     checkNFC();
