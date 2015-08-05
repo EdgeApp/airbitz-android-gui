@@ -408,7 +408,6 @@ public class TransactionListFragment extends WalletsFragment
         mSendButton.setAlpha(alpha);
     }
 
-
     private void positionBalanceBar() {
         if (mOnBitcoinMode) {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
@@ -417,7 +416,9 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private void updateBalanceBar() {
+    @Override
+    protected void updateBalanceBar() {
+        super.updateBalanceBar();
         positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();

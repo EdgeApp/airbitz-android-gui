@@ -98,6 +98,8 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     private TextView mHeaderTotal;
     private Switch mModeSelector;
+    private CompoundButton.OnCheckedChangeListener mSwitchChange;
+    private View.OnClickListener mModeListener;
     private TextView mFiatSelect;
     private TextView mBitcoinSelect;
     protected boolean mPreserveWallet = false;
@@ -174,35 +176,41 @@ public class WalletsFragment extends WalletBaseFragment implements
         });
         mHeaderTotal = (TextView) mWalletsHeader.findViewById(R.id.total);
 
-        View.OnClickListener modeListener = new View.OnClickListener() {
+        mModeListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleMode();
             }
         };
-        mModeSelector = (Switch) mWalletsHeader.findViewById(R.id.fiat_btc_select);
-        mModeSelector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSwitchChange = new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 toggleMode();
             }
-        });
+        };
+
+        mModeSelector = (Switch) mWalletsHeader.findViewById(R.id.fiat_btc_select);
+        mModeSelector.setOnCheckedChangeListener(mSwitchChange);
         mFiatSelect = (TextView) mWalletsHeader.findViewById(R.id.fiat);
         mBitcoinSelect = (TextView) mWalletsHeader.findViewById(R.id.bitcoin);
-        mFiatSelect.setOnClickListener(modeListener);
-        mBitcoinSelect.setOnClickListener(modeListener);
-        updateModeButtons();
+        mFiatSelect.setOnClickListener(mModeListener);
+        mBitcoinSelect.setOnClickListener(mModeListener);
+        updateBalanceBar();
     }
 
     private void toggleMode() {
         mOnBitcoinMode = !mOnBitcoinMode;
-        updateModeButtons();
+        updateBalanceBar();
 
         updateWalletList(mArchiveClosed);
         mWalletAdapter.notifyDataSetChanged();
     }
 
-    private void updateModeButtons() {
-        mModeSelector.setChecked(mOnBitcoinMode);
+    protected void updateBalanceBar() {
+        if (mModeSelector != null) {
+            mModeSelector.setOnCheckedChangeListener(null);
+            mModeSelector.setChecked(mOnBitcoinMode);
+            mModeSelector.setOnCheckedChangeListener(mSwitchChange);
+        }
     }
 
     @Override
