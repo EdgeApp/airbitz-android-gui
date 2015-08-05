@@ -465,7 +465,12 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         mInPartialPayment = false;
-        checkFirstUsage();
+        mActivity.hideSoftKeyboard(mAmountField);
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                checkFirstUsage();
+            }
+        }, 1000);
     }
 
     @Override
