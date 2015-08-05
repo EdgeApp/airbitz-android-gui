@@ -175,6 +175,7 @@ public class ContactPickerFragment
                 Contact contact = (Contact) mSearchAdapter.getItem(i);
                 mContactName.setText(contact.getName());
 
+                mActivity.hideSoftKeyboard(mView);
                 if (mContactSelection != null) {
                     ContactPickerFragment.popFragment(mActivity);
                     mContactSelection.onContactSelection(contact);
