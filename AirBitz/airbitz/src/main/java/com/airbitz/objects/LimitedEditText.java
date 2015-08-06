@@ -32,6 +32,7 @@
 package com.airbitz.objects;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.AttributeSet;
@@ -68,6 +69,15 @@ public class LimitedEditText extends EditText {
     };
 
     private void init() {
-        this.setFilters(new InputFilter[]{mEditTextFilter});
+        int len = getFilters().length;
+        if (len > 0) {
+            InputFilter[] filters = new InputFilter[len + 1];
+            for (int i = 0; i < len; ++i) {
+                filters[i] = getFilters()[i];
+            }
+            filters[len] = mEditTextFilter;
+        } else {
+            this.setFilters(new InputFilter[]{mEditTextFilter});
+        }
     }
 }
