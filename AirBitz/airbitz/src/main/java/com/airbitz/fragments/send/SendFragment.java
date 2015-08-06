@@ -320,6 +320,7 @@ public class SendFragment extends WalletBaseFragment implements
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(NavigationActivity.URI_DATA))) {
             showProcessing();
         }
+        updateWalletOtherList();
     }
 
     @Override
@@ -336,6 +337,9 @@ public class SendFragment extends WalletBaseFragment implements
 
     public void updateWalletOtherList() {
         mOtherWalletsList.clear();
+        if (mWallets == null) {
+            return;
+        }
         for (Wallet wallet : mWallets) {
             if (mWallet != null && mWallet.getUUID() != null && !wallet.getUUID().equals(mWallet.getUUID())) {
                 mOtherWalletsList.add(wallet);
