@@ -54,6 +54,7 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -680,10 +681,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 mTransaction = mCoreApi.getTransaction(walletUUID, txId);
 
                 if (mTransaction != null) {
-                    if((mFromSend || mFromRequest) && !mTransaction.getCategory().contains(getString(R.string.fragment_category_transfer))) {
+                    if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.getCategory())) {
                         mTransaction.setCategory(currentType);
-                    }
-                    else {
+                    } else {
                         setCurrentType(mTransaction.getCategory());
                     }
                     // if there is a bizId, add it as the first one of the map
