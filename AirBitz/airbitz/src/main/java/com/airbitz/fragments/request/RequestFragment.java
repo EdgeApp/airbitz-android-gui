@@ -1141,6 +1141,13 @@ public class RequestFragment extends WalletBaseFragment implements
     private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
         public void onAnimationUpdate(ValueAnimator animation) {
             alignQrCode();
+            if (animation.getAnimatedFraction() == 1.0f) {
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        alignQrCode();
+                    }
+                }, 100);
+            }
         }
     };
 
