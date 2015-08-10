@@ -131,7 +131,6 @@ public class SendFragment extends WalletBaseFragment implements
     private RelativeLayout mBluetoothLayout;
     private BluetoothListView mBluetoothListView;
     private List<Wallet> mOtherWalletsList;//NAMES
-    private Wallet mFromWallet;
     private String mReturnURL;
     private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
@@ -260,25 +259,23 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
-        if (mFromWallet == null) {
+        hideProcessing();
+        if (mWallet == null) {
             return;
         }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
-        bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
+        bundle.putString(FROM_WALLET_UUID, mWallet.getUUID());
         fragment.setArguments(bundle);
         if (mActivity != null) {
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
         }
-        hideProcessing();
     }
 
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
-        mFromWallet = mWallet;
-
         updateWalletOtherList();
     }
 
@@ -511,7 +508,6 @@ public class SendFragment extends WalletBaseFragment implements
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-        mFromWallet = mWallet;
         Bundle bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(WalletsFragment.FROM_SOURCE, "").equals(NavigationActivity.URI_SOURCE)) {
