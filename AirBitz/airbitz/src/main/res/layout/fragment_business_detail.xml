@@ -177,6 +177,16 @@
                 android:text="@string/fragment_directory_detail_foursquare"
                 android:visibility="gone" />
 
+            <!-- Hack to add padding to NestedScrollView.
+                 Using arbitrary android:text to get correct view height -->
+            <Button
+                style="@style/CategoryItemDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/fragment_directory_detail_foursquare"
+                android:visibility="invisible" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
