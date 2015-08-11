@@ -41,7 +41,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -97,8 +96,6 @@ public class TransactionListFragment extends WalletsFragment
 
     private final String TAG = getClass().getSimpleName();
 
-    private MenuItem mSearchItem;
-    private SearchView mSearchView;
     private View mRequestButton;
     private View mSendButton;
     private ImageView mMoverCoin;
@@ -283,6 +280,8 @@ public class TransactionListFragment extends WalletsFragment
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
 
+                    mResetState = false;
+                    mPreserveWallet = true;
                     mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
@@ -318,6 +317,9 @@ public class TransactionListFragment extends WalletsFragment
 
     @Override
     protected void onSearchQuery(String query) {
+        if (mLoading) {
+            return;
+        }
         try {
             if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
                 mSearchTask.cancel(true);
@@ -344,15 +346,12 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     public boolean hideSearch() {
         if (super.hideSearch()) {
-            mTransactionAdapter.setSearch(false);
-            startTransactionTask();
+            if (!mLoading) {
+                mTransactionAdapter.setSearch(false);
+                startTransactionTask();
+            }
             return true;
         }
-        return false;
-    }
-
-    @Override
-    protected boolean getForceDefaultWallet() {
         return false;
     }
 
@@ -411,7 +410,6 @@ public class TransactionListFragment extends WalletsFragment
         mSendButton.setAlpha(alpha);
     }
 
-
     private void positionBalanceBar() {
         if (mOnBitcoinMode) {
             mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
@@ -420,7 +418,9 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private void updateBalanceBar() {
+    @Override
+    protected void updateBalanceBar() {
+        super.updateBalanceBar();
         positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();

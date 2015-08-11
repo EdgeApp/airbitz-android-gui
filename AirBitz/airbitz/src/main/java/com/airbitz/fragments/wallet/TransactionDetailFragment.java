@@ -54,6 +54,7 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -185,7 +186,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private TransactionDetailSearchAdapter mSearchAdapter;
     private TransactionDetailCategoryAdapter mCategoryAdapter;
     private Calculator mCalculator;
-    private Wallet mWallet;
     private Transaction mTransaction;
     private NearBusinessSearchAsyncTask mNearBusinessSearchAsyncTask = null;
     private OnlineBusinessSearchAsyncTask mOnlineBusinessSearchAsyncTask = null;
@@ -198,7 +198,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private Picasso mPicasso;
 
-    private CoreAPI mCoreAPI;
     private View mView;
     private NavigationActivity mActivity;
     private AlertDialog mMessageDialog;
@@ -207,8 +206,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (NavigationActivity) getActivity();
-        mCoreAPI = CoreAPI.getApi();
-
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setDropdownEnabled(false);
@@ -292,8 +289,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CategoryAdapter mCategoryAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
-        mCategorySpinner.setAdapter(mCategoryAdapter);
+        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mCategorySpinner.setAdapter(spinnerAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -602,7 +599,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCategories.clear();
         mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
-        List<String> catStrings = mCoreAPI.loadCategories();
+        List<String> catStrings = mCoreApi.loadCategories();
         for(String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
                 originalStrings.add(cat);
@@ -680,14 +677,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (walletUUID.isEmpty()) {
                 Log.d(TAG, "no detail info");
             } else {
-                mWallet = mCoreAPI.getWalletFromUUID(walletUUID);
-                mTransaction = mCoreAPI.getTransaction(walletUUID, txId);
+                mWallet = mCoreApi.getWalletFromUUID(walletUUID);
+                mTransaction = mCoreApi.getTransaction(walletUUID, txId);
 
                 if (mTransaction != null) {
-                    if((mFromSend || mFromRequest) && !mTransaction.getCategory().contains(getString(R.string.fragment_category_transfer))) {
+                    if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.getCategory())) {
                         mTransaction.setCategory(currentType);
-                    }
-                    else {
+                    } else {
                         setCurrentType(mTransaction.getCategory());
                     }
                     // if there is a bizId, add it as the first one of the map
@@ -710,7 +706,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             UpdateView(mTransaction);
         }
 
-        if(mOriginalCategories == null || mOriginalCategories.isEmpty()) {
+        if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
             Log.d(TAG, "Getting original categories");
             setupOriginalCategories();
         }
@@ -719,6 +715,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
         Log.d(TAG, "OnResume finished");
     }
 
+    @Override
+    protected void setDefaultWallet() {
+        Bundle bundle = getArguments();
+        String uuid = bundle.getString(Wallet.WALLET_UUID);
+        setDefaultWallet(uuid);
+        if (mWallet == null && uuid != null) {
+            mWallet = mCoreApi.getWalletFromUUID(uuid);
+        }
+        mLoading = false;
+    }
 
     private void goDone() {
         saveTransaction();
@@ -738,7 +744,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void done() {
         String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
-        mCoreAPI.addCategory(category);
+        mCoreApi.addCategory(category);
         mActivity.onBackPressed();
     }
 
@@ -941,7 +947,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String finalBaseUrl;
-            if (mCoreAPI.isTestNet()) {
+            if (mCoreApi.isTestNet()) {
                 finalBaseUrl = "https://www.biteasy.com/testnet/";
             } else { // LIVE
                 finalBaseUrl = "https://insight.bitpay.com/";
@@ -951,11 +957,11 @@ public class TransactionDetailFragment extends WalletBaseFragment
             int end;
             for (CoreAPI.TxOutput output : mTransaction.getOutputs()) {
                 start = 0;
-                SpannableString val = new SpannableString(mCoreAPI.formatSatoshi(output.getmValue()));
+                SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
                 final String txUrl;
-                if (mCoreAPI.isTestNet()) {
+                if (mCoreApi.isTestNet()) {
                     txUrl = finalBaseUrl + "addresses/" + output.getAddress();
                 } else {
                     txUrl = finalBaseUrl + "address/" + output.getAddress();
@@ -999,7 +1005,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append(mTransaction.getmMalleableID());
             end = s.length();
             final String txIdLink;
-            if(mCoreAPI.isTestNet()) {
+            if(mCoreApi.isTestNet()) {
                 txIdLink = finalBaseUrl + "transactions/" + mTransaction.getmMalleableID();
             } else {
                 txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
@@ -1021,7 +1027,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
-            s.append(mCoreAPI.formatSatoshi(netSum))
+            s.append(mCoreApi.formatSatoshi(netSum))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -1051,7 +1057,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(mCoreAPI.formatSatoshi(feesSatoshi, true))
+            s.append(mCoreApi.formatSatoshi(feesSatoshi, true))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1090,28 +1096,28 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String feeFormatted;
         if (transaction.getAmountSatoshi() < 0) {
             coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
-            feeFormatted = "+" + mCoreAPI.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
+            feeFormatted = "+" + mCoreApi.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
         } else {
             coinValue = transaction.getAmountSatoshi();
             feeFormatted = "";
         }
 
-        mBitcoinValueTextview.setText(mCoreAPI.formatSatoshi(coinValue, false));
+        mBitcoinValueTextview.setText(mCoreApi.formatSatoshi(coinValue, false));
 
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.getAmountFiat() == 0.0) {
-            currencyValue = mCoreAPI.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
+            currencyValue = mCoreApi.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
                     false, false);
         } else {
-            currencyValue = mCoreAPI.formatCurrency(transaction.getAmountFiat(),
+            currencyValue = mCoreApi.formatCurrency(transaction.getAmountFiat(),
                     mWallet.getCurrencyNum(), false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(mCoreAPI.currencyCodeLookup(mWallet.getCurrencyNum()));
+        mFiatDenominationLabel.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
 
-        mBitcoinSignTextview.setText(mCoreAPI.getDefaultBTCDenomination());
+        mBitcoinSignTextview.setText(mCoreApi.getDefaultBTCDenomination());
 
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
@@ -1168,7 +1174,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     public void onNewCategory(String categoryName) {
         if (!categoryName.substring(categoryName.indexOf(':') + 1).trim().isEmpty()) {
             mCategories.add(new Category(categoryName, ""));
-            mCoreAPI.addCategory(categoryName);
+            mCoreApi.addCategory(categoryName);
         }
 
         setCategoryText(categoryName);
@@ -1321,7 +1327,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             }
             transaction.setAmountFiat(amountFiat);
             transaction.setmBizId(Bizid);
-            return mCoreAPI.storeTransaction(mTransaction);
+            return mCoreApi.storeTransaction(mTransaction);
         }
 
         @Override
@@ -1509,7 +1515,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return mCoreAPI.needsRecoveryReminder(mWallet);
+            return mCoreApi.needsRecoveryReminder(mWallet);
         }
 
         @Override
@@ -1520,7 +1526,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mReminderTask = null;
             if (mFromRequest && needsReminder && !mHasReminded) {
                 mHasReminded = true;
-                mCoreAPI.incRecoveryReminder();
+                mCoreApi.incRecoveryReminder();
                 ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                         getString(R.string.transaction_details_recovery_reminder_message));
             } else {

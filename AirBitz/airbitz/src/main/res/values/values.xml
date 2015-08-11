@@ -4,4 +4,5 @@
     <integer name="alert_hold_time_help_popups">6000</integer>
     <integer name="alert_hold_time_forever">999999</integer>
     <integer name="alert_fadeout_time_default">2000</integer>
+    <integer name="wallet_max_name_length">50</integer>
 </resources>

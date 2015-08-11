@@ -350,15 +350,14 @@ Java_com_airbitz_api_CoreAPI_get64BitLongAtPtr(JNIEnv *env, jobject obj, jlong p
 {
     char *base = *(char **) &ptr;
     int i=0;
-    char value=0;
     long long result = 0;
-//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_Get64BitLongAtPtr", "ptr=%p", (void *) base);
+    // __android_log_print(ANDROID_LOG_INFO, "ABC_android_util_Get64BitLongAtPtr", "ptr=%p", (void *) base);
     for(i=0; i<8; i++) {
-        long long value = base[i];
-//        __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%llx", value);
+        long long value = base[i] & 0xff;
+        // __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "value=%llx", value);
         result |= ( value << (i*8) );
     }
-//    __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx", result);
+    // __android_log_print(ANDROID_LOG_INFO, "ABC_android_util", "result=%llx, actual=%lld", result, result);
     return (jlong) result;
 }
 

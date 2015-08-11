@@ -14,6 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:singleLine="true"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:maxLength="@integer/wallet_max_name_length"
         android:hint="@string/fragment_wallets_addwallet_name_hint"
         android:imeOptions="actionDone" />
 

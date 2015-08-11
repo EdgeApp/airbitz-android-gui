@@ -32,9 +32,9 @@
 package com.airbitz.fragments.send;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -53,6 +53,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -130,7 +131,6 @@ public class SendFragment extends WalletBaseFragment implements
     private RelativeLayout mBluetoothLayout;
     private BluetoothListView mBluetoothListView;
     private List<Wallet> mOtherWalletsList;//NAMES
-    private Wallet mFromWallet;
     private String mReturnURL;
     private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
@@ -259,22 +259,23 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
-        if (mFromWallet == null) {
+        hideProcessing();
+        if (mWallet == null) {
             return;
         }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
-        bundle.putString(FROM_WALLET_UUID, mFromWallet.getUUID());
+        bundle.putString(FROM_WALLET_UUID, mWallet.getUUID());
         fragment.setArguments(bundle);
-        if (mActivity != null)
+        if (mActivity != null) {
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
+        }
     }
 
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
-
         updateWalletOtherList();
     }
 
@@ -311,6 +312,12 @@ public class SendFragment extends WalletBaseFragment implements
 
         checkFirstBLEUsage();
         startBluetoothSearch();
+
+        Bundle bundle = getArguments();
+        if (bundle != null && !TextUtils.isEmpty(bundle.getString(NavigationActivity.URI_DATA))) {
+            showProcessing();
+        }
+        updateWalletOtherList();
     }
 
     @Override
@@ -326,20 +333,14 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     public void updateWalletOtherList() {
-        if (null == mWallets) {
-            mTransferButton.setVisibility(View.GONE);
+        mOtherWalletsList.clear();
+        if (mWallets == null) {
             return;
         }
-        mOtherWalletsList.clear();
         for (Wallet wallet : mWallets) {
-            if (mFromWallet != null && mFromWallet.getUUID() != null && !wallet.getUUID().equals(mFromWallet.getUUID())) {
+            if (mWallet != null && mWallet.getUUID() != null && !wallet.getUUID().equals(mWallet.getUUID())) {
                 mOtherWalletsList.add(wallet);
             }
-        }
-        if (mOtherWalletsList.size() == 0) {
-            mTransferButton.setVisibility(View.GONE);
-        } else {
-            mTransferButton.setVisibility(View.VISIBLE);
         }
         mOtherWalletsAdapter.notifyDataSetChanged();
     }
@@ -349,7 +350,7 @@ public class SendFragment extends WalletBaseFragment implements
         super.onPause();
         stopCamera();
         stopBluetoothSearch();
-        if(mBluetoothListView != null) {
+        if (mBluetoothListView != null) {
             mBluetoothListView.close();
         }
         hasCheckedFirstUsage = false;
@@ -449,11 +450,15 @@ public class SendFragment extends WalletBaseFragment implements
         showDialog(msg);
     }
 
-    private void showDialog(String message) {
+    private void hideProcessing() {
         if (null != mDialog) {
             mDialog.dismiss();
             mDialog = null;
         }
+    }
+
+    private void showDialog(String message) {
+        hideProcessing();
         MaterialDialog.Builder builder =
             new MaterialDialog.Builder(mActivity)
                     .content(message)
@@ -478,9 +483,7 @@ public class SendFragment extends WalletBaseFragment implements
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (mDialog != null) {
-                    mDialog.dismiss();
-                }
+                hideProcessing();
                 String title =
                     mActivity.getString(R.string.bluetoothlistview_address_mismatch_title);
                 String message = String.format(getResources().getString(
@@ -505,7 +508,6 @@ public class SendFragment extends WalletBaseFragment implements
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-        mFromWallet = mWallet;
         Bundle bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(WalletsFragment.FROM_SOURCE, "").equals(NavigationActivity.URI_SOURCE)) {
@@ -544,10 +546,7 @@ public class SendFragment extends WalletBaseFragment implements
                 showMessageAndStartCameraDialog(
                     R.string.fragment_send_failure_title,
                     R.string.fragment_send_confirmation_invalid_bitcoin_address);
-            }
-            if (null != mDialog) {
-                mDialog.dismiss();
-                mDialog = null;
+                hideProcessing();
             }
         }
 
@@ -590,6 +589,13 @@ public class SendFragment extends WalletBaseFragment implements
 
     private boolean showOtherWallets() {
         if (mOtherWalletsListView.getVisibility() == View.VISIBLE) {
+            return false;
+        }
+
+        if (mOtherWalletsList == null || 0 == mOtherWalletsList.size()) {
+            mActivity.ShowFadingDialog(
+                getString(R.string.fragment_send_create_wallet_to_transfer),
+                getResources().getInteger(R.integer.alert_hold_time_help_popups));
             return false;
         }
 
