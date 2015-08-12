@@ -366,7 +366,7 @@ public class RequestFragment extends WalletBaseFragment implements
             // ignore
         }
 
-        mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, r.getDisplayMetrics());
+        mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
         return mView;
     }
 
@@ -1127,15 +1127,17 @@ public class RequestFragment extends WalletBaseFragment implements
         mQRView.getLocationOnScreen(mQrCoords);
         mCalculator.getLocationOnScreen(mCalcCoords);
 
-        float qrY = mQrCoords[1] + mQRView.getHeight();
+        float qrY = mQrCoords[1];//  + mQRView.getHeight();
         float calcY = mCalcCoords[1];
-        float diff = (qrY + mQrPadding) - calcY;
-        int newHeight = mQRView.getHeight() - (int) (diff / 2.0);
+        float diff = calcY - qrY;
+        int newHeight = (int) (diff - mQrPadding);
         if (newHeight > mOrigQrHeight) {
-            return;
+            newHeight = (int) mOrigQrHeight;
         }
-        mQRView.getLayoutParams().height = newHeight;
-        mQRView.requestLayout();
+        if (mQRView.getHeight() != newHeight) {
+            mQRView.getLayoutParams().height = newHeight;
+            mQRView.requestLayout();
+        }
     }
 
     private ValueAnimator.AnimatorUpdateListener mUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
@@ -1144,6 +1146,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (animation.getAnimatedFraction() == 1.0f) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
+                        Log.d(TAG, "Last");
                         alignQrCode();
                     }
                 }, 100);

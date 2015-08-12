@@ -39,6 +39,7 @@ import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -359,7 +360,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
-        if(mPasswordEditText.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(mPasswordEditText.getText())
+                && TextUtils.isEmpty(mPasswordConfirmationEditText.getText())) {
             return true;
         }
         boolean bNewPasswordFieldsAreValid = true;
