@@ -360,19 +360,26 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // returns YES if new mPassword fields are good, NO if the new mPassword fields failed the checks
     // if the new mPassword fields are bad, an appropriate message box is displayed
     private boolean newPasswordFieldsAreValid() {
-        if (TextUtils.isEmpty(mPasswordEditText.getText())
-                && TextUtils.isEmpty(mPasswordConfirmationEditText.getText())) {
-            return true;
+        if (TextUtils.isEmpty(mPasswordEditText.getText())) {
+            if (TextUtils.isEmpty(mPasswordConfirmationEditText.getText())) {
+                return true;
+            } else {
+                String title = getResources().getString(R.string.activity_signup_failed);
+                String message = getResources().getString(R.string.activity_signup_passwords_dont_match);
+                mActivity.ShowOkMessageDialog(title, message);
+                return false;
+            }
         }
         boolean bNewPasswordFieldsAreValid = true;
             List<String> fails = checkPasswordRules(mPasswordEditText.getText().toString());
             if (!fails.isEmpty()) {
                 bNewPasswordFieldsAreValid = false;
+                String title = getResources().getString(R.string.activity_signup_insufficient_password);
                 String message = getResources().getString(R.string.activity_signup_password_fails);
                 for(String fail : fails) {
                     message += "\n" + fail + ".";
                 }
-                mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_password), message);
+                mActivity.ShowOkMessageDialog(title, message);
             } else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString())) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
