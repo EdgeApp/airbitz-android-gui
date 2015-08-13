@@ -172,12 +172,12 @@ public class ContactPickerFragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 mActivity.hideSoftKeyboard(mContactName);
-                Contact contact = (Contact) mSearchAdapter.getItem(i);
-                mContactName.setText(contact.getName());
 
-                mActivity.hideSoftKeyboard(mView);
+                Contact contact = (Contact) mSearchAdapter.getItem(i);
+                // XXX: causes weird Illegal exceptions
+                // mContactName.setText(contact.getName());
+                ContactPickerFragment.popFragment(mActivity);
                 if (mContactSelection != null) {
-                    ContactPickerFragment.popFragment(mActivity);
                     mContactSelection.onContactSelection(contact);
                 }
             }
