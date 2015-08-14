@@ -335,6 +335,22 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_PluginDataClear(szUserName, szPassword, szPlugin, tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_GetWalletUUIDs(String szUserName, String szPassword, SWIGTYPE_p_p_p_char paWalletUUID, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_GetWalletUUIDs(szUserName, szPassword, SWIGTYPE_p_p_p_char.getCPtr(paWalletUUID), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_SetWalletOrder(String szUserName, String szPassword, String szUUIDs, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SetWalletOrder(szUserName, szPassword, szUUIDs, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WalletArchived(String szUserName, String szWalletUUID, SWIGTYPE_p_bool pResult, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WalletArchived(szUserName, szWalletUUID, SWIGTYPE_p_bool.getCPtr(pResult), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_SetWalletArchived(String szUserName, String szPassword, String szUUID, long archived, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_SetWalletArchived(szUserName, szPassword, szUUID, archived, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_RequestExchangeRateUpdate(String szUserName, String szPassword, int currencyNum, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_RequestExchangeRateUpdate(szUserName, szPassword, currencyNum, tABC_Error.getCPtr(pError), pError));
   }
@@ -347,14 +363,6 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CurrencyToSatoshi(szUserName, szPassword, currency, currencyNum, SWIGTYPE_p_int64_t.getCPtr(pSatoshi), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_CreateWallet(String szUserName, String szPassword, String szWalletName, int currencyNum, SWIGTYPE_p_p_char pszUuid, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_CreateWallet(szUserName, szPassword, szWalletName, currencyNum, SWIGTYPE_p_p_char.getCPtr(pszUuid), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_GetWalletUUIDs(String szUserName, String szPassword, SWIGTYPE_p_p_p_char paWalletUUID, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetWalletUUIDs(szUserName, szPassword, SWIGTYPE_p_p_p_char.getCPtr(paWalletUUID), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
-  }
-
   public static tABC_CC ABC_GetWallets(String szUserName, String szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetWallets(szUserName, szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo.getCPtr(paWalletInfo), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
   }
@@ -363,24 +371,36 @@ public class core implements coreConstants {
     coreJNI.ABC_FreeWalletInfoArray(SWIGTYPE_p_p_sABC_WalletInfo.getCPtr(aWalletInfo), nCount);
   }
 
-  public static tABC_CC ABC_SetWalletOrder(String szUserName, String szPassword, String szUUIDs, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SetWalletOrder(szUserName, szPassword, szUUIDs, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_RenameWallet(String szUserName, String szPassword, String szUUID, String szNewWalletName, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_RenameWallet(szUserName, szPassword, szUUID, szNewWalletName, tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static tABC_CC ABC_SetWalletArchived(String szUserName, String szPassword, String szUUID, long archived, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_SetWalletArchived(szUserName, szPassword, szUUID, archived, tABC_Error.getCPtr(pError), pError));
-  }
-
   public static tABC_CC ABC_GetWalletInfo(String szUserName, String szPassword, String szUUID, SWIGTYPE_p_p_sABC_WalletInfo ppWalletInfo, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetWalletInfo(szUserName, szPassword, szUUID, SWIGTYPE_p_p_sABC_WalletInfo.getCPtr(ppWalletInfo), tABC_Error.getCPtr(pError), pError));
   }
 
   public static void ABC_FreeWalletInfo(tABC_WalletInfo pWalletInfo) {
     coreJNI.ABC_FreeWalletInfo(tABC_WalletInfo.getCPtr(pWalletInfo), pWalletInfo);
+  }
+
+  public static tABC_CC ABC_CreateWallet(String szUserName, String szPassword, String szWalletName, int currencyNum, SWIGTYPE_p_p_char pszUuid, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_CreateWallet(szUserName, szPassword, szWalletName, currencyNum, SWIGTYPE_p_p_char.getCPtr(pszUuid), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WalletLoad(String szUserName, String szWalletUUID, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WalletLoad(szUserName, szWalletUUID, tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WalletName(String szUserName, String szWalletUUID, SWIGTYPE_p_p_char pszResult, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WalletName(szUserName, szWalletUUID, SWIGTYPE_p_p_char.getCPtr(pszResult), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WalletCurrency(String szUserName, String szWalletUUID, SWIGTYPE_p_int pResult, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WalletCurrency(szUserName, szWalletUUID, SWIGTYPE_p_int.getCPtr(pResult), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_WalletBalance(String szUserName, String szWalletUUID, SWIGTYPE_p_int64_t pResult, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WalletBalance(szUserName, szWalletUUID, SWIGTYPE_p_int64_t.getCPtr(pResult), tABC_Error.getCPtr(pError), pError));
+  }
+
+  public static tABC_CC ABC_RenameWallet(String szUserName, String szPassword, String szUUID, String szNewWalletName, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_RenameWallet(szUserName, szPassword, szUUID, szNewWalletName, tABC_Error.getCPtr(pError), pError));
   }
 
   public static tABC_CC ABC_ExportWalletSeed(String szUserName, String szPassword, String szUUID, SWIGTYPE_p_p_char pszWalletSeed, tABC_Error pError) {
