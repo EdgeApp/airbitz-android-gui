@@ -32,11 +32,13 @@
 package com.airbitz.plugins;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.airbitz.R;
 import com.airbitz.models.Wallet;
@@ -421,11 +423,32 @@ public class PluginFramework {
         });
     }
 
-    public void buildPluginView(Plugin plugin, WebView webView) {
+    public void buildPluginView(final Plugin plugin, WebView webView) {
         mWebView = webView;
         mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 Log.d(TAG, message + " -- From line " + lineNumber);
+            }
+        });
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains("airbitz://")) {
+                    Uri uri = Uri.parse(url);
+                    // If this is an airbitz URI plugin
+                    if ("airbitz".equals(uri.getScheme()) && "plugin".equals(uri.getHost())) {
+                        url = plugin.sourceFile + "?" + uri.getEncodedQuery();
+                        view.loadUrl(url);
+                        return true;
+                    }
+                    return false;
+
+                } else {
+                    Log.d(TAG, url);
+                    view.loadUrl(url);
+                }
+                return true;
             }
         });
         mWebView.getSettings().setJavaScriptEnabled(true);
