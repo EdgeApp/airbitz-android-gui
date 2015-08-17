@@ -183,8 +183,13 @@ public class TransactionListFragment extends WalletsFragment
         mSwipeLayout.setOnRefreshListener(this);
 
         mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions);
-        mTransactionAdapter.setLoading(true);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+        if (mWallet != null) {
+            mTransactionAdapter.setWallet(mWallet);
+            mTransactionAdapter.setLoading(false);
+        } else {
+            mTransactionAdapter.setLoading(true);
+        }
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mListHeaderView == null) {
             mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_header, null, false);
