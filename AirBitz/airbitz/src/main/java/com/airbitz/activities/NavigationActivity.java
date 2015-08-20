@@ -291,7 +291,6 @@ public class NavigationActivity extends ActionBarActivity
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mActionMenu.close(true);
             }
@@ -299,7 +298,6 @@ public class NavigationActivity extends ActionBarActivity
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mActionMenu.close(true);
             }
@@ -307,7 +305,6 @@ public class NavigationActivity extends ActionBarActivity
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
                 mActionMenu.close(true);
             }
@@ -509,6 +506,7 @@ public class NavigationActivity extends ActionBarActivity
                 DisplayLoginOverlay(true, true);
             }
         }
+        resetDrawerButtons();
     }
 
     public void switchFragmentThread(int id) {
@@ -560,10 +558,13 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[mNavThreadId].push(fragment);
         transaction.replace(R.id.activityLayout, fragment);
         transaction.commitAllowingStateLoss();
+
+        resetDrawerButtons();
     }
 
     public void pushFragment(Fragment fragment) {
         pushFragment(fragment, mNavThreadId);
+        resetDrawerButtons();
     }
 
     public void pushFragment(Fragment fragment, int threadID) {
@@ -582,6 +583,7 @@ public class NavigationActivity extends ActionBarActivity
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
         }
+        resetDrawerButtons();
     }
 
     public void pushFragmentNoAnimation(Fragment fragment, int threadID) {
@@ -594,6 +596,7 @@ public class NavigationActivity extends ActionBarActivity
             transaction.commitAllowingStateLoss();
         }
         getFragmentManager().executePendingTransactions();
+        resetDrawerButtons();
     }
 
     public void popFragment(FragmentTransaction transaction) {
@@ -698,7 +701,11 @@ public class NavigationActivity extends ActionBarActivity
         showModalProgress(false);
 
         if (isAtNavStackEntry()) {
-            ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+            if (AirbitzApplication.isLoggedIn() && Tabs.WALLET.ordinal() != mNavThreadId) {
+                onNavBarSelected(Tabs.WALLET.ordinal());
+            } else {
+                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+            }
         } else {
             popFragment();
         }
@@ -904,7 +911,6 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin-ret or x-callback-url Uri's coming from OS
      */
     private void handleRequestForPaymentUri(Uri uri) {
-        resetDrawerButtons(mDrawerRequest);
         AddressRequestFragment fragment = new AddressRequestFragment();
         fragment.setOnAddressRequestListener(this);
         Bundle bundle = new Bundle();
@@ -941,7 +947,6 @@ public class NavigationActivity extends ActionBarActivity
     private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-        resetDrawerButtons(mDrawerSend);
 
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
@@ -1227,7 +1232,7 @@ public class NavigationActivity extends ActionBarActivity
         }
 
         updateDrawer(true);
-        resetDrawerButtons(mDrawerTxs);
+        resetDrawerButtons();
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1946,8 +1951,6 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[Tabs.MORE.ordinal()].clear();
         mNavStacks[Tabs.MORE.ordinal()].add(frag);
         switchFragmentThread(Tabs.MORE.ordinal());
-
-        resetDrawerButtons(mDrawerSettings);
     }
 
     private void checkDailyLimitPref() {
@@ -2080,7 +2083,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerDirectory);
                 onNavBarSelected(Tabs.BD.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2090,7 +2092,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2100,7 +2101,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2110,7 +2110,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerTxs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2122,7 +2121,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerBuySell);
                 if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
                     pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
@@ -2136,10 +2134,9 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerImport);
-                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-                onNavBarSelected(Tabs.MORE.ordinal());
-                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
+                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
+                onNavBarSelected(Tabs.REQUEST.ordinal());
+                pushFragmentNoAnimation(new ImportFragment(), Tabs.REQUEST.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2148,7 +2145,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(null);
                 mDrawer.closeDrawer(mDrawerView);
                 Logout();
             }
@@ -2159,7 +2155,6 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onClick(View v) {
                 int tmp = mNavThreadId;
-                resetDrawerButtons(mDrawerSettings);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
                 if (Tabs.MORE.ordinal() == tmp) {
@@ -2224,6 +2219,30 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onDrawerStateChanged(int newState) {}
         });
+    }
+
+    private void resetDrawerButtons() {
+        Fragment frag = mNavStacks[mNavThreadId].peek();
+        if (frag instanceof ImportFragment) {
+            resetDrawerButtons(mDrawerImport);
+            return;
+        }
+        if (frag instanceof BuySellFragment) {
+            resetDrawerButtons(mDrawerBuySell);
+            return;
+        }
+
+        if (mNavThreadId == Tabs.BD.ordinal()) {
+            resetDrawerButtons(mDrawerDirectory);
+        } else if (mNavThreadId == Tabs.WALLET.ordinal()) {
+            resetDrawerButtons(mDrawerTxs);
+        } else if (mNavThreadId == Tabs.SEND.ordinal()) {
+            resetDrawerButtons(mDrawerSend);
+        } else if (mNavThreadId == Tabs.REQUEST.ordinal()) {
+            resetDrawerButtons(mDrawerRequest);
+        } else if (mNavThreadId == Tabs.MORE.ordinal()) {
+            resetDrawerButtons(mDrawerSettings);
+        }
     }
 
     private void resetDrawerButtons(Button button) {
