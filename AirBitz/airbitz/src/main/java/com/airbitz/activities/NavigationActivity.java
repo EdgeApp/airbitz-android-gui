@@ -1140,8 +1140,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void gotoImportNow(Uri uri) {
-        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-        switchFragmentThread(Tabs.REQUEST.ordinal());
+        resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+        switchFragmentThread(Tabs.MORE.ordinal());
         Fragment fragment = new ImportFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ImportFragment.URI, uri.toString());
@@ -2141,9 +2141,9 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-                onNavBarSelected(Tabs.REQUEST.ordinal());
-                pushFragmentNoAnimation(new ImportFragment(), Tabs.REQUEST.ordinal());
+                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.MORE.ordinal());
+                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
