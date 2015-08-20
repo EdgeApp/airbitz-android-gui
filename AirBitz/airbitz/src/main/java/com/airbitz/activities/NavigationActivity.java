@@ -510,6 +510,10 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void switchFragmentThread(int id) {
+        switchFragmentThread(id, true);
+    }
+
+    public void switchFragmentThread(int id, boolean animation) {
         if (mActionButton.getVisibility() != View.VISIBLE) {
             showNavBar();
         }
@@ -529,6 +533,9 @@ public class NavigationActivity extends ActionBarActivity
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
+            if (animation) {
+                transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+            }
             transaction.replace(R.id.activityLayout, frag);
             Log.d(TAG, "switchFragmentThread replace executed.");
         }
@@ -1206,7 +1213,7 @@ public class NavigationActivity extends ActionBarActivity
             resetFragmentThreadToBaseFragment(mNavThreadId);
             AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
             resetFragmentThreadToBaseFragment(Tabs.WALLET.ordinal());
-            switchFragmentThread(Tabs.WALLET.ordinal());
+            switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
