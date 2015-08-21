@@ -512,15 +512,28 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private void checkFirstUsage() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
-        if(count <= 2) {
-            count++;
-            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(FIRST_USAGE_COUNT, count);
-            editor.apply();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+                if(count <= 2) {
+                    count++;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt(FIRST_USAGE_COUNT, count);
+                    editor.apply();
+
+                    notifyFirstUsage();
+                }
+            }
+        }).start();
+    }
+
+    private void notifyFirstUsage() {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+        });
     }
 
     private void checkNFC() {

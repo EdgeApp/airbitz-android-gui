@@ -34,6 +34,7 @@ package com.airbitz.fragments.wallet;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -214,6 +215,14 @@ public class WalletsFragment extends WalletBaseFragment implements
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (isMenuExpanded()) {
             inflater.inflate(R.menu.menu_wallets, menu);
@@ -276,15 +285,19 @@ public class WalletsFragment extends WalletBaseFragment implements
     @Override
     public void OnHeaderButtonPressed() {
         mArchiveClosed = !mArchiveClosed;
+        final boolean archivedClosed = mArchiveClosed;
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, archivedClosed).apply();
+            }
+        });
         updateWalletList(mArchiveClosed);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
-
         setupLatestWalletListView();
 
         mResetState = true;
@@ -293,9 +306,6 @@ public class WalletsFragment extends WalletBaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
-
-        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, mArchiveClosed).apply();
         if (mResetState) {
             mPreserveWallet = false;
         }
