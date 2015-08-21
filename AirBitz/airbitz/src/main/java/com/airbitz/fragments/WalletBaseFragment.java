@@ -246,7 +246,7 @@ public class WalletBaseFragment extends BaseFragment implements
             }
         }
         if (mWallet != null) {
-            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
+            mLoading = mWallet.isLoading();
         }
     }
 

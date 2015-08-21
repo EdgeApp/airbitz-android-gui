@@ -377,9 +377,6 @@ public class TransactionListFragment extends WalletsFragment
         mTransactionAdapter.setWallet(mWallet);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
 
-        mRequestButton.setClickable(false);
-        mSendButton.setClickable(false);
-
         mTransactionTask = new TransactionTask();
         mTransactionTask.execute(mWallet);
     }
@@ -443,7 +440,7 @@ public class TransactionListFragment extends WalletsFragment
 
     // Sum all transactions and show in total
     private void updateBalances() {
-        if (mWallet != null) {
+        if (mWallet != null && !mWallet.isLoading()) {
             long totalSatoshis = mWallet.getBalanceSatoshi();
 
             mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
@@ -494,6 +491,7 @@ public class TransactionListFragment extends WalletsFragment
         super.onExchangeRatesChange();
         if (!mLoading) {
             updateBalances();
+            updateSendRequestButtons();
         }
     }
 
@@ -501,6 +499,8 @@ public class TransactionListFragment extends WalletsFragment
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
         if (mWallet != null) {
+            updateBalances();
+            updateSendRequestButtons();
             startTransactionTask();
         }
     }
@@ -508,6 +508,8 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
+        updateBalances();
+        updateSendRequestButtons();
         startTransactionTask();
     }
 
