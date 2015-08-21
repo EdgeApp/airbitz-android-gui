@@ -1896,8 +1896,8 @@ public class NavigationActivity extends ActionBarActivity
                 String title = mNotificationMap.get(i).mTitle;
                 String message = mNotificationMap.get(i).mMessage;
 
-                s.append(title).append("\n");
-                s.append(message).append("\n\n");
+                s.append("<div style=\"font-weight: bold; text-align: center\">").append(title).append("</div><br />");
+                s.append("<div>").append(message).append("</div><br /><br />");
             }
 
             final int saveInt = max;
@@ -1907,9 +1907,11 @@ public class NavigationActivity extends ActionBarActivity
             mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
             mAlertNotificationDialog.setCancelable(false);
+
             WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
             wv.setVisibility(View.VISIBLE);
             wv.loadData(s.toString(), "text/html; charset=UTF-8", null);
+
             Button ok = (Button) mAlertNotificationDialog.findViewById(R.id.dialog_notification_ok_button);
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
