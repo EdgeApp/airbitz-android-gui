@@ -200,14 +200,12 @@ public class TransactionListFragment extends WalletsFragment
         mSendButton = mListHeaderView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = mListHeaderView.findViewById(R.id.fragment_wallet_request_button);
 
-        Typeface typefaceWithCustomB = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
-
         mBitCoinBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_top);
-        mBitCoinBalanceButton.setTypeface(typefaceWithCustomB);
+        mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_bottom);
-        mFiatBalanceButton.setTypeface(typefaceWithCustomB);
+        mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonMover = (Button) mListHeaderView.findViewById(R.id.button_mover);
-        mButtonMover.setTypeface(typefaceWithCustomB);
+        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
         mBalanceSwitchLayout = (RelativeLayout) mListHeaderView.findViewById(R.id.switchable);
         mSwitchView = (RelativeLayout) mListHeaderView.findViewById(R.id.layout_balance);
         mMoverCoin = (ImageView) mListHeaderView.findViewById(R.id.button_mover_coin);
@@ -543,7 +541,6 @@ public class TransactionListFragment extends WalletsFragment
             }
             mAllTransactions = transactions;
             updateTransactionsListView(transactions);
-
             mTransactionTask = null;
         }
 
