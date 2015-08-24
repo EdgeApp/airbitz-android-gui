@@ -271,7 +271,11 @@ public class CoreAPI {
         mOnIncomingBitcoin = listener;
     }
     final Runnable IncomingBitcoinUpdater = new Runnable() {
-        public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID); }
+        public void run() {
+            if (null != mOnIncomingBitcoin) {
+                mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID);
+            }
+        }
     };
 
     // Callback interface when a block height change is received

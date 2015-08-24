@@ -1160,7 +1160,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
 //            Log.d(TAG, "Searching for "+type);
             addMatchesForPrefix(type, match);
         }
-        mCategoryAdapter.notifyDataSetChanged();
+        if (null != mCategoryAdapter) {
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
