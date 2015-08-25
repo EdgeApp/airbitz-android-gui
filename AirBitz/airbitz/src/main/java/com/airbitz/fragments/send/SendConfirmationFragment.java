@@ -200,6 +200,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         mAutoUpdatingTextFields = true;
         setHomeEnabled(true);
+        if (null != mSpendTarget && mSpendTarget.isTransfer()) {
+            setDropdownEnabled(false);
+        }
     }
 
     @Override

@@ -44,6 +44,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -3240,6 +3241,10 @@ public class CoreAPI {
 
         public long getSpendAmount() {
             return get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(_pSpend.getAmount()));
+        }
+
+        public boolean isTransfer() {
+            return !TextUtils.isEmpty(_pSpend.getSzDestUUID());
         }
 
         public void setSpendAmount(long amount) {
