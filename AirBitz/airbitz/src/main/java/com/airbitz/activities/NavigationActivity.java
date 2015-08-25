@@ -1901,12 +1901,12 @@ public class NavigationActivity extends ActionBarActivity
             }
 
             final int saveInt = max;
+            saveMessageIDPref(saveInt);
 
             mAlertNotificationDialog = new Dialog(this);
             mAlertNotificationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
-            mAlertNotificationDialog.setCancelable(false);
 
             WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
             wv.setVisibility(View.VISIBLE);
@@ -1917,7 +1917,6 @@ public class NavigationActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view) {
                     mAlertNotificationDialog.cancel();
-                    saveMessageIDPref(saveInt);
                 }
             });
             mAlertNotificationDialog.show();
