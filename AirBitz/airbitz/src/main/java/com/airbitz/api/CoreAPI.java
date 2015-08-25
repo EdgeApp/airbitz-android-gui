@@ -386,6 +386,22 @@ public class CoreAPI {
     }
 
     public Wallet getWalletFromUUID(String uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        List<Wallet> wallets = getCoreWallets(false);
+        if (wallets == null) {
+            return null;
+        }
+        for (Wallet w : wallets) {
+            if (uuid.equals(w.getUUID())) {
+                return w;
+            }
+        }
+        return null;
+    }
+
+    public Wallet getWalletFromCore(String uuid) {
         // If watchers aren't loaded don't fetch
         if (null == mWatcherTasks.get(uuid)) {
             mCoreHandler.postDelayed(new Runnable() {
@@ -422,7 +438,7 @@ public class CoreAPI {
         }
         else
         {
-            Log.d("", "Error: CoreBridge.getWalletFromUUID: " + Error.getSzDescription());
+            Log.d("", "Error: CoreBridge.getWalletFromCore: " + Error.getSzDescription());
             return null;
         }
     }
@@ -2319,7 +2335,7 @@ public class CoreAPI {
         List<Wallet> wallets = new ArrayList<Wallet>();
         List<String> uuids = loadWalletUUIDs();
         for (String uuid : uuids) {
-            wallets.add(getWalletFromUUID(uuid));
+            wallets.add(getWalletFromCore(uuid));
         }
         return wallets;
     }
