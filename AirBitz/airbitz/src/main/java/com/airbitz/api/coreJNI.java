@@ -188,17 +188,6 @@ public class coreJNI {
   public final static native boolean tABC_PasswordRule_bPassed_get(long jarg1, tABC_PasswordRule jarg1_);
   public final static native long new_tABC_PasswordRule();
   public final static native void delete_tABC_PasswordRule(long jarg1);
-  public final static native String tABC_RequestInfo_szID_get(long jarg1, tABC_RequestInfo jarg1_);
-  public final static native void tABC_RequestInfo_timeCreation_set(long jarg1, tABC_RequestInfo jarg1_, long jarg2);
-  public final static native long tABC_RequestInfo_timeCreation_get(long jarg1, tABC_RequestInfo jarg1_);
-  public final static native void tABC_RequestInfo_pDetails_set(long jarg1, tABC_RequestInfo jarg1_, long jarg2, tABC_TxDetails jarg2_);
-  public final static native long tABC_RequestInfo_pDetails_get(long jarg1, tABC_RequestInfo jarg1_);
-  public final static native void tABC_RequestInfo_amountSatoshi_set(long jarg1, tABC_RequestInfo jarg1_, long jarg2);
-  public final static native long tABC_RequestInfo_amountSatoshi_get(long jarg1, tABC_RequestInfo jarg1_);
-  public final static native void tABC_RequestInfo_owedSatoshi_set(long jarg1, tABC_RequestInfo jarg1_, long jarg2);
-  public final static native long tABC_RequestInfo_owedSatoshi_get(long jarg1, tABC_RequestInfo jarg1_);
-  public final static native long new_tABC_RequestInfo();
-  public final static native void delete_tABC_RequestInfo(long jarg1);
   public final static native void tABC_SpendTarget_amount_set(long jarg1, tABC_SpendTarget jarg1_, long jarg2);
   public final static native long tABC_SpendTarget_amount_get(long jarg1, tABC_SpendTarget jarg1_);
   public final static native void tABC_SpendTarget_amountMutable_set(long jarg1, tABC_SpendTarget jarg1_, boolean jarg2);
@@ -338,8 +327,6 @@ public class coreJNI {
   public final static native int ABC_CancelReceiveRequest(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, tABC_Error jarg5_);
   public final static native int ABC_GenerateRequestQRCode(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, long jarg7, long jarg8, tABC_Error jarg8_);
   public final static native int ABC_GetRequestAddress(String jarg1, String jarg2, String jarg3, String jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_GetPendingRequests(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native void ABC_FreeRequests(long jarg1, long jarg2);
   public final static native void ABC_SpendTargetFree(long jarg1, tABC_SpendTarget jarg1_);
   public final static native int ABC_SpendNewDecode(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_SpendNewTransfer(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);

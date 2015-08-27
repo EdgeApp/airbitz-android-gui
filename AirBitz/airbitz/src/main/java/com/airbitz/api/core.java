@@ -439,14 +439,6 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_GetRequestAddress(szUserName, szPassword, szWalletUUID, szRequestID, SWIGTYPE_p_p_char.getCPtr(pszAddress), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_GetPendingRequests(String szUserName, String szPassword, String szWalletUUID, SWIGTYPE_p_p_p_sABC_RequestInfo paRequests, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetPendingRequests(szUserName, szPassword, szWalletUUID, SWIGTYPE_p_p_p_sABC_RequestInfo.getCPtr(paRequests), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static void ABC_FreeRequests(SWIGTYPE_p_p_sABC_RequestInfo aRequests, long count) {
-    coreJNI.ABC_FreeRequests(SWIGTYPE_p_p_sABC_RequestInfo.getCPtr(aRequests), count);
-  }
-
   public static void ABC_SpendTargetFree(tABC_SpendTarget pSpend) {
     coreJNI.ABC_SpendTargetFree(tABC_SpendTarget.getCPtr(pSpend), pSpend);
   }
