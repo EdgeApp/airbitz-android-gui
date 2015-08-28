@@ -553,6 +553,7 @@ public class NavigationActivity extends ActionBarActivity
         Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
 
         getFragmentManager().executePendingTransactions();
+        resetDrawerButtons();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
