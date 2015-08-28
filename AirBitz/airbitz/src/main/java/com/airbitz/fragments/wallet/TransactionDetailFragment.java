@@ -636,6 +636,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private void hideCalculator() {
         mCalculator.hideCalculator();
         showUpperLayout(true);
+
+        try {
+            String fiatString = mFiatValueEdittext.getText().toString();
+            double fiatAmount = Double.parseDouble(fiatString);
+            if (mTransaction.getAmountSatoshi() < 0 && fiatAmount > 0) {
+                mFiatValueEdittext.setText("-" + fiatString);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
     }
 
     private void showUpperLayout(boolean visible) {
