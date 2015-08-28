@@ -664,6 +664,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void showNavBar() {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
         if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
             ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
             key.setDuration(NAV_BAR_ANIMATE);
