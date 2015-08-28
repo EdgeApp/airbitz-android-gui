@@ -211,6 +211,8 @@ public class WalletsFragment extends WalletBaseFragment implements
             mModeSelector.setOnCheckedChangeListener(null);
             mModeSelector.setChecked(mOnBitcoinMode);
             mModeSelector.setOnCheckedChangeListener(mSwitchChange);
+
+            updateWalletList(mArchiveClosed);
         }
     }
 
@@ -343,7 +345,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                 totalSatoshis += w.getBalanceSatoshi();
             }
         }
-
         mWalletAdapter.swapWallets();
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
         mWalletAdapter.setCurrencyNum(currencyNum);
