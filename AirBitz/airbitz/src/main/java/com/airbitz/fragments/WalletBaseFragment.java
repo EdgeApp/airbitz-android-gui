@@ -94,6 +94,7 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mOnBitcoinMode = true;
     protected boolean mExpanded = false;
     protected boolean mLoading = true;
+    protected String mSearchQuery = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,6 @@ public class WalletBaseFragment extends BaseFragment implements
         mCoreApi = CoreAPI.getApi();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         mLoading = true;
-        mSearching = false;
         // Check for cached wallets
         if (null == mWallets) {
             mWallets = mCoreApi.getCoreActiveWallets();
@@ -152,7 +152,8 @@ public class WalletBaseFragment extends BaseFragment implements
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    onSearchQuery(editable.toString());
+                    mSearchQuery = editable.toString();
+                    onSearchQuery(mSearchQuery);
                 }
             });
             mSearch.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -174,6 +175,8 @@ public class WalletBaseFragment extends BaseFragment implements
                             hideSearch();
                         } else {
                             mSearch.setText("");
+                            mSearch.requestFocus();
+                            mSearchQuery = null;
                         }
                     }
                 });
@@ -320,6 +323,10 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (mSearching) {
+            showSearch();
+            showArrow(false);
+        }
 
         mCoreApi.setOnWalletLoadedListener(this);
         mCoreApi.addExchangeRateChangeListener(this);
@@ -416,6 +423,8 @@ public class WalletBaseFragment extends BaseFragment implements
 
     public boolean hideSearch() {
         if (mSearchLayout.getVisibility() == View.VISIBLE) {
+            mSearch.setText("");
+            mSearchQuery = null;
             showBurger();
             mSearchLayout.setVisibility(View.GONE);
             mTitleFrame.setVisibility(View.VISIBLE);

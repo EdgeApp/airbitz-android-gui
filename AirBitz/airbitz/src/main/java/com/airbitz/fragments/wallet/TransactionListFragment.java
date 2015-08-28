@@ -150,7 +150,6 @@ public class TransactionListFragment extends WalletsFragment
     private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
     private View mView;
     private TransactionTask mTransactionTask;
-    private SearchTask mSearchTask;
     private Handler mHandler = new Handler();
     ExecutorService mExecutor = Executors.newFixedThreadPool(2);
 
@@ -324,14 +323,10 @@ public class TransactionListFragment extends WalletsFragment
             return;
         }
         try {
-            if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
-                mSearchTask.cancel(true);
-            }
             if (TextUtils.isEmpty(query)) {
                 updateTransactionsListView(mAllTransactions);
             } else {
-                mSearchTask = new SearchTask();
-                mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
+                startTransactionTask();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -375,7 +370,7 @@ public class TransactionListFragment extends WalletsFragment
         mTransactionAdapter.setWallet(mWallet);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
 
-        mTransactionTask = new TransactionTask();
+        mTransactionTask = new TransactionTask(mSearchQuery);
         mTransactionTask.execute(mWallet);
     }
 
@@ -466,10 +461,6 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private List<Transaction> searchTransactions(String term) {
-        return mCoreApi.searchTransactionsIn(mWallet, term);
-    }
-
     private void animateBar() {
         if (mBarIsAnimating) {
             return;
@@ -525,13 +516,18 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
-
-        public TransactionTask() {
+        String query;
+        public TransactionTask(String query) {
+            this.query = query;
         }
 
         @Override
         protected List<Transaction> doInBackground(Wallet... wallet) {
-            return mCoreApi.loadAllTransactions(wallet[0]);
+            if (TextUtils.isEmpty(query)) {
+                return mCoreApi.loadAllTransactions(wallet[0]);
+            } else {
+                return mCoreApi.searchTransactionsIn(wallet[0], query);
+            }
         }
 
         @Override
@@ -547,32 +543,6 @@ public class TransactionListFragment extends WalletsFragment
         @Override
         protected void onCancelled() {
             mTransactionTask = null;
-            super.onCancelled();
-        }
-    }
-
-    class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
-
-        public SearchTask() {
-        }
-
-        @Override
-        protected List<Transaction> doInBackground(String... strings) {
-            return searchTransactions(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<Transaction> transactions) {
-            if (!isAdded()) {
-                return;
-            }
-            updateTransactionsListView(transactions);
-            mSearchTask = null;
-        }
-
-        @Override
-        protected void onCancelled() {
-            mSearchTask = null;
             super.onCancelled();
         }
     }

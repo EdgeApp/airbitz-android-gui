@@ -238,14 +238,30 @@ public class BaseFragment extends Fragment {
     }
 
     protected void showArrow() {
+        showArrow(true);
+    }
+
+    protected void showArrow(boolean animate) {
         if (mMaterialMenu != null) {
-            mMaterialMenu.animateIconState(IconState.ARROW);
+            if (animate) {
+                mMaterialMenu.animateIconState(IconState.ARROW);
+            } else {
+                mMaterialMenu.setIconState(IconState.ARROW);
+            }
         }
     }
 
     protected void showBurger() {
+        showBurger(true);
+    }
+
+    protected void showBurger(boolean animate) {
         if (mMaterialMenu != null) {
-            mMaterialMenu.animateIconState(IconState.BURGER);
+            if (animate) {
+                mMaterialMenu.animateIconState(IconState.BURGER);
+            } else {
+                mMaterialMenu.setIconState(IconState.BURGER);
+            }
         }
     }
 
