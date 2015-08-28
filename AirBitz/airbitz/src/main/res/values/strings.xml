@@ -606,6 +606,9 @@
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
+    <!-- Logout -->
+    <string name="logout_message">Please wait while Airbitz gracefully exits your account. This may take awhile on slow networks</string>
+
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_directory">Directory</string>

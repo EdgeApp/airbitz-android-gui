@@ -1302,14 +1302,43 @@ public class NavigationActivity extends ActionBarActivity
             transaction.remove(fragment);
             transaction.commitAllowingStateLoss();
         }
-        mHandler.postDelayed(mAttemptLogout, 100);
-        DisplayLoginOverlay(true);
-
-        resetApp();
-        AirbitzApplication.Logout();
-        mCoreAPI.logout();
-
+        // mHandler.postDelayed(mAttemptLogout, 100);
         updateDrawer(false);
+
+        mLogoutTask = new LogoutTask();
+        mLogoutTask.execute();
+    }
+
+    private LogoutTask mLogoutTask;
+    public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
+
+        LogoutTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            NavigationActivity.this.ShowFadingDialog(
+                    getString(R.string.logout_message),
+                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            AirbitzApplication.Logout();
+            mCoreAPI.logout();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (isCancelled()) {
+                return;
+            }
+            NavigationActivity.this.DismissFadingDialog();
+            DisplayLoginOverlay(true);
+            switchFragmentThread(Tabs.BD.ordinal());
+            resetApp();
+            mLogoutTask = null;
+        }
     }
 
     Runnable mAttemptLogout = new Runnable() {
