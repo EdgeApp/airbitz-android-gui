@@ -108,6 +108,9 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     protected void setupWalletViews(View view) {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
         mWalletsContainer = view.findViewById(R.id.wallets_container);
 
         mWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
@@ -323,6 +326,9 @@ public class WalletsFragment extends WalletBaseFragment implements
     }
 
     private void setupLatestWalletListView() {
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
         mWalletListView.setAdapter(mWalletAdapter);
         mWalletListView.setWalletList(mLatestWalletList);
         mWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);

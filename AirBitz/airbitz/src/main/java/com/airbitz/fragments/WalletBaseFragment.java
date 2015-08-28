@@ -117,6 +117,9 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
 
         View view = getView();
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
