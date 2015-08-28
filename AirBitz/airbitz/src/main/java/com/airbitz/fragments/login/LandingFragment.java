@@ -526,6 +526,12 @@ public class LandingFragment extends BaseFragment implements
         mActivity.hideSoftKeyboard(mPasswordEditText);
     }
 
+    public void refreshViewAndUsername() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        refreshView();
+    }
+
     public void refreshView() {
         refreshView(mPinLoginMode, mPinLoginMode);
     }
