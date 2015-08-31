@@ -2050,7 +2050,6 @@ public class CoreAPI {
         while (mDataHandler.hasMessages(LAST)
                 || mCoreHandler.hasMessages(LAST)
                 || mMainHandler.hasMessages(LAST)) {
-            Log.d(TAG, "sleeping");
             try {
                 Thread.sleep(200);
             } catch (Exception e) {
@@ -2192,7 +2191,9 @@ public class CoreAPI {
     }
 
     public void stopFileSyncUpdates() {
-        mDataHandler.removeCallbacksAndMessages(null);
+        if (null != mDataHandler) {
+            mDataHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     public void startFileSyncUpdates() {
