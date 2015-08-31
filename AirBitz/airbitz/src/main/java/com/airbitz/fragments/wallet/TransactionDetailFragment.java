@@ -675,7 +675,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             String txId = bundle.getString(Transaction.TXID);
             if (walletUUID.isEmpty()) {
                 Log.d(TAG, "no detail info");
-            } else {
+            } else if (mWallet == null || mTransaction == null) {
                 mWallet = mCoreApi.getWalletFromUUID(walletUUID);
                 mTransaction = mCoreApi.getTransaction(walletUUID, txId);
 
@@ -690,6 +690,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                         mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
                         mBizId = mTransaction.getmBizId();
                     }
+                    UpdateView(mTransaction);
                 }
             }
         }
@@ -702,7 +703,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if(mTransaction != null) {
             Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
-            UpdateView(mTransaction);
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
