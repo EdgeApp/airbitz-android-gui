@@ -188,6 +188,14 @@ public class tABC_AccountSettings {
     return coreJNI.tABC_AccountSettings_pinLoginCount_get(swigCPtr, this);
   }
 
+  public void setBDisableFingerprintLogin(boolean value) {
+    coreJNI.tABC_AccountSettings_bDisableFingerprintLogin_set(swigCPtr, this, value);
+  }
+
+  public boolean getBDisableFingerprintLogin() {
+    return coreJNI.tABC_AccountSettings_bDisableFingerprintLogin_get(swigCPtr, this);
+  }
+
   public tABC_AccountSettings() {
     this(coreJNI.new_tABC_AccountSettings(), true);
   }

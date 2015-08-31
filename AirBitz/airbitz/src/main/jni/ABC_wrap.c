@@ -3827,6 +3827,34 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1pinL
 }
 
 
+SWIGEXPORT void JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1bDisableFingerprintLogin_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->bDisableFingerprintLogin = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_airbitz_api_coreJNI_tABC_1AccountSettings_1bDisableFingerprintLogin_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  struct sABC_AccountSettings *arg1 = (struct sABC_AccountSettings *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(struct sABC_AccountSettings **)&jarg1; 
+  result = (bool) ((arg1)->bDisableFingerprintLogin);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_airbitz_api_coreJNI_new_1tABC_1AccountSettings(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   struct sABC_AccountSettings *result = 0 ;
