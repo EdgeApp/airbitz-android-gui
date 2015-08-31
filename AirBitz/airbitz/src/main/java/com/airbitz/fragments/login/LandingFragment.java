@@ -529,6 +529,7 @@ public class LandingFragment extends BaseFragment implements
     public void refreshViewAndUsername() {
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        mPinLoginMode = mCoreAPI.PinLoginExists(mUsername);
         refreshView();
     }
 
