@@ -365,29 +365,18 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
         mNoteEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 showUpperLayout(!hasFocus);
                 showMiddleLayout(!hasFocus);
+                if (!hasFocus) {
+                    mActivity.hideSoftKeyboard(mView);
+                }
             }
         });
         mNoteEdittext.setHorizontallyScrolling(false);
         mNoteEdittext.setMaxLines(Integer.MAX_VALUE);
-
-        mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    showUpperLayout(true);
-                    showMiddleLayout(true);
-                    mActivity.hideSoftKeyboard(mView);
-                    return true;
-                }
-                return false;
-            }
-        });
 
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);

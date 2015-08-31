@@ -318,8 +318,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:gravity="left"
-                    android:imeOptions="actionDone"
-                    android:inputType="textNoSuggestions|textAutoCorrect|textCapSentences"
+                    android:inputType="textMultiLine|textNoSuggestions|textAutoCorrect|textCapSentences"
                     android:background="@drawable/emboss_down"
                     style="@style/TxDetailsEditText"
                     />
