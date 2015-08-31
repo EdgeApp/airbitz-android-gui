@@ -193,8 +193,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private SaveTransactionAsyncTask mSaveTask;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
-    private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_btn_green,
-            R.drawable.bg_btn_blue_stretch, R.drawable.bg_button_orange};
+    private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_button_green,
+            R.drawable.bg_button_blue, R.drawable.bg_button_orange};
 
     private Picasso mPicasso;
 
