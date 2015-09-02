@@ -233,6 +233,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
+        mSlideLayout.setVisibility(View.INVISIBLE);
 
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
