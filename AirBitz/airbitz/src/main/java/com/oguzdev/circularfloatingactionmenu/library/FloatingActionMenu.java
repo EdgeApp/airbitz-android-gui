@@ -58,6 +58,8 @@ public class FloatingActionMenu {
     /** a simple layout to contain all the sub action views in the system overlay mode */
     private FrameLayout overlayContainer;
 
+    private View contentView;
+
     private OrientationEventListener orientationListener;
 
     /**
@@ -78,6 +80,7 @@ public class FloatingActionMenu {
                               MenuAnimationHandler animationHandler,
                               boolean animated,
                               MenuStateChangeListener stateChangeListener,
+                              View contentView,
                               final boolean systemOverlay) {
         this.mainActionView = mainActionView;
         this.startAngle = startAngle;
@@ -87,6 +90,7 @@ public class FloatingActionMenu {
         this.animationHandler = animationHandler;
         this.animated = animated;
         this.systemOverlay = systemOverlay;
+        this.contentView = contentView;
         // The menu is initially closed.
         this.open = false;
 
@@ -424,6 +428,9 @@ public class FloatingActionMenu {
      * @return the main content view
      */
     public View getActivityContentView() {
+        if (contentView != null) {
+            return contentView;
+        }
         try {
             return ((Activity) mainActionView.getContext()).getWindow().getDecorView().findViewById(android.R.id.content);
         }
@@ -634,6 +641,7 @@ public class FloatingActionMenu {
         private boolean animated;
         private MenuStateChangeListener stateChangeListener;
         private boolean systemOverlay;
+        private View contentView;
 
         public Builder(Context context, boolean systemOverlay) {
             subActionItems = new ArrayList<Item>();
@@ -738,6 +746,11 @@ public class FloatingActionMenu {
             return this;
         }
 
+        public Builder contentView(View view) {
+            this.contentView = view;
+            return this;
+        }
+
         public FloatingActionMenu build() {
             return new FloatingActionMenu(actionView,
                                           startAngle,
@@ -747,6 +760,7 @@ public class FloatingActionMenu {
                                           animationHandler,
                                           animated,
                                           stateChangeListener,
+                                          contentView,
                                           systemOverlay);
         }
     }
