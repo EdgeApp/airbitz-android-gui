@@ -92,9 +92,11 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mDrawerEnabled = false;
     protected boolean mDropDownEnabled = true;
     protected boolean mOnBitcoinMode = true;
-    protected boolean mExpanded = false;
     protected boolean mLoading = true;
     protected String mSearchQuery = null;
+
+    private enum MenuState { OPEN, CLOSED, OPENING, CLOSING };
+    private MenuState mMenuState = MenuState.CLOSED;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,7 +132,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mBlocker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mExpanded) {
+                if (mMenuState == MenuState.OPEN) {
                     hideWalletList();
                 }
             }
@@ -192,7 +194,7 @@ public class WalletBaseFragment extends BaseFragment implements
                 }
             });
             setupWalletViews(view);
-            if (mExpanded) {
+            if (mMenuState == MenuState.OPEN) {
                 finishShowWallets();
             } else {
                 finishHideWallets();
@@ -407,11 +409,13 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public boolean showSearch() {
-        if (mSearchLayout.getVisibility() != View.VISIBLE) {
+        if (mMenuState == MenuState.CLOSED
+                && mSearchLayout.getVisibility() != View.VISIBLE) {
             showArrow();
             mSearchLayout.setVisibility(View.VISIBLE);
             mTitleFrame.setVisibility(View.INVISIBLE);
             mSearch.requestFocus();
+            mActivity.lockDrawer();
             mActivity.showSoftKeyboard(mSearch);
 
             mSearching = true;
@@ -428,6 +432,7 @@ public class WalletBaseFragment extends BaseFragment implements
             showBurger();
             mSearchLayout.setVisibility(View.GONE);
             mTitleFrame.setVisibility(View.VISIBLE);
+            mActivity.unlockDrawer();
             mActivity.hideSoftKeyboard(mSearchLayout);
 
             mSearching = false;
@@ -446,7 +451,7 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public boolean isMenuExpanded() {
-        return mExpanded;
+        return mMenuState == MenuState.OPEN;
     }
 
     protected int getAnimDuration() {
@@ -454,6 +459,9 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public void showWalletList() {
+        if (mSearching) {
+            return;
+        }
         ObjectAnimator blocker = ObjectAnimator.ofFloat(mBlocker, "alpha", 0f, 1f);
         ObjectAnimator key = ObjectAnimator.ofFloat(mWalletsContainer, "translationY", -mWalletsContainer.getHeight(), 0f);
 
@@ -470,6 +478,7 @@ public class WalletBaseFragment extends BaseFragment implements
             public void onAnimationStart(Animator animator) {
                 mBlocker.setVisibility(View.VISIBLE);
                 mWalletsContainer.setVisibility(View.VISIBLE);
+                mMenuState = MenuState.OPENING;
             }
         });
         set.start();
@@ -479,7 +488,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mWalletsContainer.setVisibility(View.VISIBLE);
         mBlocker.setVisibility(View.VISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = true;
+        mMenuState = MenuState.OPEN;
 
         showArrow();
     }
@@ -502,6 +511,7 @@ public class WalletBaseFragment extends BaseFragment implements
             public void onAnimationStart(Animator animator) {
                 mWalletsContainer.setVisibility(View.VISIBLE);
                 mBlocker.setVisibility(View.VISIBLE);
+                mMenuState = MenuState.CLOSING;
             }
         });
         set.start();
@@ -511,7 +521,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mWalletsContainer.setVisibility(View.INVISIBLE);
         mBlocker.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = false;
+        mMenuState = MenuState.CLOSED;
 
         updateNavigationIcon();
 

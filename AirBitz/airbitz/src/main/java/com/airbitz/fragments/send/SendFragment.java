@@ -658,7 +658,6 @@ public class SendFragment extends WalletBaseFragment implements
     private void finishHideOthers() {
         mOtherWalletsListView.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = false;
 
         if (!mHomeEnabled) {
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
