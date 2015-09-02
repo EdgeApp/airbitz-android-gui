@@ -287,26 +287,24 @@ public class NavigationActivity extends ActionBarActivity
                                   .addSubActionView(sendAction)
                                   .addSubActionView(txAction)
                                   .attachTo(mActionButton)
+                                  .contentView(findViewById(R.id.action_menu_container))
                                   .build();
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 onNavBarSelected(Tabs.REQUEST.ordinal());
-                mActionMenu.close(true);
             }
         });
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 onNavBarSelected(Tabs.SEND.ordinal());
-                mActionMenu.close(true);
             }
         });
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 onNavBarSelected(Tabs.WALLET.ordinal());
-                mActionMenu.close(true);
             }
         });
 
@@ -2239,7 +2237,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
-                mOtherAccountsListView.setVisibility(View.GONE);
                 mDrawerExchangeUpdated = false;
             }
 
@@ -2258,7 +2255,9 @@ public class NavigationActivity extends ActionBarActivity
             public void onDrawerOpened(View drawerView) {}
 
             @Override
-            public void onDrawerStateChanged(int newState) {}
+            public void onDrawerStateChanged(int newState) {
+                mActionMenu.close(true);
+            }
         });
     }
 
@@ -2298,10 +2297,10 @@ public class NavigationActivity extends ActionBarActivity
         if (button != null) {
             button.setSelected(true);
         }
+        mActionMenu.close(true);
     }
 
     private void updateDrawer(boolean loggedIn) {
-        closeDrawer();
         if (loggedIn) {
             mDrawerAccount.setText(AirbitzApplication.getUsername());
             mDrawerLogin.setVisibility(View.GONE);
