@@ -499,19 +499,10 @@ public class CoreAPI {
         @Override
         protected void onPostExecute(List<Wallet> walletList) {
             mCoreWallets = walletList;
-            if (walletList != null) {
-                for (Wallet w : walletList) {
-                    if (w != null && w.isLoading()) {
-                        mMainHandler.sendEmptyMessageDelayed(RELOAD, 500);
-                        break;
-                    }
-                }
-            }
             if (mOnWalletLoadedListener != null) {
                 Log.d(TAG, "wallets loaded");
                 mOnWalletLoadedListener.onWalletsLoaded();
-            }
-            else {
+            } else {
                 Log.d(TAG, "no wallet loaded listener");
             }
             mReloadWalletTask = null;

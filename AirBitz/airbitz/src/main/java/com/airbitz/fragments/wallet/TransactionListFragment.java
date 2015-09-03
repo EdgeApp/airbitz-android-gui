@@ -363,6 +363,9 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     private void startTransactionTask() {
+        if (mWallet == null || mWallet.isLoading()) {
+            return;
+        }
         if (mTransactionTask != null) {
             mTransactionTask.cancel(false);
         }
