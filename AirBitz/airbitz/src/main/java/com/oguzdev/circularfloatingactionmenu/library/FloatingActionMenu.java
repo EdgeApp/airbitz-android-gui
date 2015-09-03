@@ -171,6 +171,11 @@ public class FloatingActionMenu {
     }
 
     private void checkItemViews(int x, int y) {
+        // Don't do this during an animation
+        if (animationHandler != null &&
+                animationHandler.isAnimating()) {
+            return;
+        }
         //Find button view if any
         Rect rect = new Rect();
         for(final Item item : subActionItems) {
