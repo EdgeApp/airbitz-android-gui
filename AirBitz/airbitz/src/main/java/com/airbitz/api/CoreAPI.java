@@ -2100,7 +2100,7 @@ public class CoreAPI {
         Set<Integer> currencies;
         UpdateExchangeRateTask() {
             List<Wallet> wallets = getCoreWallets(false);
-            Set<Integer> currencies = new HashSet();
+            currencies = new HashSet();
             if (wallets != null) {
                 for (Wallet wallet : wallets) {
                     if (wallet.getCurrencyNum() != -1) {
@@ -2138,11 +2138,9 @@ public class CoreAPI {
             tABC_Error error = new tABC_Error();
             core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
-            if (null != currencies) {
-                for (Integer currency : currencies) {
-                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(), currency, error);
-                }
+            for (Integer currency : currencies) {
+                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), currency, error);
             }
         }
     }
