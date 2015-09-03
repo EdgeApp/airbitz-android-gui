@@ -8,7 +8,10 @@
         app:showAsAction="always"
         android:title="@string/string_search" />
 
+    <item android:id="@+id/action_export"
+          android:title="@string/export_title"
+          android:icon="@drawable/btn_export" />
+
     <item android:id="@+id/action_help"
-          android:title="@string/string_help"
-          app:showAsAction="ifRoom"/>
+          android:title="@string/string_help" />
 </menu>

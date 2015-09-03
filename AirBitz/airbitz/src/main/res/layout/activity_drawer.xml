@@ -129,6 +129,12 @@
                         style="@style/DrawerButton"/>
 
                     <Button
+                        android:id="@+id/item_drawer_wallets"
+                        android:text="@string/drawer_wallets"
+                        android:drawableLeft="@drawable/ic_wallets_dark"
+                        style="@style/DrawerButton"/>
+
+                    <Button
                         android:id="@+id/item_drawer_buy_sell"
                         android:drawableLeft="@drawable/ic_exchange_dark"
                         android:text="@string/drawer_buy_sell"

@@ -74,6 +74,7 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
@@ -91,7 +92,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TransactionListFragment extends WalletsFragment
+public class TransactionListFragment extends WalletBaseFragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -151,7 +152,10 @@ public class TransactionListFragment extends WalletsFragment
     private View mView;
     private TransactionTask mTransactionTask;
     private Handler mHandler = new Handler();
-    ExecutorService mExecutor = Executors.newFixedThreadPool(2);
+
+    public TransactionListFragment() {
+        mAllowArchived = true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = true;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -224,6 +229,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = false;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -232,6 +238,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = !mOnBitcoinMode;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -282,8 +289,6 @@ public class TransactionListFragment extends WalletsFragment
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
 
-                    mResetState = false;
-                    mPreserveWallet = true;
                     mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
@@ -307,7 +312,12 @@ public class TransactionListFragment extends WalletsFragment
         case android.R.id.home:
             return onBackPress();
         case R.id.action_search:
-            showSearch();
+            if (!mLoading) {
+                showSearch();
+            }
+            return true;
+        case R.id.action_export:
+            ExportFragment.pushFragment(mActivity);
             return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS));
@@ -351,6 +361,18 @@ public class TransactionListFragment extends WalletsFragment
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void showWalletList() {
+        if (mSearching) {
+            return;
+        }
+        mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLETS.ordinal());
+    }
+
+    @Override
+    public void hideWalletList() {
     }
 
     private void buildFragments(Bundle bundle) {
@@ -416,9 +438,8 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    @Override
     protected void updateBalanceBar() {
-        super.updateBalanceBar();
+        // super.updateBalanceBar();
         positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();
@@ -428,7 +449,7 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     public void onPause() {
         super.onPause();
-        if(mTransactionTask!=null) {
+        if (mTransactionTask != null) {
             mTransactionTask.cancel(true);
             mTransactionTask = null;
         }
@@ -469,7 +490,6 @@ public class TransactionListFragment extends WalletsFragment
             return;
         }
         mBarIsAnimating = true;
-        AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
         if (mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
         } else {

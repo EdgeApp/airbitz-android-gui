@@ -57,6 +57,7 @@ public class AirbitzApplication extends Application {
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
     private static String LOCATION_MODE = "com.airbitz.application.locationmode";
+    private static String ARCHIVE_HEADER_STATE = "archiveClosed";
     public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
     public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
@@ -188,16 +189,43 @@ public class AirbitzApplication extends Application {
         return System.currentTimeMillis() - mLoginTime <= 120000;
     }
 
+    static Boolean sBitcoinMode = null;
     public static boolean getBitcoinSwitchMode() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        boolean state = prefs.getBoolean(BITCOIN_MODE, true);
-        return state;
+        if (sBitcoinMode == null) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            sBitcoinMode = prefs.getBoolean(BITCOIN_MODE, true);
+        }
+        return sBitcoinMode;
     }
 
-    public static void setBitcoinSwitchMode(boolean state) {
-        SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        editor.putBoolean(BITCOIN_MODE, state);
-        editor.apply();
+    public static void setBitcoinSwitchMode(final boolean state) {
+        sBitcoinMode = state;
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+                editor.putBoolean(BITCOIN_MODE, state);
+                editor.apply();
+            }
+        }).start();
+    }
+
+    static Boolean sArchiveHeader = null;
+    public static boolean getArchivedMode() {
+        if (sArchiveHeader == null) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            sArchiveHeader = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
+        }
+        return sArchiveHeader;
+    }
+
+    public static void setArchivedMode(final boolean state) {
+        sArchiveHeader = state;
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, state).apply();
+            }
+        });
     }
 
     public static boolean getLocationWarn() {

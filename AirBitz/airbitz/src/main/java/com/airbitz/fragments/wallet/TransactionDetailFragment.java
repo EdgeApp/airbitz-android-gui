@@ -202,6 +202,10 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private NavigationActivity mActivity;
     private AlertDialog mMessageDialog;
 
+    public TransactionDetailFragment() {
+        mAllowArchived = true;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

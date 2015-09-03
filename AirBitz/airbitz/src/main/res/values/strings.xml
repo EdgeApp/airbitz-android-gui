@@ -615,6 +615,7 @@
     <string name="drawer_send">Send</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_wallets">Wallets</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>
     <string name="drawer_buy_sell">Buy/Sell</string>

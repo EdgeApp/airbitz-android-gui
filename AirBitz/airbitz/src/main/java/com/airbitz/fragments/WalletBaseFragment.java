@@ -92,6 +92,7 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mDrawerEnabled = false;
     protected boolean mDropDownEnabled = true;
     protected boolean mOnBitcoinMode = true;
+    protected boolean mAllowArchived = false;
     protected boolean mLoading = true;
     protected String mSearchQuery = null;
 
@@ -106,7 +107,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mLoading = true;
         // Check for cached wallets
         if (null == mWallets) {
-            mWallets = mCoreApi.getCoreActiveWallets();
+            mWallets = fetchCoreWallets();
         }
         // Create empty list
         if (null == mWallets) {
@@ -214,8 +215,12 @@ public class WalletBaseFragment extends BaseFragment implements
     protected void onSearchQuery(String query) {
     }
 
+    protected List<Wallet> fetchCoreWallets() {
+        return mCoreApi.getCoreActiveWallets();
+    }
+
     protected void fetchWallets() {
-        List<Wallet> tmp = mCoreApi.getCoreActiveWallets();
+        List<Wallet> tmp = fetchCoreWallets();
         if (tmp != null) {
             mWallets.clear();
             mWallets.addAll(tmp);
@@ -234,18 +239,13 @@ public class WalletBaseFragment extends BaseFragment implements
                 AirbitzApplication.setCurrentWallet(uuid);
             }
         }
-        if (uuid != null && null != mWallets) {
-            for (Wallet w : mWallets) {
-                if (!w.getUUID().equals(uuid)) {
-                    continue;
-                }
-                mWallet = w;
-                break;
-            }
+        if (uuid != null) {
+            mWallet = mCoreApi.getWalletFromUUID(uuid);
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
         if (mWallet != null
+                && !mAllowArchived
                 && mWallet.isArchived()
                 && mWallet.getUUID().equals(AirbitzApplication.getCurrentWallet())) {
             if (mWallets != null && mWallets.size() > 0) {
@@ -381,11 +381,11 @@ public class WalletBaseFragment extends BaseFragment implements
 
     protected void walletChanged(Wallet newWallet) {
         mWallet = newWallet;
-        if (!newWallet.isArchived()) {
-            AirbitzApplication.setCurrentWallet(mWallet.getUUID());
-        }
+        AirbitzApplication.setCurrentWallet(mWallet.getUUID());
         updateTitle();
-        hideWalletList();
+        if (mDropDownEnabled) {
+            hideWalletList();
+        }
     }
 
     protected void setHomeEnabled(boolean enabled) {

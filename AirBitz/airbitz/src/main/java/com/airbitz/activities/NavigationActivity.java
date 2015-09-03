@@ -196,6 +196,7 @@ public class NavigationActivity extends ActionBarActivity
             new RequestFragment(),
             new SendFragment(),
             new TransactionListFragment(),
+            new WalletsFragment(),
             new SettingFragment()};
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = null;
@@ -228,6 +229,7 @@ public class NavigationActivity extends ActionBarActivity
     private Button mDrawerRequest;
     private Button mDrawerSend;
     private Button mDrawerTxs;
+    private Button mDrawerWallets;
     private Button mDrawerBuySell;
     private Button mDrawerImport;
     private Button mDrawerSettings;
@@ -1371,6 +1373,8 @@ public class NavigationActivity extends ActionBarActivity
             case 3:
                 return new TransactionListFragment();
             case 4:
+                return new WalletsFragment();
+            case 5:
                 return new SettingFragment();
             default:
                 return null;
@@ -1419,7 +1423,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, MORE}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE}
 
     //************************ Connectivity support
 
@@ -2154,6 +2158,15 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
 
+        mDrawerWallets = (Button) findViewById(R.id.item_drawer_wallets);
+        mDrawerWallets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.WALLETS.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
         mDrawerExchange = (TextView) findViewById(R.id.item_drawer_exchange_rate);
         mDrawerBuySellLayout = (RelativeLayout) findViewById(R.id.layout_drawer_bottom_buttons);
         mDrawerBuySell = (Button) findViewById(R.id.item_drawer_buy_sell);
@@ -2274,8 +2287,10 @@ public class NavigationActivity extends ActionBarActivity
 
         if (mNavThreadId == Tabs.BD.ordinal()) {
             resetDrawerButtons(mDrawerDirectory);
+        } else if (mNavThreadId == Tabs.WALLETS.ordinal()) {
+                resetDrawerButtons(mDrawerWallets);
         } else if (mNavThreadId == Tabs.WALLET.ordinal()) {
-            resetDrawerButtons(mDrawerTxs);
+                resetDrawerButtons(mDrawerTxs);
         } else if (mNavThreadId == Tabs.SEND.ordinal()) {
             resetDrawerButtons(mDrawerSend);
         } else if (mNavThreadId == Tabs.REQUEST.ordinal()) {
@@ -2290,6 +2305,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerRequest.setSelected(false);
         mDrawerSend.setSelected(false);
         mDrawerTxs.setSelected(false);
+        mDrawerWallets.setSelected(false);
         mDrawerBuySell.setSelected(false);
         mDrawerImport.setSelected(false);
         mDrawerSettings.setSelected(false);
