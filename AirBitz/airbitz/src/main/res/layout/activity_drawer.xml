@@ -43,6 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:paddingLeft="100dp"
                     android:text="@string/drawer_signin_or_signup"
                     style="@style/GreenButton" />
 
@@ -93,11 +94,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/drawer_top_layout" >
 
+            <View
+                android:background="@drawable/bottom_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_above="@+id/layout_footer" />
+
             <ScrollView
                 android:layout_alignParentTop="true"
                 android:layout_above="@+id/layout_footer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingBottom="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -160,6 +168,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:layout_alignParentBottom="true"
+                android:elevation="2dp"
                 android:orientation="vertical">
 
                 <include layout="@layout/divider_horizontal_light_gray" />
