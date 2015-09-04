@@ -128,28 +128,10 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-
         if (mSupportedPreviewSizes != null) {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         }
-
-        float ratio;
-        if (mPreviewSize.height >= mPreviewSize.width)
-            ratio = (float) mPreviewSize.height / (float) mPreviewSize.width;
-        else
-            ratio = (float) mPreviewSize.width / (float) mPreviewSize.height;
-
-        int rotation = ((WindowManager) mContext
-                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-        switch (rotation) {
-            case Surface.ROTATION_90:
-            case Surface.ROTATION_270:
-                ratio = 1/ratio;
-                break;
-            default:
-                break;
-        }
-        setMeasuredDimension(width, (int) (width * ratio));
+        setMeasuredDimension(width, height);
     }
 
     public static void setCameraDisplayOrientation(Context context,
