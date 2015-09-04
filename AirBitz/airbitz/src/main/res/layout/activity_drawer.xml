@@ -43,7 +43,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:paddingLeft="100dp"
+                    android:drawableLeft="@drawable/ic_user_account_secure_light"
+                    android:drawablePadding="20dp"
                     android:text="@string/drawer_signin_or_signup"
                     style="@style/GreenButton" />
 
