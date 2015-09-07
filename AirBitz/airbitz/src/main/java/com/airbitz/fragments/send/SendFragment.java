@@ -52,6 +52,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.ClipboardManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -137,6 +138,7 @@ public class SendFragment extends WalletBaseFragment implements
     private View mView;
     QRCamera mQRCamera;
     private CoreAPI mCoreApi;
+    private ClipboardManager mClipboard;
 
     @Override
     protected String getSubtitle() {
@@ -145,6 +147,7 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mClipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         mCoreApi = CoreAPI.getApi();
 
         mView = inflater.inflate(R.layout.fragment_send, container, false);
@@ -567,10 +570,25 @@ public class SendFragment extends WalletBaseFragment implements
         }
     }
 
+    // TODO: this should call down into the core to verify its a valid address
+    private boolean isValidAddress(String address) {
+       return address != null && address.length() >= 10;
+    }
+
+    private String fromClipboard() {
+        return mClipboard.getText() != null ? mClipboard.getText().toString() : "";
+    }
+
     public void showAddressDialog() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.alert_address_form, null);
         final EditText editText = (EditText) view.findViewById(R.id.address);
+
+        final String pasteData = fromClipboard();
+        String pasteText = getResources().getString(R.string.string_paste);
+        if (!TextUtils.isEmpty(pasteData) && isValidAddress(pasteData)) {
+            pasteText = getResources().getString(R.string.string_paste_address, pasteData.substring(0, 3)) + "...";
+        }
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_send_address_dialog_title))
@@ -578,6 +596,7 @@ public class SendFragment extends WalletBaseFragment implements
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_done))
                .negativeText(getResources().getString(R.string.string_cancel))
+               .neutralText(pasteText)
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -586,6 +605,11 @@ public class SendFragment extends WalletBaseFragment implements
                     }
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
+                    }
+                    public void onNeutral(MaterialDialog dialog) {
+                        final String pasteData = fromClipboard();
+                        editText.setText(pasteData);
+                        checkAndSendAddress(pasteData);
                     }
                 });
         builder.show();

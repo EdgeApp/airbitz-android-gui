@@ -10,6 +10,8 @@
     <string name="string_no">No</string>
     <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
+    <string name="string_paste">Paste</string>
+    <string name="string_paste_address">Paste %1$s</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
