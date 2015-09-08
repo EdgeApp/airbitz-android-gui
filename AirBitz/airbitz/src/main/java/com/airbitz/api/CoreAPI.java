@@ -2266,12 +2266,24 @@ public class CoreAPI {
         });
     }
 
-    private boolean hasConnectivity() {
-        ConnectivityManager cm =
-            (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
+    public boolean hasConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if ("WIFI".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    Log.d(TAG, "Connection is WIFI");
+                    return true;
+                }
+            }
+            if ("MOBILE".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    Log.d(TAG, "Connection is MOBILE");
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     boolean mOTPError = false;
@@ -2683,6 +2695,11 @@ public class CoreAPI {
     public void connectWatcher(final String uuid) {
         mMainHandler.post(new Runnable() {
             public void run() {
+                if (!hasConnectivity()) {
+                    Log.d(TAG, "Skipping connect...no connectivity");
+                    return;
+                }
+
                 tABC_Error error = new tABC_Error();
                 core.ABC_WatcherConnect(uuid, error);
                 printABCError(error);

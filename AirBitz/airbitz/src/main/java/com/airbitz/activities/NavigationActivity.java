@@ -52,7 +52,6 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -169,10 +168,14 @@ public class NavigationActivity extends ActionBarActivity
                 if (networkIsAvailable()) {
                     Log.d(TAG, "Connection available");
                     mCoreAPI.restoreConnectivity();
+                    mConnectivityNotified = false;
                 } else { // has connection
                     Log.d(TAG, "Connection NOT available");
                     mCoreAPI.lostConnectivity();
-                    ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
+                    if (!mConnectivityNotified) {
+                        ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
+                    }
+                    mConnectivityNotified = true;
                 }
             }
         }
@@ -185,6 +188,7 @@ public class NavigationActivity extends ActionBarActivity
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
+    private boolean mConnectivityNotified = false;
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
@@ -1382,26 +1386,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public boolean networkIsAvailable() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI")) {
-                if (ni.isConnected()) {
-                    Log.d(TAG, "Connection is WIFI");
-                    haveConnectedWifi = true;
-                }
-            }
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE")) {
-                if (ni.isConnected()) {
-                    Log.d(TAG, "Connection is MOBILE");
-                    haveConnectedMobile = true;
-                }
-            }
-        }
-        return haveConnectedWifi || haveConnectedMobile;
+        return mCoreAPI.hasConnectivity();
     }
 
     private boolean loginExpired() {
