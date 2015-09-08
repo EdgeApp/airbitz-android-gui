@@ -509,8 +509,7 @@ public class LandingFragment extends BaseFragment implements
                 refreshView(true, true, true);
                 return;
             }
-        }
-        else {
+        } else if (!AirbitzApplication.isLoggedIn()) {
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
