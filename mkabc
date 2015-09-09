@@ -1,37 +1,12 @@
 #!/bin/bash
 
 BASE=$(pwd)
-CORE_PATH="$BASE/../airbitz-core/deps"
-WALLET_PATH="$BASE/AirBitz/airbitz"
-WALLET_MAIN="$WALLET_PATH/src/main"
 
-cd $CORE_PATH
-
-if [[ ! -n $(which swig) ]]; then
-    echo "swig must be installed";
-    exit 1
-fi
-
+# Build the core:
+cd $BASE/../airbitz-core/deps
 touch recipes/abc
 make abc.build-android-arm abc.build-android-x86
 
-mkdir -p $WALLET_MAIN/jni/
-mkdir -p $WALLET_MAIN/jniLibs/armeabi/
-mkdir -p $WALLET_MAIN/jniLibs/x86/
-
-cp ../src/ABC.h $WALLET_MAIN/jni/
-sed  -e 's/const char *\*/const char *const /' $WALLET_MAIN/jni/ABC.h \
-    > $WALLET_MAIN/jni/ABC-const.h
-cp build/abc/android-arm/libabc.so $WALLET_MAIN/jniLibs/armeabi/
-cp build/abc/android-x86/libabc.so $WALLET_MAIN/jniLibs/x86/
-
-cd $WALLET_PATH
-swig -java -package com.airbitz.api \
-        -outdir src/main/java/com/airbitz/api \
-        -o src/main/jni/ABC_wrap.c src/main/jni/ABC.i
-cd src/main/jni/
-$CORE_PATH/build/ndk/android-ndk-r10d/ndk-build
-
-cp ../libs/armeabi/libairbitz.so ../jniLibs/armeabi/
-cp ../libs/x86/libairbitz.so ../jniLibs/x86/
-
+# Now build the JNI wrapper:
+cd $BASE
+./cpabc "$@"
