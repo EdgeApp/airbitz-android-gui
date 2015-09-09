@@ -32,9 +32,12 @@
 package com.airbitz.fragments.settings.twofactor;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -60,28 +64,30 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
 
-/**
- * Two Factor Authentication Show
- * Created 2/6/15
- */
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
 public class TwoFactorShowFragment extends BaseFragment
 {
     private final String TAG = getClass().getSimpleName();
 
-    Button mImportButton, mApproveButton, mCancelButton;
-    ImageView mQRView;
-    RelativeLayout mQRViewLayout;
-    EditText mPassword;
-    Switch mEnabledSwitch;
+    private Button mImportButton, mApproveButton, mCancelButton;
+    private ImageView mQRView;
+    private RelativeLayout mQRViewLayout;
+    private EditText mPassword;
+    private Switch mEnabledSwitch;
     private TextView mTitleTextView;
-    LinearLayout mRequestView;
-    boolean _isOn;
+    private LinearLayout mRequestView;
     private CoreAPI mCoreAPI;
+
+    CompoundButton.OnCheckedChangeListener mStateListener = new CompoundButton.OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            checkPassword();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mCoreAPI = CoreAPI.getApi();
 
         setHasOptionsMenu(true);
@@ -100,6 +106,8 @@ public class TwoFactorShowFragment extends BaseFragment
         View mView = i.inflate(R.layout.fragment_twofactor_show, container, false);
 
         mPassword = (EditText) mView.findViewById(R.id.fragment_twofactor_show_password_edittext);
+        mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        mPassword.setTypeface(Typeface.DEFAULT);
         mRequestView = (LinearLayout) mView.findViewById(R.id.fragment_twofactor_request_view);
         mApproveButton = (Button) mView.findViewById(R.id.fragment_twofactor_show_button_approve);
         mApproveButton.setOnClickListener(new View.OnClickListener() {
@@ -129,12 +137,7 @@ public class TwoFactorShowFragment extends BaseFragment
         mQRView = (ImageView) mView.findViewById(R.id.fragment_twofactor_show_qr_image);
 
         mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
-        mEnabledSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchFlipped(mEnabledSwitch.isChecked());
-            }
-        });
+        mEnabledSwitch.setOnCheckedChangeListener(mStateListener);
         return mView;
     }
 
@@ -159,25 +162,53 @@ public class TwoFactorShowFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
+        if (null != mPasswordTask) {
+            mPasswordTask.cancel(true);
+            mPasswordTask = null;
+        }
+        if (null != mSwitchFlippedTask) {
+            mSwitchFlippedTask.cancel(true);
+            mSwitchFlippedTask = null;
+        }
     }
 
-    void initUI()
-    {
+    private void confirmEnable() {
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.fragment_two_factor_warn_title))
+            .setMessage(getResources().getString(R.string.fragment_two_factor_warn_message))
+            .setCancelable(false)
+            .setPositiveButton(getResources().getString(R.string.string_ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startSwitchTask(true);
+                    }
+                }
+            )
+            .setNegativeButton(getResources().getString(R.string.string_cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        quietlyFlipSwitch(false);
+                        dialog.cancel();
+                    }
+                }
+            );
+        builder.create().show();
+    }
+
+    void initUI() {
         mPassword.setText("");
         mPassword.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
 
-        _isOn = false;
         updateTwoFactorUI(false);
 
         // Check for any pending reset requests
         checkStatus(false);
     }
 
-    void updateTwoFactorUI(boolean enabled)
-    {
+    void updateTwoFactorUI(boolean enabled) {
         mRequestView.setVisibility(View.GONE);
         mImportButton.setVisibility(mCoreAPI.hasOTPError() ? View.VISIBLE : View.GONE);
-        mEnabledSwitch.setChecked(enabled);
+        quietlyFlipSwitch(enabled);
         mEnabledSwitch.setText(getString(enabled ? R.string.fragment_twofactor_show_enabled : R.string.fragment_twofactor_show_disabled));
         mQRViewLayout.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
@@ -190,22 +221,17 @@ public class TwoFactorShowFragment extends BaseFragment
         mActivity.pushFragment(fragment);
     }
 
-    void checkStatus(boolean bMsg)
-    {
+    void checkStatus(boolean bMsg) {
         mCheckStatusTask = new CheckStatusTask(bMsg);
         mCheckStatusTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
-    /**
-     * Check Two Factor Status
-     */
     private CheckStatusTask mCheckStatusTask;
     public class CheckStatusTask extends AsyncTask<Void, Void, tABC_CC> {
         boolean mMsg;
 
         CheckStatusTask(boolean bMsg) {
             mMsg = bMsg;
-            mActivity.showModalProgress(true);
         }
 
         @Override
@@ -215,18 +241,16 @@ public class TwoFactorShowFragment extends BaseFragment
 
         @Override
         protected tABC_CC doInBackground(Void... params) {
-            tABC_CC cc = mCoreAPI.OtpAuthGet();
-            return cc;
+            return mCoreAPI.OtpAuthGet();
         }
 
         @Override
         protected void onPostExecute(final tABC_CC cc) {
             onCancelled();
             updateTwoFactorUI(mCoreAPI.isTwoFactorOn());
-            if(cc == tABC_CC.ABC_CC_Ok) {
+            if (cc == tABC_CC.ABC_CC_Ok) {
                 checkSecret(mMsg);
-            }
-            else {
+            } else {
                 mActivity.ShowFadingDialog(getString(R.string.fragment_twofactor_show_unable_status));
             }
         }
@@ -238,13 +262,11 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    void checkSecret(boolean bMsg)
-    {
+    void checkSecret(boolean bMsg) {
         if (mCoreAPI.isTwoFactorOn()) {
             if (mCoreAPI.GetTwoFactorSecret() == null) {
                 mQRViewLayout.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 mQRViewLayout.setVisibility(View.VISIBLE);
             }
         }
@@ -263,8 +285,7 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    void showQrCode(boolean show)
-    {
+    void showQrCode(boolean show) {
         if (show) {
             Bitmap bitmap = mCoreAPI.getTwoFactorQRCodeBitmap();
             if(bitmap != null) {
@@ -280,8 +301,7 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    void animateQrCode(boolean show)
-    {
+    void animateQrCode(boolean show) {
         if (show) {
             if (mQRViewLayout.getVisibility() != View.VISIBLE) {
                 mQRViewLayout.setAlpha(0f);
@@ -303,8 +323,7 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    void checkRequest()
-    {
+    void checkRequest() {
         tABC_Error error = new tABC_Error();
         boolean pending = mCoreAPI.isTwoFactorResetPending(AirbitzApplication.getUsername());
         boolean okay = error.getCode() == tABC_CC.ABC_CC_Ok;
@@ -312,37 +331,31 @@ public class TwoFactorShowFragment extends BaseFragment
             mRequestView.setVisibility(View.VISIBLE);
         } else {
             mRequestView.setVisibility(View.GONE);
-            if(!okay) {
+            if (!okay) {
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, error.getCode()));
             }
         }
         mActivity.showModalProgress(false);
     }
 
-    void switchFlipped(boolean isChecked) {
+    void checkPassword() {
+        mPasswordTask = new PasswordTask();
+        mPasswordTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+    }
+
+    void startSwitchTask(boolean isChecked) {
         mSwitchFlippedTask = new SwitchFlippedTask(isChecked);
         mSwitchFlippedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
-    void switchTwoFactor(boolean on)
-    {
-        tABC_CC cc = mCoreAPI.enableTwoFactor(on);
-        if(cc==tABC_CC.ABC_CC_Ok) {
-            updateTwoFactorUI(on);
-            checkSecret(true);
-        }
+    void quietlyFlipSwitch(boolean status) {
+        mEnabledSwitch.setOnCheckedChangeListener(null);
+        mEnabledSwitch.setChecked(status);
+        mEnabledSwitch.setOnCheckedChangeListener(mStateListener);
     }
 
-    /**
-     * Flip Enable switch task
-     */
-    private SwitchFlippedTask mSwitchFlippedTask;
-    public class SwitchFlippedTask extends AsyncTask<Void, Void, Boolean> {
-        boolean mIsChecked;
-        SwitchFlippedTask(boolean isChecked) {
-            mIsChecked = isChecked;
-        }
-
+    private PasswordTask mPasswordTask;
+    public class PasswordTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
@@ -354,23 +367,59 @@ public class TwoFactorShowFragment extends BaseFragment
         }
 
         @Override
-        protected void onPostExecute(final Boolean authenticated) {
-            onCancelled();
+        protected void onCancelled() {
+            mActivity.showModalProgress(false);
+        }
 
-            if(authenticated) {
-                switchTwoFactor(mIsChecked);
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mActivity.showModalProgress(false);
+            if (isCancelled()) {
+                return;
             }
-            else {
+            if (success) {
+                if (mEnabledSwitch.isChecked()) {
+                    confirmEnable();
+                } else {
+                    startSwitchTask(false);
+                }
+            } else {
                 mPassword.requestFocus();
-                mEnabledSwitch.setChecked(!mIsChecked);
+                quietlyFlipSwitch(!mEnabledSwitch.isChecked());
                 mActivity.ShowOkMessageDialog(getString(R.string.activity_signup_incorrect_password),
-                        getString(R.string.activity_signup_incorrect_password));
+                    getString(R.string.activity_signup_incorrect_password));
+            }
+        }
+    }
+
+    private SwitchFlippedTask mSwitchFlippedTask;
+    public class SwitchFlippedTask extends AsyncTask<Void, Void, Boolean> {
+        boolean isChecked;
+        SwitchFlippedTask(boolean isChecked) {
+            this.isChecked = isChecked;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreAPI.enableTwoFactor(this.isChecked) == tABC_CC.ABC_CC_Ok;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            onCancelled();
+            if (success) {
+                updateTwoFactorUI(this.isChecked);
+                checkSecret(true);
             }
         }
 
         @Override
         protected void onCancelled() {
-            mCheckStatusTask = null;
             mActivity.showModalProgress(false);
         }
     }
@@ -387,14 +436,8 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    /**
-     * Confirm Request
-     */
     private ConfirmRequestTask mConfirmRequestTask;
     public class ConfirmRequestTask extends AsyncTask<Void, Void, tABC_CC> {
-
-        ConfirmRequestTask() { }
-
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
@@ -408,13 +451,10 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onPostExecute(final tABC_CC cc) {
             onCancelled();
-            mActivity.showModalProgress(false);
-
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mActivity.ShowFadingDialog("Request confirmed, Two Factor off.");
                 updateTwoFactorUI(false);
-            }
-            else {
+            } else {
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, cc));
             }
         }
@@ -426,26 +466,18 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    private void cancelRequest()
-    {
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
+    private void cancelRequest() {
+        if (mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
             mCancelRequestTask = new CancelRequestTask();
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
-        else {
+        } else {
             mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
         }
     }
 
-    /**
-     * Cancel Request
-     */
     private CancelRequestTask mCancelRequestTask;
     public class CancelRequestTask extends AsyncTask<Void, Void, tABC_CC> {
-
-        CancelRequestTask() { }
-
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
@@ -459,13 +491,10 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onPostExecute(final tABC_CC cc) {
             onCancelled();
-            mActivity.showModalProgress(false);
-
             if (cc == tABC_CC.ABC_CC_Ok) {
                 mActivity.ShowFadingDialog("Reset Cancelled.");
                 mRequestView.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, cc));
             }
         }
