@@ -141,6 +141,7 @@ public class RequestFragment extends WalletBaseFragment implements
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
+    private View mBottomButtons;
 
     private Long mSavedSatoshi;
     private String mSavedCurrency;
@@ -299,6 +300,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mOtherAmountTextView = (TextView) mView.findViewById(R.id.request_not_selected_value);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
+        mBottomButtons = mView.findViewById(R.id.request_bottom_buttons);
         mCopyButton = (Button) mView.findViewById(R.id.fragment_triple_selector_left);
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,6 +358,14 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
         return mView;
+    }
+
+    @Override
+    protected float getFabTop() {
+Log.d("NavigationActivity", mActivity.getFabTop() + " " + mBottomButtons.getHeight() + " " + mBitcoinAddress.getHeight());
+        return mActivity.getFabTop()
+             - mBottomButtons.getHeight()
+             - mBitcoinAddress.getHeight();
     }
 
     @Override

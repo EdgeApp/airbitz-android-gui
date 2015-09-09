@@ -136,6 +136,7 @@ public class SendFragment extends WalletBaseFragment implements
     private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
     private View mView;
+    private View mButtonBar;
     QRCamera mQRCamera;
     private CoreAPI mCoreApi;
     private ClipboardManager mClipboard;
@@ -188,6 +189,7 @@ public class SendFragment extends WalletBaseFragment implements
                 showAddressDialog();
             }
         });
+        mButtonBar = mView.findViewById(R.id.fragment_send_buttons);
 
         mOtherWalletsList = new ArrayList<Wallet>();
         mOtherWalletsAdapter = new WalletOtherAdapter(getActivity(), mOtherWalletsList);
@@ -233,6 +235,11 @@ public class SendFragment extends WalletBaseFragment implements
         if (requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
             mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    protected float getFabTop() {
+        return mActivity.getFabTop() - mButtonBar.getHeight();
     }
 
     private void checkAndSendAddress(String strTo) {

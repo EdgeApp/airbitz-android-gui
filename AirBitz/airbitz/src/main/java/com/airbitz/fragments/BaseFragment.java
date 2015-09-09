@@ -47,6 +47,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -133,13 +134,28 @@ public class BaseFragment extends Fragment {
         mActivity = (NavigationActivity) activity;
     }
 
+    protected float getFabTop() {
+        return mActivity.getFabTop();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        if (mBackEnabled) {
-            mActivity.hideNavBar();
-        } else {
-            mActivity.showNavBar();
+        final View view = getView();
+
+        if (view.getViewTreeObserver().isAlive()) {
+            ViewTreeObserver observer = view.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if (mBackEnabled) {
+                        mActivity.hideNavBar();
+                    } else {
+                        mActivity.showNavBar(getFabTop());
+                    }
+                }
+            });
         }
     }
 

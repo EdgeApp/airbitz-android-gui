@@ -252,6 +252,9 @@ public class NavigationActivity extends ActionBarActivity
     private ViewGroup mRoot;
     private int mTouchDown;
 
+    private int mMenuPadding;
+    private int mMenuWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,9 +268,9 @@ public class NavigationActivity extends ActionBarActivity
 
 
         Resources r = getResources();
-        int menuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
-        int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
-        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
+        mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        mMenuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
+        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(mMenuWidth, mMenuWidth);
 
         mActionButton = findViewById(R.id.action_button);
 
@@ -275,11 +278,11 @@ public class NavigationActivity extends ActionBarActivity
         ImageView sendButton = new ImageView(this);
         ImageView txButton = new ImageView(this);
         requestButton.setImageResource(R.drawable.ic_receive_dark);
-        requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        requestButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
         sendButton.setImageResource(R.drawable.ic_send_dark);
-        sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        sendButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
         txButton.setImageResource(R.drawable.ic_transactions_dark);
-        txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        txButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
@@ -647,9 +650,14 @@ public class NavigationActivity extends ActionBarActivity
     static final int NAV_BAR_ANIMATE = 250;
 
     public void hideNavBar() {
-        if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight() * 4);
-            key.setDuration(NAV_BAR_ANIMATE);
+        hideNavBar(NAV_BAR_ANIMATE);
+    }
+
+    public void hideNavBar(int duration) {
+        final float bottom = mFragmentContainer.getBottom();
+        if (!mNavBarAnimating && mActionButton.getY() != bottom) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), bottom);
+            key.setDuration(duration);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator aniamtor) {
@@ -667,12 +675,25 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    public float getFabHeight() {
+        return mActionButton.getHeight() + mMenuPadding;
+    }
+
+    public float getFabTop() {
+        return getBottom() - Common.getStatusBarHeight(this) - getFabHeight();
+    }
+
     public void showNavBar() {
+        showNavBar(getFabTop());
+    }
+
+    public void showNavBar(float animateTo) {
         if (!AirbitzApplication.isLoggedIn()) {
+            hideNavBar(0);
             return;
         }
-        if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
+        if (!mNavBarAnimating && mActionButton.getY() != animateTo) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), animateTo);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
