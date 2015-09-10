@@ -561,13 +561,14 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
-            mCoreAPI.stopAllAsyncUpdates();
             mPin = mWithdrawalPinEditText.getText().toString();
             super.onPreExecute();
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
+            mCoreAPI.stopAllAsyncUpdates();
+
             String answers = params[0];
             mUsername = params[1];
             Editable pass = mPasswordEditText.getText();
