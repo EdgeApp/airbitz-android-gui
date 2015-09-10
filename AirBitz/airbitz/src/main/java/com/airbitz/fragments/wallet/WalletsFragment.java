@@ -223,7 +223,10 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     public void showWalletList() {
-        mActivity.onBackPressed();
+        if (getActivity() == null || !isAdded() || !finishedResume()) {
+            return;
+        }
+        mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
     }
 
     @Override

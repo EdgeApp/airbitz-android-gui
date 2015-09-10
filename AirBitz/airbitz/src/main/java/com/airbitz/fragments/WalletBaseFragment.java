@@ -96,6 +96,8 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mLoading = true;
     protected String mSearchQuery = null;
 
+    private Long mResumeTime = null;
+
     private enum MenuState { OPEN, CLOSED, OPENING, CLOSING };
     private MenuState mMenuState = MenuState.CLOSED;
 
@@ -212,6 +214,12 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
+    protected void disableTitleClick() {
+        if (null != mTitleFrame) {
+            mTitleFrame.setOnClickListener(null);
+        }
+    }
+
     protected void onSearchQuery(String query) {
     }
 
@@ -325,6 +333,7 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        mResumeTime = System.currentTimeMillis();
         if (mSearching) {
             showSearch();
             showArrow(false);
@@ -338,10 +347,16 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
+        mResumeTime = null;
 
         mCoreApi.setOnWalletLoadedListener(null);
         mCoreApi.removeExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(null);
+    }
+
+    protected boolean finishedResume() {
+        return mResumeTime != null
+            && System.currentTimeMillis() - mResumeTime > 500;
     }
 
     @Override

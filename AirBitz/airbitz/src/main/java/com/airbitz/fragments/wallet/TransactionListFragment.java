@@ -365,7 +365,7 @@ public class TransactionListFragment extends WalletBaseFragment
 
     @Override
     public void showWalletList() {
-        if (mSearching) {
+        if (mSearching || getActivity() == null || !finishedResume()) {
             return;
         }
         mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLETS.ordinal());
