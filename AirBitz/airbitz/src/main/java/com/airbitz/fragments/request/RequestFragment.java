@@ -362,7 +362,6 @@ public class RequestFragment extends WalletBaseFragment implements
 
     @Override
     protected float getFabTop() {
-Log.d("NavigationActivity", mActivity.getFabTop() + " " + mBottomButtons.getHeight() + " " + mBitcoinAddress.getHeight());
         return mActivity.getFabTop()
              - mBottomButtons.getHeight()
              - mBitcoinAddress.getHeight();
