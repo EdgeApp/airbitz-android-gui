@@ -541,6 +541,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp, boolean isTransition) {
+        showAccountsList(false);
         if (isTransition) {
             mBlackoutView.setVisibility(View.VISIBLE);
             mBlackoutView.setAlpha(1f);

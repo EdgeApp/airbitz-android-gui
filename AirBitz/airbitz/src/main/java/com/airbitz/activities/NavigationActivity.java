@@ -376,10 +376,10 @@ public class NavigationActivity extends ActionBarActivity
             case MotionEvent.ACTION_UP:
                 Log.d("", "ACTION_UP: " + String.valueOf((int) X));
                 if (deltaX > view.getWidth() / 2) {
-                    DisplayLoginOverlay(false, true);
+                    DisplayLoginOverlay(false, true, false);
                     hideSoftKeyboard(view);
                 } else {
-                    DisplayLoginOverlay(true, true);
+                    DisplayLoginOverlay(true, true, false);
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -443,6 +443,10 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
+        DisplayLoginOverlay(overlay, animate, true);
+    }
+
+    public void DisplayLoginOverlay(boolean overlay, boolean animate, boolean fullRefresh) {
 
         if (!overlay) {
             // Show FragmentLayout
@@ -482,7 +486,11 @@ public class NavigationActivity extends ActionBarActivity
             mFragmentLayout.setAlpha(0.0f);
             hideNavBar();
             mDrawer.closeDrawer(mDrawerView);
-            mLandingFragment.refreshViewAndUsername();
+            if (fullRefresh) {
+                mLandingFragment.refreshViewAndUsername();
+            } else {
+                mLandingFragment.refreshView();
+            }
         }
     }
 
