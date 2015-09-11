@@ -410,6 +410,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     showUpperLayout(true);
                     showMiddleLayout(true);
                     mActivity.hideSoftKeyboard(mView);
+                    mCategoryEdittext.clearFocus();
                     return true;
                 }
                 return false;
