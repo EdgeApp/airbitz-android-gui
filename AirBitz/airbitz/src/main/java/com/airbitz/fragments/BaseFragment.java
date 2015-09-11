@@ -138,11 +138,14 @@ public class BaseFragment extends Fragment {
         return mActivity.getFabTop();
     }
 
+    public void finishFabAnimation() {
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        final View view = getView();
 
+        final View view = getView();
         if (view.getViewTreeObserver().isAlive()) {
             ViewTreeObserver observer = view.getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

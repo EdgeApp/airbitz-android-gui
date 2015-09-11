@@ -32,8 +32,11 @@
 package com.airbitz.activities;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -85,6 +88,7 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
@@ -466,7 +470,6 @@ public class NavigationActivity extends ActionBarActivity
             layoutParams.bottomMargin = 0;
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(1.0f);
-            showNavBar();
         } else {
             // Go back to showing Landing
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
@@ -530,10 +533,6 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void switchFragmentThread(int id, boolean animation) {
-        if (mActionButton.getVisibility() != View.VISIBLE) {
-            showNavBar();
-        }
-
         Fragment frag = mNavStacks[id].peek();
         Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null)
@@ -684,6 +683,10 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    public View getFabView() {
+        return mActionButton;
+    }
+
     public float getFabHeight() {
         return mActionButton.getHeight() + mMenuPadding;
     }
@@ -702,6 +705,16 @@ public class NavigationActivity extends ActionBarActivity
             return;
         }
         if (!mNavBarAnimating && mActionButton.getY() != animateTo) {
+            final ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+            val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Fragment fragment = mNavStacks[mNavThreadId].peek();
+                    if (fragment instanceof BaseFragment) {
+                        ((BaseFragment) fragment).finishFabAnimation();
+                    }
+                }
+            });
+
             ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), animateTo);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
@@ -717,7 +730,11 @@ public class NavigationActivity extends ActionBarActivity
                     mNavBarAnimating = true;
                 }
             });
-            key.start();
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(NAV_BAR_ANIMATE);
+            set.playTogether(key, val);
+            set.start();
         }
     }
 

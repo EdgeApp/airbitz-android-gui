@@ -174,6 +174,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private float mOrigQrHeight;
     private float mQrPadding;
+    private int mFabCoords[] = new int[2];
     private int mQrCoords[] = new int[2];
     private int mCalcCoords[] = new int[2];
 
@@ -1130,14 +1131,25 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     };
 
+    @Override
+    public void finishFabAnimation() {
+        alignQrCode();
+    }
+
     private void alignQrCode() {
+        mQRView.getLocationOnScreen(mQrCoords);
+        mCalculator.getLocationOnScreen(mCalcCoords);
         if (mOrigQrHeight == 0.0f) {
             mOrigQrHeight = mQRView.getHeight();
         }
-        mQRView.getLocationOnScreen(mQrCoords);
-        mCalculator.getLocationOnScreen(mCalcCoords);
 
-        float qrY = mQrCoords[1];//  + mQRView.getHeight();
+        View fab = mActivity.getFabView();
+        fab.getLocationOnScreen(mFabCoords);
+        if (mQrCoords[1] + mOrigQrHeight > mFabCoords[1]) {
+            mOrigQrHeight = mFabCoords[1] - mQrCoords[1];
+        }
+
+        float qrY = mQrCoords[1];
         float calcY = mCalcCoords[1];
         float diff = calcY - qrY;
         int newHeight = (int) (diff - mQrPadding);
