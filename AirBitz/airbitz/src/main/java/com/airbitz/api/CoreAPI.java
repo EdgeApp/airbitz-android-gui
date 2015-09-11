@@ -430,7 +430,7 @@ public class CoreAPI {
         else
         {
             Log.d("", "Error: CoreBridge.getWalletFromCore: " + Error.getSzDescription());
-            return null;
+            return createLoading(uuid);
         }
     }
 
