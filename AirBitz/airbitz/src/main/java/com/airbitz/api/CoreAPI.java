@@ -358,6 +358,7 @@ public class CoreAPI {
         if (!hasConnectivity()) {
             return false;
         }
+        Log.d(TAG, "createWallet(" + walletName + "," + currencyNum + ")");
         tABC_Error pError = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -398,40 +399,60 @@ public class CoreAPI {
     }
 
     public Wallet getWalletFromCore(String uuid) {
-        // If watchers aren't loaded don't fetch
-        if (null == mWatcherTasks.get(uuid)) {
-            return createLoading(uuid);
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        Wallet wallet = new Wallet("Loading...");
+        wallet.setUUID(uuid);
+        wallet.setCurrencyNum(-1); // Defaults to loading
+        wallet.setTransactions(new ArrayList<Transaction>());
+
+        if (null != mWatcherTasks.get(uuid)) {
+            // Load Wallet name
+            SWIGTYPE_p_long pName = core.new_longp();
+            SWIGTYPE_p_p_char ppName = core.longp_to_ppChar(pName);
+            result = core.ABC_WalletName(
+                AirbitzApplication.getUsername(), uuid, ppName, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setName(getStringAtPtr(core.longp_value(pName)));
+            }
+
+            // Load currency
+            SWIGTYPE_p_int pCurrency = core.new_intp();
+            SWIGTYPE_p_unsigned_int upCurrency = core.int_to_uint(pCurrency);
+
+            result = core.ABC_WalletCurrency(
+                AirbitzApplication.getUsername(), uuid, pCurrency, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setCurrencyNum(core.intp_value(pCurrency));
+            } else {
+                wallet.setCurrencyNum(-1);
+                wallet.setName("Loading...");
+            }
+
+            // Load balance
+            SWIGTYPE_p_int64_t l = core.new_int64_tp();
+            result = core.ABC_WalletBalance(
+                AirbitzApplication.getUsername(), uuid, l, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setBalanceSatoshi(
+                    get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(l)));
+            } else {
+                wallet.setBalanceSatoshi(0);
+            }
         }
 
-        tABC_Error Error = new tABC_Error();
+        // If there is a UUID there are wallet attributes
         SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_WalletInfo walletInfo = core.longp_to_ppWalletinfo(lp);
-
-        tABC_CC result = core.ABC_GetWalletInfo(AirbitzApplication.getUsername(),
-            AirbitzApplication.getPassword(), uuid, walletInfo, Error);
-
-        int ptrToInfo = core.longp_value(lp);
-        WalletInfo info = new WalletInfo(ptrToInfo);
-
-        if (result ==tABC_CC.ABC_CC_Ok)
-        {
-            Wallet wallet = new Wallet(info.getName());
-            wallet.setName(info.getName());
-            wallet.setUUID(info.getUUID());
-            wallet.setAttributes(info.getAttributes());
-            wallet.setCurrencyNum(info.getCurrencyNum());
-            wallet.setTransactions(new ArrayList<Transaction>());
-            wallet.setBalanceSatoshi(info.getBalance());
-            // Free the C-struct
-            core.ABC_FreeWalletInfo(info);
-
-            return wallet;
+        SWIGTYPE_p_bool archived = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+        result = core.ABC_WalletArchived(
+            AirbitzApplication.getUsername(), uuid, archived, error);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            wallet.setAttributes(
+                getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0 ? 0x1 : 0);
         }
-        else
-        {
-            Log.d("", "Error: CoreBridge.getWalletFromCore: " + Error.getSzDescription());
-            return createLoading(uuid);
-        }
+
+        return wallet;
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -2135,10 +2156,14 @@ public class CoreAPI {
     // Exchange Rate updates may have delay the first call
     private void updateAllExchangeRates(Set<Integer> currencies) {
         if (AirbitzApplication.isLoggedIn()) {
+Log.d("CoreApiCurrency", "---------");
+Log.d("CoreApiCurrency", "" + coreSettings().getCurrencyNum());
+Log.d("CoreApiCurrency", "---------");
             tABC_Error error = new tABC_Error();
             core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
             for (Integer currency : currencies) {
+Log.d("CoreApiCurrency", "" + currency);
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                     AirbitzApplication.getPassword(), currency, error);
             }
@@ -2351,23 +2376,6 @@ public class CoreAPI {
             }
         }
         return uuids;
-    }
-
-    private Wallet createLoading(String uuid) {
-        tABC_Error error = new tABC_Error();
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_bool archived = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
-        core.ABC_WalletArchived(
-            AirbitzApplication.getUsername(), uuid, archived, error);
-
-        Wallet w = new Wallet("Loading...");
-        w.setBalanceSatoshi(0);
-        w.setUUID(uuid);
-        w.setCurrencyNum(-1);
-        w.setAttributes(
-            getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0 ? 0x1 : 0);
-
-        return w;
     }
 
     private List<Wallet> getWallets() {
