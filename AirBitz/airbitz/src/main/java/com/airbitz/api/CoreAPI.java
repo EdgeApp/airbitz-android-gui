@@ -2688,6 +2688,7 @@ Log.d("CoreApiCurrency", "" + currency);
 
                     // Request a data sync as soon as watcher is started
                     requestWalletDataSync(uuid);
+                    mMainHandler.sendEmptyMessage(RELOAD);
                 }
             }
         });
