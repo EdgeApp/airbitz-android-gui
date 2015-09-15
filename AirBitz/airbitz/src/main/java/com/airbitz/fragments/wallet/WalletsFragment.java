@@ -180,7 +180,9 @@ public class WalletsFragment extends WalletBaseFragment implements
                     view.setSelected(true);
 
                     walletChanged(wallet);
-                    mActivity.onBackPressed();
+
+                    mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.WALLET.ordinal());
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
         });
@@ -226,6 +228,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         if (getActivity() == null || !isAdded() || !finishedResume()) {
             return;
         }
+        mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.WALLET.ordinal());
         mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
     }
 
