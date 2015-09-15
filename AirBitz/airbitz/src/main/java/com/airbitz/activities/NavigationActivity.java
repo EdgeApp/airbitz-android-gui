@@ -117,6 +117,7 @@ import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.ListViewUtility;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -2397,6 +2398,7 @@ public class NavigationActivity extends ActionBarActivity
         mOtherAccounts.clear();
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
+        ListViewUtility.setListViewHeightBasedOnChildren(mOtherAccountsListView);
         if(show && !mOtherAccounts.isEmpty()) {
             mOtherAccountsListView.setVisibility(View.VISIBLE);
             mDrawerBuySellLayout.setVisibility(View.GONE);
