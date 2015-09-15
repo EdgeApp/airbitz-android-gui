@@ -41,12 +41,12 @@
                     android:textSize="18dp" />
 
 
-                    <ImageView
-                        android:id="@+id/fragment_setup_writeitdown_edittext"
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/write_down_pencil" />
+                <ImageView
+                    android:id="@+id/fragment_setup_writeitdown_edittext"
+                    android:layout_width="@dimen/writeitdown_size"
+                    android:layout_height="@dimen/writeitdown_size"
+                    android:layout_weight="1"
+                    android:background="@drawable/write_down_pencil" />
 
 
                 <RelativeLayout

@@ -34,7 +34,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
                         android:paddingLeft="6.3dp"
                         android:paddingRight="6.3dp"
                         android:text="@string/fragment_setup_username_label"
@@ -47,7 +46,7 @@
                         <com.airbitz.objects.MinEditText
                             android:id="@+id/fragment_setup_username_edittext"
                             android:hint="@string/activity_signup_username_hint"
-                            android:layout_marginTop="25.4dp"
+                            android:layout_marginTop="10dp"
                             style="@style/EditText" />
 
                         </RelativeLayout>
