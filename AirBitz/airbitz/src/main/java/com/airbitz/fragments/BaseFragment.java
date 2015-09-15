@@ -66,6 +66,7 @@ public class BaseFragment extends Fragment {
     protected Toolbar mToolbar;
     protected boolean mDrawerEnabled = true;
     protected boolean mBackEnabled = false;
+    protected boolean mPositionNavBar = true;
     protected int mIconColor;
 
     public BaseFragment() {
@@ -146,7 +147,7 @@ public class BaseFragment extends Fragment {
         super.onResume();
 
         final View view = getView();
-        if (view.getViewTreeObserver().isAlive()) {
+        if (mPositionNavBar && view.getViewTreeObserver().isAlive()) {
             ViewTreeObserver observer = view.getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override

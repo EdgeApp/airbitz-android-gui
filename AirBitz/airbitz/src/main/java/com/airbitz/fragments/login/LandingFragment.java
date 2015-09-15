@@ -144,6 +144,7 @@ public class LandingFragment extends BaseFragment implements
         saveInvalidEntryCount(0);
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        mPositionNavBar = false;
     }
 
     View mView;
