@@ -993,6 +993,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         @Override
         protected String doInBackground(Void... params) {
             Log.d(TAG, "Initiating SEND");
+            try {
+                // Hack: Give the fragment manager time to finish
+                Thread.sleep(500);
+            } catch (Exception e) {
+                Log.e(TAG, "", e);
+            }
             return mSpendTarget.approve(mFromWallet.getUUID(), mAmountFiat);
         }
 
