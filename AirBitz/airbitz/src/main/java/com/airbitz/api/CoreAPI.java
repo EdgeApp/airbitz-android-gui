@@ -1973,6 +1973,7 @@ public class CoreAPI {
 
     private Handler mMainHandler;
     private Handler mCoreHandler;
+    private Handler mWatcherHandler;
     private Handler mDataHandler;
     private boolean mDataFetched = false;
 
@@ -2023,6 +2024,10 @@ public class CoreAPI {
         ht.start();
         mCoreHandler = new Handler(ht.getLooper());
 
+        ht = new HandlerThread("Watchers");
+        ht.start();
+        mWatcherHandler = new Handler(ht.getLooper());
+
         List<String> uuids = loadWalletUUIDs();
         for (final String uuid : uuids) {
             mCoreHandler.post(new Runnable() {
@@ -2057,10 +2062,13 @@ public class CoreAPI {
         mCoreHandler.sendEmptyMessage(LAST);
         mDataHandler.removeCallbacksAndMessages(null);
         mDataHandler.sendEmptyMessage(LAST);
+        mWatcherHandler.removeCallbacksAndMessages(null);
+        mWatcherHandler.sendEmptyMessage(LAST);
         mMainHandler.removeCallbacksAndMessages(null);
         mMainHandler.sendEmptyMessage(LAST);
         while (mDataHandler.hasMessages(LAST)
                 || mCoreHandler.hasMessages(LAST)
+                || mWatcherHandler.hasMessages(LAST)
                 || mMainHandler.hasMessages(LAST)) {
             try {
                 Thread.sleep(200);
@@ -2666,7 +2674,7 @@ Log.d("CoreApiCurrency", "" + currency);
     }
 
     private void startWatcher(final String uuid) {
-        mMainHandler.post(new Runnable() {
+        mWatcherHandler.post(new Runnable() {
             public void run() {
                 if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
                     tABC_Error error = new tABC_Error();
@@ -2702,7 +2710,7 @@ Log.d("CoreApiCurrency", "" + currency);
     }
 
     public void connectWatcher(final String uuid) {
-        mMainHandler.post(new Runnable() {
+        mWatcherHandler.post(new Runnable() {
             public void run() {
                 if (!hasConnectivity()) {
                     Log.d(TAG, "Skipping connect...no connectivity");
@@ -2718,10 +2726,14 @@ Log.d("CoreApiCurrency", "" + currency);
     }
 
     public void disconnectWatchers() {
-        for (String uuid : mWatcherTasks.keySet()) {
-            tABC_Error error = new tABC_Error();
-            core.ABC_WatcherDisconnect(uuid, error);
-        }
+        mWatcherHandler.post(new Runnable() {
+            public void run() {
+                for (String uuid : mWatcherTasks.keySet()) {
+                    tABC_Error error = new tABC_Error();
+                    core.ABC_WatcherDisconnect(uuid, error);
+                }
+            }
+        });
     }
 
     private void watchAddresses(final String uuid) {
