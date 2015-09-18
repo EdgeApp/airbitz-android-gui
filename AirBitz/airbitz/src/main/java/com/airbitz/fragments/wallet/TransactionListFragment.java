@@ -457,8 +457,11 @@ public class TransactionListFragment extends WalletBaseFragment
 
     // Sum all transactions and show in total
     private void updateBalances() {
-        if (mWallet != null && !mWallet.isLoading()) {
-            long totalSatoshis = mWallet.getBalanceSatoshi();
+        if (mTransactions != null && mWallet != null && !mWallet.isLoading()) {
+            long totalSatoshis = 0;
+            for (Transaction t : mTransactions) {
+                totalSatoshis += t.getAmountSatoshi();
+            }
 
             mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
             mTopType.setText(mCoreApi.getDefaultBTCDenomination());
