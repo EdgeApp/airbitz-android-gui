@@ -66,6 +66,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
     private Uri mUri;
     private String strName;
     private String strCategory;
+    private String maxNumAddress;
     private String strNotes;
     private String _successUrl;
     private String _errorUrl;
@@ -129,6 +130,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
                 strName = map.containsKey("x-source") ? map.get("x-source") : "";
                 strNotes = map.containsKey("notes") ? map.get("notes") : "";
                 strCategory = map.containsKey("category") ? map.get("category") : "";
+                maxNumAddress = map.containsKey("max-number") ? map.get("max-number") : "";
                 _successUrl = map.get("x-success");
                 _errorUrl = map.get("x-error");
                 _cancelUrl = map.get("x-cancel");
@@ -153,9 +155,9 @@ public class AddressRequestFragment extends WalletBaseFragment {
         if (_successUrl != null) {
             String query;
             if (_successUrl.contains("?")) {
-                query = "&addr=";
+                query = "&address=";
             } else {
-                query = "?addr=";
+                query = "?address=";
             }
             try {
                 query += URLEncoder.encode(mRequestURI, "utf-8") + "&x-source=Airbitz";
@@ -192,9 +194,9 @@ public class AddressRequestFragment extends WalletBaseFragment {
             String cancelMessage = Uri.encode("User cancelled the request.");
             String query;
             if (!_cancelUrl.contains("?")) {
-                query = _cancelUrl + "?addr=&cancelMessage=" + cancelMessage;
+                query = _cancelUrl + "?address=&cancelMessage=" + cancelMessage;
             } else {
-                query = _cancelUrl + "&addr=&cancelMessage=" + cancelMessage;
+                query = _cancelUrl + "&address=&cancelMessage=" + cancelMessage;
             }
             Uri cancelUri = Uri.parse(query);
             Intent errorIntent = new Intent(Intent.ACTION_VIEW, cancelUri);
