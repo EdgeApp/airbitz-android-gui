@@ -74,6 +74,7 @@ import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
@@ -91,7 +92,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TransactionListFragment extends WalletsFragment
+public class TransactionListFragment extends WalletBaseFragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -150,9 +151,11 @@ public class TransactionListFragment extends WalletsFragment
     private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
     private View mView;
     private TransactionTask mTransactionTask;
-    private SearchTask mSearchTask;
     private Handler mHandler = new Handler();
-    ExecutorService mExecutor = Executors.newFixedThreadPool(2);
+
+    public TransactionListFragment() {
+        mAllowArchived = true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,8 +186,13 @@ public class TransactionListFragment extends WalletsFragment
         mSwipeLayout.setOnRefreshListener(this);
 
         mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions);
-        mTransactionAdapter.setLoading(true);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+        if (mWallet != null) {
+            mTransactionAdapter.setWallet(mWallet);
+            mTransactionAdapter.setLoading(false);
+        } else {
+            mTransactionAdapter.setLoading(true);
+        }
         mListTransaction = (ListView) mView.findViewById(R.id.listview_transaction);
         if (mListHeaderView == null) {
             mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_header, null, false);
@@ -195,14 +203,12 @@ public class TransactionListFragment extends WalletsFragment
         mSendButton = mListHeaderView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = mListHeaderView.findViewById(R.id.fragment_wallet_request_button);
 
-        Typeface typefaceWithCustomB = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
-
         mBitCoinBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_top);
-        mBitCoinBalanceButton.setTypeface(typefaceWithCustomB);
+        mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_bottom);
-        mFiatBalanceButton.setTypeface(typefaceWithCustomB);
+        mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
         mButtonMover = (Button) mListHeaderView.findViewById(R.id.button_mover);
-        mButtonMover.setTypeface(typefaceWithCustomB);
+        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
         mBalanceSwitchLayout = (RelativeLayout) mListHeaderView.findViewById(R.id.switchable);
         mSwitchView = (RelativeLayout) mListHeaderView.findViewById(R.id.layout_balance);
         mMoverCoin = (ImageView) mListHeaderView.findViewById(R.id.button_mover_coin);
@@ -214,6 +220,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = true;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -222,6 +229,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = false;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -230,6 +238,7 @@ public class TransactionListFragment extends WalletsFragment
             @Override
             public void onClick(View view) {
                 mOnBitcoinMode = !mOnBitcoinMode;
+                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
                 animateBar();
             }
         });
@@ -280,8 +289,6 @@ public class TransactionListFragment extends WalletsFragment
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
 
-                    mResetState = false;
-                    mPreserveWallet = true;
                     mActivity.pushFragment(fragment, NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
@@ -305,7 +312,12 @@ public class TransactionListFragment extends WalletsFragment
         case android.R.id.home:
             return onBackPress();
         case R.id.action_search:
-            showSearch();
+            if (!mLoading) {
+                showSearch();
+            }
+            return true;
+        case R.id.action_export:
+            ExportFragment.pushFragment(mActivity);
             return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS));
@@ -321,14 +333,10 @@ public class TransactionListFragment extends WalletsFragment
             return;
         }
         try {
-            if (mSearchTask != null && mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
-                mSearchTask.cancel(true);
-            }
             if (TextUtils.isEmpty(query)) {
                 updateTransactionsListView(mAllTransactions);
             } else {
-                mSearchTask = new SearchTask();
-                mSearchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
+                startTransactionTask();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -355,6 +363,18 @@ public class TransactionListFragment extends WalletsFragment
         return false;
     }
 
+    @Override
+    public void showWalletList() {
+        if (mSearching || getActivity() == null || !finishedResume()) {
+            return;
+        }
+        mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLETS.ordinal());
+    }
+
+    @Override
+    public void hideWalletList() {
+    }
+
     private void buildFragments(Bundle bundle) {
         if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)
                 || bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
@@ -365,6 +385,9 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     private void startTransactionTask() {
+        if (mWallet == null || mWallet.isLoading()) {
+            return;
+        }
         if (mTransactionTask != null) {
             mTransactionTask.cancel(false);
         }
@@ -372,10 +395,7 @@ public class TransactionListFragment extends WalletsFragment
         mTransactionAdapter.setWallet(mWallet);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
 
-        mRequestButton.setClickable(false);
-        mSendButton.setClickable(false);
-
-        mTransactionTask = new TransactionTask();
+        mTransactionTask = new TransactionTask(mSearchQuery);
         mTransactionTask.execute(mWallet);
     }
 
@@ -418,9 +438,8 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    @Override
     protected void updateBalanceBar() {
-        super.updateBalanceBar();
+        // super.updateBalanceBar();
         positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();
@@ -430,7 +449,7 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     public void onPause() {
         super.onPause();
-        if(mTransactionTask!=null) {
+        if (mTransactionTask != null) {
             mTransactionTask.cancel(true);
             mTransactionTask = null;
         }
@@ -438,8 +457,11 @@ public class TransactionListFragment extends WalletsFragment
 
     // Sum all transactions and show in total
     private void updateBalances() {
-        if (mWallet != null) {
-            long totalSatoshis = mWallet.getBalanceSatoshi();
+        if (mTransactions != null && mWallet != null && !mWallet.isLoading()) {
+            long totalSatoshis = 0;
+            for (Transaction t : mTransactions) {
+                totalSatoshis += t.getAmountSatoshi();
+            }
 
             mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
             mTopType.setText(mCoreApi.getDefaultBTCDenomination());
@@ -466,16 +488,11 @@ public class TransactionListFragment extends WalletsFragment
         }
     }
 
-    private List<Transaction> searchTransactions(String term) {
-        return mCoreApi.searchTransactionsIn(mWallet, term);
-    }
-
     private void animateBar() {
         if (mBarIsAnimating) {
             return;
         }
         mBarIsAnimating = true;
-        AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
         if (mOnBitcoinMode) {
             mHandler.post(animateSwitchUp);
         } else {
@@ -489,6 +506,7 @@ public class TransactionListFragment extends WalletsFragment
         super.onExchangeRatesChange();
         if (!mLoading) {
             updateBalances();
+            updateSendRequestButtons();
         }
     }
 
@@ -496,6 +514,8 @@ public class TransactionListFragment extends WalletsFragment
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
         if (mWallet != null) {
+            updateBalances();
+            updateSendRequestButtons();
             startTransactionTask();
         }
     }
@@ -503,6 +523,8 @@ public class TransactionListFragment extends WalletsFragment
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
+        updateBalances();
+        updateSendRequestButtons();
         startTransactionTask();
     }
 
@@ -520,13 +542,18 @@ public class TransactionListFragment extends WalletsFragment
     }
 
     class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
-
-        public TransactionTask() {
+        String query;
+        public TransactionTask(String query) {
+            this.query = query;
         }
 
         @Override
         protected List<Transaction> doInBackground(Wallet... wallet) {
-            return mCoreApi.loadAllTransactions(wallet[0]);
+            if (TextUtils.isEmpty(query)) {
+                return mCoreApi.loadAllTransactions(wallet[0]);
+            } else {
+                return mCoreApi.searchTransactionsIn(wallet[0], query);
+            }
         }
 
         @Override
@@ -536,39 +563,12 @@ public class TransactionListFragment extends WalletsFragment
             }
             mAllTransactions = transactions;
             updateTransactionsListView(transactions);
-
             mTransactionTask = null;
         }
 
         @Override
         protected void onCancelled() {
             mTransactionTask = null;
-            super.onCancelled();
-        }
-    }
-
-    class SearchTask extends AsyncTask<String, Integer, List<Transaction>> {
-
-        public SearchTask() {
-        }
-
-        @Override
-        protected List<Transaction> doInBackground(String... strings) {
-            return searchTransactions(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<Transaction> transactions) {
-            if (!isAdded()) {
-                return;
-            }
-            updateTransactionsListView(transactions);
-            mSearchTask = null;
-        }
-
-        @Override
-        protected void onCancelled() {
-            mSearchTask = null;
             super.onCancelled();
         }
     }

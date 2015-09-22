@@ -31,7 +31,6 @@
             android:singleLine="true"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="1000 bits = 270.00 USD"
             android:textColor="@color/dark_gray_text"
             android:textSize="14dp" />
 
@@ -171,7 +170,6 @@
                         android:gravity="right"
                         android:textColor="@android:color/white"
                         android:textSize="20dp"
-                        android:text="USD"
                         android:layout_marginRight="15dp"
                         android:visibility="visible"
                         android:textStyle="normal"
@@ -220,7 +218,6 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:text="mBTC"
                         android:textColor="@color/bright_text_hint"
                         android:textSize="18dp"
                         android:onClick="onClickRequestSwapCurrency"
@@ -233,7 +230,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="20"
                         android:singleLine="true"
-                        android:text="104.25"
                         android:textColor="@color/bright_text_hint"
                         android:textSize="18dp"
                         android:onClick="onClick"

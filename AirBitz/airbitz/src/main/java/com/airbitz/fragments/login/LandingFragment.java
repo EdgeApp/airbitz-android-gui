@@ -144,6 +144,7 @@ public class LandingFragment extends BaseFragment implements
         saveInvalidEntryCount(0);
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        mPositionNavBar = false;
     }
 
     View mView;
@@ -509,8 +510,7 @@ public class LandingFragment extends BaseFragment implements
                 refreshView(true, true, true);
                 return;
             }
-        }
-        else {
+        } else if (!AirbitzApplication.isLoggedIn()) {
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
@@ -526,6 +526,13 @@ public class LandingFragment extends BaseFragment implements
         mActivity.hideSoftKeyboard(mPasswordEditText);
     }
 
+    public void refreshViewAndUsername() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+        mPinLoginMode = mCoreAPI.PinLoginExists(mUsername);
+        refreshView();
+    }
+
     public void refreshView() {
         refreshView(mPinLoginMode, mPinLoginMode);
     }
@@ -535,6 +542,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp, boolean isTransition) {
+        showAccountsList(false);
         if (isTransition) {
             mBlackoutView.setVisibility(View.VISIBLE);
             mBlackoutView.setAlpha(1f);

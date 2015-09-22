@@ -30,10 +30,13 @@
     <dimen name="nine_mm">56.7dp</dimen>
     <dimen name="fragment_landing_content_total_height">333.9dp</dimen>
     <dimen name="activity_signup_popup_height">119.7dp</dimen>
+    <dimen name="signup_padding_top">20dp</dimen>
+    <dimen name="signup_padding_bottom">50dp</dimen>
     <dimen name="fragment_wallet_addwallet_height">150dp</dimen>
     <dimen name="currency_switch_height">37.8dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_height">138.6dp</dimen>
     <dimen name="fragment_wallet_search_scroll_animation_top">157.5dp</dimen>
+    <dimen name="writeitdown_size">180dp</dimen>
     <dimen name="map_height">480dp</dimen>
     <dimen name="map_padding">120dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>

@@ -47,6 +47,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -65,6 +66,7 @@ public class BaseFragment extends Fragment {
     protected Toolbar mToolbar;
     protected boolean mDrawerEnabled = true;
     protected boolean mBackEnabled = false;
+    protected boolean mPositionNavBar = true;
     protected int mIconColor;
 
     public BaseFragment() {
@@ -133,13 +135,31 @@ public class BaseFragment extends Fragment {
         mActivity = (NavigationActivity) activity;
     }
 
+    protected float getFabTop() {
+        return mActivity.getFabTop();
+    }
+
+    public void finishFabAnimation() {
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        if (mBackEnabled) {
-            mActivity.hideNavBar();
-        } else {
-            mActivity.showNavBar();
+
+        final View view = getView();
+        if (mPositionNavBar && view.getViewTreeObserver().isAlive()) {
+            ViewTreeObserver observer = view.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if (mBackEnabled) {
+                        mActivity.hideNavBar();
+                    } else {
+                        mActivity.showNavBar(getFabTop());
+                    }
+                }
+            });
         }
     }
 
@@ -238,14 +258,30 @@ public class BaseFragment extends Fragment {
     }
 
     protected void showArrow() {
+        showArrow(true);
+    }
+
+    protected void showArrow(boolean animate) {
         if (mMaterialMenu != null) {
-            mMaterialMenu.animateIconState(IconState.ARROW);
+            if (animate) {
+                mMaterialMenu.animateIconState(IconState.ARROW);
+            } else {
+                mMaterialMenu.setIconState(IconState.ARROW);
+            }
         }
     }
 
     protected void showBurger() {
+        showBurger(true);
+    }
+
+    protected void showBurger(boolean animate) {
         if (mMaterialMenu != null) {
-            mMaterialMenu.animateIconState(IconState.BURGER);
+            if (animate) {
+                mMaterialMenu.animateIconState(IconState.BURGER);
+            } else {
+                mMaterialMenu.setIconState(IconState.BURGER);
+            }
         }
     }
 

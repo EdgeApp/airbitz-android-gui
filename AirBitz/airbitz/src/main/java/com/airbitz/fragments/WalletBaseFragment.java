@@ -92,8 +92,14 @@ public class WalletBaseFragment extends BaseFragment implements
     protected boolean mDrawerEnabled = false;
     protected boolean mDropDownEnabled = true;
     protected boolean mOnBitcoinMode = true;
-    protected boolean mExpanded = false;
+    protected boolean mAllowArchived = false;
     protected boolean mLoading = true;
+    protected String mSearchQuery = null;
+
+    private Long mResumeTime = null;
+
+    private enum MenuState { OPEN, CLOSED, OPENING, CLOSING };
+    private MenuState mMenuState = MenuState.CLOSED;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,10 +107,9 @@ public class WalletBaseFragment extends BaseFragment implements
         mCoreApi = CoreAPI.getApi();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         mLoading = true;
-        mSearching = false;
         // Check for cached wallets
         if (null == mWallets) {
-            mWallets = mCoreApi.getCoreActiveWallets();
+            mWallets = fetchCoreWallets();
         }
         // Create empty list
         if (null == mWallets) {
@@ -117,6 +122,9 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onStart() {
         super.onStart();
+        if (!AirbitzApplication.isLoggedIn()) {
+            return;
+        }
 
         View view = getView();
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
@@ -127,7 +135,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mBlocker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mExpanded) {
+                if (mMenuState == MenuState.OPEN) {
                     hideWalletList();
                 }
             }
@@ -149,7 +157,8 @@ public class WalletBaseFragment extends BaseFragment implements
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    onSearchQuery(editable.toString());
+                    mSearchQuery = editable.toString();
+                    onSearchQuery(mSearchQuery);
                 }
             });
             mSearch.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -171,6 +180,8 @@ public class WalletBaseFragment extends BaseFragment implements
                             hideSearch();
                         } else {
                             mSearch.setText("");
+                            mSearch.requestFocus();
+                            mSearchQuery = null;
                         }
                     }
                 });
@@ -186,7 +197,7 @@ public class WalletBaseFragment extends BaseFragment implements
                 }
             });
             setupWalletViews(view);
-            if (mExpanded) {
+            if (mMenuState == MenuState.OPEN) {
                 finishShowWallets();
             } else {
                 finishHideWallets();
@@ -203,11 +214,21 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
+    protected void disableTitleClick() {
+        if (null != mTitleFrame) {
+            mTitleFrame.setOnClickListener(null);
+        }
+    }
+
     protected void onSearchQuery(String query) {
     }
 
+    protected List<Wallet> fetchCoreWallets() {
+        return mCoreApi.getCoreActiveWallets();
+    }
+
     protected void fetchWallets() {
-        List<Wallet> tmp = mCoreApi.getCoreActiveWallets();
+        List<Wallet> tmp = fetchCoreWallets();
         if (tmp != null) {
             mWallets.clear();
             mWallets.addAll(tmp);
@@ -226,18 +247,13 @@ public class WalletBaseFragment extends BaseFragment implements
                 AirbitzApplication.setCurrentWallet(uuid);
             }
         }
-        if (uuid != null && null != mWallets) {
-            for (Wallet w : mWallets) {
-                if (!w.getUUID().equals(uuid)) {
-                    continue;
-                }
-                mWallet = w;
-                break;
-            }
+        if (uuid != null) {
+            mWallet = mCoreApi.getWalletFromUUID(uuid);
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
         if (mWallet != null
+                && !mAllowArchived
                 && mWallet.isArchived()
                 && mWallet.getUUID().equals(AirbitzApplication.getCurrentWallet())) {
             if (mWallets != null && mWallets.size() > 0) {
@@ -246,7 +262,7 @@ public class WalletBaseFragment extends BaseFragment implements
             }
         }
         if (mWallet != null) {
-            mLoading = mWallet.getCurrencyNum() == -1 ? true : false;
+            mLoading = mWallet.isLoading();
         }
     }
 
@@ -317,6 +333,11 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        mResumeTime = System.currentTimeMillis();
+        if (mSearching) {
+            showSearch();
+            showArrow(false);
+        }
 
         mCoreApi.setOnWalletLoadedListener(this);
         mCoreApi.addExchangeRateChangeListener(this);
@@ -326,10 +347,16 @@ public class WalletBaseFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
+        mResumeTime = null;
 
         mCoreApi.setOnWalletLoadedListener(null);
         mCoreApi.removeExchangeRateChangeListener(this);
         mActivity.setOnWalletUpdated(null);
+    }
+
+    protected boolean finishedResume() {
+        return mResumeTime != null
+            && System.currentTimeMillis() - mResumeTime > 500;
     }
 
     @Override
@@ -369,11 +396,11 @@ public class WalletBaseFragment extends BaseFragment implements
 
     protected void walletChanged(Wallet newWallet) {
         mWallet = newWallet;
-        if (!newWallet.isArchived()) {
-            AirbitzApplication.setCurrentWallet(mWallet.getUUID());
-        }
+        AirbitzApplication.setCurrentWallet(mWallet.getUUID());
         updateTitle();
-        hideWalletList();
+        if (mDropDownEnabled) {
+            hideWalletList();
+        }
     }
 
     protected void setHomeEnabled(boolean enabled) {
@@ -397,11 +424,13 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public boolean showSearch() {
-        if (mSearchLayout.getVisibility() != View.VISIBLE) {
+        if (mMenuState == MenuState.CLOSED
+                && mSearchLayout.getVisibility() != View.VISIBLE) {
             showArrow();
             mSearchLayout.setVisibility(View.VISIBLE);
             mTitleFrame.setVisibility(View.INVISIBLE);
             mSearch.requestFocus();
+            mActivity.lockDrawer();
             mActivity.showSoftKeyboard(mSearch);
 
             mSearching = true;
@@ -413,9 +442,12 @@ public class WalletBaseFragment extends BaseFragment implements
 
     public boolean hideSearch() {
         if (mSearchLayout.getVisibility() == View.VISIBLE) {
+            mSearch.setText("");
+            mSearchQuery = null;
             showBurger();
             mSearchLayout.setVisibility(View.GONE);
             mTitleFrame.setVisibility(View.VISIBLE);
+            mActivity.unlockDrawer();
             mActivity.hideSoftKeyboard(mSearchLayout);
 
             mSearching = false;
@@ -434,7 +466,7 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public boolean isMenuExpanded() {
-        return mExpanded;
+        return mMenuState == MenuState.OPEN;
     }
 
     protected int getAnimDuration() {
@@ -442,6 +474,9 @@ public class WalletBaseFragment extends BaseFragment implements
     }
 
     public void showWalletList() {
+        if (mSearching) {
+            return;
+        }
         ObjectAnimator blocker = ObjectAnimator.ofFloat(mBlocker, "alpha", 0f, 1f);
         ObjectAnimator key = ObjectAnimator.ofFloat(mWalletsContainer, "translationY", -mWalletsContainer.getHeight(), 0f);
 
@@ -458,6 +493,7 @@ public class WalletBaseFragment extends BaseFragment implements
             public void onAnimationStart(Animator animator) {
                 mBlocker.setVisibility(View.VISIBLE);
                 mWalletsContainer.setVisibility(View.VISIBLE);
+                mMenuState = MenuState.OPENING;
             }
         });
         set.start();
@@ -467,7 +503,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mWalletsContainer.setVisibility(View.VISIBLE);
         mBlocker.setVisibility(View.VISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = true;
+        mMenuState = MenuState.OPEN;
 
         showArrow();
     }
@@ -490,6 +526,7 @@ public class WalletBaseFragment extends BaseFragment implements
             public void onAnimationStart(Animator animator) {
                 mWalletsContainer.setVisibility(View.VISIBLE);
                 mBlocker.setVisibility(View.VISIBLE);
+                mMenuState = MenuState.CLOSING;
             }
         });
         set.start();
@@ -499,7 +536,7 @@ public class WalletBaseFragment extends BaseFragment implements
         mWalletsContainer.setVisibility(View.INVISIBLE);
         mBlocker.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = false;
+        mMenuState = MenuState.CLOSED;
 
         updateNavigationIcon();
 

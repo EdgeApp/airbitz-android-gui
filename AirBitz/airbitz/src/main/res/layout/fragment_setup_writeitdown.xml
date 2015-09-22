@@ -6,15 +6,17 @@
     android:background="@color/gray_frost"
     android:animateLayoutChanges="true">
 
-    <include layout="@layout/layout_toolbar_header" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title_header">
 
         <RelativeLayout
             android:id="@+id/fragment_setup_writeitdown_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="?android:attr/actionBarSize"
-            android:layout_below="@+id/layout_title_header">
+            android:paddingBottom="@dimen/signup_padding_bottom"
+            android:paddingTop="@dimen/signup_padding_top">
 
             <LinearLayout
                 android:id="@+id/fragment_setup_writeitdown_top"
@@ -39,12 +41,12 @@
                     android:textSize="18dp" />
 
 
-                    <ImageView
-                        android:id="@+id/fragment_setup_writeitdown_edittext"
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/write_down_pencil" />
+                <ImageView
+                    android:id="@+id/fragment_setup_writeitdown_edittext"
+                    android:layout_width="@dimen/writeitdown_size"
+                    android:layout_height="@dimen/writeitdown_size"
+                    android:layout_weight="1"
+                    android:background="@drawable/write_down_pencil" />
 
 
                 <RelativeLayout
@@ -254,26 +256,28 @@
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/layout_decide"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/fragment_setup_next"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/string_finish"
-                    android:textColor="@android:color/white"
-                    android:layout_alignParentRight="true"
-                    android:textSize="16dp"
-                    android:visibility="visible"
-                    style="@style/GreenButton"/>
-
-            </RelativeLayout>
-
         </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/layout_decide"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/fragment_setup_next"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/string_finish"
+            android:textColor="@android:color/white"
+            android:layout_alignParentRight="true"
+            android:textSize="16dp"
+            android:visibility="visible"
+            style="@style/GreenButton"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/layout_toolbar_header" />
 
 </RelativeLayout>

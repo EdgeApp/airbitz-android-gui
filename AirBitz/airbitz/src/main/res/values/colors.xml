@@ -81,11 +81,17 @@
     <color name="btn_blue">#ff006698</color>
     <color name="btn_blue_pressed">#99006698</color>
 
+    <color name="btn_green">#ff80C342</color>
+    <color name="btn_green_pressed">#9980C342</color>
+
     <color name="btn_gray">#ff999999</color>
     <color name="btn_gray_pressed">#99999999</color>
 
     <color name="btn_red">#ffd02e32</color>
     <color name="btn_red_pressed">#99d02e32</color>
+
+    <color name="btn_orange">#ffd02e32</color>
+    <color name="btn_orange_pressed">#99d02e32</color>
 
     <color name="colorPrimary">#ff2291CF</color>
     <color name="colorPrimaryPressed">#aa2291CF</color>

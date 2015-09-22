@@ -4,6 +4,7 @@
     android:id="@+id/fragment_wallet_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryFrost"
     android:focusableInTouchMode="true">
 
     <LinearLayout
@@ -26,21 +27,15 @@
                 android:layout_marginTop="4dp"
                 android:background="@android:color/transparent"
                 android:divider="@drawable/wallet_list_divider"
-                android:dividerHeight="0dp" />
+                android:dividerHeight="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/action_button_size"
+                />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/toolbar_blocker"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:background="@android:color/black"
-        android:visibility="invisible" />
-
-    <include layout="@layout/fragment_wallets" />
-
-    <include layout="@layout/layout_toolbar_title" />
+    <include layout="@layout/layout_toolbar_dropdown" />
 
 </RelativeLayout>

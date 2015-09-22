@@ -193,14 +193,18 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private SaveTransactionAsyncTask mSaveTask;
 
     private Category baseIncomeCat, baseExpenseCat, baseTransferCat, baseExchangeCat;
-    private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_btn_green,
-            R.drawable.bg_btn_blue_stretch, R.drawable.bg_button_orange};
+    private int[] mCategoryBackgrounds = {R.drawable.bg_button_red, R.drawable.bg_button_green,
+            R.drawable.bg_button_blue, R.drawable.bg_button_orange};
 
     private Picasso mPicasso;
 
     private View mView;
     private NavigationActivity mActivity;
     private AlertDialog mMessageDialog;
+
+    public TransactionDetailFragment() {
+        mAllowArchived = true;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -365,29 +369,18 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         mNoteEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_notes);
         mNoteEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mNoteEdittext.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 showUpperLayout(!hasFocus);
                 showMiddleLayout(!hasFocus);
+                if (!hasFocus) {
+                    mActivity.hideSoftKeyboard(mView);
+                }
             }
         });
         mNoteEdittext.setHorizontallyScrolling(false);
         mNoteEdittext.setMaxLines(Integer.MAX_VALUE);
-
-        mNoteEdittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    showUpperLayout(true);
-                    showMiddleLayout(true);
-                    mActivity.hideSoftKeyboard(mView);
-                    return true;
-                }
-                return false;
-            }
-        });
 
         mCategoryEdittext = (EditText) mView.findViewById(R.id.transaction_detail_edittext_category);
         mCategoryEdittext.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -417,6 +410,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     showUpperLayout(true);
                     showMiddleLayout(true);
                     mActivity.hideSoftKeyboard(mView);
+                    mCategoryEdittext.clearFocus();
                     return true;
                 }
                 return false;
@@ -636,6 +630,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private void hideCalculator() {
         mCalculator.hideCalculator();
         showUpperLayout(true);
+
+        try {
+            String fiatString = mFiatValueEdittext.getText().toString();
+            double fiatAmount = Double.parseDouble(fiatString);
+            if (mTransaction.getAmountSatoshi() < 0 && fiatAmount > 0) {
+                mFiatValueEdittext.setText("-" + fiatString);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
     }
 
     private void showUpperLayout(boolean visible) {
@@ -676,7 +680,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             String txId = bundle.getString(Transaction.TXID);
             if (walletUUID.isEmpty()) {
                 Log.d(TAG, "no detail info");
-            } else {
+            } else if (mWallet == null || mTransaction == null) {
                 mWallet = mCoreApi.getWalletFromUUID(walletUUID);
                 mTransaction = mCoreApi.getTransaction(walletUUID, txId);
 
@@ -691,6 +695,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                         mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
                         mBizId = mTransaction.getmBizId();
                     }
+                    UpdateView(mTransaction);
                 }
             }
         }
@@ -703,7 +708,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if(mTransaction != null) {
             Log.d(TAG, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
-            UpdateView(mTransaction);
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
@@ -1160,7 +1164,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
 //            Log.d(TAG, "Searching for "+type);
             addMatchesForPrefix(type, match);
         }
-        mCategoryAdapter.notifyDataSetChanged();
+        if (null != mCategoryAdapter) {
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

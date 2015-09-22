@@ -200,6 +200,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         mAutoUpdatingTextFields = true;
         setHomeEnabled(true);
+        if (null != mSpendTarget && mSpendTarget.isTransfer()) {
+            setDropdownEnabled(false);
+        }
     }
 
     @Override
@@ -230,6 +233,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
         mSlideLayout = (RelativeLayout) mView.findViewById(R.id.layout_slide);
+        mSlideLayout.setVisibility(View.INVISIBLE);
 
         mToEdittext.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.BOLD);
 
@@ -989,6 +993,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         @Override
         protected String doInBackground(Void... params) {
             Log.d(TAG, "Initiating SEND");
+            try {
+                // Hack: Give the fragment manager time to finish
+                Thread.sleep(500);
+            } catch (Exception e) {
+                Log.e(TAG, "", e);
+            }
             return mSpendTarget.approve(mFromWallet.getUUID(), mAmountFiat);
         }
 

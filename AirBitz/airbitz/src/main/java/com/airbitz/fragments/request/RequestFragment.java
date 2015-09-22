@@ -35,7 +35,6 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -123,21 +122,14 @@ public class RequestFragment extends WalletBaseFragment implements
         NfcAdapter.CreateNdefMessageCallback,
         Calculator.OnCalculatorKey
 {
-    public static final String BITCOIN_VALUE = "com.airbitz.request.bitcoin_value";
-    public static final String SATOSHI_VALUE = "com.airbitz.request.satoshi_value";
-    public static final String FIAT_VALUE = "com.airbitz.request.fiat_value";
-    public static final String BITCOIN_ID = "com.airbitz.request.bitcoinid";
-    public static final String BITCOIN_ADDRESS = "com.airbitz.request.bitcoinaddress";
+
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
     public static final String MERCHANT_MODE = "com.airbitz.request.merchant_mode";
 
     private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.requestqr.firstusagecount";
     private final int READVERTISE_REPEAT_PERIOD = 1000 * 60 * 2;
-    public static final int PARTIAL_PAYMENT_TIMEOUT = 10000;
 
     private final String TAG = getClass().getSimpleName();
-    int mFromIndex = 0;
-    private String mUUID = null;
     private EditText mAmountField;
     private boolean mAutoUpdatingTextFields = false;
     private boolean mInPartialPayment = false;
@@ -146,14 +138,13 @@ public class RequestFragment extends WalletBaseFragment implements
     private TextView mDenominationTextView;
     private TextView mOtherDenominationTextView;
     private TextView mOtherAmountTextView;
-    private View mBottomContainer;
     private Calculator mCalculator;
     private CoreAPI mCoreAPI;
     private View mView;
+    private View mBottomButtons;
 
     private Long mSavedSatoshi;
     private String mSavedCurrency;
-    private int mSavedIndex;
     private boolean mAmountIsBitcoin = false;
 
     private NavigationActivity mActivity;
@@ -183,6 +174,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private float mOrigQrHeight;
     private float mQrPadding;
+    private int mFabCoords[] = new int[2];
     private int mQrCoords[] = new int[2];
     private int mCalcCoords[] = new int[2];
 
@@ -209,7 +201,6 @@ public class RequestFragment extends WalletBaseFragment implements
         mView = inflater.inflate(R.layout.fragment_request, container, false);
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
         mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mAmountField.requestFocus();
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -277,7 +268,6 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mAmountField.setOnEditorActionListener(amountEditorListener);
 
-        mBottomContainer = mView.findViewById(R.id.bottom_container);
         mCalculator = (Calculator) mActivity.findViewById(R.id.navigation_calculator_layout);
         mCalculator.setCalculatorKeyListener(this);
         mCalculator.setEditText(mAmountField);
@@ -311,6 +301,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mOtherAmountTextView = (TextView) mView.findViewById(R.id.request_not_selected_value);
         mBitcoinAddress = (TextView) mView.findViewById(R.id.request_bitcoin_address);
 
+        mBottomButtons = mView.findViewById(R.id.request_bottom_buttons);
         mCopyButton = (Button) mView.findViewById(R.id.fragment_triple_selector_left);
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,6 +359,13 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
         return mView;
+    }
+
+    @Override
+    protected float getFabTop() {
+        return mActivity.getFabTop()
+             - mBottomButtons.getHeight()
+             - mBitcoinAddress.getHeight();
     }
 
     @Override
@@ -524,15 +522,28 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private void checkFirstUsage() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
-        if(count <= 2) {
-            count++;
-            mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(FIRST_USAGE_COUNT, count);
-            editor.apply();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+                if(count <= 2) {
+                    count++;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt(FIRST_USAGE_COUNT, count);
+                    editor.apply();
+
+                    notifyFirstUsage();
+                }
+            }
+        }).start();
+    }
+
+    private void notifyFirstUsage() {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mActivity.ShowFadingDialog(getString(R.string.request_qr_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+        });
     }
 
     private void checkNFC() {
@@ -1120,14 +1131,25 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     };
 
+    @Override
+    public void finishFabAnimation() {
+        alignQrCode();
+    }
+
     private void alignQrCode() {
+        mQRView.getLocationOnScreen(mQrCoords);
+        mCalculator.getLocationOnScreen(mCalcCoords);
         if (mOrigQrHeight == 0.0f) {
             mOrigQrHeight = mQRView.getHeight();
         }
-        mQRView.getLocationOnScreen(mQrCoords);
-        mCalculator.getLocationOnScreen(mCalcCoords);
 
-        float qrY = mQrCoords[1];//  + mQRView.getHeight();
+        View fab = mActivity.getFabView();
+        fab.getLocationOnScreen(mFabCoords);
+        if (mQrCoords[1] + mOrigQrHeight > mFabCoords[1]) {
+            mOrigQrHeight = mFabCoords[1] - mQrCoords[1];
+        }
+
+        float qrY = mQrCoords[1];
         float calcY = mCalcCoords[1];
         float diff = calcY - qrY;
         int newHeight = (int) (diff - mQrPadding);

@@ -10,6 +10,8 @@
     <string name="string_no">No</string>
     <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
+    <string name="string_paste">Paste</string>
+    <string name="string_paste_address">Paste %1$s</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
     <string name="string_save">Save</string>
@@ -563,6 +565,9 @@
     <string name="fragment_two_factor_scan_try_again">Try Again</string>
     <string name="fragment_two_factor_scan_no_thanks">No Thanks</string>
 
+    <string name="fragment_two_factor_warn_title">** Warning **</string>
+    <string name="fragment_two_factor_warn_message">If you lose your device or uninstall the Airbitz app, it will take 7 days to disable 2FA and access your account.</string>
+
     <string name="twofactor_reset_message">A two factor reset has been requested. Please login as %1$s and approve or cancel the request.</string>
     <string name="twofactor_reset_title">Two Factor Reset Request</string>
 
@@ -606,12 +611,16 @@
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
+    <!-- Logout -->
+    <string name="logout_message">Please wait while Airbitz gracefully exits your account. This may take a while on slow networks</string>
+
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_directory">Directory</string>
     <string name="drawer_send">Send</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
+    <string name="drawer_wallets">Wallets</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>
     <string name="drawer_buy_sell">Buy/Sell</string>

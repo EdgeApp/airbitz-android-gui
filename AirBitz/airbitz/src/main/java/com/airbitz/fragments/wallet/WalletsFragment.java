@@ -34,6 +34,7 @@ package com.airbitz.fragments.wallet;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -83,7 +84,6 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
-    public static final String ARCHIVE_HEADER_STATE = "archiveClosed";
 
     public final String TAG = getClass().getSimpleName();
 
@@ -102,21 +102,39 @@ public class WalletsFragment extends WalletBaseFragment implements
     private View.OnClickListener mModeListener;
     private TextView mFiatSelect;
     private TextView mBitcoinSelect;
-    protected boolean mPreserveWallet = false;
-    protected boolean mResetState = true;
+    private View mView;
+
+    public WalletsFragment() {
+        mAllowArchived = true;
+    }
 
     @Override
-    protected void setupWalletViews(View view) {
-        mWalletsContainer = view.findViewById(R.id.wallets_container);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    protected String getSubtitle() {
+        return mActivity.getString(R.string.fragment_wallets_title);
+    }
+
+    @Override
+    protected List<Wallet> fetchCoreWallets() {
+        return mCoreApi.getCoreWallets(false);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
         mWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mWalletAdapter.setHeaderButtonListener(this);
+        mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
 
         mWalletsHeader = view.findViewById(R.id.fragment_wallets_wallets_header);
-        mWalletsHeader.setVisibility(View.GONE);
 
         mArchiveHeader = view.findViewById(R.id.fragment_wallets_archive_header);
-        mArchiveHeader.setVisibility(View.GONE);
         mArchiveHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,8 +156,14 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         mProgress = view.findViewById(R.id.progress_horizontal);
         mWalletListView = (DynamicListView) view.findViewById(R.id.fragment_wallets_listview);
+        mWalletListView.setAdapter(mWalletAdapter);
+        mWalletListView.setWalletList(mLatestWalletList);
+        mWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mWalletListView.setHeaders(mWalletsHeader, mArchiveHeader);
+        mWalletListView.setArchiveClosed(mArchiveClosed);
+        mWalletListView.setHeaderVisibilityOnReturn();
+        mWalletListView.setOnListReorderedListener(this);
         mWalletListView.setEmptyView(mProgress);
-        mWalletListView.setVisibility(View.GONE);
         mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -156,6 +180,9 @@ public class WalletsFragment extends WalletBaseFragment implements
                     view.setSelected(true);
 
                     walletChanged(wallet);
+
+                    mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.WALLET.ordinal());
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
                 }
             }
         });
@@ -189,63 +216,66 @@ public class WalletsFragment extends WalletBaseFragment implements
         };
 
         mModeSelector = (Switch) mWalletsHeader.findViewById(R.id.fiat_btc_select);
-        mModeSelector.setOnCheckedChangeListener(mSwitchChange);
         mFiatSelect = (TextView) mWalletsHeader.findViewById(R.id.fiat);
         mBitcoinSelect = (TextView) mWalletsHeader.findViewById(R.id.bitcoin);
         mFiatSelect.setOnClickListener(mModeListener);
         mBitcoinSelect.setOnClickListener(mModeListener);
-        updateBalanceBar();
+        return view;
+    }
+
+    @Override
+    public void showWalletList() {
+        if (getActivity() == null || !isAdded() || !finishedResume()) {
+            return;
+        }
+        mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.WALLET.ordinal());
+        mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
+    }
+
+    @Override
+    public void hideWalletList() {
     }
 
     private void toggleMode() {
         mOnBitcoinMode = !mOnBitcoinMode;
-        updateBalanceBar();
+        AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
 
-        updateWalletList(mArchiveClosed);
-        mWalletAdapter.notifyDataSetChanged();
+        updateBalanceBar();
     }
 
     protected void updateBalanceBar() {
-        if (mModeSelector != null) {
-            mModeSelector.setOnCheckedChangeListener(null);
-            mModeSelector.setChecked(mOnBitcoinMode);
-            mModeSelector.setOnCheckedChangeListener(mSwitchChange);
-        }
+        mModeSelector.setOnCheckedChangeListener(null);
+        mModeSelector.setChecked(mOnBitcoinMode);
+        mModeSelector.setOnCheckedChangeListener(mSwitchChange);
+
+        updateWalletList(mArchiveClosed);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mArchiveClosed = AirbitzApplication.getArchivedMode();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isMenuExpanded()) {
-            inflater.inflate(R.menu.menu_wallets, menu);
-        }
+        inflater.inflate(R.menu.menu_wallets, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!isMenuExpanded()) {
-            return super.onOptionsItemSelected(item);
-        }
         switch (item.getItemId()) {
         case R.id.action_add:
-            WalletAddFragment.pushFragment(mActivity);
-            return true;
-        case R.id.action_export:
-            ExportFragment.pushFragment(mActivity);
+            if (!mLoading) {
+                WalletAddFragment.pushFragment(mActivity);
+            }
             return true;
         case R.id.action_help:
             mActivity.pushFragment(new HelpFragment(HelpFragment.WALLETS));
             return true;
         default:
             return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void checkWalletListVisibility() {
-        if (mWalletListView.getVisibility() != View.VISIBLE && mLatestWalletList.size() >= 3) {
-            mWalletListView.setVisibility(View.VISIBLE);
-            mWalletsHeader.setVisibility(View.VISIBLE);
-            mArchiveHeader.setVisibility(View.VISIBLE);
         }
     }
 
@@ -259,65 +289,16 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
     }
 
-    protected void setDefaultWallet() {
-        String uuid = AirbitzApplication.getCurrentWallet();
-        if (mWallet != null && mPreserveWallet) {
-            uuid = mWallet.getUUID();
-        }
-        setDefaultWallet(uuid);
-    }
-
     @Override
     protected void loadWallets() {
-        updateWalletList(mArchiveClosed);
-        checkWalletListVisibility();
+        updateBalanceBar();
     }
 
     @Override
     public void OnHeaderButtonPressed() {
         mArchiveClosed = !mArchiveClosed;
-        updateWalletList(mArchiveClosed);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        mArchiveClosed = prefs.getBoolean(ARCHIVE_HEADER_STATE, false);
-
-        setupLatestWalletListView();
-
-        mResetState = true;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        prefs.edit().putBoolean(ARCHIVE_HEADER_STATE, mArchiveClosed).apply();
-        if (mResetState) {
-            mPreserveWallet = false;
-        }
-    }
-
-    @Override
-    protected void fetchWallets() {
-        List<Wallet> tmp = mCoreApi.getCoreWallets(false);
-        if (tmp != null) {
-            mWallets.clear();
-            mWallets.addAll(tmp);
-        }
-    }
-
-    private void setupLatestWalletListView() {
-        mWalletListView.setAdapter(mWalletAdapter);
-        mWalletListView.setWalletList(mLatestWalletList);
-        mWalletListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        mWalletListView.setHeaders(mWalletsHeader, mArchiveHeader);
-        mWalletListView.setArchiveClosed(mArchiveClosed);
-        mWalletListView.setHeaderVisibilityOnReturn();
-        mWalletListView.setOnListReorderedListener(this);
+        AirbitzApplication.setArchivedMode(mArchiveClosed);
+        updateBalanceBar();
     }
 
     private void updateWalletList(boolean archiveClosed) {
@@ -333,7 +314,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                 totalSatoshis += w.getBalanceSatoshi();
             }
         }
-
         mWalletAdapter.swapWallets();
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
         mWalletAdapter.setCurrencyNum(currencyNum);

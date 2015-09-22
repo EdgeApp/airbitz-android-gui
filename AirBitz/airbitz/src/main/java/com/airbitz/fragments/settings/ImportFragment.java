@@ -96,6 +96,7 @@ public class ImportFragment extends WalletBaseFragment implements
     private final String TAG = getClass().getSimpleName();
     private Button mAddressButton;
     private Button mGalleryButton;
+    private View mBottomButtons;
     private View mFlashButton;
     private NfcAdapter mNfcAdapter;
     private QRCamera mQRCamera;
@@ -153,6 +154,7 @@ public class ImportFragment extends WalletBaseFragment implements
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_layout_camera);
+        mBottomButtons = mView.findViewById(R.id.fragment_import_buttons);
 
         mFlashButton = mView.findViewById(R.id.fragment_import_button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
@@ -276,6 +278,11 @@ public class ImportFragment extends WalletBaseFragment implements
         if (mQRCamera != null && requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
             mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    protected float getFabTop() {
+        return mActivity.getFabTop() - mBottomButtons.getHeight();
     }
 
     private void attemptSubmit(String uriString) {

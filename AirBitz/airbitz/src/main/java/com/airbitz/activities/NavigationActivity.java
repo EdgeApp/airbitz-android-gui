@@ -32,8 +32,11 @@
 package com.airbitz.activities;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -45,13 +48,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -85,6 +88,7 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
@@ -113,6 +117,7 @@ import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.ListViewUtility;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -168,10 +173,14 @@ public class NavigationActivity extends ActionBarActivity
                 if (networkIsAvailable()) {
                     Log.d(TAG, "Connection available");
                     mCoreAPI.restoreConnectivity();
+                    mConnectivityNotified = false;
                 } else { // has connection
                     Log.d(TAG, "Connection NOT available");
                     mCoreAPI.lostConnectivity();
-                    ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
+                    if (!mConnectivityNotified) {
+                        ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
+                    }
+                    mConnectivityNotified = true;
                 }
             }
         }
@@ -184,6 +193,7 @@ public class NavigationActivity extends ActionBarActivity
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
+    private boolean mConnectivityNotified = false;
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
@@ -195,9 +205,12 @@ public class NavigationActivity extends ActionBarActivity
             new RequestFragment(),
             new SendFragment(),
             new TransactionListFragment(),
-            new SettingFragment()};
+            new WalletsFragment(),
+            new SettingFragment(),
+            new ImportFragment(),
+    };
     // These stacks are the five "threads" of fragments represented in mNavFragments
-    private Stack<Fragment>[] mNavStacks = new Stack[mNavFragments.length];
+    private Stack<Fragment>[] mNavStacks = null;
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
     private OnWalletUpdated mOnWalletUpdated;
@@ -227,6 +240,7 @@ public class NavigationActivity extends ActionBarActivity
     private Button mDrawerRequest;
     private Button mDrawerSend;
     private Button mDrawerTxs;
+    private Button mDrawerWallets;
     private Button mDrawerBuySell;
     private Button mDrawerImport;
     private Button mDrawerSettings;
@@ -245,18 +259,25 @@ public class NavigationActivity extends ActionBarActivity
     private ViewGroup mRoot;
     private int mTouchDown;
 
+    private int mMenuPadding;
+    private int mMenuWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getResources().getBoolean(R.bool.portrait_only)){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
 
 
         Resources r = getResources();
-        int menuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
-        int menuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
-        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(menuWidth, menuWidth);
+        mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        mMenuWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, r.getDisplayMetrics());
+        FrameLayout.LayoutParams menuLayout = new FrameLayout.LayoutParams(mMenuWidth, mMenuWidth);
 
         mActionButton = findViewById(R.id.action_button);
 
@@ -264,11 +285,11 @@ public class NavigationActivity extends ActionBarActivity
         ImageView sendButton = new ImageView(this);
         ImageView txButton = new ImageView(this);
         requestButton.setImageResource(R.drawable.ic_receive_dark);
-        requestButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        requestButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
         sendButton.setImageResource(R.drawable.ic_send_dark);
-        sendButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        sendButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
         txButton.setImageResource(R.drawable.ic_transactions_dark);
-        txButton.setPadding(menuPadding, menuPadding, menuPadding, menuPadding);
+        txButton.setPadding(mMenuPadding, mMenuPadding, mMenuPadding, mMenuPadding);
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
@@ -282,29 +303,24 @@ public class NavigationActivity extends ActionBarActivity
                                   .addSubActionView(sendAction)
                                   .addSubActionView(txAction)
                                   .attachTo(mActionButton)
+                                  .contentView(findViewById(R.id.action_menu_container))
                                   .build();
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
-                mActionMenu.close(true);
             }
         });
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
-                mActionMenu.close(true);
             }
         });
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
-                mActionMenu.close(true);
             }
         });
 
@@ -316,9 +332,14 @@ public class NavigationActivity extends ActionBarActivity
 
         setTypeFaces();
 
-        for (int i = 0; i < mNavFragments.length; i++) {
-            mNavStacks[i] = new Stack<Fragment>();
-            mNavStacks[i].push(mNavFragments[i]);
+        mNavStacks = AirbitzApplication.getFragmentStack();
+        AirbitzApplication.setFragmentStack(null);
+        if(mNavStacks == null) {
+            mNavStacks = new Stack[mNavFragments.length];
+            for (int i = 0; i < mNavFragments.length; i++) {
+                mNavStacks[i] = new Stack<Fragment>();
+                mNavStacks[i].push(mNavFragments[i]);
+            }
         }
 
         mLandingFragment = new LandingFragment();
@@ -338,6 +359,17 @@ public class NavigationActivity extends ActionBarActivity
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(!getResources().getBoolean(R.bool.portrait_only)){
+            // store the fragment stack in case of an orientation change
+            AirbitzApplication.setFragmentStack(mNavStacks);
+            AirbitzApplication.setLastNavTab(mNavThreadId);
+        }
+    }
+
+
     public boolean onTouch(View view, MotionEvent event) {
 
         int X = (int) event.getRawX();
@@ -351,10 +383,10 @@ public class NavigationActivity extends ActionBarActivity
             case MotionEvent.ACTION_UP:
                 Log.d("", "ACTION_UP: " + String.valueOf((int) X));
                 if (deltaX > view.getWidth() / 2) {
-                    DisplayLoginOverlay(false, true);
+                    DisplayLoginOverlay(false, true, false);
                     hideSoftKeyboard(view);
                 } else {
-                    DisplayLoginOverlay(true, true);
+                    DisplayLoginOverlay(true, true, false);
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -418,6 +450,10 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void DisplayLoginOverlay(boolean overlay, boolean animate) {
+        DisplayLoginOverlay(overlay, animate, true);
+    }
+
+    public void DisplayLoginOverlay(boolean overlay, boolean animate, boolean fullRefresh) {
 
         if (!overlay) {
             // Show FragmentLayout
@@ -437,7 +473,6 @@ public class NavigationActivity extends ActionBarActivity
             layoutParams.bottomMargin = 0;
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(1.0f);
-            showNavBar();
         } else {
             // Go back to showing Landing
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLandingLayout.getLayoutParams();
@@ -456,7 +491,12 @@ public class NavigationActivity extends ActionBarActivity
             mFragmentLayout.setLayoutParams(layoutParams);
             mFragmentLayout.setAlpha(0.0f);
             hideNavBar();
-            mLandingFragment.refreshView();
+            mDrawer.closeDrawer(mDrawerView);
+            if (fullRefresh) {
+                mLandingFragment.refreshViewAndUsername();
+            } else {
+                mLandingFragment.refreshView();
+            }
         }
     }
 
@@ -488,13 +528,14 @@ public class NavigationActivity extends ActionBarActivity
                 DisplayLoginOverlay(true, true);
             }
         }
+        resetDrawerButtons();
     }
 
     public void switchFragmentThread(int id) {
-        if (mActionButton.getVisibility() != View.VISIBLE) {
-            showNavBar();
-        }
+        switchFragmentThread(id, true);
+    }
 
+    public void switchFragmentThread(int id, boolean animation) {
         Fragment frag = mNavStacks[id].peek();
         Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null)
@@ -510,6 +551,9 @@ public class NavigationActivity extends ActionBarActivity
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
+            if (animation) {
+                transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+            }
             transaction.replace(R.id.activityLayout, frag);
             Log.d(TAG, "switchFragmentThread replace executed.");
         }
@@ -527,6 +571,7 @@ public class NavigationActivity extends ActionBarActivity
         Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
 
         getFragmentManager().executePendingTransactions();
+        resetDrawerButtons();
     }
 
     public void switchFragmentThread(int id, Bundle bundle) {
@@ -539,10 +584,13 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[mNavThreadId].push(fragment);
         transaction.replace(R.id.activityLayout, fragment);
         transaction.commitAllowingStateLoss();
+
+        resetDrawerButtons();
     }
 
     public void pushFragment(Fragment fragment) {
         pushFragment(fragment, mNavThreadId);
+        resetDrawerButtons();
     }
 
     public void pushFragment(Fragment fragment, int threadID) {
@@ -561,6 +609,7 @@ public class NavigationActivity extends ActionBarActivity
             transaction.replace(R.id.activityLayout, fragment);
             transaction.commitAllowingStateLoss();
         }
+        resetDrawerButtons();
     }
 
     public void pushFragmentNoAnimation(Fragment fragment, int threadID) {
@@ -573,6 +622,7 @@ public class NavigationActivity extends ActionBarActivity
             transaction.commitAllowingStateLoss();
         }
         getFragmentManager().executePendingTransactions();
+        resetDrawerButtons();
     }
 
     public void popFragment(FragmentTransaction transaction) {
@@ -611,9 +661,14 @@ public class NavigationActivity extends ActionBarActivity
     static final int NAV_BAR_ANIMATE = 250;
 
     public void hideNavBar() {
-        if (!mNavBarAnimating && mActionButton.getVisibility() == View.VISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", 0f, mActionButton.getHeight() * 4);
-            key.setDuration(NAV_BAR_ANIMATE);
+        hideNavBar(NAV_BAR_ANIMATE);
+    }
+
+    public void hideNavBar(int duration) {
+        final float bottom = mFragmentContainer.getBottom();
+        if (!mNavBarAnimating && mActionButton.getY() != bottom) {
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), bottom);
+            key.setDuration(duration);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator aniamtor) {
@@ -631,9 +686,39 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    public View getFabView() {
+        return mActionButton;
+    }
+
+    public float getFabHeight() {
+        return mActionButton.getHeight() + mMenuPadding;
+    }
+
+    public float getFabTop() {
+        return getBottom() - Common.getStatusBarHeight(this) - getFabHeight();
+    }
+
     public void showNavBar() {
-        if (!mNavBarAnimating && mActionButton.getVisibility() == View.INVISIBLE) {
-            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "translationY", mActionButton.getHeight() * 4, 0f);
+        showNavBar(getFabTop());
+    }
+
+    public void showNavBar(float animateTo) {
+        if (!AirbitzApplication.isLoggedIn()) {
+            hideNavBar(0);
+            return;
+        }
+        if (!mNavBarAnimating && mActionButton.getY() != animateTo) {
+            final ValueAnimator val = ValueAnimator.ofFloat(1f, 0f);
+            val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Fragment fragment = mNavStacks[mNavThreadId].peek();
+                    if (fragment instanceof BaseFragment) {
+                        ((BaseFragment) fragment).finishFabAnimation();
+                    }
+                }
+            });
+
+            ObjectAnimator key = ObjectAnimator.ofFloat(mActionButton, "y", mActionButton.getY(), animateTo);
             key.setDuration(NAV_BAR_ANIMATE);
             key.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -648,7 +733,11 @@ public class NavigationActivity extends ActionBarActivity
                     mNavBarAnimating = true;
                 }
             });
-            key.start();
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(NAV_BAR_ANIMATE);
+            set.playTogether(key, val);
+            set.start();
         }
     }
 
@@ -677,7 +766,11 @@ public class NavigationActivity extends ActionBarActivity
         showModalProgress(false);
 
         if (isAtNavStackEntry()) {
-            ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+            if (AirbitzApplication.isLoggedIn() && Tabs.WALLET.ordinal() != mNavThreadId) {
+                onNavBarSelected(Tabs.WALLET.ordinal());
+            } else {
+                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+            }
         } else {
             popFragment();
         }
@@ -752,6 +845,8 @@ public class NavigationActivity extends ActionBarActivity
         setCoreListeners(this);
 
         activityInForeground = true;
+
+        hideSoftKeyboard(mFragmentContainer);
 
         super.onResume();
     }
@@ -881,7 +976,6 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin-ret or x-callback-url Uri's coming from OS
      */
     private void handleRequestForPaymentUri(Uri uri) {
-        resetDrawerButtons(mDrawerRequest);
         AddressRequestFragment fragment = new AddressRequestFragment();
         fragment.setOnAddressRequestListener(this);
         Bundle bundle = new Bundle();
@@ -918,7 +1012,6 @@ public class NavigationActivity extends ActionBarActivity
     private void handleBitcoinUri(Uri dataUri) {
         Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
-        resetDrawerButtons(mDrawerSend);
 
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, URI_SOURCE);
@@ -1105,8 +1198,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void gotoImportNow(Uri uri) {
-        resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-        switchFragmentThread(Tabs.REQUEST.ordinal());
+        resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
+        switchFragmentThread(Tabs.MORE.ordinal());
         Fragment fragment = new ImportFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ImportFragment.URI, uri.toString());
@@ -1178,7 +1271,7 @@ public class NavigationActivity extends ActionBarActivity
             resetFragmentThreadToBaseFragment(mNavThreadId);
             AirbitzApplication.setLastNavTab(Tabs.WALLET.ordinal());
             resetFragmentThreadToBaseFragment(Tabs.WALLET.ordinal());
-            switchFragmentThread(Tabs.WALLET.ordinal());
+            switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
         if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
@@ -1204,7 +1297,7 @@ public class NavigationActivity extends ActionBarActivity
         }
 
         updateDrawer(true);
-        resetDrawerButtons(mDrawerTxs);
+        resetDrawerButtons();
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1266,14 +1359,43 @@ public class NavigationActivity extends ActionBarActivity
             transaction.remove(fragment);
             transaction.commitAllowingStateLoss();
         }
-        mHandler.postDelayed(mAttemptLogout, 100);
-        DisplayLoginOverlay(true);
-
-        resetApp();
-        AirbitzApplication.Logout();
-        mCoreAPI.logout();
-
+        // mHandler.postDelayed(mAttemptLogout, 100);
         updateDrawer(false);
+
+        mLogoutTask = new LogoutTask();
+        mLogoutTask.execute();
+    }
+
+    private LogoutTask mLogoutTask;
+    public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
+
+        LogoutTask() { }
+
+        @Override
+        protected void onPreExecute() {
+            NavigationActivity.this.ShowFadingDialog(
+                    getString(R.string.logout_message),
+                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            AirbitzApplication.Logout();
+            mCoreAPI.logout();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (isCancelled()) {
+                return;
+            }
+            NavigationActivity.this.DismissFadingDialog();
+            DisplayLoginOverlay(true);
+            switchFragmentThread(Tabs.BD.ordinal());
+            resetApp();
+            mLogoutTask = null;
+        }
     }
 
     Runnable mAttemptLogout = new Runnable() {
@@ -1305,33 +1427,18 @@ public class NavigationActivity extends ActionBarActivity
             case 3:
                 return new TransactionListFragment();
             case 4:
+                return new WalletsFragment();
+            case 5:
                 return new SettingFragment();
+            case 6:
+                return new ImportFragment();
             default:
                 return null;
         }
     }
 
     public boolean networkIsAvailable() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI")) {
-                if (ni.isConnected()) {
-                    Log.d(TAG, "Connection is WIFI");
-                    haveConnectedWifi = true;
-                }
-            }
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE")) {
-                if (ni.isConnected()) {
-                    Log.d(TAG, "Connection is MOBILE");
-                    haveConnectedMobile = true;
-                }
-            }
-        }
-        return haveConnectedWifi || haveConnectedMobile;
+        return mCoreAPI.hasConnectivity();
     }
 
     private boolean loginExpired() {
@@ -1353,7 +1460,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, MORE}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT}
 
     //************************ Connectivity support
 
@@ -1569,14 +1676,16 @@ public class NavigationActivity extends ActionBarActivity
 
                     mFadingDialog.show();
                     View view = mFadingDialog.getView();
-                    view.setOnClickListener(new View.OnClickListener() {
+                    View.OnClickListener dismiss = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (mFadingDialog != null) {
                                 mFadingDialog.dismiss();
                             }
                         }
-                    });
+                    };
+                    view.setOnClickListener(dismiss);
+                    tv.setOnClickListener(dismiss);
                     view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
@@ -1861,26 +1970,27 @@ public class NavigationActivity extends ActionBarActivity
                 String title = mNotificationMap.get(i).mTitle;
                 String message = mNotificationMap.get(i).mMessage;
 
-                s.append(title).append("\n");
-                s.append(message).append("\n\n");
+                s.append("<div style=\"font-weight: bold; text-align: center\">").append(title).append("</div><br />");
+                s.append("<div>").append(message).append("</div><br /><br />");
             }
 
             final int saveInt = max;
+            saveMessageIDPref(saveInt);
 
             mAlertNotificationDialog = new Dialog(this);
             mAlertNotificationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mAlertNotificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             mAlertNotificationDialog.setContentView(R.layout.dialog_notification);
-            mAlertNotificationDialog.setCancelable(false);
+
             WebView wv = (WebView) mAlertNotificationDialog.findViewById(R.id.dialog_notification_webview);
             wv.setVisibility(View.VISIBLE);
             wv.loadData(s.toString(), "text/html; charset=UTF-8", null);
+
             Button ok = (Button) mAlertNotificationDialog.findViewById(R.id.dialog_notification_ok_button);
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mAlertNotificationDialog.cancel();
-                    saveMessageIDPref(saveInt);
                 }
             });
             mAlertNotificationDialog.show();
@@ -1923,8 +2033,6 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[Tabs.MORE.ordinal()].clear();
         mNavStacks[Tabs.MORE.ordinal()].add(frag);
         switchFragmentThread(Tabs.MORE.ordinal());
-
-        resetDrawerButtons(mDrawerSettings);
     }
 
     private void checkDailyLimitPref() {
@@ -2057,7 +2165,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerDirectory);
                 onNavBarSelected(Tabs.BD.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2067,7 +2174,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerRequest);
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2077,7 +2183,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerSend);
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2087,8 +2192,16 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerTxs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerTxs);
                 onNavBarSelected(Tabs.WALLET.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
+        mDrawerWallets = (Button) findViewById(R.id.item_drawer_wallets);
+        mDrawerWallets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.WALLETS.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2099,7 +2212,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerBuySell);
                 if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
                     mNavStacks[Tabs.MORE.ordinal()].clear();
                     pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
@@ -2113,10 +2225,8 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(mDrawerImport);
-                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-                onNavBarSelected(Tabs.MORE.ordinal());
-                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
+                resetFragmentThreadToBaseFragment(Tabs.IMPORT.ordinal());
+                onNavBarSelected(Tabs.IMPORT.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2125,7 +2235,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDrawerButtons(null);
                 mDrawer.closeDrawer(mDrawerView);
                 Logout();
             }
@@ -2136,7 +2245,6 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onClick(View v) {
                 int tmp = mNavThreadId;
-                resetDrawerButtons(mDrawerSettings);
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
                 if (Tabs.MORE.ordinal() == tmp) {
@@ -2180,7 +2288,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
-                mOtherAccountsListView.setVisibility(View.GONE);
                 mDrawerExchangeUpdated = false;
             }
 
@@ -2199,8 +2306,34 @@ public class NavigationActivity extends ActionBarActivity
             public void onDrawerOpened(View drawerView) {}
 
             @Override
-            public void onDrawerStateChanged(int newState) {}
+            public void onDrawerStateChanged(int newState) {
+                mActionMenu.close(true);
+            }
         });
+    }
+
+    private void resetDrawerButtons() {
+        Fragment frag = mNavStacks[mNavThreadId].peek();
+        if (frag instanceof BuySellFragment) {
+            resetDrawerButtons(mDrawerBuySell);
+            return;
+        }
+
+        if (mNavThreadId == Tabs.BD.ordinal()) {
+            resetDrawerButtons(mDrawerDirectory);
+        } else if (mNavThreadId == Tabs.WALLETS.ordinal()) {
+                resetDrawerButtons(mDrawerWallets);
+        } else if (mNavThreadId == Tabs.WALLET.ordinal()) {
+                resetDrawerButtons(mDrawerTxs);
+        } else if (mNavThreadId == Tabs.SEND.ordinal()) {
+            resetDrawerButtons(mDrawerSend);
+        } else if (mNavThreadId == Tabs.REQUEST.ordinal()) {
+            resetDrawerButtons(mDrawerRequest);
+        } else if (mNavThreadId == Tabs.MORE.ordinal()) {
+            resetDrawerButtons(mDrawerSettings);
+        } else if (mNavThreadId == Tabs.IMPORT.ordinal()) {
+            resetDrawerButtons(mDrawerImport);
+        }
     }
 
     private void resetDrawerButtons(Button button) {
@@ -2208,6 +2341,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerRequest.setSelected(false);
         mDrawerSend.setSelected(false);
         mDrawerTxs.setSelected(false);
+        mDrawerWallets.setSelected(false);
         mDrawerBuySell.setSelected(false);
         mDrawerImport.setSelected(false);
         mDrawerSettings.setSelected(false);
@@ -2215,10 +2349,10 @@ public class NavigationActivity extends ActionBarActivity
         if (button != null) {
             button.setSelected(true);
         }
+        mActionMenu.close(true);
     }
 
     private void updateDrawer(boolean loggedIn) {
-        closeDrawer();
         if (loggedIn) {
             mDrawerAccount.setText(AirbitzApplication.getUsername());
             mDrawerLogin.setVisibility(View.GONE);
@@ -2267,6 +2401,7 @@ public class NavigationActivity extends ActionBarActivity
         mOtherAccounts.clear();
         mOtherAccounts.addAll(otherAccounts(username));
         mOtherAccountsAdapter.notifyDataSetChanged();
+        ListViewUtility.setListViewHeightBasedOnChildren(mOtherAccountsListView);
         if(show && !mOtherAccounts.isEmpty()) {
             mOtherAccountsListView.setVisibility(View.VISIBLE);
             mDrawerBuySellLayout.setVisibility(View.GONE);

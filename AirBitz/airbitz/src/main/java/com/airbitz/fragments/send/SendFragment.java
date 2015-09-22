@@ -52,6 +52,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.ClipboardManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -135,8 +136,10 @@ public class SendFragment extends WalletBaseFragment implements
     private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
     private View mView;
+    private View mButtonBar;
     QRCamera mQRCamera;
     private CoreAPI mCoreApi;
+    private ClipboardManager mClipboard;
 
     @Override
     protected String getSubtitle() {
@@ -145,6 +148,7 @@ public class SendFragment extends WalletBaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mClipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         mCoreApi = CoreAPI.getApi();
 
         mView = inflater.inflate(R.layout.fragment_send, container, false);
@@ -185,6 +189,7 @@ public class SendFragment extends WalletBaseFragment implements
                 showAddressDialog();
             }
         });
+        mButtonBar = mView.findViewById(R.id.fragment_send_buttons);
 
         mOtherWalletsList = new ArrayList<Wallet>();
         mOtherWalletsAdapter = new WalletOtherAdapter(getActivity(), mOtherWalletsList);
@@ -232,6 +237,11 @@ public class SendFragment extends WalletBaseFragment implements
         }
     }
 
+    @Override
+    protected float getFabTop() {
+        return mActivity.getFabTop() - mButtonBar.getHeight();
+    }
+
     private void checkAndSendAddress(String strTo) {
         newSpend(strTo);
     }
@@ -247,15 +257,27 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     private void checkFirstUsage() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
-        if(count <= 2) {
-            count++;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(FIRST_USAGE_COUNT, count);
-            editor.apply();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+                if(count <= 2) {
+                    count++;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt(FIRST_USAGE_COUNT, count);
+                    editor.apply();
+                    notifyFirstUsage();
+                }
+            }
+        }).start();
+    }
+
+    private void notifyFirstUsage() {
+        mHandler.post(new Runnable() {
+            public void run() {
+                mActivity.ShowFadingDialog(getString(R.string.fragment_send_first_usage), getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+        });
     }
 
     public void GotoSendConfirmation(CoreAPI.SpendTarget target) {
@@ -555,10 +577,25 @@ public class SendFragment extends WalletBaseFragment implements
         }
     }
 
+    // TODO: this should call down into the core to verify its a valid address
+    private boolean isValidAddress(String address) {
+       return address != null && address.length() >= 10;
+    }
+
+    private String fromClipboard() {
+        return mClipboard.getText() != null ? mClipboard.getText().toString() : "";
+    }
+
     public void showAddressDialog() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.alert_address_form, null);
         final EditText editText = (EditText) view.findViewById(R.id.address);
+
+        final String pasteData = fromClipboard();
+        String pasteText = getResources().getString(R.string.string_paste);
+        if (!TextUtils.isEmpty(pasteData) && isValidAddress(pasteData)) {
+            pasteText = getResources().getString(R.string.string_paste_address, pasteData.substring(0, 3)) + "...";
+        }
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_send_address_dialog_title))
@@ -566,6 +603,7 @@ public class SendFragment extends WalletBaseFragment implements
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_done))
                .negativeText(getResources().getString(R.string.string_cancel))
+               .neutralText(pasteText)
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -574,6 +612,11 @@ public class SendFragment extends WalletBaseFragment implements
                     }
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
+                    }
+                    public void onNeutral(MaterialDialog dialog) {
+                        final String pasteData = fromClipboard();
+                        editText.setText(pasteData);
+                        checkAndSendAddress(pasteData);
                     }
                 });
         builder.show();
@@ -646,7 +689,6 @@ public class SendFragment extends WalletBaseFragment implements
     private void finishHideOthers() {
         mOtherWalletsListView.setVisibility(View.INVISIBLE);
         mActivity.invalidateOptionsMenu();
-        mExpanded = false;
 
         if (!mHomeEnabled) {
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);

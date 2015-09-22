@@ -2,14 +2,14 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/calc_button_radius" />
-            <solid android:color="@color/calc_button_green" />
+            <solid android:color="@color/btn_green_pressed" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/calc_button_radius" />
-            <solid android:color="@color/calc_button_green" />
+            <solid android:color="@color/btn_green" />
+            <padding android:left="2dp" android:right="2dp" android:top="2dp" />
+            <stroke android:width="1dp" android:color="@color/btn_green" />
         </shape>
     </item>
 </selector>

@@ -41,6 +41,10 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -87,7 +91,7 @@ public class CoreAPI {
 
     private final String CERT_FILENAME = "ca-certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
-    private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 10;
+    private static int ABC_SYNC_REFRESH_INTERVAL_SECONDS = 30;
     private static int CONFIRMED_CONFIRMATION_COUNT = 3;
     public static int ABC_DENOMINATION_BTC = 0;
     public static int ABC_DENOMINATION_MBTC = 1;
@@ -231,12 +235,8 @@ public class CoreAPI {
                 Log.d(TAG, "block exchange event has no listener");
         }
         else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
-            if (mOnDataSync != null) {
-                mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
-                mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
-            } else {
-                Log.d(TAG, "data sync event has no listener");
-            }
+            mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
+            mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
         }
         else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
             if(mOnRemotePasswordChange!=null)
@@ -269,7 +269,11 @@ public class CoreAPI {
         mOnIncomingBitcoin = listener;
     }
     final Runnable IncomingBitcoinUpdater = new Runnable() {
-        public void run() { mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID); }
+        public void run() {
+            if (null != mOnIncomingBitcoin) {
+                mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID);
+            }
+        }
     };
 
     // Callback interface when a block height change is received
@@ -355,6 +359,7 @@ public class CoreAPI {
         if (!hasConnectivity()) {
             return false;
         }
+        Log.d(TAG, "createWallet(" + walletName + "," + currencyNum + ")");
         tABC_Error pError = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
@@ -378,45 +383,77 @@ public class CoreAPI {
         return result == tABC_CC.ABC_CC_Ok;
     }
 
-    public void reloadWallet(Wallet wallet) {
-        Wallet info = getWalletFromUUID(wallet.getUUID());
-        if(info != null) {
-            wallet.setName(info.getName());
-            wallet.setUUID(info.getUUID());
-            wallet.setAttributes(info.getAttributes());
-            wallet.setBalanceSatoshi(info.getBalanceSatoshi());
-            wallet.setCurrencyNum(info.getCurrencyNum());
-        }
-    }
-
     public Wallet getWalletFromUUID(String uuid) {
-        tABC_Error Error = new tABC_Error();
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_WalletInfo walletInfo = core.longp_to_ppWalletinfo(lp);
-
-        tABC_CC result = core.ABC_GetWalletInfo(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                uuid, walletInfo, Error);
-
-        int ptrToInfo = core.longp_value(lp);
-        WalletInfo info = new WalletInfo(ptrToInfo);
-
-        if (result ==tABC_CC.ABC_CC_Ok)
-        {
-            Wallet wallet = new Wallet(info.getName());
-            wallet.setName(info.getName());
-            wallet.setUUID(info.getUUID());
-            wallet.setAttributes(info.getAttributes());
-            wallet.setCurrencyNum(info.getCurrencyNum());
-            wallet.setTransactions(getTransactions(wallet.getName()));
-            wallet.setBalanceSatoshi(info.getBalance());
-
-            return wallet;
-        }
-        else
-        {
-            Log.d("", "Error: CoreBridge.getWalletFromUUID: " + Error.getSzDescription());
+        if (uuid == null) {
             return null;
         }
+        List<Wallet> wallets = getCoreWallets(false);
+        if (wallets == null) {
+            return null;
+        }
+        for (Wallet w : wallets) {
+            if (uuid.equals(w.getUUID())) {
+                return w;
+            }
+        }
+        return null;
+    }
+
+    public Wallet getWalletFromCore(String uuid) {
+        tABC_CC result;
+        tABC_Error error = new tABC_Error();
+
+        Wallet wallet = new Wallet("Loading...");
+        wallet.setUUID(uuid);
+        wallet.setCurrencyNum(-1); // Defaults to loading
+        wallet.setTransactions(new ArrayList<Transaction>());
+
+        if (null != mWatcherTasks.get(uuid)) {
+            // Load Wallet name
+            SWIGTYPE_p_long pName = core.new_longp();
+            SWIGTYPE_p_p_char ppName = core.longp_to_ppChar(pName);
+            result = core.ABC_WalletName(
+                AirbitzApplication.getUsername(), uuid, ppName, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setName(getStringAtPtr(core.longp_value(pName)));
+            }
+
+            // Load currency
+            SWIGTYPE_p_int pCurrency = core.new_intp();
+            SWIGTYPE_p_unsigned_int upCurrency = core.int_to_uint(pCurrency);
+
+            result = core.ABC_WalletCurrency(
+                AirbitzApplication.getUsername(), uuid, pCurrency, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setCurrencyNum(core.intp_value(pCurrency));
+            } else {
+                wallet.setCurrencyNum(-1);
+                wallet.setName("Loading...");
+            }
+
+            // Load balance
+            SWIGTYPE_p_int64_t l = core.new_int64_tp();
+            result = core.ABC_WalletBalance(
+                AirbitzApplication.getUsername(), uuid, l, error);
+            if (result == tABC_CC.ABC_CC_Ok) {
+                wallet.setBalanceSatoshi(
+                    get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(l)));
+            } else {
+                wallet.setBalanceSatoshi(0);
+            }
+        }
+
+        // If there is a UUID there are wallet attributes
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_bool archived = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+        result = core.ABC_WalletArchived(
+            AirbitzApplication.getUsername(), uuid, archived, error);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            wallet.setAttributes(
+                getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0 ? 0x1 : 0);
+        }
+
+        return wallet;
     }
 
     public void setWalletOrder(List<Wallet> wallets) {
@@ -465,7 +502,7 @@ public class CoreAPI {
 
     ReloadWalletTask mReloadWalletTask = null;
     public void reloadWallets() {
-        if(mReloadWalletTask == null) {
+        if (mReloadWalletTask == null && AirbitzApplication.isLoggedIn()) {
             mReloadWalletTask = new ReloadWalletTask();
             mReloadWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -487,8 +524,7 @@ public class CoreAPI {
             if (mOnWalletLoadedListener != null) {
                 Log.d(TAG, "wallets loaded");
                 mOnWalletLoadedListener.onWalletsLoaded();
-            }
-            else {
+            } else {
                 Log.d(TAG, "no wallet loaded listener");
             }
             mReloadWalletTask = null;
@@ -1931,34 +1967,123 @@ public class CoreAPI {
     private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
 
     private ThreadPoolExecutor exchangeRateThread;
-    private ThreadPoolExecutor dataSyncThread;
 
     public interface OnExchangeRatesChange {
         public void OnExchangeRatesChange();
     }
 
+    private Handler mMainHandler;
+    private Handler mCoreHandler;
+    private Handler mWatcherHandler;
+    private Handler mDataHandler;
+    private boolean mDataFetched = false;
+
+    final static int RELOAD = 0;
+    final static int REPEAT = 1;
+    final static int LAST = 2;
+
+    private class DataHandler extends Handler {
+        DataHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(final Message msg) {
+            if (REPEAT == msg.what) {
+                postDelayed(new Runnable() {
+                    public void run() {
+                        syncAllData();
+                    }
+                }, ABC_SYNC_REFRESH_INTERVAL_SECONDS * 1000);
+            }
+        }
+    }
+
+    private class MainHandler extends Handler {
+        MainHandler() {
+            super();
+        }
+
+        @Override
+        public void handleMessage(final Message msg) {
+            if (RELOAD == msg.what) {
+                reloadWallets();
+            }
+        }
+    }
+
     public void startAllAsyncUpdates() {
-        startWatchers();
-
         exchangeRateThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        dataSyncThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-        startExchangeRateUpdates();
-        startFileSyncUpdates();
+        mMainHandler = new MainHandler();
+
+        HandlerThread ht = new HandlerThread("Data Handler");
+        ht.start();
+        mDataHandler = new DataHandler(ht.getLooper());
+
+        ht = new HandlerThread("ABC Core");
+        ht.start();
+        mCoreHandler = new Handler(ht.getLooper());
+
+        ht = new HandlerThread("Watchers");
+        ht.start();
+        mWatcherHandler = new Handler(ht.getLooper());
+
+        List<String> uuids = loadWalletUUIDs();
+        for (final String uuid : uuids) {
+            mCoreHandler.post(new Runnable() {
+                public void run() {
+                    tABC_Error error = new tABC_Error();
+                    core.ABC_WalletLoad(AirbitzApplication.getUsername(), uuid, error);
+
+                    startWatcher(uuid);
+                    mMainHandler.sendEmptyMessage(RELOAD);
+                }
+            });
+        }
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                startExchangeRateUpdates();
+            }
+        });
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                startFileSyncUpdates();
+            }
+        });
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                mMainHandler.sendEmptyMessage(RELOAD);
+            }
+        });
     }
 
     public void stopAllAsyncUpdates() {
+        mCoreHandler.removeCallbacksAndMessages(null);
+        mCoreHandler.sendEmptyMessage(LAST);
+        mDataHandler.removeCallbacksAndMessages(null);
+        mDataHandler.sendEmptyMessage(LAST);
+        mWatcherHandler.removeCallbacksAndMessages(null);
+        mWatcherHandler.sendEmptyMessage(LAST);
+        mMainHandler.removeCallbacksAndMessages(null);
+        mMainHandler.sendEmptyMessage(LAST);
+        while (mDataHandler.hasMessages(LAST)
+                || mCoreHandler.hasMessages(LAST)
+                || mWatcherHandler.hasMessages(LAST)
+                || mMainHandler.hasMessages(LAST)) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+                Log.e(TAG, "", e);
+            }
+        }
+
+        stopWatchers();
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
-        stopWatchers();
-
         if (null != exchangeRateThread) {
             exchangeRateThread.shutdown();
             exchangeRateThread = null;
-        }
-        if (null != dataSyncThread) {
-            dataSyncThread.shutdown();
-            dataSyncThread = null;
         }
     }
 
@@ -1967,8 +2092,16 @@ public class CoreAPI {
             return;
         }
         connectWatchers();
-        startExchangeRateUpdates();
-        startFileSyncUpdates();
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                startExchangeRateUpdates();
+            }
+        });
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                startFileSyncUpdates();
+            }
+        });
     }
 
     public void lostConnectivity() {
@@ -1997,7 +2130,7 @@ public class CoreAPI {
         Set<Integer> currencies;
         UpdateExchangeRateTask() {
             List<Wallet> wallets = getCoreWallets(false);
-            Set<Integer> currencies = new HashSet();
+            currencies = new HashSet();
             if (wallets != null) {
                 for (Wallet wallet : wallets) {
                     if (wallet.getCurrencyNum() != -1) {
@@ -2032,14 +2165,16 @@ public class CoreAPI {
     // Exchange Rate updates may have delay the first call
     private void updateAllExchangeRates(Set<Integer> currencies) {
         if (AirbitzApplication.isLoggedIn()) {
+Log.d("CoreApiCurrency", "---------");
+Log.d("CoreApiCurrency", "" + coreSettings().getCurrencyNum());
+Log.d("CoreApiCurrency", "---------");
             tABC_Error error = new tABC_Error();
             core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
                 AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
-            if (null != currencies) {
-                for (Integer currency : currencies) {
-                    core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(), currency, error);
-                }
+            for (Integer currency : currencies) {
+Log.d("CoreApiCurrency", "" + currency);
+                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
+                    AirbitzApplication.getPassword(), currency, error);
             }
         }
     }
@@ -2078,41 +2213,111 @@ public class CoreAPI {
         }
     }
 
-    final Runnable FileSyncUpdater = new Runnable() {
-        public void run() {
-            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_SYNC_REFRESH_INTERVAL_SECONDS);
-            Log.d(TAG, "Starting file sync");
-            syncAllData();
-        }
-    };
-
     public void stopFileSyncUpdates() {
-        mPeriodicTaskHandler.removeCallbacks(FileSyncUpdater);
+        if (null != mDataHandler) {
+            mDataHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     public void startFileSyncUpdates() {
-        if(AirbitzApplication.isLoggedIn()) {
-            mPeriodicTaskHandler.post(FileSyncUpdater);
-        }
+        syncAllData();
     }
 
-    public void syncAllData()
-    {
-        if (AirbitzApplication.isLoggedIn()) {
-            if(mSyncDataTask == null && null != dataSyncThread) {
-                mSyncDataTask = new SyncDataTask();
-                mSyncDataTask.executeOnExecutor(dataSyncThread);
-                Log.d(TAG, "File sync initiated.");
+    public void syncAllData() {
+        if (mDataHandler.hasMessages(REPEAT)
+            || mDataHandler.hasMessages(LAST)) {
+            return;
+        }
+        mDataHandler.post(new Runnable() {
+            public void run() {
+                generalInfoUpdate();
+            }
+        });
+        mDataHandler.post(new Runnable() {
+            public void run() {
+                if (!hasConnectivity()) {
+                    return;
+                }
+                tABC_Error error = new tABC_Error();
+                int ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
+
+                if (tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
+                    mMainHandler.post(new Runnable() {
+                        public void run() {
+                            if (mOnOTPError != null && AirbitzApplication.isLoggedIn()) {
+                                mOnOTPError.onOTPError(GetTwoFactorSecret());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        List<String> uuids = loadWalletUUIDs();
+        for (String uuid : uuids) {
+            requestWalletDataSync(uuid);
+        }
+
+        mDataHandler.post(new Runnable() {
+            public void run() {
+                mMainHandler.post(new Runnable() {
+                    public void run() {
+                        if (!mDataFetched) {
+                            mDataFetched = true;
+                            connectWatchers();
+                        }
+                        if (mOTPResetRequest != null && isTwoFactorResetPending(AirbitzApplication.getUsername())) {
+                            mOTPResetRequest.onOTPResetRequest();
+                        }
+                    }
+                });
+            }
+        });
+        // Repeat the data sync
+        mDataHandler.sendEmptyMessage(REPEAT);
+    }
+
+    private void requestWalletDataSync(final String uuid) {
+        mDataHandler.post(new Runnable() {
+            public void run() {
+                if (!hasConnectivity()) {
+                    return;
+                }
+                tABC_Error error = new tABC_Error();
+                coreDataSyncWallet(AirbitzApplication.getUsername(),
+                                AirbitzApplication.getPassword(),
+                                uuid,
+                                tABC_Error.getCPtr(error));
+                mMainHandler.post(new Runnable() {
+                    public void run() {
+                        if (!mDataFetched) {
+                            connectWatcher(uuid);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public boolean hasConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if ("WIFI".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    Log.d(TAG, "Connection is WIFI");
+                    return true;
+                }
+            }
+            if ("MOBILE".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    Log.d(TAG, "Connection is MOBILE");
+                    return true;
+                }
             }
         }
-    }
-
-    private boolean hasConnectivity() {
-        ConnectivityManager cm =
-            (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
+        return false;
     }
 
     boolean mOTPError = false;
@@ -2146,77 +2351,6 @@ public class CoreAPI {
     private OnOTPResetRequest mOTPResetRequest;
     public void setOTPResetRequestListener(OnOTPResetRequest listener) {
         mOTPResetRequest = listener;
-    }
-
-    private SyncDataTask mSyncDataTask;
-    private boolean mDataFetched = false;
-    public class SyncDataTask extends AsyncTask<Void, String, Boolean> {
-        SyncDataTask() { }
-
-        @Override
-        protected void onPreExecute() {
-            Log.d(TAG, "coreDataSyncAll called");
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            generalInfoUpdate();
-            // Sync Account
-            tABC_Error error = new tABC_Error();
-            int ccInt;
-            if (hasConnectivity()) {
-                ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
-
-                if(tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
-                    if (mOnOTPError != null && AirbitzApplication.isLoggedIn()) {
-                        mOnOTPError.onOTPError(GetTwoFactorSecret());
-                    }
-                }
-            }
-
-
-            List<String> uuids = loadWalletUUIDs();
-            for (String uuid : uuids) {
-                if (hasConnectivity()) {
-                    coreDataSyncWallet(AirbitzApplication.getUsername(),
-                                    AirbitzApplication.getPassword(),
-                                    uuid,
-                                    tABC_Error.getCPtr(error));
-                }
-                publishProgress(uuid);
-            }
-
-            return (isTwoFactorResetPending(AirbitzApplication.getUsername()));
-        }
-
-        @Override
-        protected void onProgressUpdate(String... uuids) {
-            if (!mDataFetched) {
-                for (String uuid : uuids) {
-                    connectWatcher(uuid);
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean resetRequested) {
-            Log.d(TAG, "coreDataSyncAll returned");
-            mSyncDataTask = null;
-            if (!mDataFetched) {
-                mDataFetched = true;
-            }
-
-            if(resetRequested && mOTPResetRequest != null) {
-                mOTPResetRequest.onOTPResetRequest();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            Log.d(TAG, "coreDataSyncAll cancelled");
-            mSyncDataTask = null;
-        }
     }
 
     //**************** Wallet handling
@@ -2255,40 +2389,11 @@ public class CoreAPI {
 
     private List<Wallet> getWallets() {
         List<Wallet> wallets = new ArrayList<Wallet>();
-
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo = core.longp_to_pppWalletInfo(lp);
-
-        tABC_Error pError = new tABC_Error();
-
-        SWIGTYPE_p_int pCount = core.new_intp();
-        SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
-
-        tABC_CC result = core.ABC_GetWallets(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                paWalletInfo, pUCount, pError);
-
-        if(result == tABC_CC.ABC_CC_Ok) {
-            int ptrToInfo = core.longp_value(lp);
-            int count = core.intp_value(pCount);
-            ppWalletInfo base = new ppWalletInfo(ptrToInfo);
-
-            for (int i = 0; i < count; i++) {
-                pLong temp = new pLong(base.getPtr(base, i * 4));
-                long start = core.longp_value(temp);
-                WalletInfo wi = new WalletInfo(start);
-                Wallet in = new Wallet(wi.getName());
-                in.setBalanceSatoshi(wi.getBalance());
-                in.setUUID(wi.getUUID());
-                in.setAttributes(wi.getAttributes());
-                in.setCurrencyNum(wi.getCurrencyNum());
-                in.setTransactions(loadAllTransactions(in));
-                wallets.add(in);
-            }
-            core.ABC_FreeWalletInfoArray(core.longp_to_ppWalletinfo(new pLong(ptrToInfo)), count);
-            return wallets;
-        } else {
-            return null;
+        List<String> uuids = loadWalletUUIDs();
+        for (String uuid : uuids) {
+            wallets.add(getWalletFromCore(uuid));
         }
+        return wallets;
     }
 
     private List<Wallet> mCoreWallets = null;
@@ -2346,27 +2451,27 @@ public class CoreAPI {
             return mUUID;
         }
 
-        public long getBalance() {return mBalance; }
+        public long getBalance() {
+            return mBalance;
+        }
 
-        public long getAttributes() {return mArchived; }
+        public long getAttributes() {
+            return mArchived;
+        }
 
-        public int getCurrencyNum() {return mCurrencyNum; }
+        public int getCurrencyNum() {
+            return mCurrencyNum;
+        }
 
-        public List<Transaction> getTransactions() {return mTransactions; }
+        public List<Transaction> getTransactions() {
+            return mTransactions;
+        }
     }
 
     private class pLong extends SWIGTYPE_p_long {
         public pLong(long ptr) {
             super(ptr, false);
         }
-    }
-
-    /*
-     * Account Transaction handling
-     */
-    public static List<Transaction> getTransactions(String walletName) {
-        List<Transaction> list = new ArrayList<Transaction>();
-        return list;
     }
 
     /*
@@ -2561,7 +2666,7 @@ public class CoreAPI {
     private Map<String, Thread> mWatcherTasks = new ConcurrentHashMap<String, Thread>();
     public void startWatchers() {
         List<String> wallets = loadWalletUUIDs();
-        for (String uuid : wallets) {
+        for (final String uuid : wallets) {
             startWatcher(uuid);
         }
         if (mDataFetched) {
@@ -2569,59 +2674,75 @@ public class CoreAPI {
         }
     }
 
-    private void startWatcher(String uuid) {
-        if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
-            tABC_Error error = new tABC_Error();
-            core.ABC_WatcherStart(AirbitzApplication.getUsername(),
-                                AirbitzApplication.getPassword(),
-                                uuid, error);
-            printABCError(error);
-            Log.d(TAG, "Started watcher for " + uuid);
+    private void startWatcher(final String uuid) {
+        mWatcherHandler.post(new Runnable() {
+            public void run() {
+                if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
+                    tABC_Error error = new tABC_Error();
+                    core.ABC_WatcherStart(AirbitzApplication.getUsername(),
+                                        AirbitzApplication.getPassword(),
+                                        uuid, error);
+                    printABCError(error);
+                    Log.d(TAG, "Started watcher for " + uuid);
 
-            Thread thread = new Thread(new WatcherRunnable(uuid));
-            mWatcherTasks.put(uuid, thread);
-            thread.start();
+                    Thread thread = new Thread(new WatcherRunnable(uuid));
+                    thread.start();
 
-            watchAddresses(uuid);
+                    watchAddresses(uuid);
 
-            if (mDataFetched) {
-                connectWatcher(uuid);
+                    if (mDataFetched) {
+                        connectWatcher(uuid);
+                    }
+                    mWatcherTasks.put(uuid, thread);
+
+                    // Request a data sync as soon as watcher is started
+                    requestWalletDataSync(uuid);
+                    mMainHandler.sendEmptyMessage(RELOAD);
+                }
             }
-        }
+        });
     }
 
     public void connectWatchers() {
         List<String> wallets = loadWalletUUIDs();
-        for (String uuid : wallets) {
+        for (final String uuid : wallets) {
             connectWatcher(uuid);
         }
     }
 
-    public void connectWatcher(String uuid) {
-        tABC_Error error = new tABC_Error();
-        core.ABC_WatcherConnect(uuid, error);
-        printABCError(error);
-        watchAddresses(uuid);
+    public void connectWatcher(final String uuid) {
+        mWatcherHandler.post(new Runnable() {
+            public void run() {
+                if (!hasConnectivity()) {
+                    Log.d(TAG, "Skipping connect...no connectivity");
+                    return;
+                }
+
+                tABC_Error error = new tABC_Error();
+                core.ABC_WatcherConnect(uuid, error);
+                printABCError(error);
+                watchAddresses(uuid);
+            }
+        });
     }
 
     public void disconnectWatchers() {
-        for (String uuid : mWatcherTasks.keySet()) {
-            tABC_Error error = new tABC_Error();
-            core.ABC_WatcherDisconnect(uuid, error);
-        }
+        mWatcherHandler.post(new Runnable() {
+            public void run() {
+                for (String uuid : mWatcherTasks.keySet()) {
+                    tABC_Error error = new tABC_Error();
+                    core.ABC_WatcherDisconnect(uuid, error);
+                }
+            }
+        });
     }
 
     private void watchAddresses(final String uuid) {
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                tABC_Error error = new tABC_Error();
-                core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(),
-                        uuid, error);
-                printABCError(error);
-            }
-        });
-        thread.start();
+        tABC_Error error = new tABC_Error();
+        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
+                AirbitzApplication.getPassword(),
+                uuid, error);
+        printABCError(error);
     }
 
     /*
@@ -2930,14 +3051,32 @@ public class CoreAPI {
         stopAllAsyncUpdates();
         mCoreSettings = null;
         mCoreWallets = null;
+        mDataFetched = false;
 
-        ClearCacheKeys();
+        // Wait for data sync to exit gracefully
+        AsyncTask[] as = new AsyncTask[] {
+            mUpdateExchangeRateTask,
+            mPinSetup, mReloadWalletTask
+        };
+        for (AsyncTask a : as) {
+            if (a != null) {
+                a.cancel(true);
+                try {
+                    a.get(1000, TimeUnit.MILLISECONDS);
+                } catch (java.util.concurrent.CancellationException e) {
+                    Log.d(TAG, "task cancelled");
+                } catch (Exception e) {
+                    Log.e(TAG, "", e);
+                }
+            }
+        }
+        clearCacheKeys();
     }
 
-    public void ClearCacheKeys() {
+    private void clearCacheKeys() {
         tABC_Error error = new tABC_Error();
         tABC_CC result = core.ABC_ClearKeyCache(error);
-        if(result != tABC_CC.ABC_CC_Ok) {
+        if (result != tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, error.toString());
         }
     }
@@ -3187,6 +3326,10 @@ public class CoreAPI {
 
         public long getSpendAmount() {
             return get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(_pSpend.getAmount()));
+        }
+
+        public boolean isTransfer() {
+            return !TextUtils.isEmpty(_pSpend.getSzDestUUID());
         }
 
         public void setSpendAmount(long amount) {

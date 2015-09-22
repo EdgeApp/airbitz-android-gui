@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2014, Airbitz Inc
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms are permitted provided that 
+ *
+ * Redistribution and use in source and binary forms are permitted provided that
  * the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. Redistribution or use of modified source code requires the express written
  *    permission of Airbitz Inc.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,9 +23,9 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
 
@@ -36,8 +36,10 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -47,46 +49,32 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
-/*
- * Information and actions for User debugging assistance
- */
 public class DebugFragment extends BaseFragment {
 
     View mView;
-    private HighlightOnPressButton mClearWatchersButton;
-    private HighlightOnPressButton mUploadLogButton;
-    private HighlightOnPressImageButton mBackButton;
-    private TextView mTitleTextView;
-    private NavigationActivity mActivity;
-    private CoreAPI mCoreAPI;
+    CoreAPI mCoreApi;
+    private Button mClearWatchersButton;
+    private Button mUploadLogButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCoreApi = CoreAPI.getApi();
+        setHasOptionsMenu(true);
+        setDrawerEnabled(false);
+        setBackEnabled(true);
+    }
 
-        mActivity = (NavigationActivity) getActivity();
-        mCoreAPI = CoreAPI.getApi();
+    @Override
+    public String getTitle() {
+        return mActivity.getString(R.string.settings_button_debug);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_debug, container, false);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(getString(R.string.fragment_debug_title));
-
-        mBackButton = (HighlightOnPressImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mActivity.onBackPressed();
-            }
-        });
-
-
-        mClearWatchersButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_debug_clear_watcher_button);
+        mClearWatchersButton = (Button) mView.findViewById(R.id.fragment_debug_clear_watcher_button);
         mClearWatchersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +82,7 @@ public class DebugFragment extends BaseFragment {
             }
         });
 
-        mUploadLogButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_debug_upload_log_button);
+        mUploadLogButton = (Button) mView.findViewById(R.id.fragment_debug_upload_log_button);
         mUploadLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +107,17 @@ public class DebugFragment extends BaseFragment {
         return mView;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mActivity.popFragment();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * Upload core logs
      */
@@ -136,7 +135,7 @@ public class DebugFragment extends BaseFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCoreAPI.uploadLogs();
+            mCoreApi.uploadLogs();
             return null;
         }
 
@@ -165,8 +164,8 @@ public class DebugFragment extends BaseFragment {
     public class ClearWatchersTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            mCoreAPI.stopWatchers();
-            mCoreAPI.startWatchers();
+            mCoreApi.stopWatchers();
+            mCoreApi.startWatchers();
             return null;
         }
     }

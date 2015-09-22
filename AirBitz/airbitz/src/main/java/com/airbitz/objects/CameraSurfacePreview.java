@@ -68,11 +68,14 @@
 
 package com.airbitz.objects;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -110,7 +113,7 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
             mCamera.setParameters(parameters);
             mCamera.setPreviewDisplay(holder);
-            mCamera.setDisplayOrientation(90);
+            setCameraDisplayOrientation(mContext, 0, mCamera);
             mCamera.startPreview();
         } catch (IOException e) {
             Log.d("TAG", "Error setting camera preview: " + e.getMessage());
@@ -125,19 +128,35 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-
         if (mSupportedPreviewSizes != null) {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         }
+        setMeasuredDimension(width, height);
+    }
 
-        float ratio;
-        if (mPreviewSize.height >= mPreviewSize.width)
-            ratio = (float) mPreviewSize.height / (float) mPreviewSize.width;
-        else
-            ratio = (float) mPreviewSize.width / (float) mPreviewSize.height;
+    public static void setCameraDisplayOrientation(Context context,
+                                                   int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0: degrees = 0; break;
+            case Surface.ROTATION_90: degrees = 90; break;
+            case Surface.ROTATION_180: degrees = 180; break;
+            case Surface.ROTATION_270: degrees = 270; break;
+        }
 
-        // One of these methods should be used, second method squishes preview slightly
-        setMeasuredDimension(width, (int) (width * ratio));
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {

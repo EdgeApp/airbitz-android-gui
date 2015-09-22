@@ -1,142 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include
-        layout="@layout/layout_title_header"
-        android:layout_width="match_parent"
-        android:layout_height="44.1dp" />
+    android:background="@android:color/white"
+    style="@style/SettingsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/debug_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:layout_marginTop="40dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:paddingTop="20dp"
+            android:paddingBottom="84dp">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
+            <LinearLayout style="@style/SettingsGroup">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="8dp"
-                android:weightSum="6">
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="@string/fragment_debug_version_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="1"/>
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="test"
-                    android:id="@+id/debug_app_version_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="5" />
-            </TableRow>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="8dp"
-                android:weightSum="6">
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="@string/fragment_debug_core_version_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="1"/>
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="test"
-                    android:id="@+id/debug_core_version_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="5" />
-            </TableRow>
+                    <TextView
+                        android:text="@string/fragment_debug_version_title"
+                        style="@style/SettingsSplitText" />
+                    <TextView
+                        android:id="@+id/debug_app_version_text"
+                        style="@style/SettingsSplitText" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="8dp"
-                android:weightSum="6">
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="@string/fragment_debug_network_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="1"/>
-                <TextView
-                    style="@style/BlackDropShadow"
-                    android:text="test"
-                    android:id="@+id/debug_network_version_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="5" />
-            </TableRow>
+                </LinearLayout>
 
-        </TableLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
 
-            <com.airbitz.objects.HighlightOnPressButton
-                style="@style/BlackDropShadow"
+                    <TextView
+                        android:text="@string/fragment_debug_core_version_title"
+                        style="@style/SettingsSplitText" />
+                    <TextView
+                        android:id="@+id/debug_core_version_text"
+                        style="@style/SettingsSplitText" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/settings_title_auto_logoff"
+                        android:text="@string/fragment_debug_network_title"
+                        style="@style/SettingsSplitText" />
+
+                    <TextView
+                        android:id="@+id/debug_network_version_text"
+                        style="@style/SettingsSplitText" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
                 android:id="@+id/fragment_debug_clear_watcher_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/btn_green"
-                android:padding="5dp"
                 android:text="@string/fragment_debug_clear_watcher_button"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
+                android:layout_marginBottom="20dp"
+                style="@style/GreenButton" />
 
-            <com.airbitz.objects.HighlightOnPressButton
-                style="@style/BlackDropShadow"
+            <Button
                 android:id="@+id/fragment_debug_upload_log_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/btn_green"
-                android:padding="5dp"
                 android:text="@string/fragment_debug_upload_log_files_button"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
-
+                android:layout_marginBottom="20dp"
+                style="@style/GreenButton" />
         </LinearLayout>
+
     </ScrollView>
 
-</LinearLayout>
+    <include layout="@layout/layout_toolbar_title" />
+
+</FrameLayout>

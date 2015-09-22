@@ -48,6 +48,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
 
 import com.airbitz.AirbitzApplication;
@@ -56,6 +57,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +75,7 @@ import java.util.TimeZone;
  * If server not responsive in TTL seconds, the alarm is skipped
  */
 public class AirbitzAlertReceiver extends BroadcastReceiver {
-    final private String TAG = getClass().getSimpleName();
+    static final private String TAG = "AirbitzAlertReceiver";
 
     private static final String TYPE = "com.airbitz.airbitalert.Type";
 
@@ -245,10 +247,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(final String response) {
             Log.d(TAG, "Notification response of " + mMessageId + "," + mBuildNumber + ": " + response);
-            if(response != null && response.length() != 0) {
-                if(hasAlerts(response)) {
-                    issueOSNotification(mContext, mContext.getString(R.string.alert_notification_message), ALERT_NOTIFICATION_CODE);
-                }
+            if (response != null && response.length() != 0) {
+                sendNotifications(mContext, response);
             }
             mHandler.removeCallbacks(murderPendingTasks);
             mHandler.post(murderPendingTasks);
@@ -283,6 +283,27 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             return false;
         }
         return false;
+    }
+
+    private void sendNotifications(Context context, String input) {
+        try {
+            JSONObject json = new JSONObject(input);
+            int count = json.getInt("count");
+            if (count == 0) {
+                return;
+            }
+
+            JSONArray results = json.getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject notification = results.getJSONObject(i);
+
+                String title = notification.getString("title");
+                title = Html.fromHtml(title).toString();
+                issueOSNotification(context, title, ALERT_NEW_BUSINESS_CODE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public class NewBusinessTask extends AsyncTask<Void, Void, String> {

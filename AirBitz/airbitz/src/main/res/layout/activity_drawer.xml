@@ -11,176 +11,197 @@
         android:layout_height="match_parent"
         android:background="@android:color/white">
 
-        <LinearLayout
-            android:id="@+id/drawer_top_layout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:clipToPadding="false">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimaryDarker"
-                android:gravity="center"
-                android:elevation="4dp">
-
-                <TextView
-                    android:id="@+id/item_drawer_exchange_rate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="10dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="20dp"
-                    android:singleLine="true"
-                    android:text=""
-                    android:textColor="@android:color/white"
-                    android:textSize="20dp"/>
-
-                <TextView
-                    android:id="@+id/item_drawer_login"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/drawer_signin_or_signup"
-                    style="@style/GreenButton" />
-
-            </FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_footer">
 
             <RelativeLayout
-                android:id="@+id/layout_account"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary">
-
-                <TextView
-                    android:id="@+id/item_drawer_account"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/transparent_until_pressed"
-                    android:clickable="true"
-                    android:drawableLeft="@drawable/ic_user_account_secure_light"
-                    android:drawablePadding="20dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="14dp"
-                    android:paddingTop="20dp"
-                    android:singleLine="true"
-                    android:text="Account"
-                    android:textColor="@color/white_frost"
-                    android:textSize="20dp" />
-
-                <ImageView
-                    android:id="@+id/item_drawer_account_arrow"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/ic_arrow_drop_down_white_24dp"/>
-                </RelativeLayout>
-
-            <include layout="@layout/divider_horizontal_light_gray" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_drawer_bottom_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/drawer_top_layout" >
-
-            <ScrollView
-                android:layout_alignParentTop="true"
-                android:layout_above="@+id/layout_footer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/drawer_top_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clipToPadding="false">
 
-                    <Button
-                        android:id="@+id/item_drawer_directory"
-                        android:text="@string/drawer_directory"
-                        android:drawableLeft="@drawable/ic_directory_dark"
-                        style="@style/DrawerButton"/>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@color/colorPrimaryDarker"
+                        android:gravity="center"
+                        android:elevation="4dp">
 
-                    <Button
-                        android:id="@+id/item_drawer_request"
-                        android:text="@string/drawer_request"
-                        android:drawableLeft="@drawable/ic_receive_dark"
-                        style="@style/DrawerButton"/>
+                        <TextView
+                            android:id="@+id/item_drawer_exchange_rate"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawablePadding="10dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="20dp"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textSize="20dp"/>
 
-                    <Button
-                        android:id="@+id/item_drawer_send"
-                        android:text="@string/drawer_send"
-                        android:drawableLeft="@drawable/ic_send_dark"
-                        style="@style/DrawerButton"/>
+                        <TextView
+                            android:id="@+id/item_drawer_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:drawableLeft="@drawable/ic_user_account_secure_light"
+                            android:drawablePadding="20dp"
+                            android:text="@string/drawer_signin_or_signup"
+                            style="@style/GreenButton" />
 
-                    <Button
-                        android:id="@+id/item_drawer_txs"
-                        android:text="@string/drawer_transactions"
-                        android:drawableLeft="@drawable/ic_transactions_dark"
-                        style="@style/DrawerButton"/>
+                    </FrameLayout>
 
-                    <Button
-                        android:id="@+id/item_drawer_buy_sell"
-                        android:drawableLeft="@drawable/ic_exchange_dark"
-                        android:text="@string/drawer_buy_sell"
-                        android:visibility="gone"
-                        style="@style/DrawerButton"
-                        />
+                    <RelativeLayout
+                        android:id="@+id/layout_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary">
+
+                        <TextView
+                            android:id="@+id/item_drawer_account"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/transparent_until_pressed"
+                            android:clickable="true"
+                            android:drawableLeft="@drawable/ic_user_account_secure_light"
+                            android:drawablePadding="20dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="20dp"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
+                            android:paddingTop="20dp"
+                            android:singleLine="true"
+                            android:text="Account"
+                            android:textColor="@color/white_frost"
+                            android:textSize="20dp" />
+
+                        <ImageView
+                            android:id="@+id/item_drawer_account_arrow"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="20dp"
+                            android:src="@drawable/ic_arrow_drop_down_white_24dp"/>
+                        </RelativeLayout>
 
                     <include layout="@layout/divider_horizontal_light_gray" />
 
-                    <Button
-                        android:id="@+id/item_drawer_import"
-                        android:drawableLeft="@drawable/ic_import_dark"
-                        android:singleLine="false"
-                        android:text="@string/drawer_import"
-                        style="@style/DrawerButton" />
                 </LinearLayout>
 
-            </ScrollView>
+                <RelativeLayout
+                    android:id="@+id/layout_drawer_bottom_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/drawer_top_layout" >
 
-            <LinearLayout
-                android:id="@+id/layout_footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:orientation="vertical">
 
-                <include layout="@layout/divider_horizontal_light_gray" />
+                        <Button
+                            android:id="@+id/item_drawer_directory"
+                            android:text="@string/drawer_directory"
+                            android:drawableLeft="@drawable/ic_directory_dark"
+                            style="@style/DrawerButton"/>
 
-                <Button
-                    android:id="@+id/item_drawer_logout"
-                    android:drawableLeft="@drawable/ic_logout_dark"
-                    android:text="@string/drawer_logout"
-                    style="@style/DrawerButton" />
+                        <Button
+                            android:id="@+id/item_drawer_request"
+                            android:text="@string/drawer_request"
+                            android:drawableLeft="@drawable/ic_receive_dark"
+                            style="@style/DrawerButton"/>
 
-                <Button
-                    android:id="@+id/item_drawer_settings"
-                    android:drawableLeft="@drawable/ic_settings_dark"
-                    android:text="@string/drawer_settings"
-                    style="@style/DrawerButton" />
+                        <Button
+                            android:id="@+id/item_drawer_send"
+                            android:text="@string/drawer_send"
+                            android:drawableLeft="@drawable/ic_send_dark"
+                            style="@style/DrawerButton"/>
 
-            </LinearLayout>
+                        <Button
+                            android:id="@+id/item_drawer_txs"
+                            android:text="@string/drawer_transactions"
+                            android:drawableLeft="@drawable/ic_transactions_dark"
+                            style="@style/DrawerButton"/>
 
-        </RelativeLayout>
+                        <Button
+                            android:id="@+id/item_drawer_wallets"
+                            android:text="@string/drawer_wallets"
+                            android:drawableLeft="@drawable/ic_wallets_dark"
+                            style="@style/DrawerButton"/>
 
-        <ListView
-            android:id="@+id/drawer_account_list"
+                        <Button
+                            android:id="@+id/item_drawer_buy_sell"
+                            android:drawableLeft="@drawable/ic_exchange_dark"
+                            android:text="@string/drawer_buy_sell"
+                            android:visibility="gone"
+                            style="@style/DrawerButton"
+                            />
+
+                        <include layout="@layout/divider_horizontal_light_gray" />
+
+                        <Button
+                            android:id="@+id/item_drawer_import"
+                            android:drawableLeft="@drawable/ic_import_dark"
+                            android:singleLine="false"
+                            android:text="@string/drawer_import"
+                            style="@style/DrawerButton" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <ListView
+                    android:id="@+id/drawer_account_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:layout_below="@id/drawer_top_layout"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <View
+            android:background="@drawable/bottom_shadow"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/light_gray"
-            android:layout_below="@id/drawer_top_layout"
-            android:visibility="gone"/>
+            android:layout_height="5dp"
+            android:layout_above="@+id/layout_footer" />
+
+        <LinearLayout
+            android:id="@+id/layout_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_alignParentBottom="true"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <include layout="@layout/divider_horizontal_light_gray" />
+
+            <Button
+                android:id="@+id/item_drawer_logout"
+                android:drawableLeft="@drawable/ic_logout_dark"
+                android:text="@string/drawer_logout"
+                style="@style/DrawerButton" />
+
+            <Button
+                android:id="@+id/item_drawer_settings"
+                android:drawableLeft="@drawable/ic_settings_dark"
+                android:text="@string/drawer_settings"
+                style="@style/DrawerButton" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 </FrameLayout>
