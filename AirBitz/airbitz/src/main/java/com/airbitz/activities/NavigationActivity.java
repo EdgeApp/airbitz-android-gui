@@ -206,7 +206,9 @@ public class NavigationActivity extends ActionBarActivity
             new SendFragment(),
             new TransactionListFragment(),
             new WalletsFragment(),
-            new SettingFragment()};
+            new SettingFragment(),
+            new ImportFragment(),
+    };
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = null;
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
@@ -1428,6 +1430,8 @@ public class NavigationActivity extends ActionBarActivity
                 return new WalletsFragment();
             case 5:
                 return new SettingFragment();
+            case 6:
+                return new ImportFragment();
             default:
                 return null;
         }
@@ -1456,7 +1460,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT}
 
     //************************ Connectivity support
 
@@ -2221,9 +2225,8 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-                onNavBarSelected(Tabs.MORE.ordinal());
-                pushFragmentNoAnimation(new ImportFragment(), Tabs.MORE.ordinal());
+                resetFragmentThreadToBaseFragment(Tabs.IMPORT.ordinal());
+                onNavBarSelected(Tabs.IMPORT.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2311,10 +2314,6 @@ public class NavigationActivity extends ActionBarActivity
 
     private void resetDrawerButtons() {
         Fragment frag = mNavStacks[mNavThreadId].peek();
-        if (frag instanceof ImportFragment) {
-            resetDrawerButtons(mDrawerImport);
-            return;
-        }
         if (frag instanceof BuySellFragment) {
             resetDrawerButtons(mDrawerBuySell);
             return;
@@ -2332,6 +2331,8 @@ public class NavigationActivity extends ActionBarActivity
             resetDrawerButtons(mDrawerRequest);
         } else if (mNavThreadId == Tabs.MORE.ordinal()) {
             resetDrawerButtons(mDrawerSettings);
+        } else if (mNavThreadId == Tabs.IMPORT.ordinal()) {
+            resetDrawerButtons(mDrawerImport);
         }
     }
 
