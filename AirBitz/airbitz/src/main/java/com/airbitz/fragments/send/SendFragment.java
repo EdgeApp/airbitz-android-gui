@@ -319,17 +319,6 @@ public class SendFragment extends WalletBaseFragment implements
         }
 
         startCamera();
-
-        final NfcManager nfcManager = (NfcManager) mActivity.getSystemService(Context.NFC_SERVICE);
-        NfcAdapter mNfcAdapter = nfcManager.getDefaultAdapter();
-
-        if (mNfcAdapter != null && mNfcAdapter.isEnabled() && SettingFragment.getNFCPref()) {
-//            mQRCodeTextView.setText(getString(R.string.send_scan_text_nfc));
-        }
-        else {
-//            mQRCodeTextView.setText(getString(R.string.send_scan_text));
-        }
-
         mQRCamera.setOnScanResultListener(this);
 
         checkFirstBLEUsage();

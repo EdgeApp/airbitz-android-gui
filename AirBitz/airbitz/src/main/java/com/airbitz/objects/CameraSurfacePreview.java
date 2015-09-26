@@ -84,15 +84,19 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
 
     Context mContext;
     private SurfaceHolder mHolder;
-    private Camera mCamera;
+    private CameraManager mCameraManager;
     private List<Camera.Size> mSupportedPreviewSizes;
+    private Camera.Parameters mParameters;
     private Camera.Size mPreviewSize;
 
-    public CameraSurfacePreview(Context context, Camera camera) {
+    public CameraSurfacePreview(Context context) {
         super(context);
-        mCamera = camera;
+        mCameraManager = CameraManager.instance();
         mContext = context;
-        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        mParameters = mCameraManager.getParameters();
+        if (mParameters != null) {
+            mSupportedPreviewSizes = mParameters.getSupportedPreviewSizes();
+        }
 
         // Install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed.
         mHolder = getHolder();
@@ -109,12 +113,16 @@ public class CameraSurfacePreview extends SurfaceView implements SurfaceHolder.C
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
-            Camera.Parameters parameters = mCamera.getParameters();
+            Camera camera = mCameraManager.getCamera();
+            if (camera == null) {
+                return;
+            }
+            Camera.Parameters parameters = camera.getParameters();
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-            mCamera.setParameters(parameters);
-            mCamera.setPreviewDisplay(holder);
-            setCameraDisplayOrientation(mContext, 0, mCamera);
-            mCamera.startPreview();
+            camera.setParameters(parameters);
+            camera.setPreviewDisplay(holder);
+            setCameraDisplayOrientation(mContext, 0, camera);
+            mCameraManager.startPreview();
         } catch (IOException e) {
             Log.d("TAG", "Error setting camera preview: " + e.getMessage());
         }

@@ -145,16 +145,12 @@ public class ImportFragment extends WalletBaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
-        } else {
-            return mView;
-        }
-
+        mView = inflater.inflate(R.layout.fragment_import_wallet, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_import_layout_camera);
         mBottomButtons = mView.findViewById(R.id.fragment_import_buttons);
+        mQRCamera = new QRCamera(this, mCameraLayout);
 
         mFlashButton = mView.findViewById(R.id.fragment_import_button_flash);
         mFlashButton.setOnClickListener(new View.OnClickListener() {
@@ -220,16 +216,13 @@ public class ImportFragment extends WalletBaseFragment implements
 
     public void stopCamera() {
         Log.d(TAG, "stopCamera");
-        if(mQRCamera != null) {
+        if (mQRCamera != null) {
             mQRCamera.stopCamera();
         }
     }
 
     public void startCamera() {
-        if(mQRCamera == null) {
-            mQRCamera = new QRCamera(this, mCameraLayout);
-            mQRCamera.setOnScanResultListener(this);
-        }
+        mQRCamera.setOnScanResultListener(this);
         mQRCamera.startCamera();
     }
 
