@@ -45,15 +45,12 @@ public class QRCamera implements
     public static final int RESULT_LOAD_IMAGE = 678;
     final int FOCUS_MILLIS = 2000;
 
+    CameraManager mCameraManager;
     Fragment mFragment;
-    Camera mCamera;
     CameraSurfacePreview mPreview;
     FrameLayout mPreviewFrame, mPreviewObscura;
     View mCameraLayout;
     Handler mHandler;
-    CameraHandler mCameraHandler;
-    boolean mFlashOn = false;
-    boolean mPreviewing = false;
 
     //************** Callback for notification of a QR code scan result
     OnScanResult mOnScanResult;
@@ -68,7 +65,7 @@ public class QRCamera implements
     Runnable cameraFocusRunner = new Runnable() {
         @Override
         public void run() {
-            mCameraHandler.sendEmptyMessage(AUTO_FOCUS);
+            mCameraManager.autoFocus();
             mHandler.postDelayed(cameraFocusRunner, FOCUS_MILLIS);
         }
     };
@@ -76,12 +73,9 @@ public class QRCamera implements
     public QRCamera(Fragment frag, View cameraLayout) {
         mFragment = frag;
         mCameraLayout = cameraLayout;
+        mCameraManager = CameraManager.instance();
 
-        HandlerThread ht = new HandlerThread("Camera Handler Thread");
-        ht.start();
-        mCameraHandler = new CameraHandler(ht.getLooper());
         mHandler = new Handler();
-
         mPreviewFrame = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_preview);
         mPreviewObscura = (FrameLayout) mCameraLayout.findViewById(R.id.layout_camera_obscura);
     }
@@ -89,8 +83,8 @@ public class QRCamera implements
     Runnable mCameraStartRunner = new Runnable() {
         @Override
         public void run() {
-            if (mCamera != null) {
-                if (mPreviewing) {
+            if (mCameraManager.getCamera() != null) {
+                if (mCameraManager.isPreviewing()) {
                     stopCamera();
                 }
                 mHandler.postDelayed(mCameraStartRunner, 200);
@@ -101,11 +95,11 @@ public class QRCamera implements
     };
 
     public void startScanning() {
-        mCameraHandler.sendEmptyMessage(PREVIEW_ON);
+        mCameraManager.previewOn();
     }
 
     public void stopScanning() {
-        mCameraHandler.sendEmptyMessage(PREVIEW_OFF);
+        mCameraManager.previewOff();
     }
 
     public void startCamera() {
@@ -144,24 +138,32 @@ public class QRCamera implements
         if (cameraIndex < 0) {
             return;
         }
-        mCameraHandler.post(new Runnable() {
-            public void run() {
-                try {
-                    Log.d(TAG, "Opening Camera");
-                    mCamera = Camera.open(cameraIndex);
-                    finishOpenCamera();
-                } catch (Exception e) {
-                    Log.e(TAG, "Camera Does Not exist", e);
-                    mHandler.postDelayed(mCameraStartRunner, 500);
-                }
+        mCameraManager.startCamera(cameraIndex, new CameraManager.Callback() {
+            public void success(final Camera camera) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        finishOpenCamera();
+                    }
+                });
+            }
+            public void error(Exception e) {
+                Log.e(TAG, "Camera Does Not exist", e);
+                mHandler.postDelayed(mCameraStartRunner, 500);
             }
         });
     }
 
     private void finishOpenCamera() {
-        mPreview = new CameraSurfacePreview(mFragment.getActivity(), mCamera);
-        mCameraHandler.sendEmptyMessage(SETUP);
-        mPreviewing = true;
+        if (mFragment.getActivity() == null || null == mCameraManager.getCamera()) {
+            return;
+        }
+        mPreview = new CameraSurfacePreview(mFragment.getActivity());
+        mCameraManager.postToCameraThread(new Runnable() {
+            public void run() {
+                setupCameraParams();
+            }
+        });
+        mCameraManager.previewOn();
         mHandler.post(new Runnable() {
             public void run() {
                 mPreviewFrame.addView(mPreview);
@@ -170,47 +172,21 @@ public class QRCamera implements
     }
 
     public void stopCamera() {
-        if (mCamera != null) {
+        if (mCameraManager.getCamera() != null) {
             mPreviewFrame.removeView(mPreview);
         }
         Log.d(TAG, "stopping camera");
-        mCameraHandler.sendEmptyMessage(STOP_PREVIEW);
-        mCameraHandler.sendEmptyMessage(RELEASE);
-        mHandler.removeCallbacks(cameraFocusRunner);
-        mPreviewing = false;
-    }
-
-    public boolean hasCameraFlash() {
-        if (mCamera == null) {
-            return false;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        if (parameters.getFlashMode() == null) {
-            return false;
-        }
-        List<String> supportedFlashModes = parameters.getSupportedFlashModes();
-        if (supportedFlashModes == null || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1
-                && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
-            return false;
-        }
-        return true;
+        mCameraManager.previewOff();
+        mCameraManager.stopPreview();
+        mCameraManager.release();
     }
 
     public boolean isFlashOn() {
-        return mFlashOn;
+        return mCameraManager.isFlashOn();
     }
 
     public void setFlashOn(boolean on) {
-        // You have camera in your device
-        if (hasCameraFlash()) {
-            if (on) {
-                mFlashOn = true;
-                mCameraHandler.sendEmptyMessage(FLASH_ON);
-            } else {
-                mFlashOn = false;
-                mCameraHandler.sendEmptyMessage(FLASH_OFF);
-            }
-        }
+        mCameraManager.flash(on);
     }
 
     // delegated from the containing fragment
@@ -249,130 +225,13 @@ public class QRCamera implements
         });
     }
 
-    private static final int RELEASE = 1;
-    private static final int UNLOCK = 2;
-    private static final int LOCK = 3;
-    private static final int SETUP = 4;
-    private static final int START_PREVIEW = 5;
-    private static final int STOP_PREVIEW = 6;
-    private static final int AUTO_FOCUS = 7;
-    private static final int CANCEL_AUTO_FOCUS = 8;
-    private static final int FLASH_ON = 9;
-    private static final int FLASH_OFF = 10;
-    private static final int PREVIEW_ON = 11;
-    private static final int PREVIEW_OFF = 12;
-
-    private class CameraHandler extends Handler {
-        CameraHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(final Message msg) {
-            try {
-                Log.d(TAG, "handleMessage");
-                if (mCamera == null) {
-                    return;
-                }
-                switch (msg.what) {
-                    case RELEASE:
-                        Log.d(TAG, "RELEASE");
-                        mCamera.setPreviewCallback(null);
-                        mCamera.release();
-                        mCamera = null;
-                        break;
-
-                    case UNLOCK:
-                        Log.d(TAG, "UNLOCK");
-
-                        mCamera.unlock();
-                        break;
-
-                    case LOCK:
-                        Log.d(TAG, "LOCK");
-
-                        mCamera.lock();
-                        break;
-
-                    case SETUP:
-                        Log.d(TAG, "SETUP");
-
-                        setupCameraParams();
-                        break;
-
-                    case START_PREVIEW:
-                        Log.d(TAG, "START_PREVIEW");
-
-                        mCamera.startPreview();
-                        return;
-
-                    case STOP_PREVIEW:
-                        Log.d(TAG, "STOP_PREVIEW");
-
-                        mCamera.stopPreview();
-                        break;
-
-                    case AUTO_FOCUS:
-                        Log.d(TAG, "AUTO_FOCUS");
-
-                        mCamera.autoFocus(null);
-                        break;
-
-                    case CANCEL_AUTO_FOCUS:
-                        Log.d(TAG, "CANCEL_AUTO_FOCUS");
-
-                        mCamera.cancelAutoFocus();
-                        break;
-
-                    case FLASH_ON: {
-                        Log.d(TAG, "FLASH_ON");
-                        Camera.Parameters parameters = mCamera.getParameters();
-                        parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                        mCamera.setParameters(parameters);
-                        break;
-                    }
-
-                    case FLASH_OFF: {
-                        Log.d(TAG, "FLASH_OFF");
-                        Camera.Parameters parameters = mCamera.getParameters();
-                        parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                        mCamera.setParameters(parameters);
-                        break;
-                    }
-
-                    case PREVIEW_ON:
-                        Log.d(TAG, "PREVIEW_ON");
-                        mPreviewing = true;
-                        break;
-
-                    case PREVIEW_OFF:
-                        Log.d(TAG, "PREVIEW_OFF");
-                        mPreviewing = false;
-                        break;
-
-                    default:
-                        throw new RuntimeException("Invalid CameraProxy message=" + msg.what);
-                }
-            } catch (RuntimeException e) {
-                if (msg.what != RELEASE && mCamera != null) {
-                    try {
-                        mCamera.release();
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Fail to release the camera.");
-                    }
-                    mCamera = null;
-                }
-                throw e;
-            }
-        }
-    }
-
     private void setupCameraParams() {
-        if (mCamera != null) {
-            mCamera.setPreviewCallback(this);
-            Camera.Parameters params = mCamera.getParameters();
+        if (mCameraManager.getCamera() != null) {
+            Camera camera = mCameraManager.getCamera();
+            camera.setPreviewCallback(this);
+            Camera.Parameters params = camera.getParameters();
             if (params != null) {
-                List<String> supportedFocusModes = mCamera.getParameters().getSupportedFocusModes();
+                List<String> supportedFocusModes = camera.getParameters().getSupportedFocusModes();
                 if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
                 } else if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO) &&
@@ -380,7 +239,7 @@ public class QRCamera implements
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                     mHandler.post(cameraFocusRunner);
                 }
-                mCamera.setParameters(params);
+                camera.setParameters(params);
             }
         }
     }
@@ -424,7 +283,7 @@ public class QRCamera implements
 
     @Override
     public void onPreviewFrame(final byte[] bytes, final Camera camera) {
-        if (!mPreviewing) {
+        if (!mCameraManager.isPreviewing()) {
             return;
         }
         obscuraDown();
@@ -432,14 +291,14 @@ public class QRCamera implements
     }
 
     private void tryBytes(final byte[] bytes, final Camera camera) {
-        if (mCamera == null || !mPreviewing) {
+        if (mCameraManager.getCamera() == null || !mCameraManager.isPreviewing()) {
             return;
         }
         String info = attemptDecodeBytes(bytes, camera);
         if (info == null) {
             return;
         }
-        mPreviewing = false;
+        mCameraManager.previewOff();
         receivedQrCode(info);
     }
 
@@ -511,5 +370,4 @@ public class QRCamera implements
         }
         return null;
     }
-
 }
