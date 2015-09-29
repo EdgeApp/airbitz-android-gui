@@ -31,21 +31,15 @@
 
 package com.airbitz.fragments.settings;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -66,6 +60,12 @@ public class CurrencyFragment extends BaseFragment {
     public static interface OnCurrencySelectedListener {
         public void onCurrencySelected(String code);
     }
+
+    //
+    // We are called from outside of Settings. Just set the selected currency number in the Activity
+    // when done.
+    //
+    public  boolean mSetCurrencyNumInActivity = false;
 
     private NavigationActivity mActivity;
     private OnCurrencySelectedListener mListener;
@@ -154,16 +154,24 @@ public class CurrencyFragment extends BaseFragment {
                 String code = mCodes.get(i);
                 int num = mApi.getCurrencyNumberFromCode(code);
                 if (num > 0) {
-                    tABC_AccountSettings settings = mApi.newCoreSettings();
-                    if (settings == null) {
-                        return;
+                    if (mSetCurrencyNumInActivity) {
+                        mActivity.mSendConfirmationCurrencyNumOverride = num;
+                        mActivity.mSendConfirmationOverrideCurrencyMode = true;
+                    } else {
+                        tABC_AccountSettings settings = mApi.newCoreSettings();
+                        if (settings == null) {
+                            return;
+                        }
+                        settings.setCurrencyNum(num);
+                        mApi.saveAccountSettings(settings);
                     }
-                    settings.setCurrencyNum(num);
-                    mApi.saveAccountSettings(settings);
                 }
 
                 mActivity.popFragment();
-                mActivity.ShowFadingDialog(getString(R.string.settings_currency_change_note_popup),getResources().getInteger(R.integer.alert_hold_time_help_popups));
+
+                if (!mActivity.mSendConfirmationOverrideCurrencyMode) {
+                    mActivity.ShowFadingDialog(getString(R.string.settings_currency_change_note_popup),getResources().getInteger(R.integer.alert_hold_time_help_popups));
+                }
             }
         });
         return view;
@@ -201,4 +209,5 @@ public class CurrencyFragment extends BaseFragment {
     public void setSelected(String code) {
         mSelected = code;
     }
+
 }

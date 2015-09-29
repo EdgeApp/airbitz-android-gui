@@ -90,8 +90,8 @@
     <color name="btn_red">#ffd02e32</color>
     <color name="btn_red_pressed">#99d02e32</color>
 
-    <color name="btn_orange">#ffd02e32</color>
-    <color name="btn_orange_pressed">#99d02e32</color>
+    <color name="btn_orange">#FFFFA634</color>
+    <color name="btn_orange_pressed">#FFFFA634</color>
 
     <color name="colorPrimary">#ff2291CF</color>
     <color name="colorPrimaryPressed">#aa2291CF</color>

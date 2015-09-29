@@ -39,7 +39,7 @@
                     android:layout_marginRight="10dp"
                     android:gravity="right|center_vertical"
                     android:text="@string/send_confirmation_to_title"
-                    android:textColor="@color/dark_gray_text"
+                    android:textColor="@color/dark_text"
                     android:textSize="15dp"
                     android:textStyle="normal" />
 
@@ -50,7 +50,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="left|center_vertical"
                     android:singleLine="true"
-                    android:textColor="@color/dark_gray_text"
+                    android:textColor="@color/dark_text"
                     android:textSize="15dp"
                     android:textStyle="normal" />
 
@@ -75,14 +75,13 @@
                     android:layout_height="34.65dp"
                     android:gravity="center"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/text_dark_gray"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/dark_text"
+                    android:textSize="17dp"/>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/emboss_down"
+                    android:background="@drawable/emboss_down_light"
                     android:layout_toRightOf="@id/send_confirmation_btc_sign" >
 
                     <TextView
@@ -92,9 +91,8 @@
                         android:layout_alignParentRight="true"
                         android:gravity="center_vertical|right"
                         android:paddingRight="8dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="13dp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/dark_text"
+                        android:textSize="13dp"/>
 
                     <EditText
                         android:id="@+id/button_bitcoin_balance"
@@ -107,8 +105,8 @@
                         android:paddingLeft="4dp"
                         android:paddingRight="6.3dp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white"
-                        android:textCursorDrawable="@drawable/bold_cursor_white"
+                        android:textColor="@color/dark_text"
+                        android:textCursorDrawable="@drawable/bold_cursor_dark_text"
                         android:textSize="20dp" />
 
 
@@ -133,14 +131,13 @@
                     android:layout_height="34.65dp"
                     android:gravity="center"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/text_dark_gray"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/dark_text"
+                    android:textSize="17dp"/>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/emboss_down"
+                    android:background="@drawable/emboss_down_light"
                     android:layout_toRightOf="@id/send_confirmation_fiat_sign" >
 
                     <TextView
@@ -150,9 +147,17 @@
                         android:layout_alignParentRight="true"
                         android:gravity="center_vertical|right"
                         android:paddingRight="8dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="13dp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/dark_text_link"
+                        android:textSize="13dp"/>
+
+                    <Button
+                        android:id="@+id/button_change_fiat"
+                        android:layout_width="55dp"
+                        android:layout_height="34.65dp"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="8dp"
+                        android:background="@color/clear_color"/>
 
                     <EditText
                         android:id="@+id/button_dollar_balance"
@@ -165,8 +170,8 @@
                         android:paddingLeft="4dp"
                         android:paddingRight="6.3dp"
                         android:singleLine="true"
-                        android:textColor="@android:color/white"
-                        android:textCursorDrawable="@drawable/bold_cursor_white"
+                        android:textColor="@color/dark_text"
+                        android:textCursorDrawable="@drawable/bold_cursor_dark_text"
                         android:textSize="20dp" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -181,7 +186,7 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="1 mBTC = ?"
-                android:textColor="@color/text_dark_gray"
+                android:textColor="@color/dark_text"
                 android:textSize="15dp" />
 
             <Button
@@ -192,6 +197,7 @@
                 android:layout_below="@+id/layout_to"
                 android:text="@string/send_confirmation_max_button_title"
                 android:textSize="10dp"
+                android:textColor="@color/dark_text"
                 android:background="@drawable/bg_button_green"
                 android:layout_marginRight="12.6dp"
                 android:padding="1dp"/>
@@ -218,7 +224,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingRight="20dp"
                 android:singleLine="true"
-                android:textColor="@color/text_dark_gray"
+                android:textColor="@color/dark_text"
                 android:textSize="16dp" />
 
             <EditText
@@ -227,15 +233,16 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="25.2dp"
                 android:layout_weight="1"
-                android:background="@drawable/emboss_down"
+                android:background="@drawable/emboss_down_light"
                 android:gravity="center"
                 android:hint=""
                 android:inputType="numberPassword"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white"
-                android:textCursorDrawable="@drawable/bold_cursor_white" />
+                android:textColor="@color/dark_text"
+                android:textColorHint="@color/dark_text"
+                android:textStyle="normal"
+                android:textCursorDrawable="@drawable/bold_cursor_dark_text" />
         </LinearLayout>
 
         <RelativeLayout
@@ -252,7 +259,7 @@
                 android:id="@+id/textview_slide"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="left|center"
+                android:gravity="center"
                 android:paddingLeft="15dp"
                 android:text="@string/send_confirmation_slide_to_confirm"
                 android:textColor="@android:color/white"
