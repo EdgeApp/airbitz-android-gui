@@ -198,6 +198,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mCoreAPI = CoreAPI.getApi();
 
         mAutoUpdatingTextFields = true;
+        mPositionNavBar = false;
         setHomeEnabled(true);
         if (null != mSpendTarget && mSpendTarget.isTransfer()) {
             setDropdownEnabled(false);
