@@ -58,14 +58,8 @@ public class CurrencyFragment extends BaseFragment {
     public static String CURRENCY = "currency";
 
     public static interface OnCurrencySelectedListener {
-        public void onCurrencySelected(String code);
+        public void onCurrencySelected(int currencyNum);
     }
-
-    //
-    // We are called from outside of Settings. Just set the selected currency number in the Activity
-    // when done.
-    //
-    public  boolean mSetCurrencyNumInActivity = false;
 
     private NavigationActivity mActivity;
     private OnCurrencySelectedListener mListener;
@@ -79,6 +73,11 @@ public class CurrencyFragment extends BaseFragment {
     private EditText mSearch;
     private View mSearchClose;
     private String mSelected;
+
+    public interface CurrencySelection {
+        public void currencyChanged(int currencyNum);
+    }
+    private CurrencySelection mSelectionListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,26 +150,15 @@ public class CurrencyFragment extends BaseFragment {
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mActivity.popFragment();
+                mActivity.getFragmentManager().executePendingTransactions();
+
                 String code = mCodes.get(i);
                 int num = mApi.getCurrencyNumberFromCode(code);
                 if (num > 0) {
-                    if (mSetCurrencyNumInActivity) {
-                        mActivity.mSendConfirmationCurrencyNumOverride = num;
-                        mActivity.mSendConfirmationOverrideCurrencyMode = true;
-                    } else {
-                        tABC_AccountSettings settings = mApi.newCoreSettings();
-                        if (settings == null) {
-                            return;
-                        }
-                        settings.setCurrencyNum(num);
-                        mApi.saveAccountSettings(settings);
+                    if (mListener != null) {
+                        mListener.onCurrencySelected(num);
                     }
-                }
-
-                mActivity.popFragment();
-
-                if (!mActivity.mSendConfirmationOverrideCurrencyMode) {
-                    mActivity.ShowFadingDialog(getString(R.string.settings_currency_change_note_popup),getResources().getInteger(R.integer.alert_hold_time_help_popups));
                 }
             }
         });
@@ -181,9 +169,7 @@ public class CurrencyFragment extends BaseFragment {
         switch (item.getItemId()) {
             case android.R.id.home:
                 mActivity.popFragment();
-                if (null != mListener) {
-                    mListener.onCurrencySelected(null);
-                }
+                mActivity.getFragmentManager().executePendingTransactions();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -209,5 +195,4 @@ public class CurrencyFragment extends BaseFragment {
     public void setSelected(String code) {
         mSelected = code;
     }
-
 }

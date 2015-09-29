@@ -197,8 +197,6 @@ public class NavigationActivity extends ActionBarActivity
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
-    public  boolean mSendConfirmationOverrideCurrencyMode = false;
-    public int mSendConfirmationCurrencyNumOverride;
     private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {

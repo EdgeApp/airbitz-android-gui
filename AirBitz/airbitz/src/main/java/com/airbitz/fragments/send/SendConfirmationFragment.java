@@ -82,7 +82,8 @@ import java.lang.reflect.Method;
  */
 public class SendConfirmationFragment extends WalletBaseFragment implements
         CoreAPI.OnPasswordCheckListener,
-        Calculator.OnCalculatorKey {
+        Calculator.OnCalculatorKey,
+        CurrencyFragment.OnCurrencySelectedListener {
     private CoreAPI mCoreAPI;
 
     private final String TAG = getClass().getSimpleName();
@@ -108,6 +109,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private Button mMaxButton;
     private Button mChangeFiatButton;
     private int mCurrencyNum;
+    private boolean mSendConfirmationOverrideCurrencyMode = false;
+    private int mSendConfirmationCurrencyNumOverride;
 
     private Bundle bundle;
 
@@ -442,7 +445,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(code);
-                fragment.mSetCurrencyNumInActivity = true;
+                fragment.setOnCurrencySelectedListener(SendConfirmationFragment.this);
 
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
             }
@@ -511,6 +514,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
     }
 
+    @Override
+    public void onCurrencySelected(int num) {
+        mSendConfirmationCurrencyNumOverride = num;
+        mSendConfirmationOverrideCurrencyMode = true;
+        checkFields();
+    }
+
     public void setExitHandler(OnExitHandler handler) {
         this.exitHandler = handler;
     }
@@ -544,8 +554,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         long satoshi;
 
         mAutoUpdatingTextFields = true;
-        if (mActivity.mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mActivity.mSendConfirmationCurrencyNumOverride;
+        if (mSendConfirmationOverrideCurrencyMode) {
+            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
         } else {
             mCurrencyNum = mSourceWallet.getCurrencyNum();
         }
@@ -603,8 +613,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private void UpdateFeeFields(Long fees, tABC_Error error) {
         mAutoUpdatingTextFields = true;
         int color;
-        if (mActivity.mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mActivity.mSendConfirmationCurrencyNumOverride;
+        if (mSendConfirmationOverrideCurrencyMode) {
+            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
         } else {
             mCurrencyNum = mSourceWallet.getCurrencyNum();
         }
@@ -848,20 +858,26 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mToEdittext.setText(temp);
         }
 
-        mActivity.showNavBar(); // in case we came from backing out of SuccessFragment
-//        mParentLayout.requestFocus(); //Take focus away first
-
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
+        checkFields();
+        checkAuthorization();
+    }
+
+    private void checkFields() {
         mAutoUpdatingTextFields = true;
 
         if (mSavedBitcoin > 0) {
             mAmountToSendSatoshi = mSavedBitcoin;
         }
 
-        checkAuthorization();
+        if (mSendConfirmationOverrideCurrencyMode) {
+            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
+        } else {
+            mCurrencyNum = mSourceWallet.getCurrencyNum();
+        }
 
         if(mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
@@ -880,12 +896,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             showCalculator();
         }
 
-        if (mActivity.mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mActivity.mSendConfirmationCurrencyNumOverride;
-        } else {
-            mCurrencyNum = mSourceWallet.getCurrencyNum();
-        }
-
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
         mBTCSignTextview.setText(mCoreApi.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
@@ -898,7 +908,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mMaxLocked = false;
 
         mInvalidEntryCount = getInvalidEntryCount();
-
     }
 
     @Override
