@@ -264,10 +264,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             @Override
             public void afterTextChanged(Editable editable) {
                 if (mPinRequired && editable.length() >= 4) {
-                    InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(mAuthorizationEdittext.getWindowToken(), 0);
-                    mAuthorizationEdittext.clearFocus();
+                    mActivity.hideSoftKeyboard(mAuthorizationEdittext);
+                    mConfirmSwipeButton.requestFocus();
                 }
             }
         };
