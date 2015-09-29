@@ -90,7 +90,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
-public class SettingFragment extends BaseFragment {
+public class SettingFragment extends BaseFragment implements CurrencyFragment.OnCurrencySelectedListener {
     private static final String MERCHANT_MODE_PREF = "MerchantMode";
     private static final String DISTANCE_PREF = "DistancePref";
     private static final String NFC_PREF = "NFCPref";
@@ -337,6 +337,7 @@ public class SettingFragment extends BaseFragment {
 
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(code);
+                fragment.setOnCurrencySelectedListener(SettingFragment.this);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
@@ -644,6 +645,17 @@ public class SettingFragment extends BaseFragment {
         if (AirbitzApplication.isLoggedIn()) {
             saveCurrentSettings();
         }
+    }
+
+    @Override
+    public void onCurrencySelected(int num) {
+        mCurrencyNum = num;
+        saveCurrentSettings();
+        mDefaultCurrencyButton.setText(
+            mCoreAPI.getCurrencyCode(mCurrencyNum));
+        mActivity.ShowFadingDialog(
+            getString(R.string.settings_currency_change_note_popup),
+            getResources().getInteger(R.integer.alert_hold_time_help_popups));
     }
 
     static class AutoLogoffDialogManager {

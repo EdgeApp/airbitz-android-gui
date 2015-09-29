@@ -170,14 +170,6 @@ public class TransactionListFragment extends WalletBaseFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle bundle = this.getArguments();
-        if (bundle != null && bundle.getBoolean(WalletsFragment.CREATE)) {
-            bundle.putBoolean(WalletsFragment.CREATE, false);
-            buildFragments(bundle);
-        } else {
-            Log.d(TAG, "onCreateView stopping in Wallets");
-        }
-
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_list, container, false);
         }
@@ -296,6 +288,20 @@ public class TransactionListFragment extends WalletBaseFragment
         updateBalanceBar();
         updateSendRequestButtons();
         return mView;
+    }
+
+    @Override
+    public void onResume() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null && bundle.getBoolean(WalletsFragment.CREATE)) {
+            mPositionNavBar = false;
+            bundle.putBoolean(WalletsFragment.CREATE, false);
+            buildFragments(bundle);
+            super.onResume();
+            mPositionNavBar = true;
+        } else {
+            super.onResume();
+        }
     }
 
     @Override

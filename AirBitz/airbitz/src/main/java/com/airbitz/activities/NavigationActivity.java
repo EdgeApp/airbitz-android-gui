@@ -197,7 +197,6 @@ public class NavigationActivity extends ActionBarActivity
     private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
-//    private ViewPager mViewPager;
     private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {
