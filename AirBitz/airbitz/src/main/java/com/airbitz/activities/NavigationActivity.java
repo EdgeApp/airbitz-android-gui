@@ -1675,16 +1675,18 @@ public class NavigationActivity extends ActionBarActivity
 
                     mFadingDialog.show();
                     View view = mFadingDialog.getView();
-                    View.OnClickListener dismiss = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mFadingDialog != null) {
-                                mFadingDialog.dismiss();
+                    if (cancelable) {
+                        View.OnClickListener dismiss = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mFadingDialog != null) {
+                                    mFadingDialog.dismiss();
+                                }
                             }
-                        }
-                    };
-                    view.setOnClickListener(dismiss);
-                    tv.setOnClickListener(dismiss);
+                        };
+                        view.setOnClickListener(dismiss);
+                        tv.setOnClickListener(dismiss);
+                    }
                     view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
