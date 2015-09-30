@@ -2071,6 +2071,11 @@ public class CoreAPI {
                 || mWatcherHandler.hasMessages(LAST)
                 || mMainHandler.hasMessages(LAST)) {
             try {
+                Log.d(TAG,
+                    "Data: " + mDataHandler.hasMessages(LAST) + ", " +
+                    "Core: " + mCoreHandler.hasMessages(LAST) + ", " +
+                    "Watcher: " + mWatcherHandler.hasMessages(LAST) + ", " +
+                    "Main: " + mMainHandler.hasMessages(LAST));
                 Thread.sleep(200);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
