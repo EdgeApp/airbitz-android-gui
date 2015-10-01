@@ -87,7 +87,7 @@ import com.airbitz.models.BleDevice;
 import com.airbitz.models.Wallet;
 import com.airbitz.models.WalletPickerEnum;
 import com.airbitz.objects.BleUtil;
-import com.airbitz.objects.BluetoothListView;
+import com.airbitz.objects.BeaconSend;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
 import com.airbitz.objects.QRCamera;
@@ -100,8 +100,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SendFragment extends WalletBaseFragment implements
-        BluetoothListView.OnPeripheralSelected,
-        BluetoothListView.OnBitcoinURIReceived,
+        BeaconSend.OnPeripheralSelected,
         QRCamera.OnScanResult
 {
     private final String TAG = getClass().getSimpleName();
@@ -130,20 +129,36 @@ public class SendFragment extends WalletBaseFragment implements
     private RelativeLayout mListviewContainer;
     private RelativeLayout mCameraLayout;
     private RelativeLayout mBluetoothLayout;
-    private BluetoothListView mBluetoothListView;
+    private ListView mBluetoothListView;
+    private BeaconSend mBeaconSend;
     private List<Wallet> mOtherWalletsList;//NAMES
     private String mReturnURL;
     private WalletOtherAdapter mOtherWalletsAdapter;
     private boolean mForcedBluetoothScanning = false;
     private View mView;
     private View mButtonBar;
-    QRCamera mQRCamera;
+    private QRCamera mQRCamera;
     private CoreAPI mCoreApi;
     private ClipboardManager mClipboard;
+
+    List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
+    BluetoothSearchAdapter mSearchAdapter;
 
     @Override
     protected String getSubtitle() {
         return mActivity.getString(R.string.fragment_send_subtitle);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            if (SettingFragment.getBLEPref()) {
+                mBeaconSend = new BeaconSend(mActivity);
+                mBeaconSend.setOnPeripheralSelectedListener(this);
+            }
+        }
     }
 
     @Override
@@ -153,7 +168,27 @@ public class SendFragment extends WalletBaseFragment implements
 
         mView = inflater.inflate(R.layout.fragment_send, container, false);
 
-        mBluetoothLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_bluetooth_layout);
+        mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
+        mBluetoothListView = (ListView) mView.findViewById(R.id.fragment_send_bluetooth_layout);
+        mBluetoothListView.setAdapter(mSearchAdapter);
+        if (mBeaconSend != null) {
+            mBluetoothListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    BleDevice device = mPeripherals.get(i);
+                    if (!device.hasErrors()) {
+                        mSearchAdapter.selectItem(view);
+
+                        showConnecting(device);
+                        stopBluetoothSearch();
+                        mBeaconSend.connectGatt(device);
+                    } else {
+                        hideProcessing();
+                    }
+                }
+            });
+        }
+
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
         mQRCamera = new QRCamera(this, mCameraLayout);
 
@@ -214,19 +249,6 @@ public class SendFragment extends WalletBaseFragment implements
                 GotoSendConfirmation(target);
             }
         });
-
-        // if BLE is supported on the device, enable
-        if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            if (SettingFragment.getBLEPref()) {
-                mBluetoothListView = new BluetoothListView(mActivity);
-                mBluetoothListView.setOnBitcoinURIReceivedListener(this);
-                mBluetoothLayout.addView(mBluetoothListView, 0);
-            }
-            else {
-                // Bluetooth is not enabled - ask for enabling?
-            }
-        }
-
         return mView;
     }
 
@@ -312,6 +334,15 @@ public class SendFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (mBeaconSend != null) {
+            if (mCoreApi.coreSettings().getBNameOnPayments()) {
+                String name = mCoreApi.coreSettings().getSzFullName();
+                mBeaconSend.setBroadcastName(name);
+            } else {
+                mBeaconSend.setBroadcastName(
+                    getResources().getString(R.string.request_qr_unknown));
+            }
+        }
 
         hasCheckedFirstUsage = false;
         if (mHandler == null) {
@@ -361,8 +392,9 @@ public class SendFragment extends WalletBaseFragment implements
         super.onPause();
         stopCamera();
         stopBluetoothSearch();
-        if (mBluetoothListView != null) {
-            mBluetoothListView.close();
+        hideProcessing();
+        if (mBeaconSend != null) {
+            mBeaconSend.close();
         }
         hasCheckedFirstUsage = false;
     }
@@ -427,26 +459,50 @@ public class SendFragment extends WalletBaseFragment implements
 
     // Start the Bluetooth search
     private void startBluetoothSearch() {
-        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
-            mBluetoothListView.setOnPeripheralSelectedListener(this);
-            mBluetoothListView.scanForBleDevices(true);
+        if (mBeaconSend != null && BleUtil.isBleAvailable(mActivity)) {
+            mBeaconSend.scanForBleDevices(true);
         }
     }
 
     // Stop the Bluetooth search
     private void stopBluetoothSearch() {
-        if(mBluetoothListView != null && BleUtil.isBleAvailable(mActivity)) {
-            mBluetoothListView.scanForBleDevices(false);
-            mBluetoothListView.close();
+        if (mBeaconSend != null && BleUtil.isBleAvailable(mActivity)) {
+            mBeaconSend.scanForBleDevices(false);
+            mBeaconSend.close();
         }
     }
 
     @Override
-    public void onPeripheralSelected(BleDevice device) {
-        showConnecting(device);
-        stopBluetoothSearch();
-        mBluetoothListView.setOnPeripheralSelectedListener(null);
-        mBluetoothListView.connectGatt(device);
+    public void onPeripheralError(BleDevice device) {
+        hideProcessing();
+    }
+
+    @Override
+    public void onPeripheralConnected(BleDevice device) {
+    }
+
+    @Override
+    public void onPeripheralDisconnect(BleDevice device) {
+    }
+
+    @Override
+    public void onPeripheralFailedConnect(BleDevice device) {
+        showBleError(R.string.bluetoothlistview_connection_failed);
+    }
+
+    @Override
+    public void onPeripheralFailedDiscovery() {
+        showBleError(R.string.bluetoothlistview_discovery_failed);
+    }
+
+    private void showBleError(final int errorMsg) {
+        mHandler.post(new Runnable() {
+            public void run() {
+                hideProcessing();
+                startBluetoothSearch();
+                mActivity.ShowFadingDialog(getResources().getString(errorMsg));
+            }
+        });
     }
 
     private MaterialDialog mDialog = null;
@@ -473,10 +529,18 @@ public class SendFragment extends WalletBaseFragment implements
         MaterialDialog.Builder builder =
             new MaterialDialog.Builder(mActivity)
                     .content(message)
+                    .cancelable(false)
                     .progress(true, 0)
                     .progressIndeterminateStyle(false);
         mDialog = builder.build();
         mDialog.show();
+    }
+
+    @Override
+    public void devicesUpdated(List<BleDevice> devices) {
+        mPeripherals.clear();
+        mPeripherals.addAll(devices);
+        mSearchAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -485,6 +549,16 @@ public class SendFragment extends WalletBaseFragment implements
             @Override
             public void run() {
                 checkAndSendAddress(bitcoinAddress);
+            }
+        });
+    }
+
+    @Override
+    public void onBitcoinURIInvalid() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mActivity.ShowFadingDialog(getResources().getString(R.string.request_qr_ble_invalid_uri));
             }
         });
     }

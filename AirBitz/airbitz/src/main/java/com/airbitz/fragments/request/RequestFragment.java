@@ -38,18 +38,6 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattServer;
-import android.bluetooth.BluetoothGattServerCallback;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseData;
-import android.bluetooth.le.AdvertiseSettings;
-import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -106,6 +94,7 @@ import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
+import com.airbitz.objects.BeaconRequest;
 import com.airbitz.objects.BleUtil;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.DessertView;
@@ -120,7 +109,8 @@ import java.util.UUID;
 public class RequestFragment extends WalletBaseFragment implements
         ContactPickerFragment.ContactSelection,
         NfcAdapter.CreateNdefMessageCallback,
-        Calculator.OnCalculatorKey
+        Calculator.OnCalculatorKey,
+        BeaconRequest.BeaconRequestListener
 {
 
     public static final String FROM_UUID = "com.airbitz.request.from_uuid";
@@ -149,6 +139,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private NavigationActivity mActivity;
     private Handler mHandler;
+    private BeaconRequest mBeaconRequest;
     private TextView mBitcoinAddress;
     private long mAmountSatoshi;
     private long mOriginalAmountSatoshi;
@@ -184,9 +175,32 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHandler = new Handler();
         mCoreAPI = CoreAPI.getApi();
         mActivity = (NavigationActivity) getActivity();
-        mHandler = new Handler();
+        mBeaconRequest = new BeaconRequest(mActivity);
+        mBeaconRequest.setRequestListener(this);
+    }
+
+    @Override
+    public void advertiseStartFailed() {
+        mActivity.ShowFadingDialog(getString(R.string.request_qr_ble_advertise_start_failed));
+    }
+
+    @Override
+    public void invalidService() {
+        mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_service));
+    }
+
+    @Override
+    public void receivedConnection(String text) {
+        Contact nameInContacts = findMatchingContact(text);
+        text += "\nConnected";
+        if (nameInContacts != null) {
+            mActivity.ShowFadingDialog(text, nameInContacts.getThumbnail(), getResources().getInteger(R.integer.alert_hold_time_default), true);
+        } else {
+            mActivity.ShowFadingDialog(text, "", getResources().getInteger(R.integer.alert_hold_time_default), true);
+        }
     }
 
     @Override
@@ -462,6 +476,13 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
+            String name = mCoreAPI.coreSettings().getSzFullName();
+            mBeaconRequest.setBroadcastName(name);
+        } else {
+            mBeaconRequest.setBroadcastName(
+                getResources().getString(R.string.request_qr_unknown));
+        }
         mInPartialPayment = false;
         mActivity.hideSoftKeyboard(mAmountField);
         mHandler.postDelayed(new Runnable() {
@@ -489,7 +510,8 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         }
         hideCalculator();
-        stopAirbitzAdvertise();
+
+        mBeaconRequest.stop();
     }
 
     @Override
@@ -889,212 +911,14 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     }
 
-    //******************************** BLE support
-    // See BluetoothListView for protocol explanation
-    private BluetoothLeAdvertiser mBleAdvertiser;
-    private BluetoothGattServer mGattServer;
-    private AdvertiseCallback mAdvCallback;
-
     private void checkBle() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
-//            mBLEImageView.setVisibility(View.VISIBLE);
-            stopAirbitzAdvertise();
-            startAirbitzAdvertise(mRequestURI);
-            mHandler.postDelayed(mContinuousReAdvertiseRunnable, READVERTISE_REPEAT_PERIOD);
+            mBeaconRequest.stop();
+            mBeaconRequest.startRepeated(mRequestURI);
         }
     }
 
-    // start Advertise
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void startAirbitzAdvertise(String data) {
-        if (data == null) {
-            return;
-        }
-
-        BluetoothManager manager = (BluetoothManager) mActivity.getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter adapter = manager.getAdapter();
-
-        // The name maximum is 26 characters tested
-        String[] separate = data.split(":");
-        String address, name = " ";
-        if(separate[1] != null && separate[1].length() >= 10) {
-            address = separate[1].substring(0, 10);
-        }
-        else {
-            address = data;
-        }
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFullName();
-            if(name==null || name.isEmpty()) {
-                name = " ";
-            }
-        }
-        String advertiseText = address + name;
-        advertiseText = advertiseText.length()>26 ?
-                advertiseText.substring(0, 26) : advertiseText;
-        Log.d(TAG, "AdvertiseText = "+adapter.getName());
-        adapter.setName(advertiseText);
-
-        mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
-        AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
-        mGattServer = BleUtil.getManager(mActivity).openGattServer(mActivity, bgsc);
-        bgsc.setupServices(mActivity, mGattServer, data);
-
-        mAdvCallback = new AdvertiseCallback() {
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                if (settingsInEffect != null) {
-                    Log.d(TAG, "onStartSuccess TxPowerLv="
-                            + settingsInEffect.getTxPowerLevel()
-                            + " mode=" + settingsInEffect.getMode()
-                            + " timeout=" + settingsInEffect.getTimeout());
-                } else {
-                    Log.d(TAG, "onStartSuccess, settingInEffect is null");
-                }
-            }
-
-            public void onStartFailure(int errorCode) {
-                mActivity.ShowFadingDialog(getString(R.string.request_qr_ble_advertise_start_failed));
-            }
-        };
-
-        mBleAdvertiser.startAdvertising(
-                createAirbitzAdvertiseSettings(true, 0),
-                createAirbitzAdvertiseData(),
-                createAirbitzScanResponseData(),
-                mAdvCallback);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void stopAirbitzAdvertise() {
-        mHandler.removeCallbacks(mContinuousReAdvertiseRunnable);
-        if (mGattServer != null) {
-            mGattServer.clearServices();
-            mGattServer.close();
-            mGattServer = null;
-        }
-        if (mBleAdvertiser != null) {
-            mBleAdvertiser.stopAdvertising(mAdvCallback);
-            mBleAdvertiser = null;
-            mAdvCallback = null;
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static AdvertiseSettings createAirbitzAdvertiseSettings(boolean connectable, int timeoutMillis) {
-        AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
-        builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
-        builder.setConnectable(connectable);
-        builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
-        return builder.build();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static AdvertiseData createAirbitzAdvertiseData() {
-        AdvertiseData.Builder builder = new AdvertiseData.Builder();
-        builder.addServiceUuid(new ParcelUuid(UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID)));
-        AdvertiseData data = builder.build();
-        return data;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static AdvertiseData createAirbitzScanResponseData() {
-        AdvertiseData.Builder builder = new AdvertiseData.Builder();
-        builder.setIncludeDeviceName(true);
-        AdvertiseData data = builder.build();
-        return data;
-    }
-
-    /*
-    * Callback for BLE peripheral mode beacon
-    */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public class AirbitzGattServerCallback extends BluetoothGattServerCallback {
-        private String TAG = getClass().getSimpleName();
-
-        private NavigationActivity mActivity;
-
-        String mData;
-
-        private BluetoothGattServer mGattServer;
-
-        public void setupServices(NavigationActivity activity, BluetoothGattServer gattServer, String data) {
-            mActivity = activity;
-            if (gattServer == null || data == null) {
-                throw new IllegalArgumentException("gattServer or data is null");
-            }
-            mGattServer = gattServer;
-            mData = data;
-
-            // setup Airbitz services
-            {
-                BluetoothGattService ias = new BluetoothGattService(
-                        UUID.fromString(BleUtil.AIRBITZ_SERVICE_UUID),
-                        BluetoothGattService.SERVICE_TYPE_PRIMARY);
-                // alert level char.
-                BluetoothGattCharacteristic alc = new BluetoothGattCharacteristic(
-                        UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID),
-                        BluetoothGattCharacteristic.PROPERTY_READ |
-                                BluetoothGattCharacteristic.PROPERTY_WRITE,
-                        BluetoothGattCharacteristic.PERMISSION_READ |
-                                BluetoothGattCharacteristic.PERMISSION_WRITE);
-                ias.addCharacteristic(alc);
-                mGattServer.addService(ias);
-            }
-        }
-
-        public void onServiceAdded(int status, BluetoothGattService service) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d(TAG, "onServiceAdded status=GATT_SUCCESS service="
-                        + service.getUuid().toString());
-            } else {
-                mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_service));
-            }
-        }
-
-        public void onConnectionStateChange(BluetoothDevice device, int status,
-                                            int newState) {
-            Log.d(TAG, "onConnectionStateChange status =" + status + "-> state =" + newState);
-        }
-
-        // ghost of didReceiveReadRequest
-        public void onCharacteristicReadRequest(BluetoothDevice device,
-                                                int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-            Log.d(TAG, "onCharacteristicReadRequest requestId=" + requestId + " offset=" + offset);
-            if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
-                Log.d(TAG, "AIRBITZ_CHARACTERISTIC_READ");
-                characteristic.setValue(mData.substring(offset));
-                mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset,
-                        characteristic.getValue());
-            }
-        }
-
-        public void onCharacteristicWriteRequest(BluetoothDevice device,
-                                                 int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite,
-                                                 boolean responseNeeded, int offset, byte[] value) {
-            Log.d(TAG, "onCharacteristicWriteRequest requestId=" + requestId + " preparedWrite="
-                    + Boolean.toString(preparedWrite) + " responseNeeded="
-                    + Boolean.toString(responseNeeded) + " offset=" + offset
-                    + " value=" + new String(value) );
-            if (characteristic.getUuid().equals(UUID.fromString(BleUtil.AIRBITZ_CHARACTERISTIC_UUID))) {
-                Log.d(TAG, "Airbitz characteristic received");
-                String displayName = new String(value);
-                if(displayName.isEmpty()) {
-                    displayName = getString(R.string.request_qr_unknown);
-                }
-                Contact nameInContacts = findMatchingContact(displayName);
-                displayName += "\nConnected";
-                if(nameInContacts != null) {
-                    mActivity.ShowFadingDialog(displayName, nameInContacts.getThumbnail(), getResources().getInteger(R.integer.alert_hold_time_default), true);
-                }
-                else {
-                    mActivity.ShowFadingDialog(displayName, "", getResources().getInteger(R.integer.alert_hold_time_default), true); // Show the default icon
-                }
-
-                mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
-            }
-        }
-    }
 
     private Contact findMatchingContact(String displayName) {
         String id = null;
@@ -1109,15 +933,6 @@ public class RequestFragment extends WalletBaseFragment implements
             return null;
         }
     }
-
-    Runnable mContinuousReAdvertiseRunnable = new Runnable() {
-        @Override
-        public void run() {
-            stopAirbitzAdvertise();
-            startAirbitzAdvertise(mRequestURI);
-            mHandler.postDelayed(this, READVERTISE_REPEAT_PERIOD);
-        }
-    };
 
     private Interpolator mCalcInterpolator = new AccelerateInterpolator() {
         @Override
