@@ -2058,6 +2058,12 @@ public class CoreAPI {
     }
 
     public void stopAllAsyncUpdates() {
+        if (mCoreHandler == null
+                || mDataHandler == null
+                || mWatcherHandler == null
+                || mMainHandler == null) {
+            return;
+        }
         mCoreHandler.removeCallbacksAndMessages(null);
         mCoreHandler.sendEmptyMessage(LAST);
         mDataHandler.removeCallbacksAndMessages(null);
@@ -2081,6 +2087,11 @@ public class CoreAPI {
                 Log.e(TAG, "", e);
             }
         }
+
+        mCoreHandler = null;
+        mDataHandler = null;
+        mWatcherHandler = null;
+        mMainHandler = null;
 
         stopWatchers();
         stopExchangeRateUpdates();
