@@ -50,7 +50,7 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <ListView
         android:id="@+id/fragment_send_bluetooth_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
