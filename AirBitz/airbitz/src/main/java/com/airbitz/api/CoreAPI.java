@@ -3271,6 +3271,30 @@ Log.d("CoreApiCurrency", "" + currency);
         return Common.errorMap(mContext, error.getCode());
     }
 
+    public static class BitidSignature {
+        public String address;
+        public String signature;
+    }
+
+    public BitidSignature bitidSignature(String uri, String message) {
+        BitidSignature bitid = new BitidSignature();
+
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long pAddress = core.new_longp();
+        SWIGTYPE_p_p_char ppAddress = core.longp_to_ppChar(pAddress);
+        SWIGTYPE_p_long pSignature = core.new_longp();
+        SWIGTYPE_p_p_char ppSignature = core.longp_to_ppChar(pSignature);
+
+        tABC_CC result = core.ABC_BitidSign(
+            AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            uri, message, ppAddress, ppSignature, error);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            bitid.address = getStringAtPtr(core.longp_value(pAddress));
+            bitid.signature = getStringAtPtr(core.longp_value(pSignature));
+        }
+        return bitid;
+    }
+
     public String pluginDataGet(String pluginId, String key) {
         tABC_Error pError = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
@@ -3468,5 +3492,25 @@ Log.d("CoreApiCurrency", "" + currency);
             }
         }
 
+    }
+
+    public String parseBitidUri(String uri) {
+        tABC_Error error = new tABC_Error();
+        String urlDomain = null;
+
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+
+        core.ABC_BitidParseUri(AirbitzApplication.getUsername(), null, uri, ppChar, error);
+        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+            urlDomain = getStringAtPtr(core.longp_value(lp));
+        }
+        return urlDomain;
+    }
+
+    public boolean bitidLogin(String uri) {
+        tABC_Error error = new tABC_Error();
+        core.ABC_BitidLogin(AirbitzApplication.getUsername(), null, uri, error);
+        return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 }

@@ -145,9 +145,7 @@
                             android:id="@+id/item_drawer_buy_sell"
                             android:drawableLeft="@drawable/ic_exchange_dark"
                             android:text="@string/drawer_buy_sell"
-                            android:visibility="gone"
-                            style="@style/DrawerButton"
-                            />
+                            style="@style/DrawerButton" />
 
                         <include layout="@layout/divider_horizontal_light_gray" />
 

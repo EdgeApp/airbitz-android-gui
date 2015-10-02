@@ -8,6 +8,7 @@
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
+    <string name="string_continue">Continue</string>
     <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
     <string name="string_paste">Paste</string>
@@ -613,6 +614,12 @@
 
     <!-- Logout -->
     <string name="logout_message">Please wait while Airbitz gracefully exits your account. This may take a while on slow networks</string>
+
+    <string name="bitid_login_message">%1$s</string>
+    <string name="bitid_login_title">BitID Login</string>
+
+    <string name="bitid_login_success">Successfully Logged In</string>
+    <string name="bitid_login_failure">Error Logging In</string>
 
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>

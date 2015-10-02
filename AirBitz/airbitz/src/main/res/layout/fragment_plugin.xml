@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryFrost">
 
-    <include layout="@layout/layout_toolbar_header" />
-
     <com.airbitz.plugins.PluginWebView
         android:id="@+id/plugin_webview"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@+id/toolbar"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <include layout="@layout/layout_toolbar_dropdown" />
 
 </RelativeLayout>

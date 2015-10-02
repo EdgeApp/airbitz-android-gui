@@ -31,6 +31,7 @@
 
 package com.airbitz.plugins;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -47,19 +48,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
 import com.airbitz.api.CoreAPI.SpendTarget;
-import com.airbitz.fragments.BaseFragment;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
+import com.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 
 import java.util.Stack;
 
-public class PluginFragment extends BaseFragment implements NavigationActivity.OnBackPress {
+public class PluginFragment extends WalletBaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
     private WebView mWebView;
@@ -78,12 +81,14 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
     private LinearLayout.LayoutParams frameLayoutParams;
 
     private SendConfirmationFragment mSendConfirmation;
+    private String mSubtitle;
 
     public PluginFragment(Plugin plugin) {
         mFramework = new PluginFramework(handler);
         mFramework.setup();
         mNav = new Stack<String>();
         setRetainInstance(true);
+        setBackEnabled(true);
         mPlugin = plugin;
     }
 
@@ -92,6 +97,8 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        mFramework.setWallet(mWallet);
+        mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
 
     public void setUri(Uri uri) {
@@ -99,8 +106,8 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
     }
 
     @Override
-    protected String getTitle() {
-        return mActivity.getString(R.string.loading);
+    protected String getSubtitle() {
+        return mSubtitle;
     }
 
     @Override
@@ -112,7 +119,7 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
         mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
 
-        mFramework.buildPluginView(mPlugin, mWebView);
+        mFramework.buildPluginView(mPlugin, mActivity, mWebView);
         mWebView.setBackgroundColor(0x00000000);
 
         mToolbarHeight = getResources().getDimensionPixelSize(R.dimen.tabbar_height);
@@ -157,10 +164,6 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
             }
             mWebView.loadUrl(mUrl);
         }
-        Log.d(TAG, "URL: " + mUrl);
-        if (mUri != null) {
-            Log.d(TAG, "URI: " + mUri.toString());
-        }
     }
 
     @Override
@@ -172,6 +175,12 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
             mView.removeView(mWebView);
             mPopped = true;
         }
+    }
+
+    @Override
+    protected void walletChanged(Wallet newWallet) {
+        super.walletChanged(newWallet);
+        mFramework.setWallet(newWallet);
     }
 
     private void resizeWebView() {
@@ -220,8 +229,8 @@ public class PluginFragment extends BaseFragment implements NavigationActivity.O
 
     @Override
     protected void setTitle(String title) {
-        mTitle = title;
-        super.setTitle(title);
+        mSubtitle = title;
+        updateTitle();
     }
 
     private UiHandler handler = new UiHandler() {

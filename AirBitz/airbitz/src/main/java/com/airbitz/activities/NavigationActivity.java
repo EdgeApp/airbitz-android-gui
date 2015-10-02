@@ -959,7 +959,9 @@ public class NavigationActivity extends ActionBarActivity
                 Log.d(TAG, uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
-        } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
+        } else if ("bitcoin".equals(scheme)
+                || "airbitz".equals(scheme)
+                || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme)

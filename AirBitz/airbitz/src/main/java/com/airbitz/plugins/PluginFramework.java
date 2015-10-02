@@ -31,7 +31,9 @@
 
 package com.airbitz.plugins;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -93,7 +95,6 @@ public class PluginFramework {
             plugin.env.put("CURRENCY_CODE", "840");
             plugin.env.put("CURRENCY_ABBREV", "USD");
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
-            plugin.env.put("GLIDERA_CLIENT_SECRET", AirbitzApplication.getContext().getString(R.string.glidera_client_secret));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             mPlugins.add(plugin);
         }
@@ -237,6 +238,29 @@ public class PluginFramework {
             this.framework = framework;
             this.plugin = plugin;
             this.handler = handler;
+        }
+
+        @JavascriptInterface
+        public String bitidAddress(String uri, String message) {
+            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            return bitid.address;
+        }
+
+        @JavascriptInterface
+        public String bitidSignature(String uri, String message) {
+            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            return bitid.signature;
+        }
+
+        @JavascriptInterface
+        public void selectedWallet(String cbid) {
+            CallbackTask task = new CallbackTask(cbid, framework) {
+                @Override
+                public String doInBackground(Void... v) {
+                    return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                }
+            };
+            task.execute();
         }
 
         @JavascriptInterface
@@ -386,6 +410,7 @@ public class PluginFramework {
     private UiHandler handler;
     private WebView mWebView;
     private CoreAPI mCoreAPI;
+    private Wallet mWallet;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
@@ -398,6 +423,10 @@ public class PluginFramework {
 
     public void cleanup() {
         mCoreAPI.removeExchangeRateChangeListener(exchangeListener);
+    }
+
+    public void setWallet(Wallet wallet) {
+        mWallet = wallet;
     }
 
     public void sendSuccess(String cbid, String walletUUID, String txId) {
@@ -423,7 +452,7 @@ public class PluginFramework {
         });
     }
 
-    public void buildPluginView(final Plugin plugin, WebView webView) {
+    public void buildPluginView(final Plugin plugin, final Activity activity, WebView webView) {
         mWebView = webView;
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -434,6 +463,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, "--------- " + url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin
@@ -442,13 +472,15 @@ public class PluginFramework {
                         view.loadUrl(url);
                         return true;
                     }
+                } else if (url.contains("bitid://")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    activity.startActivity(intent);
                     return false;
-
-                } else {
-                    Log.d(TAG, url);
+                } else if (url.contains("file://")) {
                     view.loadUrl(url);
+                    return true;
                 }
-                return true;
+                return super.shouldOverrideUrlLoading(view, url);
             }
         });
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -466,8 +498,6 @@ public class PluginFramework {
     CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {
         @Override
         public void OnExchangeRatesChange() {
-            Log.d(TAG, JS_EXCHANGE_UPDATE);
-            PluginFramework.this.loadUrl(JS_EXCHANGE_UPDATE);
         }
     };
 }
