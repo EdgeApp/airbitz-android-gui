@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParsePosition;
@@ -2668,7 +2669,7 @@ Log.d("CoreApiCurrency", "" + currency);
         bb1.putLong(time);
         strSeed += bb1.array();
 
-        Random r = new Random();
+        Random r = new SecureRandom();
         ByteBuffer bb2 = ByteBuffer.allocate(4);
         bb2.putInt(r.nextInt());
         strSeed += bb2.array();

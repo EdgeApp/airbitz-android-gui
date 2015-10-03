@@ -5,5 +5,6 @@
     <dimen name="tabbar_height">70dp</dimen>
     <dimen name="tabbar_top_height">0dp</dimen>
     <dimen name="tabbar_textsize">16dp</dimen>
+    <dimen name="activity_signup_popup_top_padding">45dp</dimen>
 
 </resources>
