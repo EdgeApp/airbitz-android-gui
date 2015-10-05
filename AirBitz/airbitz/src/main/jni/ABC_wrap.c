@@ -7126,7 +7126,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1TxHeight(JNIEnv *jenv,
   jint jresult = 0 ;
   char *arg1 = (char *) (char *)0 ;
   char *arg2 = (char *) 0 ;
-  unsigned int *arg3 = (unsigned int *) 0 ;
+  int *arg3 = (int *) 0 ;
   tABC_Error *arg4 = (tABC_Error *) 0 ;
   tABC_CC result;
   
@@ -7143,7 +7143,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1TxHeight(JNIEnv *jenv,
     arg2 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(unsigned int **)&jarg3; 
+  arg3 = *(int **)&jarg3; 
   arg4 = *(tABC_Error **)&jarg4; 
   result = (tABC_CC)ABC_TxHeight((char const *)arg1,(char const *)arg2,arg3,arg4);
   jresult = (jint)result; 
@@ -7156,7 +7156,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1TxHeight(JNIEnv *jenv,
 SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1BlockHeight(JNIEnv *jenv, jclass jcls, jstring jarg1, jlong jarg2, jlong jarg3, jobject jarg3_) {
   jint jresult = 0 ;
   char *arg1 = (char *) (char *)0 ;
-  unsigned int *arg2 = (unsigned int *) 0 ;
+  int *arg2 = (int *) 0 ;
   tABC_Error *arg3 = (tABC_Error *) 0 ;
   tABC_CC result;
   
@@ -7168,7 +7168,7 @@ SWIGEXPORT jint JNICALL Java_com_airbitz_api_coreJNI_ABC_1BlockHeight(JNIEnv *je
     arg1 = (char *)(*jenv)->GetStringUTFChars(jenv, jarg1, 0);
     if (!arg1) return 0;
   }
-  arg2 = *(unsigned int **)&jarg2; 
+  arg2 = *(int **)&jarg2; 
   arg3 = *(tABC_Error **)&jarg3; 
   result = (tABC_CC)ABC_BlockHeight((char const *)arg1,arg2,arg3);
   jresult = (jint)result; 

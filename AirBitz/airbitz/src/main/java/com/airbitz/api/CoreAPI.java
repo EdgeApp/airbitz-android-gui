@@ -1419,11 +1419,11 @@ public class CoreAPI {
         if (wallet.getUUID().length() == 0 || txId.length() == 0) {
             return 0;
         }
-        if (core.ABC_TxHeight(wallet.getUUID(), txId, core.int_to_uint(th), Error) != tABC_CC.ABC_CC_Ok) {
+        if (core.ABC_TxHeight(wallet.getUUID(), txId, th, Error) != tABC_CC.ABC_CC_Ok) {
             t.setSyncing(true);
             return 0;
         }
-        if (core.ABC_BlockHeight(wallet.getUUID(), core.int_to_uint(bh), Error) != tABC_CC.ABC_CC_Ok) {
+        if (core.ABC_BlockHeight(wallet.getUUID(), bh, Error) != tABC_CC.ABC_CC_Ok) {
             t.setSyncing(true);
             return 0;
         }
