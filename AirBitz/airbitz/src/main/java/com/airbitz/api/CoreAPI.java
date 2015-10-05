@@ -1386,7 +1386,7 @@ public class CoreAPI {
             transaction.setmMalleableID(txInfo.getSzMalleableTxId());
         }
 
-        int confirmations = calcTxConfirmations(wallet, transaction, transaction.getmMalleableID());
+        int confirmations = calcTxConfirmations(wallet, transaction, transaction.getID());
         transaction.setConfirmations(confirmations);
         transaction.setConfirmed(false);
         transaction.setConfirmed(transaction.getConfirmations() >= CONFIRMED_CONFIRMATION_COUNT);
