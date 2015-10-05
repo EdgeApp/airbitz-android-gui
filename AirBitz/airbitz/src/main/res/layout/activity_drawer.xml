@@ -142,19 +142,18 @@
                             style="@style/DrawerButton"/>
 
                         <Button
-                            android:id="@+id/item_drawer_buy_sell"
-                            android:drawableLeft="@drawable/ic_exchange_dark"
-                            android:text="@string/drawer_buy_sell"
-                            style="@style/DrawerButton" />
-
-                        <include layout="@layout/divider_horizontal_light_gray" />
-
-                        <Button
                             android:id="@+id/item_drawer_import"
                             android:drawableLeft="@drawable/ic_import_dark"
                             android:singleLine="false"
                             android:text="@string/drawer_import"
                             style="@style/DrawerButton" />
+
+                        <Button
+                            android:id="@+id/item_drawer_buy_sell"
+                            android:drawableLeft="@drawable/ic_exchange_dark"
+                            android:text="@string/drawer_buy_sell"
+                            style="@style/DrawerButton" />
+
                     </LinearLayout>
 
                 </RelativeLayout>
