@@ -555,6 +555,10 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_WatcherDelete(szWalletUUID, tABC_Error.getCPtr(pError), pError));
   }
 
+  public static tABC_CC ABC_WatcherDeleteCache(String szWalletUUID, tABC_Error pError) {
+    return tABC_CC.swigToEnum(coreJNI.ABC_WatcherDeleteCache(szWalletUUID, tABC_Error.getCPtr(pError), pError));
+  }
+
   public static tABC_CC ABC_TxHeight(String szWalletUUID, String szTxId, SWIGTYPE_p_int height, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_TxHeight(szWalletUUID, szTxId, SWIGTYPE_p_int.getCPtr(height), tABC_Error.getCPtr(pError), pError));
   }

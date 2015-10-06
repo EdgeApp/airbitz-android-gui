@@ -358,6 +358,7 @@ public class coreJNI {
   public final static native int ABC_WatcherDisconnect(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherStop(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_WatcherDelete(String jarg1, long jarg2, tABC_Error jarg2_);
+  public final static native int ABC_WatcherDeleteCache(String jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_TxHeight(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_BlockHeight(String jarg1, long jarg2, long jarg3, tABC_Error jarg3_);
   public final static native long p64_t_to_long_ptr(long jarg1);
