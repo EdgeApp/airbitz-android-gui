@@ -2358,8 +2358,6 @@ public class NavigationActivity extends ActionBarActivity
             button.setSelected(true);
         }
         mActionMenu.close(true);
-        mDrawerBuySell.setVisibility(
-            mCoreAPI.isTestNet() ? View.VISIBLE : View.GONE);
     }
 
     private void updateDrawer(boolean loggedIn) {
