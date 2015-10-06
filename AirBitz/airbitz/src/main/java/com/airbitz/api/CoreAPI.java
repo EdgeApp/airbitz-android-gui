@@ -2761,6 +2761,17 @@ Log.d("CoreApiCurrency", "" + currency);
         printABCError(error);
     }
 
+    public void waitOnWatchers() {
+        mWatcherHandler.sendEmptyMessage(LAST);
+        while (mWatcherHandler != null && mWatcherHandler.hasMessages(LAST)) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+                Log.e(TAG, "", e);
+            }
+        }
+    }
+
     /*
      * This thread will block as long as the watchers are running
      */
