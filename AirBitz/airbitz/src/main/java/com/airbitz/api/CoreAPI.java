@@ -2797,6 +2797,14 @@ Log.d("CoreApiCurrency", "" + currency);
         mWatcherTasks.clear();
     }
 
+    public void deleteWatcherCache() {
+        tABC_Error error = new tABC_Error();
+        List<String> uuids = loadWalletUUIDs();
+        for (String uuid : uuids) {
+            core.ABC_WatcherDeleteCache(uuid, error);
+        }
+    }
+
     /*
      * Prioritize wallet loop attention to this address for uuid
      */
