@@ -118,6 +118,13 @@ public class DebugFragment extends BaseFragment {
         }
     }
 
+    private void lockButton(View view, boolean enabled) {
+        if (isAdded()) {
+            view.setClickable(enabled);
+            view.setEnabled(enabled);
+        }
+    }
+
     /**
      * Upload core logs
      */
@@ -127,10 +134,7 @@ public class DebugFragment extends BaseFragment {
 
         @Override
         protected void onPreExecute() {
-            if(isAdded()) {
-                mUploadLogButton.setClickable(false);
-                mUploadLogButton.setEnabled(false);
-            }
+            lockButton(mUploadLogButton, false);
         }
 
         @Override
@@ -141,20 +145,12 @@ public class DebugFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(Void v) {
-            if(isAdded()) {
-                mUploadLogButton.setClickable(true);
-                mUploadLogButton.setEnabled(true);
-                mUploadLogButton.setBackgroundResource(R.drawable.btn_green);
-            }
+            lockButton(mUploadLogButton, true);
         }
 
         @Override
         protected void onCancelled() {
-            if(isAdded()) {
-                mUploadLogButton.setClickable(true);
-                mUploadLogButton.setEnabled(true);
-                mUploadLogButton.setBackgroundResource(R.drawable.btn_green);
-            }
+            lockButton(mUploadLogButton, true);
         }
     }
 
@@ -162,11 +158,28 @@ public class DebugFragment extends BaseFragment {
      * Clear watchers
      */
     public class ClearWatchersTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            lockButton(mClearWatchersButton, false);
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             mCoreApi.stopWatchers();
+            mCoreApi.deleteWatcherCache();
             mCoreApi.startWatchers();
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            lockButton(mClearWatchersButton, true);
+        }
+
+        @Override
+        protected void onCancelled() {
+            lockButton(mClearWatchersButton, true);
         }
     }
 }
