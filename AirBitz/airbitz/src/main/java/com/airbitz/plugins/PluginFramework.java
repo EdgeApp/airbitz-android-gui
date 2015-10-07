@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -429,6 +430,10 @@ public class PluginFramework {
         mWallet = wallet;
     }
 
+    public static boolean isInsidePlugin(Stack<String> nav) {
+        return nav.get(nav.size() - 1).contains("file://");
+    }
+
     public void sendSuccess(String cbid, String walletUUID, String txId) {
         String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
         Log.d(TAG, hex);
@@ -453,6 +458,7 @@ public class PluginFramework {
     }
 
     public void buildPluginView(final Plugin plugin, final Activity activity, WebView webView) {
+        final PluginContext pluginContext = new PluginContext(this, plugin, handler);
         mWebView = webView;
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -480,6 +486,8 @@ public class PluginFramework {
                     view.loadUrl(url);
                     return true;
                 }
+                Log.d(TAG, "Pushing...." + url);
+                pluginContext.navStackPush(url);
                 return super.shouldOverrideUrlLoading(view, url);
             }
         });

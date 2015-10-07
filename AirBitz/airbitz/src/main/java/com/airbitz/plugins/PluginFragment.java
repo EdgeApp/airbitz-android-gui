@@ -71,7 +71,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private ViewGroup mView;
     private PluginFramework mFramework;
     private Plugin mPlugin;
-    private Stack mNav;
+    private Stack<String> mNav;
     private Uri mUri;
     private String mUrl;
 
@@ -214,7 +214,11 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             popFragment();
             mSendConfirmation = null;
         } else {
-            mFramework.back();
+            if (PluginFramework.isInsidePlugin(mNav)) {
+                mFramework.back();
+            } else {
+                mWebView.goBack();
+            }
         }
         return true;
     }
