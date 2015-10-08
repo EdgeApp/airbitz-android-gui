@@ -87,7 +87,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera USA";
+            plugin.name = "Glidera US (beta)";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
