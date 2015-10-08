@@ -95,9 +95,11 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
         setHasOptionsMenu(true);
         mNav = new Stack<String>();
-        mFramework = new PluginFramework(handler);
-        mFramework.setup();
-        mFramework.setWallet(mWallet);
+        if (mFramework == null) {
+            mFramework = new PluginFramework(handler);
+            mFramework.setup();
+            mFramework.setWallet(mWallet);
+        }
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
 
@@ -275,7 +277,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     mSendConfirmation = null;
                 }
                 public void error() {
-                    mFramework.sendError(cbid);
+                    if (mFramework != null) {
+                        mFramework.sendError(cbid);
+                    }
                     mSendConfirmation = null;
                 }
             };
@@ -294,7 +298,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         bundle.putBoolean(SendFragment.LOCKED, true);
                         mSendConfirmation.setArguments(bundle);
 
-                        ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.MORE.ordinal());
+                        ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.BUYSELL.ordinal());
 
                     }
                 }

@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -412,6 +413,7 @@ public class PluginFramework {
     private WebView mWebView;
     private CoreAPI mCoreAPI;
     private Wallet mWallet;
+    private String mLastUrl;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
