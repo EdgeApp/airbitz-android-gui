@@ -424,6 +424,9 @@ input[type=date]::-webkit-inner-spin-button {
     opacity: 1;
   }
 }
+.app-top-margin {
+  margin-top: 20px;
+}
 .shadow-text {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
@@ -451,53 +454,6 @@ input[type=date]::-webkit-inner-spin-button {
   -moz-box-shadow: none !important;
   box-shadow: none !important;
 }
-#main-content {
-  padding-right: 0;
-  padding-left: 0;
-}
-#main-content .row {
-  margin-left: 0;
-  margin-right: 0;
-}
-.contain {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-.no-pad {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-.no-pad-left {
-  padding-left: 0 !important;
-}
-.no-pad-right {
-  padding-right: 0 !important;
-}
-.btn {
-  border-radius: 0;
-}
-.app-top-margin {
-  margin-top: 20px;
-}
-.exchange-ticker {
-  position: relative;
-  width: 100%;
-  padding: 5px 15px;
-  background: #003e61;
-}
-.exchange-ticker .live-ticker .live-price-rate {
-  font-size: 17px;
-}
-.exchange-ticker .live-ticker .live-price-rate .price-rate-label {
-  color: #fff;
-}
-.exchange-ticker .live-ticker .live-price-rate .price-rate-data {
-  color: #80c342;
-}
-.exchange-ticker .live-ticker .live-price-expiration .expiration-data {
-  font-weight: bold;
-  color: #333333;
-}
 html {
   height: 100%;
   width: 100%;
@@ -516,11 +472,217 @@ html body {
   animation: fadein 500ms;
   overflow-x: auto;
   overflow-y: auto;
-  /*
-  background: url('img/postcard_mountain.jpg');
   background-size: cover;
   background-attachment: fixed;
-  */
+}
+html body #main-content {
+  padding-right: 0;
+  padding-left: 0;
+}
+html body #main-content .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+html body .contain {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+html body .no-pad {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+html body .no-pad-left {
+  padding-left: 0 !important;
+}
+html body .no-pad-right {
+  padding-right: 0 !important;
+}
+html body .btn {
+  border-radius: 0;
+  outline: none;
+}
+html body .btn:focus,
+html body .btn:active:focus {
+  outline: none;
+}
+html body .btn.btn-link {
+  color: #000;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+}
+html body label {
+  color: #000;
+  font-weight: 300;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+}
+html body .label {
+  font-weight: 300;
+}
+html body .label.lable-outline {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+html body .label.status {
+  font-size: 10px;
+  position: absolute;
+  right: -1px;
+  bottom: -6px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+html body .help-block {
+  color: #999999;
+}
+html body .well {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+html body .table.table-no-border th,
+html body .table.table-no-border td {
+  border-top: none;
+}
+html body .table thead th {
+  background: #efefef;
+  color: #0f5791;
+}
+html body .list-group .list-group-item,
+html body .list-group a.list-group-item {
+  color: #0f5791;
+  background: white;
+  font-size: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0px;
+  cursor: pointer;
+}
+html body .list-group .list-group-item.header,
+html body .list-group a.list-group-item.header {
+  background-color: white);
+  color: #0f5791;
+}
+html body .list-group .list-group-item.header:hover,
+html body .list-group a.list-group-item.header:hover,
+html body .list-group .list-group-item.header:active,
+html body .list-group a.list-group-item.header:active,
+html body .list-group .list-group-item.header:focus,
+html body .list-group a.list-group-item.header:focus {
+  background-color: white;
+}
+html body .list-group .list-group-item.header:hover,
+html body .list-group a.list-group-item.header:hover,
+html body .list-group .list-group-item.header:active,
+html body .list-group a.list-group-item.header:active,
+html body .list-group .list-group-item.header:focus,
+html body .list-group a.list-group-item.header:focus,
+html body .list-group .list-group-item.header:visited,
+html body .list-group a.list-group-item.header:visited {
+  text-decoration: none;
+}
+html body .list-group .list-group-item .list-group-item-text,
+html body .list-group a.list-group-item .list-group-item-text {
+  color: #333333;
+  font-size: 10px !important;
+}
+html body .form-control::-webkit-input-placeholder {
+  color: #777;
+}
+html body .form-control::-moz-placeholder {
+  /* Firefox 18- */
+  color: #777;
+}
+html body .form-control:::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #777;
+}
+html body .form-control::-ms-input-placeholder {
+  color: #777;
+}
+html body input[type='text'],
+html body input[type='number'],
+html body input[type='tel'],
+html body input[type='email'],
+html body input[type='date'] {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border: none;
+  border-bottom: 1px solid #999;
+  border-radius: 5 !important;
+}
+html body .form-group input[type="text"],
+html body .input-group input[type="text"],
+html body .form-group input[type="number"],
+html body .input-group input[type="number"],
+html body .form-group input[type="tel"],
+html body .input-group input[type="tel"] {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+html body .form-group input[type="text"].large,
+html body .input-group input[type="text"].large,
+html body .form-group input[type="number"].large,
+html body .input-group input[type="number"].large,
+html body .form-group input[type="tel"].large,
+html body .input-group input[type="tel"].large {
+  height: auto;
+  padding: 4px 12px;
+  font-size: 175%;
+  border: none;
+}
+html body .form-group input[type="text"].left-square,
+html body .input-group input[type="text"].left-square,
+html body .form-group input[type="number"].left-square,
+html body .input-group input[type="number"].left-square,
+html body .form-group input[type="tel"].left-square,
+html body .input-group input[type="tel"].left-square {
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+html body .form-group input[type="text"].right-square,
+html body .input-group input[type="text"].right-square,
+html body .form-group input[type="number"].right-square,
+html body .input-group input[type="number"].right-square,
+html body .form-group input[type="tel"].right-square,
+html body .input-group input[type="tel"].right-square {
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+html body .form-group input[type="text"]:focus,
+html body .input-group input[type="text"]:focus,
+html body .form-group input[type="number"]:focus,
+html body .input-group input[type="number"]:focus,
+html body .form-group input[type="tel"]:focus,
+html body .input-group input[type="tel"]:focus {
+  outline: none;
+  border: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+html body .form-group input[disabled],
+html body .input-group input[disabled] {
+  color: #aaa;
+}
+html body .form-group .input-group-addon,
+html body .input-group .input-group-addon {
+  background: rgba(0, 0, 0, 0.2);
+  color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+html body .form-group .input-group-addon.large,
+html body .input-group .input-group-addon.large {
+  font-size: 175%;
+  border: none;
 }
 html body #main-content {
   position: absolute;
@@ -603,294 +765,133 @@ html body .twofa-phone-preview .phone-data {
 html body .user-account-form {
   margin-top: 20px;
 }
-body input[type='text'],
-body input[type='number'],
-body input[type='tel'],
-body input[type='email'],
-body input[type='date'] {
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border: none;
-  border-bottom: 1px solid #999;
-  border-radius: 0 !important;
-}
-body .btn.btn-link {
-  color: #000;
-  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
-  box-shadow: none;
-}
-body .btn:focus,
-body .btn:active:focus {
-  outline: none;
-}
-body .help-block {
-  color: #999999;
-}
-body .well {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-body .table thead th {
-  background: #efefef;
-  color: #0f5791;
-}
-body .table.table-no-border th,
-body .table.table-no-border td {
-  border-top: none;
-}
-body .form-control::-webkit-input-placeholder {
-  color: #aaa;
-}
-body .form-group input[type="text"],
-body .input-group input[type="text"],
-body .form-group input[type="number"],
-body .input-group input[type="number"],
-body .form-group input[type="tel"],
-body .input-group input[type="tel"] {
-  display: block;
+.exchange-ticker {
+  position: relative;
   width: 100%;
-  padding: 6px 12px;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
-  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  padding: 5px 15px;
+  background: #003e61;
 }
-body .form-group input[type="text"].large,
-body .input-group input[type="text"].large,
-body .form-group input[type="number"].large,
-body .input-group input[type="number"].large,
-body .form-group input[type="tel"].large,
-body .input-group input[type="tel"].large {
-  height: auto;
-  padding: 4px 12px;
-  font-size: 175%;
-  border: none;
+.exchange-ticker .live-ticker .live-price-rate {
+  font-size: 17px;
 }
-body .form-group input[type="text"].left-square,
-body .input-group input[type="text"].left-square,
-body .form-group input[type="number"].left-square,
-body .input-group input[type="number"].left-square,
-body .form-group input[type="tel"].left-square,
-body .input-group input[type="tel"].left-square {
-  border-left: none;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+.exchange-ticker .live-ticker .live-price-rate .price-rate-label {
+  color: #fff;
 }
-body .form-group input[type="text"].right-square,
-body .input-group input[type="text"].right-square,
-body .form-group input[type="number"].right-square,
-body .input-group input[type="number"].right-square,
-body .form-group input[type="tel"].right-square,
-body .input-group input[type="tel"].right-square {
-  border-right: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.exchange-ticker .live-ticker .live-price-rate .price-rate-data {
+  color: #80c342;
 }
-body .form-group input[type="text"]:focus,
-body .input-group input[type="text"]:focus,
-body .form-group input[type="number"]:focus,
-body .input-group input[type="number"]:focus,
-body .form-group input[type="tel"]:focus,
-body .input-group input[type="tel"]:focus {
-  outline: none;
-  border: none !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-  box-shadow: none !important;
-}
-body .form-group input[disabled],
-body .input-group input[disabled] {
-  color: #999999;
-}
-body .form-group .input-group-addon,
-body .input-group .input-group-addon {
-  background: rgba(0, 0, 0, 0.2);
-  color: #000;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-body .form-group .input-group-addon.large,
-body .input-group .input-group-addon.large {
-  font-size: 175%;
-  border: none;
-}
-body .list-group .list-group-item,
-body .list-group a.list-group-item {
-  color: #0f5791;
-  background: rgba(255, 255, 255, 0.2);
-  font-size: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-}
-body .list-group .list-group-item.header,
-body .list-group a.list-group-item.header {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #0f5791;
-}
-body .list-group .list-group-item.header:hover,
-body .list-group a.list-group-item.header:hover,
-body .list-group .list-group-item.header:active,
-body .list-group a.list-group-item.header:active,
-body .list-group .list-group-item.header:focus,
-body .list-group a.list-group-item.header:focus {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-body .list-group .list-group-item:hover,
-body .list-group a.list-group-item:hover,
-body .list-group .list-group-item:active,
-body .list-group a.list-group-item:active,
-body .list-group .list-group-item:focus,
-body .list-group a.list-group-item:focus {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-body .list-group .list-group-item:hover,
-body .list-group a.list-group-item:hover,
-body .list-group .list-group-item:active,
-body .list-group a.list-group-item:active,
-body .list-group .list-group-item:focus,
-body .list-group a.list-group-item:focus,
-body .list-group .list-group-item:visited,
-body .list-group a.list-group-item:visited {
-  text-decoration: none;
-}
-body .list-group .list-group-item-text {
+.exchange-ticker .live-ticker .live-price-expiration .expiration-data {
+  font-weight: bold;
   color: #333333;
-  font-size: 10px !important;
 }
-body label {
-  color: #000;
-  font-weight: 300;
-  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
-}
-body .label {
-  font-weight: 300;
-}
-body .label.label-outline {
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-body .label.status {
-  font-size: 10px;
-  position: absolute;
-  right: -1px;
-  bottom: -6px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  border-right: 0;
-  border-bottom: 0;
-}
-body .exchange-limits .limit-header-buy {
+.exchange-limits .limit-header-buy {
   text-transform: uppercase;
   color: #42832e;
   text-shadow: none;
 }
-body .exchange-limits .limit-header-sell {
+.exchange-limits .limit-header-sell {
   text-transform: uppercase;
   color: #0f5791;
   text-shadow: none;
 }
-body .limit-label {
+.order-limits {
+  float: left;
+  width: 100%;
+  padding: 6px 0;
+  margin-bottom: 10px;
+}
+.limit-label {
   text-transform: uppercase;
   letter-spacing: -1px;
   color: #000;
   text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
-body .buy-limits {
+.buy-limits {
   float: left;
   width: 100%;
   font-size: 12px;
 }
-body .buy-limits .limit-label {
+.buy-limits .limit-label {
   display: inline-block;
   float: left;
 }
-body .buy-limits .limit-data {
+.buy-limits .limit-data {
   display: inline-block;
   float: right;
   color: #42832e;
 }
-body .buy-limits .limit-buy-daily,
-body .buy-limits .limit-buy-monthly {
+.buy-limits .limit-buy-daily,
+.buy-limits .limit-buy-monthly {
   clear: both;
 }
-body .sell-limits {
+.sell-limits {
   float: left;
   width: 100%;
   font-size: 12px;
 }
-body .sell-limits .limit-label {
+.sell-limits .limit-label {
   display: inline-block;
   float: left;
 }
-body .sell-limits .limit-data {
+.sell-limits .limit-data {
   display: inline-block;
   float: right;
   color: #0f5791;
 }
-body .sell-limits .limit-sell-daily,
-body .sell-limits .limit-sell-monthly {
+.sell-limits .limit-sell-daily,
+.sell-limits .limit-sell-monthly {
   clear: both;
 }
-body .exchange-options {
+.exchange-options {
   margin: 40px 0;
 }
-body .exchange-options .list-group-item i {
+.exchange-options .list-group-item i {
   width: 24px;
   margin-right: 10px;
 }
-body .disclaimer p {
+.disclaimer p {
   text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
-body .exchange-sign-up h2 {
+.exchange-sign-up h2 {
   margin-bottom: 20px;
 }
-body .exchange-email-edit {
+.exchange-email-edit {
   margin: 60px 0;
 }
-body .exchange-buy-sell {
-  margin-top: 30px;
+.exchange-buy-sell {
   margin-bottom: 30px;
 }
-body .buy-sell-header {
+.buy-sell-header {
   margin-bottom: 10px;
 }
-body .buy-sell-header .btn-group .btn.active {
+.buy-sell-header .btn-group .btn.active {
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
-body .exchange-balances {
+.exchange-balances {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-body .exchange-user-account {
+.exchange-user-account {
   margin-top: 30px;
   margin-bottom: 20px;
 }
-body .exchange-user-account .list-group-item small {
+.exchange-user-account .list-group-item small {
   margin-left: 12px;
   font-size: 65%;
 }
-body .exchange-user-account .list-group-item i {
+.exchange-user-account .list-group-item i {
   width: 24px;
   margin-right: 10px;
 }
-body .row.next-cancel {
+.row.next-cancel {
   margin-top: 40px;
 }
-body .order-limits {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 6px 5px;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  float: left;
-  width: 100%;
-}
-body .order-review {
+.order-review {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-body .order-review table {
+.order-review table {
   margin-bottom: 10px;
   background-color: rgba(0, 0, 0, 0.2);
   padding: 6px 5px;
@@ -898,51 +899,52 @@ body .order-review table {
   border: 1px solid rgba(0, 0, 0, 0.5);
   color: #0f5791;
 }
-body .order-review table td:first-child {
+.order-review table td:first-child {
   width: 150px;
   text-align: right;
   font-weight: 300;
   background: rgba(255, 255, 255, 0.5);
 }
-body .order-receipt-heading {
+.order-receipt-heading {
   font-weight: 300;
   margin-top: 0;
 }
-body .order-receipt-heading .bitcoin-logo {
+.order-receipt-heading .bitcoin-logo {
   height: 32px;
   padding-bottom: 4px;
 }
-body .transactions .table {
+.transactions .table {
   width: 100%;
 }
-body .transactions .table thead {
+.transactions .table thead {
   background: rgba(0, 0, 0, 0.7);
   color: #000;
 }
-body .transactions .table td {
+.transactions .table td {
   background: rgba(0, 0, 0, 0.2);
   font-size: 8px;
 }
-body .verify-phone-info {
+.verify-phone-info {
   margin-bottom: 20px;
   text-align: center;
 }
-body .verify-phone-form input[name="phone"] {
+.verify-phone-form input[name="phone"] {
   text-align: center;
 }
-body .error-message-console {
+.error-message-console {
   height: 20px;
   text-align: center;
   color: #d9534f;
 }
-body .error-screen {
+.error-screen {
   margin-top: 20px;
 }
-body .input-error {
+.input-error {
   position: absolute;
   right: 14px;
   margin-top: -11px;
 }
+
 
 
 </style>
@@ -6867,6 +6869,18 @@ var Glidera = (function () {
       });
     },
 
+    userSetupRedirect: function(next, state) {
+      var nonce = new Date().getTime();
+      var url = [this.GLIDERA_URL, '/user/setup',
+        '?redirect_uri=', encodeURIComponent(next),
+        '&state=', encodeURIComponent(state),
+        '&X-CLIENT-ID=', this.clientId,
+        '&X-ACCESS-KEY=', this.accessKey,
+        '&X-ACCESS-NONCE=', nonce].join('');
+      url += '&X-ACCESS-SIGNATURE=' + Glidera.hmacsha256(url, this.secret);
+      return url;
+    },
+
     createBankAccountRedirect: function(next, state) {
       var nonce = new Date().getTime();
       var url = [this.GLIDERA_URL, '/user/bankaccountcreate',
@@ -6915,6 +6929,13 @@ var Glidera = (function () {
       });
     },
 
+    resendEmailVerification: function(callback) {
+      return this._request(true, '/user/email/resend_verification', {
+        'method': 'POST',
+        'callback': callback
+      });
+    },
+
     userStatus: function(callback) {
       return this._request(true, '/user/status', {
         'callback': callback
@@ -6933,6 +6954,14 @@ var Glidera = (function () {
         'data': {
           'phoneNumber': phoneNumber
         },
+        'callback': callback
+      });
+    },
+
+    deletePhoneNumber: function(otpCode, callback) {
+      return this._request(true, '/user/phone', {
+        'method': 'DELETE',
+        'otpCode': otpCode,
         'callback': callback
       });
     },
@@ -7108,12 +7137,10 @@ var Glidera = (function () {
         if ($stateParams.confirmNumber == 'confirm' && userStatus.userPhoneIsSetup) {
           $scope.hasNumber = true;
         }
-        if ($stateParams.confirmNumber != 'confirm') {
-          TwoFactor.requestCode().then(function() { }, function(error) {
-            $state.go('exchange');
-            Airbitz.ui.showAlert('Error', 'Unable to request 2fa token. Please retry again later.');
-          });
-        }
+        TwoFactor.requestCode().then(function() { }, function(error) {
+          $state.go('exchange');
+          Airbitz.ui.showAlert('Error', 'Unable to request 2fa token. Please retry again later.');
+        });
       });
     };
     $scope.submit2FA = function() {
@@ -7606,6 +7633,7 @@ console.log(wallet);
     UserFactory.fetchUserAccountStatus().then(function(b) {
       $scope.userStatus = b;
       $scope.showOptions = !$scope.userStatus.userCanTransact;
+      $scope.extraComplete = b.userSsnIsSetup && b.userOowIsSetup;
     }).then(function() {
       return UserFactory.getEmailAddress();
     }).then(function() {
@@ -7615,7 +7643,11 @@ console.log(wallet);
         $scope.limits = limits;
       });
     }).then(function() {
-      DataFactory.checkPhoneNumber($scope.account);
+      if (!$scope.userStatus.userEmailIsSetup) {
+        $state.go("verifyEmail");
+      } else {
+        DataFactory.checkPhoneNumber($scope.account);
+      }
     });
 
     $scope.regMessage = function() {
@@ -7656,6 +7688,11 @@ console.log(wallet);
 
     $scope.showAccountOptions = function() {
       $scope.showOptions = !$scope.showOptions;
+    };
+
+    $scope.increaseSpendingLimits = function() {
+        Airbitz.ui.title('Additional User Info');
+        window.location = UserFactory.userSetupRedirect();
     };
 
     $scope.routeBankAccount = function() {
@@ -7728,10 +7765,16 @@ console.log(wallet);
     Airbitz.ui.title('Verify Email');
     $scope.account = UserFactory.getUserAccount();
 
+    $scope.resend = function() {
+      UserFactory.resendEmailVerification().then(function(userStatus) {
+        Airbitz.ui.showAlert('Verify Email', 'Verification email has been resent.');
+      }, Error.reject);
+    };
+
     $scope.next = function() {
       UserFactory.fetchUserAccountStatus().then(function(userStatus) {
         if (userStatus.userEmailIsSetup) {
-          $state.go('verifyPhone');
+          $state.go('dashboard');
         } else {
           Airbitz.ui.showAlert('Verify Email', 'Please verify your email address before proceeding!');
           $state.go('verifyEmail');
@@ -7743,12 +7786,23 @@ console.log(wallet);
   function verifyPhoneController($scope, $state, Error, DataFactory, UserFactory, TwoFactor) {
     Airbitz.ui.title('Verify Phone');
     $scope.account = UserFactory.getUserAccount();
+    $scope.userStatus = UserFactory.getUserAccountStatus();
 
     var verifyCode = function() {
       DataFactory.confirmPhoneNumber(TwoFactor.getCode(), TwoFactor.getOldCode()).then(function() {
         $state.go('dashboard');
       }, Error.reject);
     };
+    $scope.deletePhone = function() {
+      TwoFactor.confirmTwoFactor(function() {
+        DataFactory.deletePhoneNumber($scope.account).then(function(b) {
+          $state.go("dashboard");
+        }, function() {
+          Airbitz.ui.showAlert('Error', 'Unable to update phone number.');
+          $state.go("dashboard");
+        });
+      });
+    }
     $scope.submitPhone = function(){
       DataFactory.addPhoneNumber($scope.account.phone).then(function() {
         TwoFactor.confirmTwoFactor(verifyCode);
@@ -8031,6 +8085,9 @@ var app = angular.module('app.core', [
       var signature = Airbitz.core.bitidSignature(domainUri, message);
       return glideraFactory.bitidAuthRedirect(redirectUri, address, message, signature, 'authorize');
     };
+    factory.userSetupRedirect = function() {
+      return glideraFactory.userSetupRedirect(redirectUri, 'usersetup');
+    };
     factory.createBankAccountUrl = function() {
       return glideraFactory.createBankAccountRedirect(redirectUri, 'bankaccount');
     };
@@ -8070,6 +8127,13 @@ var app = angular.module('app.core', [
     };
     factory.getUserAccountStatus = function() {
       return userStatus;
+    };
+    factory.resendEmailVerification = function() {
+      var d = $q.defer();
+      glideraFactory.resendEmailVerification(function(e,s,b) {
+        s >= 200 && s < 300?  d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
     };
     factory.fetchUserAccountStatus = function() {
       var d = $q.defer();
@@ -8208,6 +8272,20 @@ var app = angular.module('app.core', [
       var d = $q.defer();
       glideraFactory.getPhoneNumber(function(e, r, b) {
         200 == r ? d.resolve(b) : d.reject(b);
+      });
+      return d.promise;
+    };
+
+    factory.deletePhoneNumber = function(account) {
+      var d = $q.defer();
+      glideraFactory.deletePhoneNumber(TwoFactor.getCode(), function(e, r, b) {
+        if (r >= 200 && r < 300) {
+          account.phone = null;
+          Airbitz.core.writeData('account', account);
+          d.resolve(b);
+        } else {
+          d.reject(b);
+        }
       });
       return d.promise;
     };
@@ -8627,24 +8705,6 @@ module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/2fa/partials/verify.twofactor.html',
     '<div class="twofa row text-center">\n' +
     '  <form class="form col-xs-offset-2 col-xs-8" novalidate>\n' +
-    '    <div ng-show="hasNumber" class="form-group">\n' +
-    '      <div class="row">\n' +
-    '        <p><label class="label label-warning">Note</label> You already have a\n' +
-    '        phone number set. In order to change the number you have to include the\n' +
-    '        previous two factor code.</p>\n' +
-    '      </div>\n' +
-    '      <label for="inputOldVerificationCode" class="sr-only">Old Verification Code</label>\n' +
-    '      <input\n' +
-    '        type="number"\n' +
-    '        id="inputOldVerificationCode"\n' +
-    '        class="large text-center"\n' +
-    '        placeholder="Previous 2FA Code"\n' +
-    '        autocorrect="off"\n' +
-    '        autocomplete="off"\n' +
-    '        ng-model="oldVerificationCode"\n' +
-    '        pattern="[0-9]*"\n' +
-    '      />\n' +
-    '    </div>\n' +
     '    <div class="form-group">\n' +
     '      <label for="inputVerificationCode" class="sr-only">Verification Code</label>\n' +
     '      <input\n' +
@@ -8750,7 +8810,7 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '    <form ng-submit="next()" class="form" name="form">\n' +
     '      <div class="row">\n' +
-    '        <div class="col-xs-6">\n' +
+    '        <div class="col-xs-6 no-pad">\n' +
     '          <label>Your {{order.orderAction | titlecase}} Limits</label>\n' +
     '          <div class="order-limits">\n' +
     '            <div ng-show="{{order.orderAction==\'buy\'}}" buy-limits></div>\n' +
@@ -8963,7 +9023,7 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/limits/partials/limits.html',
     '<div class="exchange-limits row">\n' +
-    '  <div class="col-xs-6">\n' +
+    '  <div class="col-xs-6 no-pad-left">\n' +
     '    <label class="limit-header-buy">Buy Limits</label>\n' +
     '    <div class="buy-limits">\n' +
     '      <div class="limit-buy-daily">\n' +
@@ -8975,7 +9035,7 @@ module.run(['$templateCache', function($templateCache) {
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
-    '  <div class="col-xs-6">\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
     '    <label class="limit-header-sell">Sell Limits</label>\n' +
     '    <div class="sell-limits">\n' +
     '      <div class="limit-sell-daily">\n' +
@@ -9123,7 +9183,7 @@ module.run(['$templateCache', function($templateCache) {
     '  <div class="account-message col-xs-12"\n' +
     '       ng-if="!userStatus.userCanTransact" ng-bind-html="regMessage()">\n' +
     '  </div>\n' +
-    '  <div class="col-xs-12">\n' +
+    '  <div class="col-xs-12 no-pad">\n' +
     '    <ul class="list-group">\n' +
     '      <li ng-if="userStatus.userCanTransact" ng-click="showAccountOptions()" class="header list-group-item">\n' +
     '        <span class="list-group-item-heading">{{ account.firstName || \'first\' | titlecase }} {{ account.lastName || \'last\' | titlecase }}</span>\n' +
@@ -9131,9 +9191,9 @@ module.run(['$templateCache', function($templateCache) {
     '        <label class="status label label-outline pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userCanTransact}">{{ userStatus.userCanTransact | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-if="userStatus.userCanTransact && showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <!-- <li ng-if="userStatus.userCanTransact && showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <div exchange-limits></div>\n' +
-    '      </li>\n' +
+    '      </li> -->\n' +
     '      <li ng-if="showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Email</span>\n' +
     '        <p class="list-group-item-text">{{account.email || \'email\'}}</p>\n' +
@@ -9157,6 +9217,12 @@ module.run(['$templateCache', function($templateCache) {
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
     '        <label class="status label label-outline pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userBankAccountIsSetup}">{{ userStatus.userBankAccountIsSetup | statusFilter }}</label>\n' +
+    '      </li>\n' +
+    '      <li ng-if="showOptions" ng-click="increaseSpendingLimits()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '        <span class="list-group-item-heading">Increase Spending Limits</span>\n' +
+    '        <p class="list-group-item-text">Tap to edit</p>\n' +
+    '        <label class="status label label-outline pull-right"\n' +
+    '               ng-class="{\'label-success\': userStatus.userBankAccountIsSetup}">{{ extraComplete | statusFilter }}</label>\n' +
     '      </li>\n' +
     '    </ul>\n' +
     '  </div>\n' +
@@ -9182,11 +9248,19 @@ module.run(['$templateCache', function($templateCache) {
     '</div>\n' +
     '\n' +
     '<div ng-if="userStatus.userCanTransact" class="exchange-buy-sell row">\n' +
-    '  <div class="col-xs-6">\n' +
-    '    <button ng-click="buy()" class="buy-button btn-success btn-lg btn-block btn">BUY</button>\n' +
-    '  </div>\n' +
-    '  <div class="col-xs-6">\n' +
-    '    <button ng-click="sell()" class="sell-button btn-primary btn-lg btn-block btn">SELL</button>\n' +
+    '  <div class="col-xs-12 no-pad">\n' +
+    '    <ul class="list-group" style="margin-bottom: 0;">\n' +
+    '      <li ng-if="userStatus.userCanTransact" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '        <div exchange-limits></div>\n' +
+    '      </li>\n' +
+    '    </ul>\n' +
+    '\n' +
+    '    <div class="col-xs-6 no-pad">\n' +
+    '        <button ng-click="buy()" class="buy-button btn-success btn-lg btn-block btn">BUY</button>\n' +
+    '    </div>\n' +
+    '    <div class="col-xs-6 no-pad">\n' +
+    '        <button ng-click="sell()" class="sell-button btn-primary btn-lg btn-block btn">SELL</button>\n' +
+    '    </div>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
@@ -9482,9 +9556,7 @@ module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/verify.email.html',
     '<div class="row text-center">\n' +
     '  <h3 class="col-xs-12">Please check:</h3>\n' +
-    '  <h3 class="col-xs-12"><label class="label label-outline">{{account.email||"jimmy@hendrix.com"}}</label></h3>\n' +
-    '  <h3 class="col-xs-12">for an email from:</h3>\n' +
-    '  <h3 class="col-xs-12"><label class="label label-outline">{{exchange.emailVerificationAddress}}</label></h3>\n' +
+    '  <h3 class="col-xs-12">{{account.email}}</h3>\n' +
     '</div>\n' +
     '\n' +
     '<div class="row" style="margin: 20px 0">\n' +
@@ -9493,6 +9565,9 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '<div class="row text-right" style="margin-top: 40px;">\n' +
     '  <div class="col-xs-12">\n' +
+    '    <button ng-click="resend()" \n' +
+    '            ng-disabled="form.$invalid" \n' +
+    '            class="btn btn-lg btn-success">Resend</button>\n' +
     '    <button ng-click="next()" \n' +
     '            ng-disabled="form.$invalid" \n' +
     '            class="btn btn-lg btn-success">Continue</button>\n' +
@@ -9514,20 +9589,18 @@ module.run(['$templateCache', function($templateCache) {
     '<div class="verify-phone-form text-center row">\n' +
     '  <form name="form" class="form col-xs-12" novalidate>\n' +
     '\n' +
-    '    <div class="row" style="margin: 20px 0">\n' +
-    '      <p>Please enter your phone number.</p>\n' +
-    '    </div>\n' +
-    '\n' +
-    '    <div class="row">\n' +
+    '    <div class="row" ng-if="!userStatus.userPhoneIsSetup">\n' +
     '      <div class="form-group col-xs-12">\n' +
-    '        <label for="inputPhone" class="sr-only">Verification Code</label>\n' +
+    '        <p>Please enter your phone number.</p>\n' +
+    '      </div>\n' +
+    '      <div class="form-group col-xs-12">\n' +
     '        <input ng-model="account.phone" name="phone" type="tel" id="inputPhone"\n' +
     '               class="large glass-input form-control"\n' +
     '               placeholder="Enter Your Phone #"\n' +
     '               autofocus="true"\n' +
     '               autocomplete="off"\n' +
+    '               \n' +
     '               phone-number-validator />\n' +
-    '\n' +
     '      </div>\n' +
     '\n' +
     '      <div class="error-message-console col-xs-12" ng-show="form.$submitted || form.phone.$touched">\n' +
@@ -9535,6 +9608,15 @@ module.run(['$templateCache', function($templateCache) {
     '        <span ng-show="form.phone.$error.tel">Not a valid phone number.</span>\n' +
     '      </div>\n' +
     '\n' +
+    '    </div>\n' +
+    '\n' +
+    '    <div class="row" ng-if="userStatus.userPhoneIsSetup">\n' +
+    '      <div class="form-group col-xs-12">\n' +
+    '        <p>To change your phone number, first delete your existing phone number.</p>\n' +
+    '      </div>\n' +
+    '      <div class="form-group col-xs-12">\n' +
+    '        <h3 >{{ account.phone }} </h3>\n' +
+    '      </div>\n' +
     '    </div>\n' +
     '\n' +
     '    <div class="row" style="margin: 20px 0">\n' +
@@ -9545,6 +9627,12 @@ module.run(['$templateCache', function($templateCache) {
     '      <div class="col-xs-12">\n' +
     '        <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-link">Cancel</button>\n' +
     '        <button type="submit"\n' +
+    '                ng-show="userStatus.userPhoneIsSetup"\n' +
+    '                ng-click="deletePhone()"\n' +
+    '                ng-disabled="form.$invalid"\n' +
+    '                class="buy-sell-next btn btn-lg btn-danger">Delete</button>\n' +
+    '        <button type="submit"\n' +
+    '                ng-show="!userStatus.userPhoneIsSetup"\n' +
     '                ng-click="submitPhone()"\n' +
     '                ng-disabled="form.$invalid"\n' +
     '                class="buy-sell-next btn btn-lg btn-success">Verify</button>\n' +
