@@ -2215,7 +2215,6 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetFragmentThreadToBaseFragment(Tabs.BUYSELL.ordinal());
                 onNavBarSelected(Tabs.BUYSELL.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }

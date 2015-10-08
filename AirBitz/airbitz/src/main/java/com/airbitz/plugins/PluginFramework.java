@@ -500,7 +500,7 @@ public class PluginFramework {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.setInitialScale(1);
         mWebView.clearFormData();
-        mWebView.addJavascriptInterface(new PluginContext(this, plugin, handler), "_native");
+        mWebView.addJavascriptInterface(pluginContext, "_native");
     }
 
     CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {

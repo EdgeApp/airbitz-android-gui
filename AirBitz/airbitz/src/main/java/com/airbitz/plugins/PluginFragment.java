@@ -84,10 +84,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private String mSubtitle;
 
     public PluginFragment(Plugin plugin) {
-        mFramework = new PluginFramework(handler);
-        mFramework.setup();
-        mNav = new Stack<String>();
-        setRetainInstance(true);
         setBackEnabled(true);
         mPlugin = plugin;
     }
@@ -95,8 +91,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("PluginFramework", "onCreate");
 
         setHasOptionsMenu(true);
+        mNav = new Stack<String>();
+        mFramework = new PluginFramework(handler);
+        mFramework.setup();
         mFramework.setWallet(mWallet);
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
@@ -127,11 +127,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         // Resize webview
         mView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
-                resizeWebView();
+                if (null != mView) {
+                    resizeWebView();
+                }
             }
         });
         frameLayoutParams = (LinearLayout.LayoutParams) mView.getLayoutParams();
-
         return mView;
     }
 
@@ -149,6 +150,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     public void onResume() {
         super.onResume();
         CoreAPI.getApi().reloadWallets();
+        if (mWebView != null) {
+            mWebView.onResume();
+            mWebView.resumeTimers();
+        }
 
         if (mPopped && mWebView != null) {
             mView.addView(mWebView);
@@ -169,6 +174,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     @Override
     public void onPause() {
         super.onPause();
+        if (mWebView != null) {
+            mWebView.onPause();
+            mWebView.pauseTimers();
+        }
 
         if (null != mView) {
             // Remove view to prevent retry crash onBackPressed
