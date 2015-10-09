@@ -1071,11 +1071,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mActivity.popFragment(); // stop sending screen
                     if (null != exitHandler) {
                         exitHandler.success(txResult);
-                        mHandler.postDelayed(new Runnable() {
-                            public void run() {
-                                mActivity.popFragment(); // confirmation screen
-                            }
-                        }, 500);
                     } else {
                         mFundsSent = true;
                         String returnUrl = mSpendTarget.getSpend().getSzRet();
