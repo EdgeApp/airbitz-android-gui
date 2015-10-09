@@ -505,6 +505,26 @@ public class PluginFramework {
         mWebView.addJavascriptInterface(pluginContext, "_native");
     }
 
+    public void onResume(WebView webView) {
+        mWebView = webView;
+    }
+
+    public void onPause() {
+        mWebView = null;
+    }
+
+    public void destroy() {
+        if (null != mWebView) {
+            mWebView.onPause();
+            mWebView.pauseTimers();
+            mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.loadUrl("about:blank");
+        }
+        mWebView = null;
+        mCoreAPI = null;
+        mWallet = null;
+    }
+
     CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {
         @Override
         public void OnExchangeRatesChange() {

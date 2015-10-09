@@ -116,6 +116,7 @@ import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.plugins.PluginFragment;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -1410,6 +1411,11 @@ public class NavigationActivity extends ActionBarActivity
     };
 
     private void resetApp() {
+        Fragment frag = mNavStacks[Tabs.BUYSELL.ordinal()].peek();
+        if (frag instanceof PluginFragment) {
+            PluginFragment plugin = (PluginFragment) frag;
+            plugin.cleanup();
+        }
         for(int i=0; i<mNavFragments.length; i++) {
             resetFragmentThreadToBaseFragment(i);
         }

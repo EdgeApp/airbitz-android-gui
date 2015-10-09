@@ -103,6 +103,16 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
 
+    public void cleanup() {
+        if (mWebView != null) {
+            mWebView.clearCache(true);
+        }
+        mFramework.destroy();
+        mFramework = null;
+        mWebView = null;
+        mView = null;
+    }
+
     public void setUri(Uri uri) {
         this.mUri = uri;
     }
@@ -120,6 +130,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
         mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
+        mWebView.clearCache(true);
 
         mFramework.buildPluginView(mPlugin, mActivity, mWebView);
         mWebView.setBackgroundColor(0x00000000);
@@ -325,7 +336,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     if (getActivity() != null) {
-                        ((NavigationActivity) getActivity()).onBackPressed();
+                        PluginFragment.popFragment(mActivity);
                     }
                 }
             });
