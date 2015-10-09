@@ -502,6 +502,7 @@ public class PluginFramework {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.setInitialScale(1);
         mWebView.clearFormData();
+        mWebView.clearCache(true);
         mWebView.addJavascriptInterface(pluginContext, "_native");
     }
 
