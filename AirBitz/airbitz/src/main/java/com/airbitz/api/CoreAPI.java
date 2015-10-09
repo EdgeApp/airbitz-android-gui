@@ -2092,7 +2092,6 @@ public class CoreAPI {
         mCoreHandler = null;
         mDataHandler = null;
         mWatcherHandler = null;
-        mMainHandler = null;
 
         stopWatchers();
         stopExchangeRateUpdates();
