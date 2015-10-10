@@ -2089,10 +2089,6 @@ public class CoreAPI {
             }
         }
 
-        mCoreHandler = null;
-        mDataHandler = null;
-        mWatcherHandler = null;
-
         stopWatchers();
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
