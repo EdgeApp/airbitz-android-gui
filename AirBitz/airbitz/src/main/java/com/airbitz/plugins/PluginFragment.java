@@ -43,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -103,10 +104,15 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
 
-    public void cleanup() {
+    private void cleanupWebview() {
         if (mWebView != null) {
             mWebView.clearCache(true);
+            CookieManager.getInstance().removeAllCookies(null);
         }
+    }
+
+    public void cleanup() {
+        cleanupWebview();
         mFramework.destroy();
         mFramework = null;
         mWebView = null;
@@ -130,7 +136,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
         mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
-        mWebView.clearCache(true);
+        cleanupWebview();
 
         mFramework.buildPluginView(mPlugin, mActivity, mWebView);
         mWebView.setBackgroundColor(0x00000000);
