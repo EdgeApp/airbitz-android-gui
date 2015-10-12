@@ -1096,8 +1096,9 @@ _bridge = function() {
       return _native.getConfig(key);
     },
 
-    showAlert: function(title, message) {
-      _native.showAlert(title, message);
+    showAlert: function(title, message, options) {
+      var showSpinner = options['showSpinner'] || false;
+      _native.showAlert(title, message, showSpinner);
     },
 
     title: function(s) {
@@ -1115,6 +1116,7 @@ _bridge = function() {
     },
 
     back: function() {
+      _native.back();
     },
 
     exit: function() {
@@ -1228,8 +1230,8 @@ _bridge = function() {
     Airbitz._listeners[currencyNum].splice(i, 1);
   };
 
-  Airbitz.ui.showAlert = function(title, message) {
-    Airbitz._bridge.showAlert(title, message);
+  Airbitz.ui.showAlert = function(title, message, options) {
+    Airbitz._bridge.showAlert(title, message, options || {});
   };
 
   Airbitz.ui.title = function(s) {
@@ -9589,6 +9591,7 @@ var Glidera = (function () {
 
     $scope.saveUserAccount = function() {
       Airbitz.ui.title('Saving...');
+      Airbitz.ui.showAlert('Saved', 'Saving information...', {'showSpinner': true});
       UserFactory.updateUserAccount($scope.account).then(function() {
         Airbitz.ui.showAlert('Saved', 'User information has been updated.');
         $state.go('dashboard');
@@ -9799,6 +9802,7 @@ var Glidera = (function () {
     return factory;
 
     function reject(res) {
+      console.log("Error: " + JSON.stringify(res));
       if (!res || !res.code) {
         Airbitz.ui.showAlert('Error', 'An unknown error occurred.');
       } else {
@@ -9883,6 +9887,8 @@ var Glidera = (function () {
       return "Transaction amount is below minimum threshold";
     } else if (3112 == code) {
       return "Transaction cannot be processed because daily limit would be exceeded";
+    } else if (3125 == code) {
+      return "Cannot update because no information has changed";
     } else {
       return "An error occurred";
     }
@@ -10033,14 +10039,15 @@ var app = angular.module('app.core', [
             account.state = States.findState(b.state);
             account.country = b.countryCode;
 
-            // XXX: This is kind of hacky
             if (b.birthDate) {
-              var birthDate = b.birthDate.replace(/T.*/, '');
-              account.birthDate = new Date(birthDate);
+              // XXX: This is kind of hacky
+              var arr = b.birthDate.split("-");
+              account.birthDate = new Date(arr[0], arr[1] - 1, arr[2]);
             }
             account.registered = true;
 
             // persist locally
+            console.log(b);
             console.log(account);
             Airbitz.core.writeData('account', account);
             resolve(account);
@@ -10052,7 +10059,7 @@ var app = angular.module('app.core', [
     }
     factory.updateUserAccount = function(account) {
       return $q(function(resolve, reject) {
-        glideraFactory.updatePersonalInfo({
+        var d = {
           'firstName': account.firstName,
           'middleName': account.middleName,
           'lastName': account.lastName,
@@ -10063,7 +10070,9 @@ var app = angular.module('app.core', [
           'state': account.state ? account.state.id : null,
           'zipCode': account.zipCode,
           'ip': '127.0.0.1'
-        }, function(e, s, b) {
+        };
+        console.log(d);
+        glideraFactory.updatePersonalInfo(d, function(e, s, b) {
           if (s === 200) {
             Airbitz.core.writeData('account', account);
             resolve(b);
@@ -10198,6 +10207,7 @@ var app = angular.module('app.core', [
                   ? glideraFactory.sandboxAddress : request['address'];
       if (address) {
         var opts = {'priceUuid': Prices.buyUuid()};
+        Airbitz.ui.showAlert('Processing', 'Processing order...', {'showSpinner': true});
         glideraFactory.buy(TwoFactor.getCode(), address, qty, opts, function(e, r, b) {
           console.log(JSON.stringify(b));
           if (r == 200) {
