@@ -518,7 +518,6 @@ html body .btn.btn-link {
   box-shadow: none;
 }
 html body label {
-  color: #000 !important;
   font-weight: 300;
   text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
@@ -526,7 +525,7 @@ html body .label {
   font-weight: 300;
 }
 html body .label.label-outline {
-  color: #555;
+  color: #333;
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 html body .label.label-outline.label-success {
@@ -536,12 +535,8 @@ html body .label.status {
   font-size: 10px;
   position: absolute;
   right: -1px;
-  bottom: -6px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  border-right: 0;
-  border-bottom: 0;
+  bottom: 0px;
+  border: none;
 }
 html body .help-block {
   color: #999999;
@@ -595,18 +590,18 @@ html body .list-group a.list-group-item .list-group-item-text {
   color: #333333;
   font-size: 10px !important;
 }
-html body .form-control::-webkit-input-placeholder {
+html body input::-webkit-input-placeholder {
   color: #777;
 }
-html body .form-control::-moz-placeholder {
+html body input::-moz-placeholder {
   /* Firefox 18- */
   color: #777;
 }
-html body .form-control:::-moz-placeholder {
+html body input:::-moz-placeholder {
   /* Firefox 19+ */
   color: #777;
 }
-html body .form-control::-ms-input-placeholder {
+html body input::-ms-input-placeholder {
   color: #777;
 }
 html body input[type='text'],
@@ -785,7 +780,7 @@ html body .user-account-form {
   background: #003e61;
 }
 .exchange-ticker .live-ticker .live-price-rate {
-  font-size: 17px;
+  font-size: 16px;
 }
 .exchange-ticker .live-ticker .live-price-rate .price-rate-label {
   color: #fff;
@@ -887,8 +882,7 @@ html body .user-account-form {
   margin-top: 40px;
 }
 .order-review {
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin: 20px 0;
 }
 .order-review table {
   margin-bottom: 10px;
@@ -916,11 +910,31 @@ html body .user-account-form {
   width: 100%;
 }
 .transactions .table thead {
-  background: #2291cf;
-  color: #fff;
+  background: #fff;
+  color: #2291cf;
+  color: #555;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 .transactions .table td {
   font-size: 8px;
+}
+.transactions .table.table-striped tbody tr.processing td {
+  opacity: 0.4;
+}
+.transactions .table.table-striped tbody td.type.buy {
+  background: #80c342;
+  color: white;
+}
+.transactions .table.table-striped tbody td.type.sell {
+  background: #2291cf;
+  color: white;
+}
+.exchange-buy-sell-interface {
+  margin: 20px 0;
+}
+.exchange-transactions-summary {
+  margin-bottom: 50px;
 }
 .verify-phone-info {
   margin-bottom: 20px;
@@ -10412,7 +10426,7 @@ var app = angular.module('app.core', [
         Airbitz.ui.navStackClear();
       } else if (next.match(/\.html#\/receipt\/$/)) {
         Airbitz.ui.navStackClear();
-
+        history.length = 0;
         history.push('/dashboard/');
         Airbitz.ui.navStackPush('/dashboard/');
       }
@@ -10658,9 +10672,9 @@ module.run(['$templateCache', function($templateCache) {
     '  </div>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="exchange-buy-sell-interface row">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <form ng-submit="next()" class="form" name="form">\n' +
+    '<form ng-submit="next()" class="form" name="form">\n' +
+    '  <div class="exchange-buy-sell-interface row">\n' +
+    '    <div class="col-xs-12">\n' +
     '      <div class="form-group">\n' +
     '        <label for="inputFiatAmount">Amount to <span class="label label-outline">{{ order.orderAction | uppercase }}</span></label>\n' +
     '        <div class="input-group">\n' +
@@ -10704,23 +10718,23 @@ module.run(['$templateCache', function($templateCache) {
     '          <div ng-show="form.orderFiatInput.$error.required" class="label label-danger">Required</div>\n' +
     '        </div>\n' +
     '      </div>\n' +
-    '\n' +
-    '      <div class="row text-right" style="margin-top: 40px;">\n' +
-    '        <div class="col-xs-12">\n' +
-    '          <button type="button"\n' +
-    '                  ui-sref="dashboard"\n' +
-    '                  class="buy-sell-next btn btn-lg btn-link">Cancel {{ order.orderAction | titlecase }}</button>\n' +
-    '          <button type="submit"\n' +
-    '                  ng-disabled="form.$invalid || !order.transferToWallet"\n' +
-    '                  tabindex="2"\n' +
-    '                  class="buy-sell-next btn btn-lg btn-success">Next</button>\n' +
-    '        </div>\n' +
-    '      </div>\n' +
-    '    </form>\n' +
+    '    </div>\n' +
     '  </div>\n' +
-    '</div>\n' +
     '\n' +
-    '\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-6 no-pad">\n' +
+    '      <button type="button"\n' +
+    '      ui-sref="dashboard"\n' +
+    '      class="buy-sell-next btn btn-lg btn-block btn-danger">Cancel {{ order.orderAction | titlecase }}</button>\n' +
+    '    </div>\n' +
+    '    <div class="col-xs-6 no-pad">\n' +
+    '      <button type="submit"\n' +
+    '      ng-disabled="form.$invalid || !order.transferToWallet"\n' +
+    '      tabindex="2"\n' +
+    '      class="buy-sell-next btn btn-lg btn-block btn-success">Next</button>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '</form>\n' +
     '\n' +
     '\n' +
     '');
@@ -10786,10 +10800,14 @@ module.run(['$templateCache', function($templateCache) {
     '    <label class="label label-outline" style="border-radius: 100px; font-size: 14px;">{{exchange.orderTimeout||"60"}} seconds to complete</label>\n' +
     '  </div> -->\n' +
     '\n' +
-    '  <div class="text-right col-xs-12">\n' +
-    '    <button ng-click="editOrder()" class="btn btn-lg btn-link">Edit</button>\n' +
-    '    <button ng-show="{{ order.orderAction == \'buy\' }}" ng-click="executeOrder()" class="btn btn-lg btn-success"><i class="fa fa-checkmark"></i> Confirm {{ order.orderAction | titlecase }}</button>\n' +
-    '    <button ng-show="{{ order.orderAction == \'sell\' }}" ng-click="executeOrder()" class="btn btn-lg btn-success"><i class="fa fa-checkmark"></i> Authorize Sell</button>\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button ng-click="editOrder()" class="btn btn-lg btn-block btn-danger">Edit</button>\n' +
+    '  </div>\n' +
+    '  <div ng-show="{{ order.orderAction == \'buy\' }}" class="col-xs-6 no-pad">\n' +
+    '    <button ng-show="{{ order.orderAction == \'buy\' }}" ng-click="executeOrder()" class="btn btn-lg btn-block btn-success"><i class="fa fa-checkmark"></i> Confirm {{ order.orderAction | titlecase }}</button>\n' +
+    '  </div>\n' +
+    '  <div ng-show="{{ order.orderAction == \'sell\' }}" class="col-xs-6 no-pad">\n' +
+    '    <button ng-show="{{ order.orderAction == \'sell\' }}" ng-click="executeOrder()" class="btn btn-lg btn-block btn-primary"><i class="fa fa-checkmark"></i> Authorize {{ order.orderAction | titlecase }}</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '');
@@ -10805,8 +10823,8 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/transactions.html',
     '<button type="button"\n' +
-    '        ui-sref="dashboard"\n' +
-    '        class="btn btn-lg btn-link pull-right">Back to Dashboard <i class="fa fa-arrow-right"></i></button>\n' +
+    'ui-sref="dashboard"\n' +
+    'class="btn btn-lg btn-link pull-right">Back to Dashboard <i class="fa fa-arrow-right"></i></button>\n' +
     '\n' +
     '<div class="transactions row">\n' +
     '\n' +
@@ -10814,21 +10832,21 @@ module.run(['$templateCache', function($templateCache) {
     '    <table ng-model="transactions" class="table table-bordered table-striped">\n' +
     '      <thead>\n' +
     '        <tr>\n' +
-    '          <td>Status</td>\n' +
+    '          <td>Date</td>\n' +
     '          <td>Type</td>\n' +
     '          <td>Subtotal</td>\n' +
     '          <td>Total</td>\n' +
     '          <td>BTC Price</td>\n' +
-    '          <td>Date</td>\n' +
+    '          <td>Status</td>\n' +
     '        </tr>\n' +
     '      </thead>\n' +
-    '      <tr ng-repeat="t in transactions">\n' +
-    '        <td>{{ t.status || \'status\' }}</td>\n' +
-    '        <td>{{ t.type || \'type\' }}</td>\n' +
-    '        <td>{{ t.subtotal || \'subtotal\' }}</td>\n' +
-    '        <td>{{ t.total || \'total\' }}</td>\n' +
-    '        <td>{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
-    '        <td>{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
+    '      <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
+    '        <td class="date">{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
+    '        <td class="type" ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</td>\n' +
+    '        <td class="subtotal">{{ t.subtotal || \'subtotal\' }}</td>\n' +
+    '        <td class="total">{{ t.total || \'total\' }}</td>\n' +
+    '        <td class="price-each">{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
+    '        <td class="status">{{ t.status || \'status\' }}</td>\n' +
     '      </tr>\n' +
     '    </table>\n' +
     '  </div>\n' +
@@ -11038,41 +11056,38 @@ module.run(['$templateCache', function($templateCache) {
     '      <li ng-if="userStatus.userCanTransact" ng-click="showAccountOptions()" class="header list-group-item">\n' +
     '        <span class="list-group-item-heading">{{ account.firstName || \'first\' | titlecase }} {{ account.lastName || \'last\' | titlecase }}</span>\n' +
     '        <p class="list-group-item-text">Tap to view your account details</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
+    '        <label class="status label pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userCanTransact}">{{ userStatus.userCanTransact | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <!-- <li ng-if="userStatus.userCanTransact && showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
-    '        <div exchange-limits></div>\n' +
-    '      </li> -->\n' +
     '      <li ng-if="showOptions" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Email</span>\n' +
     '        <p class="list-group-item-text">{{account.email || \'email\'}}</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.userEmailIsSetup}">{{ userStatus.userEmailIsSetup | statusFilter }}</label>\n' +
+    '        <label class="status label pull-right"\n' +
+    '               ng-class="(userStatus.userEmailIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userEmailIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="verifyPhone" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Mobile Phone</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.userPhoneIsSetup}">{{ userStatus.userPhoneIsSetup | statusFilter }}</label>\n' +
+    '        <label class="status label pull-right"\n' +
+    '               ng-class="(userStatus.userPhoneIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userPhoneIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="account" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Account Information</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.personalInfoState == \'VERIFIED\'}">{{ userStatus.personalInfoState | statusFilter }}</label>\n' +
+    '        <label class="status label pull-right"\n' +
+    '               ng-class="(userStatus.personalInfoState == \'VERIFIED\') ? \'label-success\' : \'label-danger\'">{{ userStatus.personalInfoState | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ng-click="routeBankAccount()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Bank Account</span>\n' +
     '        <p class="list-group-item-text">{{ bankMessage }}</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.userBankAccountIsSetup}">{{ userStatus.userBankAccountIsSetup | statusFilter }}</label>\n' +
+    '        <label class="status label pull-right"\n' +
+    '               ng-class="(userStatus.userBankAccountIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userBankAccountIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ng-click="increaseSpendingLimits()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Increase Spending Limits</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
-    '        <label class="status label label-outline pull-right"\n' +
-    '               ng-class="{\'label-success\': userStatus.extraComplete}">{{ extraComplete | statusFilter }}</label>\n' +
+    '        <label class="status label pull-right"\n' +
+    '               ng-class="(userStatus.extraComplete) ? \'label-success\' : \'label-danger\'">{{ extraComplete | statusFilter }}</label>\n' +
     '      </li>\n' +
     '    </ul>\n' +
     '  </div>\n' +
@@ -11116,37 +11131,37 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '<div account-summary></div>\n' +
     '\n' +
-    '<div ng-if="userStatus.userCanTransact" class="dashboard-bottom-buttons ng-trans ng-trans-fade-up easeOutSine">\n' +
-    '  <div class="row">\n' +
-    '    <div class="col-xs-12 no-pad">\n' +
-    '      <button type="button" ui-sref="exchangeTransactions" class="btn btn-block btn-lg btn-info">Transactions</button>\n' +
-    '    </div>\n' +
-    '  </div>\n' +
-    '\n' +
+    '<div ng-if="userStatus.userCanTransact && transactions" class="exchange-transactions-summary ng-trans ng-trans-fade-up easeOutSine">\n' +
     '  <div ng-if="transactions" class="transactions row">\n' +
-    '\n' +
     '    <div class="col-xs-12 no-pad">\n' +
     '      <table ng-model="transactions" class="table table-bordered table-striped">\n' +
     '        <thead>\n' +
     '          <tr>\n' +
-    '            <td>Status</td>\n' +
+    '            <td>Date</td>\n' +
     '            <td>Type</td>\n' +
     '            <td>Subtotal</td>\n' +
     '            <td>Total</td>\n' +
     '            <td>BTC Price</td>\n' +
-    '            <td>Date</td>\n' +
+    '            <td>Status</td>\n' +
     '          </tr>\n' +
     '        </thead>\n' +
-    '        <tr ng-repeat="t in transactions | limitTo:5 ">\n' +
-    '          <td>{{ t.status || \'status\' }}</td>\n' +
-    '          <td>{{ t.type || \'type\' }}</td>\n' +
-    '          <td>{{ t.subtotal || \'subtotal\' }}</td>\n' +
-    '          <td>{{ t.total || \'total\' }}</td>\n' +
-    '          <td>{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
-    '          <td>{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
+    '        <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
+    '          <td class="date">{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
+    '          <td class="type" ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</td>\n' +
+    '          <td class="subtotal">{{ t.subtotal || \'subtotal\' }}</td>\n' +
+    '          <td class="total">{{ t.total || \'total\' }}</td>\n' +
+    '          <td class="price-each">{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
+    '          <td class="status">{{ t.status || \'status\' }}</td>\n' +
     '        </tr>\n' +
     '      </table>\n' +
     '    </div>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div ng-if="userStatus.userCanTransact" class="dashboard-bottom-buttons ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-12 no-pad">\n' +
+    '      <button type="button" ui-sref="exchangeTransactions" class="btn btn-block btn-lg btn-info">Transactions</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
