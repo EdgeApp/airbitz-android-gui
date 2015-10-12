@@ -16,7 +16,8 @@
         android:paddingBottom="20dp"
         android:paddingLeft="20dp"
         android:paddingTop="20dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="20dp"
+        android:drawableRight="@drawable/arrow_right"
         android:textColor="@color/gray_text"
         android:textSize="20dp"/>
 
