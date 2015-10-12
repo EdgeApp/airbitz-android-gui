@@ -119,6 +119,7 @@ public class PluginFramework {
                                final String label, final String category, final String notes);
         public void showNavBar();
         public void hideNavBar();
+        public void back();
         public void exit();
 
         public void stackClear();
@@ -433,7 +434,8 @@ public class PluginFramework {
     }
 
     public static boolean isInsidePlugin(Stack<String> nav) {
-        return nav.get(nav.size() - 1).contains("file://");
+        return !(nav.get(nav.size() - 1).contains("http://")
+                || nav.get(nav.size() - 1).contains("https://"));
     }
 
     public void sendSuccess(String cbid, String walletUUID, String txId) {
@@ -471,7 +473,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, "--------- " + url);
+                Log.d(TAG, url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin
@@ -488,7 +490,6 @@ public class PluginFramework {
                     view.loadUrl(url);
                     return true;
                 }
-                Log.d(TAG, "Pushing...." + url);
                 pluginContext.navStackPush(url);
                 return super.shouldOverrideUrlLoading(view, url);
             }

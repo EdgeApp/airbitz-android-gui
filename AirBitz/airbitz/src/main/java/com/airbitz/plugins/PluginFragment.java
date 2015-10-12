@@ -338,6 +338,16 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
 
+        public void back() {
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    if (getActivity() != null) {
+                        PluginFragment.popFragment(mActivity);
+                    }
+                }
+            });
+        }
+
         public void exit() {
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
