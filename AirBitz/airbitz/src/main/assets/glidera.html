@@ -1147,6 +1147,7 @@ _bridge = function() {
   Airbitz._callbacks = {};
   Airbitz._results = {};
   Airbitz._listeners = {};
+  Airbitz._walletListener = null;
   Airbitz._bridge = _bridge();
 
   Airbitz.core.bitidAddress = function(uri, message) {
@@ -1208,6 +1209,24 @@ _bridge = function() {
 
   Airbitz.config.get = function(key) {
     return Airbitz._bridge.getConfig(key);
+  };
+
+  Airbitz.core.setWalletChangeListener = function(callback) {
+    Airbitz._walletListener = callback;
+  };
+
+  Airbitz._bridge.walletChanged = function(newWallet) {
+    if (Airbitz._walletListener) {
+      var j = JSON.parse(newWallet);
+      if (j.success) {
+        Airbitz._walletListener(j.result);
+      }
+    }
+  };
+
+  Airbitz.core.removeExchangeRateListener = function(currencyNum, callback) {
+    var i = Airbitz._listeners[currencyNum].indexOf(callback);
+    Airbitz._listeners[currencyNum].splice(i, 1);
   };
 
   Airbitz._bridge.exchangeRateUpdate = function() {
@@ -9108,10 +9127,6 @@ var Glidera = (function () {
       return Prices.setBuyQty(1).then(function() {
         Prices.setSellQty(1);
       });
-    }).then(function() {
-      return DataFactory.getSelectedWallet().then(function(wallet) {
-        $scope.order.transferToWallet = wallet 
-      }, Error.reject);
     });
 
     $scope.convertFiatValue = function(input) {
@@ -9162,15 +9177,16 @@ var Glidera = (function () {
     };
     $scope.executeOrder = function() {
       console.log(JSON.stringify(order));
-      var amountFiat = DataFactory.getExchange().currencyNum == order.transferToWallet.currencyNum
+      var wallet = order.transferToWallet = Airbitz.currentWallet;
+      var amountFiat = DataFactory.getExchange().currencyNum == wallet.currencyNum
                      ? order.orderFiatInput : 0;
       if (order.orderAction == 'buy') {
-        DataFactory.buy(order.transferToWallet, order.orderBtcInput, amountFiat).then(function(data) {
+        DataFactory.buy(wallet, order.orderBtcInput, amountFiat).then(function(data) {
           Airbitz.ui.showAlert('Bought Bitcoin', 'You bought bitcoin!');
           $state.go('orderReceipt');
         }, Error.reject);
       } else {
-        DataFactory.sell(order.transferToWallet, order.orderBtcInput, amountFiat).then(function(data) {
+        DataFactory.sell(wallet, order.orderBtcInput, amountFiat).then(function(data) {
           Airbitz.ui.showAlert('Sold Bitcoin', 'You sold bitcoin!');
           $state.go('orderReceipt');
         }, Error.reject);
@@ -9245,16 +9261,16 @@ var Glidera = (function () {
         return false;
       }
       var fiat = parseFloat(btc) * parseFloat(Prices.currentBuy.price);
-      return fiat < limits.dailyBuyRemaining
-          && fiat < limits.monthlyBuyRemaining;
+      return fiat <= limits.dailyBuyRemaining
+          && fiat <= limits.monthlyBuyRemaining;
     },
     factory.isSellAllowed = function(btc) {
       if (!limits.dailySellRemaining || !limits.monthlySellRemaining) {
         return false;
       }
       var fiat = parseFloat(btc) * parseFloat(Prices.currentSell.price);
-      return fiat < limits.dailySellRemaining
-          && fiat < limits.monthlySellRemaining;
+      return fiat <= limits.dailySellRemaining
+          && fiat <= limits.monthlySellRemaining;
     },
     factory.fetchLimits = function() {
       var deferred = $q.defer();
@@ -9818,13 +9834,13 @@ var Glidera = (function () {
           $state.go('dashboard');
           Airbitz.ui.showAlert('Error', 'Please verify your email address before continuing.');
         } else {
-          Airbitz.ui.showAlert('Error', errorMap(res.code));
+          Airbitz.ui.showAlert('Error', errorMap(res.code, res.message));
         }
       }
     }
   }
 
-  function errorMap(code) {
+  function errorMap(code, message) {
     if (415 == code) {
       return "Unsupported media type";
     } else if (400 == code) {
@@ -9836,7 +9852,7 @@ var Glidera = (function () {
     } else if (1100 == code) {
       return "Missing required parameter";
     } else if (1101 == code) {
-      return "Invalid parameter value";
+      return "Error submitting transaction to the network";
     } else if (2001 == code) {
       return "Invalid or incorrect access_token";
     } else if (2002 == code) {
@@ -9889,6 +9905,8 @@ var Glidera = (function () {
       return "Transaction cannot be processed because daily limit would be exceeded";
     } else if (3125 == code) {
       return "Cannot update because no information has changed";
+    } else if (9999 == code) {
+      return message;
     } else {
       return "An error occurred";
     }
@@ -10270,12 +10288,12 @@ var app = angular.module('app.core', [
               d.reject({"code": "IgnoreAction"});
             } else {
               d.resolve({'sellAddress': data.sellAddress,
-                        'refundAddress': data.refundAddress,
-                        'signedTx': res});
+                         'refundAddress': data.refundAddress,
+                         'signedTx': res});
             }
           },
           error: function() {
-            d.reject();
+            d.reject({"code": "9999", "message": "Error during send"});
           }
         });
         return d.promise;
@@ -10426,6 +10444,9 @@ var app = angular.module('app.core', [
         $location.path('/authorizeRedirect/');
         return;
       }
+      if (current.match(/\.html#\/verify\/twofa/)) {
+        return;
+      }
       if (!skip && !next.match(/Redirect/)) {
         history.push(current);
         Airbitz.ui.navStackPush(current);
@@ -10555,6 +10576,16 @@ app.config(['$stateProvider', '$urlRouterProvider', '$sceDelegateProvider', func
     })
 }]).
 run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
+  DataFactory.getSelectedWallet().then(function(newWallet) {
+    Airbitz.currentWallet = newWallet;
+    $rootScope.currentWallet = newWallet;
+  });
+  Airbitz.core.setWalletChangeListener(function(newWallet) {
+    $rootScope.$apply(function() {
+      Airbitz.currentWallet = newWallet;
+      $rootScope.currentWallet = newWallet;
+    });
+  });
   $rootScope.exchange = DataFactory.getExchange();
   $rootScope.countryCode = Airbitz.config.get('COUNTRY_CODE');
   $rootScope.countryName = Airbitz.config.get('COUNTRY_NAME');
@@ -10739,7 +10770,7 @@ module.run(['$templateCache', function($templateCache) {
     '    </div>\n' +
     '    <div class="col-xs-6 no-pad">\n' +
     '      <button type="submit"\n' +
-    '      ng-disabled="form.$invalid || !order.transferToWallet"\n' +
+    '      ng-disabled="form.$invalid"\n' +
     '      tabindex="2"\n' +
     '      class="buy-sell-next btn btn-lg btn-block btn-success">Next</button>\n' +
     '    </div>\n' +
@@ -10778,11 +10809,11 @@ module.run(['$templateCache', function($templateCache) {
     '      <tbody>\n' +
     '        <tr ng-show="{{ order.orderAction === \'buy\' }}">\n' +
     '          <td>Destination Wallet</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
+    '          <td>{{ currentWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr ng-show="{{ order.orderAction === \'sell\' }}">\n' +
     '          <td>Sell From</td>\n' +
-    '          <td>{{ order.transferToWallet.name || "" }}</td>\n' +
+    '          <td>{{ currentWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>{{ exchange.order.currency }} Amount</td>\n' +
