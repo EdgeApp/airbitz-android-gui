@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -104,10 +105,15 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
 
+    @SuppressWarnings("deprecation")
     private void cleanupWebview() {
         if (mWebView != null) {
             mWebView.clearCache(true);
-            CookieManager.getInstance().removeAllCookies(null);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieManager.getInstance().removeAllCookie();
+            } else {
+                CookieManager.getInstance().removeAllCookies(null);
+            }
         }
     }
 
