@@ -88,7 +88,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera US (beta)";
+            plugin.name = "Glidera US (Beta)";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
@@ -112,7 +112,7 @@ public class PluginFramework {
     }
 
     public interface UiHandler {
-        public void showAlert(String title, String message);
+        public void showAlert(String title, String message, boolean showSpinner);
         public void setTitle(String title);
         public void launchSend(final String cbid, final String uuid, final String address,
                                final long amountSatoshi, final double amountFiat,
@@ -370,8 +370,8 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
-        public void showAlert(String title, String message) {
-            handler.showAlert(title, message);
+        public void showAlert(String title, String message, boolean showSpinner) {
+            handler.showAlert(title, message, showSpinner);
         }
 
         @JavascriptInterface

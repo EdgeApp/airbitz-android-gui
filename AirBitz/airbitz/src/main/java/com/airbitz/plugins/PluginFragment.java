@@ -272,13 +272,22 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     }
 
     private UiHandler handler = new UiHandler() {
-        public void showAlert(final String title, final String message) {
+        public void showAlert(final String title, final String message, final boolean showSpinner) {
             if (getActivity() == null) {
                 return;
             }
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    ((NavigationActivity) getActivity()).ShowFadingDialog(message, null, mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
+                    final NavigationActivity act = (NavigationActivity) getActivity();
+                    int duration = 0;
+                    boolean cancelable = true;
+                    if (showSpinner) {
+                        duration = getResources().getInteger(R.integer.alert_hold_time_forever);
+                        cancelable = false;
+                    } else {
+                        duration = mActivity.getResources().getInteger(R.integer.alert_hold_time_default);
+                    }
+                    act.ShowFadingDialog(message, null, duration, cancelable);
                 }
             });
         }
