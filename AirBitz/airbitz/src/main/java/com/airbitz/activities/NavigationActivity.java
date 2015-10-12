@@ -995,6 +995,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void launchBuySell(String country, String provider, Uri uri) {
+        resetFragmentThreadToBaseFragment(Tabs.BUYSELL.ordinal());
+
         BuySellFragment buySell = (BuySellFragment) mNavStacks[Tabs.BUYSELL.ordinal()].peek();
         switchFragmentThread(Tabs.BUYSELL.ordinal());
         mDrawer.closeDrawer(mDrawerView);
