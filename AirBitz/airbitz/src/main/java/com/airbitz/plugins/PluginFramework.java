@@ -63,6 +63,7 @@ public class PluginFramework {
     public static String JS_BACK = "javascript:window.Airbitz.ui.back();";
     public static String JS_CALLBACK = "javascript:Airbitz._callbacks[%s]('%s');";
     public static String JS_EXCHANGE_UPDATE = "javascript:Airbitz._bridge.exchangeRateUpdate();";
+    public static String JS_WALLET_UPDATE = "javascript:Airbitz._bridge.walletChanged('%s');";
 
     static public class Plugin {
         String pluginId;
@@ -431,6 +432,7 @@ public class PluginFramework {
 
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
+        loadUrl(String.format(JS_WALLET_UPDATE, jsonResult(new PluginWallet(wallet)).toString()));
     }
 
     public static boolean isInsidePlugin(Stack<String> nav) {

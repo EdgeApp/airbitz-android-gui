@@ -100,7 +100,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         if (mFramework == null) {
             mFramework = new PluginFramework(handler);
             mFramework.setup();
-            mFramework.setWallet(mWallet);
         }
         mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
     }
@@ -174,16 +173,13 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     @Override
     public void onResume() {
         super.onResume();
-        CoreAPI.getApi().reloadWallets();
         if (mWebView != null) {
             mWebView.onResume();
             mWebView.resumeTimers();
         }
-
         if (mPopped && mWebView != null) {
             mView.addView(mWebView);
         }
-
         if (!TextUtils.isEmpty(mTitle)) {
             setTitle(mTitle);
         }
@@ -193,6 +189,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 mUrl = mPlugin.sourceFile + "?" + mUri.getEncodedQuery();
             }
             mWebView.loadUrl(mUrl);
+        }
+        // We do this after webview is resumed so current wallet is inserted
+        // into plugin
+        CoreAPI.getApi().reloadWallets();
+        if (mWallet != null) {
+            mFramework.setWallet(mWallet);
         }
     }
 
