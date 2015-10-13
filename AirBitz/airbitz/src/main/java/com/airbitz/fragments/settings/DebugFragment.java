@@ -169,6 +169,7 @@ public class DebugFragment extends BaseFragment {
             mCoreApi.stopWatchers();
             mCoreApi.deleteWatcherCache();
             mCoreApi.startWatchers();
+            mCoreApi.waitOnWatchers();
             return null;
         }
 

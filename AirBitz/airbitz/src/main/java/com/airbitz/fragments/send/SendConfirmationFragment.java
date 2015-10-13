@@ -177,6 +177,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public interface OnExitHandler {
         public void error();
         public void success(String txId);
+        public void back();
     }
 
     private OnExitHandler exitHandler;
@@ -483,7 +484,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             return true;
         } else {
             if (null != exitHandler) {
-                exitHandler.error();
+                exitHandler.back();
             }
             mActivity.popFragment();
             return true;
@@ -740,7 +741,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
             mSuccessFragment.setArguments(bundle);
             if (null != exitHandler) {
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.MORE.ordinal());
+                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.BUYSELL.ordinal());
             } else {
                 mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
@@ -1058,24 +1059,22 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 Log.d(TAG, "Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
-                    mDelayedMessage = mActivity.getResources().getString(R.string.fragment_send_confirmation_send_error_title);
-                    mHandler.postDelayed(mDelayedErrorMessage, 500);
-                }
-                if (null != exitHandler) {
-                    exitHandler.error();
+                    if (null == exitHandler) {
+                        mDelayedMessage = mActivity.getResources().getString(R.string.fragment_send_confirmation_send_error_title);
+                        mHandler.postDelayed(mDelayedErrorMessage, 500);
+                    } else {
+                        mActivity.popFragment(); // stop the sending screen
+                        exitHandler.error();
+                    }
                 }
             } else {
                 if (mActivity != null) {
                     saveInvalidEntryCount(0);
                     AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
-                    mActivity.popFragment(); // stop sending screen
+                    mActivity.popFragment(); // stop the sending screen
                     if (null != exitHandler) {
+                        mActivity.popFragment();
                         exitHandler.success(txResult);
-                        mHandler.postDelayed(new Runnable() {
-                            public void run() {
-                                mActivity.popFragment(); // confirmation screen
-                            }
-                        }, 500);
                     } else {
                         mFundsSent = true;
                         String returnUrl = mSpendTarget.getSpend().getSzRet();

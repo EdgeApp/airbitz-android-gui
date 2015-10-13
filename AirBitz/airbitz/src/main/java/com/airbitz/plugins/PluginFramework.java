@@ -31,12 +31,17 @@
 
 package com.airbitz.plugins;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.airbitz.R;
 import com.airbitz.models.Wallet;
@@ -47,6 +52,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +63,7 @@ public class PluginFramework {
     public static String JS_BACK = "javascript:window.Airbitz.ui.back();";
     public static String JS_CALLBACK = "javascript:Airbitz._callbacks[%s]('%s');";
     public static String JS_EXCHANGE_UPDATE = "javascript:Airbitz._bridge.exchangeRateUpdate();";
+    public static String JS_WALLET_UPDATE = "javascript:Airbitz._bridge.walletChanged('%s');";
 
     static public class Plugin {
         String pluginId;
@@ -79,30 +86,19 @@ public class PluginFramework {
             mPlugins = new LinkedList<Plugin>();
 
             Plugin plugin;
-            if (api.isTestNet()) {
-                plugin = new Plugin();
-                plugin.pluginId = "com.glidera.us";
-                plugin.sourceFile = "file:///android_asset/glidera.html";
-                plugin.name = "Glidera USA";
-                plugin.provider = "glidera";
-                plugin.country = "US";
-                plugin.env.put("COUNTRY_CODE", "US");
-                plugin.env.put("COUNTRY_NAME", "United States");
-                plugin.env.put("CURRENCY_CODE", "840");
-                plugin.env.put("CURRENCY_ABBREV", "USD");
-                mPlugins.add(plugin);
-            }
-
             plugin = new Plugin();
-            plugin.pluginId = "com.glidera.ca";
+            plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera Canada";
+            plugin.name = "Glidera US (Beta)";
             plugin.provider = "glidera";
-            plugin.country = "CA";
-            plugin.env.put("COUNTRY_CODE", "CA");
-            plugin.env.put("COUNTRY_NAME", "Canada");
-            plugin.env.put("CURRENCY_CODE", "124");
-            plugin.env.put("CURRENCY_ABBREV", "CAD");
+            plugin.country = "US";
+            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+            plugin.env.put("COUNTRY_CODE", "US");
+            plugin.env.put("COUNTRY_NAME", "United States");
+            plugin.env.put("CURRENCY_CODE", "840");
+            plugin.env.put("CURRENCY_ABBREV", "USD");
+            plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
+            plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             mPlugins.add(plugin);
         }
     }
@@ -117,13 +113,14 @@ public class PluginFramework {
     }
 
     public interface UiHandler {
-        public void showAlert(String title, String message);
+        public void showAlert(String title, String message, boolean showSpinner);
         public void setTitle(String title);
         public void launchSend(final String cbid, final String uuid, final String address,
                                final long amountSatoshi, final double amountFiat,
                                final String label, final String category, final String notes);
         public void showNavBar();
         public void hideNavBar();
+        public void back();
         public void exit();
 
         public void stackClear();
@@ -179,6 +176,12 @@ public class PluginFramework {
     }
 
     private static class ToArray extends JSONArray implements ToJson {
+        public Object toJson() throws JSONException {
+            return (Object) this;
+        }
+    }
+
+    private static class ToObject extends JSONObject implements ToJson {
         public Object toJson() throws JSONException {
             return (Object) this;
         }
@@ -248,11 +251,37 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
+        public String bitidAddress(String uri, String message) {
+            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            return bitid.address;
+        }
+
+        @JavascriptInterface
+        public String bitidSignature(String uri, String message) {
+            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            return bitid.signature;
+        }
+
+        @JavascriptInterface
+        public void selectedWallet(String cbid) {
+            CallbackTask task = new CallbackTask(cbid, framework) {
+                @Override
+                public String doInBackground(Void... v) {
+                    return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                }
+            };
+            task.execute();
+        }
+
+        @JavascriptInterface
         public void wallets(String cbid) {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
                     List<Wallet> coreWallets = api.getCoreActiveWallets();
+                    if (null == coreWallets) {
+                        return jsonError().toString();
+                    }
                     ToArray wallets = new ToArray();
                     try {
                         for (Wallet w : coreWallets) {
@@ -343,17 +372,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String getConfig(String key) {
-            if ("GLIDERA_PARTNER_TOKEN".equals(key)) {
-                String token = AirbitzApplication.getContext().getString(R.string.glidera_partner_key);
-                return token;
-            } else {
-                return plugin.env.get(key);
-            }
+            Log.d(TAG, "key/value " + key + ":" + plugin.env.get(key));
+            return plugin.env.get(key);
         }
 
         @JavascriptInterface
-        public void showAlert(String title, String message) {
-            handler.showAlert(title, message);
+        public void showAlert(String title, String message, boolean showSpinner) {
+            handler.showAlert(title, message, showSpinner);
         }
 
         @JavascriptInterface
@@ -395,6 +420,8 @@ public class PluginFramework {
     private UiHandler handler;
     private WebView mWebView;
     private CoreAPI mCoreAPI;
+    private Wallet mWallet;
+    private String mLastUrl;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
@@ -409,10 +436,30 @@ public class PluginFramework {
         mCoreAPI.removeExchangeRateChangeListener(exchangeListener);
     }
 
+    public void setWallet(Wallet wallet) {
+        mWallet = wallet;
+        loadUrl(String.format(JS_WALLET_UPDATE, jsonResult(new PluginWallet(wallet)).toString()));
+    }
+
+    public static boolean isInsidePlugin(Stack<String> nav) {
+        return !(nav.get(nav.size() - 1).contains("http://")
+                || nav.get(nav.size() - 1).contains("https://"));
+    }
+
     public void sendSuccess(String cbid, String walletUUID, String txId) {
         String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
         Log.d(TAG, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
+    }
+
+    public void sendBack(String cbid) {
+        try {
+            ToObject object = new ToObject();
+            object.put("back", true);
+            loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(object).toString()));
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
     }
 
     public void sendError(String cbid) {
@@ -432,11 +479,37 @@ public class PluginFramework {
         });
     }
 
-    public void buildPluginView(Plugin plugin, WebView webView) {
+    public void buildPluginView(final Plugin plugin, final Activity activity, WebView webView) {
+        final PluginContext pluginContext = new PluginContext(this, plugin, handler);
         mWebView = webView;
         mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 Log.d(TAG, message + " -- From line " + lineNumber);
+            }
+        });
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, url);
+                if (url.contains("airbitz://")) {
+                    Uri uri = Uri.parse(url);
+                    // If this is an airbitz URI plugin
+                    if ("airbitz".equals(uri.getScheme()) && "plugin".equals(uri.getHost())) {
+                        url = plugin.sourceFile + "?" + uri.getEncodedQuery();
+                        view.loadUrl(url);
+                        return true;
+                    }
+                } else if (url.contains("bitid://")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    activity.startActivity(intent);
+                    return false;
+                } else if (url.contains("file://")) {
+                    view.loadUrl(url);
+                    return true;
+                }
+                pluginContext.navStackPush(url);
+                return super.shouldOverrideUrlLoading(view, url);
             }
         });
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -448,14 +521,33 @@ public class PluginFramework {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.setInitialScale(1);
         mWebView.clearFormData();
-        mWebView.addJavascriptInterface(new PluginContext(this, plugin, handler), "_native");
+        mWebView.clearCache(true);
+        mWebView.addJavascriptInterface(pluginContext, "_native");
+    }
+
+    public void onResume(WebView webView) {
+        mWebView = webView;
+    }
+
+    public void onPause() {
+        mWebView = null;
+    }
+
+    public void destroy() {
+        if (null != mWebView) {
+            mWebView.onPause();
+            mWebView.pauseTimers();
+            mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.loadUrl("about:blank");
+        }
+        mWebView = null;
+        mCoreAPI = null;
+        mWallet = null;
     }
 
     CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {
         @Override
         public void OnExchangeRatesChange() {
-            Log.d(TAG, JS_EXCHANGE_UPDATE);
-            PluginFramework.this.loadUrl(JS_EXCHANGE_UPDATE);
         }
     };
 }

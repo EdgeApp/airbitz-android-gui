@@ -116,6 +116,7 @@ import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.plugins.PluginFragment;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -207,6 +208,7 @@ public class NavigationActivity extends ActionBarActivity
             new WalletsFragment(),
             new SettingFragment(),
             new ImportFragment(),
+            new BuySellFragment(),
     };
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = null;
@@ -952,13 +954,16 @@ public class NavigationActivity extends ActionBarActivity
             return;
         }
 
-        String scheme =uri.getScheme();
+        String scheme = uri.getScheme();
         if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
-            if (2 == path.size()) {
-                launchBuySell(path.get(1), path.get(0));
+            if (2 <= path.size()) {
+                Log.d(TAG, uri.toString());
+                launchBuySell(path.get(1), path.get(0), uri);
             }
-        } else if ("bitcoin".equals(scheme) || "airbitz".equals(scheme)) {
+        } else if ("bitcoin".equals(scheme)
+                || "airbitz".equals(scheme)
+                || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme)
@@ -989,20 +994,18 @@ public class NavigationActivity extends ActionBarActivity
         mDataUri = null;
     }
 
-    private void launchBuySell(String country, String provider) {
-        BuySellFragment buySell = null;
-        if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
-            mNavStacks[Tabs.MORE.ordinal()].clear();
+    private void launchBuySell(String country, String provider, Uri uri) {
+        resetFragmentThreadToBaseFragment(Tabs.BUYSELL.ordinal());
 
-            buySell = new BuySellFragment();
-            pushFragmentNoAnimation(buySell, NavigationActivity.Tabs.MORE.ordinal());
-        } else {
-            buySell = (BuySellFragment) mNavStacks[Tabs.MORE.ordinal()].get(0);
-        }
-        switchFragmentThread(Tabs.MORE.ordinal());
+        BuySellFragment buySell = (BuySellFragment) mNavStacks[Tabs.BUYSELL.ordinal()].peek();
+        switchFragmentThread(Tabs.BUYSELL.ordinal());
         mDrawer.closeDrawer(mDrawerView);
 
-        buySell.launchPluginByCountry(country, provider);
+        FragmentManager manager = getFragmentManager();
+        if (manager != null) {
+            manager.executePendingTransactions();
+        }
+        buySell.launchPluginByCountry(country, provider, uri);
     }
 
     /*
@@ -1410,6 +1413,11 @@ public class NavigationActivity extends ActionBarActivity
     };
 
     private void resetApp() {
+        Fragment frag = mNavStacks[Tabs.BUYSELL.ordinal()].peek();
+        if (frag instanceof PluginFragment) {
+            PluginFragment plugin = (PluginFragment) frag;
+            plugin.cleanup();
+        }
         for(int i=0; i<mNavFragments.length; i++) {
             resetFragmentThreadToBaseFragment(i);
         }
@@ -1431,6 +1439,8 @@ public class NavigationActivity extends ActionBarActivity
                 return new SettingFragment();
             case 6:
                 return new ImportFragment();
+            case 7:
+                return new BuySellFragment();
             default:
                 return null;
         }
@@ -1459,7 +1469,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT, BUYSELL}
 
     //************************ Connectivity support
 
@@ -2213,11 +2223,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(mNavStacks[Tabs.MORE.ordinal()].get(0) instanceof BuySellFragment)) {
-                    mNavStacks[Tabs.MORE.ordinal()].clear();
-                    pushFragment(new BuySellFragment(), Tabs.MORE.ordinal());
-                }
-                switchFragmentThread(Tabs.MORE.ordinal());
+                onNavBarSelected(Tabs.BUYSELL.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
@@ -2315,11 +2321,6 @@ public class NavigationActivity extends ActionBarActivity
 
     private void resetDrawerButtons() {
         Fragment frag = mNavStacks[mNavThreadId].peek();
-        if (frag instanceof BuySellFragment) {
-            resetDrawerButtons(mDrawerBuySell);
-            return;
-        }
-
         if (mNavThreadId == Tabs.BD.ordinal()) {
             resetDrawerButtons(mDrawerDirectory);
         } else if (mNavThreadId == Tabs.WALLETS.ordinal()) {
@@ -2334,6 +2335,8 @@ public class NavigationActivity extends ActionBarActivity
             resetDrawerButtons(mDrawerSettings);
         } else if (mNavThreadId == Tabs.IMPORT.ordinal()) {
             resetDrawerButtons(mDrawerImport);
+        } else if (mNavThreadId == Tabs.BUYSELL.ordinal()) {
+            resetDrawerButtons(mDrawerBuySell);
         }
     }
 

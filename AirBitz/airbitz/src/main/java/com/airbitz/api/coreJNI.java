@@ -251,6 +251,7 @@ public class coreJNI {
   public final static native void delete_tABC_AccountSettings(long jarg1);
   public final static native int ABC_Initialize(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
   public final static native void ABC_Terminate();
+  public final static native void ABC_Log(String jarg1);
   public final static native int ABC_Version(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_IsTestNet(long jarg1, long jarg2, tABC_Error jarg2_);
   public final static native int ABC_ClearKeyCache(long jarg1, tABC_Error jarg1_);

@@ -140,6 +140,7 @@ public class SendFragment extends WalletBaseFragment implements
     private QRCamera mQRCamera;
     private CoreAPI mCoreApi;
     private ClipboardManager mClipboard;
+    private BitidLoginTask mBitidTask;
 
     List<BleDevice> mPeripherals = new ArrayList<BleDevice>();
     BluetoothSearchAdapter mSearchAdapter;
@@ -265,7 +266,7 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     private void checkAndSendAddress(String strTo) {
-        newSpend(strTo);
+        processUri(strTo);
     }
 
     public void stopCamera() {
@@ -395,6 +396,10 @@ public class SendFragment extends WalletBaseFragment implements
         hideProcessing();
         if (mBeaconSend != null) {
             mBeaconSend.close();
+        }
+        if (mBitidTask != null) {
+            mBitidTask.cancel(true);
+            mBitidTask = null;
         }
         hasCheckedFirstUsage = false;
     }
@@ -584,7 +589,7 @@ public class SendFragment extends WalletBaseFragment implements
         Log.d(TAG, "checking result = " + result);
         if (result != null) {
             showProcessing();
-            newSpend(result);
+            processUri(result);
         } else {
             showMessageAndStartCameraDialog(R.string.send_title, R.string.fragment_send_send_bitcoin_unscannable);
         }
@@ -599,15 +604,67 @@ public class SendFragment extends WalletBaseFragment implements
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
                 if (!uriData.isEmpty()) {
-                    newSpend(uriData);
+                    processUri(uriData);
                 }
             }
         }
         updateWalletOtherList();
     }
 
-    private void newSpend(String text) {
-        new NewSpendTask().execute(text);
+    private void processUri(String text) {
+        String parsedUri = mCoreApi.parseBitidUri(text);
+        if (!TextUtils.isEmpty(parsedUri)) {
+            askBitidLogin(parsedUri, text);
+        } else {
+            new NewSpendTask().execute(text);
+        }
+    }
+
+    private void askBitidLogin(final String uri, final String text) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.content(getString(R.string.bitid_login_message, uri))
+               .title(R.string.bitid_login_title)
+               .theme(Theme.LIGHT)
+               .positiveText(getResources().getString(R.string.string_continue))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        mBitidTask = new BitidLoginTask();
+                        mBitidTask.execute(text);
+                    }
+                    public void onNegative(MaterialDialog dialog) {
+                        mQRCamera.startScanning();
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
+    }
+
+    public class BitidLoginTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... text) {
+            return mCoreApi.bitidLogin(text[0]);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean result) {
+            if (result) {
+                mActivity.ShowFadingDialog(
+                    getString(R.string.bitid_login_success),
+                    getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            } else {
+                mActivity.ShowFadingDialog(
+                    getString(R.string.bitid_login_failure),
+                    getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+            hideProcessing();
+            mQRCamera.startScanning();
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
     }
 
     public class NewSpendTask extends AsyncTask<String, Void, Boolean> {

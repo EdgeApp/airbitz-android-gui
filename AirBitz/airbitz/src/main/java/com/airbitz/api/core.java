@@ -127,6 +127,10 @@ public class core implements coreConstants {
     coreJNI.ABC_Terminate();
   }
 
+  public static void ABC_Log(String szMessage) {
+    coreJNI.ABC_Log(szMessage);
+  }
+
   public static tABC_CC ABC_Version(SWIGTYPE_p_p_char szVersion, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_Version(SWIGTYPE_p_p_char.getCPtr(szVersion), tABC_Error.getCPtr(pError), pError));
   }

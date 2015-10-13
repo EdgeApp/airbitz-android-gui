@@ -8,6 +8,7 @@
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
     <string name="string_no">No</string>
+    <string name="string_continue">Continue</string>
     <string name="string_change">Change</string>
     <string name="string_cancel">CANCEL</string>
     <string name="string_paste">Paste</string>
@@ -606,7 +607,7 @@
     <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
     <string name="password_set_skip">Skip</string>
 
-    <string name="buysell_title">Buy/Sell</string>
+    <string name="buysell_title">Buy/Sell (Beta)</string>
 
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
@@ -614,15 +615,21 @@
     <!-- Logout -->
     <string name="logout_message">Please wait while Airbitz gracefully exits your account. This may take a while on slow networks</string>
 
+    <string name="bitid_login_message">%1$s</string>
+    <string name="bitid_login_title">BitID Login</string>
+
+    <string name="bitid_login_success">Successfully Logged In</string>
+    <string name="bitid_login_failure">Error Logging In</string>
+
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
-    <string name="drawer_directory">Directory</string>
+    <string name="drawer_buy_sell">Buy/Sell (Beta)</string>
     <string name="drawer_send">Send</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
     <string name="drawer_wallets">Wallets</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>
-    <string name="drawer_buy_sell">Buy/Sell</string>
     <string name="drawer_import">Import Gift Card\n(Private Key)</string>
+    <string name="drawer_directory">Directory</string>
 </resources>

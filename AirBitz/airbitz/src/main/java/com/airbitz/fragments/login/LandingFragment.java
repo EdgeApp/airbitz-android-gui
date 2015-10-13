@@ -92,6 +92,7 @@ public class LandingFragment extends BaseFragment implements
 
     String mUsername;
     char[] mPassword;
+    String mPin;
 
     private TextView mDetailTextView;
     private ImageView mRightArrow;
@@ -635,6 +636,7 @@ public class LandingFragment extends BaseFragment implements
      */
     public void attemptPinLogin() {
         if(mActivity.networkIsAvailable()) {
+            mPin = mPinEditText.getText().toString();
             mPINLoginTask = new PINLoginTask();
             mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
         }
@@ -677,24 +679,22 @@ public class LandingFragment extends BaseFragment implements
             tABC_Error result = (tABC_Error) success;
             mPinEditText.setText("");
 
-            if(result.getCode() == tABC_CC.ABC_CC_Ok) {
+            if (result.getCode() == tABC_CC.ABC_CC_Ok) {
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mUsername, null);
-                return;
-            }
-            else if(result.getCode() == tABC_CC.ABC_CC_BadPassword) {
-                    mActivity.setFadingDialogListener(LandingFragment.this);
-                    mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
-                    mPinEditText.requestFocus();
-            }
-            else {
+            } else if (result.getCode() == tABC_CC.ABC_CC_BadPassword) {
+                mActivity.setFadingDialogListener(LandingFragment.this);
+                mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
+                mPinEditText.requestFocus();
+            } else if (tABC_CC.ABC_CC_InvalidOTP == result.getCode()) {
+                launchTwoFactorMenu();
+            } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(Common.errorMap(getActivity(), result));
                 mPinFailedCount++;
                 if (mPinFailedCount >= MAX_PIN_FAILS) {
                     abortPermanently();
                 }
-                return;
             }
         }
 
@@ -784,11 +784,7 @@ public class LandingFragment extends BaseFragment implements
         } else if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
             launchTwoFactorMenu();
         } else {
-            if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
-                launchTwoFactorMenu();
-            } else {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
-            }
+            mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
         }
     }
 
@@ -814,8 +810,13 @@ public class LandingFragment extends BaseFragment implements
 
     private void twoFactorSignIn(String secret) {
         mCoreAPI.OtpKeySet(mUsername, secret);
-        mPasswordLoginTask = new PasswordLoginTask();
-        mPasswordLoginTask.execute(mUsername, mPassword);
+        if (mPinLoginMode) {
+            mPINLoginTask = new PINLoginTask();
+            mPINLoginTask.execute(mUsername, mPin);
+        } else {
+            mPasswordLoginTask = new PasswordLoginTask();
+            mPasswordLoginTask.execute(mUsername, mPassword);
+        }
     }
 
     private void abortPermanently() {

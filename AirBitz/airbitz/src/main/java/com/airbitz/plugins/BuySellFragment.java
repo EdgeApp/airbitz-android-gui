@@ -32,9 +32,11 @@
 package com.airbitz.plugins;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,13 +57,18 @@ public class BuySellFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
     private View mView;
-    private TextView mTitleTextView;
     private ListView mPluginsListView;
     private PluginsAdapter mAdapter;
     private List<Plugin> mPlugins;
 
     public BuySellFragment() {
         mPlugins = PluginFramework.getPlugins();
+        setBackEnabled(true);
+    }
+
+    @Override
+    protected String getTitle() {
+        return mActivity.getString(R.string.buysell_title);
     }
 
     @Override
@@ -72,19 +79,6 @@ public class BuySellFragment extends BaseFragment {
         }
         mView = inflater.inflate(R.layout.fragment_buysell, container, false);
 
-        mTitleTextView = (TextView) mView.findViewById(R.id.layout_title_header_textview_title);
-        mTitleTextView.setTypeface(NavigationActivity.latoBlackTypeFace);
-        mTitleTextView.setText(getString(R.string.buysell_title));
-
-        ImageButton mBackButton = (ImageButton) mView.findViewById(R.id.layout_title_header_button_back);
-        mBackButton.setVisibility(View.VISIBLE);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((NavigationActivity) getActivity()).onBackPressed();
-            }
-        });
-
         mAdapter = new PluginsAdapter(getActivity(), mPlugins);
         mPluginsListView = (ListView) mView.findViewById(R.id.fragment_buysell_listview);
         mPluginsListView.setAdapter(mAdapter);
@@ -94,14 +88,25 @@ public class BuySellFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 PluginsAdapter adapter = (PluginsAdapter) adapterView.getAdapter();
                 Plugin plugin = adapter.getItem(i);
-                launchPlugin(plugin);
+                launchPlugin(plugin, null);
             }
         });
 
         return mView;
     }
 
-    public boolean launchPluginByCountry(String country,  String provider) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ((NavigationActivity) getActivity()).onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public boolean launchPluginByCountry(String country, String provider, Uri uri) {
         Plugin plugin = null;
         for (Plugin p : mPlugins) {
             if (p.provider.equals(provider) && p.country.equals(country)) {
@@ -109,15 +114,14 @@ public class BuySellFragment extends BaseFragment {
             }
         }
         if (null != plugin) {
-            launchPlugin(plugin);
+            launchPlugin(plugin, uri);
             return true;
         }
         return false;
     }
 
-    private void launchPlugin(Plugin plugin) {
-        PluginFragment fragment = new PluginFragment(plugin);
-        ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
+    private void launchPlugin(Plugin plugin, Uri uri) {
+        PluginFragment.pushFragment(mActivity, plugin, uri);
     }
 
     public class PluginsAdapter extends BaseAdapter {
