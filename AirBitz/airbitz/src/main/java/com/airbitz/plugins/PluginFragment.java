@@ -96,8 +96,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         Log.d("PluginFramework", "onCreate");
 
         setHasOptionsMenu(true);
-        mNav = new Stack<String>();
         if (mFramework == null) {
+            mNav = new Stack<String>();
             mFramework = new PluginFramework(handler);
             mFramework.setup();
         }
@@ -310,6 +310,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     mFramework.sendSuccess(cbid, uuid, txId);
                     mSendConfirmation = null;
                 }
+                public void back() {
+                    mFramework.sendBack(cbid);
+                    mSendConfirmation = null;
+                }
                 public void error() {
                     if (mFramework != null) {
                         mFramework.sendError(cbid);
@@ -376,14 +380,20 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
 
         public void stackClear() {
+            Log.d("PluginFragment", "clear");
             mNav.clear();
         }
 
         public void stackPush(String path) {
             mNav.push(path);
+            Log.d("PluginFragment", "stackPush");
+            for (String p : mNav) {
+                Log.d("PluginFragment", "\t" + p);
+            }
         }
 
         public void stackPop() {
+            Log.d("PluginFragment", "pop");
             mNav.pop();
         }
     };

@@ -181,6 +181,12 @@ public class PluginFramework {
         }
     }
 
+    private static class ToObject extends JSONObject implements ToJson {
+        public Object toJson() throws JSONException {
+            return (Object) this;
+        }
+    }
+
     private static class JsonValue<T> implements ToJson {
         T l;
 
@@ -444,6 +450,16 @@ public class PluginFramework {
         String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
         Log.d(TAG, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
+    }
+
+    public void sendBack(String cbid) {
+        try {
+            ToObject object = new ToObject();
+            object.put("back", true);
+            loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(object).toString()));
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
     }
 
     public void sendError(String cbid) {

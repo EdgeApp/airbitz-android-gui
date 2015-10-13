@@ -177,6 +177,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public interface OnExitHandler {
         public void error();
         public void success(String txId);
+        public void back();
     }
 
     private OnExitHandler exitHandler;
@@ -483,7 +484,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             return true;
         } else {
             if (null != exitHandler) {
-                exitHandler.error();
+                exitHandler.back();
             }
             mActivity.popFragment();
             return true;
