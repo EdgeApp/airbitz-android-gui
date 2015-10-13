@@ -952,9 +952,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String finalBaseUrl;
             if (mCoreApi.isTestNet()) {
-                finalBaseUrl = "https://www.biteasy.com/testnet/";
+                finalBaseUrl = "https://testnet.blockexplorer.com/";
             } else { // LIVE
-                finalBaseUrl = "https://insight.bitpay.com/";
+                finalBaseUrl = "https://blockexplorer.com/";
             }
 
             int start;
@@ -964,12 +964,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
                 SpannableString address = new SpannableString(output.getAddress());
                 end = address.length();
-                final String txUrl;
-                if (mCoreApi.isTestNet()) {
-                    txUrl = finalBaseUrl + "addresses/" + output.getAddress();
-                } else {
-                    txUrl = finalBaseUrl + "address/" + output.getAddress();
-                }
+                final String txUrl = finalBaseUrl + "address/" + output.getAddress();
                 ClickableSpan span = new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
@@ -1008,12 +1003,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             start = s.length();
             s.append(mTransaction.getmMalleableID());
             end = s.length();
-            final String txIdLink;
-            if(mCoreApi.isTestNet()) {
-                txIdLink = finalBaseUrl + "transactions/" + mTransaction.getmMalleableID();
-            } else {
-                txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
-            }
+            final String txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
