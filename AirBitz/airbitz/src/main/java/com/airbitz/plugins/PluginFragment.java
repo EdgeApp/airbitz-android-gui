@@ -68,7 +68,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private final String TAG = getClass().getSimpleName();
 
     private WebView mWebView;
-    private boolean mPopped = false;
     private TextView mTitleTextView;
     private ViewGroup mView;
     private PluginFramework mFramework;
@@ -177,9 +176,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             mWebView.onResume();
             mWebView.resumeTimers();
         }
-        if (mPopped && mWebView != null) {
-            mView.addView(mWebView);
-        }
         if (!TextUtils.isEmpty(mTitle)) {
             setTitle(mTitle);
         }
@@ -204,12 +200,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         if (mWebView != null) {
             mWebView.onPause();
             mWebView.pauseTimers();
-        }
-
-        if (null != mView) {
-            // Remove view to prevent retry crash onBackPressed
-            mView.removeView(mWebView);
-            mPopped = true;
         }
     }
 
