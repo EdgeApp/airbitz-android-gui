@@ -153,7 +153,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private boolean mPinRequired = false;
     private boolean mMaxLocked = false;
 
-    private Wallet mSourceWallet, mToWallet;
+    private Wallet mToWallet;
 
     private boolean mAutoUpdatingTextFields = false;
 
@@ -427,7 +427,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mMaxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mSourceWallet != null && !mMaxLocked) {
+                if (mWallet != null && !mMaxLocked) {
                     mMaxLocked = true;
                     if (mMaxAmountTask != null)
                         mMaxAmountTask.cancel(true);
@@ -524,6 +524,23 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         this.exitHandler = handler;
     }
 
+    @Override
+    protected void onExchangeRatesChange() {
+        super.onExchangeRatesChange();
+Log.d(TAG, " ++++++++++ onExchangeRatesChange()");
+        checkFields();
+        checkAuthorization();
+    }
+
+
+    @Override
+    public void onWalletsLoaded() {
+        super.onWalletsLoaded();
+Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
+        checkFields();
+        checkAuthorization();
+    }
+
     private void resetFiatAndBitcoinFields() {
         mAutoUpdatingTextFields = true;
         mAmountToSendSatoshi = 0;
@@ -556,7 +573,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrencyNum = mSendConfirmationCurrencyNumOverride;
         } else {
-            mCurrencyNum = mSourceWallet.getCurrencyNum();
+            mCurrencyNum = mWallet.getCurrencyNum();
         }
 
         mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
@@ -615,7 +632,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrencyNum = mSendConfirmationCurrencyNumOverride;
         } else {
-            mCurrencyNum = mSourceWallet.getCurrencyNum();
+            mCurrencyNum = mWallet.getCurrencyNum();
         }
 
         mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
@@ -629,7 +646,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 color = getResources().getColor(R.color.dark_text);
                 mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
             }
-            if ((fees + mAmountToSendSatoshi) <= mSourceWallet.getBalanceSatoshi()) {
+            if ((fees + mAmountToSendSatoshi) <= mWallet.getBalanceSatoshi()) {
                 mConversionTextView.setTextColor(color);
                 mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 mConversionTextView.setBackgroundResource(android.R.color.transparent);
@@ -746,7 +763,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
 
-            mSendOrTransferTask = new SendOrTransferTask(mSourceWallet, mAmountFiat);
+            mSendOrTransferTask = new SendOrTransferTask(mWallet, mAmountFiat);
             mSendOrTransferTask.execute();
             hideCalculator();
         }
@@ -776,7 +793,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         boolean dailyLimitSetting = mCoreApi.GetDailySpendLimitSetting();
 
         if (mToWallet == null && dailyLimitSetting
-            && (mAmountToSendSatoshi + mCoreApi.GetTotalSentToday(mSourceWallet) >= dailyLimit)) {
+            && (mAmountToSendSatoshi + mCoreApi.GetTotalSentToday(mWallet) >= dailyLimit)) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
@@ -819,7 +836,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
-            mSourceWallet = mCoreApi.getWalletFromUUID(bundle.getString(SendFragment.FROM_WALLET_UUID));
             if (mIsUUID) {
                 mToWallet = mCoreApi.getWalletFromUUID(mUUIDorURI);
             }
@@ -875,17 +891,18 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrencyNum = mSendConfirmationCurrencyNumOverride;
         } else {
-            mCurrencyNum = mSourceWallet.getCurrencyNum();
+            mCurrencyNum = mWallet.getCurrencyNum();
         }
+Log.d(TAG, " " + mCurrencyNum);
 
-        if(mAmountToSendSatoshi > 0) {
+        if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
-            if (mSourceWallet != null) {
+            if (mWallet != null) {
                 mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
             }
             calculateFees();
 
-            if(mAuthorizationLayout.getVisibility() == View.VISIBLE) {
+            if (mAuthorizationLayout.getVisibility() == View.VISIBLE) {
                 mAuthorizationEdittext.requestFocus();
             }
         } else {
@@ -926,7 +943,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
 
-        mSourceWallet = newWallet;
+        mWallet = newWallet;
         updateTextFieldContents(true);
     }
 
@@ -956,7 +973,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         @Override
         protected Long doInBackground(Void... params) {
             Log.d(TAG, "Max calculation started");
-            return mSpendTarget.maxSpendable(mSourceWallet.getUUID());
+            return mSpendTarget.maxSpendable(mWallet.getUUID());
         }
 
         @Override
@@ -1004,8 +1021,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         @Override
         protected Long doInBackground(Void... params) {
             Log.d(TAG, "Fee calculation started");
-            String dest = mIsUUID ? mSourceWallet.getUUID() : mUUIDorURI;
-            return mSpendTarget.calcSendFees(mSourceWallet.getUUID(), error);
+            String dest = mIsUUID ? mWallet.getUUID() : mUUIDorURI;
+            return mSpendTarget.calcSendFees(mWallet.getUUID(), error);
         }
 
         @Override
