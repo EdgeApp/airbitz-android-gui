@@ -51,7 +51,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -59,6 +61,7 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -79,6 +82,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -1652,7 +1656,7 @@ public class NavigationActivity extends ActionBarActivity
                         new MaterialDialog.Builder(NavigationActivity.this)
                                 .content(message)
                                 .contentColorRes(android.R.color.white)
-                                .theme(Theme.DARK)
+                                .theme(Theme.LIGHT)
                                 .backgroundColorRes(R.color.colorPrimary);
                     if (!cancelable) {
                         builder.progress(true, 0);
@@ -1684,6 +1688,22 @@ public class NavigationActivity extends ActionBarActivity
                     });
 
                     mFadingDialog.show();
+
+                    ProgressBar progress = (ProgressBar) mFadingDialog.getView().findViewById(android.R.id.progress);
+                    if (Build.VERSION_CODES.LOLLIPOP <= Build.VERSION.SDK_INT
+                            && !cancelable
+                            && null != progress) {
+                        int[][] states = new int[][] {
+                            new int[] { android.R.attr.state_enabled},
+                            new int[] { -android.R.attr.state_enabled},
+                        };
+                        int[] colors = new int[] {
+                            Color.WHITE,
+                            Color.WHITE
+                        };
+                        progress.setIndeterminateTintList(
+                            new ColorStateList(states, colors).withAlpha(200));
+                    }
                     View view = mFadingDialog.getView();
                     if (cancelable) {
                         View.OnClickListener dismiss = new View.OnClickListener() {
