@@ -464,6 +464,7 @@ input[type=date]::-webkit-inner-spin-button {
 html {
   height: 100%;
   width: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 html body {
   min-height: 100%;
@@ -523,6 +524,7 @@ html body label {
 }
 html body .label {
   font-weight: 300;
+  border-radius: 0;
 }
 html body .label.label-outline {
   color: #333;
@@ -530,6 +532,9 @@ html body .label.label-outline {
 }
 html body .label.label-outline.label-success {
   color: white !important;
+}
+html body .label.label-outline.label-danger {
+  background: #ff5656;
 }
 html body .label.status {
   font-size: 10px;
@@ -555,7 +560,7 @@ html body .table thead th {
 }
 html body .list-group .list-group-item,
 html body .list-group a.list-group-item {
-  color: #0f5791;
+  color: #003e61;
   background: white;
   font-size: 20px;
   border: 0;
@@ -565,7 +570,7 @@ html body .list-group a.list-group-item {
 html body .list-group .list-group-item.header,
 html body .list-group a.list-group-item.header {
   background-color: white);
-  color: #0f5791;
+  color: #003e61;
 }
 html body .list-group .list-group-item.header:hover,
 html body .list-group a.list-group-item.header:hover,
@@ -735,11 +740,8 @@ html body hr.page {
   margin: 80px 0;
   border-color: #000;
 }
-html body .exchange-user-account {
-  margin-bottom: 50px;
-}
 html body .exchange-user-account .account-message {
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 html body .exchange-user-account .account-message h4 {
   margin-bottom: 20px;
@@ -906,6 +908,13 @@ html body .user-account-form {
   height: 32px;
   padding-bottom: 4px;
 }
+.transactions {
+  margin-bottom: 26px;
+}
+.transactions .transactions-header {
+  color: #003e61;
+  font-weight: 400;
+}
 .transactions .table {
   width: 100%;
 }
@@ -917,28 +926,44 @@ html body .user-account-form {
   text-transform: uppercase;
 }
 .transactions .table td {
-  font-size: 8px;
+  font-size: 10px;
+  padding: 10px 15px;
 }
 .transactions .table.table-striped tbody tr.processing td {
-  opacity: 0.4;
+  opacity: 0.6;
 }
-.transactions .table.table-striped tbody td.type.buy {
+.transactions .table.table-striped tbody td {
+  border: none;
+}
+.transactions .table.table-striped tbody td.type span {
+  padding: 3px 6px;
+}
+.transactions .table.table-striped tbody td.type .buy {
   background: #80c342;
   color: white;
 }
-.transactions .table.table-striped tbody td.type.sell {
+.transactions .table.table-striped tbody td.type .sell {
   background: #2291cf;
   color: white;
+}
+.transactions .table .table-mini {
+  width: 100%;
+}
+.transactions .table .table-mini tr td {
+  padding: 3px;
 }
 .exchange-buy-sell-interface {
   margin: 20px 0;
 }
 .exchange-transactions-summary {
-  margin-bottom: 50px;
+  margin-bottom: 26px;
 }
 .verify-phone-info {
   margin-bottom: 20px;
   text-align: center;
+}
+.verify-phone-form {
+  margin-top: 20px;
 }
 .verify-phone-form input[name="phone"] {
   text-align: center;
@@ -957,6 +982,11 @@ html body .user-account-form {
   margin-top: -11px;
 }
 .dashboard-bottom-buttons {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.return-to-dashboard {
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -9527,8 +9557,11 @@ var Glidera = (function () {
         $scope.bankMessage = msg;
         Airbitz.ui.showAlert('Verify', msg);
       }
+    }).then(function(){
+      DataFactory.getTransactions().then(function(transactions) {
+        $scope.transactions = transactions;
+      });
     });
-
 
     $scope.regMessage = function() {
       var msg = '';
@@ -10627,6 +10660,12 @@ module.run(['$templateCache', function($templateCache) {
     '  <h3 class="col-xs-12" style="margin-top: 0;"><label class="label label-outline"><span class="phone-label">Phone:</span> <span class="phone-data">{{ account.phone }}</span></label></h3>\n' +
     '</div>\n' +
     '\n' +
+    '\n' +
+    '<div class="return-to-dashboard row">\n' +
+    '  <div class="col-xs-12 no-pad">\n' +
+    '    <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
+    '</div>\n' +
+    '\n' +
     '');
 }]);
 })();
@@ -10863,43 +10902,49 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/transactions.html',
-    '<button type="button"\n' +
-    'ui-sref="dashboard"\n' +
-    'class="btn btn-lg btn-link pull-right">Back to Dashboard <i class="fa fa-arrow-right"></i></button>\n' +
-    '\n' +
     '<div class="transactions row">\n' +
     '\n' +
     '  <div class="col-xs-12 no-pad">\n' +
     '    <table ng-model="transactions" class="table table-bordered table-striped">\n' +
-    '      <thead>\n' +
-    '        <tr>\n' +
-    '          <td>Date</td>\n' +
-    '          <td>Type</td>\n' +
-    '          <td>Subtotal</td>\n' +
-    '          <td>Total</td>\n' +
-    '          <td>BTC Price</td>\n' +
-    '          <td>Status</td>\n' +
-    '        </tr>\n' +
-    '      </thead>\n' +
     '      <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
-    '        <td class="date">{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
-    '        <td class="type" ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</td>\n' +
-    '        <td class="subtotal">{{ t.subtotal || \'subtotal\' }}</td>\n' +
-    '        <td class="total">{{ t.total || \'total\' }}</td>\n' +
-    '        <td class="price-each">{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
-    '        <td class="status">{{ t.status || \'status\' }}</td>\n' +
+    '        <td>\n' +
+    '          <table class="table-mini">\n' +
+    '            <tr>\n' +
+    '              <td class="date text-left">{{ t.estimatedDeliveryDate || \'&nbsp;\' }}</td></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
+    '            </tr>\n' +
+    '          </table>\n' +
+    '        </td>\n' +
+    '\n' +
+    '        <td>\n' +
+    '          <table class="table-mini">\n' +
+    '            <tr>\n' +
+    '              <td class="subtotal text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="price text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
+    '            </tr>\n' +
+    '          </table>\n' +
+    '        </td>\n' +
     '      </tr>\n' +
     '    </table>\n' +
     '  </div>\n' +
-    '\n' +
     '</div>\n' +
     '\n' +
-    '<div class="row">\n' +
-    '  <div class="col-xs-12 no-pad">\n' +
-    '    <button type="button" ng-click="logout()" class="btn btn-block btn-lg btn-danger">Logout</button>\n' +
+    '<div class="return-to-dashboard ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-12 no-pad">\n' +
+    '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
     '  </div>\n' +
-    '</div>\n' +
-    '');
+    '</div>');
 }]);
 })();
 
@@ -11172,27 +11217,42 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '<div account-summary></div>\n' +
     '\n' +
-    '<div ng-if="userStatus.userCanTransact && transactions" class="exchange-transactions-summary ng-trans ng-trans-fade-up easeOutSine">\n' +
-    '  <div ng-if="transactions" class="transactions row">\n' +
+    '<div ng-if="userStatus.userCanTransact && transactions.length" class="exchange-transactions-summary ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '\n' +
+    '  <div class="transactions row">\n' +
+    '\n' +
+    '    <h4 class="transactions-header col-xs-12">Recent Transactions</h4>\n' +
+    '\n' +
     '    <div class="col-xs-12 no-pad">\n' +
     '      <table ng-model="transactions" class="table table-bordered table-striped">\n' +
-    '        <thead>\n' +
-    '          <tr>\n' +
-    '            <td>Date</td>\n' +
-    '            <td>Type</td>\n' +
-    '            <td>Subtotal</td>\n' +
-    '            <td>Total</td>\n' +
-    '            <td>BTC Price</td>\n' +
-    '            <td>Status</td>\n' +
-    '          </tr>\n' +
-    '        </thead>\n' +
     '        <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
-    '          <td class="date">{{ t.estimatedDeliveryDate || \'date\' }}</td>\n' +
-    '          <td class="type" ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</td>\n' +
-    '          <td class="subtotal">{{ t.subtotal || \'subtotal\' }}</td>\n' +
-    '          <td class="total">{{ t.total || \'total\' }}</td>\n' +
-    '          <td class="price-each">{{ t.subtotal / t.price || \'price each\' }}</td>\n' +
-    '          <td class="status">{{ t.status || \'status\' }}</td>\n' +
+    '          <td>\n' +
+    '            <table class="table-mini">\n' +
+    '              <tr>\n' +
+    '                <td class="date text-left">{{ t.estimatedDeliveryDate || \'&nbsp;\' }}</td></td>\n' +
+    '              </tr>\n' +
+    '              <tr>\n' +
+    '                <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
+    '              </tr>\n' +
+    '              <tr>\n' +
+    '                <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
+    '              </tr>\n' +
+    '            </table>\n' +
+    '          </td>\n' +
+    '\n' +
+    '          <td>\n' +
+    '            <table class="table-mini">\n' +
+    '              <tr>\n' +
+    '                <td class="subtotal text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '              </tr>\n' +
+    '              <tr>\n' +
+    '                <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
+    '              </tr>\n' +
+    '              <tr>\n' +
+    '                <td class="price text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
+    '              </tr>\n' +
+    '            </table>\n' +
+    '          </td>\n' +
     '        </tr>\n' +
     '      </table>\n' +
     '    </div>\n' +
@@ -11202,7 +11262,7 @@ module.run(['$templateCache', function($templateCache) {
     '<div ng-if="userStatus.userCanTransact" class="dashboard-bottom-buttons ng-trans ng-trans-fade-up easeOutSine">\n' +
     '  <div class="row">\n' +
     '    <div class="col-xs-12 no-pad">\n' +
-    '      <button type="button" ui-sref="exchangeTransactions" class="btn btn-block btn-lg btn-info">Transactions</button>\n' +
+    '      <button type="button" ui-sref="exchangeTransactions" class="btn btn-block btn-lg btn-info">Transaction Log</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
@@ -11363,10 +11423,10 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputFirstName" class="">Name</label>\n' +
     '      <input ng-model="account.firstName" ng-required="true"\n' +
-    '             type="text" id="inputFirstName" class="form-control"\n' +
-    '             placeholder="First name" autofocus="true" autocomplete="off" autocorrect="off"\n' +
-    '             name="firstName"\n' +
-    '             required="" />\n' +
+    '      type="text" id="inputFirstName" class="form-control"\n' +
+    '      placeholder="First name" autofocus="true" autocomplete="off" autocorrect="off"\n' +
+    '      name="firstName"\n' +
+    '      required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.firstName.$touched">\n' +
     '        <span ng-show="form.firstName.$error.required" class="label label-danger">Required</span>\n' +
     '      </div>\n' +
@@ -11375,10 +11435,10 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputLastName" class="sr-only">Last</label>\n' +
     '      <input ng-model="account.lastName" ng-required="true"\n' +
-    '             type="text" id="inputLastName" class="form-control"\n' +
-    '             placeholder="Last name" autofocus="" autocomplete="off" autocorrect="off"\n' +
-    '             name="lastName"\n' +
-    '             required="" />\n' +
+    '      type="text" id="inputLastName" class="form-control"\n' +
+    '      placeholder="Last name" autofocus="" autocomplete="off" autocorrect="off"\n' +
+    '      name="lastName"\n' +
+    '      required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.lastName.$touched">\n' +
     '        <span ng-show="form.lastName.$error.required" class="label label-danger">Required</span>\n' +
     '      </div>\n' +
@@ -11387,10 +11447,10 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputAddress" class="">Address</label>\n' +
     '      <input ng-model="account.address1"\n' +
-    '             type="text" id="inputAddressStreet" class="form-control"\n' +
-    '             placeholder="Address" autofocus="" autocomplete="off" autocorrect="off"\n' +
-    '             name="address"\n' +
-    '             required="" />\n' +
+    '      type="text" id="inputAddressStreet" class="form-control"\n' +
+    '      placeholder="Address" autofocus="" autocomplete="off" autocorrect="off"\n' +
+    '      name="address"\n' +
+    '      required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.address.$touched">\n' +
     '        <span ng-show="form.address.$error.required" class="label label-danger">Required</span>\n' +
     '      </div>\n' +
@@ -11399,17 +11459,17 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="form-group">\n' +
     '      <label for="inputAddress2" class="sr-only">Address 2</label>\n' +
     '      <input ng-model="account.address2"\n' +
-    '             type="text" id="inputAddressStreet2" class="form-control"\n' +
-    '             placeholder="Address 2" autofocus="" autocomplete="off" autocorrect="off" />\n' +
+    '      type="text" id="inputAddressStreet2" class="form-control"\n' +
+    '      placeholder="Address 2" autofocus="" autocomplete="off" autocorrect="off" />\n' +
     '    </div>\n' +
     '\n' +
     '    <div class="form-group">\n' +
     '      <label for="inputAddressCity" class="sr-only">City</label>\n' +
     '      <input ng-model="account.city"\n' +
-    '             type="text" id="inputAddressCity" class="form-control"\n' +
-    '             placeholder="City" autofocus="" autocomplete="off" autocorrect="off"\n' +
-    '             name="city"\n' +
-    '             required="" />\n' +
+    '      type="text" id="inputAddressCity" class="form-control"\n' +
+    '      placeholder="City" autofocus="" autocomplete="off" autocorrect="off"\n' +
+    '      name="city"\n' +
+    '      required="" />\n' +
     '      <div class="input-error" ng-show="form.$submitted || form.city.$touched">\n' +
     '        <span ng-show="form.city.$error.required" class="label label-danger">Required</span>\n' +
     '      </div>\n' +
@@ -11419,10 +11479,10 @@ module.run(['$templateCache', function($templateCache) {
     '      <div class="no-pad-left form-group col-xs-6">\n' +
     '        <label for="inputAddressZip" class="sr-only">Postal Code</label>\n' +
     '        <input ng-model="account.zipCode"\n' +
-    '               type="text" id="inputAddressZip" class="form-control"\n' +
-    '               placeholder="Postal Code" autofocus="" autocomplete="off" autocorrect="off"\n' +
-    '               name="zip"\n' +
-    '               required="" />\n' +
+    '        type="text" id="inputAddressZip" class="form-control"\n' +
+    '        placeholder="Postal Code" autofocus="" autocomplete="off" autocorrect="off"\n' +
+    '        name="zip"\n' +
+    '        required="" />\n' +
     '        <div class="input-error" ng-show="form.$submitted || form.zip.$touched">\n' +
     '          <span ng-show="form.zip.$error.required" class="label label-danger">Required</span>\n' +
     '          <span ng-show="form.zip.$error.number" class="label label-danger">Number Required</span>\n' +
@@ -11430,50 +11490,52 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '      <div class="no-pad-right form-group col-xs-6">\n' +
     '        <select ng-options="o.name for o in states" ng-model="account.state" class="form-control"\n' +
-    '                name="state"\n' +
-    '                required="" />\n' +
-    '          <option value="" ng-if="countryCode == \'US\'">Select a State</option>\n' +
-    '          <option value="" ng-if="countryCode == \'CA\'">Select a Province</option>\n' +
-    '        </select>\n' +
-    '        <div class="input-error" ng-show="form.$submitted || form.state.$touched">\n' +
-    '          <span ng-show="form.state.$error.required" class="label label-danger">Required</span>\n' +
-    '        </div>\n' +
+    '        name="state"\n' +
+    '        required="" />\n' +
+    '        <option value="" ng-if="countryCode == \'US\'">Select a State</option>\n' +
+    '        <option value="" ng-if="countryCode == \'CA\'">Select a Province</option>\n' +
+    '      </select>\n' +
+    '      <div class="input-error" ng-show="form.$submitted || form.state.$touched">\n' +
+    '        <span ng-show="form.state.$error.required" class="label label-danger">Required</span>\n' +
     '      </div>\n' +
     '    </div>\n' +
+    '  </div>\n' +
     '\n' +
-    '    <div class="form-group" ng-show="countryCode == \'CA\'">\n' +
-    '        <label for="inputOccupation" class="">Occupation</label>\n' +
-    '        <select ng-options="o.name for o in occupations" ng-model="account.occupation" class="form-control"\n' +
-    '                name="occupation"\n' +
-    '                required="" />\n' +
-    '            <option value="">Select an Occupation</option>\n' +
-    '        </select>\n' +
-    '      <div class="input-error" ng-show="form.$submitted || form.occupation.$touched">\n' +
-    '        <span ng-show="form.occupation.$error.required" class="label label-danger">Required</span>\n' +
-    '        <span ng-show="form.occupation.$error.occupation" class="label label-danger">Occupation Required</span>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
+    '  <div class="form-group" ng-show="countryCode == \'CA\'">\n' +
+    '    <label for="inputOccupation" class="">Occupation</label>\n' +
+    '    <select ng-options="o.name for o in occupations" ng-model="account.occupation" class="form-control"\n' +
+    '    name="occupation"\n' +
+    '    required="" />\n' +
+    '      <option value="">Select an Occupation</option>\n' +
+    '    </select>\n' +
+    '  <div class="input-error" ng-show="form.$submitted || form.occupation.$touched">\n' +
+    '    <span ng-show="form.occupation.$error.required" class="label label-danger">Required</span>\n' +
+    '    <span ng-show="form.occupation.$error.occupation" class="label label-danger">Occupation Required</span>\n' +
+    '  </div>\n' +
+    '</div>\n' +
     '\n' +
-    '    <div class="form-group">\n' +
-    '      <label for="inputDob" class="">Date of Birth</label>\n' +
-    '      <input ng-model="account.birthDate"\n' +
-    '             type="date" id="inputDob" class="form-control" placeholder="YYYY-MM-DD" autofocus=""\n' +
-    '             autocomplete="off"\n' +
-    '             name="dob"\n' +
-    '             required="" />\n' +
-    '      <div class="input-error" ng-show="form.$submitted || form.dob.$touched">\n' +
-    '        <span ng-show="form.dob.$error.required" class="label label-danger">Required</span>\n' +
-    '        <span ng-show="form.dob.$error.date" class="label label-danger">Date Required</span>\n' +
-    '      </div>\n' +
+    '  <div class="form-group">\n' +
+    '    <label for="inputDob" class="">Date of Birth</label>\n' +
+    '    <input ng-model="account.birthDate"\n' +
+    '    type="date" id="inputDob" class="form-control" placeholder="YYYY-MM-DD" autofocus=""\n' +
+    '    autocomplete="off"\n' +
+    '    name="dob"\n' +
+    '    required="" />\n' +
+    '    <div class="input-error" ng-show="form.$submitted || form.dob.$touched">\n' +
+    '      <span ng-show="form.dob.$error.required" class="label label-danger">Required</span>\n' +
+    '      <span ng-show="form.dob.$error.date" class="label label-danger">Date Required</span>\n' +
     '    </div>\n' +
+    '  </div>\n' +
+    '</form>\n' +
+    '</div>\n' +
     '\n' +
-    '    <div class="row text-right" style="margin-top: 40px;">\n' +
-    '      <div class="col-xs-12">\n' +
-    '        <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-link">Cancel</button>\n' +
-    '        <button type="button" ng-click="saveUserAccount()" class="btn btn-lg btn-success">Save</button>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
-    '  </form>\n' +
+    '<div class="row" style="margin-top: 20px;">\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-block btn-danger">Cancel</button>\n' +
+    '  </div>\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button type="button" ng-click="saveUserAccount()" class="btn btn-lg btn-block btn-success">Save</button>\n' +
+    '  </div>\n' +
     '</div>\n' +
     '');
 }]);
@@ -11496,17 +11558,26 @@ module.run(['$templateCache', function($templateCache) {
     '  <p><label class="label label-warning">Note</label> Email will contain a link which must be clicked on phone to proceed past this screen.</p>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="row text-right" style="margin-top: 40px;">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <button ng-click="resend()" \n' +
-    '            ng-disabled="form.$invalid" \n' +
-    '            class="btn btn-lg btn-success">Resend</button>\n' +
-    '    <button ng-click="next()" \n' +
-    '            ng-disabled="form.$invalid" \n' +
-    '            class="btn btn-lg btn-success">Continue</button>\n' +
+    '<div class="row" style="margin-top: 40px;">\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button ng-click="resend()"\n' +
+    '            ng-disabled="form.$invalid"\n' +
+    '            class="btn btn-lg btn-block btn-success">Resend</button>\n' +
+    '  </div>\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button ng-click="next()"\n' +
+    '            ng-disabled="form.$invalid"\n' +
+    '            class="btn btn-lg btn-block btn-primary">Continue</button>\n' +
     '  </div>\n' +
     '</div>\n' +
-    '');
+    '\n' +
+    '\n' +
+    '<div class="return-to-dashboard ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-12 no-pad">\n' +
+    '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
+    '  </div>\n' +
+    '</div>');
 }]);
 })();
 
@@ -11532,7 +11603,7 @@ module.run(['$templateCache', function($templateCache) {
     '               placeholder="Enter Your Phone #"\n' +
     '               autofocus="true"\n' +
     '               autocomplete="off"\n' +
-    '               \n' +
+    '\n' +
     '               phone-number-validator />\n' +
     '      </div>\n' +
     '\n' +
@@ -11556,26 +11627,32 @@ module.run(['$templateCache', function($templateCache) {
     '      <p><label class="label label-warning">Note</label> Phone must be able to receive SMS text messages.</p>\n' +
     '    </div>\n' +
     '\n' +
-    '    <div class="text-right row" style="margin-top: 40px;">\n' +
-    '      <div class="col-xs-12">\n' +
-    '        <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-link">Cancel</button>\n' +
-    '        <button type="submit"\n' +
-    '                ng-show="userStatus.userPhoneIsSetup"\n' +
-    '                ng-click="deletePhone()"\n' +
-    '                ng-disabled="form.$invalid"\n' +
-    '                class="buy-sell-next btn btn-lg btn-danger">Delete</button>\n' +
-    '        <button type="submit"\n' +
-    '                ng-show="!userStatus.userPhoneIsSetup"\n' +
-    '                ng-click="submitPhone()"\n' +
-    '                ng-disabled="form.$invalid"\n' +
-    '                class="buy-sell-next btn btn-lg btn-success">Verify</button>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
-    '\n' +
     '  </form>\n' +
     '\n' +
     '</div>\n' +
-    '');
+    '\n' +
+    '<div class="row" style="margin-top: 40px;">\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button type="button" ng-click="cancelSignup()" class="btn btn-lg btn-block btn-link">Cancel</button>\n' +
+    '  </div>\n' +
+    '  <div class="col-xs-6 no-pad">\n' +
+    '    <button type="submit"\n' +
+    '            ng-show="userStatus.userPhoneIsSetup"\n' +
+    '            ng-click="deletePhone()"\n' +
+    '            ng-disabled="form.$invalid"\n' +
+    '            class="buy-sell-next btn btn-lg btn-block btn-danger">Delete</button>\n' +
+    '    <button type="submit"\n' +
+    '            ng-show="!userStatus.userPhoneIsSetup"\n' +
+    '            ng-click="submitPhone()"\n' +
+    '            ng-disabled="form.$invalid"\n' +
+    '            class="buy-sell-next btn btn-lg btn-block btn-success">Verify</button>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="return-to-dashboard row">\n' +
+    '  <div class="col-xs-12 no-pad">\n' +
+    '    <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
+    '</div>');
 }]);
 })();
 
