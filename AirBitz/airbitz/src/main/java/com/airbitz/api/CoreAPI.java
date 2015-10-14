@@ -2271,13 +2271,14 @@ public class CoreAPI {
 
         mDataHandler.post(new Runnable() {
             public void run() {
+                final boolean isPending = isTwoFactorResetPending(AirbitzApplication.getUsername());
                 mMainHandler.post(new Runnable() {
                     public void run() {
                         if (!mDataFetched) {
                             mDataFetched = true;
                             connectWatchers();
                         }
-                        if (mOTPResetRequest != null && isTwoFactorResetPending(AirbitzApplication.getUsername())) {
+                        if (mOTPResetRequest != null && isPending) {
                             mOTPResetRequest.onOTPResetRequest();
                         }
                     }
