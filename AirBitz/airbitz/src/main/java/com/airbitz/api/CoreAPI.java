@@ -340,7 +340,6 @@ public class CoreAPI {
         public void run() {
             mCoreSettings = null;
             mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
-            updateExchangeRates();
         }
     };
 
@@ -1966,8 +1965,6 @@ public class CoreAPI {
     private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
     private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
 
-    private ThreadPoolExecutor exchangeRateThread;
-
     public interface OnExchangeRatesChange {
         public void OnExchangeRatesChange();
     }
@@ -1976,6 +1973,7 @@ public class CoreAPI {
     private Handler mCoreHandler;
     private Handler mWatcherHandler;
     private Handler mDataHandler;
+    private Handler mExchangeHandler;
     private boolean mDataFetched = false;
 
     final static int RELOAD = 0;
@@ -1999,6 +1997,23 @@ public class CoreAPI {
         }
     }
 
+    private class ExchangeHandler extends Handler {
+        ExchangeHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(final Message msg) {
+            if (REPEAT == msg.what) {
+                postDelayed(new Runnable() {
+                    public void run() {
+                        updateExchangeRates();
+                    }
+                }, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
+            }
+        }
+    }
+
     private class MainHandler extends Handler {
         MainHandler() {
             super();
@@ -2013,13 +2028,15 @@ public class CoreAPI {
     }
 
     public void startAllAsyncUpdates() {
-        exchangeRateThread = new ThreadPoolExecutor(1, 1, 60 * 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-
         mMainHandler = new MainHandler();
 
         HandlerThread ht = new HandlerThread("Data Handler");
         ht.start();
         mDataHandler = new DataHandler(ht.getLooper());
+
+        ht = new HandlerThread("Exchange Handler");
+        ht.start();
+        mExchangeHandler = new ExchangeHandler(ht.getLooper());
 
         ht = new HandlerThread("ABC Core");
         ht.start();
@@ -2061,6 +2078,7 @@ public class CoreAPI {
     public void stopAllAsyncUpdates() {
         if (mCoreHandler == null
                 || mDataHandler == null
+                || mExchangeHandler == null
                 || mWatcherHandler == null
                 || mMainHandler == null) {
             return;
@@ -2069,6 +2087,8 @@ public class CoreAPI {
         mCoreHandler.sendEmptyMessage(LAST);
         mDataHandler.removeCallbacksAndMessages(null);
         mDataHandler.sendEmptyMessage(LAST);
+        mExchangeHandler.removeCallbacksAndMessages(null);
+        mExchangeHandler.sendEmptyMessage(LAST);
         mWatcherHandler.removeCallbacksAndMessages(null);
         mWatcherHandler.sendEmptyMessage(LAST);
         mMainHandler.removeCallbacksAndMessages(null);
@@ -2076,12 +2096,14 @@ public class CoreAPI {
         while (mDataHandler.hasMessages(LAST)
                 || mCoreHandler.hasMessages(LAST)
                 || mWatcherHandler.hasMessages(LAST)
+                || mExchangeHandler.hasMessages(LAST)
                 || mMainHandler.hasMessages(LAST)) {
             try {
                 Log.d(TAG,
                     "Data: " + mDataHandler.hasMessages(LAST) + ", " +
                     "Core: " + mCoreHandler.hasMessages(LAST) + ", " +
                     "Watcher: " + mWatcherHandler.hasMessages(LAST) + ", " +
+                    "Exchange: " + mExchangeHandler.hasMessages(LAST) + ", " +
                     "Main: " + mMainHandler.hasMessages(LAST));
                 Thread.sleep(200);
             } catch (Exception e) {
@@ -2092,10 +2114,6 @@ public class CoreAPI {
         stopWatchers();
         stopExchangeRateUpdates();
         stopFileSyncUpdates();
-        if (null != exchangeRateThread) {
-            exchangeRateThread.shutdown();
-            exchangeRateThread = null;
-        }
     }
 
     public void restoreConnectivity() {
@@ -2124,70 +2142,51 @@ public class CoreAPI {
         disconnectWatchers();
     }
 
-    public void updateExchangeRates()
-    {
-        if (AirbitzApplication.isLoggedIn() && coreSettings() != null) {
-            mUpdateExchangeRateTask = new UpdateExchangeRateTask();
-
-            Log.d(TAG, "Exchange Rate Update initiated.");
-            if (exchangeRateThread != null) {
-                mUpdateExchangeRateTask.executeOnExecutor(exchangeRateThread);
-            }
-        }
-    }
-
-    private UpdateExchangeRateTask mUpdateExchangeRateTask;
-    public class UpdateExchangeRateTask extends AsyncTask<Void, Void, Void> {
-        Set<Integer> currencies;
-        UpdateExchangeRateTask() {
-            List<Wallet> wallets = getCoreWallets(false);
-            currencies = new HashSet();
-            if (wallets != null) {
-                for (Wallet wallet : wallets) {
-                    if (wallet.getCurrencyNum() != -1) {
-                        currencies.add(wallet.getCurrencyNum());
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            updateAllExchangeRates(currencies);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            onExchangeRatesUpdated();
-        }
-    }
-
     public void stopExchangeRateUpdates() {
-        mPeriodicTaskHandler.removeCallbacks(ExchangeRateUpdater);
+        mExchangeHandler.removeCallbacksAndMessages(null);
+        mExchangeHandler.sendEmptyMessage(LAST);
     }
 
     public void startExchangeRateUpdates() {
-        if(AirbitzApplication.isLoggedIn()) {
-            mPeriodicTaskHandler.postDelayed(ExchangeRateUpdater, 100);
+        updateExchangeRates();
+    }
+
+
+    public void updateExchangeRates() {
+        if (null == mExchangeHandler
+            || mExchangeHandler.hasMessages(REPEAT)
+            || mExchangeHandler.hasMessages(LAST)) {
+            return;
         }
+
+        List<Wallet> wallets = getCoreWallets(false);
+        if (AirbitzApplication.isLoggedIn()
+                && null != coreSettings()
+                && null != wallets) {
+            requestExchangeRateUpdate(coreSettings().getCurrencyNum());
+            for (Wallet wallet : wallets) {
+                if (wallet.getCurrencyNum() != -1) {
+                    requestExchangeRateUpdate(wallet.getCurrencyNum());
+                }
+            }
+            mMainHandler.post(new Runnable() {
+                public void run() {
+                    onExchangeRatesUpdated();
+                }
+            });
+        }
+        mExchangeHandler.sendEmptyMessage(REPEAT);
     }
 
     // Exchange Rate updates may have delay the first call
-    private void updateAllExchangeRates(Set<Integer> currencies) {
-        if (AirbitzApplication.isLoggedIn()) {
-Log.d("CoreApiCurrency", "---------");
-Log.d("CoreApiCurrency", "" + coreSettings().getCurrencyNum());
-Log.d("CoreApiCurrency", "---------");
-            tABC_Error error = new tABC_Error();
-            core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), coreSettings().getCurrencyNum(), error);
-            for (Integer currency : currencies) {
-Log.d("CoreApiCurrency", "" + currency);
+    private void requestExchangeRateUpdate(final Integer currencyNum) {
+        mExchangeHandler.post(new Runnable() {
+            public void run() {
+                tABC_Error error = new tABC_Error();
                 core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), currency, error);
+                    AirbitzApplication.getPassword(), currencyNum, error);
             }
-        }
+        });
     }
 
     public void addExchangeRateChangeListener(OnExchangeRatesChange listener) {
@@ -2207,18 +2206,18 @@ Log.d("CoreApiCurrency", "" + currency);
     }
 
     public void onExchangeRatesUpdated() {
-        if(!mExchangeRateRemovers.isEmpty()) {
-            for(OnExchangeRatesChange i : mExchangeRateRemovers) {
-                if(mExchangeRateObservers.contains(i)) {
+        if (!mExchangeRateRemovers.isEmpty()) {
+            for (OnExchangeRatesChange i : mExchangeRateRemovers) {
+                if( mExchangeRateObservers.contains(i)) {
                     mExchangeRateObservers.remove(i);
                 }
             }
             mExchangeRateRemovers.clear();
         }
 
-        if (!mExchangeRateObservers.isEmpty()) {
+        if  (!mExchangeRateObservers.isEmpty()) {
             Log.d(TAG, "Exchange Rate changed");
-            for(OnExchangeRatesChange listener : mExchangeRateObservers) {
+            for (OnExchangeRatesChange listener : mExchangeRateObservers) {
                 listener.OnExchangeRatesChange();
             }
         }
@@ -3085,7 +3084,6 @@ Log.d("CoreApiCurrency", "" + currency);
 
         // Wait for data sync to exit gracefully
         AsyncTask[] as = new AsyncTask[] {
-            mUpdateExchangeRateTask,
             mPinSetup, mReloadWalletTask
         };
         for (AsyncTask a : as) {
