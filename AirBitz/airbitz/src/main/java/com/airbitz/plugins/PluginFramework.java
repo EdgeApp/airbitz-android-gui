@@ -508,7 +508,6 @@ public class PluginFramework {
                     view.loadUrl(url);
                     return true;
                 }
-                pluginContext.navStackPush(url);
                 return super.shouldOverrideUrlLoading(view, url);
             }
         });

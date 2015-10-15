@@ -141,6 +141,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
         cleanupWebview();
+        // Allows use to nest iframes from 3rd parties
+        CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
 
         mFramework.buildPluginView(mPlugin, mActivity, mWebView);
         mWebView.setBackgroundColor(0x00000000);
