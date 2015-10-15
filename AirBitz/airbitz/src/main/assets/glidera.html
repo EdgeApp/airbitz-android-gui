@@ -483,7 +483,16 @@ html body {
   background-size: cover;
   background-attachment: fixed;
 }
+html body iframe {
+  height: 100%;
+  width: 100%;
+  padding: 0 10px;
+}
+html body iframe table.table {
+  background: blue !important;
+}
 html body #main-content {
+  height: 100%;
   padding-right: 0;
   padding-left: 0;
 }
@@ -929,11 +938,31 @@ html body .user-account-form {
   font-size: 10px;
   padding: 10px 15px;
 }
-.transactions .table.table-striped tbody tr.processing td {
-  opacity: 0.6;
+.transactions .table.table-striped tbody tr.processing td.total,
+.transactions .table.table-striped tbody tr.processing td.qty,
+.transactions .table.table-striped tbody tr.processing td.price-each,
+.transactions .table.table-striped tbody tr.processing td.status {
+  opacity: .4;
+}
+.transactions .table.table-striped tbody tr.type-sell td.qty {
+  color: #ff5656;
 }
 .transactions .table.table-striped tbody td {
   border: none;
+}
+.transactions .table.table-striped tbody td.datetime .date {
+  color: #003e61;
+  font-weight: 700;
+}
+.transactions .table.table-striped tbody td.datetime .date .est-label {
+  color: #80c342;
+}
+.transactions .table.table-striped tbody td.datetime .seperator {
+  color: #ccc;
+}
+.transactions .table.table-striped tbody td.datetime .time {
+  color: #999;
+  font-weight: 200;
 }
 .transactions .table.table-striped tbody td.type span {
   padding: 3px 6px;
@@ -945,6 +974,9 @@ html body .user-account-form {
 .transactions .table.table-striped tbody td.type .sell {
   background: #2291cf;
   color: white;
+}
+.transactions .table.table-striped tbody td.qty {
+  color: #55af00;
 }
 .transactions .table .table-mini {
   width: 100%;
@@ -990,6 +1022,10 @@ html body .user-account-form {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+.return-to-dashboard.relative {
+  position: relative;
+  bottom: auto;
 }
 
 
@@ -9197,8 +9233,14 @@ var Glidera = (function () {
     Airbitz.ui.title('Confirm Order');
     $scope.order = order;
     $scope.account = UserFactory.getUserAccount();
-    $scope.priceObj = ($scope.order.orderAction == 'buy')
-                    ? Prices.currentBuy : Prices.currentSell;
+    var update = function() {
+      $scope.priceObj = ($scope.order.orderAction == 'buy')
+                      ? Prices.currentBuy : Prices.currentSell;
+    };
+    update();
+    $scope.$on('PriceUpdate', function(events, args){
+      update();
+    })
     if (!order.orderAction) {
       $state.go('dashboard');
     }
@@ -9278,7 +9320,7 @@ var Glidera = (function () {
     .directive('sellLimits', sellLimits);
 
   function limitsFactory($q, glideraFactory, Prices) {
-    var limits = {};
+    var limits = Airbitz.core.readData('limits', limits) || {};
     var factory = {};
     factory.reset = function() {
         limits = {}; 
@@ -9310,6 +9352,7 @@ var Glidera = (function () {
         glideraFactory.userLimits(function(e, r, b) {
           if (r == 200) {
             limits = b;
+            Airbitz.core.writeData('limits', limits);
             deferred.resolve(b);
           } else {
             deferred.reject();
@@ -9366,11 +9409,11 @@ var Glidera = (function () {
 
   angular
     .module('app.prices', ['app.glidera'])
-    .factory('Prices', ['$q', 'glideraFactory', Prices])
+    .factory('Prices', ['$rootScope', '$q', 'glideraFactory', Prices])
     .directive('priceUpdate', ['$interval', '$filter', 'Prices', priceUpdate])
     .directive('priceExpires', ['$interval', '$filter', 'Prices', priceExpires])
 
-  function Prices($q, glideraFactory) {
+  function Prices($rootScope, $q, glideraFactory) {
     var factory = {};
     var timeDiff = function(date) {
       return (new Date(date).getTime() - new Date().getTime()) / 1000.0;
@@ -9404,7 +9447,12 @@ var Glidera = (function () {
       } else {
         glideraFactory.buyPrices(factory.buyQty, function(e, r, b) {
           factory.currentBuy = b;
-          (r == 200) ?  deferred.resolve(b) : deferred.reject();
+          if (r == 200) {
+            deferred.resolve(b);
+            broadcastUpdate($rootScope, 'buy');
+          } else {
+            deferred.reject();
+          }
         });
       }
       return deferred.promise;
@@ -9420,12 +9468,20 @@ var Glidera = (function () {
       } else {
         glideraFactory.sellPrices(factory.sellQty, function(e, r, b) {
           factory.currentSell = b;
-          (r == 200) ?  deferred.resolve(b) : deferred.reject();
+          if (r == 200) {
+            deferred.resolve(b);
+            broadcastUpdate($rootScope, 'sell');
+          } else {
+            deferred.reject();
+          }
         });
       }
       return deferred.promise;
     };
     return factory;
+  }
+  function broadcastUpdate($rootScope, type) {
+    $rootScope.$broadcast('PriceUpdate', type);
   }
   function priceUpdate($interval, $filter, Prices) {
     return {
@@ -9460,6 +9516,8 @@ var Glidera = (function () {
     .controller('homeController', ['$scope', '$state', '$location', 'UserFactory', homeController])
     .controller('dashboardController', ['$scope', '$sce', '$state', 'Error', 'DataFactory', 'UserFactory', 'Limits', dashboardController])
     .controller('userAccountController', ['$scope', '$state', 'Error', 'States', 'UserFactory', userAccountController])
+    .controller('bankAccountController', ['$scope', '$sce', '$state', 'UserFactory', bankAccountController])
+    .controller('increaseLimitsController', ['$scope', '$sce', '$state', 'UserFactory', increaseLimitsController])
     .controller('disclaimerController', ['$scope', '$state', 'Error', 'States', 'UserFactory', disclaimerController])
     .controller('authController', ['$scope', '$state', '$location', 'UserFactory', authController])
     .controller('verifyEmailController', ['$scope', '$state', 'Error', 'UserFactory', verifyEmailController])
@@ -9607,20 +9665,31 @@ var Glidera = (function () {
         Airbitz.ui.title('Additional User Info');
         window.location = UserFactory.userSetupRedirect();
     };
+  }
 
-    $scope.routeBankAccount = function() {
-      var url = '';
-      if ($scope.userStatus.userBankAccountIsSetup) {
-        Airbitz.ui.title('Add Bank Account');
-        console.log(UserFactory.editBankAccountUrl());
-        url = UserFactory.editBankAccountUrl();
-      } else {
-        Airbitz.ui.title('Edit Bank Account');
-        console.log(UserFactory.createBankAccountUrl());
-        url = UserFactory.createBankAccountUrl();
-      }
-      window.location = url;
-    };
+  function bankAccountController($scope, $sce, $state, UserFactory) {
+    $scope.userStatus = UserFactory.getUserAccountStatus();
+    var url = '';
+    if ($scope.userStatus.userBankAccountIsSetup) {
+      Airbitz.ui.title('Add Bank Account');
+      console.log(UserFactory.editBankAccountUrl());
+      url = UserFactory.editBankAccountUrl();
+    } else {
+      Airbitz.ui.title('Edit Bank Account');
+      console.log(UserFactory.createBankAccountUrl());
+      url = UserFactory.createBankAccountUrl();
+    }
+    $scope.iframeUrl = $sce.trustAsResourceUrl(url);
+  }
+
+  function increaseLimitsController($scope, $sce, $state, UserFactory) {
+    $scope.userStatus = UserFactory.getUserAccountStatus();
+    var url = '';
+
+    Airbitz.ui.title('Additional User Info');
+    url = UserFactory.userSetupRedirect();
+
+    $scope.iframeUrl = $sce.trustAsResourceUrl(url);
   }
 
   function userAccountController($scope, $state, Error, States, UserFactory) {
@@ -10019,7 +10088,7 @@ var app = angular.module('app.core', [
           account.secret = glideraFactory.secret;
           Airbitz.core.writeData('account', account);
         }
-        cb(success, results); 
+        cb(success, results);
       });
     };
     factory.registrationMode = function() {
@@ -10305,7 +10374,7 @@ var app = angular.module('app.core', [
       }).then(function(data) {
         var sellAddress = data["sellAddress"];
         var d = $q.defer();
-        createAddress(wallet, 'Glidera Refund', btcToSatoshi(qty), 
+        createAddress(wallet, 'Glidera Refund', btcToSatoshi(qty),
                       amountFiat, 'Exchange:Refund Bitcoin', notes, function(req) {
           d.resolve({'sellAddress': sellAddress, 'refundAddress': req['address']});
         }, d.reject);
@@ -10361,7 +10430,8 @@ var app = angular.module('app.core', [
       'depositTimeout': '3600',
       'countryCode': Airbitz.config.get("COUNTRY_CODE"),
       'currencyNum': Airbitz.config.get("CURRENCY_CODE"),
-      'currency': Airbitz.config.get("CURRENCY_ABBREV")
+      'currency': Airbitz.config.get("CURRENCY_ABBREV"),
+      'currencySymbol': '$'
     };
   }
   function States() {
@@ -10601,6 +10671,18 @@ app.config(['$stateProvider', '$urlRouterProvider', '$sceDelegateProvider', func
       templateUrl: "app/user/partials/userAccount.html",
       controller: "userAccountController",
     })
+    // route for glidera bank account access
+    .state("bankAccount", {
+      url: "/bankAccount/",
+      templateUrl: "app/user/partials/bankAccount.html",
+      controller: "bankAccountController",
+    })
+    // route for glidera increased limits access
+    .state("increaseLimits", {
+      url: "/increaseLimits/",
+      templateUrl: "app/user/partials/increaseLimits.html",
+      controller: "increaseLimitsController",
+    })
     // route for errors
     .state("error", {
       url: "/error/",
@@ -10622,6 +10704,7 @@ run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
   $rootScope.exchange = DataFactory.getExchange();
   $rootScope.countryCode = Airbitz.config.get('COUNTRY_CODE');
   $rootScope.countryName = Airbitz.config.get('COUNTRY_NAME');
+  $rootScope.cryptoDenom = 'BTC';
 }]);
 
 </script>
@@ -10855,20 +10938,20 @@ module.run(['$templateCache', function($templateCache) {
     '          <td>{{ currentWallet.name || "" }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
-    '          <td>{{ exchange.order.currency }} Amount</td>\n' +
-    '          <td>{{ order.orderBtcInput || "3.14" | roundBtc }} {{ exchange.order.currency || "BTC" }}</td>\n' +
+    '          <td>Amount</td>\n' +
+    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ exchange.cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.subtotal || "priceSubtotal" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.subtotal || "priceSubtotal" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Fees</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.fees || "priceFees" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.fees || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Total</td>\n' +
-    '          <td>{{ exchange.order.currencySymbol || "$" }}{{ priceObj.total || "priceTotal" | roundFiat }} {{ exchange.currency || "USD" }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.total || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -10903,40 +10986,40 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/transactions.html',
     '<div class="transactions row">\n' +
+    '  <table ng-model="transactions" class="table table-bordered table-striped col-xs-12 no-pad">\n' +
+    '    <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\', \'type-buy\': t.type == \'BUY\', \'type-sell\': t.type == \'SELL\' }">\n' +
+    '      <td>\n' +
+    '        <table class="table-mini">\n' +
+    '          <tr>\n' +
+    '            <td class="datetime text-left">\n' +
+    '              <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate }}</span>\n' +
+    '              <span ng-if="!t.estimatedDeliveryDate && t.transactionDate" class="date">{{ (t.transactionDate | date:\'yyyy-MM-dd\') }} <span class="seperator">|<span> <span class="time">{{ t.transactionDate | date:\'h:m a\' }}</span></span>\n' +
+    '            </td>\n' +
+    '          </tr>\n' +
+    '          <tr>\n' +
+    '            <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
+    '          </tr>\n' +
+    '          <tr>\n' +
+    '            <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
+    '          </tr>\n' +
+    '        </table>\n' +
+    '      </td>\n' +
     '\n' +
-    '  <div class="col-xs-12 no-pad">\n' +
-    '    <table ng-model="transactions" class="table table-bordered table-striped">\n' +
-    '      <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
-    '        <td>\n' +
-    '          <table class="table-mini">\n' +
-    '            <tr>\n' +
-    '              <td class="date text-left">{{ t.estimatedDeliveryDate || \'&nbsp;\' }}</td></td>\n' +
-    '            </tr>\n' +
-    '            <tr>\n' +
-    '              <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
-    '            </tr>\n' +
-    '            <tr>\n' +
-    '              <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
-    '            </tr>\n' +
-    '          </table>\n' +
-    '        </td>\n' +
-    '\n' +
-    '        <td>\n' +
-    '          <table class="table-mini">\n' +
-    '            <tr>\n' +
-    '              <td class="subtotal text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
-    '            </tr>\n' +
-    '            <tr>\n' +
-    '              <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
-    '            </tr>\n' +
-    '            <tr>\n' +
-    '              <td class="price text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
-    '            </tr>\n' +
-    '          </table>\n' +
-    '        </td>\n' +
-    '      </tr>\n' +
-    '    </table>\n' +
-    '  </div>\n' +
+    '      <td>\n' +
+    '        <table class="table-mini">\n' +
+    '          <tr>\n' +
+    '            <td class="qty text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '          </tr>\n' +
+    '          <tr>\n' +
+    '            <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
+    '          </tr>\n' +
+    '          <tr>\n' +
+    '            <td class="price-each text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
+    '          </tr>\n' +
+    '        </table>\n' +
+    '      </td>\n' +
+    '    </tr>\n' +
+    '  </table>\n' +
     '</div>\n' +
     '\n' +
     '<div class="return-to-dashboard ng-trans ng-trans-fade-up easeOutSine">\n' +
@@ -10976,7 +11059,15 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/limits/partials/limits.html',
-    '<div class="exchange-limits row">\n' +
+    '<div ng-if="limits.transactDisabledPendingFirstTransaction" class="exchange-limits row">\n' +
+    '  <div class="col-xs-12 no-pad-left">\n' +
+    '    <label class="limit-header-buy">Notice</label>\n' +
+    '    <div class="buy-limits">\n' +
+    '      Buys and sells are disabled until your first transaction completes.\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '<div ng-if="!limits.transactDisabledPendingFirstTransaction" class="exchange-limits row">\n' +
     '  <div class="col-xs-6 no-pad-left">\n' +
     '    <label class="limit-header-buy">Buy Limits</label>\n' +
     '    <div class="buy-limits">\n' +
@@ -11000,7 +11091,8 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '    </div>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -11071,7 +11163,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <tbody>\n' +
     '        <tr>\n' +
     '          <td>Order Type</td>\n' +
-    '          <td>{{ order.orderAction || "orderAction" | titlecase }} Order</td>\n' +
+    '          <td>{{ order.orderAction || "" | titlecase }} Order</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -11097,19 +11189,19 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>BTC Amount:</td>\n' +
-    '          <td>{{ order.orderBtcInput }}</td>\n' +
+    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ exchange.cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
-    '          <td>Sub Total:</td>\n' +
-    '          <td>{{ order.details.subtotal }}</td>\n' +
+    '          <td>Subtotal:</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.subtotal || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Fees:</td>\n' +
-    '          <td>{{ order.details.fees }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.fees || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Total:</td>\n' +
-    '          <td>{{ order.details.total }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.total || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -11161,21 +11253,41 @@ module.run(['$templateCache', function($templateCache) {
     '        <span class="list-group-item-heading">Account Information</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
     '        <label class="status label pull-right"\n' +
-    '               ng-class="(userStatus.personalInfoState == \'VERIFIED\') ? \'label-success\' : \'label-danger\'">{{ userStatus.personalInfoState | statusFilter }}</label>\n' +
+    '               ng-class="(userStatus.personalInfoState == \'VERIFIED\') ? \'label-success\' : \'label-danger\'">{{ userStatus.personalInfoState == \'VERIFIED\' | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-if="showOptions" ng-click="routeBankAccount()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="showOptions" ui-sref="bankAccount" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Bank Account</span>\n' +
     '        <p class="list-group-item-text">{{ bankMessage }}</p>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="(userStatus.userBankAccountIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userBankAccountIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
-    '      <li ng-if="showOptions" ng-click="increaseSpendingLimits()" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
+    '      <li ng-if="showOptions" ui-sref="increaseLimits" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Increase Spending Limits</span>\n' +
     '        <p class="list-group-item-text">Tap to edit</p>\n' +
     '        <label class="status label pull-right"\n' +
-    '               ng-class="(userStatus.extraComplete) ? \'label-success\' : \'label-danger\'">{{ extraComplete | statusFilter }}</label>\n' +
+    '               ng-class="(extraComplete) ? \'label-success\' : \'label-danger\'">{{ extraComplete | statusFilter }}</label>\n' +
     '      </li>\n' +
     '    </ul>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/user/partials/bankAccount.html',
+    '<iframe id="glidera-iframe" ng-src="{{ iframeUrl }}" frameBorder="0"></iframe>\n' +
+    '\n' +
+    '<div class="return-to-dashboard ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-12 no-pad">\n' +
+    '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '');
@@ -11207,10 +11319,14 @@ module.run(['$templateCache', function($templateCache) {
     '    </ul>\n' +
     '\n' +
     '    <div class="col-xs-6 no-pad">\n' +
-    '        <button ng-click="buy()" class="buy-button btn-success btn-lg btn-block btn">BUY</button>\n' +
+    '      <button ng-click="buy()" \n' +
+    '        ng-disabled="!userStatus.userCanBuy || limits.transactDisabledPendingFirstTransaction"\n' +
+    '        class="buy-button btn-success btn-lg btn-block btn">BUY</button>\n' +
     '    </div>\n' +
     '    <div class="col-xs-6 no-pad">\n' +
-    '        <button ng-click="sell()" class="sell-button btn-primary btn-lg btn-block btn">SELL</button>\n' +
+    '      <button ng-click="sell()"\n' +
+    '        ng-disabled="!userStatus.userCanSell || limits.transactDisabledPendingFirstTransaction"\n' +
+    '        class="sell-button btn-primary btn-lg btn-block btn">SELL</button>\n' +
     '    </div>\n' +
     '  </div>\n' +
     '</div>\n' +
@@ -11218,44 +11334,42 @@ module.run(['$templateCache', function($templateCache) {
     '<div account-summary></div>\n' +
     '\n' +
     '<div ng-if="userStatus.userCanTransact && transactions.length" class="exchange-transactions-summary ng-trans ng-trans-fade-up easeOutSine">\n' +
-    '\n' +
     '  <div class="transactions row">\n' +
-    '\n' +
     '    <h4 class="transactions-header col-xs-12">Recent Transactions</h4>\n' +
+    '    <table ng-model="transactions" class="table table-bordered table-striped col-xs-12 no-pad">\n' +
+    '      <tr ng-repeat="t in transactions | limitTo:5" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\', \'type-buy\': t.type == \'BUY\', \'type-sell\': t.type == \'SELL\' }">\n' +
+    '        <td>\n' +
+    '          <table class="table-mini">\n' +
+    '            <tr>\n' +
+    '              <td class="datetime text-left">\n' +
+    '                <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate }}</span>\n' +
+    '                <span ng-if="!t.estimatedDeliveryDate && t.transactionDate" class="date">{{ (t.transactionDate | date:\'yyyy-MM-dd\') }} <span class="seperator">|<span> <span class="time">{{ t.transactionDate | date:\'h:m a\' }}</span></span>\n' +
+    '              </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
+    '            </tr>\n' +
+    '          </table>\n' +
+    '        </td>\n' +
     '\n' +
-    '    <div class="col-xs-12 no-pad">\n' +
-    '      <table ng-model="transactions" class="table table-bordered table-striped">\n' +
-    '        <tr ng-repeat="t in transactions" ng-class="{ \'processing\': t.status==\'PROCESSING\', \'complete\': t.status==\'COMPLETE\' }">\n' +
-    '          <td>\n' +
-    '            <table class="table-mini">\n' +
-    '              <tr>\n' +
-    '                <td class="date text-left">{{ t.estimatedDeliveryDate || \'&nbsp;\' }}</td></td>\n' +
-    '              </tr>\n' +
-    '              <tr>\n' +
-    '                <td class="type text-left"><span ng-class="{ \'buy\': t.type==\'BUY\', \'sell\': t.type==\'SELL\' }">{{ t.type || \'type\' }}</span></td>\n' +
-    '              </tr>\n' +
-    '              <tr>\n' +
-    '                <td class="status text-left">{{ t.status || \'status\' }}</td>\n' +
-    '              </tr>\n' +
-    '            </table>\n' +
-    '          </td>\n' +
-    '\n' +
-    '          <td>\n' +
-    '            <table class="table-mini">\n' +
-    '              <tr>\n' +
-    '                <td class="subtotal text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
-    '              </tr>\n' +
-    '              <tr>\n' +
-    '                <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
-    '              </tr>\n' +
-    '              <tr>\n' +
-    '                <td class="price text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
-    '              </tr>\n' +
-    '            </table>\n' +
-    '          </td>\n' +
-    '        </tr>\n' +
-    '      </table>\n' +
-    '    </div>\n' +
+    '        <td>\n' +
+    '          <table class="table-mini">\n' +
+    '            <tr>\n' +
+    '              <td class="qty text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '              <td class="price-each text-right"><strong>Price:</strong> ${{ t.price || \'price each\' }}</td>\n' +
+    '            </tr>\n' +
+    '          </table>\n' +
+    '        </td>\n' +
+    '      </tr>\n' +
+    '    </table>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
@@ -11303,6 +11417,25 @@ module.run(['$templateCache', function($templateCache) {
     '  </form>\n' +
     '</div>\n' +
     '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/user/partials/increaseLimits.html',
+    '<iframe id="glidera-iframe" ng-src="{{ iframeUrl }}" frameBorder="0"></iframe>\n' +
+    '\n' +
+    '<div class="return-to-dashboard relative ng-trans ng-trans-fade-up easeOutSine">\n' +
+    '  <div class="row">\n' +
+    '    <div class="col-xs-12 no-pad">\n' +
+    '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
+    '  </div>\n' +
+    '</div>');
 }]);
 })();
 
