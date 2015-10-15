@@ -1398,8 +1398,8 @@ public class NavigationActivity extends ActionBarActivity
             }
             NavigationActivity.this.DismissFadingDialog();
             DisplayLoginOverlay(true);
-            switchFragmentThread(Tabs.BD.ordinal());
             resetApp();
+            switchFragmentThread(Tabs.BD.ordinal());
             mLogoutTask = null;
         }
     }
