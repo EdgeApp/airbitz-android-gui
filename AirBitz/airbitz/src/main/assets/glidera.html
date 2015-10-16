@@ -578,16 +578,10 @@ html body .list-group a.list-group-item {
 }
 html body .list-group .list-group-item.header,
 html body .list-group a.list-group-item.header {
-  background-color: white);
+  margin-bottom: 0;
   color: #003e61;
-}
-html body .list-group .list-group-item.header:hover,
-html body .list-group a.list-group-item.header:hover,
-html body .list-group .list-group-item.header:active,
-html body .list-group a.list-group-item.header:active,
-html body .list-group .list-group-item.header:focus,
-html body .list-group a.list-group-item.header:focus {
-  background-color: white;
+  border-bottom: 1px solid #ddd;
+  background: #f9f9f9;
 }
 html body .list-group .list-group-item.header:hover,
 html body .list-group a.list-group-item.header:hover,
@@ -601,8 +595,11 @@ html body .list-group a.list-group-item.header:visited {
 }
 html body .list-group .list-group-item .list-group-item-text,
 html body .list-group a.list-group-item .list-group-item-text {
-  color: #333333;
-  font-size: 10px !important;
+  font-size: 12px !important;
+}
+html body .list-group .list-group-item:last-child,
+html body .list-group a.list-group-item:last-child {
+  border-bottom: 1px solid #ddd;
 }
 html body input::-webkit-input-placeholder {
   color: #777;
@@ -795,9 +792,17 @@ html body .user-account-form {
 }
 .exchange-ticker .live-ticker .live-price-rate .price-rate-label {
   color: #fff;
+  font-size: 10px;
+  font-weight: 700;
 }
 .exchange-ticker .live-ticker .live-price-rate .price-rate-data {
   color: #80c342;
+}
+.exchange-ticker .live-price-expiration {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 1px 3px;
+  font-size: 12px;
 }
 .exchange-ticker .live-price-expiration .expiration-label {
   color: #ff5656;
@@ -1138,6 +1143,10 @@ _bridge = function() {
       return _native.readData(key);
     },
 
+    getBtcDenomination: function() {
+      return _handleResponse(_native.getBtcDenomination());
+    },
+
     satoshiToCurrency: function(satoshi, currencyNum) {
       return _handleResponse(_native.satoshiToCurrency(satoshi, currencyNum));
     },
@@ -1214,6 +1223,7 @@ _bridge = function() {
   Airbitz._results = {};
   Airbitz._listeners = {};
   Airbitz._walletListener = null;
+  Airbitz._denomListener = null;
   Airbitz._bridge = _bridge();
 
   Airbitz.core.bitidAddress = function(uri, message) {
@@ -1257,6 +1267,10 @@ _bridge = function() {
     return (data && data !== 'undefined') ? JSON.parse(data) : data;
   };
 
+  Airbitz.core.getBtcDenomination = function() {
+    return Airbitz._bridge.getBtcDenomination();
+  }
+
   Airbitz.core.satoshiToCurrency = function(satoshi, currencyNum) {
     return Airbitz._bridge.satoshiToCurrency(satoshi, currencyNum);
   }
@@ -1286,6 +1300,19 @@ _bridge = function() {
       var j = JSON.parse(newWallet);
       if (j.success) {
         Airbitz._walletListener(j.result);
+      }
+    }
+  };
+
+  Airbitz.core.setDenominationChangeListener = function(callback) {
+    Airbitz._denomListener = callback;
+  };
+
+  Airbitz._bridge.denominationUpdate = function(newDenom) {
+    if (Airbitz._denomListener) {
+      var j = JSON.parse(newDenom);
+      if (j.success) {
+        Airbitz._denomListener(j.result.value);
       }
     }
   };
@@ -9195,12 +9222,21 @@ var Glidera = (function () {
       });
     });
 
+    $scope.$on('DenominationChange', function(events, args){
+      var val = $filter('satoshiToDenom')($scope.order.orderValueSatoshi);
+      $scope.$apply(function() {
+        $scope.order.orderValueInput = val;
+        $scope.convertBtcValue(val);
+      });
+    });
+
     $scope.convertFiatValue = function(input) {
       if (typeof(input)==='undefined') input = 0;
 
       var price = ($scope.order.orderAction == 'buy')
                 ? Prices.currentBuy.price : Prices.currentSell.price;
       var btcValue = input / parseFloat(price);
+      $scope.order.orderValueSatoshi = btcValue * 100000000;
       $scope.order.orderBtcInput = parseFloat($filter('roundBtc')(btcValue));
     };
 
@@ -9209,7 +9245,10 @@ var Glidera = (function () {
 
       var price = ($scope.order.orderAction == 'buy')
           ? Prices.currentBuy.price : Prices.currentSell.price;
-      var output = input * price;
+      var btc = $filter('valToBtc')(input);
+      var output = btc * price;
+      $scope.order.orderBtcInput = btc;
+      $scope.order.orderValueSatoshi = btc * 100000000;
       $scope.order.orderFiatInput = parseFloat($filter('roundFiat')(parseFloat(output)));
     };
     $scope.next = function() {
@@ -9586,13 +9625,31 @@ var Glidera = (function () {
     $scope.account = UserFactory.getUserAccount();
     $scope.userStatus = UserFactory.getUserAccountStatus();
     $scope.limits = Limits.getLimits();
-    $scope.showOptions = !$scope.userStatus.userCanTransact;
     $scope.debugClicks = 0;
     $scope.bankMessage = 'Tap to edit';
+    $scope.viewAccountBtn = $sce.trustAsHtml('<button class="btn btn-primary btn-xs">+ View Account</button>');
+    $scope.hideAccountBtn = $sce.trustAsHtml('<button class="btn btn-default btn-xs">- Hide Account</button>')
+    $scope.accountButton = $scope.viewAccountBtn;
+
+    function showOptionStatus() {
+      if ($scope.userStatus.userCanTransact) {
+        $scope.showOptions = Airbitz.core.readData('showOptions');
+      } else {
+        $scope.showOptions = true;
+      }
+      console.log("SHOW OPTIONS:" + $scope.showOptions);
+
+      if ($scope.showOptions) {
+        $scope.accountButton = $scope.hideAccountBtn;
+      } else {
+        $scope.accountButton = $scope.viewAccountBtn;
+      }
+    }
+    showOptionStatus();
 
     UserFactory.fetchUserAccountStatus().then(function(b) {
+      showOptionStatus();
       $scope.userStatus = b;
-      $scope.showOptions = !$scope.userStatus.userCanTransact;
       $scope.extraComplete = b.userSsnIsSetup && b.userOowIsSetup;
     }).then(function() {
       return UserFactory.getEmailAddress();
@@ -9658,12 +9715,18 @@ var Glidera = (function () {
     };
 
     $scope.showAccountOptions = function() {
-      $scope.showOptions = !$scope.showOptions;
-    };
+      if($scope.userStatus.userCanTransact) {
 
-    $scope.increaseSpendingLimits = function() {
-        Airbitz.ui.title('Additional User Info');
-        window.location = UserFactory.userSetupRedirect();
+        if ($scope.showOptions) {
+          $scope.showOptions = !$scope.showOptions;
+          $scope.accountButton = $scope.viewAccountBtn;
+        } else {
+          $scope.showOptions = !$scope.showOptions;
+          $scope.accountButton = $scope.hideAccountBtn
+        }
+        Airbitz.core.writeData('showOptions', $scope.showOptions);
+        console.log(Airbitz.core.readData('showOptions'));
+      };
     };
   }
 
@@ -9811,7 +9874,9 @@ var Glidera = (function () {
     .filter('statusFilter', statusFilter)
     .filter('titlecase', titleCase)
     .filter('roundFiat', roundFiat)
-    .filter('roundBtc', roundBtc);
+    .filter('roundBtc', roundBtc)
+    .filter('valToBtc', valToBtc)
+    .filter('satoshiToDenom', satoshiToDenom);
 
   function statusFilter() {
     return function(status) {
@@ -9858,14 +9923,44 @@ var Glidera = (function () {
   }
 
   function roundFiat(){
-    return function(val,to){
+    return function(val, to){
         return val.toFixed(to || 2);
     }
   }
 
   function roundBtc(){
-    return function(val,to){
-        return val.toFixed(to || 5);
+    return function(val, to){
+      var d = Airbitz.cryptoDenom;
+      if (d == "mBTC") {
+        return (val * 100).toFixed(to || 3);
+      } else if (d == "bits") {
+        return (val * 1000000).toFixed(to || 2);
+      }
+      return val.toFixed(to || 5);
+    }
+  }
+
+  function valToBtc() {
+    return function(val){
+      var d = Airbitz.cryptoDenom;
+      if (d == "mBTC") {
+        return val / 1000;
+      } else if (d == "bits") {
+        return val / 1000000;
+      }
+      return val;
+    }
+  }
+
+  function satoshiToDenom() {
+    return function(val) {
+      if ("bits" == Airbitz.cryptoDenom) {
+        return val / 100;
+      } else if ("mBTC" == Airbitz.cryptoDenom) {
+        return val / 100000;
+      } else {
+        return val / 100000000;
+      }
     }
   }
 
@@ -10701,10 +10796,18 @@ run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
       $rootScope.currentWallet = newWallet;
     });
   });
+  Airbitz.cryptoDenom = Airbitz.core.getBtcDenomination();
+  $rootScope.cryptoDenom = Airbitz.core.getBtcDenomination();
+  Airbitz.core.setDenominationChangeListener(function(newDenom) {
+    $rootScope.$apply(function() {
+      Airbitz.cryptoDenom = newDenom;
+      $rootScope.cryptoDenom = newDenom;
+    });
+    $rootScope.$broadcast('DenominationChange', newDenom);
+  });
   $rootScope.exchange = DataFactory.getExchange();
   $rootScope.countryCode = Airbitz.config.get('COUNTRY_CODE');
   $rootScope.countryName = Airbitz.config.get('COUNTRY_NAME');
-  $rootScope.cryptoDenom = 'BTC';
 }]);
 
 </script>
@@ -10842,21 +10945,21 @@ module.run(['$templateCache', function($templateCache) {
     '        <label for="inputFiatAmount">Amount to <span class="label label-outline">{{ order.orderAction | uppercase }}</span></label>\n' +
     '        <div class="input-group">\n' +
     '          <input\n' +
-    '            ng-model="order.orderBtcInput"\n' +
-    '            ng-change="convertBtcValue(order.orderBtcInput)"\n' +
+    '            ng-model="order.orderValueInput"\n' +
+    '            ng-change="convertBtcValue(order.orderValueInput)"\n' +
     '            type="number"\n' +
-    '            name="orderBtcInput"\n' +
+    '            name="orderValueInput"\n' +
     '            class="right-square"\n' +
     '            id="inputBtcAmount"\n' +
     '            placeholder="Enter Amount"\n' +
     '            step="any"\n' +
     '            autocorrect="off"\n' +
     '            required="" />\n' +
-    '          <span class="input-group-addon">BTC</span>\n' +
+    '          <span class="input-group-addon">{{ cryptoDenom }}</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
-    '             ng-show="form.$submitted || form.orderBtcInput.$touched">\n' +
-    '          <div ng-show="form.orderBtcInput.$error.required" class="label label-danger">Required</div>\n' +
+    '             ng-show="form.$submitted || form.orderValueInput.$touched">\n' +
+    '          <div ng-show="form.orderValueInput.$error.required" class="label label-danger">Required</div>\n' +
     '        </div>\n' +
     '      </div>\n' +
     '\n' +
@@ -10939,7 +11042,7 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Amount</td>\n' +
-    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ exchange.cryptoDenom }}</td>\n' +
+    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal</td>\n' +
@@ -11008,7 +11111,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <td>\n' +
     '        <table class="table-mini">\n' +
     '          <tr>\n' +
-    '            <td class="qty text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '            <td class="qty text-right">{{ t.qty || 0 | roundBtc }} <strong>{{ cryptoDenom }}</strong></td>\n' +
     '          </tr>\n' +
     '          <tr>\n' +
     '            <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
@@ -11027,7 +11130,8 @@ module.run(['$templateCache', function($templateCache) {
     '    <div class="col-xs-12 no-pad">\n' +
     '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
     '  </div>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
@@ -11139,7 +11243,8 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/prices/partials/rate.html',
     '<div class="live-price-rate">\n' +
-    '  <span class="price-rate-label">1 BTC =</span> <span class="price-rate-data">{{ price }} {{ currency }} </span>\n' +
+    '  <div class="price-rate-data">{{ price }} {{ currency }} </div>\n' +
+    '  <div class="price-rate-label">BTC Rate</div>\n' +
     '</div>\n' +
     '');
 }]);
@@ -11153,9 +11258,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/receipt/partials/receipt.html',
-    '<h2 class="order-receipt-heading">\n' +
-    '  <img class="bitcoin-logo" src="./img/bitcoin-icon-logo.png"> Order Receipt\n' +
-    '</h2>\n' +
+    '<h2 class="order-receipt-heading app-margin-top">Order Receipt</h2>\n' +
     '\n' +
     '<div class="order-review row">\n' +
     '  <div class="col-xs-12">\n' +
@@ -11189,7 +11292,7 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>BTC Amount:</td>\n' +
-    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ exchange.cryptoDenom }}</td>\n' +
+    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal:</td>\n' +
@@ -11233,7 +11336,7 @@ module.run(['$templateCache', function($templateCache) {
     '    <ul class="list-group">\n' +
     '      <li ng-if="userStatus.userCanTransact" ng-click="showAccountOptions()" class="header list-group-item">\n' +
     '        <span class="list-group-item-heading">{{ account.firstName || \'first\' | titlecase }} {{ account.lastName || \'last\' | titlecase }}</span>\n' +
-    '        <p class="list-group-item-text">Tap to view your account details</p>\n' +
+    '        <div ng-bind-html="accountButton">{{ accountButton }}</div>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="{\'label-success\': userStatus.userCanTransact}">{{ userStatus.userCanTransact | statusFilter }}</label>\n' +
     '      </li>\n' +
@@ -11245,25 +11348,25 @@ module.run(['$templateCache', function($templateCache) {
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="verifyPhone" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Mobile Phone</span>\n' +
-    '        <p class="list-group-item-text">Tap to edit</p>\n' +
+    '        <p class="list-group-item-text text-primary">Tap to edit</p>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="(userStatus.userPhoneIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userPhoneIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="account" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Account Information</span>\n' +
-    '        <p class="list-group-item-text">Tap to edit</p>\n' +
+    '        <p class="list-group-item-text text-primary">Tap to edit</p>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="(userStatus.personalInfoState == \'VERIFIED\') ? \'label-success\' : \'label-danger\'">{{ userStatus.personalInfoState == \'VERIFIED\' | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="bankAccount" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Bank Account</span>\n' +
-    '        <p class="list-group-item-text">{{ bankMessage }}</p>\n' +
+    '        <p class="list-group-item-text text-primary">{{ bankMessage }}</p>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="(userStatus.userBankAccountIsSetup) ? \'label-success\' : \'label-danger\'">{{ userStatus.userBankAccountIsSetup | statusFilter }}</label>\n' +
     '      </li>\n' +
     '      <li ng-if="showOptions" ui-sref="increaseLimits" class="ng-trans ng-trans-scale-up easeOutBack list-group-item">\n' +
     '        <span class="list-group-item-heading">Increase Spending Limits</span>\n' +
-    '        <p class="list-group-item-text">Tap to edit</p>\n' +
+    '        <p class="list-group-item-text text-primary">Tap to edit</p>\n' +
     '        <label class="status label pull-right"\n' +
     '               ng-class="(extraComplete) ? \'label-success\' : \'label-danger\'">{{ extraComplete | statusFilter }}</label>\n' +
     '      </li>\n' +
@@ -11302,11 +11405,9 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/dashboard.html',
-    '<div>\n' +
-    '  <div class="exchange-ticker row">\n' +
-    '    <div class="live-ticker text-right">\n' +
-    '      <div price-update price-type="{{ order.orderAction }}"></div>\n' +
-    '    </div>\n' +
+    '<div class="exchange-ticker row">\n' +
+    '  <div class="live-ticker text-right">\n' +
+    '    <div price-update price-type="{{ order.orderAction }}"></div>\n' +
     '  </div>\n' +
     '</div>\n' +
     '\n' +
@@ -11358,7 +11459,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>\n' +
     '          <table class="table-mini">\n' +
     '            <tr>\n' +
-    '              <td class="qty text-right">{{ t.qty || \'qty\' }} <strong>BTC</strong></td>\n' +
+    '              <td class="qty text-right">{{ t.qty || 0 | roundBtc }} <strong>{{ cryptoDenom }} </strong></td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '              <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
