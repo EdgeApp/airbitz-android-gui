@@ -64,6 +64,7 @@ public class PluginFramework {
     public static String JS_CALLBACK = "javascript:Airbitz._callbacks[%s]('%s');";
     public static String JS_EXCHANGE_UPDATE = "javascript:Airbitz._bridge.exchangeRateUpdate();";
     public static String JS_WALLET_UPDATE = "javascript:Airbitz._bridge.walletChanged('%s');";
+    public static String JS_DENOM_UPDATE = "javascript:Airbitz._bridge.denominationUpdate('%s');";
 
     static public class Plugin {
         String pluginId;
@@ -347,6 +348,11 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
+        public String getBtcDenomination() {
+            return jsonResult(new JsonValue<String>(api.getDefaultBTCDenomination())).toString();
+        }
+
+        @JavascriptInterface
         public String satoshiToCurrency(long satoshi, int currencyNum) {
             double currency = api.SatoshiToCurrency(satoshi, currencyNum);
             return jsonResult(new JsonValue<Double>(currency)).toString();
@@ -439,6 +445,11 @@ public class PluginFramework {
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
         loadUrl(String.format(JS_WALLET_UPDATE, jsonResult(new PluginWallet(wallet)).toString()));
+    }
+
+    public void updateDenomation() {
+        String denomination = mCoreAPI.getDefaultBTCDenomination();
+        loadUrl(String.format(JS_DENOM_UPDATE, jsonResult(new JsonValue(denomination)).toString()));
     }
 
     public static boolean isInsidePlugin(Stack<String> nav) {

@@ -142,7 +142,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
         cleanupWebview();
         // Allows use to nest iframes from 3rd parties
-        CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
+        if (Build.VERSION_CODES.LOLLIPOP < Build.VERSION.SDK_INT) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
+        }
 
         mFramework.buildPluginView(mPlugin, mActivity, mWebView);
         mWebView.setBackgroundColor(0x00000000);
@@ -194,6 +196,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         if (mWallet != null) {
             mFramework.setWallet(mWallet);
         }
+        mFramework.updateDenomation();
     }
 
     @Override
@@ -209,6 +212,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
         mFramework.setWallet(newWallet);
+        mFramework.updateDenomation();
     }
 
     private void resizeWebView() {
