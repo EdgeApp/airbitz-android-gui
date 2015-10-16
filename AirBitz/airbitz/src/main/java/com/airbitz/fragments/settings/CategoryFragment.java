@@ -33,6 +33,7 @@ package com.airbitz.fragments.settings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -77,6 +78,7 @@ public class CategoryFragment extends BaseFragment {
     private SettingsCategoryAdapter mCategoryAdapter;
     private List<String> mCategories;
     private List<String> mCurrentCategories;
+    private SaveTask mSaveTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,8 +121,10 @@ public class CategoryFragment extends BaseFragment {
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveAllChanges();
-                mActivity.popFragment();
+                if (mSaveTask == null) {
+                    mSaveTask = new SaveTask();
+                    mSaveTask.execute();
+                }
             }
         });
 
@@ -174,6 +178,20 @@ public class CategoryFragment extends BaseFragment {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mSaveTask != null) {
+            mSaveTask.cancel(true);
+            mSaveTask = null;
         }
     }
 
@@ -243,6 +261,33 @@ public class CategoryFragment extends BaseFragment {
         mCategoryAdapter.notifyDataSetChanged();
 
         mChanged = true;
+    }
+
+    public class SaveTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            mActivity.showModalProgress(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            saveAllChanges();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            mSaveTask = null;
+
+            mActivity.showModalProgress(false);
+            mActivity.popFragment();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mSaveTask = null;
+            mActivity.showModalProgress(false);
+        }
     }
 
     private void saveAllChanges() {
