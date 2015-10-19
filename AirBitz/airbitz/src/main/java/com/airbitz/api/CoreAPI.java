@@ -3129,10 +3129,11 @@ public class CoreAPI {
         return core.ABC_VERSION;
     }
 
-    public void uploadLogs() {
+    public boolean uploadLogs() {
         tABC_Error Error = new tABC_Error();
         core.ABC_UploadLogs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
                 Error);
+        return Error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
     //*********************** Two Factor Authentication
