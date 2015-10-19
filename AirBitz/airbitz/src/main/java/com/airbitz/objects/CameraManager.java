@@ -284,7 +284,6 @@ public class CameraManager {
                     }
                     mCamera = null;
                 }
-                throw e;
             }
         }
     }
