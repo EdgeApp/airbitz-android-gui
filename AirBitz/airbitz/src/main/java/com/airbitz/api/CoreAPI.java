@@ -32,6 +32,7 @@
 package com.airbitz.api;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -44,6 +45,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -100,6 +102,22 @@ public class CoreAPI {
     public static double SATOSHI_PER_mBTC = 1E5;
     public static double SATOSHI_PER_uBTC = 1E2;
     public static int OTP_RESET_DELAY_SECS = 60 * 60 * 24 * 7;
+
+    public static final String WALLET_LOADING_START_ACTION = "com.airbitz.notifications.wallets_data_loading_start";
+    public static final String WALLET_LOADING_STATUS_ACTION = "com.airbitz.notifications.wallets_data_loaded";
+    public static final String WALLETS_ALL_LOADED_ACTION = "com.airbitz.notifications.all_wallets_data_loaded";
+    public static final String WALLETS_LOADING_BITCOIN_ACTION = "com.airbitz.notifications.bitcoin_data_loading_start";
+    public static final String WALLETS_LOADED_BITCOIN_ACTION = "com.airbitz.notifications.bitcoin_data_loaded";
+    public static final String WALLETS_RELOADED_ACTION = "com.airbitz.notifications.wallet_data_reloaded";
+
+    public static final String WALLET_UUID = "com.airbitz.wallet_uuid";
+    public static final String WALLETS_LOADED_TOTAL = "com.airbitz.wallets_loaded_total";
+    public static final String WALLETS_TOTAL = "com.airbitz.wallets_total";
+
+    public static final String EXCHANGE_RATE_UPDATED_ACTION = "com.airbitz.notifications.exchange_rate_update";
+    public static final String DATASYNC_UPDATE_ACTION = "com.airbitz.notifications.data_sync_update";
+
+    private static final int TX_LOADED_DELAY = 1000 * 20;
 
     static {
         System.loadLibrary("abc");
@@ -223,6 +241,9 @@ public class CoreAPI {
                 mIncomingTxID = info.getSzTxID();
                 mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
                 mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
+
+                mPeriodicTaskHandler.removeCallbacks(mNotifyBitcoinLoaded);
+                mPeriodicTaskHandler.postDelayed(mNotifyBitcoinLoaded, TX_LOADED_DELAY);
             }
             else {
                 Log.d(TAG, "incoming bitcoin event has no listener");
@@ -268,6 +289,14 @@ public class CoreAPI {
     public void setOnIncomingBitcoinListener(OnIncomingBitcoin listener) {
         mOnIncomingBitcoin = listener;
     }
+
+    final Runnable mNotifyBitcoinLoaded = new Runnable() {
+        public void run() {
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                new Intent(WALLETS_LOADED_BITCOIN_ACTION));
+        }
+    };
+
     final Runnable IncomingBitcoinUpdater = new Runnable() {
         public void run() {
             if (null != mOnIncomingBitcoin) {
@@ -306,6 +335,8 @@ public class CoreAPI {
             mCoreSettings = null;
             startWatchers();
             reloadWallets();
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                new Intent(DATASYNC_UPDATE_ACTION));
             if (null != mOnDataSync) {
                 mOnDataSync.OnDataSync();
             }
@@ -520,6 +551,8 @@ public class CoreAPI {
         @Override
         protected void onPostExecute(List<Wallet> walletList) {
             mCoreWallets = walletList;
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                new Intent(WALLETS_RELOADED_ACTION));
             if (mOnWalletLoadedListener != null) {
                 Log.d(TAG, "wallets loaded");
                 mOnWalletLoadedListener.onWalletsLoaded();
@@ -2046,7 +2079,15 @@ public class CoreAPI {
         ht.start();
         mWatcherHandler = new Handler(ht.getLooper());
 
-        List<String> uuids = loadWalletUUIDs();
+        final List<String> uuids = loadWalletUUIDs();
+        final int walletCount = uuids.size();
+        mCoreHandler.post(new Runnable() {
+            public void run() {
+                // Started loading...
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                    new Intent(WALLET_LOADING_START_ACTION));
+            }
+        });
         for (final String uuid : uuids) {
             mCoreHandler.post(new Runnable() {
                 public void run() {
@@ -2055,21 +2096,24 @@ public class CoreAPI {
 
                     startWatcher(uuid);
                     mMainHandler.sendEmptyMessage(RELOAD);
+
+                    Intent intent = new Intent(WALLET_LOADING_STATUS_ACTION);
+                    intent.putExtra(WALLET_UUID, uuid);
+                    intent.putExtra(WALLETS_LOADED_TOTAL, mWatcherTasks.size());
+                    intent.putExtra(WALLETS_TOTAL, walletCount);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                 }
             });
         }
         mCoreHandler.post(new Runnable() {
             public void run() {
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                    new Intent(WALLETS_ALL_LOADED_ACTION));
+
+                startBitcoinUpdates();
                 startExchangeRateUpdates();
-            }
-        });
-        mCoreHandler.post(new Runnable() {
-            public void run() {
                 startFileSyncUpdates();
-            }
-        });
-        mCoreHandler.post(new Runnable() {
-            public void run() {
+
                 mMainHandler.sendEmptyMessage(RELOAD);
             }
         });
@@ -2147,6 +2191,13 @@ public class CoreAPI {
         mExchangeHandler.sendEmptyMessage(LAST);
     }
 
+    public void startBitcoinUpdates() {
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+            new Intent(WALLETS_LOADING_BITCOIN_ACTION));
+        mPeriodicTaskHandler.removeCallbacks(mNotifyBitcoinLoaded);
+        mPeriodicTaskHandler.postDelayed(mNotifyBitcoinLoaded, TX_LOADED_DELAY);
+    }
+
     public void startExchangeRateUpdates() {
         updateExchangeRates();
     }
@@ -2206,6 +2257,8 @@ public class CoreAPI {
     }
 
     public void onExchangeRatesUpdated() {
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+            new Intent(EXCHANGE_RATE_UPDATED_ACTION));
         if (!mExchangeRateRemovers.isEmpty()) {
             for (OnExchangeRatesChange i : mExchangeRateRemovers) {
                 if( mExchangeRateObservers.contains(i)) {
