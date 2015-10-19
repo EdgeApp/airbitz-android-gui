@@ -64,6 +64,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -362,6 +363,14 @@ public class NavigationActivity extends ActionBarActivity
 
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CoreAPI.WALLET_LOADING_START_ACTION);
+        filter.addAction(CoreAPI.WALLET_LOADING_STATUS_ACTION);
+        filter.addAction(CoreAPI.WALLETS_ALL_LOADED_ACTION);
+        filter.addAction(CoreAPI.WALLETS_LOADING_BITCOIN_ACTION);
+        filter.addAction(CoreAPI.WALLETS_LOADED_BITCOIN_ACTION);
+        mWalletsLoadedReceiver = new WalletReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mWalletsLoadedReceiver, filter);
     }
 
     @Override
@@ -372,8 +381,8 @@ public class NavigationActivity extends ActionBarActivity
             AirbitzApplication.setFragmentStack(mNavStacks);
             AirbitzApplication.setLastNavTab(mNavThreadId);
         }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mWalletsLoadedReceiver);
     }
-
 
     public boolean onTouch(View view, MotionEvent event) {
 
@@ -1486,7 +1495,9 @@ public class NavigationActivity extends ActionBarActivity
         public void onWalletUpdated();
     }
 
-    public void LoginNow(String username, char[] password) {
+    public void LoginNow(String username, char[] password, boolean newDevice) {
+        mWalletsLoadedReceiver.mShowMessages = newDevice;
+
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
         mDrawerAccount.setText(username);
@@ -1635,6 +1646,14 @@ public class NavigationActivity extends ActionBarActivity
         ShowFadingDialog(message, null, timeout, cancelable);
     }
 
+    public void ShowOrUpdateDialog(String message, int timeout, boolean cancelable) {
+        if (mFadingDialog == null || !mFadingDialog.isShowing()) {
+            ShowFadingDialog(message, null, timeout, cancelable);
+        } else {
+            mFadingDialog.setMessage(message);
+        }
+    }
+
     private MaterialDialog mFadingDialog = null;
     public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         ShowFadingDialog(null, message, thumbnail, timeout, cancelable);
@@ -1646,7 +1665,9 @@ public class NavigationActivity extends ActionBarActivity
                 @Override
                 public void run() {
                     if (timeout == 0) {
-                        mFadingDialog.dismiss();
+                        if (mFadingDialog != null) {
+                            mFadingDialog.dismiss();
+                        }
                         return;
                     }
                     if (mFadingDialog != null) {
@@ -1657,7 +1678,8 @@ public class NavigationActivity extends ActionBarActivity
                                 .content(message)
                                 .contentColorRes(android.R.color.white)
                                 .theme(Theme.LIGHT)
-                                .backgroundColorRes(R.color.colorPrimary);
+                                .backgroundColorRes(R.color.colorPrimary)
+                                .widgetColorRes(android.R.color.white);
                     if (!cancelable) {
                         builder.progress(true, 0);
                     }
@@ -1668,6 +1690,21 @@ public class NavigationActivity extends ActionBarActivity
                     TextView tv = mFadingDialog.getContentView();
                     tv.setTypeface(NavigationActivity.latoRegularTypeFace);
 
+                    mFadingDialog.show();
+
+                    View view = mFadingDialog.getView();
+                    if (cancelable) {
+                        View.OnClickListener dismiss = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mFadingDialog != null) {
+                                    mFadingDialog.dismiss();
+                                }
+                            }
+                        };
+                        view.setOnClickListener(dismiss);
+                        tv.setOnClickListener(dismiss);
+                    }
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
                     fadeOut.setDuration(getResources().getInteger(R.integer.alert_fadeout_time_default));
@@ -1687,36 +1724,6 @@ public class NavigationActivity extends ActionBarActivity
                         }
                     });
 
-                    mFadingDialog.show();
-
-                    ProgressBar progress = (ProgressBar) mFadingDialog.getView().findViewById(android.R.id.progress);
-                    if (Build.VERSION_CODES.LOLLIPOP <= Build.VERSION.SDK_INT
-                            && !cancelable
-                            && null != progress) {
-                        int[][] states = new int[][] {
-                            new int[] { android.R.attr.state_enabled},
-                            new int[] { -android.R.attr.state_enabled},
-                        };
-                        int[] colors = new int[] {
-                            Color.WHITE,
-                            Color.WHITE
-                        };
-                        progress.setIndeterminateTintList(
-                            new ColorStateList(states, colors).withAlpha(200));
-                    }
-                    View view = mFadingDialog.getView();
-                    if (cancelable) {
-                        View.OnClickListener dismiss = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (mFadingDialog != null) {
-                                    mFadingDialog.dismiss();
-                                }
-                            }
-                        };
-                        view.setOnClickListener(dismiss);
-                        tv.setOnClickListener(dismiss);
-                    }
                     view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
@@ -2488,4 +2495,45 @@ public class NavigationActivity extends ActionBarActivity
         Dialog confirmDialog = builder.create();
         confirmDialog.show();
     }
+
+    private WalletReceiver mWalletsLoadedReceiver;
+    class WalletReceiver extends BroadcastReceiver {
+        public boolean mDataLoaded = false;
+        public boolean mShowMessages = false;
+
+        private void showMessage(String message) {
+            if (mShowMessages) {
+                NavigationActivity.this.ShowOrUpdateDialog(message,
+                    NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
+            }
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (CoreAPI.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
+                if (mShowMessages) {
+                    showMessage(context.getString(R.string.loading_wallets));
+                }
+            } else if (CoreAPI.WALLET_LOADING_STATUS_ACTION.equals(intent.getAction())) {
+                int complete = intent.getIntExtra(CoreAPI.WALLETS_LOADED_TOTAL, -1);
+                int total = intent.getIntExtra(CoreAPI.WALLETS_TOTAL, -1);
+                if (total >= 0) {
+                    showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+                } else {
+                    showMessage(context.getString(R.string.loading_wallets));
+                }
+            } else if (CoreAPI.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
+                mDataLoaded = true;
+                showMessage(context.getString(R.string.loading_transactions));
+            } else if (CoreAPI.WALLETS_LOADING_BITCOIN_ACTION.equals(intent.getAction())) {
+                if (mDataLoaded) {
+                    showMessage(context.getString(R.string.loading_transactions));
+                }
+            } else if (CoreAPI.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
+                NavigationActivity.this.DismissFadingDialog();
+                mDataLoaded = true;
+                mShowMessages = true;
+            }
+        }
+    };
 }
