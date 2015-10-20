@@ -40,8 +40,9 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.airbitz.api.AirbitzAPI;
-import com.airbitz.models.BusinessDetail;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.utils.Common;
 
 import com.squareup.picasso.Picasso.LoadedFrom;
@@ -77,12 +78,12 @@ public class AirbitzRequestHandler extends RequestHandler {
     }
 
     private final Context mContext;
-    private AirbitzAPI mAirbitzApi;
+    private DirectoryApi mDirectoryApi;
     private Downloader mDownloader;
 
     public AirbitzRequestHandler(Context context) {
         this.mContext = context;
-        this.mAirbitzApi = AirbitzAPI.getApi();
+        this.mDirectoryApi = DirectoryWrapper.getApi();
         this.mDownloader = new UrlConnectionDownloader(mContext);
         this.mBizIds = new ConcurrentHashMap<Integer, String>();
     }
@@ -128,7 +129,7 @@ public class AirbitzRequestHandler extends RequestHandler {
 
             Uri thumbnail = null;
             if (mBizIds.get(bizId) == null) {
-                BusinessDetail biz = mAirbitzApi.getHttpBusiness(bizId);
+                BusinessDetail biz = mDirectoryApi.getHttpBusiness(bizId);
                 if (biz == null || biz.getSquareImageLink() == null) {
                     return null;
                 }

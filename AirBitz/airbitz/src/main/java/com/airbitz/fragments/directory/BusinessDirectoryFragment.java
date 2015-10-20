@@ -70,11 +70,12 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.VenueAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.directory.BusinessSearchResult;
+import com.airbitz.api.directory.SearchResult;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.SearchResult;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.Common;
 
@@ -437,8 +438,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     private class VenuesTask extends AsyncTask<String, Void, String> {
-
-        AirbitzAPI mApi = AirbitzAPI.getApi();
+        DirectoryApi mApi = DirectoryWrapper.getApi();
         Context mContext;
         String mLatLng;
 

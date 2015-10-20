@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.airbitz.AirbitzApplication;
-import com.airbitz.models.Location;
+import com.airbitz.api.directory.Location;
 
 public class HomeLocation {
     public final static String HOME_LOCATION = "home_location";

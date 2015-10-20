@@ -90,8 +90,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -1887,7 +1888,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected String doInBackground(Void... params) {
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             PackageInfo pInfo;
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);

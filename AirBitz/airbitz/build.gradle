@@ -131,5 +131,6 @@ dependencies {
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
     compile project(':libs:bitbeacon')
+    compile project(':libs:airbitz-directory')
 }
 

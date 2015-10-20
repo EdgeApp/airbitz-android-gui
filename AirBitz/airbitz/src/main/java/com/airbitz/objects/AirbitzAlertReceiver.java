@@ -54,8 +54,9 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -229,7 +230,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
         @Override
         protected String doInBackground(Void... params) {
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             PackageInfo pInfo;
             try {
                 pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
@@ -340,7 +341,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             }
             Log.d(TAG, "LastTime: " + lastTime);
 
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             return api.getNewBusinesses(lastTime, latLong, "100000");
         }
 

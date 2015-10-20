@@ -68,7 +68,8 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -337,7 +338,7 @@ public class ImportFragment extends WalletBaseFragment implements QRCamera.OnSca
 
         @Override
         protected String doInBackground(String... params) {
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             return api.getHiddenBits(params[0]);
         }
 

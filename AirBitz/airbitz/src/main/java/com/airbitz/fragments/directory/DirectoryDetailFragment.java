@@ -61,14 +61,15 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.models.BusinessDetail;
-import com.airbitz.models.Category;
-import com.airbitz.models.Hour;
-import com.airbitz.models.Image;
-import com.airbitz.models.Location;
-import com.airbitz.models.Social;
+import com.airbitz.api.directory.BusinessDetail;
+import com.airbitz.api.directory.Category;
+import com.airbitz.api.directory.Hour;
+import com.airbitz.api.directory.Image;
+import com.airbitz.api.directory.Location;
+import com.airbitz.api.directory.Social;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.Common;
 import com.airbitz.widgets.TouchImageView;
@@ -279,7 +280,7 @@ public class DirectoryDetailFragment extends BaseFragment
     }
 
     private class GetBusinessDetailTask extends AsyncTask<String, Void, String> {
-        AirbitzAPI mApi = AirbitzAPI.getApi();
+        DirectoryApi mApi = DirectoryWrapper.getApi();
 
         public GetBusinessDetailTask() {
         }

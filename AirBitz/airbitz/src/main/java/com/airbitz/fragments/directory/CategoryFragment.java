@@ -47,10 +47,11 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.MoreCategoryAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.Categories;
+import com.airbitz.api.directory.Category;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.models.Category;
-import com.airbitz.models.Categories;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +159,7 @@ public class CategoryFragment extends BaseFragment
     }
 
     class BusinessCategoryAsyncTask extends AsyncTask<String, Integer, Categories> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
 
         @Override
         protected void onPreExecute() {
@@ -191,7 +192,7 @@ public class CategoryFragment extends BaseFragment
 
     private Categories getMoreBusinessCategory(Categories initial, String link) {
         while (!link.equalsIgnoreCase("null")) {
-            String jSOnString = AirbitzAPI.getApi().getRequest(link);
+            String jSOnString = DirectoryWrapper.getApi().getRequest(link);
             Categories jsonParsingResult = null;
             try {
                 jsonParsingResult = new Categories(new JSONObject(jSOnString));
