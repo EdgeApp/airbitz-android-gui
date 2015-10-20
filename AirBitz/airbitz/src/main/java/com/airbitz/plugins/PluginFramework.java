@@ -32,10 +32,13 @@
 package com.airbitz.plugins;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -435,11 +438,9 @@ public class PluginFramework {
     }
 
     public void setup() {
-        mCoreAPI.addExchangeRateChangeListener(exchangeListener);
     }
 
     public void cleanup() {
-        mCoreAPI.removeExchangeRateChangeListener(exchangeListener);
     }
 
     public void setWallet(Wallet wallet) {
@@ -554,10 +555,4 @@ public class PluginFramework {
         mCoreAPI = null;
         mWallet = null;
     }
-
-    CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {
-        @Override
-        public void OnExchangeRatesChange() {
-        }
-    };
 }

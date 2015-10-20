@@ -111,11 +111,21 @@ public class CoreAPI {
     public static final String WALLETS_RELOADED_ACTION = "com.airbitz.notifications.wallet_data_reloaded";
 
     public static final String WALLET_UUID = "com.airbitz.wallet_uuid";
+    public static final String WALLET_TXID = "com.airbitz.txid";
     public static final String WALLETS_LOADED_TOTAL = "com.airbitz.wallets_loaded_total";
     public static final String WALLETS_TOTAL = "com.airbitz.wallets_total";
+    public static final String AMOUNT_SWEPT = "com.airbitz.amount_swept";
 
     public static final String EXCHANGE_RATE_UPDATED_ACTION = "com.airbitz.notifications.exchange_rate_update";
     public static final String DATASYNC_UPDATE_ACTION = "com.airbitz.notifications.data_sync_update";
+    public static final String BLOCKHEIGHT_CHANGE_ACTION = "com.airbitz.notifications.block_height_change";
+    public static final String INCOMING_BITCOIN_ACTION = "com.airbitz.notifications.incoming_bitcoin";
+    public static final String WALLET_SWEEP_ACTION = "com.airbitz.notifications.wallet_sweep_action";
+    public static final String REMOTE_PASSWORD_CHANGE_ACTION = "com.airbitz.notifications.remote_password_change";
+
+    public static final String OTP_ERROR_ACTION = "com.airbitz.notifications.otp_error_action";
+    public static final String OTP_RESET_ACTION = "com.airbitz.notifications.otp_reset_action";
+    public static final String OTP_SECRET = "com.airbitz.otp_secret";
 
     private static final int TX_LOADED_DELAY = 1000 * 20;
 
@@ -231,64 +241,41 @@ public class CoreAPI {
 
     //***************** Callback handling
     public void callbackAsyncBitcoinInfo(long asyncBitCoinInfo_ptr) {
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
         tABC_AsyncBitCoinInfo info = new tABC_AsyncBitCoinInfo(asyncBitCoinInfo_ptr, false);
         tABC_AsyncEventType type = info.getEventType();
 
         Log.d(TAG, "asyncBitCoinInfo callback type = "+type.toString());
-        if(type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
-            if (mOnIncomingBitcoin != null) {
-                mIncomingUUID = info.getSzWalletUUID();
-                mIncomingTxID = info.getSzTxID();
-                mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
-                mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
+        if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingBitCoin) {
+            mIncomingIntent = new Intent(INCOMING_BITCOIN_ACTION);
+            mIncomingIntent.putExtra(WALLET_UUID, info.getSzWalletUUID());
+            mIncomingIntent.putExtra(WALLET_TXID, info.getSzTxID());
 
-                mPeriodicTaskHandler.removeCallbacks(mNotifyBitcoinLoaded);
-                mPeriodicTaskHandler.postDelayed(mNotifyBitcoinLoaded, TX_LOADED_DELAY);
-            }
-            else {
-                Log.d(TAG, "incoming bitcoin event has no listener");
-            }
-        }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
-            if(mOnBlockHeightChange!=null)
-                mPeriodicTaskHandler.post(BlockHeightUpdater);
-            else
-                Log.d(TAG, "block exchange event has no listener");
-        }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
+            // Notify app of new tx
+            mPeriodicTaskHandler.removeCallbacks(IncomingBitcoinUpdater);
+            mPeriodicTaskHandler.postDelayed(IncomingBitcoinUpdater, 300);
+
+            // Notify progress bar more txs might be coming
+            mPeriodicTaskHandler.removeCallbacks(mNotifyBitcoinLoaded);
+            mPeriodicTaskHandler.postDelayed(mNotifyBitcoinLoaded, TX_LOADED_DELAY);
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_BlockHeightChange) {
+            mPeriodicTaskHandler.post(BlockHeightUpdater);
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
             mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
             mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
-        }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
-            if(mOnRemotePasswordChange!=null)
-                mPeriodicTaskHandler.post(RemotePasswordChangeUpdater);
-            else
-                Log.d(TAG, "remote password event has no listener");
-        }
-        else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
-            if (mOnWalletSweep != null) {
-                mIncomingUUID = info.getSzTxID();
-                mSweepSatoshi = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(info.getSweepSatoshi()));
-                mPeriodicTaskHandler.removeCallbacks(WalletSweepUpdater);
-                mPeriodicTaskHandler.post(WalletSweepUpdater);
-            }
-            else {
-                Log.d(TAG, "incoming bitcoin event has no listener");
-            }
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
+            manager.sendBroadcast(new Intent(REMOTE_PASSWORD_CHANGE_ACTION));
+        } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
+            String txid = info.getSzTxID();
+            long amount = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(info.getSweepSatoshi()));
+            Intent intent = new Intent(WALLET_SWEEP_ACTION);
+            intent.putExtra(WALLET_TXID, txid);
+            intent.putExtra(AMOUNT_SWEPT, amount);
+            manager.sendBroadcast(intent);
         }
     }
 
-    private String mIncomingUUID, mIncomingTxID;
-    private long mSweepSatoshi;
-    // Callback interface when an incoming bitcoin is received
-    private OnIncomingBitcoin mOnIncomingBitcoin;
-
-    public interface OnIncomingBitcoin {
-        public void onIncomingBitcoin(String walletUUID, String txId);
-    }
-    public void setOnIncomingBitcoinListener(OnIncomingBitcoin listener) {
-        mOnIncomingBitcoin = listener;
-    }
+    private Intent mIncomingIntent;
 
     final Runnable mNotifyBitcoinLoaded = new Runnable() {
         public void run() {
@@ -299,37 +286,18 @@ public class CoreAPI {
 
     final Runnable IncomingBitcoinUpdater = new Runnable() {
         public void run() {
-            if (null != mOnIncomingBitcoin) {
-                mOnIncomingBitcoin.onIncomingBitcoin(mIncomingUUID, mIncomingTxID);
-            }
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(mIncomingIntent);
         }
     };
 
-    // Callback interface when a block height change is received
-    private OnBlockHeightChange mOnBlockHeightChange;
-    public interface OnBlockHeightChange {
-        public void onBlockHeightChange();
-    }
-    public void setOnBlockHeightChangeListener(OnBlockHeightChange listener) {
-        mOnBlockHeightChange = listener;
-    }
     final Runnable BlockHeightUpdater = new Runnable() {
         public void run() {
             mCoreSettings = null;
-            if (null != mOnBlockHeightChange) {
-                mOnBlockHeightChange.onBlockHeightChange();
-            }
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                new Intent(BLOCKHEIGHT_CHANGE_ACTION));
         }
     };
 
-    // Callback interface when a data sync change is received
-    private OnDataSync mOnDataSync;
-    public interface OnDataSync {
-        public void OnDataSync();
-    }
-    public void setOnDataSyncListener(OnDataSync listener) {
-        mOnDataSync = listener;
-    }
     final Runnable DataSyncUpdater = new Runnable() {
         public void run() {
             mCoreSettings = null;
@@ -337,52 +305,8 @@ public class CoreAPI {
             reloadWallets();
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(
                 new Intent(DATASYNC_UPDATE_ACTION));
-            if (null != mOnDataSync) {
-                mOnDataSync.OnDataSync();
-            }
         }
     };
-
-    // Callback interface when a remote mPassword change is received
-    private OnRemotePasswordChange mOnRemotePasswordChange;
-    public interface OnRemotePasswordChange {
-        public void OnRemotePasswordChange();
-    }
-    public void setOnOnRemotePasswordChangeListener(OnRemotePasswordChange listener) {
-        mOnRemotePasswordChange = listener;
-    }
-    final Runnable RemotePasswordChangeUpdater = new Runnable() {
-        public void run() { mOnRemotePasswordChange.OnRemotePasswordChange(); }
-    };
-
-    // Callback interface for a wallet sweep
-    private OnWalletSweep mOnWalletSweep;
-    public interface OnWalletSweep {
-        public void OnWalletSweep(String uuid, long satoshis);
-    }
-    public void setOnWalletSweepListener(OnWalletSweep listener) {
-        mOnWalletSweep = listener;
-    }
-    final Runnable WalletSweepUpdater = new Runnable() {
-        public void run() { mOnWalletSweep.OnWalletSweep(mIncomingUUID, mSweepSatoshi); }
-    };
-
-    final Runnable ExchangeRateUpdater = new Runnable() {
-        public void run() {
-            mCoreSettings = null;
-            mPeriodicTaskHandler.postDelayed(this, 1000 * ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS);
-        }
-    };
-
-    //***************** Wallet handling
-    OnWalletLoaded mOnWalletLoadedListener = null;
-    public void setOnWalletLoadedListener(OnWalletLoaded listener) {
-        mOnWalletLoadedListener = listener;
-        reloadWallets();
-    }
-    public interface OnWalletLoaded {
-        void onWalletsLoaded();
-    }
 
     // This is a blocking call. You must wrap this in an AsyncTask or similar.
     public boolean createWallet(String username, String password, String walletName, int currencyNum) {
@@ -551,14 +475,8 @@ public class CoreAPI {
         @Override
         protected void onPostExecute(List<Wallet> walletList) {
             mCoreWallets = walletList;
-            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
-                new Intent(WALLETS_RELOADED_ACTION));
-            if (mOnWalletLoadedListener != null) {
-                Log.d(TAG, "wallets loaded");
-                mOnWalletLoadedListener.onWalletsLoaded();
-            } else {
-                Log.d(TAG, "no wallet loaded listener");
-            }
+            LocalBroadcastManager.getInstance(mContext)
+                .sendBroadcast(new Intent(WALLETS_RELOADED_ACTION));
             mReloadWalletTask = null;
         }
     }
@@ -1532,6 +1450,7 @@ public class CoreAPI {
         {
             Log.d(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
         }
+        mMainHandler.sendEmptyMessage(RELOAD);
 
         return result;
     }
@@ -1994,14 +1913,6 @@ public class CoreAPI {
     //*************** Asynchronous Updating
     Handler mPeriodicTaskHandler = new Handler();
 
-    // Callback interface for adding and removing location change listeners
-    private List<OnExchangeRatesChange> mExchangeRateObservers = Collections.synchronizedList(new ArrayList<OnExchangeRatesChange>());
-    private List<OnExchangeRatesChange> mExchangeRateRemovers = new ArrayList<OnExchangeRatesChange>();
-
-    public interface OnExchangeRatesChange {
-        public void OnExchangeRatesChange();
-    }
-
     private Handler mMainHandler;
     private Handler mCoreHandler;
     private Handler mWatcherHandler;
@@ -2222,14 +2133,14 @@ public class CoreAPI {
             }
             mMainHandler.post(new Runnable() {
                 public void run() {
-                    onExchangeRatesUpdated();
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                        new Intent(EXCHANGE_RATE_UPDATED_ACTION));
                 }
             });
         }
         mExchangeHandler.sendEmptyMessage(REPEAT);
     }
 
-    // Exchange Rate updates may have delay the first call
     private void requestExchangeRateUpdate(final Integer currencyNum) {
         mExchangeHandler.post(new Runnable() {
             public void run() {
@@ -2238,42 +2149,6 @@ public class CoreAPI {
                     AirbitzApplication.getPassword(), currencyNum, error);
             }
         });
-    }
-
-    public void addExchangeRateChangeListener(OnExchangeRatesChange listener) {
-        if(mExchangeRateObservers.size() == 0) {
-            startExchangeRateUpdates();
-        }
-        if(!mExchangeRateObservers.contains(listener)) {
-            mExchangeRateObservers.add(listener);
-        }
-    }
-
-    public void removeExchangeRateChangeListener(OnExchangeRatesChange listener) {
-        mExchangeRateRemovers.add(listener);
-        if(mExchangeRateObservers.size() <= 0) {
-            stopExchangeRateUpdates();
-        }
-    }
-
-    public void onExchangeRatesUpdated() {
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(
-            new Intent(EXCHANGE_RATE_UPDATED_ACTION));
-        if (!mExchangeRateRemovers.isEmpty()) {
-            for (OnExchangeRatesChange i : mExchangeRateRemovers) {
-                if( mExchangeRateObservers.contains(i)) {
-                    mExchangeRateObservers.remove(i);
-                }
-            }
-            mExchangeRateRemovers.clear();
-        }
-
-        if  (!mExchangeRateObservers.isEmpty()) {
-            Log.d(TAG, "Exchange Rate changed");
-            for (OnExchangeRatesChange listener : mExchangeRateObservers) {
-                listener.OnExchangeRatesChange();
-            }
-        }
     }
 
     public void stopFileSyncUpdates() {
@@ -2308,8 +2183,10 @@ public class CoreAPI {
                 if (tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
                     mMainHandler.post(new Runnable() {
                         public void run() {
-                            if (mOnOTPError != null && AirbitzApplication.isLoggedIn()) {
-                                mOnOTPError.onOTPError(GetTwoFactorSecret());
+                            if (AirbitzApplication.isLoggedIn()) {
+                                Intent intent = new Intent(OTP_ERROR_ACTION);
+                                intent.putExtra(OTP_SECRET, GetTwoFactorSecret());
+                                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                             }
                         }
                     });
@@ -2331,8 +2208,8 @@ public class CoreAPI {
                             mDataFetched = true;
                             connectWatchers();
                         }
-                        if (mOTPResetRequest != null && isPending) {
-                            mOTPResetRequest.onOTPResetRequest();
+                        if (isPending) {
+                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(new Intent(OTP_RESET_ACTION));
                         }
                     }
                 });
@@ -2404,23 +2281,7 @@ public class CoreAPI {
         return false;
     }
 
-
-    public interface OnOTPError { public void onOTPError(String secret); }
-    private OnOTPError mOnOTPError;
-    public void setOnOTPErrorListener(OnOTPError listener) {
-        mOnOTPError = listener;
-    }
-
-    public interface OnOTPResetRequest { public void onOTPResetRequest(); }
-    private OnOTPResetRequest mOTPResetRequest;
-    public void setOTPResetRequestListener(OnOTPResetRequest listener) {
-        mOTPResetRequest = listener;
-    }
-
-    //**************** Wallet handling
-
-    public List<String> loadWalletUUIDs()
-    {
+    public List<String> loadWalletUUIDs() {
         tABC_Error Error = new tABC_Error();
         List<String> uuids = new ArrayList<String>();
 

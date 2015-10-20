@@ -35,8 +35,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -64,11 +69,8 @@ import com.airbitz.models.Wallet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WalletBaseFragment extends BaseFragment implements
-        CoreAPI.OnWalletLoaded,
-        CoreAPI.OnExchangeRatesChange,
-        NavigationActivity.OnBackPress,
-        NavigationActivity.OnWalletUpdated {
+public class WalletBaseFragment extends BaseFragment
+    implements NavigationActivity.OnBackPress {
 
     private final String TAG = WalletBaseFragment.class.getSimpleName();
 
@@ -265,7 +267,6 @@ public class WalletBaseFragment extends BaseFragment implements
         }
     }
 
-    @Override
     public void onWalletsLoaded() {
         fetchWallets();
         if (mLoading) {
@@ -276,16 +277,6 @@ public class WalletBaseFragment extends BaseFragment implements
             loadWallets();
             updateTitle();
         }
-    }
-
-    @Override
-    public void onWalletUpdated() {
-        mCoreApi.reloadWallets();
-    }
-
-    @Override
-    public void OnExchangeRatesChange() {
-        onExchangeRatesChange();
     }
 
     protected void onExchangeRatesChange() {
@@ -338,9 +329,14 @@ public class WalletBaseFragment extends BaseFragment implements
             showArrow(false);
         }
 
-        mCoreApi.setOnWalletLoadedListener(this);
-        mCoreApi.addExchangeRateChangeListener(this);
-        mActivity.setOnWalletUpdated(this);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(CoreAPI.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(CoreAPI.WALLETS_RELOADED_ACTION));
+
+        mCoreApi.reloadWallets();
+        if (mWallets != null && mWallets.size() > 0) {
+            onWalletsLoaded();
+        }
     }
 
     @Override
@@ -348,9 +344,9 @@ public class WalletBaseFragment extends BaseFragment implements
         super.onPause();
         mResumeTime = null;
 
-        mCoreApi.setOnWalletLoadedListener(null);
-        mCoreApi.removeExchangeRateChangeListener(this);
-        mActivity.setOnWalletUpdated(null);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.unregisterReceiver(mExchangeReceiver);
+        manager.unregisterReceiver(mWalletLoadedReceiver);
     }
 
     protected boolean finishedResume() {
@@ -553,4 +549,18 @@ public class WalletBaseFragment extends BaseFragment implements
             super.onNavigationClick();
         }
     }
+
+    private BroadcastReceiver mExchangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onExchangeRatesChange();
+        }
+    };
+
+    private BroadcastReceiver mWalletLoadedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onWalletsLoaded();
+        }
+    };
 }
