@@ -1,1 +1,2 @@
+include ':libs:bitbeacon'
 include ':airbitz'

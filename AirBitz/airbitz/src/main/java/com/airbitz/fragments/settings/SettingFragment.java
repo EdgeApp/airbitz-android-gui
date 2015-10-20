@@ -83,7 +83,7 @@ import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListene
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
-import com.airbitz.objects.BleUtil;
+import com.airbitz.bitbeacon.BleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.objects;
+package com.airbitz.bitbeacon;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -58,11 +58,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.adapters.BluetoothSearchAdapter;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.models.BleDevice;
+// import com.airbitz.models.BleDevice;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -93,7 +89,6 @@ public class BeaconSend {
     Set<String> mDeviceSet = new HashSet<String>();
 
     BluetoothDeviceComparator mBluetoothDeviceComparator;
-    BluetoothSearchAdapter mSearchAdapter;
     Handler mHandler = new Handler();
 
     public interface OnPeripheralSelected {

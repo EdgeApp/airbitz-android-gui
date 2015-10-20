@@ -31,8 +31,8 @@ task buildAirbitzCore(type:Exec) {
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 16
@@ -130,5 +130,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+    compile project(':libs:bitbeacon')
 }
 

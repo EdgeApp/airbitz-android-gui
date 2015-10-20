@@ -28,7 +28,7 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Airbitz Project.
  */
-package com.airbitz.objects;
+package com.airbitz.bitbeacon;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
