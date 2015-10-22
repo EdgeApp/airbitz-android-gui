@@ -66,6 +66,7 @@ import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1615,12 +1616,15 @@ public class CoreAPI {
         int decimalPlaces = userDecimalPlaces();
 
         try {
+            // Parse using the current locale
             Number cleanAmount =
                 new DecimalFormat().parse(amount, new ParsePosition(0));
             if (null == cleanAmount) {
                 return 0L;
             }
-            return ParseAmount(cleanAmount.toString(), decimalPlaces);
+            // Convert to BD so we don't lose precision
+            BigDecimal bd = BigDecimal.valueOf(cleanAmount.doubleValue());
+            return Math.max(ParseAmount(bd.toString(), decimalPlaces), 0);
         } catch (Exception e) {
             // Shhhhh
         }

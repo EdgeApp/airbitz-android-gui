@@ -152,6 +152,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private boolean mPasswordRequired = false;
     private boolean mPinRequired = false;
     private boolean mMaxLocked = false;
+    private boolean mBtcMode = false;
 
     private Wallet mToWallet;
 
@@ -298,7 +299,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!mAutoUpdatingTextFields) {
-                    updateTextFieldContents(true);
+                    mBtcMode = true;
+                    updateTextFieldContents(mBtcMode);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
             }
@@ -325,7 +327,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!mAutoUpdatingTextFields) {
-                    updateTextFieldContents(false);
+                    mBtcMode = false;
+                    updateTextFieldContents(mBtcMode);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
             }
@@ -893,7 +896,6 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         } else {
             mCurrencyNum = mWallet.getCurrencyNum();
         }
-Log.d(TAG, " " + mCurrencyNum);
 
         if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
@@ -908,7 +910,13 @@ Log.d(TAG, " " + mCurrencyNum);
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
-            mFiatField.requestFocus();
+            if (mBtcMode) {
+                mBitcoinField.requestFocus();
+                mCalculator.setEditText(mBitcoinField);
+            } else {
+                mFiatField.requestFocus();
+                mCalculator.setEditText(mFiatField);
+            }
             showCalculator();
         }
 
@@ -944,7 +952,7 @@ Log.d(TAG, " " + mCurrencyNum);
         super.walletChanged(newWallet);
 
         mWallet = newWallet;
-        updateTextFieldContents(true);
+        updateTextFieldContents(mBtcMode);
     }
 
     private void saveInvalidEntryCount(int entries) {
