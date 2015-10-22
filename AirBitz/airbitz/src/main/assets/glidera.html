@@ -9222,9 +9222,9 @@ var Glidera = (function () {
     });
 
     $scope.$on('DenominationChange', function(events, args){
-      var val = $filter('satoshiToDenom')($scope.order.orderValueSatoshi);
+      var btcValue = $scope.order.orderValueSatoshi / 100000000;
       $scope.$apply(function() {
-        $scope.order.orderValueInput = val;
+        $scope.order.orderValueInput = parseFloat($filter('roundBtc')(btcValue));
         $scope.convertBtcValue(val);
       });
     });
@@ -9259,6 +9259,8 @@ var Glidera = (function () {
         Airbitz.ui.showAlert('Error', 'The sell limit will be exceeded. Please reduce your sell amount.');
         return;
       }
+      // Trim extra decimals off BTC amount
+      $scope.order.orderBtcInput = $scope.order.orderBtcInput.toFixed(8);
       var d = $scope.order.orderAction == 'buy' ? Prices.setBuyQty($scope.order.orderBtcInput) : Prices.setSellQty($scope.order.orderBtcInput);
       d.then(function() {
         TwoFactor.showTwoFactor(function() {
@@ -9874,6 +9876,7 @@ var Glidera = (function () {
     .filter('statusFilter', statusFilter)
     .filter('titlecase', titleCase)
     .filter('roundFiat', roundFiat)
+    .filter('formatBtc', ['$filter', formatBtc])
     .filter('roundBtc', roundBtc)
     .filter('valToBtc', valToBtc)
     .filter('satoshiToDenom', satoshiToDenom);
@@ -9924,12 +9927,21 @@ var Glidera = (function () {
 
   function roundFiat(){
     return function(val, to){
-        return val.toFixed(to || 2);
+        return (val || 0).toFixed(to || 2);
+    }
+  }
+
+  function formatBtc($filter) {
+    return function(val, denom) {
+      return $filter('roundBtc')(val) + ' ' + denom;
     }
   }
 
   function roundBtc(){
     return function(val, to){
+      if (!val) {
+        return 0;
+      }
       var d = Airbitz.cryptoDenom;
       if (d == "mBTC") {
         return (val * 100).toFixed(to || 3);
@@ -10095,7 +10107,7 @@ var Glidera = (function () {
     } else if (3109 == code) {
       return "User's first transaction must clear before transacting again";
     } else if (3110 == code) {
-      return "Invalid priceUuid";
+      return "Invalid Buy or Sell price. Please try again later.";
     } else if (3111 == code) {
       return "Transaction amount is below minimum threshold";
     } else if (3112 == code) {
@@ -11042,19 +11054,19 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Amount</td>\n' +
-    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ cryptoDenom }}</td>\n' +
+    '          <td>{{ order.orderBtcInput || 0 | formatBtc:cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ priceObj.subtotal || "priceSubtotal" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.subtotal || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Fees</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ priceObj.fees || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.fees || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Total</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ priceObj.total || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ priceObj.total || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -11111,7 +11123,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <td>\n' +
     '        <table class="table-mini">\n' +
     '          <tr>\n' +
-    '            <td class="qty text-right">{{ t.qty || 0 | roundBtc }} <strong>{{ cryptoDenom }}</strong></td>\n' +
+    '            <td class="qty text-right">{{ t.qty || 0 | formatBtc:cryptoDenom }} </td>\n' +
     '          </tr>\n' +
     '          <tr>\n' +
     '            <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
@@ -11292,19 +11304,19 @@ module.run(['$templateCache', function($templateCache) {
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>BTC Amount:</td>\n' +
-    '          <td>{{ order.orderBtcInput || "0" | roundBtc }} {{ cryptoDenom }}</td>\n' +
+    '          <td>{{ order.details.qty || 0 | formatBtc:cryptoDenom }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Subtotal:</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ order.details.subtotal || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.subtotal || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Fees:</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ order.details.fees || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.fees || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '          <td>Total:</td>\n' +
-    '          <td>{{ exchange.currencySymbol }}{{ order.details.total || "0" | roundFiat }} {{ exchange.currency }}</td>\n' +
+    '          <td>{{ exchange.currencySymbol }}{{ order.details.total || 0 | roundFiat }} {{ exchange.currency }}</td>\n' +
     '        </tr>\n' +
     '      </tbody>\n' +
     '    </table>\n' +
@@ -11459,7 +11471,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>\n' +
     '          <table class="table-mini">\n' +
     '            <tr>\n' +
-    '              <td class="qty text-right">{{ t.qty || 0 | roundBtc }} <strong>{{ cryptoDenom }} </strong></td>\n' +
+    '              <td class="qty text-right">{{ t.qty || 0 | formatBtc:cryptoDenom }} </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '              <td class="total text-right"><strong>Total:</strong> ${{ t.total || \'total\' }}</td>\n' +
