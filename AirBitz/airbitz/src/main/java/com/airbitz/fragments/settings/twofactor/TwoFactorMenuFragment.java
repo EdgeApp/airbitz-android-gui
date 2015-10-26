@@ -46,10 +46,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -143,22 +141,19 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
         mUsername = bundle.getString(USERNAME);
 
-        tABC_CC cc = mCoreAPI.GetTwoFactorDate();
-        String date = mCoreAPI.mTwoFactorDate;
-        if(cc == tABC_CC.ABC_CC_Ok) {
-            if(date == null || date.isEmpty()) {
+        try {
+            String date = mCoreAPI.getTwoFactorDate();
+            if (date == null || date.isEmpty()) {
                 mResetDate.setVisibility(View.GONE);
                 mResetDescription.setVisibility(View.GONE);
                 mResetButton.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 mResetDate.setVisibility(View.VISIBLE);
                 mResetDescription.setVisibility(View.VISIBLE);
                 mResetButton.setVisibility(View.GONE);
                 mResetDate.setText(formatDate(date));
             }
-        }
-        else {
+        } catch (AirbitzException e) {
             mResetDate.setVisibility(View.GONE);
             mResetDescription.setVisibility(View.GONE);
             mResetButton.setVisibility(View.VISIBLE);
@@ -223,11 +218,13 @@ public class TwoFactorMenuFragment extends BaseFragment implements
 
         @Override
         protected String doInBackground(Void... params) {
-            tABC_Error error = new tABC_Error();
-            tABC_CC cc = core.ABC_OtpResetSet(mUsername, error);
-            String message = cc == tABC_CC.ABC_CC_Ok ?
-                    getString(R.string.fragment_twofactor_menu_reset_requested) : Common.errorMap(mActivity, cc);
-
+            String message = null;
+            try {
+                mCoreAPI.otpReset(mUsername);
+                message = getString(R.string.fragment_twofactor_menu_reset_requested);
+            } catch (AirbitzException e) {
+                message = e.getMessage();
+            }
             return message;
         }
 

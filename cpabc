@@ -13,7 +13,7 @@ fi
 BASE=$(pwd)
 CORE_PATH="$BASE/../airbitz-core"
 BUILD_PATH=${BUILD_DIR:-$CORE_PATH/deps/build}
-WALLET_PATH="$BASE/AirBitz/airbitz/src/main"
+WALLET_PATH="$BASE/AirBitz/libs/airbitz-core/src/main"
 
 # Copy the core build output into the jni folder:
 mkdir -p $WALLET_PATH/jni/

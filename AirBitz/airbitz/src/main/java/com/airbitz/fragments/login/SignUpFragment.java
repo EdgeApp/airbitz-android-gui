@@ -42,6 +42,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,11 +63,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
 import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
@@ -552,10 +551,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     }
 
     public class ChangeTask extends AsyncTask<String, Void, Boolean> {
-        tABC_CC success;
-
+        AirbitzException mFailureException;
         String mUsername;
-        char[] mPassword;
+        String mPassword;
         String mPin;
 
         @Override
@@ -571,23 +569,24 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
             String answers = params[0];
             mUsername = params[1];
-            Editable pass = mPasswordEditText.getText();
-            mPassword = new char[pass.length()];
-            pass.getChars(0, pass.length(), mPassword, 0);
-            if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
-                mUsername = AirbitzApplication.getUsername();
-                success = mCoreAPI.ChangePassword(String.valueOf(mPassword));
-            } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                success = mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, String.valueOf(mPassword),
-                        mPin);
-            } else {
-                success = mCoreAPI.SetPin(mPin);
-                if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
-                    mCoreAPI.PinSetup();
+            mPassword = mPasswordEditText.getText().toString();
+            try {
+                if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
+                    mUsername = AirbitzApplication.getUsername();
+                    mCoreAPI.ChangePassword(mPassword);
+                } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
+                    mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword, mPin);
+                } else {
+                    mCoreAPI.SetPin(mPin);
+                    if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
+                        mCoreAPI.PinSetup();
+                    }
                 }
+            } catch (AirbitzException e) {
+                mFailureException = e;
+                return false;
             }
-
-            return success == tABC_CC.ABC_CC_Ok;
+            return true;
         }
 
         @Override
@@ -599,8 +598,12 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     AirbitzApplication.Login(mUsername, mPassword);
-                    mCoreAPI.SetPin(mPin);
-                    mCoreAPI.PinSetup();
+                    try {
+                        mCoreAPI.SetPin(mPin);
+                        mCoreAPI.PinSetup();
+                    } catch (AirbitzException e) {
+                        Log.d(TAG, "", e);
+                    }
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal());
@@ -636,12 +639,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
-        private final char[] mPassword;
+        private final String mPassword;
         private final String mPin;
-        tABC_Error pError = new tABC_Error();
         private String mFailureReason;
 
-        CreateAccountTask(String email, char[] password, String pin) {
+        CreateAccountTask(String email, String password, String pin) {
             mUsername = email;
             mPassword = password;
             mPin = pin;
@@ -650,10 +652,13 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC code =
-                core.ABC_CreateAccount(mUsername, String.valueOf(mPassword), pError);
-            mFailureReason = Common.errorMap(mActivity, code);
-            return code == tABC_CC.ABC_CC_Ok;
+            try {
+                mCoreAPI.createAccount(mUsername, String.valueOf(mPassword));
+                return true;
+            } catch (AirbitzException e) {
+                mFailureReason = e.getMessage();
+                return false;
+            }
         }
 
         @Override
@@ -661,7 +666,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mCreateAccountTask = null;
             if (success) {
                 AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.SetPin(mPin);
+                try {
+                    mCoreAPI.SetPin(mPin);
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
+                }
 
                 mCoreAPI.setupAccountSettings();
                 mCoreAPI.startAllAsyncUpdates();

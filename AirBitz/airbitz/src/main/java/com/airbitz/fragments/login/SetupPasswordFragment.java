@@ -56,6 +56,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.tABC_PasswordRule;
 import com.airbitz.fragments.BaseFragment;
@@ -477,8 +478,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             if(mPassword != null) {
                 mPasswordString = String.valueOf(mPassword);
             }
-            return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
-                    mPasswordString , mWithdrawalPinEditText.getText().toString());
+            try {
+                return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
+                        mPasswordString , mWithdrawalPinEditText.getText().toString());
+            } catch (AirbitzException e) {
+                return e.getMessage();
+            }
         }
 
         @Override

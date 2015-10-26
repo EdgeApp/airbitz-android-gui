@@ -89,6 +89,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.Business;
@@ -98,7 +99,6 @@ import com.airbitz.api.directory.Category;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.directory.ProfileImage;
 import com.airbitz.api.directory.SearchResult;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
@@ -1296,7 +1296,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
     }
 
-    class SaveTransactionAsyncTask extends BaseAsyncTask<Void, Void, tABC_CC> {
+    class SaveTransactionAsyncTask extends BaseAsyncTask<Void, Void, AirbitzException> {
         Transaction transaction;
         long Bizid;
         String Payee, Category, Note, Fiat;
@@ -1312,7 +1312,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         @Override
-        protected tABC_CC doInBackground(Void... voids) {
+        protected AirbitzException doInBackground(Void... voids) {
             transaction.setName(Payee);
             transaction.setCategory(Category);
             transaction.setNotes(Note);
@@ -1324,12 +1324,17 @@ public class TransactionDetailFragment extends WalletBaseFragment
             }
             transaction.setAmountFiat(amountFiat);
             transaction.setmBizId(Bizid);
-            return mCoreApi.storeTransaction(mTransaction);
+            try {
+                mCoreApi.storeTransaction(mTransaction);
+            } catch (AirbitzException e) {
+                return e;
+            }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(tABC_CC result) {
-            if (result != tABC_CC.ABC_CC_Ok) {
+        protected void onPostExecute(AirbitzException result) {
+            if (result != null) {
                 mActivity.ShowFadingDialog(getString(R.string.transaction_details_transaction_save_failed));
             }
             onCancelled();
