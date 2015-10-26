@@ -147,7 +147,6 @@ public class TransactionListFragment extends WalletBaseFragment
     private ViewGroup mListHeaderView;
     private TransactionAdapter mTransactionAdapter;
     private List<Transaction> mTransactions = new ArrayList<Transaction>();
-    private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
     private View mView;
     private TransactionTask mTransactionTask;
     private Handler mHandler = new Handler();
@@ -337,15 +336,7 @@ public class TransactionListFragment extends WalletBaseFragment
         if (mLoading) {
             return;
         }
-        try {
-            if (TextUtils.isEmpty(query)) {
-                updateTransactionsListView(mAllTransactions);
-            } else {
-                startTransactionTask();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        startTransactionTask();
     }
 
     @Override
@@ -566,7 +557,6 @@ public class TransactionListFragment extends WalletBaseFragment
             if (!isAdded()) {
                 return;
             }
-            mAllTransactions = transactions;
             updateTransactionsListView(transactions);
             mTransactionTask = null;
         }
