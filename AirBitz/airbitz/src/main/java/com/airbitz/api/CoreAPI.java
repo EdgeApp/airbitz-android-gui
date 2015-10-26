@@ -264,6 +264,10 @@ public class CoreAPI {
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_DataSyncUpdate) {
             mPeriodicTaskHandler.removeCallbacks(DataSyncUpdater);
             mPeriodicTaskHandler.postDelayed(DataSyncUpdater, 1000);
+
+            // Notify progress bar more txs might be coming
+            mPeriodicTaskHandler.removeCallbacks(mNotifyBitcoinLoaded);
+            mPeriodicTaskHandler.postDelayed(mNotifyBitcoinLoaded, TX_LOADED_DELAY);
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_RemotePasswordChange) {
             manager.sendBroadcast(new Intent(REMOTE_PASSWORD_CHANGE_ACTION));
         } else if (type==tABC_AsyncEventType.ABC_AsyncEventType_IncomingSweep) {
