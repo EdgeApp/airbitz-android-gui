@@ -1315,9 +1315,9 @@ public class CoreAPI {
         return core.doublep_value(seconds);
     }
 
-    public List<tABC_PasswordRule> GetPasswordRules(String password)
+    public List<PasswordRule> GetPasswordRules(String password)
     {
-        List<tABC_PasswordRule> list = new ArrayList<tABC_PasswordRule>();
+        List<PasswordRule> list = new ArrayList<PasswordRule>();
         boolean bNewPasswordFieldsAreValid = true;
 
         SWIGTYPE_p_double seconds = core.new_doublep();
@@ -1343,7 +1343,7 @@ public class CoreAPI {
         {
             pLong temp = new pLong(base + i * 4);
             long start = core.longp_value(temp);
-            tABC_PasswordRule pRule = new tABC_PasswordRule(start, false);
+            PasswordRule pRule = new PasswordRule(start, false);
             list.add(pRule);
         }
 

@@ -75,10 +75,8 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AccountSettings;
 import com.airbitz.api.AirbitzException;
+import com.airbitz.api.BitcoinDenomination;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_BitcoinDenomination;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -388,7 +386,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
     private void loadSettings(AccountSettings settings) {
         //Bitcoin denomination
-        tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
+        BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if (denomination != null) {
             if (denomination.getDenominationType() == CoreAPI.ABC_DENOMINATION_BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
@@ -436,23 +434,14 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mCoreSettings = mCoreAPI.newCoreSettings();
         }
         //Bitcoin denomination
-        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {
             if (mmBitcoinButton.isChecked()) {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
-                denomination.setSatoshi(amt);
             } else if (muBitcoinButton.isChecked()) {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
-                denomination.setSatoshi(amt);
             } else {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
-                denomination.setSatoshi(amt);
             }
         }
     }

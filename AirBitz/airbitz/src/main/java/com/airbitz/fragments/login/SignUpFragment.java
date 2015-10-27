@@ -66,7 +66,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.AccountSettings;
-import com.airbitz.api.tABC_PasswordRule;
+import com.airbitz.api.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.utils.Common;
@@ -376,7 +376,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean checkPasswordRules(String password) {
-        List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
 
         if (rules.isEmpty()) {
             return false;
@@ -384,7 +384,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
         boolean bNewPasswordFieldsAreValid = true;
         for (int i = 0; i < rules.size(); i++) {
-            tABC_PasswordRule pRule = rules.get(i);
+            PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
             if (!passed) {
                 bNewPasswordFieldsAreValid = false;
