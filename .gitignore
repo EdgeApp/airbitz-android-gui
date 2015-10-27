@@ -17,7 +17,7 @@ TODO
 *.keystore
 usercontext.properties
 keys.xml
-AirBitz/libs/airbitz-core/src/main/java/com/airbitz/api/*.java
+AirBitz/libs/airbitz-core/src/main/java/com/airbitz/api/tABC_*.java
 AirBitz/libs/airbitz-core/src/main/java/com/airbitz/api/SWIGTYPE*.java
 AirBitz/libs/airbitz-core/src/main/java/com/airbitz/api/core*.java
 AirBitz/libs/airbitz-core/src/main/jni/ABC-const.h

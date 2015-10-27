@@ -93,7 +93,7 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.directory.DirectoryApi;
-import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
@@ -2282,7 +2282,7 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if(!mDrawerExchangeUpdated) {
-                    tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                    AccountSettings settings = mCoreAPI.coreSettings();
                     if (settings != null) {
                         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
                         mDrawerExchangeUpdated = true;

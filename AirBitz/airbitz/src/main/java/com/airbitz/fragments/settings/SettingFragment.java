@@ -73,17 +73,18 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AccountSettings;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.SWIGTYPE_p_int64_t;
 import com.airbitz.api.core;
-import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
-import com.airbitz.bitbeacon.BleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +132,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private List<String> mExchanges;
     private CoreAPI mCoreAPI;
     private View mView;
-    private tABC_AccountSettings mCoreSettings;
+    private AccountSettings mCoreSettings;
     private NavigationActivity mActivity;
 
     @Override
@@ -282,8 +283,12 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                 } else if(!isChecked) {
                     Log.d(TAG, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
-                    mCoreAPI.saveAccountSettings(mCoreSettings);
-                    mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                    try {
+                        mCoreSettings.save();
+                        mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                    } catch (AirbitzException e) {
+                        Log.d(TAG, "", e);
+                    }
                 }
             }
         });
@@ -381,7 +386,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         }
     }
 
-    private void loadSettings(tABC_AccountSettings settings) {
+    private void loadSettings(AccountSettings settings) {
         //Bitcoin denomination
         tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if (denomination != null) {
@@ -398,9 +403,9 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //User Name
         mSendNameSwitch.setChecked(settings.getBNameOnPayments());
-        mFirstEditText.setText(settings.getSzFirstName());
-        mLastEditText.setText(settings.getSzLastName());
-        mNicknameEditText.setText(settings.getSzNickname());
+        mFirstEditText.setText(settings.getFirstName());
+        mLastEditText.setText(settings.getLastName());
+        mNicknameEditText.setText(settings.getNickname());
 
 
         //Options
@@ -409,11 +414,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         // Pin Relogin
         mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
         // NFC
-        if(mNFCSwitch.getVisibility() == View.VISIBLE) {
+        if (mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());
         }
         // BLE
-        if(mBLESwitch.getVisibility() == View.VISIBLE) {
+        if (mBLESwitch.getVisibility() == View.VISIBLE) {
             mBLESwitch.setChecked(getBLEPref());
         }
 
@@ -423,8 +428,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources();
-
-        mExchangeButton.setText(mCoreSettings.getSzExchangeRateSource());
+        mExchangeButton.setText(mCoreSettings.getExchangeRateSource());
     }
 
     private void saveDenomination() {
@@ -455,7 +459,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
     private void saveCurrentSettings() {
         mCoreSettings = mCoreAPI.newCoreSettings();
-        if(mCoreSettings == null) {
+        if (mCoreSettings == null) {
             return;
         }
 
@@ -464,10 +468,10 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Credentials - N/A
 
         //User Name
-        mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
-        mCoreSettings.setSzFirstName(mFirstEditText.getText().toString());
-        mCoreSettings.setSzLastName(mLastEditText.getText().toString());
-        mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
+        mCoreSettings.showNameOnPayments(mSendNameSwitch.isChecked());
+        mCoreSettings.setFirstName(mFirstEditText.getText().toString());
+        mCoreSettings.setLastName(mLastEditText.getText().toString());
+        mCoreSettings.setNickName(mNicknameEditText.getText().toString());
 
         //Options
         //Autologoff
@@ -483,11 +487,14 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
-
-        mCoreSettings.setSzExchangeRateSource(mExchangeButton.getText().toString());
+        mCoreSettings.setExchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {
-            mCoreAPI.saveAccountSettings(mCoreSettings);
+            try {
+                mCoreSettings.save();
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+            }
         }
     }
 
@@ -806,7 +813,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         protected Void doInBackground(Void... params) {
             mCoreAPI.PinSetupBlocking();
             mCoreSettings.setBDisablePINLogin(false);
-            mCoreAPI.saveAccountSettings(mCoreSettings);
+            try {
+                mCoreSettings.save();
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+            }
             return null;
         }
 

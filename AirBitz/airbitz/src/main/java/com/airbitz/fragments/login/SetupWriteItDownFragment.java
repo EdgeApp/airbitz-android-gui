@@ -49,7 +49,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -170,10 +170,13 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
 
-        tABC_AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mCoreAPI.coreSettings();
         settings.setRecoveryReminderCount(0);
-        mCoreAPI.saveAccountSettings(settings);
-
+        try {
+            settings.save();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
         mActivity.UserJustLoggedIn(true);
     }
 
