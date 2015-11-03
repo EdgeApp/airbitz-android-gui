@@ -93,14 +93,10 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera US (Beta)";
+            plugin.name = "Glidera US/Canada (beta)";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
-            plugin.env.put("COUNTRY_CODE", "US");
-            plugin.env.put("COUNTRY_NAME", "United States");
-            plugin.env.put("CURRENCY_CODE", "840");
-            plugin.env.put("CURRENCY_ABBREV", "USD");
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             mPlugins.add(plugin);
