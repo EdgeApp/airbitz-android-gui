@@ -132,6 +132,7 @@ public class LandingFragment extends BaseFragment implements
 
     private ImageView mLogo;
     private int mAccountTaps;
+    private boolean mFirstLogin = false;
 
     static final int MAX_PIN_FAILS = 3;
 
@@ -652,6 +653,7 @@ public class LandingFragment extends BaseFragment implements
     public void attemptPinLogin() {
         if(mActivity.networkIsAvailable()) {
             mPin = mPinEditText.getText().toString();
+            mFirstLogin = isFirstLogin();
             mPINLoginTask = new PINLoginTask();
             mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
         }
@@ -696,7 +698,7 @@ public class LandingFragment extends BaseFragment implements
 
             if (result.getCode() == tABC_CC.ABC_CC_Ok) {
                 mPinEditText.clearFocus();
-                mActivity.LoginNow(mUsername, null);
+                mActivity.LoginNow(mUsername, null, mFirstLogin);
             } else if (result.getCode() == tABC_CC.ABC_CC_BadPassword) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
@@ -795,12 +797,17 @@ public class LandingFragment extends BaseFragment implements
             mPasswordEditText.setText("");
             char[] password = new char[pass.length()];
             pass.getChars(0, pass.length(), password, 0);
-            mActivity.LoginNow(mUsername, password);
+            mActivity.LoginNow(mUsername, password, mFirstLogin);
         } else if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
             launchTwoFactorMenu();
         } else {
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
         }
+    }
+
+    private boolean isFirstLogin() {
+        List<String> accounts = mCoreAPI.listAccounts();
+        return accounts == null || !accounts.contains(mUsername);
     }
 
     private void launchTwoFactorMenu() {
@@ -825,6 +832,7 @@ public class LandingFragment extends BaseFragment implements
 
     private void twoFactorSignIn(String secret) {
         mCoreAPI.OtpKeySet(mUsername, secret);
+        mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
             mPINLoginTask = new PINLoginTask();
             mPINLoginTask.execute(mUsername, mPin);
@@ -897,6 +905,7 @@ public class LandingFragment extends BaseFragment implements
             // form field with an error.
             focusView.requestFocus();
         } else {
+            mFirstLogin = isFirstLogin();
             mPasswordLoginTask = new PasswordLoginTask();
             mPasswordLoginTask.execute(username, password);
         }

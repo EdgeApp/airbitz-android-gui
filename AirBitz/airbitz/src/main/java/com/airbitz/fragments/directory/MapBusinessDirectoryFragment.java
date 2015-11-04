@@ -72,15 +72,16 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
 import com.airbitz.adapters.VenueAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.Business;
+import com.airbitz.api.directory.BusinessSearchResult;
+import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.directory.LocationSearchResult;
+import com.airbitz.api.directory.SearchResult;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.maps.MapBuilder.MapLatLng;
 import com.airbitz.fragments.maps.MapBuilder.MapMarker;
 import com.airbitz.fragments.maps.MapBuilder;
-import com.airbitz.models.Business;
-import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.LocationSearchResult;
-import com.airbitz.models.SearchResult;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
@@ -574,7 +575,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
     private class GetVenuesByBoundTask extends AsyncTask<String, Void, String> {
 
-        AirbitzAPI mApi = AirbitzAPI.getApi();
+        DirectoryApi mApi = DirectoryWrapper.getApi();
         Context mContext;
 
         public GetVenuesByBoundTask(Context context) {
@@ -624,7 +625,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
 
     private class GetVenuesByLatLongTask extends AsyncTask<String, Void, String> {
 
-        AirbitzAPI mApi = AirbitzAPI.getApi();
+        DirectoryApi mApi = DirectoryWrapper.getApi();
         Context mContext;
 
         public GetVenuesByLatLongTask(Context context) {
@@ -660,7 +661,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     }
 
     private class GetVenuesByBusinessAndLocation extends AsyncTask<String, Void, String> {
-        AirbitzAPI mApi = AirbitzAPI.getApi();
+        DirectoryApi mApi = DirectoryWrapper.getApi();
         Context mContext;
 
         public GetVenuesByBusinessAndLocation(Context context) {

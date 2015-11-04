@@ -29,40 +29,68 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.models;
+package com.airbitz.api.directory;
 
-import android.bluetooth.BluetoothDevice;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class BleDevice {
-    BluetoothDevice device;
-    int rssi;
+public class BoundingBox {
 
-    public BleDevice(BluetoothDevice device, int rssi) {
-        this.device = device;
-        this.rssi = rssi;
+    private double mX;
+    private double mY;
+    private double mWidth;
+    private double mHeight;
+
+    public BoundingBox() {
+
     }
 
-    public BluetoothDevice getDevice() {
-        return device;
+    public BoundingBox(double y, double x, double width, double height) {
+        mY = y;
+        mX = x;
+        mWidth = width;
+        mHeight = height;
     }
 
-    public int getRSSI() {
-        return rssi;
+    public BoundingBox(JSONObject jsonResponse) throws JSONException {
+        if (jsonResponse != null) {
+            mX = jsonResponse.getDouble("x");
+            mY = jsonResponse.getDouble("y");
+            mWidth = jsonResponse.getDouble("width");
+            mHeight = jsonResponse.getDouble("height");
+        }
     }
 
-    static final int DIV_LENGTH = 10;
-    public String getPartialAddress() {
-        String s = device.getName();
-        return s.length() < DIV_LENGTH ? null : s.substring(0, DIV_LENGTH);
+    public double getY() {
+        return mY;
     }
 
-    public String getName() {
-        String s = device.getName();
-        return s.length() < DIV_LENGTH ? s : s.substring(DIV_LENGTH);
+    public void setY(double y) {
+        mY = y;
     }
 
-    public boolean hasErrors() {
-        return device.getName().length() < DIV_LENGTH;
+    public double getX() {
+        return mX;
     }
+
+    public void setX(double x) {
+        mX = x;
+    }
+
+    public double getWidth() {
+        return mWidth;
+    }
+
+    public void setWidth(double width) {
+        mWidth = width;
+    }
+
+    public void setHeight(double height) {
+        mHeight = height;
+    }
+
+    public double setHeight() {
+        return mHeight;
+    }
+
 }
-

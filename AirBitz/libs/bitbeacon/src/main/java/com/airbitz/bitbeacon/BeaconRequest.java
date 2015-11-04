@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.objects;
+package com.airbitz.bitbeacon;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -50,8 +50,6 @@ import android.os.Handler;
 import android.os.ParcelUuid;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.airbitz.R;
 
 import java.util.UUID;
 
@@ -273,7 +271,7 @@ public class BeaconRequest {
                 Log.d(TAG, "Airbitz characteristic received");
                 String displayName = new String(value);
                 if (displayName.isEmpty()) {
-                    displayName = mContext.getString(R.string.request_qr_unknown);
+                    displayName = "Anonymous";
                 }
                 mRequestCallback.receivedConnection(displayName);
                 mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);

@@ -64,6 +64,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -89,8 +90,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.tABC_AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -146,13 +148,6 @@ import java.util.Stack;
 public class NavigationActivity extends ActionBarActivity
         implements NavigationBarFragment.OnScreenSelectedListener,
         View.OnTouchListener,
-        CoreAPI.OnIncomingBitcoin,
-        CoreAPI.OnExchangeRatesChange,
-        CoreAPI.OnDataSync,
-        CoreAPI.OnBlockHeightChange,
-        CoreAPI.OnRemotePasswordChange,
-        CoreAPI.OnOTPError,
-        CoreAPI.OnOTPResetRequest,
         OnAddressRequestListener,
         TwoFactorScanFragment.OnTwoFactorQRScanResult,
         AccountsAdapter.OnButtonTouched {
@@ -218,7 +213,6 @@ public class NavigationActivity extends ActionBarActivity
     private Stack<Fragment>[] mNavStacks = null;
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
-    private OnWalletUpdated mOnWalletUpdated;
     private Dialog mIncomingDialog;
     private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
@@ -362,6 +356,22 @@ public class NavigationActivity extends ActionBarActivity
 
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CoreAPI.WALLET_LOADING_START_ACTION);
+        filter.addAction(CoreAPI.WALLET_LOADING_STATUS_ACTION);
+        filter.addAction(CoreAPI.WALLETS_ALL_LOADED_ACTION);
+        filter.addAction(CoreAPI.WALLETS_LOADING_BITCOIN_ACTION);
+        filter.addAction(CoreAPI.WALLETS_LOADED_BITCOIN_ACTION);
+        mWalletsLoadedReceiver = new WalletReceiver();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.registerReceiver(mWalletsLoadedReceiver, filter);
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(CoreAPI.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(CoreAPI.BLOCKHEIGHT_CHANGE_ACTION));
+        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(CoreAPI.INCOMING_BITCOIN_ACTION));
+        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(CoreAPI.REMOTE_PASSWORD_CHANGE_ACTION));
+        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(CoreAPI.DATASYNC_UPDATE_ACTION));
+        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(CoreAPI.OTP_ERROR_ACTION));
+        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(CoreAPI.OTP_RESET_ACTION));
     }
 
     @Override
@@ -372,8 +382,16 @@ public class NavigationActivity extends ActionBarActivity
             AirbitzApplication.setFragmentStack(mNavStacks);
             AirbitzApplication.setLastNavTab(mNavThreadId);
         }
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.unregisterReceiver(mWalletsLoadedReceiver);
+        manager.unregisterReceiver(mExchangeReceiver);
+        manager.unregisterReceiver(mBlockHeightReceiver);
+        manager.unregisterReceiver(mIncomingBitcoinReceiver);
+        manager.unregisterReceiver(mRemotePasswordChange);
+        manager.unregisterReceiver(mDataSyncReceiver);
+        manager.unregisterReceiver(mOtpErrorReceiver);
+        manager.unregisterReceiver(mOtpResetReceiver);
     }
-
 
     public boolean onTouch(View view, MotionEvent event) {
 
@@ -435,12 +453,6 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void setCoreListeners(NavigationActivity activity) {
-        mCoreAPI.setOnOTPErrorListener(activity);
-        mCoreAPI.setOTPResetRequestListener(activity);
-        mCoreAPI.setOnIncomingBitcoinListener(activity);
-        mCoreAPI.setOnDataSyncListener(activity);
-        mCoreAPI.setOnBlockHeightChangeListener(activity);
-        mCoreAPI.setOnOnRemotePasswordChangeListener(activity);
     }
 
     public static CoreAPI initiateCore(Context context) {
@@ -845,8 +857,6 @@ public class NavigationActivity extends ActionBarActivity
             mPasswordCheck.onResume();
         }
 
-        mCoreAPI.addExchangeRateChangeListener(this);
-
         setCoreListeners(this);
 
         activityInForeground = true;
@@ -873,7 +883,6 @@ public class NavigationActivity extends ActionBarActivity
         if (null != mPasswordCheck) {
             mPasswordCheck.onPause();
         }
-        mCoreAPI.removeExchangeRateChangeListener(this);
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
     }
 
@@ -1025,7 +1034,6 @@ public class NavigationActivity extends ActionBarActivity
         switchFragmentThread(Tabs.SEND.ordinal(), bundle);
     }
 
-    @Override
     public void onIncomingBitcoin(String walletUUID, String txId) {
         Log.d(TAG, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
@@ -1164,33 +1172,8 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
     }
 
-    public void setOnWalletUpdated(OnWalletUpdated listener) {
-        mOnWalletUpdated = listener;
-    }
-
     private void updateWalletListener() {
-        if (mOnWalletUpdated != null)
-            mOnWalletUpdated.onWalletUpdated();
-    }
-
-    @Override
-    public void OnDataSync() {
-        Log.d(TAG, "Data Sync received");
-        updateWalletListener();
-    }
-
-    @Override
-    public void onBlockHeightChange() {
-        Log.d(TAG, "Block Height received");
-        updateWalletListener();
-    }
-
-    @Override
-    public void OnRemotePasswordChange() {
-        Log.d(TAG, "Remote Password received");
-        if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
-            showRemotePasswordChangeDialog();
-        }
+        mCoreAPI.reloadWallets();
     }
 
     private void gotoDetailsNow() {
@@ -1246,8 +1229,9 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    Dialog mRemoteChange = null;
     private void showRemotePasswordChangeDialog() {
-        if (!this.isFinishing()) {
+        if (mRemoteChange == null && !this.isFinishing()) {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setMessage(getResources().getString(R.string.remote_password_change_message))
                     .setTitle(getResources().getString(R.string.remote_password_change_title))
@@ -1257,11 +1241,12 @@ public class NavigationActivity extends ActionBarActivity
                                 public void onClick(DialogInterface dialog, int id) {
                                     Logout();
                                     dialog.cancel();
+                                    mRemoteChange = null;
                                 }
                             }
                     );
-            Dialog dialog = builder.create();
-            dialog.show();
+            mRemoteChange = builder.create();
+            mRemoteChange.show();
         }
     }
 
@@ -1468,11 +1453,6 @@ public class NavigationActivity extends ActionBarActivity
         return false;
     }
 
-    @Override
-    public void OnExchangeRatesChange() {
-        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
-    }
-
     public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT, BUYSELL}
 
     //************************ Connectivity support
@@ -1482,11 +1462,9 @@ public class NavigationActivity extends ActionBarActivity
         public boolean onBackPress();
     }
 
-    public interface OnWalletUpdated {
-        public void onWalletUpdated();
-    }
+    public void LoginNow(String username, char[] password, boolean newDevice) {
+        mWalletsLoadedReceiver.mShowMessages = newDevice;
 
-    public void LoginNow(String username, char[] password) {
         AirbitzApplication.Login(username, password);
         UserJustLoggedIn(password != null);
         mDrawerAccount.setText(username);
@@ -1635,6 +1613,14 @@ public class NavigationActivity extends ActionBarActivity
         ShowFadingDialog(message, null, timeout, cancelable);
     }
 
+    public void ShowOrUpdateDialog(String message, int timeout, boolean cancelable) {
+        if (mFadingDialog == null || !mFadingDialog.isShowing()) {
+            ShowFadingDialog(message, null, timeout, cancelable);
+        } else {
+            mFadingDialog.setMessage(message);
+        }
+    }
+
     private MaterialDialog mFadingDialog = null;
     public void ShowFadingDialog(final String message, final String thumbnail, final int timeout, final boolean cancelable) {
         ShowFadingDialog(null, message, thumbnail, timeout, cancelable);
@@ -1646,7 +1632,9 @@ public class NavigationActivity extends ActionBarActivity
                 @Override
                 public void run() {
                     if (timeout == 0) {
-                        mFadingDialog.dismiss();
+                        if (mFadingDialog != null) {
+                            mFadingDialog.dismiss();
+                        }
                         return;
                     }
                     if (mFadingDialog != null) {
@@ -1657,7 +1645,8 @@ public class NavigationActivity extends ActionBarActivity
                                 .content(message)
                                 .contentColorRes(android.R.color.white)
                                 .theme(Theme.LIGHT)
-                                .backgroundColorRes(R.color.colorPrimary);
+                                .backgroundColorRes(R.color.colorPrimary)
+                                .widgetColorRes(android.R.color.white);
                     if (!cancelable) {
                         builder.progress(true, 0);
                     }
@@ -1668,6 +1657,21 @@ public class NavigationActivity extends ActionBarActivity
                     TextView tv = mFadingDialog.getContentView();
                     tv.setTypeface(NavigationActivity.latoRegularTypeFace);
 
+                    mFadingDialog.show();
+
+                    View view = mFadingDialog.getView();
+                    if (cancelable) {
+                        View.OnClickListener dismiss = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mFadingDialog != null) {
+                                    mFadingDialog.dismiss();
+                                }
+                            }
+                        };
+                        view.setOnClickListener(dismiss);
+                        tv.setOnClickListener(dismiss);
+                    }
                     AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
                     fadeOut.setStartOffset(timeout);
                     fadeOut.setDuration(getResources().getInteger(R.integer.alert_fadeout_time_default));
@@ -1687,36 +1691,6 @@ public class NavigationActivity extends ActionBarActivity
                         }
                     });
 
-                    mFadingDialog.show();
-
-                    ProgressBar progress = (ProgressBar) mFadingDialog.getView().findViewById(android.R.id.progress);
-                    if (Build.VERSION_CODES.LOLLIPOP <= Build.VERSION.SDK_INT
-                            && !cancelable
-                            && null != progress) {
-                        int[][] states = new int[][] {
-                            new int[] { android.R.attr.state_enabled},
-                            new int[] { -android.R.attr.state_enabled},
-                        };
-                        int[] colors = new int[] {
-                            Color.WHITE,
-                            Color.WHITE
-                        };
-                        progress.setIndeterminateTintList(
-                            new ColorStateList(states, colors).withAlpha(200));
-                    }
-                    View view = mFadingDialog.getView();
-                    if (cancelable) {
-                        View.OnClickListener dismiss = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (mFadingDialog != null) {
-                                    mFadingDialog.dismiss();
-                                }
-                            }
-                        };
-                        view.setOnClickListener(dismiss);
-                        tv.setOnClickListener(dismiss);
-                    }
                     view.setAnimation(fadeOut);
                     view.startAnimation(fadeOut);
                 }
@@ -1914,7 +1888,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected String doInBackground(Void... params) {
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             PackageInfo pInfo;
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -2078,17 +2052,6 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    //********************  OTP support
-    @Override
-    public void onOTPError(String secret) {
-        if(secret != null) {
-            mHandler.post(mShowOTPSkew);
-        }
-        else {
-            mHandler.post(mShowOTPRequired);
-        }
-    }
-
     Dialog mOTPAlertDialog;
     final Runnable mShowOTPRequired = new Runnable() {
         @Override
@@ -2109,7 +2072,6 @@ public class NavigationActivity extends ActionBarActivity
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
-                                            mOTPAlertDialog = null;
                                         }
                                     });
                     mOTPAlertDialog = builder.create();
@@ -2156,7 +2118,6 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     Dialog mOTPResetRequestDialog;
-    @Override
     public void onOTPResetRequest() {
         if (!NavigationActivity.this.isFinishing() && mOTPResetRequestDialog == null) {
             String message = String.format(getString(R.string.twofactor_reset_message), AirbitzApplication.getUsername());
@@ -2488,4 +2449,104 @@ public class NavigationActivity extends ActionBarActivity
         Dialog confirmDialog = builder.create();
         confirmDialog.show();
     }
+
+    private WalletReceiver mWalletsLoadedReceiver;
+    class WalletReceiver extends BroadcastReceiver {
+        public boolean mDataLoaded = false;
+        public boolean mShowMessages = false;
+
+        private void showMessage(String message) {
+            if (mShowMessages) {
+                NavigationActivity.this.ShowOrUpdateDialog(message,
+                    NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
+            }
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (CoreAPI.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
+                if (mShowMessages) {
+                    showMessage(context.getString(R.string.loading_wallets));
+                }
+            } else if (CoreAPI.WALLET_LOADING_STATUS_ACTION.equals(intent.getAction())) {
+                int complete = intent.getIntExtra(CoreAPI.WALLETS_LOADED_TOTAL, -1);
+                int total = intent.getIntExtra(CoreAPI.WALLETS_TOTAL, -1);
+                if (total >= 0) {
+                    showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+                } else {
+                    showMessage(context.getString(R.string.loading_wallets));
+                }
+            } else if (CoreAPI.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
+                mDataLoaded = true;
+                showMessage(context.getString(R.string.loading_transactions));
+            } else if (CoreAPI.WALLETS_LOADING_BITCOIN_ACTION.equals(intent.getAction())) {
+                if (mDataLoaded) {
+                    showMessage(context.getString(R.string.loading_transactions));
+                }
+            } else if (CoreAPI.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
+                NavigationActivity.this.DismissFadingDialog();
+            }
+        }
+    };
+
+    private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Block Height received");
+            updateWalletListener();
+        }
+    };
+
+    private BroadcastReceiver mDataSyncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Data Sync received");
+            updateWalletListener();
+        }
+    };
+
+    private BroadcastReceiver mIncomingBitcoinReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String uuid = intent.getStringExtra(CoreAPI.WALLET_UUID);
+            String txId = intent.getStringExtra(CoreAPI.WALLET_TXID);
+            onIncomingBitcoin(uuid, txId);
+        };
+    };
+
+    private BroadcastReceiver mExchangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
+        }
+    };
+
+    private BroadcastReceiver mRemotePasswordChange = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Remote Password received");
+            if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
+                showRemotePasswordChangeDialog();
+            }
+        }
+    };
+
+    private BroadcastReceiver mOtpErrorReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String secret = intent.getStringExtra(CoreAPI.OTP_SECRET);
+            if (secret != null) {
+                mHandler.post(mShowOTPSkew);
+            } else {
+                mHandler.post(mShowOTPRequired);
+            }
+        }
+    };
+
+    private BroadcastReceiver mOtpResetReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onOTPResetRequest();
+        }
+    };
 }

@@ -55,10 +55,11 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BusinessSearchAdapter;
 import com.airbitz.adapters.LocationAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.Business;
+import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.directory.LocationSearchResult;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.models.Business;
-import com.airbitz.models.LocationSearchResult;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
 
@@ -333,7 +334,7 @@ public class BusinessSearchFragment extends BaseFragment implements
     }
 
     class BusinessAutoCompleteAsynctask extends AsyncTask<String, Integer, List<Business>> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
         private List<Business> mCacheData = null;
 
         public BusinessAutoCompleteAsynctask(List<Business> cacheData) {
@@ -384,7 +385,7 @@ public class BusinessSearchFragment extends BaseFragment implements
     class LocationAutoCompleteAsynctask extends AsyncTask<String, Integer, List<LocationSearchResult>> {
 
         private List<LocationSearchResult> mCacheData = null;
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
 
         public LocationAutoCompleteAsynctask(List<LocationSearchResult> cacheData) {
             mCacheData = cacheData;

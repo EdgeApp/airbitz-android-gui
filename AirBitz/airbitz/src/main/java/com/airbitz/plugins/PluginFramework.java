@@ -32,10 +32,13 @@
 package com.airbitz.plugins;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -90,16 +93,13 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera US (Beta)";
+            plugin.name = "Glidera US/Canada (beta)";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
-            plugin.env.put("COUNTRY_CODE", "US");
-            plugin.env.put("COUNTRY_NAME", "United States");
-            plugin.env.put("CURRENCY_CODE", "840");
-            plugin.env.put("CURRENCY_ABBREV", "USD");
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
         }
     }
@@ -435,11 +435,9 @@ public class PluginFramework {
     }
 
     public void setup() {
-        mCoreAPI.addExchangeRateChangeListener(exchangeListener);
     }
 
     public void cleanup() {
-        mCoreAPI.removeExchangeRateChangeListener(exchangeListener);
     }
 
     public void setWallet(Wallet wallet) {
@@ -554,10 +552,4 @@ public class PluginFramework {
         mCoreAPI = null;
         mWallet = null;
     }
-
-    CoreAPI.OnExchangeRatesChange exchangeListener = new CoreAPI.OnExchangeRatesChange() {
-        @Override
-        public void OnExchangeRatesChange() {
-        }
-    };
 }

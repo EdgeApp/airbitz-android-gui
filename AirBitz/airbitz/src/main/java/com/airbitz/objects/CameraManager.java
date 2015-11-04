@@ -184,6 +184,7 @@ public class CameraManager {
             try {
                 Log.d(TAG, "handleMessage");
                 if (mCamera == null) {
+                    mSig.open();
                     return;
                 }
                 switch (msg.what) {

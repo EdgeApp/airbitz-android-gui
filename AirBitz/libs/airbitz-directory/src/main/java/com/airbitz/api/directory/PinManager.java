@@ -29,7 +29,7 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.api;
+package com.airbitz.api.directory;
 
 import android.util.Log;
 

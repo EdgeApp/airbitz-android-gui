@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.models.Business;
+import com.airbitz.api.directory.Business;
 
 import com.squareup.picasso.Picasso;
 

@@ -40,6 +40,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -70,7 +71,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.adapters.WalletAdapter;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -78,7 +78,6 @@ import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.models.BusinessDetail;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
@@ -148,7 +147,6 @@ public class TransactionListFragment extends WalletBaseFragment
     private ViewGroup mListHeaderView;
     private TransactionAdapter mTransactionAdapter;
     private List<Transaction> mTransactions = new ArrayList<Transaction>();
-    private List<Transaction> mAllTransactions = new ArrayList<Transaction>();
     private View mView;
     private TransactionTask mTransactionTask;
     private Handler mHandler = new Handler();
@@ -338,15 +336,7 @@ public class TransactionListFragment extends WalletBaseFragment
         if (mLoading) {
             return;
         }
-        try {
-            if (TextUtils.isEmpty(query)) {
-                updateTransactionsListView(mAllTransactions);
-            } else {
-                startTransactionTask();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        startTransactionTask();
     }
 
     @Override
@@ -567,7 +557,6 @@ public class TransactionListFragment extends WalletBaseFragment
             if (!isAdded()) {
                 return;
             }
-            mAllTransactions = transactions;
             updateTransactionsListView(transactions);
             mTransactionTask = null;
         }

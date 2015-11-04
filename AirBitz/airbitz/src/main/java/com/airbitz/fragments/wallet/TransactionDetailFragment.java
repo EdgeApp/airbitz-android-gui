@@ -89,26 +89,27 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
-import com.airbitz.api.AirbitzAPI;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.Business;
+import com.airbitz.api.directory.BusinessDetail;
+import com.airbitz.api.directory.BusinessSearchResult;
+import com.airbitz.api.directory.Category;
+import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.directory.ProfileImage;
+import com.airbitz.api.directory.SearchResult;
 import com.airbitz.api.tABC_CC;
+import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.directory.DirectoryDetailFragment;
-import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.send.SendFragment;
-import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.models.Business;
-import com.airbitz.models.BusinessDetail;
-import com.airbitz.models.BusinessSearchResult;
-import com.airbitz.models.Category;
-import com.airbitz.objects.CurrentLocationManager;
-import com.airbitz.utils.Common;
-import com.airbitz.models.ProfileImage;
-import com.airbitz.models.SearchResult;
+import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
+import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.utils.Common;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
@@ -1179,7 +1180,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     class NearBusinessSearchAsyncTask extends AsyncTask<String, Integer, String> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
 
         public NearBusinessSearchAsyncTask() {
         }
@@ -1341,7 +1342,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     class OnlineBusinessSearchAsyncTask extends AsyncTask<String, Integer, List<Business>> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
 
         public OnlineBusinessSearchAsyncTask() {
         }
@@ -1461,7 +1462,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     class GetBizIdThumbnailAsyncTask extends AsyncTask<Void, Void, BusinessDetail> {
-        private AirbitzAPI api = AirbitzAPI.getApi();
+        private DirectoryApi api = DirectoryWrapper.getApi();
         private String mName;
         private long mBizId;
 

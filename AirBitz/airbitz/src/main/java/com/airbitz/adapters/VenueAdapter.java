@@ -45,7 +45,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.settings.SettingFragment;
-import com.airbitz.models.BusinessSearchResult;
+import com.airbitz.api.directory.BusinessSearchResult;
 import com.airbitz.utils.Common;
 import com.squareup.picasso.Picasso;
 

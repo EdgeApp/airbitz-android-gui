@@ -32,15 +32,18 @@
 package com.airbitz.fragments.settings;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -65,7 +68,8 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletPickerAdapter;
-import com.airbitz.api.AirbitzAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -87,9 +91,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class ImportFragment extends WalletBaseFragment implements
-        CoreAPI.OnWalletSweep,
-        QRCamera.OnScanResult
+public class ImportFragment extends WalletBaseFragment implements QRCamera.OnScanResult
 {
     public static String URI = "com.airbitz.importfragment.uri";
 
@@ -229,6 +231,8 @@ public class ImportFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(getActivity())
+            .registerReceiver(mSweepReceiver, new IntentFilter(CoreAPI.WALLET_SWEEP_ACTION));
 
         Bundle args = getArguments();
 
@@ -240,17 +244,17 @@ public class ImportFragment extends WalletBaseFragment implements
             scanQRCodes();
         }
 
-        mCoreAPI.setOnWalletSweepListener(this);
         clearSweepAddress();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mSweepReceiver);
+
         showBusyLayout(null, false);
         stopCamera();
         mHandler.removeCallbacks(sweepNotFoundRunner);
-        mCoreAPI.setOnWalletSweepListener(null);
     }
 
     @Override
@@ -334,7 +338,7 @@ public class ImportFragment extends WalletBaseFragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            AirbitzAPI api = AirbitzAPI.getApi();
+            DirectoryApi api = DirectoryWrapper.getApi();
             return api.getHiddenBits(params[0]);
         }
 
@@ -366,29 +370,33 @@ public class ImportFragment extends WalletBaseFragment implements
         }
     }
 
-    @Override
-    public void OnWalletSweep(String txID, long amount) {
-        Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
+    BroadcastReceiver mSweepReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String txID = intent.getStringExtra(CoreAPI.WALLET_TXID);
+            long amount = intent.getLongExtra(CoreAPI.AMOUNT_SWEPT, 0);
+            Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
-        showBusyLayout(null, false);
+            showBusyLayout(null, false);
 
-        mSweptID = txID;
-        mSweptAmount = amount;
+            mSweptID = txID;
+            mSweptAmount = amount;
 
-        String token = getHiddenBitsToken(mSweptAddress);
-        if(token != null) { // hidden bitz
-            // Check to see if both paths are done
-            checkHiddenBitsAsyncData();
-            return;
+            String token = getHiddenBitsToken(mSweptAddress);
+            if(token != null) { // hidden bitz
+                // Check to see if both paths are done
+                checkHiddenBitsAsyncData();
+                return;
+            }
+
+            // if a private address sweep
+            mHandler.removeCallbacks(sweepNotFoundRunner);
+
+            clearSweepAddress();
+            mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
+            mSweptAmount = -1;
         }
-
-        // if a private address sweep
-        mHandler.removeCallbacks(sweepNotFoundRunner);
-
-        clearSweepAddress();
-        mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
-        mSweptAmount = -1;
-    }
+    };
 
     private void clearSweepAddress() {
         // Clear out sweep info

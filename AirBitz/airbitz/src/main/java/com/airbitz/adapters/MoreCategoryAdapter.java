@@ -41,8 +41,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.models.Categories;
-import com.airbitz.models.Category;
+import com.airbitz.api.directory.Categories;
+import com.airbitz.api.directory.Category;
 
 import java.util.ArrayList;
 import java.util.List;

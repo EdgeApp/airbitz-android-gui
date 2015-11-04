@@ -1,1 +1,3 @@
+include ':libs:bitbeacon'
+include ':libs:airbitz-directory'
 include ':airbitz'

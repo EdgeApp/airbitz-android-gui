@@ -29,17 +29,10 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.api;
+package com.airbitz.api.directory;
 
 import android.util.Log;
 import android.util.LruCache;
-
-import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
-import com.airbitz.models.Business;
-import com.airbitz.models.BusinessDetail;
-import com.airbitz.models.Categories;
-import com.airbitz.models.LocationSearchResult;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -62,14 +55,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-/**
- * Created on 2/13/14.
- */
+public class DirectoryApi {
 
-public class AirbitzAPI {
-
-    private static AirbitzAPI mInstance = null;
-    private static String TAG = AirbitzAPI.class.getSimpleName();
+    private static String TAG = DirectoryApi.class.getSimpleName();
 
     private static final String SERVER_ROOT = "https://api.airbitz.co/";
     private static final String API_PATH = SERVER_ROOT + "api/v1/";
@@ -82,16 +70,17 @@ public class AirbitzAPI {
     private static final String API_AUTO_COMPLETE_LOCATION = API_PATH + "autocomplete-location/";
     private static final String API_AUTO_COMPLETE_BUSINESS = API_PATH + "autocomplete-business/";
 
-    public static AirbitzAPI getApi(){
-        if(mInstance == null){
-            mInstance = new AirbitzAPI();
-        }
-        return mInstance;
-    }
-
     private LruCache mApiCache;
+    private String mToken;
+    private String mUserAgent;
+    private String mClientId;
+    private String mLang;
 
-    private AirbitzAPI(){
+    public DirectoryApi(String token, String userAgent, String clientId, String lang) {
+        this.mToken = token;
+        this.mUserAgent = userAgent;
+        this.mClientId = clientId;
+        this.mLang = lang;
         int cacheSize = 2 * 1024 * 1024; // 2MiB
         mApiCache = new LruCache<String, String>(cacheSize) {
             protected int sizeOf(String key, String value) {
@@ -105,18 +94,16 @@ public class AirbitzAPI {
     }
 
     public String getRequest(String url){
-        return getRequest(url,"");
+        return getRequest(url, "");
     }
 
-    public static String getRequest(String url, String params) {
-        AirbitzAPI api = AirbitzAPI.getApi();
-
+    public String getRequest(String url, String params) {
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
         HttpsURLConnection urlConnection = null;
         Log.d(TAG, url + params);
-        if (api.mApiCache.get(url + params) != null) {
-            return (String) api.mApiCache.get(url + params);
+        if (mApiCache.get(url + params) != null) {
+            return (String) mApiCache.get(url + params);
         }
         try {
             TrustManager tm[] = {
@@ -129,11 +116,9 @@ public class AirbitzAPI {
             urlConnection = (HttpsURLConnection) sendUrl.openConnection();
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
 
-            String token = AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key);
-
-            urlConnection.setRequestProperty("Authorization", "Token " + token + "");
-            urlConnection.setRequestProperty("User-Agent", AirbitzApplication.getUserAgent());
-            urlConnection.setRequestProperty("X-Client-ID", AirbitzApplication.getClientID());
+            urlConnection.setRequestProperty("Authorization", "Token " + mToken + "");
+            urlConnection.setRequestProperty("User-Agent", mUserAgent);
+            urlConnection.setRequestProperty("X-Client-ID", mClientId);
 
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(in));
@@ -158,11 +143,11 @@ public class AirbitzAPI {
             }
         }
         String temp = stringBuffer.toString();
-        if(temp == null) {
+        if (temp == null) {
             temp = "{}";
         }
-        synchronized (api.mApiCache) {
-            api.mApiCache.put(url + params, temp);
+        synchronized (mApiCache) {
+            mApiCache.put(url + params, temp);
         }
         return temp;
     }
@@ -606,7 +591,6 @@ public class AirbitzAPI {
     }
 
     private String getLanguageCode() {
-        String lang = AirbitzApplication.getContext().getResources().getConfiguration().locale.getLanguage();
-        return (lang.equals("en") || lang.equals("es")) ? lang : null;
+        return ("en".equals(mLang) || "es".equals(mLang)) ? mLang : null;
     }
 }
