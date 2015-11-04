@@ -569,7 +569,7 @@ html body .table thead th {
 }
 html body .list-group .list-group-item,
 html body .list-group a.list-group-item {
-  color: #003e61;
+  color: #003E61;
   background: white;
   font-size: 20px;
   border-radius: 0px;
@@ -578,7 +578,7 @@ html body .list-group a.list-group-item {
 html body .list-group .list-group-item.header,
 html body .list-group a.list-group-item.header {
   margin-bottom: 0;
-  color: #003e61;
+  color: #003E61;
   border-bottom: 1px solid #ddd;
   background: #f9f9f9;
 }
@@ -791,7 +791,7 @@ html body .user-account-form {
   position: relative;
   width: 100%;
   padding: 5px 15px;
-  background: #003e61;
+  background: #003E61;
 }
 .exchange-ticker .live-ticker .live-price-rate {
   font-size: 16px;
@@ -928,12 +928,14 @@ html body .user-account-form {
   height: 32px;
   padding-bottom: 4px;
 }
+.exchange-transactions-summary {
+  padding-bottom: 26px;
+}
 .transactions {
-  margin-bottom: 46px;
-  padding-bottom: 0px;
+  padding-bottom: 46px;
 }
 .transactions .transactions-header {
-  color: #003e61;
+  color: #003E61;
   font-weight: 400;
 }
 .transactions .table {
@@ -964,7 +966,7 @@ html body .user-account-form {
   border: none;
 }
 .transactions .table.table-striped tbody td.datetime .date {
-  color: #003e61;
+  color: #003E61;
   font-weight: 700;
 }
 .transactions .table.table-striped tbody td.datetime .date .est-label {
@@ -999,9 +1001,6 @@ html body .user-account-form {
 }
 .exchange-buy-sell-interface {
   margin: 20px 0;
-}
-.exchange-transactions-summary {
-  margin-bottom: 26px;
 }
 .verify-phone-info {
   margin-bottom: 20px;
@@ -9565,7 +9564,7 @@ var Glidera = (function () {
     .module('app.user', ['app.dataFactory', 'app.constants'])
     .controller('homeController', ['$scope', '$state', '$location', 'UserFactory', homeController])
     .controller('dashboardController', ['$scope', '$sce', '$state', 'Error', 'DataFactory', 'UserFactory', 'Limits', dashboardController])
-    .controller('userAccountController', ['$scope', '$state', 'Error', 'States', 'Occupations', 'UserFactory', userAccountController])
+    .controller('userAccountController', ['$scope', '$state', 'Error', 'States', 'Occupations', 'UserFactory', 'ExchangeFactory', userAccountController])
     .controller('bankAccountController', ['$scope', '$sce', '$state', 'UserFactory', bankAccountController])
     .controller('increaseLimitsController', ['$scope', '$sce', '$state', 'UserFactory', increaseLimitsController])
     .controller('disclaimerController', ['$scope', '$state', 'Error', 'States', 'UserFactory', disclaimerController])
@@ -9631,7 +9630,10 @@ var Glidera = (function () {
   }
 
   function dashboardController($scope, $sce, $state, Error, DataFactory, UserFactory, Limits) {
-    Airbitz.ui.title('Glidera ' + $scope.countryName);
+    Airbitz.ui.title('Glidera');
+    if (DataFactory.getExchange().countryName) {
+      Airbitz.ui.title('Glidera ' + DataFactory.getExchange().countryName);
+    }
     // set variables that might be cached locally to make sure they load faster if available
     $scope.account = UserFactory.getUserAccount();
     $scope.userStatus = UserFactory.getUserAccountStatus();
@@ -9766,13 +9768,14 @@ var Glidera = (function () {
     $scope.iframeUrl = $sce.trustAsResourceUrl(url);
   }
 
-  function userAccountController($scope, $state, Error, States, Occupations, UserFactory) {
+  function userAccountController($scope, $state, Error, States, Occupations, UserFactory, ExchangeFactory) {
     var title = 'User Information';
     Airbitz.ui.title(title);
     $scope.states = States.getStates();
     $scope.occupations = Occupations.getOccupations();
     $scope.OTHER = Occupations.OTHER;
     $scope.account = UserFactory.getUserAccount();
+    $scope.countryStateText = ExchangeFactory.countryCode === 'US' ? 'State' : 'Province';
     UserFactory.getFullUserAccount().then(function(account) {
       $scope.account = account;
     }, function() {
@@ -10184,7 +10187,8 @@ var app = angular.module('app.core', [
 
     var redirectUri = Airbitz.config.get('REDIRECT_URI');
     var domainUri = Airbitz.config.get('SANDBOX') == 'true'
-      ? 'bitid:sandbox.glidera.io/api/v1/authentication/bitid' : 'bitid:www.glidera.io/api/v1/authentication/bitid';
+      ? 'bitid:sandbox.glidera.io/api/v1/authentication/bitid'
+      : 'bitid:www.glidera.io/api/v1/authentication/bitid';
     factory.authorizeUrl = function() {
       var message = glideraFactory.bitidAuthUri();
       console.log(message);
@@ -10285,7 +10289,7 @@ var app = angular.module('app.core', [
             account.occupation = Occupations.find(b.occupation);
             account.employerName = b.employerName;
             account.employerDescription = b.employerDescription;
-            ExchangeFactory.updateCurrency(b.country);
+            ExchangeFactory.updateCurrency(account.country);
 
             if (b.birthDate) {
               // XXX: This is kind of hacky
@@ -10728,7 +10732,11 @@ var app = angular.module('app.core', [
     return {
       OTHER: 29,
       getOccupations: function() {
-        return occupations;
+        return occupations.sort(function(a, b) {
+          if (a.name < b.name) return -1;
+          if (b.name < a.name) return 1;
+          return 0;
+        });
       },
       find: function(code) {
         var l = occupations.filter(function(s) {
@@ -11090,13 +11098,13 @@ module.run(['$templateCache', function($templateCache) {
     '            ng-change="convertBtcValue(order.orderValueInput)"\n' +
     '            type="number"\n' +
     '            name="orderValueInput"\n' +
-    '            class="right-square"\n' +
+    '            class="right-square input-lg"\n' +
     '            id="inputBtcAmount"\n' +
     '            placeholder="Enter Amount"\n' +
     '            step="any"\n' +
     '            autocorrect="off"\n' +
     '            required="" />\n' +
-    '          <span class="input-group-addon">{{ cryptoDenom }}</span>\n' +
+    '          <span style="min-width: 75px" class="input-group-addon">{{ cryptoDenom }}</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
     '             ng-show="form.$submitted || form.orderValueInput.$touched">\n' +
@@ -11111,14 +11119,14 @@ module.run(['$templateCache', function($templateCache) {
     '            ng-change="convertFiatValue(order.orderFiatInput)"\n' +
     '            type="number"\n' +
     '            name="orderFiatInput"\n' +
-    '            class="right-square"\n' +
+    '            class="right-square input-lg"\n' +
     '            id="inputFiatAmount"\n' +
     '            placeholder="Enter Amount"\n' +
     '            autocorrect="off"\n' +
     '            tabindex="1"\n' +
     '            step="any"\n' +
     '            required="" />\n' +
-    '            <span class="input-group-addon">{{ exchange.currency }}</span>\n' +
+    '            <span style="min-width: 75px" class="input-group-addon">{{ exchange.currency }}</span>\n' +
     '        </div>\n' +
     '        <div class="input-error"\n' +
     '             ng-show="form.$submitted || form.orderFiatInput.$touched">\n' +
@@ -11399,7 +11407,11 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/receipt/partials/receipt.html',
-    '<h2 class="order-receipt-heading app-margin-top">Order Receipt</h2>\n' +
+    '<div class="row no-pad">\n' +
+    '    <div class="col-xs-12">\n' +
+    '        <h2>Order Receipt</h2>\n' +
+    '    </div>\n' +
+    '</div>\n' +
     '\n' +
     '<div class="order-review row">\n' +
     '  <div class="col-xs-12">\n' +
@@ -11865,10 +11877,8 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '      <div class="no-pad-right form-group col-xs-6">\n' +
     '        <select ng-options="o.name for o in states" ng-model="account.state" class="form-control"\n' +
-    '          name="state"\n' +
-    '          required="" />\n' +
-    '          <option value="" ng-if="exchange.countryCode == \'US\'">Select a State</option>\n' +
-    '          <option value="" ng-if="exchange.countryCode == \'CA\'">Select a Province</option>\n' +
+    '          name="state" required="" />\n' +
+    '          <option value="">Select a {{ countryStateText }}</option>\n' +
     '        </select>\n' +
     '        <div class="input-error" ng-show="form.$submitted || form.state.$touched">\n' +
     '          <span ng-show="form.state.$error.required" class="label label-danger">Required</span>\n' +
