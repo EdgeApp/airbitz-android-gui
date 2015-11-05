@@ -746,8 +746,7 @@ html body hr.page {
   border-color: #000;
 }
 html body .exchange-user-account {
-  margin-bottom: 46px;
-  padding-bottom: 1px;
+  padding-bottom: 46px;
 }
 html body .exchange-user-account .list-group {
   margin-bottom: 0px;
@@ -9268,7 +9267,12 @@ var Glidera = (function () {
         return;
       }
       // Trim extra decimals off BTC amount
-      $scope.order.orderBtcInput = $scope.order.orderBtcInput.toFixed(8);
+      try {
+        $scope.order.orderBtcInput = parseFloat($scope.order.orderBtcInput).toFixed(8);
+      } catch (e) {
+        console.log('Unable to round btc input');
+        console.log(JSON.stringify($scope.order));
+      }
       var d = $scope.order.orderAction == 'buy' ? Prices.setBuyQty($scope.order.orderBtcInput) : Prices.setSellQty($scope.order.orderBtcInput);
       d.then(function() {
         TwoFactor.showTwoFactor(function() {
@@ -9947,7 +9951,8 @@ var Glidera = (function () {
 
   function formatBtc($filter) {
     return function(val, denom) {
-      return $filter('roundBtc')(val) + ' ' + denom;
+      var d = Airbitz.cryptoDenom;
+      return $filter('roundBtc')(val) + ' ' + d;
     }
   }
 
@@ -9956,6 +9961,7 @@ var Glidera = (function () {
       if (!val) {
         return 0;
       }
+      val = parseFloat(val);
       var d = Airbitz.cryptoDenom;
       if (d == "mBTC") {
         return (val * 100).toFixed(to || 3);
@@ -10423,15 +10429,6 @@ var app = angular.module('app.core', [
 
     // initialize exchangeOrder
     var exchangeOrder = {};
-
-    factory.createBuyOrder = function(order) {
-      // exchangeOrder = angular.copy(order);
-      exchangeOrder.destinationWallet = order.destinationWallet;
-      exchangeOrder.qty = order.qty;
-      exchangeOrder.useCurrentPrice = order.useCurrentPrice;
-      exchangeOrder.orderAction = order.orderAction
-    };
-
     factory.getOrder = function(clear) {
       if (clear) {
         this.clearOrder();
@@ -11571,13 +11568,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/user/partials/bankAccount.html',
     '<iframe id="glidera-iframe" ng-src="{{ iframeUrl }}" frameBorder="0"></iframe>\n' +
-    '\n' +
-    '<div class="return-to-dashboard relative ng-trans ng-trans-fade-up easeOutSine">\n' +
-    '  <div class="row">\n' +
-    '    <div class="col-xs-12 no-pad">\n' +
-    '      <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
-    '  </div>\n' +
-    '</div>\n' +
     '');
 }]);
 })();
