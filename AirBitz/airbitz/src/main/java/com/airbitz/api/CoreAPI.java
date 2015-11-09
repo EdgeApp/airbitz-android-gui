@@ -1834,16 +1834,20 @@ public class CoreAPI {
 
         if (result == tABC_CC.ABC_CC_Ok)
         {
-            mReceiveRequestDetails = details;
-            return getStringAtPtr(core.longp_value(lp));
+            String szRequestID = getStringAtPtr(core.longp_value(lp));
+
+            result = core.ABC_ModifyReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                    wallet.getUUID(), szRequestID, details, error);
+            if (tABC_CC.ABC_CC_Ok == result)
+            {
+                mReceiveRequestDetails = details;
+                return szRequestID;
+            }
         }
-        else
-        {
-            String message = result.toString() + "," + error.getSzDescription() + ", " +
-                    error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
-            Log.d(TAG, message);
-            return null;
-        }
+        String message = result.toString() + "," + error.getSzDescription() + ", " +
+                error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
+        Log.d(TAG, message);
+        return null;
     }
 
 
