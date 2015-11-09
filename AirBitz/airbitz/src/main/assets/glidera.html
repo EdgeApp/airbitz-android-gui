@@ -9259,19 +9259,19 @@ var Glidera = (function () {
       $scope.order.orderFiatInput = parseFloat($filter('roundFiat')(parseFloat(output)));
     };
     $scope.next = function() {
-      if ($scope.order.orderAction == 'buy' && !Limits.isBuyAllowed($scope.order.orderBtcInput)) {
-        Airbitz.ui.showAlert('Error', 'The buy limit will be exceeded. Please reduce your buy amount.');
-        return;
-      } else if ($scope.order.orderAction == 'sell' && !Limits.isSellAllowed($scope.order.orderBtcInput)) {
-        Airbitz.ui.showAlert('Error', 'The sell limit will be exceeded. Please reduce your sell amount.');
-        return;
-      }
       // Trim extra decimals off BTC amount
       try {
         $scope.order.orderBtcInput = parseFloat($scope.order.orderBtcInput).toFixed(8);
       } catch (e) {
         console.log('Unable to round btc input');
         console.log(JSON.stringify($scope.order));
+      }
+      if ($scope.order.orderAction == 'buy' && !Limits.isBuyAllowed($scope.order.orderBtcInput)) {
+        Airbitz.ui.showAlert('Error', 'The buy limit will be exceeded. Please reduce your buy amount.');
+        return;
+      } else if ($scope.order.orderAction == 'sell' && !Limits.isSellAllowed($scope.order.orderBtcInput)) {
+        Airbitz.ui.showAlert('Error', 'The sell limit will be exceeded. Please reduce your sell amount.');
+        return;
       }
       var d = $scope.order.orderAction == 'buy' ? Prices.setBuyQty($scope.order.orderBtcInput) : Prices.setSellQty($scope.order.orderBtcInput);
       d.then(function() {
