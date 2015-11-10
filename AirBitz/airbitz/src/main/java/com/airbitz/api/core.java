@@ -379,22 +379,6 @@ public class core implements coreConstants {
     return tABC_CC.swigToEnum(coreJNI.ABC_CurrencyToSatoshi(szUserName, szPassword, currency, currencyNum, SWIGTYPE_p_int64_t.getCPtr(pSatoshi), tABC_Error.getCPtr(pError), pError));
   }
 
-  public static tABC_CC ABC_GetWallets(String szUserName, String szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo paWalletInfo, SWIGTYPE_p_unsigned_int pCount, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetWallets(szUserName, szPassword, SWIGTYPE_p_p_p_sABC_WalletInfo.getCPtr(paWalletInfo), SWIGTYPE_p_unsigned_int.getCPtr(pCount), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static void ABC_FreeWalletInfoArray(SWIGTYPE_p_p_sABC_WalletInfo aWalletInfo, long nCount) {
-    coreJNI.ABC_FreeWalletInfoArray(SWIGTYPE_p_p_sABC_WalletInfo.getCPtr(aWalletInfo), nCount);
-  }
-
-  public static tABC_CC ABC_GetWalletInfo(String szUserName, String szPassword, String szUUID, SWIGTYPE_p_p_sABC_WalletInfo ppWalletInfo, tABC_Error pError) {
-    return tABC_CC.swigToEnum(coreJNI.ABC_GetWalletInfo(szUserName, szPassword, szUUID, SWIGTYPE_p_p_sABC_WalletInfo.getCPtr(ppWalletInfo), tABC_Error.getCPtr(pError), pError));
-  }
-
-  public static void ABC_FreeWalletInfo(tABC_WalletInfo pWalletInfo) {
-    coreJNI.ABC_FreeWalletInfo(tABC_WalletInfo.getCPtr(pWalletInfo), pWalletInfo);
-  }
-
   public static tABC_CC ABC_CreateWallet(String szUserName, String szPassword, String szWalletName, int currencyNum, SWIGTYPE_p_p_char pszUuid, tABC_Error pError) {
     return tABC_CC.swigToEnum(coreJNI.ABC_CreateWallet(szUserName, szPassword, szWalletName, currencyNum, SWIGTYPE_p_p_char.getCPtr(pszUuid), tABC_Error.getCPtr(pError), pError));
   }
@@ -584,21 +568,6 @@ public class core implements coreConstants {
   public static SWIGTYPE_p_unsigned_int int_to_uint(SWIGTYPE_p_int x) {
     long cPtr = coreJNI.int_to_uint(SWIGTYPE_p_int.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
-  }
-
-  public static SWIGTYPE_p_p_sABC_WalletInfo longp_to_ppWalletinfo(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longp_to_ppWalletinfo(SWIGTYPE_p_long.getCPtr(x));
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_sABC_WalletInfo(cPtr, false);
-  }
-
-  public static tABC_WalletInfo longp_to_pWalletinfo(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longp_to_pWalletinfo(SWIGTYPE_p_long.getCPtr(x));
-    return (cPtr == 0) ? null : new tABC_WalletInfo(cPtr, false);
-  }
-
-  public static SWIGTYPE_p_p_p_sABC_WalletInfo longp_to_pppWalletInfo(SWIGTYPE_p_long x) {
-    long cPtr = coreJNI.longp_to_pppWalletInfo(SWIGTYPE_p_long.getCPtr(x));
-    return (cPtr == 0) ? null : new SWIGTYPE_p_p_p_sABC_WalletInfo(cPtr, false);
   }
 
   public static SWIGTYPE_p_p_p_sABC_TxInfo longp_to_pppTxInfo(SWIGTYPE_p_long x) {

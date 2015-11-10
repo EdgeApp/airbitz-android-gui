@@ -2351,60 +2351,6 @@ public class CoreAPI {
         return out;
     }
 
-    private class ppWalletInfo extends SWIGTYPE_p_p_sABC_WalletInfo {
-        public ppWalletInfo(long ptr) {
-            super(ptr, false);
-        }
-
-        public long getPtr(SWIGTYPE_p_p_sABC_WalletInfo p, long i) {
-            return getCPtr(p) + i;
-        }
-    }
-
-    private class WalletInfo extends tABC_WalletInfo {
-        String mName;
-        String mUUID;
-        long mBalance;
-        private int mCurrencyNum;
-        private long mArchived;
-        private List<Transaction> mTransactions = null;
-
-        public WalletInfo(long pv) {
-            super(pv, false);
-            if (pv != 0) {
-                mName = super.getSzName();
-                mUUID = super.getSzUUID();
-                mBalance = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(super.getBalanceSatoshi()));
-                mCurrencyNum = super.getCurrencyNum();
-                mArchived = super.getArchived();
-            }
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public String getUUID() {
-            return mUUID;
-        }
-
-        public long getBalance() {
-            return mBalance;
-        }
-
-        public long getAttributes() {
-            return mArchived;
-        }
-
-        public int getCurrencyNum() {
-            return mCurrencyNum;
-        }
-
-        public List<Transaction> getTransactions() {
-            return mTransactions;
-        }
-    }
-
     private class pLong extends SWIGTYPE_p_long {
         public pLong(long ptr) {
             super(ptr, false);

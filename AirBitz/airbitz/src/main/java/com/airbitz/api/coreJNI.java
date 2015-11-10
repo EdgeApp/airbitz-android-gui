@@ -119,16 +119,6 @@ public class coreJNI {
   public final static native String tABC_Currency_szCountries_get(long jarg1, tABC_Currency jarg1_);
   public final static native long new_tABC_Currency();
   public final static native void delete_tABC_Currency(long jarg1);
-  public final static native String tABC_WalletInfo_szUUID_get(long jarg1, tABC_WalletInfo jarg1_);
-  public final static native String tABC_WalletInfo_szName_get(long jarg1, tABC_WalletInfo jarg1_);
-  public final static native void tABC_WalletInfo_currencyNum_set(long jarg1, tABC_WalletInfo jarg1_, int jarg2);
-  public final static native int tABC_WalletInfo_currencyNum_get(long jarg1, tABC_WalletInfo jarg1_);
-  public final static native void tABC_WalletInfo_archived_set(long jarg1, tABC_WalletInfo jarg1_, long jarg2);
-  public final static native long tABC_WalletInfo_archived_get(long jarg1, tABC_WalletInfo jarg1_);
-  public final static native void tABC_WalletInfo_balanceSatoshi_set(long jarg1, tABC_WalletInfo jarg1_, long jarg2);
-  public final static native long tABC_WalletInfo_balanceSatoshi_get(long jarg1, tABC_WalletInfo jarg1_);
-  public final static native long new_tABC_WalletInfo();
-  public final static native void delete_tABC_WalletInfo(long jarg1);
   public final static native String tABC_QuestionChoice_szQuestion_get(long jarg1, tABC_QuestionChoice jarg1_);
   public final static native String tABC_QuestionChoice_szCategory_get(long jarg1, tABC_QuestionChoice jarg1_);
   public final static native void tABC_QuestionChoice_minAnswerLength_set(long jarg1, tABC_QuestionChoice jarg1_, long jarg2);
@@ -314,10 +304,6 @@ public class coreJNI {
   public final static native int ABC_RequestExchangeRateUpdate(String jarg1, String jarg2, int jarg3, long jarg4, tABC_Error jarg4_);
   public final static native int ABC_SatoshiToCurrency(String jarg1, String jarg2, long jarg3, long jarg4, int jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_CurrencyToSatoshi(String jarg1, String jarg2, double jarg3, int jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
-  public final static native int ABC_GetWallets(String jarg1, String jarg2, long jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
-  public final static native void ABC_FreeWalletInfoArray(long jarg1, long jarg2);
-  public final static native int ABC_GetWalletInfo(String jarg1, String jarg2, String jarg3, long jarg4, long jarg5, tABC_Error jarg5_);
-  public final static native void ABC_FreeWalletInfo(long jarg1, tABC_WalletInfo jarg1_);
   public final static native int ABC_CreateWallet(String jarg1, String jarg2, String jarg3, int jarg4, long jarg5, long jarg6, tABC_Error jarg6_);
   public final static native int ABC_WalletLoad(String jarg1, String jarg2, long jarg3, tABC_Error jarg3_);
   public final static native int ABC_WalletName(String jarg1, String jarg2, long jarg3, long jarg4, tABC_Error jarg4_);
@@ -365,9 +351,6 @@ public class coreJNI {
   public final static native long p64_t_to_long_ptr(long jarg1);
   public final static native long p64_t_to_double_ptr(long jarg1);
   public final static native long int_to_uint(long jarg1);
-  public final static native long longp_to_ppWalletinfo(long jarg1);
-  public final static native long longp_to_pWalletinfo(long jarg1);
-  public final static native long longp_to_pppWalletInfo(long jarg1);
   public final static native long longp_to_pppTxInfo(long jarg1);
   public final static native long longp_to_ppTxInfo(long jarg1);
   public final static native long longp_to_ppCurrency(long jarg1);
