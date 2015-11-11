@@ -70,9 +70,8 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.AccountsAdapter;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -91,7 +90,7 @@ public class LandingFragment extends BaseFragment implements
     private static final String INVALID_ENTRY_PREF = "fragment_landing_invalid_entries";
 
     String mUsername;
-    char[] mPassword;
+    String mPassword;
     String mPin;
 
     private TextView mDetailTextView;
@@ -662,9 +661,10 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
-    public class PINLoginTask extends AsyncTask {
+    public class PINLoginTask extends AsyncTask<String, Void, Boolean> {
         String mUsername;
         String mPin;
+        AirbitzException mFailureException;
 
         @Override
         protected void onPreExecute() {
@@ -673,41 +673,36 @@ public class LandingFragment extends BaseFragment implements
         }
 
         @Override
-        protected tABC_Error doInBackground(Object... params) {
-            mUsername = (String) params[0];
-            mPin = (String) params[1];
-            if (mUsername == null || mPin == null) {
-                tABC_Error error = new tABC_Error();
-                error.setCode(tABC_CC.ABC_CC_Error);
-                return error;
+        protected Boolean doInBackground(String... params) {
+            mUsername = params[0];
+            mPin = params[1];
+            try {
+                mCoreAPI.PinLogin(mUsername, mPin);
+                return true;
+            } catch (AirbitzException e) {
+                mFailureException = e;
+                return false;
             }
-            tABC_Error error = mCoreAPI.PinLogin(mUsername, mPin);
-            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
-                AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.setupAccountSettings();
-            }
-            return error;
         }
 
         @Override
-        protected void onPostExecute(final Object success) {
+        protected void onPostExecute(final Boolean success) {
             mActivity.showModalProgress(false);
             mPINLoginTask = null;
-            tABC_Error result = (tABC_Error) success;
             mPinEditText.setText("");
 
-            if (result.getCode() == tABC_CC.ABC_CC_Ok) {
+            if (success) {
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mUsername, null, mFirstLogin);
-            } else if (result.getCode() == tABC_CC.ABC_CC_BadPassword) {
+            } else if (mFailureException.isBadPassword()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                 mPinEditText.requestFocus();
-            } else if (tABC_CC.ABC_CC_InvalidOTP == result.getCode()) {
+            } else if (mFailureException.isOtpError()) {
                 launchTwoFactorMenu();
             } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
-                mActivity.ShowFadingDialog(Common.errorMap(getActivity(), result));
+                mActivity.ShowFadingDialog(mFailureException.getMessage());
                 mPinFailedCount++;
                 if (mPinFailedCount >= MAX_PIN_FAILS) {
                     abortPermanently();
@@ -754,29 +749,34 @@ public class LandingFragment extends BaseFragment implements
         }
     };
 
-    public class PasswordLoginTask extends AsyncTask {
+    public class PasswordLoginTask extends AsyncTask<String, Void, Boolean> {
+        AirbitzException mFailureException = null;
+
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected tABC_Error doInBackground(Object... params) {
+        protected Boolean doInBackground(String... params) {
             mUsername = (String) params[0];
-            mPassword = (char[]) params[1];
-            tABC_Error error = mCoreAPI.SignIn(mUsername, mPassword);
-            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+            mPassword = (String) params[1];
+            try {
+                mCoreAPI.SignIn(mUsername, mPassword);
                 AirbitzApplication.Login(mUsername, mPassword);
                 mCoreAPI.setupAccountSettings();
+                return true;
+            } catch (AirbitzException e) {
+                mFailureException = e;
+                return false;
             }
-            return error;
         }
 
         @Override
-        protected void onPostExecute(final Object error) {
+        protected void onPostExecute(final Boolean success) {
             mActivity.showModalProgress(false);
             mPasswordLoginTask = null;
-            signInComplete((tABC_Error) error);
+            signInComplete(mFailureException);
         }
 
         @Override
@@ -786,22 +786,18 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
-    private void signInComplete(tABC_Error error) {
-        tABC_CC resultCode = error.getCode();
-        mCoreAPI.otpSetError(resultCode);
-
+    private void signInComplete(AirbitzException error) {
         saveUsername(mUsername);
-        if(error.getCode() == tABC_CC.ABC_CC_Ok) {
+        if (error == null) {
             mActivity.hideSoftKeyboard(mPasswordEditText);
-            Editable pass = mPasswordEditText.getText();
+            mPassword = mPasswordEditText.getText().toString();
             mPasswordEditText.setText("");
-            char[] password = new char[pass.length()];
-            pass.getChars(0, pass.length(), password, 0);
-            mActivity.LoginNow(mUsername, password, mFirstLogin);
-        } else if (tABC_CC.ABC_CC_InvalidOTP == resultCode) {
+            mActivity.LoginNow(mUsername, mPassword, mFirstLogin);
+        } else if (error.isOtpError()) {
+            mCoreAPI.otpSetError(error);
             launchTwoFactorMenu();
         } else {
-            mActivity.ShowFadingDialog(Common.errorMap(mActivity, resultCode));
+            mActivity.ShowFadingDialog(error.getMessage());
         }
     }
 
@@ -831,7 +827,11 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void twoFactorSignIn(String secret) {
-        mCoreAPI.OtpKeySet(mUsername, secret);
+        try {
+            mCoreAPI.OtpKeySet(mUsername, secret);
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
             mPINLoginTask = new PINLoginTask();
@@ -877,9 +877,7 @@ public class LandingFragment extends BaseFragment implements
 
         // Store values at the time of the login attempt.
         String username = mUserNameEditText.getText().toString();
-        Editable pass = mPasswordEditText.getText();
-        char[] password = new char[pass.length()];
-        pass.getChars(0, pass.length(), password, 0);
+        String password = mPasswordEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -892,7 +890,7 @@ public class LandingFragment extends BaseFragment implements
         }
 
         // Check for empty password.
-        if (password.length<1) {
+        if (password.length() < 1) {
             mPasswordEditText.setError(getString(R.string.error_invalid_credentials));
             if (null == focusView) {
                 focusView = mPasswordEditText;
@@ -920,7 +918,12 @@ public class LandingFragment extends BaseFragment implements
 
         @Override
         protected String doInBackground(String... params) {
-            return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
+            try {
+                return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+                return e.getMessage();
+            }
         }
 
         @Override

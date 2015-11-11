@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,10 +50,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.QRCamera;
@@ -189,11 +188,14 @@ public class TwoFactorScanFragment extends BaseFragment implements
         }
     }
 
-    boolean storeSecret(String secret)
-    {
-        tABC_Error Error = new tABC_Error();
-        tABC_CC cc = core.ABC_OtpKeySet(mUsername, secret, Error);
-        return cc == tABC_CC.ABC_CC_Ok;
+    boolean storeSecret(String secret) {
+        try {
+            mCoreAPI.OtpKeySet(mUsername, secret);
+            return true;
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+            return false;
+        }
     }
 
     void testSecret()

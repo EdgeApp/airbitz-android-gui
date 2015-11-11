@@ -93,7 +93,7 @@ import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.directory.DirectoryApi;
-import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
@@ -1462,7 +1462,7 @@ public class NavigationActivity extends ActionBarActivity
         public boolean onBackPress();
     }
 
-    public void LoginNow(String username, char[] password, boolean newDevice) {
+    public void LoginNow(String username, String password, boolean newDevice) {
         mWalletsLoadedReceiver.mShowMessages = newDevice;
 
         AirbitzApplication.Login(username, password);
@@ -2044,10 +2044,10 @@ public class NavigationActivity extends ActionBarActivity
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
 
         // On first install/load, copy synchronized to local setting
-        if(!prefs.contains(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
+        if(!prefs.contains(CoreAPI.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
-            editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
+            editor.putLong(CoreAPI.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
+            editor.putBoolean(CoreAPI.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
             editor.apply();
         }
     }
@@ -2282,7 +2282,7 @@ public class NavigationActivity extends ActionBarActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if(!mDrawerExchangeUpdated) {
-                    tABC_AccountSettings settings = mCoreAPI.coreSettings();
+                    AccountSettings settings = mCoreAPI.coreSettings();
                     if (settings != null) {
                         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
                         mDrawerExchangeUpdated = true;

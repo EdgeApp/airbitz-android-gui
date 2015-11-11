@@ -56,8 +56,9 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_PasswordRule;
+import com.airbitz.api.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -292,7 +293,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private List<String> checkPasswordRules(String password) {
-        List<tABC_PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
         List<String> ruleFails = new ArrayList<>();
 
         if (rules.isEmpty()) {
@@ -300,7 +301,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         }
 
         for (int i = 0; i < rules.size(); i++) {
-            tABC_PasswordRule pRule = rules.get(i);
+            PasswordRule pRule = rules.get(i);
             boolean passed = pRule.getBPassed();
             if (!passed) {
                 ruleFails.add(pRule.getSzDescription());
@@ -477,8 +478,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             if(mPassword != null) {
                 mPasswordString = String.valueOf(mPassword);
             }
-            return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
-                    mPasswordString , mWithdrawalPinEditText.getText().toString());
+            try {
+                return mCoreAPI.createAccountAndPin(getArguments().getString(USERNAME),
+                        mPasswordString , mWithdrawalPinEditText.getText().toString());
+            } catch (AirbitzException e) {
+                return e.getMessage();
+            }
         }
 
         @Override

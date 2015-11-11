@@ -54,6 +54,7 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
@@ -388,8 +389,12 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
             List<String> accounts = mCoreAPI.listAccounts();
             for(String name : accounts) {
-                if(!name.isEmpty() && mCoreAPI.isTwoFactorResetPending(name)) {
-                    pendings.add(name);
+                try {
+                    if (!name.isEmpty() && mCoreAPI.isTwoFactorResetPending(name)) {
+                        pendings.add(name);
+                    }
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
                 }
             }
 

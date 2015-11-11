@@ -40,6 +40,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -54,10 +55,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.objects.HighlightOnPressButton;
@@ -262,7 +261,12 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         @Override
         protected String doInBackground(String... params) {
             String username = params[0];
-            return mCoreAPI.accountAvailable(username);
+            try {
+                return mCoreAPI.accountAvailable(username);
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+                return e.getMessage();
+            }
         }
 
         @Override

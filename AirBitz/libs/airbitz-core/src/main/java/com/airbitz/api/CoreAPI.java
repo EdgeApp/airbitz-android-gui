@@ -49,12 +49,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
 import com.airbitz.models.Contact;
 import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
-import com.airbitz.utils.Common;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,6 +88,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class CoreAPI {
     private static String TAG = CoreAPI.class.getSimpleName();
+
+    public static String PREFS = "com.airbitz.prefs";
+    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
+    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
 
     private final String CERT_FILENAME = "ca-certificates.crt";
     private static int ABC_EXCHANGE_RATE_REFRESH_INTERVAL_SECONDS = 60;
@@ -137,6 +138,8 @@ public class CoreAPI {
 
     private static CoreAPI mInstance = null;
     private static boolean initialized = false;
+    private String mUsername;
+    private String mPassword;
 
     private CoreAPI() { }
 
@@ -205,6 +208,27 @@ public class CoreAPI {
 
             initCurrencies();
         }
+    }
+
+    public void setCredentials(String username, String password) {
+        mUsername = username;
+        mPassword = password;
+    }
+
+    protected String getUsername() {
+        return mUsername;
+    }
+
+    protected String getPassword() {
+        return mPassword;
+    }
+
+    protected Context getContext() {
+        return mContext;
+    }
+
+    public boolean isLoggedIn() {
+        return mUsername != null;
     }
 
     public void setupAccountSettings() {
@@ -337,9 +361,17 @@ public class CoreAPI {
 
     public boolean renameWallet(Wallet wallet) {
         tABC_Error Error = new tABC_Error();
-        tABC_CC result = core.ABC_RenameWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_RenameWallet(mUsername, mPassword,
                 wallet.getUUID(), wallet.getName(), Error);
         return result == tABC_CC.ABC_CC_Ok;
+    }
+
+    public void createAccount(String username, String password) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
+        core.ABC_CreateAccount(username, password, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
     public Wallet getWalletFromUUID(String uuid) {
@@ -371,8 +403,7 @@ public class CoreAPI {
             // Load Wallet name
             SWIGTYPE_p_long pName = core.new_longp();
             SWIGTYPE_p_p_char ppName = core.longp_to_ppChar(pName);
-            result = core.ABC_WalletName(
-                AirbitzApplication.getUsername(), uuid, ppName, error);
+            result = core.ABC_WalletName(mUsername, uuid, ppName, error);
             if (result == tABC_CC.ABC_CC_Ok) {
                 wallet.setName(getStringAtPtr(core.longp_value(pName)));
             }
@@ -381,8 +412,7 @@ public class CoreAPI {
             SWIGTYPE_p_int pCurrency = core.new_intp();
             SWIGTYPE_p_unsigned_int upCurrency = core.int_to_uint(pCurrency);
 
-            result = core.ABC_WalletCurrency(
-                AirbitzApplication.getUsername(), uuid, pCurrency, error);
+            result = core.ABC_WalletCurrency(mUsername, uuid, pCurrency, error);
             if (result == tABC_CC.ABC_CC_Ok) {
                 wallet.setCurrencyNum(core.intp_value(pCurrency));
             } else {
@@ -392,8 +422,7 @@ public class CoreAPI {
 
             // Load balance
             SWIGTYPE_p_int64_t l = core.new_int64_tp();
-            result = core.ABC_WalletBalance(
-                AirbitzApplication.getUsername(), uuid, l, error);
+            result = core.ABC_WalletBalance(mUsername, uuid, l, error);
             if (result == tABC_CC.ABC_CC_Ok) {
                 wallet.setBalanceSatoshi(
                     get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(l)));
@@ -405,8 +434,7 @@ public class CoreAPI {
         // If there is a UUID there are wallet attributes
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_bool archived = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
-        result = core.ABC_WalletArchived(
-            AirbitzApplication.getUsername(), uuid, archived, error);
+        result = core.ABC_WalletArchived(mUsername, uuid, archived, error);
         if (result == tABC_CC.ABC_CC_Ok) {
             wallet.setAttributes(
                 getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0 ? 0x1 : 0);
@@ -436,7 +464,7 @@ public class CoreAPI {
         }
 
         tABC_Error Error = new tABC_Error();
-        tABC_CC result = core.ABC_SetWalletOrder(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_SetWalletOrder(mUsername, mPassword,
             uuids.toString().trim(), Error);
         if (result != tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, "Error: CoreBridge.setWalletOrder" + Error.getSzDescription());
@@ -445,9 +473,9 @@ public class CoreAPI {
 
     public boolean setWalletAttributes(Wallet wallet) {
         tABC_Error Error = new tABC_Error();
-        if(AirbitzApplication.isLoggedIn()) {
-            tABC_CC result = core.ABC_SetWalletArchived(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), wallet.getUUID(), wallet.getAttributes(), Error);
+        if (isLoggedIn()) {
+            tABC_CC result = core.ABC_SetWalletArchived(mUsername,
+                    mPassword, wallet.getUUID(), wallet.getAttributes(), Error);
             if (result == tABC_CC.ABC_CC_Ok) {
                 return true;
             }
@@ -461,7 +489,7 @@ public class CoreAPI {
 
     ReloadWalletTask mReloadWalletTask = null;
     public void reloadWallets() {
-        if (mReloadWalletTask == null && AirbitzApplication.isLoggedIn()) {
+        if (mReloadWalletTask == null && isLoggedIn()) {
             mReloadWalletTask = new ReloadWalletTask();
             mReloadWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -489,10 +517,12 @@ public class CoreAPI {
     //************ Account Recovery
 
     // Blocking call, wrap in AsyncTask
-    public tABC_Error SignIn(String username, char[] password) {
-        tABC_Error pError = new tABC_Error();
-        tABC_CC result = core.ABC_SignIn(username, String.valueOf(password), pError);
-        return pError;
+    public void SignIn(String username, String password) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
+        core.ABC_SignIn(username, password, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
     //************ Currency handling
@@ -558,22 +588,20 @@ public class CoreAPI {
     }
 
     public String getUserCurrencyAcronym() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return currencyCodeLookup(840);
-        }
-        else {
-            return currencyCodeLookup(settings.getCurrencyNum());
+        } else {
+            return currencyCodeLookup(settings.settings().getCurrencyNum());
         }
     }
 
     public String getUserCurrencySymbol() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return currencySymbolLookup(840);
-        }
-        else {
-            return currencySymbolLookup(settings.getCurrencyNum());
+        } else {
+            return currencySymbolLookup(settings.settings().getCurrencyNum());
         }
     }
 
@@ -638,59 +666,63 @@ public class CoreAPI {
     private String[] mBTCSymbols = {"Ƀ ", "mɃ ", "ƀ "};
 
     public String GetUserPIN() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            return coreSettings().getSzPIN();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            return settings.settings().getSzPIN();
         }
         return "";
     }
 
-    public tABC_CC SetPin(String pin) {
-        tABC_Error Error = new tABC_Error();
-
-        tABC_CC cc = core.ABC_SetPIN(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pin, Error);
-        return cc;
+    public void SetPin(String pin) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
+        tABC_CC cc = core.ABC_SetPIN(mUsername, mPassword, pin, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
 
     //****** Spend Limiting
     public boolean GetDailySpendLimitSetting() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        if(prefs.contains(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
-            return prefs.getBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), true);
-        }
-        else {
-            tABC_AccountSettings settings = coreSettings();
-            if(settings != null) {
-                return coreSettings().getBDailySpendLimit();
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (prefs.contains(DAILY_LIMIT_SETTING_PREF + mUsername)) {
+            return prefs.getBoolean(DAILY_LIMIT_SETTING_PREF + mUsername, true);
+        } else {
+            AccountSettings settings = coreSettings();
+            if (settings != null) {
+                return coreSettings().settings().getBDailySpendLimit();
             }
             return false;
         }
     }
 
     public void SetDailySpendLimitSetting(boolean set) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        settings.setBDailySpendLimit(set);
-        saveAccountSettings(settings);
+        settings.settings().setBDailySpendLimit(set);
+        try {
+            settings.save();
 
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(AirbitzApplication.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), set);
-        editor.apply();
+            SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(DAILY_LIMIT_SETTING_PREF + mUsername, set);
+            editor.apply();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
     }
 
     public long GetDailySpendLimit() {
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        if(prefs.contains(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername())) {
-            return prefs.getLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), 0);
+        SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if(prefs.contains(DAILY_LIMIT_PREF + mUsername)) {
+            return prefs.getLong(DAILY_LIMIT_PREF + mUsername, 0);
         }
         else {
-            tABC_AccountSettings settings = coreSettings();
-            if(settings != null) {
-                SWIGTYPE_p_int64_t satoshi = coreSettings().getDailySpendLimitSatoshis();
+            AccountSettings settings = coreSettings();
+            if (settings != null) {
+                SWIGTYPE_p_int64_t satoshi = settings.settings().getDailySpendLimitSatoshis();
                 return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
             }
             return 0;
@@ -698,56 +730,68 @@ public class CoreAPI {
     }
 
     public void SetDailySpendSatoshis(long spendLimit) {
-        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
-        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        settings.setDailySpendLimitSatoshis(limit);
-        saveAccountSettings(settings);
+        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
+        settings.settings().setDailySpendLimitSatoshis(limit);
+        try {
+            settings.save();
 
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong(AirbitzApplication.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), spendLimit);
-        editor.apply();
+            SharedPreferences prefs = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(DAILY_LIMIT_PREF + mUsername, spendLimit);
+            editor.apply();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
     }
 
     public boolean GetPINSpendLimitSetting() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            return coreSettings().getBSpendRequirePin();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            return settings.settings().getBSpendRequirePin();
         }
         return true;
     }
 
     public void SetPINSpendLimitSetting(boolean set) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        settings.setBSpendRequirePin(set);
-        saveAccountSettings(settings);
+        settings.settings().setBSpendRequirePin(set);
+        try {
+            settings.save();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
     }
 
     public long GetPINSpendLimit() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            SWIGTYPE_p_int64_t satoshi = coreSettings().getSpendRequirePinSatoshis();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            SWIGTYPE_p_int64_t satoshi = settings.settings().getSpendRequirePinSatoshis();
             return get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(satoshi));
         }
         return 0;
     }
 
     public void SetPINSpendSatoshis(long spendLimit) {
-        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
-        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        settings.setSpendRequirePinSatoshis(limit);
-        saveAccountSettings(settings);
+        SWIGTYPE_p_int64_t limit = core.new_int64_tp();
+        set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(limit), spendLimit);
+        settings.settings().setSpendRequirePinSatoshis(limit);
+        try {
+            settings.save();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
     }
 
     public long GetTotalSentToday(Wallet wallet) {
@@ -769,12 +813,13 @@ public class CoreAPI {
     }
 
     public String getDefaultBTCDenomination() {
-        tABC_AccountSettings settings = coreSettings();
+        AccountSettings settings = coreSettings();
         if(settings == null) {
             return "";
         }
-        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        if(bitcoinDenomination == null) {
+        tABC_BitcoinDenomination bitcoinDenomination =
+            settings.settings().getBitcoinDenomination();
+        if (bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
@@ -782,12 +827,13 @@ public class CoreAPI {
     }
 
     public String getUserBTCSymbol() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return "";
         }
-        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        if(bitcoinDenomination == null) {
+        tABC_BitcoinDenomination bitcoinDenomination =
+            settings.settings().getBitcoinDenomination();
+        if (bitcoinDenomination == null) {
             Log.d(TAG, "Bad bitcoin denomination from core settings");
             return "";
         }
@@ -795,52 +841,23 @@ public class CoreAPI {
     }
 
 
-    private tABC_AccountSettings mCoreSettings;
-    public tABC_AccountSettings coreSettings() {
-        if(mCoreSettings != null) {
+    private AccountSettings mCoreSettings;
+    public AccountSettings coreSettings() {
+        if (mCoreSettings != null) {
             return mCoreSettings;
         }
-
-        tABC_CC result;
-        tABC_Error Error = new tABC_Error();
-
-        SWIGTYPE_p_long lp = core.new_longp();
-        SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
-
-//        Log.d(TAG, "loading account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
-        result = core.ABC_LoadAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                pAccountSettings, Error);
-
-        if(result==tABC_CC.ABC_CC_Ok) {
-            mCoreSettings = new tABC_AccountSettings(core.longp_value(lp), false);
-            if(mCoreSettings.getCurrencyNum() == 0) {
-                mCoreSettings.setCurrencyNum(getLocaleDefaultCurrencyNum()); // US DOLLAR DEFAULT
-                saveAccountSettings(mCoreSettings);
-            }
+        try {
+            mCoreSettings = new AccountSettings(this).load();
             return mCoreSettings;
-        } else {
-
-            String message = Error.getSzDescription()+", "+Error.getSzSourceFunc();
-            Log.d(TAG, "Load settings failed - "+message);
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+            return null;
         }
-        return null;
     }
 
-    public tABC_AccountSettings newCoreSettings() {
+    public AccountSettings newCoreSettings() {
         mCoreSettings = null;
         return coreSettings();
-    }
-
-    public void saveAccountSettings(tABC_AccountSettings settings) {
-        tABC_CC result;
-        tABC_Error Error = new tABC_Error();
-
-//        Log.d(TAG, "saving account settings for "+AirbitzApplication.getUsername()+","+AirbitzApplication.getPassword());
-        result = core.ABC_UpdateAccountSettings(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                settings, Error);
-        if(result==tABC_CC.ABC_CC_Ok) {
-
-        }
     }
 
     public List<String> getExchangeRateSources() {
@@ -853,19 +870,25 @@ public class CoreAPI {
 
 
     public boolean incrementPinCount() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return false;
         }
-        int pinLoginCount = settings.getPinLoginCount();
+        int pinLoginCount =
+            settings.settings().getPinLoginCount();
         pinLoginCount++;
-        settings.setPinLoginCount(pinLoginCount);
-        saveAccountSettings(settings);
-        if (pinLoginCount == 3
-                || pinLoginCount == 10
-                || pinLoginCount == 40
-                || pinLoginCount == 100) {
-            return true;
+        settings.settings().setPinLoginCount(pinLoginCount);
+        try {
+            settings.save();
+            if (pinLoginCount == 3
+                    || pinLoginCount == 10
+                    || pinLoginCount == 40
+                    || pinLoginCount == 100) {
+                return true;
+            }
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+            return false;
         }
         return false;
     }
@@ -890,13 +913,17 @@ public class CoreAPI {
     }
 
     public boolean hasRecoveryQuestionsSet() {
-        String qstring = GetRecoveryQuestionsForUser(AirbitzApplication.getUsername());
-        if (qstring != null) {
-            String[] qs = qstring.split("\n");
-            if (qs.length > 1) {
-                // Recovery questions set
-                return true;
+        try {
+            String qstring = GetRecoveryQuestionsForUser(mUsername);
+            if (qstring != null) {
+                String[] qs = qstring.split("\n");
+                if (qs.length > 1) {
+                    // Recovery questions set
+                    return true;
+                }
             }
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
         }
         return false;
     }
@@ -912,21 +939,24 @@ public class CoreAPI {
     }
 
     private void incRecoveryReminder(int val) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        int reminderCount = settings.getRecoveryReminderCount();
+        int reminderCount = settings.settings().getRecoveryReminderCount();
         reminderCount += val;
-        settings.setRecoveryReminderCount(reminderCount);
-        saveAccountSettings(settings);
+        settings.settings().setRecoveryReminderCount(reminderCount);
+        try {
+            settings.save();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
     }
 
     public boolean needsRecoveryReminder(Wallet wallet) {
-
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            int reminderCount = coreSettings().getRecoveryReminderCount();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            int reminderCount = settings.settings().getRecoveryReminderCount();
             if (reminderCount >= RECOVERY_REMINDER_COUNT) {
                 // We reminded them enough
                 return false;
@@ -946,29 +976,28 @@ public class CoreAPI {
         return true;
     }
 
-    public String GetRecoveryQuestionsForUser(String username) {
-        tABC_Error pError = new tABC_Error();
+    public String GetRecoveryQuestionsForUser(String username) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        tABC_CC result = core.ABC_GetRecoveryQuestions(username, ppChar, pError);
+        tABC_CC result = core.ABC_GetRecoveryQuestions(username, ppChar, error);
         String questionString = getStringAtPtr(core.longp_value(lp));
         if (result == tABC_CC.ABC_CC_Ok) {
             return questionString;
         } else {
-            return Common.errorMap(mContext, result);
+            throw new AirbitzException(mContext, error.getCode(), error);
         }
     }
 
-    public tABC_CC SaveRecoveryAnswers(String mQuestions, String mAnswers, String password) {
-
-        tABC_Error pError = new tABC_Error();
-
-        tABC_CC result = core.ABC_SetAccountRecoveryQuestions(AirbitzApplication.getUsername(),
-                password,
-                mQuestions, mAnswers, pError);
-        return result;
+    public void SaveRecoveryAnswers(String mQuestions, String mAnswers, String password) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
+        core.ABC_SetAccountRecoveryQuestions(mUsername,
+                password, mQuestions, mAnswers, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
     private class QuestionChoices extends tABC_QuestionChoices {
@@ -1045,7 +1074,7 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t endTime = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(endTime), end); //0 means all transactions
 
-        tABC_CC result = core.ABC_CsvExport(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_CsvExport(mUsername, mPassword,
                 uuid, startTime, endTime, ppChar, pError);
 
         if (result == tABC_CC.ABC_CC_Ok) {
@@ -1076,7 +1105,7 @@ public class CoreAPI {
             Log.d(TAG, "Could not find wallet for "+ walletUUID);
             return null;
         }
-        tABC_CC result = core.ABC_GetTransaction(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_GetTransaction(mUsername, mPassword,
             walletUUID, szTxId, pTxInfo, Error);
         if (result==tABC_CC.ABC_CC_Ok)
         {
@@ -1108,7 +1137,7 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t endTime = core.new_int64_tp();
         set64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(endTime), end); //0 means all transactions
 
-        tABC_CC result = core.ABC_GetTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_GetTransactions(mUsername, mPassword,
                 wallet.getUUID(), startTime, endTime, paTxInfo, puCount, Error);
 
         if (result==tABC_CC.ABC_CC_Ok)
@@ -1286,9 +1315,9 @@ public class CoreAPI {
         return core.doublep_value(seconds);
     }
 
-    public List<tABC_PasswordRule> GetPasswordRules(String password)
+    public List<PasswordRule> GetPasswordRules(String password)
     {
-        List<tABC_PasswordRule> list = new ArrayList<tABC_PasswordRule>();
+        List<PasswordRule> list = new ArrayList<PasswordRule>();
         boolean bNewPasswordFieldsAreValid = true;
 
         SWIGTYPE_p_double seconds = core.new_doublep();
@@ -1314,7 +1343,7 @@ public class CoreAPI {
         {
             pLong temp = new pLong(base + i * 4);
             long start = core.longp_value(temp);
-            tABC_PasswordRule pRule = new tABC_PasswordRule(start, false);
+            PasswordRule pRule = new PasswordRule(start, false);
             list.add(pRule);
         }
 
@@ -1401,7 +1430,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_p_sABC_TxInfo paTxInfo = core.longp_to_pppTxInfo(lp);
 
-        tABC_CC result = core.ABC_SearchTransactions(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_SearchTransactions(mUsername, mPassword,
                 wallet.getUUID(), searchText, paTxInfo, puCount, Error);
         if (result==tABC_CC.ABC_CC_Ok)
         {
@@ -1426,46 +1455,39 @@ public class CoreAPI {
         return listTransactions;
     }
 
-    public tABC_CC storeTransaction(Transaction transaction) {
-        tABC_Error Error = new tABC_Error();
-
+    public void storeTransaction(Transaction transaction) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_TxDetails pDetails = core.longp_to_ppTxDetails(lp);
 
-        tABC_CC result = core.ABC_GetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                transaction.getWalletUUID(), transaction.getID(), pDetails, Error);
-        if (result!=tABC_CC.ABC_CC_Ok)
-        {
-            Log.d(TAG, "Error: CoreBridge.storeTransaction:  "+Error.getSzDescription());
-            return result;
+        core.ABC_GetTransactionDetails(mUsername, mPassword,
+                transaction.getWalletUUID(), transaction.getID(), pDetails, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
         }
 
         tABC_TxDetails details = new TxDetails(core.longp_value(lp));
-
         details.setSzName(transaction.getName());
         details.setSzCategory(transaction.getCategory());
         details.setSzNotes(transaction.getNotes());
         details.setAmountCurrency(transaction.getAmountFiat());
         details.setBizId(transaction.getmBizId());
 
-        result = core.ABC_SetTransactionDetails(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                transaction.getWalletUUID(), transaction.getID(), details, Error);
-
-        if (result!=tABC_CC.ABC_CC_Ok)
-        {
-            Log.d(TAG, "Error: CoreAPI.storeTransaction:  " + Error.getSzDescription());
+        error = new tABC_Error();
+        core.ABC_SetTransactionDetails(mUsername, mPassword,
+                transaction.getWalletUUID(), transaction.getID(), details, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
         }
         mMainHandler.sendEmptyMessage(RELOAD);
-
-        return result;
     }
 
     //************************* Currency formatting
 
     public String formatDefaultCurrency(double in) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            String pre = mBTCSymbols[coreSettings().getBitcoinDenomination().getDenominationType()];
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            String pre = mBTCSymbols[settings.settings().getBitcoinDenomination().getDenominationType()];
             String out = String.format("%.3f", in);
             return pre+out;
         }
@@ -1512,12 +1534,13 @@ public class CoreAPI {
 
     public int userDecimalPlaces() {
         int decimalPlaces = 8; // for ABC_DENOMINATION_BTC
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return 2;
         }
-        tABC_BitcoinDenomination bitcoinDenomination = settings.getBitcoinDenomination();
-        if(bitcoinDenomination != null) {
+        tABC_BitcoinDenomination bitcoinDenomination =
+            settings.settings().getBitcoinDenomination();
+        if (bitcoinDenomination != null) {
             int label = bitcoinDenomination.getDenominationType();
             if (label == ABC_DENOMINATION_UBTC)
                 decimalPlaces = 2;
@@ -1580,12 +1603,12 @@ public class CoreAPI {
     public int SettingsCurrencyIndex() {
         int index = -1;
         int currencyNum;
-        tABC_AccountSettings settings = coreSettings();
+        AccountSettings settings = coreSettings();
         if(settings == null && mCurrencyIndex != 0) {
             currencyNum = mCurrencyIndex;
         }
         else {
-            currencyNum = settings.getCurrencyNum();
+            currencyNum = settings.settings().getCurrencyNum();
             mCurrencyIndex = currencyNum;
         }
         int[] currencyNumbers = getCurrencyNumberArray();
@@ -1636,10 +1659,10 @@ public class CoreAPI {
     }
 
     public String BTCtoFiatConversion(int currencyNum) {
-
-        tABC_AccountSettings settings = coreSettings();
+        AccountSettings settings = coreSettings();
         if(settings != null) {
-            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
+            tABC_BitcoinDenomination denomination =
+                settings.settings().getBitcoinDenomination();
             long satoshi = 100;
             int denomIndex = 0;
             int fiatDecimals = 2;
@@ -1679,11 +1702,10 @@ public class CoreAPI {
 
     }
 
-    public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol)
-    {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            int currencyNumber = coreSettings().getCurrencyNum();
+    public String FormatDefaultCurrency(long satoshi, boolean btc, boolean withSymbol) {
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            int currencyNumber = settings.settings().getCurrencyNum();
             return FormatCurrency(satoshi, currencyNumber, btc, withSymbol);
         }
         return "";
@@ -1705,9 +1727,9 @@ public class CoreAPI {
     }
 
     public double SatoshiToDefaultCurrency(long satoshi) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            int num = coreSettings().getCurrencyNum();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            int num = settings.settings().getCurrencyNum();
             return SatoshiToCurrency(satoshi, num);
         }
         return 0;
@@ -1717,16 +1739,16 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_double currency = core.new_doublep();
 
-        long out = satoshiToCurrency(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        long out = satoshiToCurrency(mUsername, mPassword,
                 satoshi, SWIGTYPE_p_double.getCPtr(currency), currencyNum, tABC_Error.getCPtr(error));
 
         return core.doublep_value(currency);
     }
 
     public long DefaultCurrencyToSatoshi(double currency) {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            return CurrencyToSatoshi(currency, coreSettings().getCurrencyNum());
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            return CurrencyToSatoshi(currency, settings.settings().getCurrencyNum());
         }
         return 0;
     }
@@ -1757,8 +1779,8 @@ public class CoreAPI {
         SWIGTYPE_p_int64_t satoshi = core.new_int64_tp();
         SWIGTYPE_p_long l = core.p64_t_to_long_ptr(satoshi);
 
-        result = core.ABC_CurrencyToSatoshi(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-        currency, currencyNum, satoshi, error);
+        result = core.ABC_CurrencyToSatoshi(mUsername, mPassword,
+            currency, currencyNum, satoshi, error);
 
         return get64BitLongAtPtr(l.getCPtr(l));
     }
@@ -1772,10 +1794,11 @@ public class CoreAPI {
         } catch(NumberFormatException e) { // ignore any non-double
         }
 
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            tABC_BitcoinDenomination denomination = coreSettings().getBitcoinDenomination();
-            if(denomination != null) {
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            tABC_BitcoinDenomination denomination =
+                settings.settings().getBitcoinDenomination();
+            if (denomination != null) {
                 if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_BTC) {
                     val = val * SATOSHI_PER_BTC;
                 } else if(denomination.getDenominationType()==CoreAPI.ABC_DENOMINATION_MBTC) {
@@ -1810,7 +1833,6 @@ public class CoreAPI {
 
         //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
         tABC_TxDetails details = new tABC_TxDetails();
-        tABC_CC result;
         tABC_Error error = new tABC_Error();
 
         set64BitLongAtPtr(details.getCPtr(details)+0, satoshi);
@@ -1829,22 +1851,19 @@ public class CoreAPI {
         SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
 
         // create the request
-        result = core.ABC_CreateReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        core.ABC_CreateReceiveRequest(mUsername, mPassword,
                 wallet.getUUID(), details, pRequestID, error);
 
-        if (result == tABC_CC.ABC_CC_Ok)
-        {
+        if (tABC_CC.ABC_CC_Ok == error.getCode()) {
             String szRequestID = getStringAtPtr(core.longp_value(lp));
-
-            result = core.ABC_ModifyReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            core.ABC_ModifyReceiveRequest(mUsername, mPassword,
                     wallet.getUUID(), szRequestID, details, error);
-            if (tABC_CC.ABC_CC_Ok == result)
-            {
+            if (tABC_CC.ABC_CC_Ok == error.getCode()) {
                 mReceiveRequestDetails = details;
                 return szRequestID;
             }
         }
-        String message = result.toString() + "," + error.getSzDescription() + ", " +
+        String message = error.getCode().toString() + "," + error.getSzDescription() + ", " +
                 error.getSzSourceFile()+", "+error.getSzSourceFunc()+", "+error.getNSourceLine();
         Log.d(TAG, message);
         return null;
@@ -1855,8 +1874,7 @@ public class CoreAPI {
     {
         tABC_Error error = new tABC_Error();
         // Finalize this request so it isn't used elsewhere
-        core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), uuid, requestId, error);
+        core.ABC_FinalizeReceiveRequest(mUsername, mPassword, uuid, requestId, error);
         Log.d(TAG, error.getSzDescription() + " " + error.getSzSourceFunc() + " " + error.getNSourceLine());
         return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
@@ -1889,7 +1907,7 @@ public class CoreAPI {
 
             tABC_Error Error = new tABC_Error();
             // Update the Details
-            if (tABC_CC.ABC_CC_Ok != core.ABC_ModifyReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            if (tABC_CC.ABC_CC_Ok != core.ABC_ModifyReceiveRequest(mUsername, mPassword,
                 wallet.getUUID(),
                 requestId,
                 txDetails,
@@ -1898,7 +1916,7 @@ public class CoreAPI {
                 Log.d(TAG, Error.toString());
             }
             // Finalize this request so it isn't used elsewhere
-            if (tABC_CC.ABC_CC_Ok != core.ABC_FinalizeReceiveRequest(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+            if (tABC_CC.ABC_CC_Ok != core.ABC_FinalizeReceiveRequest(mUsername, mPassword,
                 wallet.getUUID(),
                 requestId,
                 Error))
@@ -2015,7 +2033,7 @@ public class CoreAPI {
             mCoreHandler.post(new Runnable() {
                 public void run() {
                     tABC_Error error = new tABC_Error();
-                    core.ABC_WalletLoad(AirbitzApplication.getUsername(), uuid, error);
+                    core.ABC_WalletLoad(mUsername, uuid, error);
 
                     startWatcher(uuid);
                     mMainHandler.sendEmptyMessage(RELOAD);
@@ -2084,7 +2102,7 @@ public class CoreAPI {
     }
 
     public void restoreConnectivity() {
-        if (!AirbitzApplication.isLoggedIn()) {
+        if (!isLoggedIn()) {
             return;
         }
         connectWatchers();
@@ -2101,7 +2119,7 @@ public class CoreAPI {
     }
 
     public void lostConnectivity() {
-        if (!AirbitzApplication.isLoggedIn()) {
+        if (!isLoggedIn()) {
             return;
         }
         stopExchangeRateUpdates();
@@ -2134,10 +2152,10 @@ public class CoreAPI {
         }
 
         List<Wallet> wallets = getCoreWallets(false);
-        if (AirbitzApplication.isLoggedIn()
+        if (isLoggedIn()
                 && null != coreSettings()
                 && null != wallets) {
-            requestExchangeRateUpdate(coreSettings().getCurrencyNum());
+            requestExchangeRateUpdate(coreSettings().settings().getCurrencyNum());
             for (Wallet wallet : wallets) {
                 if (wallet.getCurrencyNum() != -1) {
                     requestExchangeRateUpdate(wallet.getCurrencyNum());
@@ -2157,8 +2175,8 @@ public class CoreAPI {
         mExchangeHandler.post(new Runnable() {
             public void run() {
                 tABC_Error error = new tABC_Error();
-                core.ABC_RequestExchangeRateUpdate(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), currencyNum, error);
+                core.ABC_RequestExchangeRateUpdate(mUsername,
+                    mPassword, currencyNum, error);
             }
         });
     }
@@ -2189,13 +2207,12 @@ public class CoreAPI {
                     return;
                 }
                 tABC_Error error = new tABC_Error();
-                int ccInt = coreDataSyncAccount(AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(), tABC_Error.getCPtr(error));
+                int ccInt = coreDataSyncAccount(mUsername, mPassword, tABC_Error.getCPtr(error));
 
                 if (tABC_CC.swigToEnum(ccInt) == tABC_CC.ABC_CC_InvalidOTP) {
                     mMainHandler.post(new Runnable() {
                         public void run() {
-                            if (AirbitzApplication.isLoggedIn()) {
+                            if (isLoggedIn()) {
                                 Intent intent = new Intent(OTP_ERROR_ACTION);
                                 intent.putExtra(OTP_SECRET, GetTwoFactorSecret());
                                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
@@ -2213,7 +2230,13 @@ public class CoreAPI {
 
         mDataHandler.post(new Runnable() {
             public void run() {
-                final boolean isPending = isTwoFactorResetPending(AirbitzApplication.getUsername());
+                boolean pending = false;
+                try {
+                    pending = isTwoFactorResetPending(mUsername);
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
+                }
+                final boolean isPending = pending;
                 mMainHandler.post(new Runnable() {
                     public void run() {
                         if (!mDataFetched) {
@@ -2238,10 +2261,8 @@ public class CoreAPI {
                     return;
                 }
                 tABC_Error error = new tABC_Error();
-                coreDataSyncWallet(AirbitzApplication.getUsername(),
-                                AirbitzApplication.getPassword(),
-                                uuid,
-                                tABC_Error.getCPtr(error));
+                coreDataSyncWallet(mUsername, mPassword,
+                    uuid, tABC_Error.getCPtr(error));
                 mMainHandler.post(new Runnable() {
                     public void run() {
                         if (!mDataFetched) {
@@ -2280,6 +2301,11 @@ public class CoreAPI {
     public void otpSetError(tABC_CC cc) {
         mOTPError = tABC_CC.ABC_CC_InvalidOTP == cc;
     }
+
+    public void otpSetError(AirbitzException error) {
+        mOTPError = error.isOtpError();
+    }
+
     public void otpClearError() {
         mOTPError = false;
     }
@@ -2303,7 +2329,7 @@ public class CoreAPI {
         SWIGTYPE_p_long aUUIDS = core.new_longp();
         SWIGTYPE_p_p_p_char pppUUIDs = core.longp_to_pppChar(aUUIDS);
 
-        tABC_CC result = core.ABC_GetWalletUUIDs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_GetWalletUUIDs(mUsername, mPassword,
                 pppUUIDs, pUCount, Error);
         if (tABC_CC.ABC_CC_Ok == result)
         {
@@ -2401,7 +2427,7 @@ public class CoreAPI {
         SWIGTYPE_p_int pWidth = core.new_intp();
         SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pWidth);
 
-        result = core.ABC_GenerateRequestQRCode(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        result = core.ABC_GenerateRequestQRCode(mUsername, mPassword,
                 uuid, id, ppURI, ppChar, pUCount, error);
 
         int width = core.intp_value(pWidth);
@@ -2422,7 +2448,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        result = core.ABC_GetRequestAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        result = core.ABC_GetRequestAddress(mUsername, mPassword,
                 uuid, id, ppChar, error);
 
         String pAddress = null;
@@ -2467,7 +2493,7 @@ public class CoreAPI {
         SWIGTYPE_p_int pCount = core.new_intp();
         SWIGTYPE_p_unsigned_int pUCount = core.int_to_uint(pCount);
 
-        tABC_CC result = core.ABC_GetCategories(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), aszCategories, pUCount, Error);
+        tABC_CC result = core.ABC_GetCategories(mUsername, mPassword, aszCategories, pUCount, Error);
 
         if(result!=tABC_CC.ABC_CC_Ok) {
             Log.d(TAG, "loadCategories failed:"+Error.getSzDescription());
@@ -2495,14 +2521,14 @@ public class CoreAPI {
             // add the category to the core
             Log.d(TAG, "Adding category: "+strCategory);
             tABC_Error Error = new tABC_Error();
-            core.ABC_AddCategory(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), strCategory, Error);
+            core.ABC_AddCategory(mUsername, mPassword, strCategory, Error);
         }
     }
 
     public void removeCategory(String strCategory) {
         Log.d(TAG, "Remove category: "+strCategory);
         tABC_Error Error = new tABC_Error();
-        tABC_CC result = core.ABC_RemoveCategory(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), strCategory, Error);
+        tABC_CC result = core.ABC_RemoveCategory(mUsername, mPassword, strCategory, Error);
         boolean test= result==tABC_CC.ABC_CC_Ok;
     }
 
@@ -2562,9 +2588,7 @@ public class CoreAPI {
             public void run() {
                 if (uuid != null && !mWatcherTasks.containsKey(uuid)) {
                     tABC_Error error = new tABC_Error();
-                    core.ABC_WatcherStart(AirbitzApplication.getUsername(),
-                                        AirbitzApplication.getPassword(),
-                                        uuid, error);
+                    core.ABC_WatcherStart(mUsername, mPassword, uuid, error);
                     printABCError(error);
                     Log.d(TAG, "Started watcher for " + uuid);
 
@@ -2622,9 +2646,8 @@ public class CoreAPI {
 
     private void watchAddresses(final String uuid) {
         tABC_Error error = new tABC_Error();
-        core.ABC_WatchAddresses(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(),
-                uuid, error);
+        core.ABC_WatchAddresses(mUsername,
+            mPassword, uuid, error);
         printABCError(error);
     }
 
@@ -2689,51 +2712,39 @@ public class CoreAPI {
     public void prioritizeAddress(String address, String walletUUID)
     {
         tABC_Error Error = new tABC_Error();
-        core.ABC_PrioritizeAddress(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), walletUUID, address, Error);
+        core.ABC_PrioritizeAddress(mUsername, mPassword, walletUUID, address, Error);
     }
 
 
-    public tABC_CC ChangePassword(String password) {
-        tABC_Error Error = new tABC_Error();
-
-//        Log.d(TAG, "Changing password to "+password + " from "+AirbitzApplication.getPassword());
+    public void ChangePassword(String password) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
         tABC_CC cc = core.ABC_ChangePassword(
-                        AirbitzApplication.getUsername(),
-                        password,
-                        password, Error);
-        return cc;
+            mUsername, password, password, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
-    private tABC_Error mRecoveryAnswersError;
-    public tABC_Error getRecoveryAnswersError() {
-        return mRecoveryAnswersError;
-    }
-
-    public boolean recoveryAnswers(String strAnswers, String strUserName)
-    {
+    public boolean recoveryAnswers(String strAnswers, String strUserName) throws AirbitzException {
         SWIGTYPE_p_int lp = core.new_intp();
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
         tABC_Error error = new tABC_Error();
-        tABC_CC result = core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
-        if (tABC_CC.ABC_CC_Ok == result)
-        {
-            mRecoveryAnswersError = null;
-            return core.intp_value(lp)==1;
+        core.ABC_CheckRecoveryAnswers(strUserName, strAnswers, pbool, error);
+        if (tABC_CC.ABC_CC_Ok != error.getCode()) {
+            throw new AirbitzException(mContext, error.getCode(), error);
         }
-        else
-        {
-            mRecoveryAnswersError = error;
-            Log.d(TAG, error.getSzDescription());
-            return false;
-        }
+        return core.intp_value(lp)==1;
     }
 
-    public tABC_CC ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers, String password, String pin) {
-        tABC_Error Error = new tABC_Error();
+    public void ChangePasswordWithRecoveryAnswers(String username, String recoveryAnswers,
+            String password, String pin) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
         tABC_CC cc = core.ABC_ChangePasswordWithRecoveryAnswers(
-                        username, recoveryAnswers, password, Error);
-        return cc;
+                        username, recoveryAnswers, password, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
     private boolean isValidCategory(String category) {
@@ -2760,24 +2771,33 @@ public class CoreAPI {
         }
     }
 
-    public tABC_Error PinLogin(String username, String pin) {
-        tABC_Error pError = new tABC_Error();
-        tABC_CC result = core.ABC_PinLogin(username, pin, pError);
-        return pError;
+    public boolean PinLogin(String username, String pin) throws AirbitzException {
+        if (username == null || pin == null) {
+            tABC_Error error = new tABC_Error();
+            error.setCode(tABC_CC.ABC_CC_Error);
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
+
+        tABC_Error error = new tABC_Error();
+        core.ABC_PinLogin(username, pin, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
+        return true;
     }
 
     public void PinSetup() {
-        if(mPinSetup == null && AirbitzApplication.isLoggedIn()) {
+        if (mPinSetup == null && isLoggedIn()) {
             // Delay PinSetup after getting transactions
             mPeriodicTaskHandler.postDelayed(delayedPinSetup, 1000);
         }
     }
 
     public tABC_CC PinSetupBlocking() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings != null) {
-            String username = AirbitzApplication.getUsername();
-            String pin = settings.getSzPIN();
+        AccountSettings settings = coreSettings();
+        if (settings != null) {
+            String username = mUsername;
+            String pin = settings.settings().getSzPIN();
             tABC_Error pError = new tABC_Error();
             return core.ABC_PinSetup(username, pin, pError);
         }
@@ -2832,11 +2852,10 @@ public class CoreAPI {
 
         public void run() {
             boolean check = false;
-            if(mPassword == null || mPassword.isEmpty()) {
+            if (mPassword == null || mPassword.isEmpty()) {
                 check = !PasswordExists();
-            }
-            else {
-                check = PasswordOK(AirbitzApplication.getUsername(), mPassword);
+            } else {
+                check = PasswordOK(mUsername, mPassword);
             }
 
             if(mOnPasswordCheckListener != null) {
@@ -2872,7 +2891,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_bool exists = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
-        tABC_CC result = core.ABC_PasswordExists(AirbitzApplication.getUsername(), exists, pError);
+        tABC_CC result = core.ABC_PasswordExists(mUsername, exists, pError);
         if(pError.getCode().equals(tABC_CC.ABC_CC_Ok)) {
             return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
         } else {
@@ -2882,29 +2901,26 @@ public class CoreAPI {
     }
 
     public void SetupDefaultCurrency() {
-        tABC_AccountSettings settings = coreSettings();
-        if(settings == null) {
+        AccountSettings settings = coreSettings();
+        if (settings == null) {
             return;
         }
-        settings.setCurrencyNum(getLocaleDefaultCurrencyNum());
-        saveAccountSettings(settings);
+        settings.setupDefaultCurrency();
     }
 
-    public int getLocaleDefaultCurrencyNum() {
+    protected int defaultCurrencyNum() {
         initCurrencies();
         Locale locale = Locale.getDefault();
-
-        java.util.Currency currency = java.util.Currency.getInstance(locale);
-
+        Currency currency = Currency.getInstance(locale);
         Map<Integer, String> supported = mCurrencyCodeCache;
         if (supported.containsValue(currency.getCurrencyCode())) {
             int number = getCurrencyNumberFromCode(currency.getCurrencyCode());
-            Log.d(TAG, "number country code: "+number);
             return number;
         } else {
             return 840;
         }
     }
+
 
     public int getCurrencyNumberFromCode(String currencyCode) {
         initCurrencies();
@@ -2927,7 +2943,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        tABC_CC result = core.ABC_ExportWalletSeed(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        tABC_CC result = core.ABC_ExportWalletSeed(mUsername, mPassword,
                 wallet.getUUID(), ppChar, Error);
 
         if (tABC_CC.ABC_CC_Ok == result) {
@@ -2987,7 +3003,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        int result = coreSweepKey(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        int result = coreSweepKey(mUsername, mPassword,
                 uuid, wif, SWIGTYPE_p_p_char.getCPtr(ppChar), tABC_Error.getCPtr(Error));
         if ( result != 0) {
             return "";
@@ -3003,8 +3019,7 @@ public class CoreAPI {
 
     public boolean uploadLogs() {
         tABC_Error Error = new tABC_Error();
-        core.ABC_UploadLogs(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                Error);
+        core.ABC_UploadLogs(mUsername, mPassword, Error);
         return Error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
@@ -3015,24 +3030,36 @@ public class CoreAPI {
         return mTwoFactorOn;
     }
 
-    // Blocking
-    public tABC_CC OtpAuthGet() {
+    public void otpReset(String username) throws AirbitzException {
+        tABC_Error error = new tABC_Error();
+        core.ABC_OtpResetSet(username, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
+    }
+
+    public void otpAuthGet() throws AirbitzException {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long ptimeout = core.new_longp();
         SWIGTYPE_p_int lp = core.new_intp();
         SWIGTYPE_p_bool pbool = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
 
-        tABC_CC cc = core.ABC_OtpAuthGet(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), pbool, ptimeout, error);
+        core.ABC_OtpAuthGet(mUsername,
+            mPassword, pbool, ptimeout, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
 
         mTwoFactorOn = core.intp_value(lp)==1;
-        return cc;
     }
 
     //Blocking
-    public tABC_CC OtpKeySet(String username, String secret) {
+    public void OtpKeySet(String username, String secret) throws AirbitzException {
         tABC_Error error = new tABC_Error();
-        return core.ABC_OtpKeySet(username, secret, error);
+        core.ABC_OtpKeySet(username, secret, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
     // Blocking
@@ -3040,64 +3067,66 @@ public class CoreAPI {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_OtpKeyGet(AirbitzApplication.getUsername(), ppChar, error);
+        tABC_CC cc = core.ABC_OtpKeyGet(mUsername, ppChar, error);
         String secret = cc == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
         return secret;
     }
 
-    public boolean isTwoFactorResetPending(String username) {
+    public boolean isTwoFactorResetPending(String username) throws AirbitzException {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
-        tABC_CC cc = core.ABC_OtpResetGet(ppChar, error);
-        if (cc == tABC_CC.ABC_CC_Ok) {
+        core.ABC_OtpResetGet(ppChar, error);
+        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
             String userNames = getStringAtPtr(core.longp_value(lp));
-            if(userNames != null && username != null) {
+            if (userNames != null && username != null) {
                 return userNames.contains(username);
             }
+        } else {
+            throw new AirbitzException(mContext, error.getCode(), error);
         }
         return false;
     }
 
     // Blocking
-    public tABC_CC enableTwoFactor(boolean on) {
+    public void enableTwoFactor(boolean on) throws AirbitzException {
         tABC_Error error = new tABC_Error();
-        tABC_CC cc;
-        if(on) {
-            cc = core.ABC_OtpAuthSet(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), OTP_RESET_DELAY_SECS, error);
-            if (cc == tABC_CC.ABC_CC_Ok) {
+        if (on) {
+            core.ABC_OtpAuthSet(mUsername, mPassword, OTP_RESET_DELAY_SECS, error);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = true;
+            } else {
+                throw new AirbitzException(mContext, error.getCode(), error);
             }
-        }
-        else {
-            cc = core.ABC_OtpAuthRemove(AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(), error);
-            if (cc == tABC_CC.ABC_CC_Ok) {
+        } else {
+            core.ABC_OtpAuthRemove(mUsername, mPassword, error);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
                 mTwoFactorOn = false;
-                core.ABC_OtpKeyRemove(AirbitzApplication.getUsername(), error);
+                core.ABC_OtpKeyRemove(mUsername, error);
+            } else {
+                throw new AirbitzException(mContext, error.getCode(), error);
             }
         }
-        return cc;
     }
 
-    // Blocking
-    public tABC_CC cancelTwoFactorRequest() {
+    public void cancelTwoFactorRequest() throws AirbitzException {
         tABC_Error error = new tABC_Error();
-        return core.ABC_OtpResetRemove(AirbitzApplication.getUsername(),
-                AirbitzApplication.getPassword(), error);
+        core.ABC_OtpResetRemove(mUsername, mPassword, error);
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
     }
 
-    public String mTwoFactorDate;
-    public tABC_CC GetTwoFactorDate() {
+    public String getTwoFactorDate() throws AirbitzException {
         tABC_Error error = new tABC_Error();
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
         tABC_CC cc = core.ABC_OtpResetDate(ppChar, error);
-        mTwoFactorDate = error.getCode() == tABC_CC.ABC_CC_Ok ? getStringAtPtr(core.longp_value(lp)) : null;
-        return cc;
+        if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+            throw new AirbitzException(mContext, error.getCode(), error);
+        }
+        return getStringAtPtr(core.longp_value(lp));
     }
-
 
     public List<String> listAccounts() {
         tABC_Error error = new tABC_Error();
@@ -3124,21 +3153,19 @@ public class CoreAPI {
         return cc == tABC_CC.ABC_CC_Ok;
     }
 
-    public String accountAvailable(String account) {
+    public String accountAvailable(String account) throws AirbitzException {
         tABC_Error error = new tABC_Error();
 
         tABC_CC cc = core.ABC_AccountAvailable(account, error);
-        if(cc == tABC_CC.ABC_CC_Ok) {
+        if (cc == tABC_CC.ABC_CC_Ok) {
             return null;
-        }
-        else {
-            return Common.errorMap(mContext, error.getCode());
+        } else {
+            throw new AirbitzException(mContext, error.getCode(), null);
         }
     }
 
-    public String createAccountAndPin(String account, String password, String pin) {
+    public String createAccountAndPin(String account, String password, String pin) throws AirbitzException {
         tABC_Error error = new tABC_Error();
-
         core.ABC_CreateAccount(account, password, error);
         if(error.getCode() == tABC_CC.ABC_CC_Ok) {
             core.ABC_SetPIN(account, password, pin, error);
@@ -3146,7 +3173,7 @@ public class CoreAPI {
                 return null;
             }
         }
-        return Common.errorMap(mContext, error.getCode());
+        throw new AirbitzException(mContext, error.getCode(), null);
     }
 
     public static class BitidSignature {
@@ -3164,8 +3191,7 @@ public class CoreAPI {
         SWIGTYPE_p_p_char ppSignature = core.longp_to_ppChar(pSignature);
 
         tABC_CC result = core.ABC_BitidSign(
-            AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-            uri, message, ppAddress, ppSignature, error);
+            mUsername, mPassword, uri, message, ppAddress, ppSignature, error);
         if (result == tABC_CC.ABC_CC_Ok) {
             bitid.address = getStringAtPtr(core.longp_value(pAddress));
             bitid.signature = getStringAtPtr(core.longp_value(pSignature));
@@ -3178,7 +3204,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        core.ABC_PluginDataGet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        core.ABC_PluginDataGet(mUsername, mPassword,
             pluginId, key, ppChar, pError);
         if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
             return getStringAtPtr(core.longp_value(lp));
@@ -3189,20 +3215,20 @@ public class CoreAPI {
 
     public boolean pluginDataSet(String pluginId, String key, String value) {
         tABC_Error pError = new tABC_Error();
-        core.ABC_PluginDataSet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+        core.ABC_PluginDataSet(mUsername, mPassword,
                 pluginId, key, value, pError);
         return pError.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
     public boolean pluginDataRemove(String pluginId, String key) {
         tABC_Error pError = new tABC_Error();
-        core.ABC_PluginDataRemove(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, key, pError);
+        core.ABC_PluginDataRemove(mUsername, mPassword, pluginId, key, pError);
         return pError.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
     public boolean pluginDataClear(String pluginId) {
         tABC_Error pError = new tABC_Error();
-        core.ABC_PluginDataClear(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(), pluginId, pError);
+        core.ABC_PluginDataClear(mUsername, mPassword, pluginId, pError);
         return pError.getCode() == tABC_CC.ABC_CC_Ok;
     }
 
@@ -3212,7 +3238,7 @@ public class CoreAPI {
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
         core.ABC_GetRawTransaction(
-                AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
+                mUsername, mPassword,
                 walletUUID, txid, ppChar, pError);
         if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
             return getStringAtPtr(core.longp_value(lp));
@@ -3274,7 +3300,7 @@ public class CoreAPI {
         public boolean newTransfer(String walletUUID) {
             SWIGTYPE_p_uint64_t amount = core.new_uint64_tp();
             set64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(amount), 0);
-            core.ABC_SpendNewTransfer(AirbitzApplication.getUsername(),
+            core.ABC_SpendNewTransfer(mUsername,
                     walletUUID, amount, _pSpendSWIG, pError);
             _pSpend = new Spend(core.longp_value(_lpSpend));
             return pError.getCode() == tABC_CC.ABC_CC_Ok;
@@ -3296,7 +3322,7 @@ public class CoreAPI {
             SWIGTYPE_p_long txid = core.new_longp();
             SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
 
-            core.ABC_SpendApprove(AirbitzApplication.getUsername(), walletUUID,
+            core.ABC_SpendApprove(mUsername, walletUUID,
                     _pSpend, pTxId, pError);
             if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
                 id = getStringAtPtr(core.longp_value(txid));
@@ -3323,7 +3349,11 @@ public class CoreAPI {
                 if (fiatAmount > 0) {
                     tx.setAmountFiat(fiatAmount);
                 }
-                storeTransaction(tx);
+                try {
+                    storeTransaction(tx);
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
+                }
             }
 
             // This was a transfer
@@ -3332,7 +3362,11 @@ public class CoreAPI {
                 if (null != destTx) {
                     destTx.setName(srcWallet.getName());
                     destTx.setCategory(categoryText + srcWallet.getName());
-                    storeTransaction(destTx);
+                    try {
+                        storeTransaction(destTx);
+                    } catch (AirbitzException e) {
+                        Log.d(TAG, "", e);
+                    }
                 }
             }
         }
@@ -3342,23 +3376,21 @@ public class CoreAPI {
 
             SWIGTYPE_p_uint64_t result = core.new_uint64_tp();
 
-            core.ABC_SpendGetMax(AirbitzApplication.getUsername(), walletUUID, _pSpend, result, pError);
+            core.ABC_SpendGetMax(mUsername, walletUUID, _pSpend, result, pError);
             long actual = get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(result));
             return actual;
         }
 
-        public long calcSendFees(String walletUUID) {
+        public long calcSendFees(String walletUUID) throws AirbitzException {
             tABC_Error error = new tABC_Error();
-            return calcSendFees(walletUUID, error);
-        }
-
-        public long calcSendFees(String walletUUID, tABC_Error error) {
             SWIGTYPE_p_uint64_t total = core.new_uint64_tp();
-
-            core.ABC_SpendGetFee(AirbitzApplication.getUsername(), walletUUID, _pSpend, total, error);
+            core.ABC_SpendGetFee(mUsername, walletUUID, _pSpend, total, error);
 
             long fees = get64BitLongAtPtr(SWIGTYPE_p_uint64_t.getCPtr(total));
-            return error.getCode() == tABC_CC.ABC_CC_Ok ? fees : -1;
+            if (error.getCode() != tABC_CC.ABC_CC_Ok) {
+                throw new AirbitzException(mContext, error.getCode(), error);
+            }
+            return fees;
         }
 
         public class Spend extends tABC_SpendTarget {
@@ -3379,7 +3411,7 @@ public class CoreAPI {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
 
-        core.ABC_BitidParseUri(AirbitzApplication.getUsername(), null, uri, ppChar, error);
+        core.ABC_BitidParseUri(mUsername, null, uri, ppChar, error);
         if (error.getCode() == tABC_CC.ABC_CC_Ok) {
             urlDomain = getStringAtPtr(core.longp_value(lp));
         }
@@ -3388,7 +3420,7 @@ public class CoreAPI {
 
     public boolean bitidLogin(String uri) {
         tABC_Error error = new tABC_Error();
-        core.ABC_BitidLogin(AirbitzApplication.getUsername(), null, uri, error);
+        core.ABC_BitidLogin(mUsername, null, uri, error);
         return error.getCode() == tABC_CC.ABC_CC_Ok;
     }
 }

@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.airbitz.objects.AirbitzRequestHandler;
+import com.airbitz.api.CoreAPI;
 
 import com.squareup.picasso.Picasso;
 
@@ -58,8 +59,6 @@ public class AirbitzApplication extends Application {
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
     private static String LOCATION_MODE = "com.airbitz.application.locationmode";
     private static String ARCHIVE_HEADER_STATE = "archiveClosed";
-    public static final String DAILY_LIMIT_PREF = "com.airbitz.spendinglimits.dailylimit";
-    public static final String DAILY_LIMIT_SETTING_PREF = "com.airbitz.spendinglimits.dailylimitsetting";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
 
     private static Login airbitzLogin = new Login();
@@ -97,10 +96,11 @@ public class AirbitzApplication extends Application {
         return (appInfo != null && ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0));
     }
 
-    public static void Login(String uname, char[] password) {
+    public static void Login(String uname, String password) {
         if (uname != null) {
             airbitzLogin.setUsername(uname);
             airbitzLogin.setPassword(password);
+            CoreAPI.getApi().setCredentials(uname, password);
             mLoginTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
             editor.putString(LOGIN_NAME, uname);
@@ -111,6 +111,7 @@ public class AirbitzApplication extends Application {
     public static void Logout() {
         setCurrentWallet(null);
         airbitzLogin = new Login();
+        CoreAPI.getApi().setCredentials(null, null);
     }
 
     public static String getUsername() {
@@ -118,11 +119,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static String getPassword() {
-        if(airbitzLogin.getPassword()==null) {
-            return null;
-        } else {
-            return String.valueOf(airbitzLogin.getPassword());
-        }
+        return airbitzLogin.getPassword();
     }
 
     public static String getCurrentWallet() {
@@ -253,7 +250,7 @@ public class AirbitzApplication extends Application {
 
     private static class Login {
         private String mUsername = null;
-        private char[] mPassword = null;
+        private String mPassword = null;
         private String mWalletUuid = null;
 
         public String getUsername() {
@@ -264,12 +261,12 @@ public class AirbitzApplication extends Application {
             mUsername = name;
         }
 
-        public char[] getPassword() {
+        public String getPassword() {
             return mPassword;
         }
 
-        public void setPassword(char[] word) {
-            mPassword = word;
+        public void setPassword(String password) {
+            mPassword = password;
         }
     }
 }

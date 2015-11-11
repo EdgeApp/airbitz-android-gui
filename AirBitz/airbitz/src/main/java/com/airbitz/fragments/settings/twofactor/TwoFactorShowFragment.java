@@ -38,6 +38,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,9 +58,8 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
-import com.airbitz.api.tABC_Error;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -227,7 +227,7 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private CheckStatusTask mCheckStatusTask;
-    public class CheckStatusTask extends AsyncTask<Void, Void, tABC_CC> {
+    public class CheckStatusTask extends AsyncTask<Void, Void, AirbitzException> {
         boolean mMsg;
 
         CheckStatusTask(boolean bMsg) {
@@ -240,15 +240,20 @@ public class TwoFactorShowFragment extends BaseFragment
         }
 
         @Override
-        protected tABC_CC doInBackground(Void... params) {
-            return mCoreAPI.OtpAuthGet();
+        protected AirbitzException doInBackground(Void... params) {
+            try {
+                mCoreAPI.otpAuthGet();
+                return null;
+            } catch (AirbitzException e) {
+                return e;
+            }
         }
 
         @Override
-        protected void onPostExecute(final tABC_CC cc) {
+        protected void onPostExecute(final AirbitzException error) {
             onCancelled();
             updateTwoFactorUI(mCoreAPI.isTwoFactorOn());
-            if (cc == tABC_CC.ABC_CC_Ok) {
+            if (error == null) {
                 checkSecret(mMsg);
             } else {
                 mActivity.ShowFadingDialog(getString(R.string.fragment_twofactor_show_unable_status));
@@ -324,15 +329,19 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void checkRequest() {
-        tABC_Error error = new tABC_Error();
-        boolean pending = mCoreAPI.isTwoFactorResetPending(AirbitzApplication.getUsername());
-        boolean okay = error.getCode() == tABC_CC.ABC_CC_Ok;
-        if (okay && pending) {
+        AirbitzException error = null;
+        boolean pending = false;
+        try {
+            pending = mCoreAPI.isTwoFactorResetPending(AirbitzApplication.getUsername());
+        } catch (AirbitzException e) {
+            error = e;
+        }
+        if (error == null && pending) {
             mRequestView.setVisibility(View.VISIBLE);
         } else {
             mRequestView.setVisibility(View.GONE);
-            if (!okay) {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, error.getCode()));
+            if (null != error) {
+                mActivity.ShowFadingDialog(error.getMessage());
             }
         }
         mActivity.showModalProgress(false);
@@ -406,7 +415,13 @@ public class TwoFactorShowFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.enableTwoFactor(this.isChecked) == tABC_CC.ABC_CC_Ok;
+            try {
+                mCoreAPI.enableTwoFactor(this.isChecked);
+                return true;
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+                return false;
+            }
         }
 
         @Override
@@ -437,25 +452,31 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private ConfirmRequestTask mConfirmRequestTask;
-    public class ConfirmRequestTask extends AsyncTask<Void, Void, tABC_CC> {
+    public class ConfirmRequestTask extends AsyncTask<Void, Void, AirbitzException> {
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected tABC_CC doInBackground(Void... params) {
-            return mCoreAPI.enableTwoFactor(false);
+        protected AirbitzException doInBackground(Void... params) {
+            try {
+                mCoreAPI.enableTwoFactor(false);
+                return null;
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+                return e;
+            }
         }
 
         @Override
-        protected void onPostExecute(final tABC_CC cc) {
+        protected void onPostExecute(final AirbitzException error) {
             onCancelled();
-            if (cc == tABC_CC.ABC_CC_Ok) {
+            if (error == null) {
                 mActivity.ShowFadingDialog("Request confirmed, Two Factor off.");
                 updateTwoFactorUI(false);
             } else {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, cc));
+                mActivity.ShowFadingDialog(error.getMessage());
             }
         }
 
@@ -477,25 +498,30 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private CancelRequestTask mCancelRequestTask;
-    public class CancelRequestTask extends AsyncTask<Void, Void, tABC_CC> {
+    public class CancelRequestTask extends AsyncTask<Void, Void, AirbitzException> {
         @Override
         protected void onPreExecute() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected tABC_CC doInBackground(Void... params) {
-            return mCoreAPI.cancelTwoFactorRequest();
+        protected AirbitzException doInBackground(Void... params) {
+            try {
+                mCoreAPI.cancelTwoFactorRequest();
+                return null;
+            } catch (AirbitzException e) {
+                return e;
+            }
         }
 
         @Override
-        protected void onPostExecute(final tABC_CC cc) {
+        protected void onPostExecute(final AirbitzException error) {
             onCancelled();
-            if (cc == tABC_CC.ABC_CC_Ok) {
+            if (error == null) {
                 mActivity.ShowFadingDialog("Reset Cancelled.");
                 mRequestView.setVisibility(View.GONE);
             } else {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, cc));
+                mActivity.ShowFadingDialog(error.getMessage());
             }
         }
 

@@ -34,6 +34,7 @@ package com.airbitz.fragments.login;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,8 +47,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_AccountSettings;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -62,7 +64,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     public static final String PIN = "com.airbitz.setupwriteitdown.pin";
 
     private String mUsername;
-    private char[] mPassword;
+    private String mPassword;
     private String mPin;
 
     private Button mNextButton;
@@ -159,15 +161,22 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
 
     private void goNext() {
         AirbitzApplication.Login(mUsername, mPassword);
-        mCoreAPI.SetPin(mPin);
+        try {
+            mCoreAPI.SetPin(mPin);
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
 
         mCoreAPI.setupAccountSettings();
         mCoreAPI.startAllAsyncUpdates();
 
-        tABC_AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mCoreAPI.coreSettings();
         settings.setRecoveryReminderCount(0);
-        mCoreAPI.saveAccountSettings(settings);
-
+        try {
+            settings.save();
+        } catch (AirbitzException e) {
+            Log.d(TAG, "", e);
+        }
         mActivity.UserJustLoggedIn(true);
     }
 
@@ -185,11 +194,11 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         enableShow(mShow);
         Bundle bundle = getArguments();
         mUsername = bundle.getString(USERNAME);
-        mPassword = bundle.getString(PASSWORD, "").toCharArray();
+        mPassword = bundle.getString(PASSWORD, "");
         mPin = bundle.getString(PIN);
 
         mUsernameTextView.setText(mUsername);
-        mPasswordTextView.setText(String.valueOf(mPassword));
+        mPasswordTextView.setText(mPassword);
         mPinTextView.setText(mPin);
     }
 }

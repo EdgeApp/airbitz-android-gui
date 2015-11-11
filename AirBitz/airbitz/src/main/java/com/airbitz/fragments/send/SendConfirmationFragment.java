@@ -63,9 +63,8 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_Error;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.CurrencyFragment;
@@ -629,7 +628,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         mHandler.postDelayed(delayCalcFees, CALC_SEND_FEES_DELAY_MILLIS);
     }
 
-    private void UpdateFeeFields(Long fees, tABC_Error error) {
+    private void UpdateFeeFields(Long fees, AirbitzException error) {
         mAutoUpdatingTextFields = true;
         int color;
         if (mSendConfirmationOverrideCurrencyMode) {
@@ -640,8 +639,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
 
         mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
 
-        if ((error.getCode() == tABC_CC.ABC_CC_Ok) ||
-                (0 == mAmountToSendSatoshi)) {
+        if (error == null || 0 == mAmountToSendSatoshi) {
             if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
                 color = getResources().getColor(R.color.max_orange);
                 mMaxButton.setBackgroundResource(R.drawable.bg_button_orange);
@@ -671,7 +669,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
                 }
             }
         } else {
-            mConversionTextView.setText(Common.errorMap(mActivity, error));
+            mConversionTextView.setText(error.getMessage());
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
@@ -1015,11 +1013,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
     }
 
     public class CalculateFeesTask extends AsyncTask<Void, Void, Long> {
-        tABC_Error error;
-
-        CalculateFeesTask() {
-            error = new tABC_Error();
-        }
+        AirbitzException mFailureException = null;
 
         @Override
         protected void onPreExecute() {
@@ -1030,7 +1024,12 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         protected Long doInBackground(Void... params) {
             Log.d(TAG, "Fee calculation started");
             String dest = mIsUUID ? mWallet.getUUID() : mUUIDorURI;
-            return mSpendTarget.calcSendFees(mWallet.getUUID(), error);
+            try {
+                return mSpendTarget.calcSendFees(mWallet.getUUID());
+            } catch (AirbitzException e) {
+                mFailureException = e;
+                return 0L;
+            }
         }
 
         @Override
@@ -1039,7 +1038,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
             if (isAdded()) {
                 mCalculateFeesTask = null;
                 mFees = fees;
-                UpdateFeeFields(fees, error);
+                UpdateFeeFields(fees, mFailureException);
                 mSlideLayout.setEnabled(true);
             }
         }

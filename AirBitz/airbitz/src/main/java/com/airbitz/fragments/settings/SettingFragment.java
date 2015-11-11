@@ -73,17 +73,16 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AccountSettings;
+import com.airbitz.api.AirbitzException;
+import com.airbitz.api.BitcoinDenomination;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.SWIGTYPE_p_int64_t;
-import com.airbitz.api.core;
-import com.airbitz.api.tABC_AccountSettings;
-import com.airbitz.api.tABC_BitcoinDenomination;
+import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
-import com.airbitz.bitbeacon.BleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +130,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private List<String> mExchanges;
     private CoreAPI mCoreAPI;
     private View mView;
-    private tABC_AccountSettings mCoreSettings;
+    private AccountSettings mCoreSettings;
     private NavigationActivity mActivity;
 
     @Override
@@ -282,8 +281,12 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                 } else if(!isChecked) {
                     Log.d(TAG, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
-                    mCoreAPI.saveAccountSettings(mCoreSettings);
-                    mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                    try {
+                        mCoreSettings.save();
+                        mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                    } catch (AirbitzException e) {
+                        Log.d(TAG, "", e);
+                    }
                 }
             }
         });
@@ -381,9 +384,9 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         }
     }
 
-    private void loadSettings(tABC_AccountSettings settings) {
+    private void loadSettings(AccountSettings settings) {
         //Bitcoin denomination
-        tABC_BitcoinDenomination denomination = settings.getBitcoinDenomination();
+        BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if (denomination != null) {
             if (denomination.getDenominationType() == CoreAPI.ABC_DENOMINATION_BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
@@ -398,9 +401,9 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //User Name
         mSendNameSwitch.setChecked(settings.getBNameOnPayments());
-        mFirstEditText.setText(settings.getSzFirstName());
-        mLastEditText.setText(settings.getSzLastName());
-        mNicknameEditText.setText(settings.getSzNickname());
+        mFirstEditText.setText(settings.getFirstName());
+        mLastEditText.setText(settings.getLastName());
+        mNicknameEditText.setText(settings.getNickname());
 
 
         //Options
@@ -409,11 +412,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         // Pin Relogin
         mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
         // NFC
-        if(mNFCSwitch.getVisibility() == View.VISIBLE) {
+        if (mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());
         }
         // BLE
-        if(mBLESwitch.getVisibility() == View.VISIBLE) {
+        if (mBLESwitch.getVisibility() == View.VISIBLE) {
             mBLESwitch.setChecked(getBLEPref());
         }
 
@@ -423,8 +426,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //Default Exchange
         mExchanges = mCoreAPI.getExchangeRateSources();
-
-        mExchangeButton.setText(mCoreSettings.getSzExchangeRateSource());
+        mExchangeButton.setText(mCoreSettings.getExchangeRateSource());
     }
 
     private void saveDenomination() {
@@ -432,30 +434,21 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mCoreSettings = mCoreAPI.newCoreSettings();
         }
         //Bitcoin denomination
-        tABC_BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {
             if (mmBitcoinButton.isChecked()) {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000);
-                denomination.setSatoshi(amt);
             } else if (muBitcoinButton.isChecked()) {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100);
-                denomination.setSatoshi(amt);
             } else {
                 denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
-                SWIGTYPE_p_int64_t amt = core.new_int64_tp();
-                core.longp_assign(core.p64_t_to_long_ptr(amt), 100000000);
-                denomination.setSatoshi(amt);
             }
         }
     }
 
     private void saveCurrentSettings() {
         mCoreSettings = mCoreAPI.newCoreSettings();
-        if(mCoreSettings == null) {
+        if (mCoreSettings == null) {
             return;
         }
 
@@ -464,10 +457,10 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Credentials - N/A
 
         //User Name
-        mCoreSettings.setBNameOnPayments(mSendNameSwitch.isChecked());
-        mCoreSettings.setSzFirstName(mFirstEditText.getText().toString());
-        mCoreSettings.setSzLastName(mLastEditText.getText().toString());
-        mCoreSettings.setSzNickname(mNicknameEditText.getText().toString());
+        mCoreSettings.showNameOnPayments(mSendNameSwitch.isChecked());
+        mCoreSettings.setFirstName(mFirstEditText.getText().toString());
+        mCoreSettings.setLastName(mLastEditText.getText().toString());
+        mCoreSettings.setNickName(mNicknameEditText.getText().toString());
 
         //Options
         //Autologoff
@@ -483,11 +476,14 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         // Default Currency
         mCoreSettings.setCurrencyNum(mCurrencyNum);
-
-        mCoreSettings.setSzExchangeRateSource(mExchangeButton.getText().toString());
+        mCoreSettings.setExchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {
-            mCoreAPI.saveAccountSettings(mCoreSettings);
+            try {
+                mCoreSettings.save();
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+            }
         }
     }
 
@@ -806,7 +802,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         protected Void doInBackground(Void... params) {
             mCoreAPI.PinSetupBlocking();
             mCoreSettings.setBDisablePINLogin(false);
-            mCoreAPI.saveAccountSettings(mCoreSettings);
+            try {
+                mCoreSettings.save();
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+            }
             return null;
         }
 

@@ -64,8 +64,8 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
+import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.tABC_CC;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
@@ -215,9 +215,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mActivity.hideSoftKeyboard(mQuestionViews.get(0));
             mActivity.showModalProgress(true);
             if (mTwoFactorSuccess) {
-                if (mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret) == tABC_CC.ABC_CC_Ok) {
-                    // Try again with OTP
+                try {
+                    mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret);
                     AttemptSignupOrChange();
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
                 }
             }
             else {
@@ -489,6 +491,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public class AttemptAnswerVerificationTask extends AsyncTask<String, Void, Boolean> {
         private String username;
         private String answers;
+        private AirbitzException mFailureException;
 
         @Override
         public void onPreExecute() {
@@ -499,12 +502,22 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         protected Boolean doInBackground(String... params) {
             answers = params[0];
             username = params[1];
-            boolean result = mCoreAPI.recoveryAnswers(answers, username);
+            boolean result = false;
+            try {
+                result = mCoreAPI.recoveryAnswers(answers, username);
+            } catch (AirbitzException e) {
+                mFailureException = e;
+                return false;
+            }
 
             // If we have otp enabled, persist the token
             String secret = mCoreAPI.GetTwoFactorSecret();
             if (secret != null) {
-                mCoreAPI.OtpKeySet(username, secret);
+                try {
+                    mCoreAPI.OtpKeySet(username, secret);
+                } catch (AirbitzException e) {
+                    Log.d(TAG, "", e);
+                }
             }
             return result;
         }
@@ -522,8 +535,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                mCoreAPI.otpSetError(mCoreAPI.getRecoveryAnswersError().getCode());
-                if (tABC_CC.ABC_CC_InvalidOTP  == mCoreAPI.getRecoveryAnswersError().getCode()) {
+                mCoreAPI.otpSetError(mFailureException);
+                if (mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
                     mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
@@ -637,8 +650,13 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            tABC_CC result = mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
-            return result == tABC_CC.ABC_CC_Ok;
+            try {
+                mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
+                return true;
+            } catch (AirbitzException e) {
+                Log.d(TAG, "", e);
+                return false;
+            }
         }
 
         @Override
