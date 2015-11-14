@@ -64,6 +64,10 @@ android {
         prod {
             applicationId 'com.airbitz'
         }
+
+        coinbtm {
+            applicationId 'com.coinbtm.rackwallet'
+        }
     }
 
     packagingOptions {
