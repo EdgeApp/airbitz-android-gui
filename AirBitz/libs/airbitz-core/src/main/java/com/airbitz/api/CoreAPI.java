@@ -1241,12 +1241,7 @@ public class CoreAPI {
                 mInput = super.getInput();
                 mAddress = super.getSzAddress();
                 mTxId = super.getSzTxId();
-                mValue = get64BitLongAtPtr(pv + 8);
-//                mIndex = get64BitLongAtPtr(pv + 17);
-//                for(int j=0; j<20; j++) {
-//                    long temp = get64BitLongAtPtr(pv + j);
-//                    long temp2 = temp;
-//                }
+                mValue = get64BitLongAtPtr(SWIGTYPE_p_int64_t.getCPtr(getValue()));
             }
         }
 
@@ -1272,10 +1267,12 @@ public class CoreAPI {
        public TxDetails(long pv) {
             super(pv, false);
             if (pv != 0) {
-                mAmountSatoshi = get64BitLongAtPtr(pv);
-                mAmountFeesAirbitzSatoshi = get64BitLongAtPtr(pv+8);
-                mAmountFeesMinersSatoshi = get64BitLongAtPtr(pv+16);
-
+                mAmountSatoshi = get64BitLongAtPtr(
+                    SWIGTYPE_p_int64_t.getCPtr(getAmountSatoshi()));
+                mAmountFeesAirbitzSatoshi = get64BitLongAtPtr(
+                    SWIGTYPE_p_int64_t.getCPtr(getAmountFeesAirbitzSatoshi()));
+                mAmountFeesMinersSatoshi = get64BitLongAtPtr(
+                    SWIGTYPE_p_int64_t.getCPtr(getAmountFeesMinersSatoshi()));
                 mAmountCurrency = super.getAmountCurrency();
 
                 mName = super.getSzName();

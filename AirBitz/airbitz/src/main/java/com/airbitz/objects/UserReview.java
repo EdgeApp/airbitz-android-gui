@@ -130,8 +130,12 @@ public class UserReview {
         mEditor.putBoolean(ALREADY_NOTIFIED, true);
         mEditor.apply();
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
-            builder.setMessage(activity.getString(R.string.user_review_message))
-                    .setTitle(activity.getString(R.string.user_review_title))
+            builder.setMessage(String.format(
+                        activity.getString(R.string.user_review_message),
+                        activity.getString(R.string.app_name)))
+                    .setTitle(String.format(
+                        activity.getString(R.string.user_review_title),
+                        activity.getString(R.string.app_name)))
                     .setCancelable(false)
                     .setPositiveButton(activity.getResources().getString(R.string.user_review_great),
                             new DialogInterface.OnClickListener() {
@@ -158,10 +162,15 @@ public class UserReview {
                 .setPositiveButton(activity.getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                Context context = AirbitzApplication.getContext();
                                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                                 intent.setData(Uri.parse("mailto:"));
-                                intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { AirbitzApplication.getContext().getString(R.string.user_review_support_email_address) });
-                                intent.putExtra(Intent.EXTRA_SUBJECT, AirbitzApplication.getContext().getString(R.string.user_review_support_subject));
+                                intent.putExtra(Intent.EXTRA_EMAIL  , new String[] {
+                                    AirbitzApplication.getContext().getString(R.string.app_support_email)
+                                });
+                                intent.putExtra(Intent.EXTRA_SUBJECT, String.format(
+                                    context.getString(R.string.user_review_support_subject),
+                                    context.getString(R.string.app_name)));
                                 activity.startActivity(Intent.createChooser(intent, AirbitzApplication.getContext().getString(R.string.user_review_support_title)));
                                 dialog.dismiss();
                             }

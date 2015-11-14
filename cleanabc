@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+find . -name "*.so" -delete
+find . -name "core*.java" -delete
+find . -name "tABC_*.java" -delete
+find . -name "SWIGTYPE_*.java" -delete

@@ -35,4 +35,4 @@ cd $WALLET_PATH/jni/
 $BUILD_PATH/ndk/android-ndk-r10d/ndk-build
 
 # Gradle is looking in the wrong place for libraries:
-cp -r $WALLET_PATH/libs/ $WALLET_PATH/jniLibs/
+cp -R $WALLET_PATH/libs/* $WALLET_PATH/jniLibs

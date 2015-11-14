@@ -621,18 +621,22 @@ public class SendFragment extends WalletBaseFragment implements
     }
 
     private void askBitidLogin(final String uri, final String text) {
+        hideProcessing();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.content(getString(R.string.bitid_login_message, uri))
                .title(R.string.bitid_login_title)
                .theme(Theme.LIGHT)
                .positiveText(getResources().getString(R.string.string_continue))
                .negativeText(getResources().getString(R.string.string_cancel))
+               .cancelable(false)
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        showProcessing();
                         mBitidTask = new BitidLoginTask();
                         mBitidTask.execute(text);
                     }
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         mQRCamera.startScanning();
                         dialog.cancel();

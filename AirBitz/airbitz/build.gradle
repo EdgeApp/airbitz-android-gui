@@ -30,6 +30,16 @@ task buildAirbitzCore(type:Exec) {
     commandLine './mkabc'
 }
 
+task copyAirbitzCore(type:Exec) {
+    workingDir '../../'
+    commandLine './cpabc'
+}
+
+task cleanAirbitzCore(type:Exec) {
+    workingDir '../../'
+    commandLine './cleanabc'
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
