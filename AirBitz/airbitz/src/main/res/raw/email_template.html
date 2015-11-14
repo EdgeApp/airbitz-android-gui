@@ -1,47 +1,48 @@
+<html>
 <body>
-<h3>Bitcoin Payment Request</h3>
+    <div>
+        <h3>Bitcoin Payment Request</h3>
 
-<strong>From: </strong><br/>
-[[abtag FROM]]
-<br/><br/>
-<strong>Amount: </strong><br/>
-[[abtag AMOUNT_BTC]] BTC
-<br/><br/>
-<strong>Amount: </strong><br/>
-[[abtag AMOUNT_BITS]] bits
-<br/><br/>
-<strong>Address: </strong><br/>
-[[abtag ADDRESS]]
-<br/><br/>
-<strong>Full URI: </strong><br/>
-[[abtag BITCOIN_URI]]
-<br/><br/>
+        <strong>From: </strong><br/>
+        [[abtag FROM]]
+        <br/><br/>
+        <strong>Amount: </strong><br/>
+        [[abtag AMOUNT_BTC]] BTC
+        <br/><br/>
+        <strong>Amount: </strong><br/>
+        [[abtag AMOUNT_BITS]] bits
+        <br/><br/>
+        <strong>Address: </strong><br/>
+        [[abtag ADDRESS]]
+        <br/><br/>
+        <strong>Full URI: </strong><br/>
+        [[abtag BITCOIN_URI]]
+        <br/><br/>
 
-<p>Please <strong>scan QR code</strong> or <strong>click</strong> on the links below to pay</p>
+        <p>Please <strong>scan QR code</strong> or <strong>click</strong> on the links below to pay</p>
 
-<p>
-    <a href="[[abtag BITCOIN_URL]]">
-        Pay with iOS/Mac<br>
-        <em>Click Here</em>
-    </a>
-</p>
+        <p>
+            <a href="[[abtag BITCOIN_URL]]">
+                Pay with iOS/Mac<br />
+                <em>Click Here</em>
+            </a>
+        </p>
 
-<p>
-    <a href="[[abtag REDIRECT_URL]]">
-        Pay with Android<br>
-        <em>Click Here</em>
-    </a>
-</p>
-<br/><br/>
-<hr>
-<p>
-    Sent from the Airbitz Mobile<br>
-    Bitcoin Wallet + Business Directory<br>
-</p>
+        <p>
+            <a href="[[abtag REDIRECT_URL]]">
+                Pay with Android<br />
+                <em>Click Here</em>
+            </a>
+        </p>
+        <br/><br/>
+        <hr>
+        <p>
+            [[abtag REQUEST_FOOTER]]
+        </p>
 
-<a href="https://airbitz.co/app/">Download Airbitz for iOS and Android</a>
+        <a href="[[abtag REQUEST_FOOTER_LINK]]">[[abtag REQUEST_FOOTER_LINK_TITLE]]</a>
 
-<p>Questions or Problems? <a href="mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request">Contact
-    Us</a>.</p>
-
+        <p>Questions or Problems? <a href="[[abtag REQUEST_FOOTER_CONTACT]]">Contact Us</a>.</p>
+    </div>
 </body>
+</html>
