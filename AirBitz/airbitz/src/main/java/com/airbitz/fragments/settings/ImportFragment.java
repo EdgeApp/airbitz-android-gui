@@ -488,8 +488,8 @@ public class ImportFragment extends WalletBaseFragment implements QRCamera.OnSca
 //                return hideOtherWallets();
             case R.id.action_help:
                 mActivity.pushFragment(
-                        new HelpFragment(HelpFragment.IMPORT_WALLET),
-                        NavigationActivity.Tabs.MORE.ordinal());
+                    new HelpFragment(HelpFragment.IMPORT_WALLET),
+                        NavigationActivity.Tabs.IMPORT.ordinal());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

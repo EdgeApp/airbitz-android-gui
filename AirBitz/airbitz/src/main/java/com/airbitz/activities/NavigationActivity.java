@@ -786,7 +786,9 @@ public class NavigationActivity extends ActionBarActivity
             if (AirbitzApplication.isLoggedIn() && Tabs.WALLET.ordinal() != mNavThreadId) {
                 onNavBarSelected(Tabs.WALLET.ordinal());
             } else {
-                ShowExitMessageDialog("", getString(R.string.string_exit_app_question));
+                ShowExitMessageDialog("", String.format(
+                    getString(R.string.string_exit_app_question),
+                    getString(R.string.app_name)));
             }
         } else {
             popFragment();
@@ -1365,7 +1367,9 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         protected void onPreExecute() {
             NavigationActivity.this.ShowFadingDialog(
-                    getString(R.string.logout_message),
+                    String.format(
+                        getString(R.string.logout_message),
+                        getString(R.string.app_name)),
                     getResources().getInteger(R.integer.alert_hold_time_forever), false);
         }
 

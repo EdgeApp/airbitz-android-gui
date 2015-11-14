@@ -189,7 +189,10 @@ public class RequestFragment extends WalletBaseFragment implements
 
     @Override
     public void invalidService() {
-        mActivity.ShowFadingDialog(mActivity.getString(R.string.request_qr_ble_invalid_service));
+        mActivity.ShowFadingDialog(
+                String.format(
+                    mActivity.getString(R.string.request_qr_ble_invalid_service),
+                    mActivity.getString(R.string.app_name)));
     }
 
     @Override
@@ -654,7 +657,9 @@ public class RequestFragment extends WalletBaseFragment implements
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.request_qr_email_title));
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+                String.format(getString(R.string.request_qr_email_title),
+                              getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
         if (mCoreAPI.coreSettings().getBNameOnPayments()) {
@@ -701,7 +706,7 @@ public class RequestFragment extends WalletBaseFragment implements
             redirectURL = "https://airbitz.co/blf/?address=" + address;
         }
 
-        String content = Common.readRawTextFile(getActivity(), id);
+        String content = Common.evaluateTextFile(getActivity(), id);
 
         List<String> searchList = new ArrayList<String>();
         searchList.add("[[abtag FROM]]");

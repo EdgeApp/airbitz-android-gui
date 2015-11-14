@@ -193,12 +193,14 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
     private void issueOSNotification(Context context, String message, int code) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.color_logo);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
         Resources res = context.getResources();
         int height = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
         int width = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
         bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        builder.setContentTitle("Airbitz notification")
+        builder.setContentTitle(String.format(
+                    context.getString(R.string.receiver_alert_title),
+                    context.getString(R.string.app_name)))
                 .setSmallIcon(R.drawable.ico_sending_3)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setLargeIcon(bitmap);

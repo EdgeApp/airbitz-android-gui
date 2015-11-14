@@ -32,8 +32,6 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -98,23 +96,10 @@ public class HelpFragment extends BaseFragment {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
             if (mID != INFO) {
-                webView.loadData(Common.readRawTextFile(getActivity(), mID), "text/html; charset=UTF-8", null);
+                webView.loadData(Common.evaluateTextFile(getActivity(), mID), "text/html; charset=UTF-8", null);
             } else {
-                //Get file contents and replace * with versionbuild
-                String version = "version error";
-                int build = 0;
-                PackageManager manager = getActivity().getPackageManager();
-                try {
-                    PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
-                    version = info.versionName;
-                    build = info.versionCode;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                String original = Common.readRawTextFile(getActivity(), R.raw.info);
-                String replaced = original.replace("*", version + " " + String.valueOf(build));
-
-                webView.loadData(replaced, "text/html; charset=UTF-8", null);
+                String text = Common.evaluateTextFile(getActivity(), R.raw.info);
+                webView.loadData(text, "text/html; charset=UTF-8", null);
             }
         }
 

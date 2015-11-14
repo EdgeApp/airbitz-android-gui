@@ -175,7 +175,9 @@ public class TwoFactorShowFragment extends BaseFragment
     private void confirmEnable() {
         AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
         builder.setTitle(getResources().getString(R.string.fragment_two_factor_warn_title))
-            .setMessage(getResources().getString(R.string.fragment_two_factor_warn_message))
+            .setMessage(String.format(
+                getResources().getString(R.string.fragment_two_factor_warn_message),
+                getResources().getString(R.string.app_name)))
             .setCancelable(false)
             .setPositiveButton(getResources().getString(R.string.string_ok),
                 new DialogInterface.OnClickListener() {
