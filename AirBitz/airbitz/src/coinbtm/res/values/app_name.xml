@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rack</string>
+    <string name="app_homepage">http://coinbtm.com</string>
+    <string name="app_support_email">support@coinbtm.com</string>
+    <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
+    <string name="playstore_link">https://play.google.com/store/apps/details?id=com.coinbtm</string>
+    <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
+    <string name="designed_by">Designed by CoinBTM in</string>
+    <string name="company_location">New York, New York, USA</string>
+
+    <string name="request_footer">Sent from the Rack Mobile Bitcoin Wallet + Business Directory</string>
+    <string name="request_footer_link">https://play.google.com/store/apps/details?id=com.coinbtm</string>
+    <string name="request_footer_link_title">Download Rack for iOS or Android</string>
+    <string name="request_footer_contact">mailto:info@rack.co?subject=Rack+Bitcoin+Email+Request</string>
+</resources>
