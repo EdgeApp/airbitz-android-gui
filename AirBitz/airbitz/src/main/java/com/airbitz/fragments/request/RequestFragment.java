@@ -748,6 +748,9 @@ public class RequestFragment extends WalletBaseFragment implements
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
         Log.d(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
         Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+        if (null == tx)
+            return false;
+
         if (tx.getOutputs() == null || mAddress == null) {
             return false;
         }
