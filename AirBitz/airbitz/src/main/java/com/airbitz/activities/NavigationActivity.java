@@ -90,10 +90,10 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import com.airbitz.api.DirectoryWrapper;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.AccountSettings;
+import com.airbitz.api.CoreAPI;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.NavigationBarFragment;
@@ -118,6 +118,7 @@ import com.airbitz.models.Transaction;
 import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
+import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
@@ -866,6 +867,26 @@ public class NavigationActivity extends ActionBarActivity
         hideSoftKeyboard(mFragmentContainer);
 
         super.onResume();
+
+        checkDisclaimer();
+    }
+
+    private void checkDisclaimer() {
+        new Thread(new Runnable() {
+            public void run() {
+                if (!Disclaimer.hasAgreedDisclaimer(NavigationActivity.this)) {
+                    showDisclaimer();
+                }
+            }
+        }).start();
+    }
+
+    private void showDisclaimer() {
+        mHandler.post(new Runnable() {
+            public void run() {
+                Disclaimer.showDisclaimer(NavigationActivity.this);
+            }
+        });
     }
 
     @Override
