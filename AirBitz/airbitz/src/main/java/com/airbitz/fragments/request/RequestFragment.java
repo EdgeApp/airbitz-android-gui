@@ -403,24 +403,26 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private void updateConversion() {
-        if (mAmountIsBitcoin) {
-            long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
-            String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
-            mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-            mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-            mOtherAmountTextView.setText(currency);
-        } else {
-            long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
-            mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-            mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-            mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+        if (null != mWallet){
+            if (mAmountIsBitcoin) {
+                long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+                String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
+                mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+                mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+                mOtherAmountTextView.setText(currency);
+            } else {
+                long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
+                mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+                mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+                mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+            }
+            if (TextUtils.isEmpty(mAmountField.getText())) {
+                mOtherAmountTextView.setText("");
+            }
+            int currencyNum = mWallet.getCurrencyNum();
+            mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+            updateMode();
         }
-        if (TextUtils.isEmpty(mAmountField.getText())) {
-            mOtherAmountTextView.setText("");
-        }
-        int currencyNum = mWallet.getCurrencyNum();
-        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
-        updateMode();
     }
 
     private void updateMode() {
