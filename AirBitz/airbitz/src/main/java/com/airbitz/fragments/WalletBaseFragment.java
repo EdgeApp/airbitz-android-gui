@@ -309,7 +309,7 @@ public class WalletBaseFragment extends BaseFragment
 
     @Override
     public boolean onBackPress() {
-        if (mActivity.isDrawerOpen()) {
+        if (null != mActivity && mActivity.isDrawerOpen()) {
             mActivity.closeDrawer();
             return true;
         } else if (isMenuExpanded()) {
