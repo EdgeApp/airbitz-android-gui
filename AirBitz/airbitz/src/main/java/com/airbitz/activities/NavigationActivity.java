@@ -1269,8 +1269,11 @@ public class NavigationActivity extends ActionBarActivity
             switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
-        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
-            mCoreAPI.PinSetup();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (!settings.getBDisablePINLogin() && passwordLogin) {
+                mCoreAPI.PinSetup();
+            }
         }
         DisplayLoginOverlay(false, true);
 
@@ -1452,9 +1455,12 @@ public class NavigationActivity extends ActionBarActivity
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
         Log.d(TAG, "delta logout time = " + milliDelta);
-        if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            Logout();
-            return true;
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (milliDelta > settings.getMinutesAutoLogout() * 60 * 1000) {
+                Logout();
+                return true;
+            }
         }
         return false;
     }
@@ -1828,10 +1834,18 @@ public class NavigationActivity extends ActionBarActivity
             // Create the Wallet
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mCoreAPI.createWallet(
-                    AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(),
-                    walletName, mCoreAPI.coreSettings().getCurrencyNum());
+            AccountSettings settings = mCoreAPI.coreSettings();
+            if (settings != null) {
+                return mCoreAPI.createWallet(
+                        AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        walletName, settings.getCurrencyNum());
+            } else {
+                return mCoreAPI.createWallet(
+                        AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        walletName, mCoreAPI.defaultCurrencyNum());
+            }
         }
 
         @Override
@@ -2292,6 +2306,9 @@ public class NavigationActivity extends ActionBarActivity
                     if (settings != null) {
                         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
                         mDrawerExchangeUpdated = true;
+                    } else {
+                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
+                        mDrawerExchangeUpdated = true;
                     }
                 }
             }
@@ -2523,7 +2540,13 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mExchangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
+            AccountSettings settings = mCoreAPI.coreSettings();
+            if (settings != null) {
+                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
+            } else {
+                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
+            }
+
         }
     };
 

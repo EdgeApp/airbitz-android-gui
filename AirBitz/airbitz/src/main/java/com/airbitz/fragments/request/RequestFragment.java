@@ -87,6 +87,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.bitbeacon.BeaconRequest;
 import com.airbitz.bitbeacon.BleUtil;
@@ -481,8 +482,9 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            String name = mCoreAPI.coreSettings().getSzFullName();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null && settings.getBNameOnPayments()) {
+            String name = settings.getSzFullName();
             mBeaconRequest.setBroadcastName(name);
         } else {
             mBeaconRequest.setBroadcastName(
@@ -622,10 +624,13 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String name = getString(R.string.request_qr_unknown);
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFullName();
-            if(name==null) {
-                name = getString(R.string.request_qr_unknown);
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (settings.getBNameOnPayments()) {
+                name = settings.getSzFullName();
+                if (name == null) {
+                    name = getString(R.string.request_qr_unknown);
+                }
             }
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
@@ -661,11 +666,14 @@ public class RequestFragment extends WalletBaseFragment implements
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
         intent.putExtra(Intent.EXTRA_SUBJECT,
                 String.format(getString(R.string.request_qr_email_title),
-                              getString(R.string.app_name)));
+                        getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFullName();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (settings.getBNameOnPayments()) {
+                name = settings.getSzFullName();
+            }
         }
 
         String html = fillTemplate(R.raw.email_template, name);

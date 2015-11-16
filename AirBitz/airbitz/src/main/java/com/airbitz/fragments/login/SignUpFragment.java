@@ -578,8 +578,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword, mPin);
                 } else {
                     mCoreAPI.SetPin(mPin);
-                    if(!mCoreAPI.coreSettings().getBDisablePINLogin()) {
-                        mCoreAPI.PinSetup();
+                    AccountSettings settings = mCoreAPI.coreSettings();
+                    if (settings != null) {
+                        if (!settings.getBDisablePINLogin()) {
+                            mCoreAPI.PinSetup();
+                        }
                     }
                 }
             } catch (AirbitzException e) {

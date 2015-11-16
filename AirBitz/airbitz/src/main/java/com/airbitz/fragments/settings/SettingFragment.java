@@ -330,7 +330,12 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         });
 
-        mCurrencyNum = mCoreAPI.coreSettings().getCurrencyNum();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null)
+            mCurrencyNum = settings.getCurrencyNum();
+        else
+            mCurrencyNum = mCoreAPI.defaultCurrencyNum();
+
         String defaultCode = mCoreAPI.getCurrencyCode(mCurrencyNum);
         mDefaultCurrencyButton.setText(defaultCode);
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {

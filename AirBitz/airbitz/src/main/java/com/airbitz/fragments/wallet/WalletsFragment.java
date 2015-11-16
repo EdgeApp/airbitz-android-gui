@@ -64,6 +64,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -308,7 +309,13 @@ public class WalletsFragment extends WalletBaseFragment implements
             mLatestWalletList.addAll(walletList);
         }
         long totalSatoshis = 0;
-        int currencyNum = mCoreApi.coreSettings().getCurrencyNum();
+        int currencyNum;
+        AccountSettings settings = mCoreApi.coreSettings();
+        if (settings != null)
+            currencyNum = settings.getCurrencyNum();
+        else
+            currencyNum = mCoreApi.defaultCurrencyNum();
+
         for (Wallet w : walletList) {
             if (!w.isArchived()) {
                 totalSatoshis += w.getBalanceSatoshi();
