@@ -202,6 +202,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
     private View mView;
     private NavigationActivity mActivity;
     private AlertDialog mMessageDialog;
+    private String mWalletUUID;
+    private String mTxId;
 
     public TransactionDetailFragment() {
         mAllowArchived = true;
@@ -677,13 +679,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 setCurrentType(getString(R.string.fragment_category_income));
             }
 
-            String walletUUID = bundle.getString(Wallet.WALLET_UUID);
-            String txId = bundle.getString(Transaction.TXID);
-            if (walletUUID.isEmpty()) {
+            mWalletUUID = bundle.getString(Wallet.WALLET_UUID);
+            mTxId = bundle.getString(Transaction.TXID);
+            if (mWalletUUID.isEmpty()) {
                 Log.d(TAG, "no detail info");
             } else if (mWallet == null || mTransaction == null) {
-                mWallet = mCoreApi.getWalletFromUUID(walletUUID);
-                mTransaction = mCoreApi.getTransaction(walletUUID, txId);
+                mWallet = mCoreApi.getWalletFromUUID(mWalletUUID);
+                mTransaction = mCoreApi.getTransaction(mWalletUUID, mTxId);
 
                 if (mTransaction != null) {
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.getCategory())) {
@@ -947,7 +949,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void showAdvancedDetails(boolean hasFocus) {
-        if (hasFocus) {
+        Transaction tx = mCoreApi.getTransaction(mWalletUUID, mTxId);
+        if (hasFocus && tx != null) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
@@ -960,38 +963,43 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
             int start;
             int end;
-            for (CoreAPI.TxOutput output : mTransaction.getOutputs()) {
-                start = 0;
-                SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
-                SpannableString address = new SpannableString(output.getAddress());
-                end = address.length();
-                final String txUrl = finalBaseUrl + "address/" + output.getAddress();
-                ClickableSpan span = new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(txUrl));
-                        mActivity.startActivity(i);
-                    }
-                };
-                address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                SpannableStringBuilder full = new SpannableStringBuilder();
-                full.append(address);
-                full.append("\n");
-                start = full.length();
-                full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                full.append("\n");
+            if (null != tx.getOutputs()) {
+                for (CoreAPI.TxOutput output : tx.getOutputs()) {
+                    start = 0;
+                    SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
+                    SpannableString address = new SpannableString(output.getAddress());
+                    end = address.length();
+                    final String txUrl = finalBaseUrl + "address/" + output.getAddress();
+                    ClickableSpan span = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(txUrl));
+                            mActivity.startActivity(i);
+                        }
+                    };
+                    address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    SpannableStringBuilder full = new SpannableStringBuilder();
+                    full.append(address);
+                    full.append("\n");
+                    start = full.length();
+                    full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    full.append("\n");
 
-                if (output.getmInput()) {
-                    inAddresses.append(full);
-                    inSum += output.getmValue();
-                } else {
-                    outAddresses.append(full);
+                    if (output.getmInput()) {
+                        inAddresses.append(full);
+                        inSum += output.getmValue();
+                    } else {
+                        outAddresses.append(full);
+                    }
                 }
+            } else {
+                inAddresses.append(getString(R.string.transaction_details_outputs_unavailable));
+                inAddresses.append("\n");
             }
 
-            long feesSatoshi = mTransaction.getABFees() + mTransaction.getMinerFees();
+            long feesSatoshi = tx.getABFees() + tx.getMinerFees();
             long netSum = inSum - feesSatoshi;
 
             SpannableStringBuilder s = new SpannableStringBuilder();
@@ -1002,9 +1010,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(mTransaction.getmMalleableID());
+            s.append(tx.getmMalleableID());
             end = s.length();
-            final String txIdLink = finalBaseUrl + "tx/" + mTransaction.getmMalleableID();
+            final String txIdLink = finalBaseUrl + "tx/" + tx.getmMalleableID();
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
