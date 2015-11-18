@@ -479,7 +479,7 @@
     <!-- Strings for Export Saving Option fragment -->
     <string name="export_saving_option_no_transactions_title">No Transactions</string>
     <string name="export_saving_option_no_transactions_message">There are no transactions to export in your date range</string>
-    <string name="export_saving_option_email_subject">AirBitz Bitcoin Wallet Transactions</string>
+    <string name="export_saving_option_email_subject">Airbitz Bitcoin Wallet Transactions</string>
     <string name="export_saving_option_no_email_apps">There are no email applications installed</string>
     <string name="export_saving_option_private_seed">Private Seed</string>
     <string name="export_saving_option_pick_date">Pick a Date</string>
