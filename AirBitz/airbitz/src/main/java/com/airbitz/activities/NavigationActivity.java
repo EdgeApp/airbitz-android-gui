@@ -96,7 +96,6 @@ import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
@@ -119,7 +118,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
-import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
@@ -147,8 +145,7 @@ import java.util.Map;
 import java.util.Stack;
 
 public class NavigationActivity extends ActionBarActivity
-        implements NavigationBarFragment.OnScreenSelectedListener,
-        View.OnTouchListener,
+        implements View.OnTouchListener,
         OnAddressRequestListener,
         TwoFactorScanFragment.OnTwoFactorQRScanResult,
         AccountsAdapter.OnButtonTouched {
@@ -195,7 +192,6 @@ public class NavigationActivity extends ActionBarActivity
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
     private boolean mConnectivityNotified = false;
-    private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
     private LinearLayout mLandingLayout;
@@ -326,7 +322,6 @@ public class NavigationActivity extends ActionBarActivity
 
         mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
 
         Common.addStatusBarPadding(this, mFragmentContainer);
 
