@@ -247,7 +247,7 @@
 
         <RelativeLayout
             android:id="@+id/layout_slide"
-            android:layout_width="match_parent"
+            android:layout_width="265dp"
             android:layout_height="44.1dp"
             android:layout_below="@+id/fragment_send_confirmation_layout_authorization"
             android:layout_centerHorizontal="true"
