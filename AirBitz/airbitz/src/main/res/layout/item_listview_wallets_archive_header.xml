@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/item_listview_wallets_archive_header_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/wallet_row_icon_height"
+        android:layout_height="@dimen/wallet_row_icon_height"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/two_mm"
