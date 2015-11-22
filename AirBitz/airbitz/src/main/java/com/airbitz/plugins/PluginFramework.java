@@ -268,7 +268,11 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                    if (framework.mWallet == null) {
+                        return jsonError().toString();
+                    } else {
+                        return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                    }
                 }
             };
             task.execute();
