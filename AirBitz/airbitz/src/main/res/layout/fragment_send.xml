@@ -15,6 +15,23 @@
         />
 
     <LinearLayout
+        android:id="@+id/fragment_send_top_text"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/gray_frost">
+
+        <TextView
+            android:id="@+id/fragment_send_scan_qr_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/request_qr_top_message"
+            android:textColor="@color/white_frost"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/fragment_send_buttons"
         android:layout_alignParentBottom="true"
         android:background="@color/gray_frost"

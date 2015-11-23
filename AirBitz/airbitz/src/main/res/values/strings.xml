@@ -413,6 +413,7 @@
     <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
     <string name="request_qr_ble_copied">Request is copied to the clipboard.</string>
     <string name="request_qr_first_usage">Present QR code to Sender and have them scan to send you payment</string>
+    <string name="request_qr_top_message">Scan QR to Send Funds or Login with BitID</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
@@ -635,13 +636,13 @@
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_buy_sell">Buy/Sell (Beta)</string>
-    <string name="drawer_send">Send</string>
+    <string name="drawer_send">Scan QR Code</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
     <string name="drawer_wallets">Wallets</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>
-    <string name="drawer_import">Import Gift Card\n(Private Key)</string>
+    <string name="drawer_import">Import Private Key\n(Airbitz Gift Card)</string>
     <string name="drawer_directory">Directory</string>
 
     <string name="app_name">Airbitz</string>
