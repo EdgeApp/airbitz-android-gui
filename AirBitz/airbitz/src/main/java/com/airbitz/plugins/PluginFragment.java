@@ -57,7 +57,7 @@ import com.airbitz.api.CoreAPI.SpendTarget;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
-import com.airbitz.fragments.send.SendFragment;
+import com.airbitz.fragments.ScanFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
@@ -327,9 +327,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         mSendConfirmation.setExitHandler(exitHandler);
 
                         Bundle bundle = new Bundle();
-                        bundle.putDouble(SendFragment.AMOUNT_FIAT, amountFiat);
-                        bundle.putString(SendFragment.FROM_WALLET_UUID, uuid);
-                        bundle.putBoolean(SendFragment.LOCKED, true);
+                        bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
+                        bundle.putString(ScanFragment.FROM_WALLET_UUID, uuid);
+                        bundle.putBoolean(ScanFragment.LOCKED, true);
                         mSendConfirmation.setArguments(bundle);
 
                         ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.BUYSELL.ordinal());
