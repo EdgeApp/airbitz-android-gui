@@ -83,6 +83,10 @@
     <string name="fragment_business_no_categories_retreived">No categories retrieved from server</string>
     <string name="fragment_business_near_you">Near You</string>
 
+    <string name="fragment_take_picture">Picture or File</string>
+    <string name="keep">Keep</string>
+    <string name="discard">Discard</string>
+
     <!-- Strings for DirectoryDetail -->
     <string name="fragment_directory_detail_getting_venue_data">Getting venue data…</string>
     <string name="fragment_directory_detail_timeout_retrieving_data">Timeout retrieving data…</string>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/fragment_layout_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        layout="@layout/fragment_camera_scan" />
+
+    <LinearLayout
+        android:id="@+id/fragment_buttons"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_frost"
+        style="@style/SegmentedGroup">
+
+        <Button
+            android:id="@+id/fragment_button_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_photos"
+            style="@style/SegmentedButton" />
+
+        <Button
+            android:id="@+id/fragment_button_flash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_send_flash"
+            style="@style/SegmentedButton" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/take_picture"
+        android:layout_above="@id/fragment_buttons"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/camera_button"
+        android:layout_marginBottom="10dp"
+     />
+
+    <RelativeLayout
+        android:id="@+id/result_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/result_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rotation="90"
+            android:scaleType="centerInside" />
+
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/keep_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/keep"
+                style="@style/GreenButton" />
+
+            <Button
+                android:id="@+id/discard_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/discard"
+                style="@style/RedButton" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_toolbar_dropdown" />
+
+</RelativeLayout>

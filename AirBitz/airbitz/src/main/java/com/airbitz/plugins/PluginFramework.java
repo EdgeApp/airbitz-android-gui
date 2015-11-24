@@ -42,6 +42,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -65,6 +66,8 @@ public class PluginFramework {
     public static String TAG = PluginFramework.class.getSimpleName();
     public static String JS_BACK = "javascript:window.Airbitz.ui.back();";
     public static String JS_CALLBACK = "javascript:Airbitz._callbacks[%s]('%s');";
+    public static String JS_BUFFER_CLEAR = "javascript:Airbitz.bufferClear();";
+    public static String JS_BUFFER_ADD = "javascript:Airbitz.bufferAdd('%s');";
     public static String JS_EXCHANGE_UPDATE = "javascript:Airbitz._bridge.exchangeRateUpdate();";
     public static String JS_WALLET_UPDATE = "javascript:Airbitz._bridge.walletChanged('%s');";
     public static String JS_DENOM_UPDATE = "javascript:Airbitz._bridge.denominationUpdate('%s');";
@@ -109,6 +112,22 @@ public class PluginFramework {
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
+
+            if (api.isTestNet()) {
+                plugin = new Plugin();
+                plugin.pluginId = "com.clevercoin";
+                plugin.sourceFile = "file:///android_asset/clevercoin.html";
+                plugin.name = "CleverCoin (EUR)";
+                plugin.provider = "clevercoin";
+                plugin.country = "EUR";
+                plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+                plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
+                plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
+                plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
+                plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
+                plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+                mPlugins.add(plugin);
+            }
         }
     }
 
@@ -123,7 +142,9 @@ public class PluginFramework {
 
     public interface UiHandler {
         public void showAlert(String title, String message, boolean showSpinner);
+        public void hideAlert();
         public void setTitle(String title);
+        public void launchCamera(final String cbid);
         public void launchSend(final String cbid, final String uuid, final String address,
                                final long amountSatoshi, final double amountFiat,
                                final String label, final String category, final String notes);
@@ -329,6 +350,11 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
+        public void requestFile(String cbid) {
+            handler.launchCamera(cbid);
+        }
+
+        @JavascriptInterface
         public void requestSpend(String cbid, String uuid, String address, long amountSatoshi,
                                  double amountFiat, String label, String category, String notes) {
             handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes);
@@ -400,6 +426,11 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
+        public void hideAlert() {
+            handler.hideAlert();
+        }
+
+        @JavascriptInterface
         public void title(String title) {
             handler.setTitle(title);
         }
@@ -440,6 +471,10 @@ public class PluginFramework {
     private CoreAPI mCoreAPI;
     private Wallet mWallet;
     private String mLastUrl;
+    private ValueCallback<Uri> mUploadCallback;
+    private ValueCallback<Uri []> mUploadCallbackArr;
+
+    static final int INTENT_UPLOAD_CODE = 10;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
@@ -450,6 +485,17 @@ public class PluginFramework {
     }
 
     public void cleanup() {
+    }
+
+    public void uploadCallback(Uri data) {
+        if (null != mUploadCallback) {
+            mUploadCallback.onReceiveValue((Uri) data);
+            mUploadCallback = null;
+        }
+        if (null != mUploadCallbackArr) {
+            mUploadCallbackArr.onReceiveValue(new Uri[] { data });
+            mUploadCallbackArr = null;
+        }
     }
 
     public void setWallet(Wallet wallet) {
@@ -471,6 +517,19 @@ public class PluginFramework {
         String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
         Log.d(TAG, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
+    }
+
+    public void sendImage(String cbid, String imageEncoded) {
+        loadUrl(String.format(JS_BUFFER_CLEAR));
+        final int SLICE_SIZE = 500;
+        for (int i = 0; i < imageEncoded.length() / SLICE_SIZE; ++i) {
+            int start = i * SLICE_SIZE;
+            int end = start + SLICE_SIZE > imageEncoded.length()
+                ? imageEncoded.length() : start + SLICE_SIZE;
+            loadUrl(String.format(JS_BUFFER_ADD, imageEncoded.substring(start, end)));
+        }
+        loadUrl(String.format(JS_CALLBACK, cbid,
+            jsonResult(new JsonValue("useBuffer")).toString()));
     }
 
     public void sendBack(String cbid) {
@@ -507,6 +566,45 @@ public class PluginFramework {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 Log.d(TAG, message + " -- From line " + lineNumber);
+            }
+
+            public void openFileChooser(ValueCallback<Uri> uploadCallback) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("image/*");
+                activity.startActivityForResult(Intent.createChooser(i,"File Chooser"), INTENT_UPLOAD_CODE);
+
+                mUploadCallback = uploadCallback;
+            }
+
+            // For Android 3.0+
+            public void openFileChooser(ValueCallback uploadCallback, String acceptType) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+                activity.startActivityForResult(Intent.createChooser(i, "File Browser"), INTENT_UPLOAD_CODE);
+
+                mUploadCallback = uploadCallback;
+            }
+
+            //For Android 4.1
+            public void openFileChooser(ValueCallback<Uri> uploadCallback, String acceptType, String capture) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("image/*");
+                activity.startActivityForResult(Intent.createChooser(i, "File Chooser"), INTENT_UPLOAD_CODE);
+
+                mUploadCallback = uploadCallback;
+            }
+
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("image/*");
+                activity.startActivityForResult(Intent.createChooser(i, "File Chooser"), INTENT_UPLOAD_CODE);
+
+                mUploadCallbackArr = uploadCallback;
+                return true;
             }
         });
         mWebView.setWebViewClient(new WebViewClient() {

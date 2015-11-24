@@ -178,17 +178,21 @@ public class PictureCamera implements Camera.PreviewCallback {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = mFragment.getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            Bitmap picture = (BitmapFactory.decodeFile(picturePath));
+            Bitmap picture = retrievePicture(data);
             receivedPicture(picture);
         }
+    }
+
+    public Bitmap retrievePicture(Intent data) {
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = mFragment.getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        return (BitmapFactory.decodeFile(picturePath));
     }
 
     private void setupCameraParams() {
