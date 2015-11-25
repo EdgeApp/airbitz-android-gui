@@ -17,7 +17,7 @@
         <RelativeLayout
             android:id="@+id/layout_send_confirmation"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:paddingTop="12.6dp">
 
@@ -211,7 +211,7 @@
             android:layout_below="@id/layout_send_confirmation"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="0dp"
-            android:layout_marginTop="12.6dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="invisible">
@@ -247,11 +247,11 @@
 
         <RelativeLayout
             android:id="@+id/layout_slide"
-            android:layout_width="match_parent"
+            android:layout_width="265dp"
             android:layout_height="44.1dp"
             android:layout_below="@+id/fragment_send_confirmation_layout_authorization"
             android:layout_centerHorizontal="true"
-            android:layout_margin="40dp"
+            android:layout_margin="15dp"
             android:background="@drawable/emboss_down"
             android:gravity="center_horizontal">
 

@@ -45,7 +45,8 @@
 
     <dimen name="btn_radius">2dp</dimen>
     <dimen name="size_fab">56dp</dimen>
-    <dimen name="wallet_row_height">44.1dp</dimen>
+    <dimen name="wallet_row_height">70dp</dimen>
+    <dimen name="wallet_row_icon_height">50dp</dimen>
     <dimen name="max_qr_code_size">300dp</dimen>
     <dimen name="max_qr_code_margin">5dp</dimen>
 

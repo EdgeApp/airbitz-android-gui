@@ -87,6 +87,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.bitbeacon.BeaconRequest;
 import com.airbitz.bitbeacon.BleUtil;
@@ -403,24 +404,26 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private void updateConversion() {
-        if (mAmountIsBitcoin) {
-            long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
-            String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
-            mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-            mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-            mOtherAmountTextView.setText(currency);
-        } else {
-            long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
-            mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-            mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-            mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+        if (null != mWallet){
+            if (mAmountIsBitcoin) {
+                long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+                String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
+                mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+                mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+                mOtherAmountTextView.setText(currency);
+            } else {
+                long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
+                mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+                mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
+                mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+            }
+            if (TextUtils.isEmpty(mAmountField.getText())) {
+                mOtherAmountTextView.setText("");
+            }
+            int currencyNum = mWallet.getCurrencyNum();
+            mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+            updateMode();
         }
-        if (TextUtils.isEmpty(mAmountField.getText())) {
-            mOtherAmountTextView.setText("");
-        }
-        int currencyNum = mWallet.getCurrencyNum();
-        mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
-        updateMode();
     }
 
     private void updateMode() {
@@ -479,8 +482,9 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            String name = mCoreAPI.coreSettings().getSzFullName();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null && settings.getBNameOnPayments()) {
+            String name = settings.getSzFullName();
             mBeaconRequest.setBroadcastName(name);
         } else {
             mBeaconRequest.setBroadcastName(
@@ -512,7 +516,9 @@ public class RequestFragment extends WalletBaseFragment implements
                 mSavedSatoshi = null;
             }
         }
-        hideCalculator();
+        if (!SettingFragment.getMerchantModePref()) {
+            hideCalculator();
+        }
 
         mBeaconRequest.stop();
     }
@@ -620,10 +626,13 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String name = getString(R.string.request_qr_unknown);
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFullName();
-            if(name==null) {
-                name = getString(R.string.request_qr_unknown);
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (settings.getBNameOnPayments()) {
+                name = settings.getSzFullName();
+                if (name == null) {
+                    name = getString(R.string.request_qr_unknown);
+                }
             }
         }
         String textToSend = fillTemplate(R.raw.sms_template, name);
@@ -659,11 +668,14 @@ public class RequestFragment extends WalletBaseFragment implements
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getEmail()});
         intent.putExtra(Intent.EXTRA_SUBJECT,
                 String.format(getString(R.string.request_qr_email_title),
-                              getString(R.string.app_name)));
+                        getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
-        if (mCoreAPI.coreSettings().getBNameOnPayments()) {
-            name = mCoreAPI.coreSettings().getSzFullName();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (settings.getBNameOnPayments()) {
+                name = settings.getSzFullName();
+            }
         }
 
         String html = fillTemplate(R.raw.email_template, name);
@@ -738,6 +750,9 @@ public class RequestFragment extends WalletBaseFragment implements
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
         Log.d(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
         Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+        if (null == tx)
+            return false;
+
         if (tx.getOutputs() == null || mAddress == null) {
             return false;
         }
