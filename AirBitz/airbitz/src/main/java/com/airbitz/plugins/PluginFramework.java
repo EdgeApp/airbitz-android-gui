@@ -90,10 +90,18 @@ public class PluginFramework {
             mPlugins = new LinkedList<Plugin>();
 
             Plugin plugin;
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.foldapp";
+            plugin.sourceFile = "file:///android_asset/foldapp.html";
+            plugin.name = "20% Off Starbucks";
+            plugin.provider = "foldapp";
+            mPlugins.add(plugin);
+
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Glidera US/Canada (beta)";
+            plugin.name = "Buy/Sell Bitcoin (US/Canada)";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
@@ -268,7 +276,11 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                    if (framework.mWallet == null) {
+                        return jsonError().toString();
+                    } else {
+                        return jsonResult(new PluginWallet(framework.mWallet)).toString();
+                    }
                 }
             };
             task.execute();

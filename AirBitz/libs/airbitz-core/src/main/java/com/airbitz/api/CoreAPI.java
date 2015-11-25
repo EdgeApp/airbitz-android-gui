@@ -2905,7 +2905,7 @@ public class CoreAPI {
         settings.setupDefaultCurrency();
     }
 
-    protected int defaultCurrencyNum() {
+    public int defaultCurrencyNum() {
         initCurrencies();
         Locale locale = Locale.getDefault();
         Currency currency = Currency.getInstance(locale);

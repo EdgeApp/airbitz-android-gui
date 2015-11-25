@@ -263,7 +263,8 @@ public class BaseFragment extends Fragment {
 
         @Override
         protected void onCancelled() {
-            mActivity.mAsyncTasks.pop();
+            if (!mActivity.mAsyncTasks.empty())
+                mActivity.mAsyncTasks.pop();
         }
     }
 

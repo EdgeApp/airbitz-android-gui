@@ -77,6 +77,7 @@ import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.adapters.WalletChoiceAdapter;
 import com.airbitz.adapters.WalletOtherAdapter;
 import com.airbitz.adapters.WalletPickerAdapter;
+import com.airbitz.api.AccountSettings;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.bitbeacon.BeaconSend;
 import com.airbitz.bitbeacon.BleDevice;
@@ -336,8 +337,9 @@ public class SendFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         if (mBeaconSend != null) {
-            if (mCoreApi.coreSettings().getBNameOnPayments()) {
-                String name = mCoreApi.coreSettings().getSzFullName();
+            AccountSettings settings = mCoreApi.coreSettings();
+            if (settings != null && settings.getBNameOnPayments()) {
+                String name = settings.getSzFullName();
                 mBeaconSend.setBroadcastName(name);
             } else {
                 mBeaconSend.setBroadcastName(

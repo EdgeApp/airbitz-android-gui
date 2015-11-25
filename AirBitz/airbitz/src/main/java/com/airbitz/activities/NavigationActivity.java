@@ -96,7 +96,6 @@ import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.fragments.NavigationBarFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
@@ -119,7 +118,6 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
-import com.airbitz.objects.Numberpad;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
@@ -147,8 +145,7 @@ import java.util.Map;
 import java.util.Stack;
 
 public class NavigationActivity extends ActionBarActivity
-        implements NavigationBarFragment.OnScreenSelectedListener,
-        View.OnTouchListener,
+        implements View.OnTouchListener,
         OnAddressRequestListener,
         TwoFactorScanFragment.OnTwoFactorQRScanResult,
         AccountsAdapter.OnButtonTouched {
@@ -195,7 +192,6 @@ public class NavigationActivity extends ActionBarActivity
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
     private boolean mConnectivityNotified = false;
-    private Numberpad mNumberpadView;
     private View mFragmentContainer;
     public LinearLayout mFragmentLayout;
     private LinearLayout mLandingLayout;
@@ -326,7 +322,6 @@ public class NavigationActivity extends ActionBarActivity
 
         mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
-        mNumberpadView = (Numberpad) findViewById(R.id.navigation_numberpad_layout);
 
         Common.addStatusBarPadding(this, mFragmentContainer);
 
@@ -1087,10 +1082,12 @@ public class NavigationActivity extends ActionBarActivity
             }
         } else {
             Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
-            if (tx.getAmountSatoshi() > 0) {
-                AudioPlayer.play(this, R.raw.bitcoin_received);
-                showIncomingBitcoinDialog();
-                updateWalletListener();
+            if (null != tx) {
+                if (tx.getAmountSatoshi() > 0) {
+                    AudioPlayer.play(this, R.raw.bitcoin_received);
+                    showIncomingBitcoinDialog();
+                    updateWalletListener();
+                }
             }
         }
     }
@@ -1288,8 +1285,11 @@ public class NavigationActivity extends ActionBarActivity
             switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
-        if(!mCoreAPI.coreSettings().getBDisablePINLogin() && passwordLogin) {
-            mCoreAPI.PinSetup();
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (!settings.getBDisablePINLogin() && passwordLogin) {
+                mCoreAPI.PinSetup();
+            }
         }
         DisplayLoginOverlay(false, true);
 
@@ -1471,9 +1471,12 @@ public class NavigationActivity extends ActionBarActivity
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
         Log.d(TAG, "delta logout time = " + milliDelta);
-        if (milliDelta > mCoreAPI.coreSettings().getMinutesAutoLogout() * 60 * 1000) {
-            Logout();
-            return true;
+        AccountSettings settings = mCoreAPI.coreSettings();
+        if (settings != null) {
+            if (milliDelta > settings.getMinutesAutoLogout() * 60 * 1000) {
+                Logout();
+                return true;
+            }
         }
         return false;
     }
@@ -1807,13 +1810,17 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void hideSoftKeyboard(View v) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (null != v) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
     public void showSoftKeyboard(View v) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+        if (null != v) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     private void checkFirstWalletSetup() {
@@ -1847,10 +1854,18 @@ public class NavigationActivity extends ActionBarActivity
             // Create the Wallet
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
-            return mCoreAPI.createWallet(
-                    AirbitzApplication.getUsername(),
-                    AirbitzApplication.getPassword(),
-                    walletName, mCoreAPI.coreSettings().getCurrencyNum());
+            AccountSettings settings = mCoreAPI.coreSettings();
+            if (settings != null) {
+                return mCoreAPI.createWallet(
+                        AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        walletName, settings.getCurrencyNum());
+            } else {
+                return mCoreAPI.createWallet(
+                        AirbitzApplication.getUsername(),
+                        AirbitzApplication.getPassword(),
+                        walletName, mCoreAPI.defaultCurrencyNum());
+            }
         }
 
         @Override
@@ -2311,6 +2326,9 @@ public class NavigationActivity extends ActionBarActivity
                     if (settings != null) {
                         mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
                         mDrawerExchangeUpdated = true;
+                    } else {
+                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
+                        mDrawerExchangeUpdated = true;
                     }
                 }
             }
@@ -2542,7 +2560,13 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mExchangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.coreSettings().getCurrencyNum()));
+            AccountSettings settings = mCoreAPI.coreSettings();
+            if (settings != null) {
+                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
+            } else {
+                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
+            }
+
         }
     };
 

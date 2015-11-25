@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 
@@ -59,7 +60,7 @@ public class Disclaimer {
     private static Dialog mDisclaimerDialog;
 
     public static void showDisclaimer(final Context context) {
-        if (mDisclaimerDialog != null) {
+        if (null != mDisclaimerDialog) {
             mDisclaimerDialog.show();
             return;
         }
@@ -82,6 +83,10 @@ public class Disclaimer {
                 mDisclaimerDialog = null;
             }
         });
+        // Force dialog to be full screen
+        mDisclaimerDialog.getWindow().setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT);
         mDisclaimerDialog.show();
     }
 
