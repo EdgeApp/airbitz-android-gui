@@ -35,7 +35,7 @@
             android:gravity="center"
             android:text="@string/fragment_landing_detail_text"
             android:textColor="@color/dark_text"
-            android:textSize="18dp" />
+            android:textSize="24dp" />
 
         <RelativeLayout
             android:id="@+id/fragment_landing_entries_layout"
