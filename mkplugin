@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -u
+set -e
+
+CURRENT_DIR=$( /bin/pwd )
+
+cd ../airbitz-plugins
+gulp glidera-android
+gulp foldapp-android
+cp build/android/glidera/index.html ${CURRENT_DIR}/AirBitz/airbitz/src/main/assets/glidera.html
+cp build/android/foldapp/index.html ${CURRENT_DIR}/AirBitz/airbitz/src/main/assets/foldapp.html
