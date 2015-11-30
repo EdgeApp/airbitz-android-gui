@@ -10635,26 +10635,26 @@ var app = angular.module('app.core', [
       {"id": "MT", "name": "Montana"},
       {"id": "NE", "name": "Nebraska"},
       {"id": "NV", "name": "Nevada"},
-      {"id": "NH", "name": "New"},
-      {"id": "NJ", "name": "New"},
-      {"id": "NM", "name": "New"},
-      {"id": "NY", "name": "New"},
-      {"id": "NC", "name": "North"},
-      {"id": "ND", "name": "North"},
+      {"id": "NH", "name": "New Hampshire"},
+      {"id": "NJ", "name": "New Jersey"},
+      {"id": "NM", "name": "New Mexico"},
+      {"id": "NY", "name": "New York"},
+      {"id": "NC", "name": "North Carolina"},
+      {"id": "ND", "name": "North Dakota"},
       {"id": "OH", "name": "Ohio"},
       {"id": "OK", "name": "Oklahoma"},
       {"id": "OR", "name": "Oregon"},
       {"id": "PA", "name": "Pennsylvania"},
       {"id": "RI", "name": "Rhode"},
-      {"id": "SC", "name": "South"},
-      {"id": "SD", "name": "South"},
+      {"id": "SC", "name": "South Carolina"},
+      {"id": "SD", "name": "South Dakota"},
       {"id": "TN", "name": "Tennessee"},
       {"id": "TX", "name": "Texas"},
       {"id": "UT", "name": "Utah"},
       {"id": "VT", "name": "Vermont"},
       {"id": "VA", "name": "Virginia"},
       {"id": "WA", "name": "Washington"},
-      {"id": "WV", "name": "West"},
+      {"id": "WV", "name": "West Virginia"},
       {"id": "WI", "name": "Wisconsin"},
       {"id": "WY", "name": "Wyoming"}
     ];
@@ -11277,7 +11277,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <table class="table-mini">\n' +
     '          <tr>\n' +
     '            <td class="datetime text-left">\n' +
-    '              <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate | | date:\'yyyy-MM-dd\' }}</span>\n' +
+    '              <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate | date:\'yyyy-MM-dd\' }}</span>\n' +
     '              <span ng-if="!t.estimatedDeliveryDate && t.transactionDate" class="date">{{ (t.transactionDate | date:\'yyyy-MM-dd\') }} <span class="seperator">|<span> <span class="time">{{ t.transactionDate | date:\'h:mm a\' }}</span></span>\n' +
     '            </td>\n' +
     '          </tr>\n' +
