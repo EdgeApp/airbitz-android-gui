@@ -300,7 +300,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
         public void launchSend(final String cbid, final String uuid, final String address,
                                final long amountSatoshi, final double amountFiat,
-                               final String label, final String category, final String notes) {
+                               final String label, final String category, final String notes,
+                               final long bizId) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
                 public void success(String txId) {
                     mFramework.sendSuccess(cbid, uuid, txId);
@@ -321,7 +322,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 public void run() {
                     CoreAPI api = CoreAPI.getApi();
                     SpendTarget target = api.getNewSpendTarget();
-                    if(target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
+                    if (target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
+                        target.setBizId(bizId);
                         mSendConfirmation = new SendConfirmationFragment();
                         mSendConfirmation.setSpendTarget(target);
                         mSendConfirmation.setExitHandler(exitHandler);
