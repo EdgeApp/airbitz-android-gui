@@ -121,6 +121,10 @@ public class PluginFramework {
         return mInstance.mPlugins;
     }
 
+    protected void debuglevel(String level, String text) {
+        Log.d(TAG, text);
+    }
+
     public interface UiHandler {
         public void showAlert(String title, String message, boolean showSpinner);
         public void setTitle(String title);
@@ -402,6 +406,11 @@ public class PluginFramework {
         @JavascriptInterface
         public void title(String title) {
             handler.setTitle(title);
+        }
+
+        @JavascriptInterface
+        public void debugLevel(String level, String text) {
+            Log.d(TAG, text);
         }
 
         @JavascriptInterface
