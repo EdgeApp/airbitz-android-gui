@@ -1826,6 +1826,10 @@ public class CoreAPI {
     }
 
     public String createReceiveRequestFor(Wallet wallet, String name, String notes, String category, double value, long satoshi) {
+        return createReceiveRequestFor(wallet, name, notes, category, value, satoshi, 0);
+    }
+
+    public String createReceiveRequestFor(Wallet wallet, String name, String notes, String category, double value, long satoshi, long bizId) {
         //first need to create a transaction details struct
 
         //creates a receive request.  Returns a requestID.  Caller must free this ID when done with it
@@ -1843,6 +1847,9 @@ public class CoreAPI {
         details.setSzNotes(notes);
         details.setSzCategory(category);
         details.setAttributes(0x0); //for our own use (not used by the core)
+        if (0 < bizId) {
+            details.setBizId(bizId);
+        }
 
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_char pRequestID = core.longp_to_ppChar(lp);
@@ -3254,6 +3261,7 @@ public class CoreAPI {
         SWIGTYPE_p_p_sABC_SpendTarget _pSpendSWIG;
         tABC_SpendTarget _pSpend;
         tABC_Error pError;
+        long bizId;
 
         public SpendTarget() {
             _lpSpend = core.new_longp();
@@ -3314,6 +3322,10 @@ public class CoreAPI {
             return pError.getCode() == tABC_CC.ABC_CC_Ok;
         }
 
+        public void setBizId(long bizId) {
+            this.bizId = bizId;
+        }
+
         public String approve(String walletUUID, double fiatAmount) {
             String id = null;
             SWIGTYPE_p_long txid = core.new_longp();
@@ -3345,6 +3357,9 @@ public class CoreAPI {
                 }
                 if (fiatAmount > 0) {
                     tx.setAmountFiat(fiatAmount);
+                }
+                if (0 < bizId) {
+                    tx.setmBizId(bizId);
                 }
                 try {
                     storeTransaction(tx);

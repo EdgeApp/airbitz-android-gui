@@ -1038,7 +1038,59 @@ html body .user-account-form {
   position: relative;
   bottom: auto;
 }
-
+button.btn-add.btn {
+  width: 100px;
+  height: 100px;
+  font-weight: bold;
+  font-size: 30px;
+  border-radius: 50px;
+  margin: 20px;
+  background-color: #2291CF;
+}
+.fold-loading-spin {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+.main {
+  display: none;
+}
+.card-barcode {
+  padding: 20px 10px 0 10px;
+  margin-bottom: 0;
+}
+.barcode {
+  width: 200px;
+  height: 65px;
+}
+#user-cards .item {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.add-funds-header {
+  padding-top: 13px;
+}
+.add-buttons {
+  text-align: left;
+}
+.card-value {
+  padding-top: 5px;
+}
+.collection .collection-item.avatar.card-list {
+  padding: 10px 20px;
+}
+.card-content.card-info-main {
+  margin-top: 0;
+  padding-top: 0;
+}
+.fold-help {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 
 </style>
 </head>
@@ -1120,7 +1172,7 @@ _bridge = function() {
       };
       _native.createReceiveRequest(cbid, wallet.id,
           options.label || '', options.category || '', options.notes || '',
-          options.amountSatoshi || 0, options.amountFiat || 0.0);
+          options.amountSatoshi || 0, options.amountFiat || 0.0, options.bizId || 0);
     },
 
     finalizeRequest: function(wallet, requestId) {
@@ -1134,7 +1186,7 @@ _bridge = function() {
         delete Airbitz._callbacks[cbid];
       };
       _native.requestSpend(cbid, wallet.id, toAddress, amountSatoshi, amountFiat,
-        options.label || '', options.category || '', options.notes || '');
+        options.label || '', options.category || '', options.notes || '', options.bizId || 0);
     },
 
     writeData: function(key, data) {
@@ -1240,6 +1292,7 @@ _bridge = function() {
     return Airbitz._bridge.bitidSignature(uri, message);
   };
 
+  // Options has callback functions success and error.
   Airbitz.core.selectedWallet = function(options) {
     Airbitz._bridge.selectedWallet(options);
   };
@@ -1256,6 +1309,7 @@ _bridge = function() {
     Airbitz._bridge.finalizeRequest(wallet, requestId);
   },
 
+  // Takes a spend request and sends user to send confirmation screen to spend.
   Airbitz.core.requestSpend = function(wallet, toAddress, amountSatoshi, amountFiat, options) {
     Airbitz._bridge.requestSpend(wallet, toAddress, amountSatoshi, amountFiat, options);
   };
@@ -1264,13 +1318,15 @@ _bridge = function() {
     Airbitz._bridge.writeData(key, JSON.stringify(data));
   };
 
+  // Clears all data stored by the plugin.
   Airbitz.core.clearData = function() {
     Airbitz._bridge.clearData();
   };
 
+  // Retrives data for a JSON key stored for the plugin.
   Airbitz.core.readData = function(key) {
     var data = Airbitz._bridge.readData(key);
-    return (data && data !== 'undefined') ? JSON.parse(data) : data;
+    return (data && data !== 'undefined') ? JSON.parse(data) : null;
   };
 
   Airbitz.core.getBtcDenomination = function() {
@@ -1297,10 +1353,14 @@ _bridge = function() {
     return Airbitz._bridge.getConfig(key);
   };
 
+  /* Callback is called when wallet is changed AND every time plugin is created.
+  ** Callback is provided wallet as parameter.
+  */
   Airbitz.core.setWalletChangeListener = function(callback) {
     Airbitz._walletListener = callback;
   };
 
+  //
   Airbitz._bridge.walletChanged = function(newWallet) {
     if (Airbitz._walletListener) {
       var j = JSON.parse(newWallet);
@@ -10448,6 +10508,7 @@ var app = angular.module('app.core', [
           notes: notes,
           amountSatoshi: amountSatoshi,
           amountFiat: amountFiat,
+          bizId: ExchangeFactory.bizId,
           success: resolve,
           error: reject
         })
@@ -10518,6 +10579,7 @@ var app = angular.module('app.core', [
         Airbitz.core.requestSpend(wallet, data.sellAddress, btcToSatoshi(qty), amountFiat, {
           label: 'Glidera',
           category: 'Exchange:Sell Bitcoin',
+          bizId: ExchangeFactory.bizId,
           notes: notes,
           success: function(res) {
             if (res && res.back) {
@@ -10592,6 +10654,7 @@ var app = angular.module('app.core', [
     factory.depositId = 'Glidera Inc';
     factory.orderTimeout = '60';
     factory.depositTimeout = '3600';
+    factory.bizId = 11063;
     factory.updateCurrency = function(countryCode) {
       if (!countryCode) {
         return;
@@ -10635,26 +10698,26 @@ var app = angular.module('app.core', [
       {"id": "MT", "name": "Montana"},
       {"id": "NE", "name": "Nebraska"},
       {"id": "NV", "name": "Nevada"},
-      {"id": "NH", "name": "New"},
-      {"id": "NJ", "name": "New"},
-      {"id": "NM", "name": "New"},
-      {"id": "NY", "name": "New"},
-      {"id": "NC", "name": "North"},
-      {"id": "ND", "name": "North"},
+      {"id": "NH", "name": "New Hampshire"},
+      {"id": "NJ", "name": "New Jersey"},
+      {"id": "NM", "name": "New Mexico"},
+      {"id": "NY", "name": "New York"},
+      {"id": "NC", "name": "North Carolina"},
+      {"id": "ND", "name": "North Dakota"},
       {"id": "OH", "name": "Ohio"},
       {"id": "OK", "name": "Oklahoma"},
       {"id": "OR", "name": "Oregon"},
       {"id": "PA", "name": "Pennsylvania"},
       {"id": "RI", "name": "Rhode"},
-      {"id": "SC", "name": "South"},
-      {"id": "SD", "name": "South"},
+      {"id": "SC", "name": "South Carolina"},
+      {"id": "SD", "name": "South Dakota"},
       {"id": "TN", "name": "Tennessee"},
       {"id": "TX", "name": "Texas"},
       {"id": "UT", "name": "Utah"},
       {"id": "VT", "name": "Vermont"},
       {"id": "VA", "name": "Virginia"},
       {"id": "WA", "name": "Washington"},
-      {"id": "WV", "name": "West"},
+      {"id": "WV", "name": "West Virginia"},
       {"id": "WI", "name": "Wisconsin"},
       {"id": "WY", "name": "Wyoming"}
     ];
@@ -11277,7 +11340,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <table class="table-mini">\n' +
     '          <tr>\n' +
     '            <td class="datetime text-left">\n' +
-    '              <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate | | date:\'yyyy-MM-dd\' }}</span>\n' +
+    '              <span ng-if="t.estimatedDeliveryDate" class="date"><span class="est-label">Est. Delivery</span> {{ t.estimatedDeliveryDate | date:\'yyyy-MM-dd\' }}</span>\n' +
     '              <span ng-if="!t.estimatedDeliveryDate && t.transactionDate" class="date">{{ (t.transactionDate | date:\'yyyy-MM-dd\') }} <span class="seperator">|<span> <span class="time">{{ t.transactionDate | date:\'h:mm a\' }}</span></span>\n' +
     '            </td>\n' +
     '          </tr>\n' +
@@ -12073,12 +12136,12 @@ module.run(['$templateCache', function($templateCache) {
     '  </div>\n' +
     '  <div class="col-xs-6 no-pad">\n' +
     '    <button type="submit"\n' +
-    '            ng-show="userStatus.userPhoneIsSetup"\n' +
+    '            ng-if="userStatus.userPhoneIsSetup"\n' +
     '            ng-click="deletePhone()"\n' +
     '            ng-disabled="form.$invalid"\n' +
     '            class="buy-sell-next btn btn-lg btn-block btn-danger">Delete</button>\n' +
     '    <button type="submit"\n' +
-    '            ng-show="!userStatus.userPhoneIsSetup"\n' +
+    '            ng-if="!userStatus.userPhoneIsSetup"\n' +
     '            ng-click="submitPhone()"\n' +
     '            ng-disabled="form.$invalid"\n' +
     '            class="buy-sell-next btn btn-lg btn-block btn-success">Verify</button>\n' +
