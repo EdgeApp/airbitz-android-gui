@@ -99,6 +99,17 @@ public class PluginFramework {
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = "20% Off Starbucks";
             plugin.provider = "foldapp";
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("BRAND", "Target");
+            mPlugins.add(plugin);
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.foldapp";
+            plugin.sourceFile = "file:///android_asset/foldapp.html";
+            plugin.name = "10-15% Off Target";
+            plugin.provider = "foldapp";
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("BRAND", "Target");
             mPlugins.add(plugin);
 
             plugin = new Plugin();
