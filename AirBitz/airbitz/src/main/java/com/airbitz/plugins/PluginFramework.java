@@ -100,7 +100,7 @@ public class PluginFramework {
             plugin.name = "20% Off Starbucks";
             plugin.provider = "foldapp";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
-            plugin.env.put("BRAND", "Target");
+            plugin.env.put("BRAND", "Starbucks");
             mPlugins.add(plugin);
 
             plugin = new Plugin();
