@@ -100,6 +100,7 @@ public class PluginFramework {
             plugin.name = "20% Off Starbucks";
             plugin.provider = "foldapp";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
             mPlugins.add(plugin);
 
@@ -109,6 +110,7 @@ public class PluginFramework {
             plugin.name = "10-15% Off Target";
             plugin.provider = "foldapp";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
             mPlugins.add(plugin);
 
