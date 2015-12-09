@@ -182,7 +182,7 @@ public class CameraFragment extends WalletBaseFragment {
     private void sendSuccess(Bitmap bitmap) {
         if (null != exitHandler && null != bitmap) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
             String imageEncoded = Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
             exitHandler.success(imageEncoded);
         }
@@ -204,8 +204,15 @@ public class CameraFragment extends WalletBaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PictureCamera.RESULT_LOAD_IMAGE
                 && resultCode == Activity.RESULT_OK && null != data) {
-            Bitmap bitmap = mCamera.retrievePicture(data);
-            sendSuccess(bitmap);
+            final Bitmap bitmap = mCamera.retrievePicture(data);
+            mHandler.post(new Runnable() {
+                public void run() {
+                    mBitmap = bitmap;
+                    sendSuccess(bitmap);
+                    mActivity.popFragment();
+                    mBitmap = null;
+                }
+            });
         }
     }
 
