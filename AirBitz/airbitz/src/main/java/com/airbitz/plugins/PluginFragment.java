@@ -65,6 +65,7 @@ import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 
 import java.util.Stack;
+import java.net.URISyntaxException;
 
 public class PluginFragment extends WalletBaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
@@ -441,6 +442,18 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         public void stackPop() {
             Log.d("PluginFragment", "pop");
             mNav.pop();
+        }
+
+        @Override
+        public void launchExternal(String uri) {
+            try {
+                Intent intent = Intent.parseUri(uri, Intent.URI_INTENT_SCHEME);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setComponent(null);
+                mActivity.startActivity(intent);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "", e);
+            }
         }
     };
 

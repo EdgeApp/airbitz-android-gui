@@ -174,6 +174,7 @@ public class PluginFramework {
         public void stackClear();
         public void stackPush(String path);
         public void stackPop();
+        public void launchExternal(String uri);
     }
 
     private static abstract class CallbackTask extends AsyncTask<Void, Void, String> {
@@ -488,6 +489,12 @@ public class PluginFramework {
         @JavascriptInterface
         public void navStackPop() {
             handler.stackPop();
+        }
+
+        @JavascriptInterface
+        public void launchExternal(String uri) {
+            Log.d(TAG, "launchExternal");
+            handler.launchExternal(uri);
         }
     }
 
