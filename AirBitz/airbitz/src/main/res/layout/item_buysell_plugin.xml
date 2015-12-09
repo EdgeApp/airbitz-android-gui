@@ -5,11 +5,20 @@
     android:layout_height="wrap_content"
     android:background="@color/listitem_normal">
 
+    <ImageView
+        android:id="@+id/image"
+        android:scaleType="centerInside"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp" />
+
     <TextView
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:layout_toRightOf="@id/image"
         android:gravity="center_vertical"
         android:ellipsize="end"
         android:singleLine="true"

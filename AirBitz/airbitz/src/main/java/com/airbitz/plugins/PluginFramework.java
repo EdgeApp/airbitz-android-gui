@@ -78,6 +78,7 @@ public class PluginFramework {
         String name;
         String provider;
         String country;
+        int imageResId;
         Map<String, String> env;
 
         Plugin() {
@@ -99,6 +100,7 @@ public class PluginFramework {
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = "20% Off Starbucks";
             plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_coffee;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
@@ -109,6 +111,7 @@ public class PluginFramework {
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = "10-15% Off Target";
             plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_target;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
@@ -120,6 +123,7 @@ public class PluginFramework {
             plugin.name = "Buy/Sell Bitcoin (US/Canada)";
             plugin.provider = "glidera";
             plugin.country = "US";
+            plugin.imageResId = R.drawable.ic_plugin_usd;
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
@@ -133,6 +137,7 @@ public class PluginFramework {
                 plugin.name = "CleverCoin (EUR)";
                 plugin.provider = "clevercoin";
                 plugin.country = "EUR";
+                plugin.imageResId = R.drawable.ic_plugin_euro;
                 plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
                 plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
                 plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
