@@ -97,7 +97,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "20% Off Starbucks";
+            plugin.name = "Up to 20% Off Starbucks";
             plugin.provider = "foldapp";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("BRAND", "Target");
@@ -106,7 +106,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "10-15% Off Target";
+            plugin.name = "Up to 10% Off Target";
             plugin.provider = "foldapp";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("BRAND", "Target");
@@ -115,7 +115,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Buy/Sell Bitcoin (US/Canada)";
+            plugin.name = "Buy/Sell Bitcoin in US/Canada";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
@@ -128,7 +128,7 @@ public class PluginFramework {
                 plugin = new Plugin();
                 plugin.pluginId = "com.clevercoin";
                 plugin.sourceFile = "file:///android_asset/clevercoin.html";
-                plugin.name = "CleverCoin (EUR)";
+                plugin.name = "Buy/Sell Bitcoin in Europe (beta)";
                 plugin.provider = "clevercoin";
                 plugin.country = "EUR";
                 plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
