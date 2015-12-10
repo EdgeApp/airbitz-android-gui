@@ -130,22 +130,20 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
 
-            if (api.isTestNet()) {
-                plugin = new Plugin();
-                plugin.pluginId = "com.clevercoin";
-                plugin.sourceFile = "file:///android_asset/clevercoin.html";
-                plugin.name = "CleverCoin (EUR)";
-                plugin.provider = "clevercoin";
-                plugin.country = "EUR";
-                plugin.imageResId = R.drawable.ic_plugin_euro;
-                plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
-                plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
-                plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
-                plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
-                plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
-                plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
-                mPlugins.add(plugin);
-            }
+            plugin = new Plugin();
+            plugin.pluginId = "com.clevercoin";
+            plugin.sourceFile = "file:///android_asset/clevercoin.html";
+            plugin.name = "CleverCoin (EUR)";
+            plugin.provider = "clevercoin";
+            plugin.country = "EUR";
+            plugin.imageResId = R.drawable.ic_plugin_euro;
+            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+            plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
+            plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
+            plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
+            plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            mPlugins.add(plugin);
         }
     }
 
