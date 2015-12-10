@@ -512,6 +512,7 @@ public class PluginFramework {
     private ValueCallback<Uri []> mUploadCallbackArr;
 
     static final int INTENT_UPLOAD_CODE = 10;
+    static final int CAPTURE_IMAGE_CODE = 20;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;

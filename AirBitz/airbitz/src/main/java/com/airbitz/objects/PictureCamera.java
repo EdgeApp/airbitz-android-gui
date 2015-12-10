@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -184,9 +185,16 @@ public class PictureCamera implements Camera.PreviewCallback {
     }
 
     public Bitmap retrievePicture(Intent data) {
-        Uri selectedImage = data.getData();
+        return retrievePicture(data, mFragment.getActivity());
+    }
+
+    public static Bitmap retrievePicture(Intent data, Context context) {
+        return retrievePicture(data.getData(), context);
+    }
+
+    public static Bitmap retrievePicture(Uri image, Context context) {
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = mFragment.getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        Cursor cursor = context.getContentResolver().query(image, filePathColumn, null, null, null);
         cursor.moveToFirst();
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String picturePath = cursor.getString(columnIndex);
