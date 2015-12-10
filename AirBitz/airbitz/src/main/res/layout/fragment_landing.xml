@@ -132,7 +132,7 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:textColor="@color/dark_text"
+                    android:textColor="@color/color_pin_entry_text"
                     android:textSize="20dp"
                     android:clickable="true"
                     android:visibility="visible"/>
@@ -272,7 +272,7 @@
                 android:layout_height="wrap_content"
                 android:padding="6.3dp"
                 android:text="@string/fragment_landing_swipe_text"
-                android:textColor="@android:color/white"
+                android:textColor="@color/color_swipe_directory_text"
                 style="@style/BlackDropShadow"
                 android:textSize="14dp" />
 
@@ -303,7 +303,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="@string/fragment_landing_forgot_password"
                 android:layout_gravity="center_vertical"
-                android:textColor="@android:color/white"
+                android:textColor="@color/color_forgot_password_text"
                 android:textSize="15dp"
                 android:textStyle="bold"/>
 

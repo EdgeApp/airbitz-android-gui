@@ -1291,6 +1291,11 @@ public class NavigationActivity extends ActionBarActivity
                 mCoreAPI.PinSetup();
             }
         }
+
+        List<String> cats = mCoreAPI.loadCategories();
+        if (cats.size() == 0)
+            createDefaultCategories();
+
         DisplayLoginOverlay(false, true);
 
         boolean checkPassword = false;

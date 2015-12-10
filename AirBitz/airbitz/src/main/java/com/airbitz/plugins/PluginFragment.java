@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
+import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,9 +56,10 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI.SpendTarget;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.fragments.CameraFragment;
+import com.airbitz.fragments.ScanFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
-import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
@@ -82,6 +84,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private LinearLayout.LayoutParams frameLayoutParams;
 
     private SendConfirmationFragment mSendConfirmation;
+    private CameraFragment mCameraFragment;
     private String mSubtitle;
 
     public PluginFragment(Plugin plugin) {
@@ -199,6 +202,14 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mFramework.updateDenomation();
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (PluginFramework.INTENT_UPLOAD_CODE == requestCode) {
+            Uri result = intent == null || resultCode != Activity.RESULT_OK
+                ? null  : intent.getData();
+            mFramework.uploadCallback(result);
+        }
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -290,6 +301,18 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
 
+        public void hideAlert() {
+            if (getActivity() == null) {
+                return;
+            }
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    final NavigationActivity act = (NavigationActivity) getActivity();
+                    act.DismissFadingDialog();
+                }
+            });
+        }
+
         public void setTitle(final String title) {
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
@@ -298,9 +321,35 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
 
+        public void launchCamera(final String cbid) {
+            final CameraFragment.OnExitHandler exitHandler = new CameraFragment.OnExitHandler() {
+                public void success(String encodedImage) {
+                    mFramework.sendImage(cbid, encodedImage);
+                    mCameraFragment = null;
+                }
+                public void back() {
+                    mFramework.sendBack(cbid);
+                    mCameraFragment = null;
+                }
+                public void error() {
+                    mFramework.sendBack(cbid);
+                    mCameraFragment = null;
+                }
+            };
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    mCameraFragment = new CameraFragment();
+                    mCameraFragment.setExitHandler(exitHandler);
+                    ((NavigationActivity) getActivity()).pushFragment(mCameraFragment,
+                        NavigationActivity.Tabs.BUYSELL.ordinal());
+                }
+            });
+        }
+
         public void launchSend(final String cbid, final String uuid, final String address,
                                final long amountSatoshi, final double amountFiat,
-                               final String label, final String category, final String notes) {
+                               final String label, final String category, final String notes,
+                               final long bizId) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
                 public void success(String txId) {
                     mFramework.sendSuccess(cbid, uuid, txId);
@@ -321,15 +370,16 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 public void run() {
                     CoreAPI api = CoreAPI.getApi();
                     SpendTarget target = api.getNewSpendTarget();
-                    if(target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
+                    if (target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
+                        target.setBizId(bizId);
                         mSendConfirmation = new SendConfirmationFragment();
                         mSendConfirmation.setSpendTarget(target);
                         mSendConfirmation.setExitHandler(exitHandler);
 
                         Bundle bundle = new Bundle();
-                        bundle.putDouble(SendFragment.AMOUNT_FIAT, amountFiat);
-                        bundle.putString(SendFragment.FROM_WALLET_UUID, uuid);
-                        bundle.putBoolean(SendFragment.LOCKED, true);
+                        bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
+                        bundle.putString(ScanFragment.FROM_WALLET_UUID, uuid);
+                        bundle.putBoolean(ScanFragment.LOCKED, true);
                         mSendConfirmation.setArguments(bundle);
 
                         ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.BUYSELL.ordinal());
