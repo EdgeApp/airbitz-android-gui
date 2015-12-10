@@ -10,13 +10,16 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+
         <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimaryInverse">@android:color/black</item>
         <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:textColorSecondaryInverse">@android:color/black</item>
+
         <item name="actionMenuTextColor">@android:color/white</item>
         <item name="actionModeBackground">@color/colorPrimary</item>
         <item name="android:actionMenuTextColor">@android:color/white</item>
-        <!-- item name="colorControlNormal">#a5a5a5</item -->
 
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
@@ -44,6 +47,12 @@
         <item name="md_positive_color">@color/colorPrimary</item>
         <item name="md_neutral_color">@color/colorPrimary</item>
         <item name="md_negative_color">@color/colorPrimary</item>
+
+        <!-- Override alert style in order to correct marshmallow textColor -->
+        <item name="alertDialogTheme">@style/Theme.AppCompat.Light.Dialog</item>
+        <item name="android:alertDialogTheme">@style/Theme.AppCompat.Light.Dialog</item>
+        <item name="android:timePickerDialogTheme">@style/Theme.AppCompat.Light.Dialog</item>
+        <item name="android:datePickerDialogTheme">@style/Theme.AppCompat.Light.Dialog</item>
     </style>
 
     <style name="ToolBarCommon">
