@@ -272,7 +272,7 @@ public abstract class ScanFragment
     // delegated from the containing fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == QRCamera.RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            mQRCamera.retrievePicture(data);
+            mQRCamera.onActivityResult(requestCode, resultCode, data);
         }
     }
 

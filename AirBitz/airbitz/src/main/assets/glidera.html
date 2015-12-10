@@ -1056,19 +1056,42 @@ button.btn-add.btn {
 }
 .main {
   display: none;
+  margin: 10px;
+}
+.main-container {
+  width: 90%;
+}
+.brand-logo {
+  width: 64px;
+  height: 64px;
 }
 .card-barcode {
-  padding: 20px 10px 0 10px;
+  padding: 20px 20px 0 20px;
   margin-bottom: 0;
 }
 .barcode {
   width: 200px;
-  height: 65px;
+}
+.barcode-inactive {
+  opacity: .15;
 }
 #user-cards .item {
     display: block;
     width: 100%;
     height: auto;
+    max-width: 400px;
+}
+#user-cards .owl-item div{
+}
+.gift-card {
+  border-radius: 10px!important;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+.card-close {
+  position: absolute;
+  right: 25px;
+  top: 15px;
 }
 .add-funds-header {
   padding-top: 13px;
@@ -1082,8 +1105,7 @@ button.btn-add.btn {
 .collection .collection-item.avatar.card-list {
   padding: 10px 20px;
 }
-.card-content.card-info-main {
-  margin-top: 0;
+div.card.card-content.card-info-main {
   padding-top: 0;
 }
 .fold-help {
@@ -1107,14 +1129,26 @@ button.btn-add.btn {
   <script type="text/javascript">
 
 _handleResponse = function(s, options) {
-  console.log(s);
+  console.log(s.substring(0, 200));
   var j = JSON.parse(s);
   options || (options = {});
   if (j.success) {
     if (!j.result) {
       options.success();
     } else {
-      var v = (j.result.value) ? j.result.value : j.result;
+      var v = '';
+      if (j.result.value) {
+        console.log('got here 1');
+        if (j.result.value == 'useBuffer') {
+          v = Airbitz.buffer;
+          console.log('got here 2');
+          Airbitz.bufferClear();
+        } else {
+          v = j.result.value;
+        }
+      } else {
+        v = j.result
+      }
       if (options.success) {
         options.success(v);
       } else {
@@ -1172,7 +1206,7 @@ _bridge = function() {
       };
       _native.createReceiveRequest(cbid, wallet.id,
           options.label || '', options.category || '', options.notes || '',
-          options.amountSatoshi || 0, options.amountFiat || 0.0, options.bizId || 0);
+          options.amountSatoshi || 0, options.amountFiat || 0.0, options.bizId);
     },
 
     finalizeRequest: function(wallet, requestId) {
@@ -1186,7 +1220,16 @@ _bridge = function() {
         delete Airbitz._callbacks[cbid];
       };
       _native.requestSpend(cbid, wallet.id, toAddress, amountSatoshi, amountFiat,
-        options.label || '', options.category || '', options.notes || '', options.bizId || 0);
+        options.label || '', options.category || '', options.notes || '', options.bizId);
+    },
+
+    requestFile: function(options) {
+      var cbid = newId(), opts = options;
+      Airbitz._callbacks[cbid] = function(data) {
+        _handleResponse(data, opts);
+        delete Airbitz._callbacks[cbid];
+      };
+      _native.requestFile(cbid);
     },
 
     writeData: function(key, data) {
@@ -1234,17 +1277,23 @@ _bridge = function() {
       _native.showAlert(title, message, showSpinner);
     },
 
+    hideAlert: function(title, message, options) {
+      _native.hideAlert();
+    },
+
     title: function(s) {
       _native.title(s);
     },
 
+    debugLevel: function(level, text) {
+      _native.debugLevel(level, text);
+    },
+
     showNavBar: function() {
-      console.log('showNavBar');
       _native.showNavBar();
     },
 
     hideNavBar: function() {
-      console.log('hideNavBar');
       _native.hideNavBar();
     },
 
@@ -1266,6 +1315,10 @@ _bridge = function() {
 
     navStackPop: function() {
       _native.navStackPop();
+    },
+
+    launchExternal: function(uri) {
+      _native.launchExternal(uri);
     }
   }
 };
@@ -1283,6 +1336,15 @@ _bridge = function() {
   Airbitz._walletListener = null;
   Airbitz._denomListener = null;
   Airbitz._bridge = _bridge();
+
+  Airbitz.buffer = '';
+  Airbitz.bufferClear = function() {
+    Airbitz.buffer = '';
+  };
+  Airbitz.bufferAdd = function(s) {
+    Airbitz.buffer += s;
+  };
+
 
   Airbitz.core.bitidAddress = function(uri, message) {
     return Airbitz._bridge.bitidAddress(uri, message);
@@ -1312,6 +1374,10 @@ _bridge = function() {
   // Takes a spend request and sends user to send confirmation screen to spend.
   Airbitz.core.requestSpend = function(wallet, toAddress, amountSatoshi, amountFiat, options) {
     Airbitz._bridge.requestSpend(wallet, toAddress, amountSatoshi, amountFiat, options);
+  };
+
+  Airbitz.core.requestFile = function(options) {
+    Airbitz._bridge.requestFile(options);
   };
 
   Airbitz.core.writeData = function(key, data) {
@@ -1412,8 +1478,16 @@ _bridge = function() {
     Airbitz._bridge.showAlert(title, message, options || {});
   };
 
+  Airbitz.ui.hideAlert = function(title, message, options) {
+    Airbitz._bridge.hideAlert();
+  };
+
   Airbitz.ui.title = function(s) {
     Airbitz._bridge.title(s);
+  };
+
+  Airbitz.ui.debugLevel = function(level, text) {
+    Airbitz._bridge.debugLevel(level, text);
   };
 
   Airbitz.ui.showNavBar = function() {
@@ -1442,6 +1516,10 @@ _bridge = function() {
 
   Airbitz.ui.navStackPop = function() {
     Airbitz._bridge.navStackPop();
+  };
+
+  Airbitz.ui.launchExternal = function(uri) {
+    Airbitz._bridge.launchExternal(uri);
   };
 
 })(this);
@@ -10638,9 +10716,9 @@ var app = angular.module('app.core', [
           'event_text': JSON.stringify(s),
         }
       }).then(function successCallback(response) {
-        console.log(respone);
+        console.log(response);
       }, function errorCallback(response) {
-        console.log(respone);
+        console.log(response);
       });
     };
     return factory;
@@ -12151,7 +12229,8 @@ module.run(['$templateCache', function($templateCache) {
     '<div class="return-to-dashboard row">\n' +
     '  <div class="col-xs-12 no-pad">\n' +
     '    <button type="button" ui-sref="dashboard" class="btn btn-block btn-lg btn-info">Dashboard</button>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
