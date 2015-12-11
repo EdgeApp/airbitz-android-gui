@@ -78,6 +78,7 @@ public class PluginFramework {
         String name;
         String provider;
         String country;
+        int imageResId;
         Map<String, String> env;
 
         Plugin() {
@@ -97,8 +98,9 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "20% Off Starbucks";
+            plugin.name = "Up to 20% Off Starbucks";
             plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_coffee;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
@@ -107,8 +109,9 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "10-15% Off Target";
+            plugin.name = "Up to 10% Off Target";
             plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_target;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
@@ -117,30 +120,30 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Buy/Sell Bitcoin (US/Canada)";
+            plugin.name = "Buy/Sell Bitcoin in US/Canada";
             plugin.provider = "glidera";
             plugin.country = "US";
+            plugin.imageResId = R.drawable.ic_plugin_usd;
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
 
-            if (api.isTestNet()) {
-                plugin = new Plugin();
-                plugin.pluginId = "com.clevercoin";
-                plugin.sourceFile = "file:///android_asset/clevercoin.html";
-                plugin.name = "CleverCoin (EUR)";
-                plugin.provider = "clevercoin";
-                plugin.country = "EUR";
-                plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
-                plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
-                plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
-                plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
-                plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
-                plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
-                mPlugins.add(plugin);
-            }
+            plugin = new Plugin();
+            plugin.pluginId = "com.clevercoin";
+            plugin.sourceFile = "file:///android_asset/clevercoin.html";
+            plugin.name = "Buy/Sell Bitcoin in Europe (beta)";
+            plugin.provider = "clevercoin";
+            plugin.country = "EUR";
+            plugin.imageResId = R.drawable.ic_plugin_euro;
+            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+            plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
+            plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
+            plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
+            plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            mPlugins.add(plugin);
         }
     }
 
@@ -174,6 +177,7 @@ public class PluginFramework {
         public void stackClear();
         public void stackPush(String path);
         public void stackPop();
+        public void launchExternal(String uri);
     }
 
     private static abstract class CallbackTask extends AsyncTask<Void, Void, String> {
@@ -489,6 +493,12 @@ public class PluginFramework {
         public void navStackPop() {
             handler.stackPop();
         }
+
+        @JavascriptInterface
+        public void launchExternal(String uri) {
+            Log.d(TAG, "launchExternal");
+            handler.launchExternal(uri);
+        }
     }
 
     private UiHandler handler;
@@ -500,6 +510,7 @@ public class PluginFramework {
     private ValueCallback<Uri []> mUploadCallbackArr;
 
     static final int INTENT_UPLOAD_CODE = 10;
+    static final int CAPTURE_IMAGE_CODE = 20;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;

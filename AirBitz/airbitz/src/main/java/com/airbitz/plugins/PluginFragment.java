@@ -33,11 +33,19 @@ package com.airbitz.plugins;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -46,7 +54,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
-import android.content.Intent;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,6 +64,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI.SpendTarget;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.CameraFragment;
+import com.airbitz.objects.PictureCamera;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
@@ -64,6 +72,8 @@ import com.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URISyntaxException;
 import java.util.Stack;
 
 public class PluginFragment extends WalletBaseFragment implements NavigationActivity.OnBackPress {
@@ -77,6 +87,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private Stack<String> mNav;
     private Uri mUri;
     private String mUrl;
+    private ImageEncodeTask mImageTask;
 
     private int previousHeight;
     private int mToolbarHeight;
@@ -84,7 +95,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     private LinearLayout.LayoutParams frameLayoutParams;
 
     private SendConfirmationFragment mSendConfirmation;
-    private CameraFragment mCameraFragment;
     private String mSubtitle;
 
     public PluginFragment(Plugin plugin) {
@@ -202,8 +212,38 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mFramework.updateDenomation();
     }
 
+    private String mCameraId;
+    private Uri mImageUri;
+    public void launchCamera(String cbid) {
+        mCameraId = cbid;
+
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "photo.jpg");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+                mImageUri = mActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                //create new Intent
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                mActivity.startActivityForResult(intent, PluginFramework.CAPTURE_IMAGE_CODE);
+            }
+        });
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (PluginFramework.INTENT_UPLOAD_CODE == requestCode) {
+        if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode) {
+            if (Activity.RESULT_OK == resultCode) {
+                mImageTask = new ImageEncodeTask(mActivity, mImageUri, mFramework);
+                mImageTask.execute();
+            } else if (Activity.RESULT_CANCELED == resultCode) {
+                mFramework.sendBack(mCameraId);
+                mCameraId = null;
+                mImageUri = null;
+            }
+        } else if (PluginFramework.INTENT_UPLOAD_CODE == requestCode) {
             Uri result = intent == null || resultCode != Activity.RESULT_OK
                 ? null  : intent.getData();
             mFramework.uploadCallback(result);
@@ -216,6 +256,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         if (mWebView != null) {
             mWebView.onPause();
             mWebView.pauseTimers();
+        }
+        if (mImageTask != null) {
+            mImageTask.cancel(true);
+            mImageTask = null;
         }
     }
 
@@ -322,28 +366,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
 
         public void launchCamera(final String cbid) {
-            final CameraFragment.OnExitHandler exitHandler = new CameraFragment.OnExitHandler() {
-                public void success(String encodedImage) {
-                    mFramework.sendImage(cbid, encodedImage);
-                    mCameraFragment = null;
-                }
-                public void back() {
-                    mFramework.sendBack(cbid);
-                    mCameraFragment = null;
-                }
-                public void error() {
-                    mFramework.sendBack(cbid);
-                    mCameraFragment = null;
-                }
-            };
-            getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    mCameraFragment = new CameraFragment();
-                    mCameraFragment.setExitHandler(exitHandler);
-                    ((NavigationActivity) getActivity()).pushFragment(mCameraFragment,
-                        NavigationActivity.Tabs.BUYSELL.ordinal());
-                }
-            });
+            PluginFragment.this.launchCamera(cbid);
         }
 
         public void launchSend(final String cbid, final String uuid, final String address,
@@ -442,6 +465,18 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             Log.d("PluginFragment", "pop");
             mNav.pop();
         }
+
+        @Override
+        public void launchExternal(String uri) {
+            try {
+                Intent intent = Intent.parseUri(uri, Intent.URI_INTENT_SCHEME);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setComponent(null);
+                mActivity.startActivity(intent);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "", e);
+            }
+        }
     };
 
     public static void pushFragment(NavigationActivity mActivity, Plugin plugin, Uri uri) {
@@ -461,5 +496,41 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
         mActivity.popFragment(transaction);
         mActivity.getFragmentManager().executePendingTransactions();
+    }
+
+    private class ImageEncodeTask extends AsyncTask<Void, Void, String> {
+        Context mContext;
+        PluginFramework mFramework;
+        Uri mImageUri;
+
+        public ImageEncodeTask(Context context, Uri imageUri, PluginFramework framework) {
+            mContext = context;
+            mImageUri = imageUri;
+            mFramework = framework;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                Bitmap bitmap = PictureCamera.retrievePicture(mImageUri, mContext);
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
+                return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
+            } catch (Exception e) {
+                Log.e(TAG, "", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String encoded) {
+            if (encoded != null) {
+                mFramework.sendImage(mCameraId, encoded);
+            } else {
+                mFramework.sendBack(mCameraId);
+            }
+            mCameraId = null;
+            mImageUri = null;
+        }
     }
 }

@@ -42,6 +42,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -160,17 +161,20 @@ public class BuySellFragment extends BaseFragment {
 
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.item_name);
+                holder.image = (ImageView) convertView.findViewById(R.id.image);
                 holder.name.setTypeface(NavigationActivity.latoRegularTypeFace);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.name.setText(plugin.name);
+            holder.image.setImageResource(plugin.imageResId);
             return convertView;
         }
     }
 
     static class ViewHolder {
         TextView name;
+        ImageView image;
     }
 }
