@@ -156,10 +156,6 @@ public class PluginFramework {
         return mInstance.mPlugins;
     }
 
-    protected void debuglevel(String level, String text) {
-        Log.d(TAG, text);
-    }
-
     public interface UiHandler {
         public void showAlert(String title, String message, boolean showSpinner);
         public void hideAlert();
@@ -460,7 +456,7 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
-        public void debugLevel(String level, String text) {
+        public void debugLevel(int level, String text) {
             Log.d(TAG, text);
         }
 
