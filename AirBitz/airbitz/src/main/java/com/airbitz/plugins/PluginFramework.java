@@ -130,6 +130,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
 
+            /*
             plugin = new Plugin();
             plugin.pluginId = "com.clevercoin";
             plugin.sourceFile = "file:///android_asset/clevercoin.html";
@@ -144,6 +145,7 @@ public class PluginFramework {
             plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
+            */
         }
     }
 
