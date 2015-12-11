@@ -16,8 +16,15 @@
     <color name="dark_text_field_text">#FFFFFFFF</color>
     <color name="dark_divider">#FF444444</color>
 
-    <!-- Do not use colors below -->
+    <!--Login page colors used to customize background image-->
 
+    <color name="color_login_title_text">#FFeeeeee</color>
+    <color name="color_pin_entry_text">#FFeeeeee</color>
+    <color name="color_pin_entry_username_text">#ffCAE3FF</color>
+    <color name="color_swipe_directory_text">#FFeeeeee</color>
+    <color name="color_forgot_password_text">#FFeeeeee</color>
+
+    <!-- Do not use colors below -->
 
     <color name="green_text">#6fb600</color>
     <color name="green_text_dark">#409000</color>

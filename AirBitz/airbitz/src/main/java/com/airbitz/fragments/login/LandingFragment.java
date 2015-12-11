@@ -587,7 +587,7 @@ public class LandingFragment extends BaseFragment implements
             int start = out.indexOf(mUsername);
 
             SpannableStringBuilder s = new SpannableStringBuilder();
-            s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dark_text_link)), start, start + mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_pin_entry_username_text)), start, start + mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             mCurrentUserText.setText(s);
 

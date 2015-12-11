@@ -20,6 +20,8 @@ public class CameraManager {
     private ConditionVariable mSig = new ConditionVariable();
     private CameraHandler mCameraHandler;
     private Camera mCamera;
+    private Camera.PictureCallback mJpegCallback;
+    private Camera.ShutterCallback mShutterCallback;
     boolean mPreviewing = false;
     boolean mFlashOn = false;
 
@@ -39,12 +41,10 @@ public class CameraManager {
 
     public synchronized void previewOn() {
         mPreviewing = true;
-        // mCameraHandler.sendEmptyMessage(PREVIEW_ON);
     }
 
     public synchronized void previewOff() {
         mPreviewing = false;
-        // mCameraHandler.sendEmptyMessage(PREVIEW_OFF);
     }
 
     public void startPreview() {
@@ -83,6 +83,11 @@ public class CameraManager {
         mSig.close();
         mCameraHandler.obtainMessage(SET_PREVIEW_DISPLAY, holder).sendToTarget();
         mSig.block();
+    }
+
+    public void takePicture() {
+        mPreviewing = false;
+        mCameraHandler.sendEmptyMessage(TAKE_PICTURE);
     }
 
     public void setCamera(Camera camera) {
@@ -159,6 +164,14 @@ public class CameraManager {
         return mCamera;
     }
 
+    public void setPictureCallback(Camera.PictureCallback callback) {
+        mJpegCallback = callback;
+    }
+
+    public void setShutterCallback(Camera.ShutterCallback callback) {
+        mShutterCallback = callback;
+    }
+
     private static final int RELEASE = 1;
     private static final int UNLOCK = 2;
     private static final int LOCK = 3;
@@ -173,6 +186,7 @@ public class CameraManager {
     private static final int GET_PARAMETERS = 13;
     private static final int SET_PARAMETERS = 14;
     private static final int SET_PREVIEW_DISPLAY = 15;
+    private static final int TAKE_PICTURE = 16;
 
     private class CameraHandler extends Handler {
         CameraHandler(Looper looper) {
@@ -272,6 +286,11 @@ public class CameraManager {
                             throw new RuntimeException(e);
                         }
                         mSig.open();
+
+                    case TAKE_PICTURE:
+                        Log.d(TAG, "TAKE_PICTURE");
+                        mCamera.takePicture(mShutterCallback, null, null, mJpegCallback);
+                        break;
 
                     default:
                         throw new RuntimeException("Invalid CameraProxy message=" + msg.what);
