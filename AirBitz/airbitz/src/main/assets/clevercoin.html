@@ -1312,10 +1312,6 @@ _bridge = function() {
 
     navStackPop: function() {
       _native.navStackPop();
-    },
-
-    launchExternal: function(uri) {
-      _native.launchExternal(uri);
     }
   }
 };
@@ -1513,10 +1509,6 @@ _bridge = function() {
 
   Airbitz.ui.navStackPop = function() {
     Airbitz._bridge.navStackPop();
-  };
-
-  Airbitz.ui.launchExternal = function(uri) {
-    Airbitz._bridge.launchExternal(uri);
   };
 
 })(this);
@@ -10459,12 +10451,8 @@ var app = angular.module('app.core', [
         return $q(function(resolve, reject) {
           CcFactory.supportedCountries(function(e, s, b) {
             if (s === 200) {
-              countryList = b.filter(function(e) {
-                return e.isResidenceAccepted;
-              }).sort(function(a, b) {
-                return a.codeAlpha3 - b.codeAlpha3;
-              });
-              resolve(countryList);
+              countryList = b;
+              resolve(b)
             } else {
               reject(b);
             } 
@@ -10892,7 +10880,6 @@ run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
   });
   Airbitz.cryptoDenom = Airbitz.core.getBtcDenomination();
   $rootScope.cryptoDenom = Airbitz.core.getBtcDenomination();
-  $rootScope.launchExternal = Airbitz.ui.launchExternal;
   Airbitz.core.setDenominationChangeListener(function(newDenom) {
     $rootScope.$apply(function() {
       Airbitz.cryptoDenom = newDenom;
@@ -12321,6 +12308,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <label for="inputSurname" class="">Surname</label>\n' +
     '      <input ng-model="account.surname" name="surname" type="text" id="inputSurname" class="form-control"\n' +
     '            placeholder="Surname"\n' +
+    '            autofocus=""\n' +
     '            autocorrect="off"\n' +
     '            autocomplete="off"\n' +
     '            required="" />\n' +
@@ -12348,6 +12336,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <label for="inputBirthday" class="">Birthday</label>\n' +
     '      <input ng-model="account.birthday" name="birthday" type="date" id="inputBirthday" class="form-control"\n' +
     '            placeholder="Birthday"\n' +
+    '            autofocus=""\n' +
     '            autocorrect="off"\n' +
     '            autocomplete="off"\n' +
     '            required="" />\n' +
@@ -12377,6 +12366,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <label for="inputBirthCity" class="">Birth City</label>\n' +
     '      <input ng-model="account.birthcity" name="birthcity" type="text" id="inputBirthCity" class="form-control"\n' +
     '            placeholder="Birth City"\n' +
+    '            autofocus=""\n' +
     '            autocorrect="off"\n' +
     '            autocomplete="off"\n' +
     '            required="" />\n' +
@@ -12406,6 +12396,7 @@ module.run(['$templateCache', function($templateCache) {
     '      <label for="inputPhoneNumber" class="">Phone Number</label>\n' +
     '      <input ng-model="account.phonenumber" name="phonenumber" type="text" id="inputPhoneNumber" class="form-control"\n' +
     '            placeholder="Phone number"\n' +
+    '            autofocus=""\n' +
     '            autocorrect="off"\n' +
     '            autocomplete="off"\n' +
     '            required="" />\n' +
@@ -12417,7 +12408,7 @@ module.run(['$templateCache', function($templateCache) {
     '\n' +
     '  <div class="row">\n' +
     '    <div class="form-group col-xs-12">\n' +
-    '        <label for="inputTos" class=""><a target="_blank" href="#" ng-click="launchExternal(\'https://www.clevercoin.com/en/terms-conditions\')">Agree to TOS?</a></label>\n' +
+    '        <label for="inputTos" class="">Agree to TOS?</label>\n' +
     '        <input type="checkbox"\n' +
     '          ng-required="true"\n' +
     '          ng-checked="account.termsAgreedVersion > 0"\n' +

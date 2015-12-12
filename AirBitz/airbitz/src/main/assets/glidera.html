@@ -1315,10 +1315,6 @@ _bridge = function() {
 
     navStackPop: function() {
       _native.navStackPop();
-    },
-
-    launchExternal: function(uri) {
-      _native.launchExternal(uri);
     }
   }
 };
@@ -1516,10 +1512,6 @@ _bridge = function() {
 
   Airbitz.ui.navStackPop = function() {
     Airbitz._bridge.navStackPop();
-  };
-
-  Airbitz.ui.launchExternal = function(uri) {
-    Airbitz._bridge.launchExternal(uri);
   };
 
 })(this);
@@ -10586,7 +10578,6 @@ var app = angular.module('app.core', [
           notes: notes,
           amountSatoshi: amountSatoshi,
           amountFiat: amountFiat,
-          bizId: ExchangeFactory.bizId,
           success: resolve,
           error: reject
         })
@@ -10657,7 +10648,6 @@ var app = angular.module('app.core', [
         Airbitz.core.requestSpend(wallet, data.sellAddress, btcToSatoshi(qty), amountFiat, {
           label: 'Glidera',
           category: 'Exchange:Sell Bitcoin',
-          bizId: ExchangeFactory.bizId,
           notes: notes,
           success: function(res) {
             if (res && res.back) {
@@ -10732,7 +10722,6 @@ var app = angular.module('app.core', [
     factory.depositId = 'Glidera Inc';
     factory.orderTimeout = '60';
     factory.depositTimeout = '3600';
-    factory.bizId = 11063;
     factory.updateCurrency = function(countryCode) {
       if (!countryCode) {
         return;
