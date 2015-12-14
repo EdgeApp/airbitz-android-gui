@@ -295,6 +295,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     public boolean onBackPress() {
         if (mNav.size() == 0) {
             PluginFragment.popFragment(mActivity);
+            cleanup();
             return true;
         }
         if (mSendConfirmation != null) {
