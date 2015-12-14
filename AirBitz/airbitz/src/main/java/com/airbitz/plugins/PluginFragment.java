@@ -154,6 +154,13 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mView = (ViewGroup) inflater.inflate(R.layout.fragment_plugin, container, false);
         mWebView = (WebView) mView.findViewById(R.id.plugin_webview);
         cleanupWebview();
+
+        if (false) { // Set to true to enable webview debugging
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                mWebView.setWebContentsDebuggingEnabled(true);
+            }
+        }
+
         // Allows us to nest iframes from 3rd parties
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
