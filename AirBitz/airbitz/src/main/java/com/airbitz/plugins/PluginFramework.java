@@ -522,6 +522,9 @@ public class PluginFramework {
     }
 
     public void uploadCallback(Uri data) {
+        if (data == null) {
+            return;
+        }
         if (null != mUploadCallback) {
             mUploadCallback.onReceiveValue((Uri) data);
             mUploadCallback = null;
