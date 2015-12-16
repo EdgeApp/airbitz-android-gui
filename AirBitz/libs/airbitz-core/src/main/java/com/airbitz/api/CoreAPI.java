@@ -178,7 +178,8 @@ public class CoreAPI {
     public native boolean RegisterAsyncCallback ();
     public native long ParseAmount(String jarg1, int decimalplaces);
 
-    public void Initialize(Context context, String seed, long seedLength){
+    public void Initialize(Context context, String airbitzApiKey, String chainApiKey, String hiddenbitzKey,
+                           String seed, long seedLength){
         if(!initialized) {
             tABC_Error error = new tABC_Error();
             if(RegisterAsyncCallback()) {
@@ -196,7 +197,8 @@ public class CoreAPI {
                 }
                 copyStreamToFile(certStream, outputStream);
             }
-            core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME, seed, seedLength, error);
+            core.ABC_Initialize(filesDir.getPath(), filesDir.getPath() + "/" + CERT_FILENAME,
+                    airbitzApiKey, chainApiKey, hiddenbitzKey, seed, seedLength, error);
             initialized = true;
 
             // Fetch General Info
