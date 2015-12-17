@@ -35,6 +35,11 @@ task copyAirbitzCore(type:Exec) {
     commandLine './cpabc'
 }
 
+task buildAirbitzPlugins(type:Exec) {
+    workingDir '../../'
+    commandLine './mkplugin'
+}
+
 task cleanAirbitzCore(type:Exec) {
     workingDir '../../'
     commandLine './cleanabc'
