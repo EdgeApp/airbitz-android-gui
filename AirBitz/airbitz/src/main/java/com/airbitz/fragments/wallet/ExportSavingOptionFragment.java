@@ -608,6 +608,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             mSDCardButton.setVisibility(View.VISIBLE);
             mShareButton.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
+            mEmailButton.setVisibility(View.VISIBLE);
         }
         else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
