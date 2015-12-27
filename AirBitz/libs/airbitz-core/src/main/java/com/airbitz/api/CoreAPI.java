@@ -1650,7 +1650,11 @@ public class CoreAPI {
             }
             // Convert to BD so we don't lose precision
             BigDecimal bd = BigDecimal.valueOf(cleanAmount.doubleValue());
-            return Math.max(ParseAmount(bd.toString(), decimalPlaces), 0);
+            DecimalFormat df = new DecimalFormat("###0.##", new DecimalFormatSymbols(Locale.getDefault()));
+            String bdstr = df.format(bd.doubleValue());
+            long parseamt = ParseAmount(bdstr, decimalPlaces);
+            long max = Math.max(parseamt, 0);
+            return max;
         } catch (Exception e) {
             // Shhhhh
         }
