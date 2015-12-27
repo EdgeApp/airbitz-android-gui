@@ -207,6 +207,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (null != mSpendTarget && mSpendTarget.isTransfer()) {
             setDropdownEnabled(false);
         }
+        if (null != mSpendTarget && mSpendTarget.getSpendAmount() > 0) {
+            mBtcMode = true;
+        }
     }
 
     @Override
