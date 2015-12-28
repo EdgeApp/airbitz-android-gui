@@ -79,6 +79,7 @@ public class PluginFramework {
         String provider;
         String country;
         int imageResId;
+
         Map<String, String> env;
 
         Plugin() {
@@ -86,12 +87,27 @@ public class PluginFramework {
         }
     }
 
+    static final String GIFT_CARDS = "Gift Cards";
+    static final String BUYSELL = "Buy/Sell";
+
+    static String[] getTags() {
+        return new String[] {
+            GIFT_CARDS,
+            BUYSELL
+        };
+    }
+
     static class PluginList {
         List<Plugin> mPlugins;
+        Map<String, List<Plugin>> mPluginsGrouped;
 
         PluginList() {
             CoreAPI api = CoreAPI.getApi();
             mPlugins = new LinkedList<Plugin>();
+            mPluginsGrouped = new HashMap<String, List<Plugin>>();
+            for (String t : getTags()) {
+                mPluginsGrouped.put(t, new LinkedList<Plugin>());
+            }
 
             Plugin plugin;
 
@@ -104,7 +120,12 @@ public class PluginFramework {
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
+            plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/green-coffee-mug-128px.png");
+            plugin.env.put("BIZID", "11131");
+            plugin.env.put("CATEGORY", "Expense%3ACoffee Shops");
+
             mPlugins.add(plugin);
+            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
@@ -115,7 +136,56 @@ public class PluginFramework {
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
+            plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/red-bulls-eye-128px.png");
+            plugin.env.put("BIZID", "11132");
+            plugin.env.put("CATEGORY", "Expense%3AShopping");
             mPlugins.add(plugin);
+            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.foldapp";
+            plugin.sourceFile = "file:///android_asset/foldapp.html";
+            plugin.name = "Whole Foods (Up to 10% Off)";
+            plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_wholefoods;
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            plugin.env.put("BRAND", "Whole Foods");
+            plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Whole-Foods-Market-128px.png");
+            plugin.env.put("BIZID", "11139");
+            plugin.env.put("CATEGORY", "Expense%3AGroceries");
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.foldapp";
+            plugin.sourceFile = "file:///android_asset/foldapp.html";
+            plugin.name = "Walmart (Up to 10% Off)";
+            plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_walmart;
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            plugin.env.put("BRAND", "Walmart");
+            plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/WalMart-128px.png");
+            plugin.env.put("BIZID", "11140");
+            plugin.env.put("CATEGORY", "Expense%3AShopping");
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+
+            plugin = new Plugin();
+            plugin.pluginId = "com.foldapp";
+            plugin.sourceFile = "file:///android_asset/foldapp.html";
+            plugin.name = "Home Depot (Up to 15% Off)";
+            plugin.provider = "foldapp";
+            plugin.imageResId = R.drawable.ic_plugin_homedepot;
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
+            plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            plugin.env.put("BRAND", "Home Depot");
+            plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Home-Depot-square-128px.png");
+            plugin.env.put("BIZID", "11141");
+            plugin.env.put("CATEGORY", "Expense%3AHome Improvement");
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
@@ -129,6 +199,7 @@ public class PluginFramework {
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
+            mPluginsGrouped.get(BUYSELL).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.clevercoin";
@@ -144,6 +215,7 @@ public class PluginFramework {
             plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             mPlugins.add(plugin);
+            mPluginsGrouped.get(BUYSELL).add(plugin);
         }
     }
 
@@ -154,6 +226,13 @@ public class PluginFramework {
             mInstance = new PluginList();
         }
         return mInstance.mPlugins;
+    }
+
+    public static Map<String, List<Plugin>> getPluginsGrouped() {
+        if (mInstance == null) {
+            mInstance = new PluginList();
+        }
+        return mInstance.mPluginsGrouped;
     }
 
     public interface UiHandler {
