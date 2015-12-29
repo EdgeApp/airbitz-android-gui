@@ -114,7 +114,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "Up to 20% Off Starbucks";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_coffee;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -130,7 +130,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "Up to 10% Off Target";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_target_title);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_target;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -145,7 +145,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "Whole Foods (Up to 10% Off)";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_wholefoods_title);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_wholefoods;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -160,7 +160,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "Walmart (Up to 10% Off)";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_walmart_title);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_walmart;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -175,7 +175,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
-            plugin.name = "Home Depot (Up to 15% Off)";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_homedepot_title);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_homedepot;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -190,7 +190,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
-            plugin.name = "Buy/Sell Bitcoin in US/Canada";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_glidera_title);
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.imageResId = R.drawable.ic_plugin_usd;
@@ -204,7 +204,7 @@ public class PluginFramework {
             plugin = new Plugin();
             plugin.pluginId = "com.clevercoin";
             plugin.sourceFile = "file:///android_asset/clevercoin.html";
-            plugin.name = "Buy/Sell Bitcoin in Europe (beta)";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_clevercoin_title);
             plugin.provider = "clevercoin";
             plugin.country = "EUR";
             plugin.imageResId = R.drawable.ic_plugin_euro;
