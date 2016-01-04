@@ -454,7 +454,10 @@ public class NavigationActivity extends ActionBarActivity
     public static CoreAPI initiateCore(Context context) {
         CoreAPI api = CoreAPI.getApi(context);
         String seed = CoreAPI.getSeedData();
-        api.Initialize(context, seed, seed.length());
+        String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
+        String chainApiKey = AirbitzApplication.getContext().getString(R.string.chain_api_key);
+        String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
+        api.Initialize(context, airbitzApiKey, chainApiKey, hiddenbitzKey, seed, seed.length());
         return api;
     }
 

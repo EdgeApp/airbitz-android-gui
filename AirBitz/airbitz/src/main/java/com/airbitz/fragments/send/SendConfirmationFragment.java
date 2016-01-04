@@ -207,6 +207,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (null != mSpendTarget && mSpendTarget.isTransfer()) {
             setDropdownEnabled(false);
         }
+        if (null != mSpendTarget && mSpendTarget.getSpendAmount() > 0) {
+            mBtcMode = true;
+        }
     }
 
     @Override
@@ -581,15 +584,17 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
         mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mCurrencyNum));
 
-        if (btc) {
-            mAmountToSendSatoshi = mCoreApi.denominationToSatoshi(mBitcoinField.getText().toString());
-            mSpendTarget.setSpendAmount(mAmountToSendSatoshi);
-            mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
-        } else {
-            satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
-            mAmountToSendSatoshi = satoshi;
-            mSpendTarget.setSpendAmount(satoshi);
-            mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+        if (!mLocked) {
+            if (btc) {
+                mAmountToSendSatoshi = mCoreApi.denominationToSatoshi(mBitcoinField.getText().toString());
+                mSpendTarget.setSpendAmount(mAmountToSendSatoshi);
+                mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+            } else {
+                satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
+                mAmountToSendSatoshi = satoshi;
+                mSpendTarget.setSpendAmount(satoshi);
+                mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+            }
         }
         mAutoUpdatingTextFields = false;
         checkAuthorization();

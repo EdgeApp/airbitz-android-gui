@@ -662,4 +662,13 @@
     <string name="request_footer_link">https://airbitz.co/app</string>
     <string name="request_footer_link_title">Download Airbitz for iOS or Android</string>
     <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
+
+    <!-- Plugin text -->
+    <string name="plugin_starbucks_title">Starbucks (Up to 20% Off)</string>
+    <string name="plugin_target_title">Target (Up to 10% Off)</string>
+    <string name="plugin_wholefoods_title">Whole Foods (Up to 10% Off)</string>
+    <string name="plugin_walmart_title">Walmart (Up to 10% Off)</string>
+    <string name="plugin_homedepot_title">Home Depot (Up to 15% Off)</string>
+    <string name="plugin_glidera_title">Buy/Sell Bitcoin in US/Canada</string>
+    <string name="plugin_clevercoin_title">Buy/Sell Bitcoin in Europe (beta)</string>
 </resources>
