@@ -517,8 +517,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             mFramework = framework;
         }
 
-        static final int MAX_WIDTH = 1500;
-        static final int MAX_HEIGHT = 1500;
+        static final int MAX_WIDTH = 1000;
+        static final int MAX_HEIGHT = 1000;
 
         private Bitmap resize(Bitmap bitmap) {
             if (bitmap.getHeight() > MAX_HEIGHT || bitmap.getWidth() > MAX_WIDTH) {
@@ -532,7 +532,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Bitmap bitmap = PictureCamera.retrievePicture(mImageUri, mContext);
+                Bitmap bitmap = resize(PictureCamera.retrievePicture(mImageUri, mContext));
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
                 return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
