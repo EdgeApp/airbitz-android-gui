@@ -867,6 +867,7 @@ public class CoreAPI {
         sources.add("Bitstamp");
         sources.add("BraveNewCoin");
         sources.add("Coinbase");
+        sources.add("CleverCoin");
         return sources;
     }
 
