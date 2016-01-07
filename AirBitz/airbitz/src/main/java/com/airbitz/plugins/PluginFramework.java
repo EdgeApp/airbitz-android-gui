@@ -87,7 +87,7 @@ public class PluginFramework {
         }
     }
 
-    static final String GIFT_CARDS = "Gift Cards";
+    static final String GIFT_CARDS = "Discounted Gift Cards";
     static final String BUYSELL = "Buy/Sell";
 
     static String[] getTags() {
@@ -142,6 +142,7 @@ public class PluginFramework {
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
 
+            /*
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
@@ -186,6 +187,7 @@ public class PluginFramework {
             plugin.env.put("CATEGORY", "Expense%3AHome Improvement");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            */
 
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
