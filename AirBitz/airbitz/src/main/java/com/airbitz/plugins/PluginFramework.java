@@ -240,10 +240,10 @@ public class PluginFramework {
         public void hideAlert();
         public void setTitle(String title);
         public void launchCamera(final String cbid);
-        public void launchSend(final String cbid, final String uuid, final String address,
-                               final long amountSatoshi, final double amountFiat,
-                               final String label, final String category, final String notes,
-                               long bizId);
+        public CoreAPI.SpendTarget launchSend(final String cbid, final String uuid, final String address,
+                                      final long amountSatoshi, final double amountFiat,
+                                      final String label, final String category, final String notes,
+                                      long bizId, boolean signOnly);
         public void showNavBar();
         public void hideNavBar();
         public void back();
@@ -370,6 +370,10 @@ public class PluginFramework {
         Plugin plugin;
         PluginFramework framework;
 
+        // Holds signed pending spends
+        CoreAPI.SpendTarget mTarget = null;
+
+
         PluginContext(PluginFramework framework, Plugin plugin, UiHandler handler) {
             this.api = CoreAPI.getApi();
             this.framework = framework;
@@ -456,7 +460,39 @@ public class PluginFramework {
         @JavascriptInterface
         public void requestSpend(String cbid, String uuid, String address, long amountSatoshi,
                                  double amountFiat, String label, String category, String notes, long bizId) {
-            handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId);
+            handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, false);
+        }
+
+        @JavascriptInterface
+        public void requestSign(String cbid, String uuid, String address, long amountSatoshi,
+                                double amountFiat, String label, String category, String notes, long bizId) {
+            mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, true);
+        }
+
+        @JavascriptInterface
+        public void broadcastTx(final String cbid, final String uuid, final String rawTx) {
+            CallbackTask task = new CallbackTask(cbid, framework) {
+                @Override
+                public String doInBackground(Void... v) {
+                    if (mTarget != null && mTarget.broadcastTx(uuid, rawTx)) {
+                        return jsonSuccess().toString();
+                    } else {
+                        return jsonError().toString();
+                    }
+                }
+            };
+            task.execute();
+        }
+
+        @JavascriptInterface
+        public String saveTx(String uuid, String rawTx) {
+            if (mTarget != null) {
+                String id =  mTarget.saveTx(uuid, rawTx);
+                mTarget = null;
+                return id;
+            } else {
+                return null;
+            }
         }
 
         @JavascriptInterface
@@ -627,8 +663,11 @@ public class PluginFramework {
                 || nav.get(nav.size() - 1).contains("https://"));
     }
 
-    public void sendSuccess(String cbid, String walletUUID, String txId) {
-        String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
+    public void sendSuccess(String cbid, String walletUUID, String txid) {
+        loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(txid)).toString()));
+    }
+
+    public void signSuccess(String cbid, String walletUUID, String hex) {
         Log.d(TAG, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
     }

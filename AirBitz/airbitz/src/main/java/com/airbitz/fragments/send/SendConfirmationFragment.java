@@ -136,6 +136,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private String mCategory;
     private String mNotes;
     private Boolean mLocked = false;
+    private Boolean mSignOnly = false;
     private Boolean mIsUUID;
     private long mAmountMax;
     private long mAmountToSendSatoshi = -1;
@@ -532,7 +533,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     protected void onExchangeRatesChange() {
         super.onExchangeRatesChange();
-Log.d(TAG, " ++++++++++ onExchangeRatesChange()");
         checkFields();
         checkAuthorization();
     }
@@ -541,7 +541,6 @@ Log.d(TAG, " ++++++++++ onExchangeRatesChange()");
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         checkFields();
         checkAuthorization();
     }
@@ -769,7 +768,8 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
                 mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
 
-            mSendOrTransferTask = new SendOrTransferTask(mWallet, mAmountFiat);
+            mSpendTarget.setAmountFiat(mAmountFiat);
+            mSendOrTransferTask = new SendOrTransferTask(mWallet);
             mSendOrTransferTask.execute();
             hideCalculator();
         }
@@ -842,6 +842,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
+            mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
             if (mIsUUID) {
                 mToWallet = mCoreApi.getWalletFromUUID(mUUIDorURI);
             }
@@ -1055,12 +1056,10 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
     }
 
     public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
-        private final double mAmountFiat;
         private Wallet mFromWallet;
 
-        SendOrTransferTask(Wallet fromWallet, double amountFiat) {
+        SendOrTransferTask(Wallet fromWallet) {
             mFromWallet = fromWallet;
-            mAmountFiat = amountFiat;
         }
 
         @Override
@@ -1073,11 +1072,17 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
             Log.d(TAG, "Initiating SEND");
             try {
                 // Hack: Give the fragment manager time to finish
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }
-            return mSpendTarget.approve(mFromWallet.getUUID(), mAmountFiat);
+            if (mSignOnly) {
+                // Returns raw tx
+                return mSpendTarget.signTx(mFromWallet.getUUID());
+            } else {
+                // Returns txid
+                return mSpendTarget.approve(mFromWallet.getUUID());
+            }
         }
 
         @Override

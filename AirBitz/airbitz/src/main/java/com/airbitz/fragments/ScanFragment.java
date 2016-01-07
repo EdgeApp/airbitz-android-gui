@@ -105,6 +105,7 @@ public abstract class ScanFragment
     public static final String RETURN_URL = "com.airbitz.Sendfragment_RETURN_URL";
     public static final String NOTES = "com.airbitz.Sendfragment_NOTES";
     public static final String LOCKED = "com.airbitz.Sendfragment_LOCKED";
+    public static final String SIGN_ONLY = "com.airbitz.Sendfragment_SIGN_ONLY";
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
