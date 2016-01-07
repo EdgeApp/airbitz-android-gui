@@ -669,6 +669,6 @@
     <string name="plugin_wholefoods_title">Whole Foods (Up to 10% Off)</string>
     <string name="plugin_walmart_title">Walmart (Up to 10% Off)</string>
     <string name="plugin_homedepot_title">Home Depot (Up to 15% Off)</string>
-    <string name="plugin_glidera_title">Buy/Sell Bitcoin in US/Canada</string>
-    <string name="plugin_clevercoin_title">Buy/Sell Bitcoin in Europe (beta)</string>
+    <string name="plugin_glidera_title">USA and Canada</string>
+    <string name="plugin_clevercoin_title">Europe (EUR)</string>
 </resources>
