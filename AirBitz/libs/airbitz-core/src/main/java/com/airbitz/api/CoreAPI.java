@@ -3269,6 +3269,7 @@ public class CoreAPI {
         tABC_SpendTarget _pSpend;
         tABC_Error pError;
         long bizId;
+        double mAmountFiat;
 
         public SpendTarget() {
             _lpSpend = core.new_longp();
@@ -3333,22 +3334,52 @@ public class CoreAPI {
             this.bizId = bizId;
         }
 
-        public String approve(String walletUUID, double fiatAmount) {
+        public void setAmountFiat(double amountFiat) {
+            this.mAmountFiat = amountFiat;
+        }
+
+        public String signTx(String walletUUID) {
+            String rawTx = null;
+            tABC_Error error = new tABC_Error();
+            SWIGTYPE_p_long tx = core.new_longp();
+            SWIGTYPE_p_p_char pRawTx = core.longp_to_ppChar(tx);
+
+            core.ABC_SpendSignTx(mUsername, walletUUID, _pSpend, pRawTx, error);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+                rawTx = getStringAtPtr(core.longp_value(tx));
+            }
+            return rawTx;
+        }
+
+        public boolean broadcastTx(String walletUUID, String rawTx) {
+            tABC_Error error = new tABC_Error();
+            core.ABC_SpendBroadcastTx(mUsername, walletUUID, _pSpend, rawTx, error);
+            return error.getCode() == tABC_CC.ABC_CC_Ok;
+        }
+
+        public String saveTx(String walletUUID, String rawTx) {
             String id = null;
+            tABC_Error error = new tABC_Error();
             SWIGTYPE_p_long txid = core.new_longp();
             SWIGTYPE_p_p_char pTxId = core.longp_to_ppChar(txid);
-
-            core.ABC_SpendApprove(mUsername, walletUUID,
-                    _pSpend, pTxId, pError);
-            if (pError.getCode() == tABC_CC.ABC_CC_Ok) {
+            core.ABC_SpendSaveTx(mUsername, walletUUID, _pSpend, rawTx, pTxId, error);
+            if (error.getCode() == tABC_CC.ABC_CC_Ok) {
                 id = getStringAtPtr(core.longp_value(txid));
-                updateTransaction(walletUUID, id, fiatAmount);
+                updateTransaction(walletUUID, id);
             }
-
             return id;
         }
 
-        public void updateTransaction(String walletUUID, String txId, double fiatAmount) {
+        public String approve(String walletUUID) {
+            String id = null;
+            String rawTx = signTx(walletUUID);
+            if (null != rawTx && broadcastTx(walletUUID, rawTx)) {
+                id = saveTx(walletUUID, rawTx);
+            }
+            return id;
+        }
+
+        public void updateTransaction(String walletUUID, String txId) {
             String categoryText = "Transfer:Wallet:";
             Wallet destWallet = null;
             Wallet srcWallet = getWalletFromUUID(walletUUID);
@@ -3362,8 +3393,8 @@ public class CoreAPI {
                     tx.setName(destWallet.getName());
                     tx.setCategory(categoryText + destWallet.getName());
                 }
-                if (fiatAmount > 0) {
-                    tx.setAmountFiat(fiatAmount);
+                if (mAmountFiat > 0) {
+                    tx.setAmountFiat(mAmountFiat);
                 }
                 if (0 < bizId) {
                     tx.setmBizId(bizId);
