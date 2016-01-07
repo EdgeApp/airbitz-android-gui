@@ -92,8 +92,8 @@ public class PluginFramework {
 
     static String[] getTags() {
         return new String[] {
+            BUYSELL,
             GIFT_CARDS,
-            BUYSELL
         };
     }
 
