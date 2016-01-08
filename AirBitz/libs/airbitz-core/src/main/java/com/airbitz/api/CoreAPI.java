@@ -361,6 +361,18 @@ public class CoreAPI {
         }
     }
 
+    public boolean removeWallet(String uuid) {
+        tABC_Error error = new tABC_Error();
+        tABC_CC result = core.ABC_WalletRemove(getUsername(), uuid, error);
+        if (result == tABC_CC.ABC_CC_Ok) {
+            stopWatcher(uuid);
+            reloadWallets();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean renameWallet(Wallet wallet) {
         tABC_Error Error = new tABC_Error();
         tABC_CC result = core.ABC_RenameWallet(mUsername, mPassword,
@@ -2707,6 +2719,13 @@ public class CoreAPI {
             core.ABC_WatcherDelete(uuid, error);
         }
         mWatcherTasks.clear();
+    }
+
+    public void stopWatcher(String uuid) {
+        tABC_Error error = new tABC_Error();
+        core.ABC_WatcherStop(uuid, error);
+        core.ABC_WatcherDelete(uuid, error);
+        mWatcherTasks.remove(uuid);
     }
 
     public void deleteWatcherCache() {
