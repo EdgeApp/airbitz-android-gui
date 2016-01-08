@@ -40,6 +40,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -96,6 +97,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     private View mProgress;
     private List<Wallet> mLatestWalletList = new ArrayList<Wallet>();
     private boolean mArchiveClosed = false;
+    private DeleteWalletTask mDeleteTask;
 
     private TextView mHeaderTotal;
     private Switch mModeSelector;
@@ -390,6 +392,8 @@ public class WalletsFragment extends WalletBaseFragment implements
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
                .negativeText(getResources().getString(R.string.string_cancel))
                .negativeColor(getResources().getColor(R.color.colorPrimaryDark))
+               .neutralText(getResources().getString(R.string.string_delete))
+               .neutralColor(getResources().getColor(R.color.colorPrimaryDark))
                .theme(Theme.LIGHT)
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -408,10 +412,101 @@ public class WalletsFragment extends WalletBaseFragment implements
                             updateTitle();
                         }
                     }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        deleteWalletConfirm(wallet);
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
+    }
+
+    public void deleteWalletConfirm(final Wallet wallet) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.title(getResources().getString(R.string.fragment_wallets_delete_wallet_confirm_title))
+               .titleColorRes(R.color.colorPrimaryDark)
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_confirm_message), mWallet.getName()))
+               .cancelable(false)
+               .positiveText(getResources().getString(R.string.string_delete))
+               .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .negativeColor(getResources().getColor(R.color.colorPrimaryDark))
+               .theme(Theme.LIGHT)
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        deleteWalletConfirmConfirm(wallet);
+                    }
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
                     }
                 });
         builder.show();
+    }
+
+    public void deleteWalletConfirmConfirm(final Wallet wallet) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), mWallet.getName()))
+               .titleColorRes(R.color.colorPrimaryDark)
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), mWallet.getName()))
+               .cancelable(false)
+               .positiveText(getResources().getString(R.string.string_delete))
+               .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
+               .negativeText(getResources().getString(R.string.string_cancel))
+               .negativeColor(getResources().getColor(R.color.colorPrimaryDark))
+               .theme(Theme.LIGHT)
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        mDeleteTask = new DeleteWalletTask(wallet);
+                        mDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
+    }
+
+    public class DeleteWalletTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final Wallet mWallet;
+
+        DeleteWalletTask(Wallet wallet) {
+            mWallet = wallet;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String msg = mActivity.getString(R.string.fragment_wallets_deleting_wallet);
+            int timeout = mActivity.getResources().getInteger(R.integer.alert_hold_time_forever);
+            mActivity.ShowFadingDialog(msg, null, timeout, false);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return mCoreApi.removeWallet(mWallet.getUUID());
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mDeleteTask = null;
+            if (!success) {
+                mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_unable_to_delete_wallet));
+            } else {
+                mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_wallet_delete));
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mDeleteTask = null;
+        }
     }
 }

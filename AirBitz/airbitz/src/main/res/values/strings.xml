@@ -15,6 +15,7 @@
     <string name="string_paste_address">Paste %1$s</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
+    <string name="string_delete">Delete</string>
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
@@ -365,6 +366,13 @@
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
     <string name="fragment_wallets_add_wallet">Add Wallet</string>
+    <string name="fragment_wallets_deleting_wallet">Deleting wallet...</string>
+    <string name="fragment_wallets_unable_to_delete_wallet">Unable to delete wallet</string>
+    <string name="fragment_wallets_delete_wallet_confirm_title">Delete Wallet?</string>
+    <string name="fragment_wallets_delete_wallet_confirm_message">Are you sure you want to delete %1$s?</string>
+    <string name="fragment_wallets_delete_wallet_second_confirm_title">Delete Wallet: %1$s?</string>
+    <string name="fragment_wallets_delete_wallet_second_confirm_message">Are you sure? You will be unable to access any funds in this wallet and any future funds that it may receive.</string>
+    <string name="fragment_wallets_wallet_delete">Wallet deleted</string>
     <string name="fragment_wallets_rename_wallet">Rename Wallet</string>
     <string name="fragment_wallets_list_wallets_title">WALLETS</string>
     <string name="fragment_wallets_list_archive_title">ARCHIVE</string>
