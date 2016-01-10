@@ -85,6 +85,7 @@ import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
+import com.airbitz.api.CoreAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -323,14 +324,14 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if (locationEnabled && null != mCurrentLocation) {
-                    Log.d(TAG, "LocateMe button good");
+                    CoreAPI.debugLevel(1, "LocateMe button good");
                     MapLatLng currentLatLng =
                             new MapLatLng(mCurrentLocation.getLatitude(),
                                     mCurrentLocation.getLongitude());
                     drawCurrentLocationMarker(mCurrentLocation);
                     mMapShim.animateCamera(currentLatLng);
                 } else {
-                    Log.d(TAG, getString(R.string.no_location_found));
+                    CoreAPI.debugLevel(1, getString(R.string.no_location_found));
                     Common.noLocationSnack(mActivity, getView());
                 }
             }
@@ -595,7 +596,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
-            Log.d(TAG, "params: " + params[0] + " " + params[1] + " " + params[2]);
+            CoreAPI.debugLevel(1, "params: " + params[0] + " " + params[1] + " " + params[2]);
             if (mBusinessType.equalsIgnoreCase("category")) {
                 return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], PAGE_SIZE, "", "");
             } else {

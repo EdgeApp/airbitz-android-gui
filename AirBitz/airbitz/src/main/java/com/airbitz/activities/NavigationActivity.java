@@ -169,11 +169,11 @@ public class NavigationActivity extends ActionBarActivity
 
             if (extras != null) {
                 if (networkIsAvailable()) {
-                    Log.d(TAG, "Connection available");
+                    CoreAPI.debugLevel(1, "Connection available");
                     mCoreAPI.restoreConnectivity();
                     mConnectivityNotified = false;
                 } else { // has connection
-                    Log.d(TAG, "Connection NOT available");
+                    CoreAPI.debugLevel(1, "Connection NOT available");
                     mCoreAPI.lostConnectivity();
                     if (!mConnectivityNotified) {
                         ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
@@ -554,15 +554,15 @@ public class NavigationActivity extends ActionBarActivity
         Fragment frag = mNavStacks[id].peek();
         Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null)
-            Log.d(TAG, "switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
+            CoreAPI.debugLevel(1, "switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
         else
-            Log.d(TAG, "switchFragmentThread no fragment showing yet ");
+            CoreAPI.debugLevel(1, "switchFragmentThread no fragment showing yet ");
 
-        Log.d(TAG, "switchFragmentThread pending transactions executed ");
+        CoreAPI.debugLevel(1, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
         if (frag.isAdded()) {
-            Log.d(TAG, "Fragment already added, detaching and attaching");
+            CoreAPI.debugLevel(1, "Fragment already added, detaching and attaching");
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
@@ -570,20 +570,20 @@ public class NavigationActivity extends ActionBarActivity
                 transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
             }
             transaction.replace(R.id.activityLayout, frag);
-            Log.d(TAG, "switchFragmentThread replace executed.");
+            CoreAPI.debugLevel(1, "switchFragmentThread replace executed.");
         }
         transaction.commit();
-        Log.d(TAG, "switchFragmentThread transactions committed.");
+        CoreAPI.debugLevel(1, "switchFragmentThread transactions committed.");
         fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null) {
-            Log.d(TAG, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
+            CoreAPI.debugLevel(1, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
         } else {
-            Log.d(TAG, "switchFragmentThread showing frag is null");
+            CoreAPI.debugLevel(1, "switchFragmentThread showing frag is null");
         }
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
-        Log.d(TAG, "switchFragmentThread switch to threadId " + mNavThreadId);
+        CoreAPI.debugLevel(1, "switchFragmentThread switch to threadId " + mNavThreadId);
 
         getFragmentManager().executePendingTransactions();
         resetDrawerButtons();
@@ -845,7 +845,7 @@ public class NavigationActivity extends ActionBarActivity
         if(intent != null) {
             Uri data = intent.getData();
             if(data != null) {
-                Log.d(TAG, "Process URI from here 1");
+                CoreAPI.debugLevel(1, "Process URI from here 1");
                 processUri(data);
                 // XXX: replace intent that launched the app
                 // it is a result of this dirty "god" activity
@@ -936,13 +936,13 @@ public class NavigationActivity extends ActionBarActivity
         final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        Log.d(TAG, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
+        CoreAPI.debugLevel(1, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
 
         if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
-            Log.d(TAG, "Notification type found");
+            CoreAPI.debugLevel(1, "Notification type found");
                 mNotificationTask = new NotificationTask();
                 mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -978,7 +978,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void processUri(Uri uri) {
         if(uri == null || uri.getScheme() == null) {
-            Log.d(TAG, "Null uri or uri.scheme");
+            CoreAPI.debugLevel(1, "Null uri or uri.scheme");
             return;
         }
 
@@ -991,7 +991,7 @@ public class NavigationActivity extends ActionBarActivity
         if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
             if (2 <= path.size()) {
-                Log.d(TAG, uri.toString());
+                CoreAPI.debugLevel(1, uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme)
@@ -1045,7 +1045,7 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin:<address> Uri's coming from OS
      */
     private void handleBitcoinUri(Uri dataUri) {
-        Log.d(TAG, "Received onBitcoin with uri = " + dataUri.toString());
+        CoreAPI.debugLevel(1, "Received onBitcoin with uri = " + dataUri.toString());
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         Bundle bundle = new Bundle();
@@ -1055,7 +1055,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onIncomingBitcoin(String walletUUID, String txId) {
-        Log.d(TAG, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
+        CoreAPI.debugLevel(1, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
         mTxId = txId;
 
@@ -1069,7 +1069,7 @@ public class NavigationActivity extends ActionBarActivity
 
         /* If showing QR code, launch receiving screen*/
         RequestFragment f = requestMatchesQR(mUUID, mTxId);
-        Log.d(TAG, "RequestFragment? " + f);
+        CoreAPI.debugLevel(1, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff <= 0) {
@@ -1169,7 +1169,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onSentFunds(String walletUUID, String txId, String returnUrl) {
-        Log.d(TAG, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
+        CoreAPI.debugLevel(1, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
         if(manager != null) {
@@ -1183,11 +1183,11 @@ public class NavigationActivity extends ActionBarActivity
         bundle.putString(Wallet.WALLET_UUID, walletUUID);
         bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
-        Log.d(TAG, "onSentFunds calling switchToWallets");
+        CoreAPI.debugLevel(1, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
 
         while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
-            Log.d(TAG, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+            CoreAPI.debugLevel(1, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
             mNavStacks[Tabs.SEND.ordinal()].pop();
         }
         Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
@@ -1477,7 +1477,7 @@ public class NavigationActivity extends ActionBarActivity
 
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
-        Log.d(TAG, "delta logout time = " + milliDelta);
+        CoreAPI.debugLevel(1, "delta logout time = " + milliDelta);
         AccountSettings settings = mCoreAPI.coreSettings();
         if (settings != null) {
             if (milliDelta > settings.getMinutesAutoLogout() * 60 * 1000) {
@@ -1909,7 +1909,7 @@ public class NavigationActivity extends ActionBarActivity
 
         List<String> cats = mCoreAPI.loadCategories();
         if (cats.size() == 0 || cats.get(0).equals(defaults)) {
-            Log.d(TAG, "Category creation failed");
+            CoreAPI.debugLevel(1, "Category creation failed");
         }
     }
 
@@ -1951,7 +1951,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected void onPostExecute(final String response) {
-            Log.d(TAG, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
+            CoreAPI.debugLevel(1, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
             if(response != null && response.length() != 0) {
                 mNotificationMap = getAndroidMessages(response);
                 if(mNotificationMap.size() > 0) {
@@ -1959,7 +1959,7 @@ public class NavigationActivity extends ActionBarActivity
                 }
             }
             else {
-                Log.d(TAG, "No Notification response");
+                CoreAPI.debugLevel(1, "No Notification response");
             }
             mNotificationTask = null;
         }
@@ -2542,7 +2542,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Block Height received");
+            CoreAPI.debugLevel(1, "Block Height received");
             updateWalletListener();
         }
     };
@@ -2550,7 +2550,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mDataSyncReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Data Sync received");
+            CoreAPI.debugLevel(1, "Data Sync received");
             updateWalletListener();
         }
     };
@@ -2580,7 +2580,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mRemotePasswordChange = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Remote Password received");
+            CoreAPI.debugLevel(1, "Remote Password received");
             if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
                 showRemotePasswordChangeDialog();
             }

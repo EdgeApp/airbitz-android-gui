@@ -52,6 +52,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.models.Wallet;
+import com.airbitz.api.CoreAPI;
 
 public class SendFragment extends ScanFragment {
 
@@ -135,7 +136,7 @@ public class SendFragment extends ScanFragment {
 
     @Override
     public void onCameraScanResult(String result) {
-        Log.d(TAG, "checking result = " + result);
+        CoreAPI.debugLevel(1, "checking result = " + result);
         if (result != null) {
             showProcessing();
             processText(result);

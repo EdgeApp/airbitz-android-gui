@@ -46,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.airbitz.api.CoreAPI;
+
 /**
  * Created by matt on 6/30/14.
  */
@@ -81,7 +83,7 @@ public class PlayLocationManager implements
         }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            Log.d(TAG, "Listener added: " + listener);
+            CoreAPI.debugLevel(1, "Listener added: " + listener);
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -90,7 +92,7 @@ public class PlayLocationManager implements
 
     public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mObservers.remove(listener);
-        Log.d(TAG, "Listener removed: " + listener);
+        CoreAPI.debugLevel(1, "Listener removed: " + listener);
         if (mObservers.size() <= 0 && locationClient.isConnected()) {
             locationClient.disconnect();
         }
@@ -105,7 +107,7 @@ public class PlayLocationManager implements
 
     public void attemptConnection() {
         if (locationClient == null || !locationClient.isConnected() || !locationClient.isConnecting()) {
-            Log.d(TAG, "Attempting connection");
+            CoreAPI.debugLevel(1, "Attempting connection");
             locationClient = new GoogleApiClient.Builder(mContext)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -117,7 +119,7 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d(TAG, "Connected.");
+        CoreAPI.debugLevel(1, "Connected.");
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME_MILLIS * 2);
@@ -135,13 +137,13 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(TAG, "Suspended. Please re-connect.");
+        CoreAPI.debugLevel(1, "Suspended. Please re-connect.");
         attemptConnection();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
+        CoreAPI.debugLevel(1, "onLocationChanged");
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
 
@@ -154,7 +156,7 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "Connection to LocationClient failed");
+        CoreAPI.debugLevel(1, "Connection to LocationClient failed");
         attemptConnection();
     }
 }

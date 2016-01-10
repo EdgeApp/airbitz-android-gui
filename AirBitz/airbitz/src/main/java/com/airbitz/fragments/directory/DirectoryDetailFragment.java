@@ -63,6 +63,7 @@ import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.api.directory.Category;
@@ -155,7 +156,7 @@ public class DirectoryDetailFragment extends BaseFragment
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
         Common.disabledNotification(mActivity, mView);
 
-        Log.d(TAG, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
+        CoreAPI.debugLevel(1, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
         mCategoriesTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
@@ -298,7 +299,7 @@ public class DirectoryDetailFragment extends BaseFragment
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
-            Log.d(TAG, "LocationManager Location = "+latLong);
+            CoreAPI.debugLevel(1, "LocationManager Location = "+latLong);
             return mApi.getBusinessByIdAndLatLong(params[0], latLong);
         }
 

@@ -193,7 +193,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
             mCoreAPI.OtpKeySet(mUsername, secret);
             return true;
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "storeSecret error:" + e.errorMap());
             return false;
         }
     }

@@ -135,7 +135,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
                 _errorUrl = map.get("x-error");
                 _cancelUrl = map.get("x-cancel");
             } catch (UnsupportedEncodingException e) {
-                Log.d(TAG, "Unsupported uri exception");
+                CoreAPI.debugLevel(1, "Unsupported uri exception");
             }
         } else {
             strName = "An app ";

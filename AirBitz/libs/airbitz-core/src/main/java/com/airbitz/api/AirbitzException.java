@@ -24,6 +24,9 @@ public class AirbitzException extends Exception {
         return mCode == tABC_CC.ABC_CC_InvalidOTP;
     }
 
+    public String errorMap() {
+        return AirbitzException.errorMap(null, mCode, mError);
+    }
     static String errorMap(Context context, tABC_CC code, tABC_Error error) {
         if (code == tABC_CC.ABC_CC_AccountAlreadyExists) {
             return context.getString(R.string.server_error_account_already_exists);
