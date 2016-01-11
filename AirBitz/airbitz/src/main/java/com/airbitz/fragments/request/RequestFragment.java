@@ -437,7 +437,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
                 mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
             } else {
-                Log.d(TAG, "Too much bitcoin");
+                CoreAPI.debugLevel(1, "Too much bitcoin");
             }
         } else {
             String fiat = mAmountField.getText().toString();
@@ -445,7 +445,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
                     mAmountSatoshi = mCoreApi.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
                 } else {
-                    Log.d(TAG, "Too much fiat");
+                    CoreAPI.debugLevel(1, "Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -748,7 +748,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
-        Log.d(TAG, "isShowingQRCodeFor: " + walletUUID + " " + txId);
+        CoreAPI.debugLevel(1, "isShowingQRCodeFor: " + walletUUID + " " + txId);
         Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
         if (null == tx)
             return false;
@@ -756,14 +756,14 @@ public class RequestFragment extends WalletBaseFragment implements
         if (tx.getOutputs() == null || mAddress == null) {
             return false;
         }
-        Log.d(TAG, "isShowingQRCodeFor: hasOutputs");
+        CoreAPI.debugLevel(1, "isShowingQRCodeFor: hasOutputs");
         for (CoreAPI.TxOutput output : tx.getOutputs()) {
-            Log.d(TAG, output.getmInput() + " " + mAddress + " " + output.getAddress());
+            CoreAPI.debugLevel(1, output.getmInput() + " " + mAddress + " " + output.getAddress());
             if (!output.getmInput() && mAddress.equals(output.getAddress())) {
                 return true;
             }
         }
-        Log.d(TAG, "isShowingQRCodeFor: noMatch");
+        CoreAPI.debugLevel(1, "isShowingQRCodeFor: noMatch");
         return false;
     }
 
@@ -772,7 +772,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public long requestDifference(String walletUUID, String txId) {
-        Log.d(TAG, "requestDifference: " + walletUUID + " " + txId);
+        CoreAPI.debugLevel(1, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
             Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
             return mAmountSatoshi - tx.getAmountSatoshi();
@@ -851,7 +851,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         if(mRequestURI != null) {
-            Log.d(TAG, "Creating NFC request: " + mRequestURI);
+            CoreAPI.debugLevel(1, "Creating NFC request: " + mRequestURI);
             return new NdefMessage(NdefRecord.createUri(mRequestURI));
         }
         else
@@ -885,15 +885,15 @@ public class RequestFragment extends WalletBaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            Log.d(TAG, "Starting Receive Request at:" + System.currentTimeMillis());
+            CoreAPI.debugLevel(1, "Starting Receive Request at:" + System.currentTimeMillis());
             requestId = mCoreAPI.createReceiveRequestFor(wallet, "", "", satoshis);
             address = mCoreAPI.getRequestAddress(wallet.getUUID(), requestId);
             try {
                 // data in barcode is like bitcoin:address?amount=0.001
-                Log.d(TAG, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
+                CoreAPI.debugLevel(1, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
                 qrBitmap = mCoreAPI.getQRCodeBitmap(wallet.getUUID(), requestId);
                 qrBitmap = Common.AddWhiteBorder(qrBitmap);
-                Log.d(TAG, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
+                CoreAPI.debugLevel(1, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
                 uri = mCoreAPI.getRequestURI();
                 return true;
             } catch (Exception e) {
@@ -1003,7 +1003,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (animation.getAnimatedFraction() == 1.0f) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
-                        Log.d(TAG, "Last");
+                        CoreAPI.debugLevel(1, "Last");
                         alignQrCode();
                     }
                 }, 100);
@@ -1032,7 +1032,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
                     }
                 } else {
-                    Log.d(TAG, "Too much fiat");
+                    CoreAPI.debugLevel(1, "Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -1047,7 +1047,7 @@ public class RequestFragment extends WalletBaseFragment implements
                     mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false));
                 }
             } else {
-                Log.d(TAG, "Too much bitcoin");
+                CoreAPI.debugLevel(1, "Too much bitcoin");
             }
         }
         updateConversion();

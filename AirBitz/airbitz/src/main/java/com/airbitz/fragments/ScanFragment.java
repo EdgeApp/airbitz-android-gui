@@ -287,7 +287,7 @@ public abstract class ScanFragment
     }
 
     public void stopCamera() {
-        Log.d(TAG, "stopCamera");
+        mCoreApi.debugLevel(1, "stopCamera");
         mQRCamera.stopCamera();
     }
 

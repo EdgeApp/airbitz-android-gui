@@ -12,6 +12,8 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 import java.util.List;
 
+import com.airbitz.api.CoreAPI;
+
 public class CameraManager {
     final String TAG = getClass().getSimpleName();
 
@@ -196,51 +198,51 @@ public class CameraManager {
         @Override
         public void handleMessage(final Message msg) {
             try {
-                Log.d(TAG, "handleMessage");
+                CoreAPI.debugLevel(1, "handleMessage");
                 if (mCamera == null) {
                     mSig.open();
                     return;
                 }
                 switch (msg.what) {
                     case RELEASE:
-                        Log.d(TAG, "RELEASE");
+                        CoreAPI.debugLevel(1, "RELEASE");
                         mCamera.setPreviewCallback(null);
                         mCamera.release();
                         mCamera = null;
                         break;
 
                     case UNLOCK:
-                        Log.d(TAG, "UNLOCK");
+                        CoreAPI.debugLevel(1, "UNLOCK");
                         mCamera.unlock();
                         break;
 
                     case LOCK:
-                        Log.d(TAG, "LOCK");
+                        CoreAPI.debugLevel(1, "LOCK");
                         mCamera.lock();
                         break;
 
                     case START_PREVIEW:
-                        Log.d(TAG, "START_PREVIEW");
+                        CoreAPI.debugLevel(1, "START_PREVIEW");
                         mCamera.startPreview();
                         return;
 
                     case STOP_PREVIEW:
-                        Log.d(TAG, "STOP_PREVIEW");
+                        CoreAPI.debugLevel(1, "STOP_PREVIEW");
                         mCamera.stopPreview();
                         break;
 
                     case AUTO_FOCUS:
-                        Log.d(TAG, "AUTO_FOCUS");
+                        CoreAPI.debugLevel(1, "AUTO_FOCUS");
                         mCamera.autoFocus(null);
                         break;
 
                     case CANCEL_AUTO_FOCUS:
-                        Log.d(TAG, "CANCEL_AUTO_FOCUS");
+                        CoreAPI.debugLevel(1, "CANCEL_AUTO_FOCUS");
                         mCamera.cancelAutoFocus();
                         break;
 
                     case FLASH_ON: {
-                        Log.d(TAG, "FLASH_ON");
+                        CoreAPI.debugLevel(1, "FLASH_ON");
                         Camera.Parameters parameters = mCamera.getParameters();
                         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                         mCamera.setParameters(parameters);
@@ -249,7 +251,7 @@ public class CameraManager {
                     }
 
                     case FLASH_OFF: {
-                        Log.d(TAG, "FLASH_OFF");
+                        CoreAPI.debugLevel(1, "FLASH_OFF");
                         Camera.Parameters parameters = mCamera.getParameters();
                         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                         mCamera.setParameters(parameters);
@@ -258,23 +260,23 @@ public class CameraManager {
                     }
 
                     case PREVIEW_ON:
-                        Log.d(TAG, "PREVIEW_ON");
+                        CoreAPI.debugLevel(1, "PREVIEW_ON");
                         mPreviewing = true;
                         break;
 
                     case PREVIEW_OFF:
-                        Log.d(TAG, "PREVIEW_OFF");
+                        CoreAPI.debugLevel(1, "PREVIEW_OFF");
                         mPreviewing = false;
                         break;
 
                     case GET_PARAMETERS:
-                        Log.d(TAG, "GET_PARAMETERS");
+                        CoreAPI.debugLevel(1, "GET_PARAMETERS");
                         mParameters = mCamera.getParameters();
                         mSig.open();
                         break;
 
                     case SET_PARAMETERS:
-                        Log.d(TAG, "SET_PARAMETERS");
+                        CoreAPI.debugLevel(1, "SET_PARAMETERS");
                         mCamera.setParameters((Camera.Parameters) msg.obj);
                         mSig.open();
                         break;
@@ -288,7 +290,7 @@ public class CameraManager {
                         mSig.open();
 
                     case TAKE_PICTURE:
-                        Log.d(TAG, "TAKE_PICTURE");
+                        CoreAPI.debugLevel(1, "TAKE_PICTURE");
                         mCamera.takePicture(mShutterCallback, null, null, mJpegCallback);
                         break;
 

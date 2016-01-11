@@ -276,16 +276,16 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 if(isChecked && mCoreSettings.getBDisablePINLogin()) {
-                    Log.d(TAG, "Enabling PIN");
+                    CoreAPI.debugLevel(1, "Enabling PIN");
                     new mPinSetupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 } else if(!isChecked) {
-                    Log.d(TAG, "Disabling PIN");
+                    CoreAPI.debugLevel(1, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
                     try {
                         mCoreSettings.save();
                         mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
                     } catch (AirbitzException e) {
-                        Log.d(TAG, "", e);
+                        CoreAPI.debugLevel(1, "SettingFragment PINLoginDelete error" + e.errorMap());
                     }
                 }
             }
@@ -487,7 +487,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "SettingFragment saveCurrentSettings error" + e.errorMap());
             }
         }
     }
@@ -810,7 +810,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "SettingFragment mPinSetupTask error" + e.errorMap());
             }
             return null;
         }

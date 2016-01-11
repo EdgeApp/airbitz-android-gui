@@ -226,7 +226,7 @@ public class WalletAddFragment extends BaseFragment
             mAddWalletTask = null;
             if(isAdded()) {
                 if (!success) {
-                    Log.d(TAG, "AddWalletTask failed");
+                    CoreAPI.debugLevel(1, "AddWalletTask failed");
                     mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_created_wallet_failed));
                 } else {
                     WalletAddFragment.popFragment(mActivity);

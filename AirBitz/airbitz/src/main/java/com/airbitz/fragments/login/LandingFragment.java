@@ -522,7 +522,7 @@ public class LandingFragment extends BaseFragment implements
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
                 mPinEditText.setText("");
-                Log.d(TAG, "showing pin login for " + mUsername);
+                CoreAPI.debugLevel(1, "showing pin login for " + mUsername);
                 refreshView(true, true, true);
                 return;
             }
@@ -530,7 +530,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
-        Log.d(TAG, "showing password login for " + mUsername);
+        CoreAPI.debugLevel(1, "showing password login for " + mUsername);
         refreshView(false, false, true);
     }
 
@@ -830,7 +830,7 @@ public class LandingFragment extends BaseFragment implements
         try {
             mCoreAPI.OtpKeySet(mUsername, secret);
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "twoFactorSignIn error:" + e.errorMap());
         }
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
@@ -921,7 +921,7 @@ public class LandingFragment extends BaseFragment implements
             try {
                 return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "GetRecoveryQuestionsTask error:" + e.errorMap());
                 return e.getMessage();
             }
         }
@@ -940,7 +940,7 @@ public class LandingFragment extends BaseFragment implements
                 if (questions.length > 1) { // questions came back
                     mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if (questions.length == 1) { // Error string
-                    Log.d(TAG, questionString);
+                    CoreAPI.debugLevel(1, questionString);
                     mActivity.ShowFadingDialog(questions[0]);
                 }
             }

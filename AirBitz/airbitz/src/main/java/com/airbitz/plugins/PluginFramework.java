@@ -264,7 +264,7 @@ public class PluginFramework {
         }
 
         protected void onPostExecute(String data) {
-            Log.d(TAG, cbid + " " + data);
+            CoreAPI.debugLevel(1, cbid + " " + data);
             mFramework.loadUrl(String.format(JS_CALLBACK, cbid, data));
         }
     }
@@ -503,20 +503,20 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void writeData(String key, String value) {
-            Log.d(TAG, "writeData: " + key + ": " + value);
+            CoreAPI.debugLevel(1, "writeData: " + key + ": " + value);
             api.pluginDataSet(plugin.pluginId, key, value);
         }
 
         @JavascriptInterface
         public void clearData() {
-            Log.d(TAG, "clearData");
+            CoreAPI.debugLevel(1, "clearData");
             api.pluginDataClear(plugin.pluginId);
         }
 
         @JavascriptInterface
         public String readData(String key) {
             String s =  api.pluginDataGet(plugin.pluginId, key);
-            Log.d(TAG, "readData: " + key + ": " + s);
+            CoreAPI.debugLevel(1, "readData: " + key + ": " + s);
             return s;
         }
 
@@ -551,7 +551,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String getConfig(String key) {
-            Log.d(TAG, "key/value " + key + ":" + plugin.env.get(key));
+            CoreAPI.debugLevel(1, "key/value " + key + ":" + plugin.env.get(key));
             return plugin.env.get(key);
         }
 
@@ -572,7 +572,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void debugLevel(int level, String text) {
-            Log.d(TAG, text);
+            CoreAPI.debugLevel(1, text);
         }
 
         @JavascriptInterface
@@ -607,7 +607,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void launchExternal(String uri) {
-            Log.d(TAG, "launchExternal");
+            CoreAPI.debugLevel(1, "launchExternal");
             handler.launchExternal(uri);
         }
     }
@@ -668,7 +668,7 @@ public class PluginFramework {
     }
 
     public void signSuccess(String cbid, String walletUUID, String hex) {
-        Log.d(TAG, hex);
+        CoreAPI.debugLevel(1, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
     }
 
@@ -718,7 +718,7 @@ public class PluginFramework {
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                Log.d(TAG, message + " -- From line " + lineNumber);
+                CoreAPI.debugLevel(1, message + " -- From line " + lineNumber);
             }
 
             public void openFileChooser(ValueCallback<Uri> uploadCallback) {
@@ -763,7 +763,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, url);
+                CoreAPI.debugLevel(1, url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin
