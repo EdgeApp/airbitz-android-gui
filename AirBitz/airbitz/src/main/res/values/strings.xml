@@ -520,9 +520,6 @@
     <string name="fragment_debug_network_title">Network:</string>
     <string name="fragment_debug_clear_watcher_button">Clear Watcher Cache</string>
     <string name="fragment_debug_upload_log_files_button">Upload Log Files</string>
-    <string name="upload_uploading">Uploading log files...</string>
-    <string name="upload_succeeded">Upload complete</string>
-    <string name="upload_failed">Upload failed</string>
 
     <!-- Strings for MapBusinessDirectory fragment -->
     <string name="fragment_map_directory_unable_create_map">Sorry! unable to create maps, check for updates to Google Play Services</string>
@@ -625,6 +622,15 @@
     <string name="password_check_great_job">Great job remembering your password.</string>
     <string name="password_check_checking">Checking password…</string>
     <string name="password_check_current_password">Current password</string>
+
+    <!--Upload Logs-->
+    <string name="upload_log_alert_title">Upload Debug Log</string>
+    <string name="upload_log_alert_message">Enter any notes you would like to send to our support staff</string>
+    <string name="upload_log_alert_upload_logs">Upload Logs</string>
+    <string name="upload_log_alert_skip">Logs Not Uploaded</string>
+    <string name="upload_log_alert_uploading">Uploading Logs...</string>
+    <string name="upload_log_alert_succeeded">Upload complete</string>
+    <string name="upload_log_alert_failed">Upload failed. Please check network connection.</string>
 
     <!-- Password Set -->
     <string name="password_set_title">No password set</string>

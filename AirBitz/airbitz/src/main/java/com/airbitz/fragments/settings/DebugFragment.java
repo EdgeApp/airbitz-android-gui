@@ -42,12 +42,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.airbitz.BuildConfig;
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
-import com.airbitz.objects.HighlightOnPressButton;
-import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.UploadLogAlert;
 
 public class DebugFragment extends BaseFragment {
 
@@ -86,19 +85,17 @@ public class DebugFragment extends BaseFragment {
         mUploadLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new UploadLogsTask().execute();
+                CoreAPI.debugLevel(0, "Uploading logs from Debug Settings");
+                UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
+                uploadLogAlert.showUploadLogAlert();
             }
         });
 
-        try {
-            String s = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-            Integer iVersionCode = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionCode;
-            TextView appVersionText = (TextView) mView.findViewById(R.id.debug_app_version_text);
-            s = s.concat(" (" + iVersionCode.toString() + ")");
-            appVersionText.setText(s);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
+        String versionName = com.airbitz.BuildConfig.VERSION_NAME;
+        String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
+        TextView appVersionTextView = (TextView) mView.findViewById(R.id.debug_app_version_text);
+        appVersionTextView.setText(appVersion);
 
         ((TextView) mView.findViewById(R.id.debug_network_version_text)).setText(CoreAPI.getApi().isTestNet() ? "Testnet" : "Mainnet");
 
@@ -122,35 +119,6 @@ public class DebugFragment extends BaseFragment {
         if (isAdded()) {
             view.setClickable(enabled);
             view.setEnabled(enabled);
-        }
-    }
-
-    /**
-     * Upload core logs
-     */
-    public class UploadLogsTask extends AsyncTask<Void, Void, Void> {
-
-        UploadLogsTask() { }
-
-        @Override
-        protected void onPreExecute() {
-            lockButton(mUploadLogButton, false);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            mCoreApi.uploadLogs();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            lockButton(mUploadLogButton, true);
-        }
-
-        @Override
-        protected void onCancelled() {
-            lockButton(mUploadLogButton, true);
         }
     }
 

@@ -3057,6 +3057,16 @@ public class CoreAPI {
 
     public boolean uploadLogs() {
         tABC_Error Error = new tABC_Error();
+
+        // Send system information to end of logfile
+        String deviceName = Build.MODEL;
+        String deviceMan = Build.MANUFACTURER;
+        String deviceBrand = Build.BRAND;
+        String deviceOS = Build.VERSION.RELEASE;
+
+        CoreAPI.debugLevel(0, "Platform:" + deviceBrand + " " + deviceMan + " " + deviceName);
+        CoreAPI.debugLevel(0, "Android Version:" + deviceOS);
+
         core.ABC_UploadLogs(mUsername, mPassword, Error);
         return Error.getCode() == tABC_CC.ABC_CC_Ok;
     }

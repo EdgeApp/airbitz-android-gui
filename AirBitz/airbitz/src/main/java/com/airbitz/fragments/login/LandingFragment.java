@@ -75,6 +75,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.UploadLogAlert;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -226,7 +227,11 @@ public class LandingFragment extends BaseFragment implements
                 if (++mAccountTaps < 5) {
                     return;
                 }
-                new UploadLogsTask().execute();
+                CoreAPI.debugLevel(0, "Uploading logs from Landing screen");
+                UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
+                uploadLogAlert.showUploadLogAlert();
+                mAccountTaps = 0;
+
             }
         });
 
@@ -952,43 +957,5 @@ public class LandingFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
         }
 
-    }
-
-    public class UploadLogsTask extends AsyncTask<Void, Void, Boolean> {
-
-        UploadLogsTask() { }
-
-        @Override
-        protected void onPreExecute() {
-            mActivity.ShowFadingDialog(
-                    getString(R.string.upload_uploading),
-                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.uploadLogs();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            complete(success);
-        }
-
-        @Override
-        protected void onCancelled() {
-            complete(false);
-        }
-
-        private void complete(boolean success) {
-            if (mActivity != null) {
-                if (success) {
-                    mActivity.ShowFadingDialog(getString(R.string.upload_succeeded));
-                } else {
-                    mActivity.ShowFadingDialog(getString(R.string.upload_failed));
-                }
-            }
-            mAccountTaps = 0;
-        }
     }
 }
