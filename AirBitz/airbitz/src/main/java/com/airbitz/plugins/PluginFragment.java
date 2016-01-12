@@ -532,7 +532,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Bitmap bitmap = resize(PictureCamera.retrievePicture(mImageUri, mContext));
+                Bitmap bitmap = PictureCamera.retrievePicture(mImageUri, mContext);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
                 return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
