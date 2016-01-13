@@ -3052,7 +3052,14 @@ public class CoreAPI {
     }
 
     public String getCoreVersion() {
-        return core.ABC_VERSION;
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_p_char ppChar = core.longp_to_ppChar(lp);
+        core.ABC_Version(ppChar, error);
+        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getStringAtPtr(core.longp_value(lp));
+        }
+        return "";
     }
 
     public boolean uploadLogs() {
