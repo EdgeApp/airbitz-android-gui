@@ -44,6 +44,7 @@ import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.utils.Common;
+import com.airbitz.api.CoreAPI;
 
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Picasso;
@@ -97,14 +98,14 @@ public class AirbitzRequestHandler extends RequestHandler {
     @Override
     public Result load(Request request, int networkPolicy) throws IOException {
         Uri uri = request.uri;
-        Log.d(TAG, request.uri.toString());
+        CoreAPI.debugLevel(1, request.uri.toString());
         switch (matcher.match(uri)) {
         case ID_CONTACT:
-            Log.d(TAG, "ID_CONTACT");
+            CoreAPI.debugLevel(1, "ID_CONTACT");
             InputStream is = getContactStream(uri);
             return is != null ? new Result(is, LoadedFrom.DISK) : null;
         case ID_BIZ:
-            Log.d(TAG, "ID_BIZ");
+            CoreAPI.debugLevel(1, "ID_BIZ");
             return fetchBizLink(request, networkPolicy);
         default:
             throw new IllegalStateException("Invalid uri: " + uri);
@@ -135,13 +136,13 @@ public class AirbitzRequestHandler extends RequestHandler {
                 }
                 mBizIds.put(bizId, biz.getSquareImageLink());
                 thumbnail = Uri.parse(biz.getSquareImageLink());
-                Log.d(TAG, "Fetch..." + thumbnail.toString());
+                CoreAPI.debugLevel(1, "Fetch..." + thumbnail.toString());
             } else {
                 thumbnail = Uri.parse(mBizIds.get(bizId));
             }
             return networkFetch(request, thumbnail, networkPolicy);
         } catch (Exception e) {
-            Log.d(TAG, "exception");
+            CoreAPI.debugLevel(1, "exception");
             Log.e(TAG, request.uri.getPath(), e);
         }
         return null;

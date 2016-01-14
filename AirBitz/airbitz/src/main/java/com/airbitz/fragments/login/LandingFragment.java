@@ -75,6 +75,7 @@ import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.UploadLogAlert;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -226,7 +227,11 @@ public class LandingFragment extends BaseFragment implements
                 if (++mAccountTaps < 5) {
                     return;
                 }
-                new UploadLogsTask().execute();
+                CoreAPI.debugLevel(0, "Uploading logs from Landing screen");
+                UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
+                uploadLogAlert.showUploadLogAlert();
+                mAccountTaps = 0;
+
             }
         });
 
@@ -522,7 +527,7 @@ public class LandingFragment extends BaseFragment implements
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
                 mPinEditText.setText("");
-                Log.d(TAG, "showing pin login for " + mUsername);
+                CoreAPI.debugLevel(1, "showing pin login for " + mUsername);
                 refreshView(true, true, true);
                 return;
             }
@@ -530,7 +535,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
-        Log.d(TAG, "showing password login for " + mUsername);
+        CoreAPI.debugLevel(1, "showing password login for " + mUsername);
         refreshView(false, false, true);
     }
 
@@ -830,7 +835,7 @@ public class LandingFragment extends BaseFragment implements
         try {
             mCoreAPI.OtpKeySet(mUsername, secret);
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "twoFactorSignIn error:" + e.errorMap());
         }
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
@@ -921,7 +926,7 @@ public class LandingFragment extends BaseFragment implements
             try {
                 return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "GetRecoveryQuestionsTask error:" + e.errorMap());
                 return e.getMessage();
             }
         }
@@ -940,7 +945,7 @@ public class LandingFragment extends BaseFragment implements
                 if (questions.length > 1) { // questions came back
                     mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if (questions.length == 1) { // Error string
-                    Log.d(TAG, questionString);
+                    CoreAPI.debugLevel(1, questionString);
                     mActivity.ShowFadingDialog(questions[0]);
                 }
             }
@@ -952,43 +957,5 @@ public class LandingFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
         }
 
-    }
-
-    public class UploadLogsTask extends AsyncTask<Void, Void, Boolean> {
-
-        UploadLogsTask() { }
-
-        @Override
-        protected void onPreExecute() {
-            mActivity.ShowFadingDialog(
-                    getString(R.string.upload_uploading),
-                    getResources().getInteger(R.integer.alert_hold_time_forever), false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.uploadLogs();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            complete(success);
-        }
-
-        @Override
-        protected void onCancelled() {
-            complete(false);
-        }
-
-        private void complete(boolean success) {
-            if (mActivity != null) {
-                if (success) {
-                    mActivity.ShowFadingDialog(getString(R.string.upload_succeeded));
-                } else {
-                    mActivity.ShowFadingDialog(getString(R.string.upload_failed));
-                }
-            }
-            mAccountTaps = 0;
-        }
     }
 }

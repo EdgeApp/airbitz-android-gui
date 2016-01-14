@@ -164,7 +164,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         try {
             mCoreAPI.SetPin(mPin);
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 1 error:" + e.errorMap());
         }
 
         mCoreAPI.setupAccountSettings();
@@ -177,7 +177,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         try {
             settings.save();
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 2 error:" + e.errorMap());
         }
         mActivity.UserJustLoggedIn(true);
     }

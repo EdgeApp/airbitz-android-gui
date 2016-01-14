@@ -421,7 +421,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 mCoreAPI.enableTwoFactor(this.isChecked);
                 return true;
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "SwitchFlippedTask error" + e.errorMap());
                 return false;
             }
         }
@@ -466,7 +466,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 mCoreAPI.enableTwoFactor(false);
                 return null;
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "ConfirmRequestTask error" + e.errorMap());
                 return e;
             }
         }

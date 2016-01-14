@@ -53,6 +53,7 @@ import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.models.Wallet;
+import com.airbitz.api.CoreAPI;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -150,9 +151,9 @@ public class ImportFragment extends ScanFragment {
 
     @Override
     public void onCameraScanResult(String result) {
-        Log.d(TAG, "OnScanResult " + result);
+        CoreAPI.debugLevel(1, "OnScanResult " + result);
         if (result != null) {
-            Log.d(TAG, "HiddenBits found");
+            CoreAPI.debugLevel(1, "HiddenBits found");
             processText(result);
         } else {
             showMessageAndStartCameraDialog(R.string.import_title, R.string.fragment_send_send_bitcoin_unscannable);
@@ -178,7 +179,7 @@ public class ImportFragment extends ScanFragment {
                     task.execute(lastFourChars);
                 }
                 else {
-                    Log.d(TAG, "HiddenBits token error");
+                    CoreAPI.debugLevel(1, "HiddenBits token error");
                 }
             }
         } else {
@@ -208,7 +209,7 @@ public class ImportFragment extends ScanFragment {
     public class HiddenBitsApiTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "Getting HiddenBits API response");
+            CoreAPI.debugLevel(1, "Getting HiddenBits API response");
         }
 
         @Override
@@ -222,7 +223,7 @@ public class ImportFragment extends ScanFragment {
             if (result == null) {
                 return;
             }
-            Log.d(TAG, "Got HiddenBits API response: " + result);
+            CoreAPI.debugLevel(1, "Got HiddenBits API response: " + result);
 
             JSONObject jsonObject;
             try {
@@ -250,7 +251,7 @@ public class ImportFragment extends ScanFragment {
         public void onReceive(Context context, Intent intent) {
             String txID = intent.getStringExtra(CoreAPI.WALLET_TXID);
             long amount = intent.getLongExtra(CoreAPI.AMOUNT_SWEPT, 0);
-            Log.d(TAG, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
+            CoreAPI.debugLevel(1, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
             showBusyLayout(null, false);
 
@@ -282,7 +283,7 @@ public class ImportFragment extends ScanFragment {
     private void checkHiddenBitsAsyncData() {
         // both async paths are finished if both of these are not empty
         if (mSweptAmount != -1 && mTweet != null) {
-            Log.d(TAG, "Both API and OnWalletSweep are finished");
+            CoreAPI.debugLevel(1, "Both API and OnWalletSweep are finished");
 
             mHandler.removeCallbacks(sweepNotFoundRunner);
             showBusyLayout(null, false);

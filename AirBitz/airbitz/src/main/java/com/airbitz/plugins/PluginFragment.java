@@ -377,13 +377,17 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             PluginFragment.this.launchCamera(cbid);
         }
 
-        public void launchSend(final String cbid, final String uuid, final String address,
-                               final long amountSatoshi, final double amountFiat,
-                               final String label, final String category, final String notes,
-                               final long bizId) {
+        public SpendTarget launchSend(final String cbid, final String uuid, final String address,
+                                      final long amountSatoshi, final double amountFiat,
+                                      final String label, final String category, final String notes,
+                                      final long bizId, final boolean signOnly) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
                 public void success(String txId) {
-                    mFramework.sendSuccess(cbid, uuid, txId);
+                    if (signOnly) {
+                        mFramework.signSuccess(cbid, uuid, txId);
+                    } else {
+                        mFramework.sendSuccess(cbid, uuid, txId);
+                    }
                     mSendConfirmation = null;
                 }
                 public void back() {
@@ -397,12 +401,13 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     mSendConfirmation = null;
                 }
             };
+            final CoreAPI api = CoreAPI.getApi();
+            final SpendTarget target = api.getNewSpendTarget();
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    CoreAPI api = CoreAPI.getApi();
-                    SpendTarget target = api.getNewSpendTarget();
                     if (target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
                         target.setBizId(bizId);
+                        target.setAmountFiat(amountFiat);
                         mSendConfirmation = new SendConfirmationFragment();
                         mSendConfirmation.setSpendTarget(target);
                         mSendConfirmation.setExitHandler(exitHandler);
@@ -411,13 +416,14 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
                         bundle.putString(ScanFragment.FROM_WALLET_UUID, uuid);
                         bundle.putBoolean(ScanFragment.LOCKED, true);
+                        bundle.putBoolean(ScanFragment.SIGN_ONLY, signOnly);
                         mSendConfirmation.setArguments(bundle);
 
                         ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.BUYSELL.ordinal());
-
                     }
                 }
             });
+            return target;
         }
 
         public void showNavBar() {
@@ -517,8 +523,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             mFramework = framework;
         }
 
-        static final int MAX_WIDTH = 1500;
-        static final int MAX_HEIGHT = 1500;
+        static final int MAX_WIDTH = 1000;
+        static final int MAX_HEIGHT = 1000;
 
         private Bitmap resize(Bitmap bitmap) {
             if (bitmap.getHeight() > MAX_HEIGHT || bitmap.getWidth() > MAX_WIDTH) {
@@ -532,10 +538,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Bitmap bitmap = PictureCamera.retrievePicture(mImageUri, mContext);
+                Bitmap bitmap = resize(PictureCamera.retrievePicture(mImageUri, mContext));
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
-                return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
+                return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT | Base64.NO_WRAP);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }

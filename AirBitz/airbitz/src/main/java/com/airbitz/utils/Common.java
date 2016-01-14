@@ -64,6 +64,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.objects.CurrentLocationManager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -119,13 +120,13 @@ public class Common {
             }
             return buf.toString();
         } catch (IOException e) {
-            Log.d(TAG, "Error opening asset " + name);
+            CoreAPI.debugLevel(1, "Error opening asset " + name);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    Log.d(TAG, "Error closing asset " + name);
+                    CoreAPI.debugLevel(1, "Error closing asset " + name);
                 }
             }
         }
@@ -159,7 +160,7 @@ public class Common {
             PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
             version = info.versionName + " " + String.valueOf(info.versionCode);
         } catch (PackageManager.NameNotFoundException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "Common.java getVersion error" + e.toString());
         }
         return version;
     }
@@ -200,7 +201,7 @@ public class Common {
             out.close();
             return strFile;
         } catch (Throwable t) {
-            Log.d(TAG, "createFileFromString failed for " + name);
+            CoreAPI.debugLevel(1, "createFileFromString failed for " + name);
             return null;
         }
     }

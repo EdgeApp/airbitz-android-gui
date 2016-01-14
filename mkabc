@@ -4,7 +4,7 @@ BASE=$(pwd)
 
 # Build the core:
 cd $BASE/../airbitz-core/deps
-touch recipes/abc
+touch recipes/abc/abc.recipe
 make abc.build-android-arm abc.build-android-x86
 
 # Now build the JNI wrapper:

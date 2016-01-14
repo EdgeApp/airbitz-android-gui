@@ -219,7 +219,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret);
                     AttemptSignupOrChange();
                 } catch (AirbitzException e) {
-                    Log.d(TAG, "", e);
+                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment onResume error" + e.errorMap());
                 }
             }
             else {
@@ -516,7 +516,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 try {
                     mCoreAPI.OtpKeySet(username, secret);
                 } catch (AirbitzException e) {
-                    Log.d(TAG, "", e);
+                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error" + e.errorMap());
                 }
             }
             return result;
@@ -604,7 +604,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
-                Log.d(TAG, "No Questions");
+                CoreAPI.debugLevel(1, "No Questions");
                 return false;
             }
         }
@@ -654,7 +654,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
                 return true;
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error" + e.errorMap());
                 return false;
             }
         }
@@ -716,11 +716,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d(TAG, "spinner selection");
+                    CoreAPI.debugLevel(1, "spinner selection");
                     if (ignoreSelected || mMode == FORGOT_PASSWORD) return;
 
                     chosenQuestion = currentQuestionList.get(i);
-                    Log.d(TAG, "spinner selection not ignored=" + chosenQuestion);
+                    CoreAPI.debugLevel(1, "spinner selection not ignored=" + chosenQuestion);
                     if (mType == QuestionType.STRING) {
                         if (mStringCategory.containsKey(chosenQuestion))
                             mCharLimit = mStringCategory.get(chosenQuestion);

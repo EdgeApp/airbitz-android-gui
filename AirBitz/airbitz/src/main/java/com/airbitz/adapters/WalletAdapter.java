@@ -34,10 +34,13 @@ package com.airbitz.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -72,6 +75,16 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     private boolean mArchiveOpen = false;
     private Typeface mBitcoinTypeface;
     private int mCurrencyNum;
+
+    private WalletMenuListener mWalletMenuListener;
+    public interface WalletMenuListener {
+        public void renameWallet(Wallet wallet);
+        public void deleteWallet(Wallet wallet);
+    }
+
+    public void setWalletMenuListener(WalletMenuListener listener) {
+        mWalletMenuListener = listener;
+    }
 
     private OnHeaderButtonPress mHeaderButtonListener;
     public interface OnHeaderButtonPress {
@@ -230,7 +243,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             convertView = inflater.inflate(R.layout.item_listview_wallets, parent, false);
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
-            View drag = convertView.findViewById(R.id.drag_container);
+            View drag = convertView.findViewById(R.id.menu_container);
             if (archivePos == 2 && !wallet.isArchived()) {
                 drag.setVisibility(View.INVISIBLE);
             } else {
@@ -258,6 +271,29 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             } else {
                 convertView.setSelected(false);
             }
+
+            final Wallet menuWallet = wallet;
+            final PopupMenu popupMenu = new PopupMenu(mContext, drag);
+            popupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, mContext.getString(R.string.string_rename));
+            popupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, mContext.getString(R.string.string_delete));
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (mWalletMenuListener == null) {
+                        return false;
+                    }
+                    if (item.getItemId() == 1) {
+                        mWalletMenuListener.renameWallet(menuWallet);
+                    } else {
+                        mWalletMenuListener.deleteWallet(menuWallet);
+                    }
+                    return true;
+                }
+            });
+            drag.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    popupMenu.show();
+                }
+            });
         }
         if (archivePos < position && closeAfterArchive) {
             convertView.setVisibility(View.GONE);

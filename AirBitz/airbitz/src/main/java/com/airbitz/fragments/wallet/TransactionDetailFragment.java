@@ -443,7 +443,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit && isResumed()) {
-                    Log.d(TAG, "editable=" + editable.toString());
+                    CoreAPI.debugLevel(1, "editable=" + editable.toString());
                     updateBlanks(editable.toString());
                     createNewCategoryChoices(editable.toString());
                 }
@@ -670,19 +670,19 @@ public class TransactionDetailFragment extends WalletBaseFragment
         bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
-                Log.d(TAG, "SEND");
+                CoreAPI.debugLevel(1, "SEND");
                 mFromSend = true;
                 setCurrentType(getString(R.string.fragment_category_expense));
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
-                Log.d(TAG, "REQUEST");
+                CoreAPI.debugLevel(1, "REQUEST");
                 setCurrentType(getString(R.string.fragment_category_income));
             }
 
             mWalletUUID = bundle.getString(Wallet.WALLET_UUID);
             mTxId = bundle.getString(Transaction.TXID);
             if (mWalletUUID.isEmpty()) {
-                Log.d(TAG, "no detail info");
+                CoreAPI.debugLevel(1, "no detail info");
             } else if (mWallet == null || mTransaction == null) {
                 mWallet = mCoreApi.getWalletFromUUID(mWalletUUID);
                 mTransaction = mCoreApi.getTransaction(mWalletUUID, mTxId);
@@ -704,22 +704,22 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         if(mContactNames == null || mContactNames.isEmpty()) {
-            Log.d(TAG, "Getting Contact List");
+            CoreAPI.debugLevel(1, "Getting Contact List");
             getContactsList();
         }
 
         if(mTransaction != null) {
-            Log.d(TAG, "Updating view");
+            CoreAPI.debugLevel(1, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
-            Log.d(TAG, "Getting original categories");
+            CoreAPI.debugLevel(1, "Getting original categories");
             setupOriginalCategories();
         }
 
         mCategoryAdapter.setOnNewCategoryListener(this);
-        Log.d(TAG, "OnResume finished");
+        CoreAPI.debugLevel(1, "OnResume finished");
     }
 
     @Override
@@ -745,7 +745,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mActivity.startActivity(intent);
         }
         else {
-            Log.d(TAG, "Return URL does not begin with http or https");
+            CoreAPI.debugLevel(1, "Return URL does not begin with http or https");
         }
     }
 
@@ -884,7 +884,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     e.printStackTrace();
                 }
             } else {
-                Log.d(TAG, "loading remote " + payeeImage.toString());
+                CoreAPI.debugLevel(1, "loading remote " + payeeImage.toString());
                 mPicasso.with(getActivity())
                         .load(payeeImage)
                         .transform(new RoundedTransformation(round, round))
@@ -925,7 +925,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mBizIds.containsKey(mPayeeEditText.getText().toString())) {
             mBizId = mBizIds.get(mPayeeEditText.getText().toString());
         }
-        Log.d(TAG, "Biz ID: " + String.valueOf(mBizId));
+        CoreAPI.debugLevel(1, "Biz ID: " + String.valueOf(mBizId));
     }
 
 
@@ -1137,7 +1137,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
                     s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-//                    Log.d(TAG, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
+//                    CoreAPI.debugLevel(1, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1160,7 +1160,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         for (String type : orderedCategories) {
-//            Log.d(TAG, "Searching for "+type);
+//            CoreAPI.debugLevel(1, "Searching for "+type);
             addMatchesForPrefix(type, match);
         }
         if (null != mCategoryAdapter) {
@@ -1242,7 +1242,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                             if (thumbnail != null) {
                                 Uri uri = Uri.parse(thumbnail);
                                 mCombinedPhotos.put(business.getName(), uri);
-//                                Log.d(TAG, "Adding " + business.getName() + " thumbnail");
+//                                CoreAPI.debugLevel(1, "Adding " + business.getName() + " thumbnail");
                             }
                         }
                     }
@@ -1468,7 +1468,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void FindBizIdThumbnail(String name, long id) {
         if (id != 0) {
-            Log.d(TAG, "Finding bizid thumbnail for "+name);
+            CoreAPI.debugLevel(1, "Finding bizid thumbnail for "+name);
             GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1496,7 +1496,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             }
             if (business != null && business.getSquareImageLink() != null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
-                Log.d(TAG, "Got " + uri);
+                CoreAPI.debugLevel(1, "Got " + uri);
                 mCombinedPhotos.put(mName, uri);
                 updatePhoto();
                 updateBizId();

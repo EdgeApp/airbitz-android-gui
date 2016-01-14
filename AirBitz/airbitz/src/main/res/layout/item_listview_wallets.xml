@@ -31,11 +31,12 @@
 
      <!-- TODO: find a better icon to use -->
      <FrameLayout
-        android:id="@+id/drag_container"
+        android:id="@+id/menu_container"
          android:layout_height="match_parent"
          android:layout_width="50dp">
 
         <ImageView
+            android:id="@+id/popup_menu"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_gravity="center"

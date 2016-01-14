@@ -244,10 +244,10 @@ public class PluginFramework {
         public void hideAlert();
         public void setTitle(String title);
         public void launchCamera(final String cbid);
-        public void launchSend(final String cbid, final String uuid, final String address,
-                               final long amountSatoshi, final double amountFiat,
-                               final String label, final String category, final String notes,
-                               long bizId);
+        public CoreAPI.SpendTarget launchSend(final String cbid, final String uuid, final String address,
+                                      final long amountSatoshi, final double amountFiat,
+                                      final String label, final String category, final String notes,
+                                      long bizId, boolean signOnly);
         public void showNavBar();
         public void hideNavBar();
         public void back();
@@ -268,7 +268,7 @@ public class PluginFramework {
         }
 
         protected void onPostExecute(String data) {
-            Log.d(TAG, cbid + " " + data);
+            CoreAPI.debugLevel(1, cbid + " " + data);
             mFramework.loadUrl(String.format(JS_CALLBACK, cbid, data));
         }
     }
@@ -374,6 +374,10 @@ public class PluginFramework {
         Plugin plugin;
         PluginFramework framework;
 
+        // Holds signed pending spends
+        CoreAPI.SpendTarget mTarget = null;
+
+
         PluginContext(PluginFramework framework, Plugin plugin, UiHandler handler) {
             this.api = CoreAPI.getApi();
             this.framework = framework;
@@ -460,7 +464,39 @@ public class PluginFramework {
         @JavascriptInterface
         public void requestSpend(String cbid, String uuid, String address, long amountSatoshi,
                                  double amountFiat, String label, String category, String notes, long bizId) {
-            handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId);
+            handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, false);
+        }
+
+        @JavascriptInterface
+        public void requestSign(String cbid, String uuid, String address, long amountSatoshi,
+                                double amountFiat, String label, String category, String notes, long bizId) {
+            mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, true);
+        }
+
+        @JavascriptInterface
+        public void broadcastTx(final String cbid, final String uuid, final String rawTx) {
+            CallbackTask task = new CallbackTask(cbid, framework) {
+                @Override
+                public String doInBackground(Void... v) {
+                    if (mTarget != null && mTarget.broadcastTx(uuid, rawTx)) {
+                        return jsonSuccess().toString();
+                    } else {
+                        return jsonError().toString();
+                    }
+                }
+            };
+            task.execute();
+        }
+
+        @JavascriptInterface
+        public String saveTx(String uuid, String rawTx) {
+            if (mTarget != null) {
+                String id =  mTarget.saveTx(uuid, rawTx);
+                mTarget = null;
+                return id;
+            } else {
+                return null;
+            }
         }
 
         @JavascriptInterface
@@ -471,20 +507,20 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void writeData(String key, String value) {
-            Log.d(TAG, "writeData: " + key + ": " + value);
+            CoreAPI.debugLevel(1, "writeData: " + key + ": " + value);
             api.pluginDataSet(plugin.pluginId, key, value);
         }
 
         @JavascriptInterface
         public void clearData() {
-            Log.d(TAG, "clearData");
+            CoreAPI.debugLevel(1, "clearData");
             api.pluginDataClear(plugin.pluginId);
         }
 
         @JavascriptInterface
         public String readData(String key) {
             String s =  api.pluginDataGet(plugin.pluginId, key);
-            Log.d(TAG, "readData: " + key + ": " + s);
+            CoreAPI.debugLevel(1, "readData: " + key + ": " + s);
             return s;
         }
 
@@ -519,7 +555,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String getConfig(String key) {
-            Log.d(TAG, "key/value " + key + ":" + plugin.env.get(key));
+            CoreAPI.debugLevel(1, "key/value " + key + ":" + plugin.env.get(key));
             return plugin.env.get(key);
         }
 
@@ -540,7 +576,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void debugLevel(int level, String text) {
-            Log.d(TAG, text);
+            CoreAPI.debugLevel(1, text);
         }
 
         @JavascriptInterface
@@ -575,7 +611,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void launchExternal(String uri) {
-            Log.d(TAG, "launchExternal");
+            CoreAPI.debugLevel(1, "launchExternal");
             handler.launchExternal(uri);
         }
     }
@@ -631,9 +667,12 @@ public class PluginFramework {
                 || nav.get(nav.size() - 1).contains("https://"));
     }
 
-    public void sendSuccess(String cbid, String walletUUID, String txId) {
-        String hex = mCoreAPI.getRawTransaction(walletUUID, txId);
-        Log.d(TAG, hex);
+    public void sendSuccess(String cbid, String walletUUID, String txid) {
+        loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(txid)).toString()));
+    }
+
+    public void signSuccess(String cbid, String walletUUID, String hex) {
+        CoreAPI.debugLevel(1, hex);
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
     }
 
@@ -683,7 +722,7 @@ public class PluginFramework {
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                Log.d(TAG, message + " -- From line " + lineNumber);
+                CoreAPI.debugLevel(1, message + " -- From line " + lineNumber);
             }
 
             public void openFileChooser(ValueCallback<Uri> uploadCallback) {
@@ -728,7 +767,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, url);
+                CoreAPI.debugLevel(1, url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin
