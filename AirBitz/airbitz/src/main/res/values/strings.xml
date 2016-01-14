@@ -15,6 +15,7 @@
     <string name="string_paste_address">Paste %1$s</string>
     <string name="string_search">Search</string>
     <string name="string_done">DONE</string>
+    <string name="string_rename">Rename</string>
     <string name="string_delete">Delete</string>
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>

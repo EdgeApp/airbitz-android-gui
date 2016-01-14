@@ -82,7 +82,8 @@ import java.util.List;
 
 public class WalletsFragment extends WalletBaseFragment implements
     DynamicListView.OnListReordering,
-    WalletAdapter.OnHeaderButtonPress {
+    WalletAdapter.OnHeaderButtonPress,
+    WalletAdapter.WalletMenuListener {
 
     public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
@@ -133,6 +134,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         mWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mWalletAdapter.setHeaderButtonListener(this);
+        mWalletAdapter.setWalletMenuListener(this);
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
 
         mWalletsHeader = view.findViewById(R.id.fragment_wallets_wallets_header);
@@ -179,6 +181,12 @@ public class WalletsFragment extends WalletBaseFragment implements
                 } else if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), getResources().getInteger(R.integer.alert_hold_time_help_popups));
                 } else {
+                    // If the menu button is selected
+                    View menu = view.findViewById(R.id.menu_container);
+                    if (menu.getX() <= mWalletListView.getDownX()) {
+                        menu.performClick();
+                        return;
+                    }
                     a.setSelectedWallet(i);
                     view.setSelected(true);
 
@@ -190,18 +198,12 @@ public class WalletsFragment extends WalletBaseFragment implements
             }
         });
         mWalletListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long id) {
                 Wallet wallet = mLatestWalletList.get(pos);
                 if (wallet.isHeader() || wallet.isArchiveHeader()) {
                     return true;
                 }
-                View drag = arg1.findViewById(R.id.drag_container);
-                if (drag.getX() <= mWalletListView.getDownX()) {
-                    return mWalletListView.startDrag(arg0, arg1, pos, id);
-                } else {
-                    showRenameDialog(wallet);
-                    return true;
-                }
+                return mWalletListView.startDrag(adapterView, view, pos, id);
             }
         });
         mHeaderTotal = (TextView) mWalletsHeader.findViewById(R.id.total);
@@ -376,7 +378,8 @@ public class WalletsFragment extends WalletBaseFragment implements
         return 200;
     }
 
-    public void showRenameDialog(final Wallet wallet) {
+    @Override
+    public void renameWallet(final Wallet wallet) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.alert_rename_wallet, null);
         final EditText editText = (EditText) view.findViewById(R.id.wallet_name);
@@ -392,8 +395,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
                .negativeText(getResources().getString(R.string.string_cancel))
                .negativeColor(getResources().getColor(R.color.colorPrimaryDark))
-               .neutralText(getResources().getString(R.string.string_delete))
-               .neutralColor(getResources().getColor(R.color.colorPrimaryDark))
                .theme(Theme.LIGHT)
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -416,20 +417,16 @@ public class WalletsFragment extends WalletBaseFragment implements
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
                     }
-                    @Override
-                    public void onNeutral(MaterialDialog dialog) {
-                        deleteWalletConfirm(wallet);
-                        dialog.cancel();
-                    }
                 });
         builder.show();
     }
 
-    public void deleteWalletConfirm(final Wallet wallet) {
+    @Override
+    public void deleteWallet(final Wallet wallet) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_wallets_delete_wallet_confirm_title))
                .titleColorRes(R.color.colorPrimaryDark)
-               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_confirm_message), mWallet.getName()))
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_confirm_message), wallet.getName()))
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_delete))
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -451,9 +448,9 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     public void deleteWalletConfirmConfirm(final Wallet wallet) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
-        builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), mWallet.getName()))
+        builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), wallet.getName()))
                .titleColorRes(R.color.colorPrimaryDark)
-               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), mWallet.getName()))
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), wallet.getName()))
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_delete))
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
