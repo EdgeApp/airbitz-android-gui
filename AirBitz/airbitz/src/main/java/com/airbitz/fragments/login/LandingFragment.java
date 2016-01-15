@@ -808,7 +808,15 @@ public class LandingFragment extends BaseFragment implements
 
     private boolean isFirstLogin() {
         List<String> accounts = mCoreAPI.listAccounts();
-        return accounts == null || !accounts.contains(mUsername);
+        if (null == accounts) {
+            return true;
+        }
+        for (String s : accounts) {
+            if (s.equalsIgnoreCase(mUsername)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void launchTwoFactorMenu() {
