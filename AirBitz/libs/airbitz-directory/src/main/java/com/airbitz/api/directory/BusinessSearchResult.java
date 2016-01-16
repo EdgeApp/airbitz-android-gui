@@ -108,7 +108,11 @@ public class BusinessSearchResult {
             mSocialArray = Social.generateSocialListFromJSONObject(jsonResponse.getJSONArray("social"));
             mProfileImage = new ProfileImage(jsonResponse.getJSONObject("profile_image"));
             mSquareProfileImage = new ProfileImage(jsonResponse.getJSONObject("square_image"));
-            mLocation = new Location(jsonResponse.getJSONObject("location"));
+            try {
+                mLocation = new Location(jsonResponse.getJSONObject("location"));
+            } catch (JSONException e) {
+                mLocation = null;
+            }
             mBizDiscount = jsonResponse.getString("has_bitcoin_discount");
             mDistance = jsonResponse.getString("distance");
         }
