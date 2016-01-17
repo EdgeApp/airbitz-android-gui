@@ -807,16 +807,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private boolean isFirstLogin() {
-        List<String> accounts = mCoreAPI.listAccounts();
-        if (null == accounts) {
-            return true;
-        }
-        for (String s : accounts) {
-            if (s.equalsIgnoreCase(mUsername)) {
-                return false;
-            }
-        }
-        return true;
+        return !mCoreAPI.accountSyncExistsLocal(mUsername);
     }
 
     private void launchTwoFactorMenu() {
