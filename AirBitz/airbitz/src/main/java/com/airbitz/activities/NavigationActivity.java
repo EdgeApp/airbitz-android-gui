@@ -121,6 +121,7 @@ import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
+import com.airbitz.plugins.GiftCardFragment;
 import com.airbitz.plugins.PluginFragment;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
@@ -205,6 +206,7 @@ public class NavigationActivity extends ActionBarActivity
             new SettingFragment(),
             new ImportFragment(),
             new BuySellFragment(),
+            new GiftCardFragment(),
     };
     // These stacks are the five "threads" of fragments represented in mNavFragments
     private Stack<Fragment>[] mNavStacks = null;
@@ -238,6 +240,7 @@ public class NavigationActivity extends ActionBarActivity
     private Button mDrawerTxs;
     private Button mDrawerWallets;
     private Button mDrawerBuySell;
+    private Button mDrawerShop;
     private Button mDrawerImport;
     private Button mDrawerSettings;
     private Button mDrawerLogout;
@@ -1462,6 +1465,8 @@ public class NavigationActivity extends ActionBarActivity
                 return new ImportFragment();
             case 7:
                 return new BuySellFragment();
+            case 8:
+                return new GiftCardFragment();
             default:
                 return null;
         }
@@ -1488,7 +1493,7 @@ public class NavigationActivity extends ActionBarActivity
         return false;
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT, BUYSELL}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT, BUYSELL, SHOP}
 
     //************************ Connectivity support
 
@@ -2256,6 +2261,15 @@ public class NavigationActivity extends ActionBarActivity
             }
         });
 
+        mDrawerShop = (Button) findViewById(R.id.item_drawer_shop);
+        mDrawerShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavBarSelected(Tabs.SHOP.ordinal());
+                mDrawer.closeDrawer(mDrawerView);
+            }
+        });
+
         mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2368,6 +2382,8 @@ public class NavigationActivity extends ActionBarActivity
             resetDrawerButtons(mDrawerImport);
         } else if (mNavThreadId == Tabs.BUYSELL.ordinal()) {
             resetDrawerButtons(mDrawerBuySell);
+        } else if (mNavThreadId == Tabs.SHOP.ordinal()) {
+            resetDrawerButtons(mDrawerShop);
         }
     }
 
@@ -2378,6 +2394,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerTxs.setSelected(false);
         mDrawerWallets.setSelected(false);
         mDrawerBuySell.setSelected(false);
+        mDrawerShop.setSelected(false);
         mDrawerImport.setSelected(false);
         mDrawerSettings.setSelected(false);
         mDrawerLogout.setSelected(false);

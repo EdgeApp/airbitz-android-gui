@@ -31,16 +31,37 @@
 
 package com.airbitz.plugins;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
+import com.airbitz.fragments.BaseFragment;
+import com.airbitz.utils.Common;
+import com.airbitz.plugins.PluginFramework.Plugin;
 
-public class BuySellFragment extends BasePluginList {
+import java.util.List;
 
-    public BuySellFragment() {
-        mPlugins = PluginFramework.getPluginsGrouped().get(PluginFramework.BUYSELL);
+public class GiftCardFragment extends BasePluginList {
+
+    public GiftCardFragment() {
+        mPlugins = PluginFramework.getPluginsGrouped().get(PluginFramework.GIFT_CARDS);
     }
 
     @Override
     protected String getTitle() {
-        return mActivity.getString(R.string.drawer_buy_sell);
+        return mActivity.getString(R.string.drawer_discounted_gift_cards);
     }
 }

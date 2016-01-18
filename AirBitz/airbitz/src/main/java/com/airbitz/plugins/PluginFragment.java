@@ -113,7 +113,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             mFramework = new PluginFramework(handler);
             mFramework.setup();
         }
-        mSubtitle = AirbitzApplication.getContext().getString(R.string.buysell_title);
+        mSubtitle = "";
     }
 
     @SuppressWarnings("deprecation")

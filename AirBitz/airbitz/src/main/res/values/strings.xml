@@ -638,8 +638,6 @@
     <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
     <string name="password_set_skip">Skip</string>
 
-    <string name="buysell_title">Buy / Sell / Spend Bitcoin</string>
-
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
@@ -654,7 +652,8 @@
 
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
-    <string name="drawer_buy_sell">Buy / Sell / Spend Bitcoin</string>
+    <string name="drawer_buy_sell">Buy / Sell</string>
+    <string name="drawer_discounted_gift_cards">Discounted Gift Cards</string>
     <string name="drawer_send">Scan QR Code</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
