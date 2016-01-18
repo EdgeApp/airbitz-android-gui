@@ -2159,8 +2159,10 @@ public class CoreAPI {
     }
 
     public void stopExchangeRateUpdates() {
-        mExchangeHandler.removeCallbacksAndMessages(null);
-        mExchangeHandler.sendEmptyMessage(LAST);
+        if (null != mExchangeHandler) {
+            mExchangeHandler.removeCallbacksAndMessages(null);
+            mExchangeHandler.sendEmptyMessage(LAST);
+        }
     }
 
     public void startBitcoinUpdates() {
