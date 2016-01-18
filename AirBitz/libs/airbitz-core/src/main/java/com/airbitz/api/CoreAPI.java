@@ -3183,6 +3183,17 @@ public class CoreAPI {
         return getStringAtPtr(core.longp_value(lp));
     }
 
+    public boolean accountSyncExistsLocal(String username) {
+        tABC_Error error = new tABC_Error();
+        SWIGTYPE_p_long lp = core.new_longp();
+        SWIGTYPE_p_bool exists = new SWIGTYPE_p_bool(lp.getCPtr(lp), false);
+        core.ABC_AccountSyncExists(username, exists, error);
+        if (error.getCode() == tABC_CC.ABC_CC_Ok) {
+            return getBytesAtPtr(lp.getCPtr(lp), 1)[0] != 0;
+        }
+		return false;
+    }
+
     public List<String> listAccounts() {
         tABC_Error error = new tABC_Error();
         tABC_CC cc;
