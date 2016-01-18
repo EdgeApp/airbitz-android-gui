@@ -78,6 +78,7 @@ import java.util.Stack;
 
 public class PluginFragment extends WalletBaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
+    public static final String SUBTITLE = "subtitle";
 
     private WebView mWebView;
     private TextView mTitleTextView;
@@ -113,7 +114,13 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             mFramework = new PluginFramework(handler);
             mFramework.setup();
         }
-        mSubtitle = "";
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mSubtitle = bundle.getString(SUBTITLE);
+            updateTitle();
+        } else {
+            mSubtitle = "";
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -493,11 +500,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
     };
 
-    public static void pushFragment(NavigationActivity mActivity, Plugin plugin, Uri uri) {
+    public static void pushFragment(NavigationActivity mActivity, Plugin plugin, Uri uri, String subtitle) {
         FragmentTransaction transaction = mActivity.getFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
 
         Bundle bundle = new Bundle();
+        bundle.putString(SUBTITLE, subtitle);
         PluginFragment fragment = new PluginFragment(plugin);
         fragment.setUri(uri);
         fragment.setArguments(bundle);

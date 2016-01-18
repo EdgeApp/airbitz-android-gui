@@ -116,7 +116,7 @@ public abstract class BasePluginList extends BaseFragment {
     }
 
     private void launchPlugin(Plugin plugin, Uri uri) {
-        PluginFragment.pushFragment(mActivity, plugin, uri);
+        PluginFragment.pushFragment(mActivity, plugin, uri, getTitle());
     }
 
     public class PluginsAdapter extends BaseAdapter {
