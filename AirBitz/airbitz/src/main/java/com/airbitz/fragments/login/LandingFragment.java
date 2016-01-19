@@ -834,7 +834,7 @@ public class LandingFragment extends BaseFragment implements
         try {
             mCoreAPI.OtpKeySet(mUsername, secret);
         } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "twoFactorSignIn error:" + e.errorMap());
+            CoreAPI.debugLevel(1, "twoFactorSignIn error:");
         }
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
@@ -925,7 +925,7 @@ public class LandingFragment extends BaseFragment implements
             try {
                 return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "GetRecoveryQuestionsTask error:" + e.errorMap());
+                CoreAPI.debugLevel(1, "GetRecoveryQuestionsTask error:");
                 return e.getMessage();
             }
         }

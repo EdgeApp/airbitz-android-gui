@@ -398,7 +398,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                         pendings.add(name);
                     }
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "OTPResetCheckTask error" + e.errorMap());
+                    CoreAPI.debugLevel(1, "OTPResetCheckTask error");
                 }
             }
 
