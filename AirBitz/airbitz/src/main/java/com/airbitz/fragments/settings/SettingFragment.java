@@ -285,7 +285,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                         mCoreSettings.save();
                         mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
                     } catch (AirbitzException e) {
-                        CoreAPI.debugLevel(1, "SettingFragment PINLoginDelete error" + e.errorMap());
+                        CoreAPI.debugLevel(1, "SettingFragment PINLoginDelete error");
                     }
                 }
             }
@@ -487,7 +487,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "SettingFragment saveCurrentSettings error" + e.errorMap());
+                CoreAPI.debugLevel(1, "SettingFragment saveCurrentSettings error");
             }
         }
     }
@@ -810,7 +810,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "SettingFragment mPinSetupTask error" + e.errorMap());
+                CoreAPI.debugLevel(1, "SettingFragment mPinSetupTask error");
             }
             return null;
         }

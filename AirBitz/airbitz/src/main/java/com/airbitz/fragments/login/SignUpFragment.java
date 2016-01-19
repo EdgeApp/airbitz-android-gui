@@ -605,7 +605,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                         mCoreAPI.SetPin(mPin);
                         mCoreAPI.PinSetup();
                     } catch (AirbitzException e) {
-                        CoreAPI.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:" + e.errorMap());
+                        CoreAPI.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:");
                     }
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
@@ -672,7 +672,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 try {
                     mCoreAPI.SetPin(mPin);
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "SignUpFragment SetPIN error:" + e.errorMap());
+                    CoreAPI.debugLevel(1, "SignUpFragment SetPIN error:");
                 }
 
                 mCoreAPI.setupAccountSettings();
@@ -683,7 +683,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 try {
                     settings.save();
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "SignUpFragment settings.save() error:" + e.errorMap());
+                    CoreAPI.debugLevel(1, "SignUpFragment settings.save() error:");
                 }
 
                 mActivity.UserJustLoggedIn(true);

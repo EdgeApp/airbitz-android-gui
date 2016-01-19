@@ -219,7 +219,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret);
                     AttemptSignupOrChange();
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment onResume error" + e.errorMap());
+                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment onResume error");
                 }
             }
             else {
@@ -516,7 +516,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 try {
                     mCoreAPI.OtpKeySet(username, secret);
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error" + e.errorMap());
+                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error");
                 }
             }
             return result;
@@ -654,7 +654,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
                 return true;
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error" + e.errorMap());
+                CoreAPI.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error");
                 return false;
             }
         }

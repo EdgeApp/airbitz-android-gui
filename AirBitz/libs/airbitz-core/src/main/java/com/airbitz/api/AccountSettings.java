@@ -74,7 +74,7 @@ public class AccountSettings {
         try {
             save();
         } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "setupDefaultCurrency error:" + e.errorMap());
+            CoreAPI.debugLevel(1, "setupDefaultCurrency error:");
         }
     }
 

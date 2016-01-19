@@ -732,7 +732,7 @@ public class CoreAPI {
             editor.putBoolean(DAILY_LIMIT_SETTING_PREF + mUsername, set);
             editor.apply();
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "SetDailySpendLimitSetting error:" + e.errorMap());
+            mInstance.debugLevel(1, "SetDailySpendLimitSetting error:");
         }
     }
 
@@ -767,7 +767,7 @@ public class CoreAPI {
             editor.putLong(DAILY_LIMIT_PREF + mUsername, spendLimit);
             editor.apply();
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "SetDailySpendSatoshis error:" + e.errorMap());
+            mInstance.debugLevel(1, "SetDailySpendSatoshis error:");
         }
     }
 
@@ -788,7 +788,7 @@ public class CoreAPI {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "SetPINSpendLimitSetting error:" + e.errorMap());
+            mInstance.debugLevel(1, "SetPINSpendLimitSetting error:");
         }
     }
 
@@ -812,7 +812,7 @@ public class CoreAPI {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "SetPINSpendSatoshis error:" + e.errorMap());
+            mInstance.debugLevel(1, "SetPINSpendSatoshis error:");
         }
     }
 
@@ -872,7 +872,7 @@ public class CoreAPI {
             mCoreSettings = new AccountSettings(this).load();
             return mCoreSettings;
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "coreSettings error:" + e.errorMap());
+            mInstance.debugLevel(1, "coreSettings error:");
             return null;
         }
     }
@@ -910,7 +910,7 @@ public class CoreAPI {
                 return true;
             }
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "incrementPinCount error:" + e.errorMap());
+            mInstance.debugLevel(1, "incrementPinCount error:");
             return false;
         }
         return false;
@@ -946,7 +946,7 @@ public class CoreAPI {
                 }
             }
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "hasRecoveryQuestionsSet error:" + e.errorMap());
+            mInstance.debugLevel(1, "hasRecoveryQuestionsSet error:");
         }
         return false;
     }
@@ -972,7 +972,7 @@ public class CoreAPI {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            mInstance.debugLevel(1, "incRecoveryReminder error:" + e.errorMap());
+            mInstance.debugLevel(1, "incRecoveryReminder error:");
         }
     }
 
@@ -2267,7 +2267,7 @@ public class CoreAPI {
                 try {
                     pending = isTwoFactorResetPending(mUsername);
                 } catch (AirbitzException e) {
-                    mInstance.debugLevel(1, "mDataHandler.post error:" + e.errorMap());
+                    mInstance.debugLevel(1, "mDataHandler.post error:");
                 }
                 final boolean isPending = pending;
                 mMainHandler.post(new Runnable() {
@@ -3459,7 +3459,7 @@ public class CoreAPI {
                 try {
                     storeTransaction(tx);
                 } catch (AirbitzException e) {
-                    mInstance.debugLevel(1, "updateTransaction 1 error:" + e.errorMap());
+                    mInstance.debugLevel(1, "updateTransaction 1 error:");
                 }
             }
 
@@ -3472,7 +3472,7 @@ public class CoreAPI {
                     try {
                         storeTransaction(destTx);
                     } catch (AirbitzException e) {
-                        mInstance.debugLevel(1, "updateTransaction 2 error:" + e.errorMap());
+                        mInstance.debugLevel(1, "updateTransaction 2 error:");
                     }
                 }
             }
