@@ -763,7 +763,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
             mSuccessFragment.setArguments(bundle);
             if (null != exitHandler) {
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.BUYSELL.ordinal());
+                mActivity.pushFragment(mSuccessFragment);
             } else {
                 mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }

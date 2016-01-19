@@ -426,7 +426,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         bundle.putBoolean(ScanFragment.SIGN_ONLY, signOnly);
                         mSendConfirmation.setArguments(bundle);
 
-                        ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation, NavigationActivity.Tabs.BUYSELL.ordinal());
+                        ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation);
                     }
                 }
             });
