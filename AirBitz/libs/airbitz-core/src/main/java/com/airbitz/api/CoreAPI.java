@@ -129,7 +129,7 @@ public class CoreAPI {
     public static final String OTP_RESET_ACTION = "com.airbitz.notifications.otp_reset_action";
     public static final String OTP_SECRET = "com.airbitz.otp_secret";
 
-    private static final int TX_LOADED_DELAY = 1000 * 20;
+    private static final int TX_LOADED_DELAY = 1000 * 10;
 
     static {
         System.loadLibrary("abc");
