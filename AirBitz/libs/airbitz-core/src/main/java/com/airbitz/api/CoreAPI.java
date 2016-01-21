@@ -1929,7 +1929,7 @@ public class CoreAPI {
                     formatSatoshi(txDetails.getmAmountSatoshi()),
                     formatDefaultCurrency(txDetails.getmAmountCurrency()),
                     type,
-                    String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM %1$Tp", now));
+                    String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));
 
             details.setSzNotes(notes);
             if (null == details.getSzCategory()) {
