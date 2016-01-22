@@ -88,7 +88,7 @@ public class PluginFramework {
     }
 
     public static final String GIFT_CARDS = "Discounted Gift Cards";
-    public static final String BUYSELL = "Buy/Sell";
+    public static final String BUYSELL = "Buy/Sell Bitcoin";
 
     static String[] getTags() {
         return new String[] {

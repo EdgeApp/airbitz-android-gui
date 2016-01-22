@@ -652,7 +652,7 @@
 
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
-    <string name="drawer_buy_sell">Buy / Sell</string>
+    <string name="drawer_buy_sell">Buy / Sell Bitcoin</string>
     <string name="drawer_discounted_gift_cards">Discounted Gift Cards</string>
     <string name="drawer_send">Scan QR Code</string>
     <string name="drawer_request">Request</string>
