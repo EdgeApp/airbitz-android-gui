@@ -65,6 +65,9 @@ import com.airbitz.objects.HighlightOnPressButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.ahammad.showhiddenpassword.ShownEdittext;
+import net.ahammad.showhiddenpassword.ShownEdittext.OnPasswordDisplayListener;
+
 /**
  * Created on 2/26/15.
  */
@@ -74,9 +77,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     public static final int MIN_PIN_LENGTH = 4;
     public static String USERNAME = "com.airbitz.setuppassword.username";
 
-    private EditText mPasswordEditText;
+    private ShownEdittext mPasswordEditText;
     private EditText mWithdrawalPinEditText;
-    private EditText mPasswordConfirmationEditText;
+    private ShownEdittext mPasswordConfirmationEditText;
     private Button mNextButton;
 //    private HighlightOnPressButton mBackButton;
 //    private TextView mTitleTextView;
@@ -132,11 +135,22 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             }
         });
 
-        mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_edittext);
-        mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mPasswordEditText = (ShownEdittext) mView.findViewById(R.id.fragment_setup_password_edittext);
+        mPasswordEditText.getEditText().setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mPasswordConfirmationEditText = (EditText) mView.findViewById(R.id.fragment_setup_password_repassword_edittext);
-        mPasswordConfirmationEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mPasswordConfirmationEditText = (ShownEdittext) mView.findViewById(R.id.fragment_setup_password_repassword_edittext);
+        mPasswordConfirmationEditText.getEditText().setTypeface(NavigationActivity.latoRegularTypeFace);
+
+        mPasswordEditText.setOnPasswordDisplayListener(new OnPasswordDisplayListener() {
+            public void onPasswordShow() {
+                mPasswordConfirmationEditText.showPassword();
+            }
+
+            public void onPasswordHide() {
+                mPasswordConfirmationEditText.hidePassword();
+            }
+        });
+
 
         mRule1Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_1);
         mRule2Image = (ImageView) mView.findViewById(R.id.fragment_setup_password_switch_image_2);
@@ -159,17 +173,17 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                checkPasswordRules(mPasswordEditText.getText().toString());
+                checkPasswordRules(mPasswordEditText.getEditText().getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) { }
         };
 
-        mPasswordEditText.addTextChangedListener(tw);
-        mPasswordConfirmationEditText.addTextChangedListener(tw);
+        mPasswordEditText.getEditText().addTextChangedListener(tw);
+        mPasswordConfirmationEditText.getEditText().addTextChangedListener(tw);
 
-        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPasswordEditText.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -181,7 +195,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             }
         });
 
-        mPasswordConfirmationEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordConfirmationEditText.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -441,8 +455,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         }
 
         // Reset errors.
-        mPasswordEditText.setError(null);
-        mPasswordConfirmationEditText.setError(null);
+        mPasswordEditText.getEditText().setError(null);
+        mPasswordConfirmationEditText.getEditText().setError(null);
 
         mCreateAccountTask = new CreateAccountTask(password);
         mCreateAccountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
