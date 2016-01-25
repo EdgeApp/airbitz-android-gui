@@ -779,6 +779,11 @@ public class PluginFramework {
                 } else if (url.contains("file://")) {
                     view.loadUrl(url);
                     return true;
+                } else if (url.contains("mailto:")) {
+					Uri uri = Uri.parse(url);
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.intent_choose_an_email)));
+					return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
