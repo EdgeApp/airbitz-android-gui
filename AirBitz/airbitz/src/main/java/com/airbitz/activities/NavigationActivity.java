@@ -119,6 +119,7 @@ import com.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
+import com.airbitz.objects.PasswordCheckReceiver;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
@@ -846,15 +847,19 @@ public class NavigationActivity extends ActionBarActivity
         }
 
         Intent intent = getIntent();
-        if(intent != null) {
-            Uri data = intent.getData();
-            if(data != null) {
-                CoreAPI.debugLevel(1, "Process URI from here 1");
-                processUri(data);
-                // XXX: replace intent that launched the app
-                // it is a result of this dirty "god" activity
-                setIntent(new Intent());
+        if (intent != null) {
+            if (PasswordCheckReceiver.USER_SWITCH.equals(intent.getAction())) {
+                saveCachedLoginName(intent.getStringExtra(PasswordCheckReceiver.USERNAME));
+                mLandingFragment.refreshViewAndUsername();
+            } else {
+                Uri data = intent.getData();
+                if (data != null) {
+                    processUri(data);
+                }
             }
+            // XXX: replace intent that launched the app
+            // it is a result of this dirty "god" activity
+            setIntent(new Intent());
         }
 
         if (null != mPasswordCheck) {
@@ -901,6 +906,7 @@ public class NavigationActivity extends ActionBarActivity
         mCoreAPI.lostConnectivity();
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
+        PasswordCheckReceiver.setup(this);
         if(SettingFragment.getNFCPref()) {
             disableNFCForegrounding();
         }
@@ -942,7 +948,10 @@ public class NavigationActivity extends ActionBarActivity
 
         CoreAPI.debugLevel(1, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
 
-        if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
+        if (PasswordCheckReceiver.USER_SWITCH.equals(action)) {
+            saveCachedLoginName(intent.getStringExtra(PasswordCheckReceiver.USERNAME));
+            mLandingFragment.refreshViewAndUsername();
+        } else if (intentUri != null && action != null && (Intent.ACTION_VIEW.equals(action) ||
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {

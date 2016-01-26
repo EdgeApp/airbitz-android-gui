@@ -144,8 +144,9 @@
             android:name="com.google.android.maps"
             android:required="false" />
 
-        <receiver android:name=".objects.AirbitzAlertReceiver" >
-        </receiver>
+        <receiver android:name=".objects.AirbitzAlertReceiver" />
+        <receiver android:name=".objects.PasswordCheckReceiver"/>
+
         <receiver android:name=".objects.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
