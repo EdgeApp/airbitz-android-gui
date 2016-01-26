@@ -1213,13 +1213,10 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void gotoImportNow(Uri uri) {
-        resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
-        switchFragmentThread(Tabs.MORE.ordinal());
-        Fragment fragment = new ImportFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ImportFragment.URI, uri.toString());
-        fragment.setArguments(bundle);
-        pushFragment(fragment, Tabs.REQUEST.ordinal());
+        switchFragmentThread(Tabs.IMPORT.ordinal());
+
+        ImportFragment fragment = (ImportFragment) mNavStacks[Tabs.IMPORT.ordinal()].peek();
+        fragment.processAddress(uri.toString());
     }
 
     public void resetFragmentThreadToBaseFragment(int threadId) {

@@ -40,6 +40,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,7 @@ public class ImportFragment extends ScanFragment {
     String mSweptID;
     long mSweptAmount = -1;
     private String mSweptAddress;
+    private String mSweepAddress;
 
     Runnable sweepNotFoundRunner = new Runnable() {
         @Override
@@ -134,8 +136,8 @@ public class ImportFragment extends ScanFragment {
         Bundle args = getArguments();
         if (args != null && args.getString(URI) != null
                 && getHiddenBitsToken(args.getString(URI)) != null) {
-            mSweptAddress = args.getString(URI);
-            showAddressDialog();
+            processText(args.getString(URI));
+            args.putString(URI, "");
         }
         clearSweepAddress();
     }
@@ -185,6 +187,19 @@ public class ImportFragment extends ScanFragment {
         } else {
             showBusyLayout(null, false);
             showMessageAndStartCameraDialog(R.string.import_title, R.string.import_wallet_private_key_invalid);
+        }
+    }
+
+    public void processAddress(String address) {
+        mSweepAddress = address;
+    }
+
+    @Override
+    public void onWalletsLoaded() {
+        super.onWalletsLoaded();
+        if (!TextUtils.isEmpty(mSweepAddress)) {
+            processText(mSweepAddress);
+            mSweepAddress = null;
         }
     }
 
