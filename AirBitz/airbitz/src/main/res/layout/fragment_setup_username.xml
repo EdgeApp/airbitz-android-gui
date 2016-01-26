@@ -1,77 +1,54 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_signup_container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/SettingsFragment"
-    android:animateLayoutChanges="true">
+    android:background="@color/white_frost"
+    android:animateLayoutChanges="true"
+    style="@style/SettingsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/layout_title_header">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/fragment_setup_username_container"
+        <LinearLayout
+            android:id="@+id/fragment_setup_username_top"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/signup_padding_bottom"
-            android:paddingTop="@dimen/signup_padding_top">
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="vertical"
+            android:paddingTop="?attr/actionBarSize">
 
-                <LinearLayout
-                    android:id="@+id/fragment_setup_username_top"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:orientation="vertical"
-                    android:focusable="true"
-                    android:layout_marginTop="?android:attr/actionBarSize"
-                    android:focusableInTouchMode="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/fragment_setup_username_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:paddingLeft="6.3dp"
-                        android:paddingRight="6.3dp"
-                        android:text="@string/fragment_setup_username_label"
-                        style="@style/SettingsTitle"/>
+                <com.airbitz.objects.MinEditText
+                    android:id="@+id/fragment_setup_username_edittext"
+                    android:hint="@string/activity_signup_username_hint"
+                    android:layout_marginTop="10dp"
+                    style="@style/EditText" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.airbitz.objects.MinEditText
-                            android:id="@+id/fragment_setup_username_edittext"
-                            android:hint="@string/activity_signup_username_hint"
-                            android:layout_marginTop="10dp"
-                            style="@style/EditText" />
-
-                        </RelativeLayout>
+                </RelativeLayout>
 
 
-                    <TextView
-                        android:id="@+id/fragment_setup_username_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:paddingLeft="6.3dp"
-                        android:paddingRight="6.3dp"
-                        android:text="@string/fragment_setup_username_text"
-                        style="@style/SettingsTitle"/>
+            <TextView
+                android:id="@+id/fragment_setup_username_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="6.3dp"
+                android:paddingRight="6.3dp"
+                android:text="@string/fragment_setup_username_text"
+                style="@style/SettingsTitle"/>
 
-                </LinearLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 
     <RelativeLayout
         android:id="@+id/layout_decide"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <Button

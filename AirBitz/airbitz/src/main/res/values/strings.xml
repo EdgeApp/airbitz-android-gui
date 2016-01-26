@@ -20,6 +20,7 @@
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
     <string name="string_next">NEXT</string>
+    <string name="string_skip">SKIP</string>
     <string name="string_total">TOTAL:</string>
     <string name="string_finish">FINISH</string>
     <string name="string_help">Help</string>
@@ -196,10 +197,13 @@
 
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>
-    <string name="fragment_setup_username_text">Example: \"coinmaster\". This is not your email or real name.\n\nThis is the username to login into your account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
+    <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
     <string name="fragment_setup_password_title">Set a Password and PIN</string>
     <string name="fragment_setup_password_text">The Password is used to authenticate your account and to change sensitive settings.</string>
-    <string name="fragment_setup_pin_title">Choose a PIN</string>
+    <string name="fragment_setup_password_nopassword_title">Account has not password</string>
+    <string name="fragment_setup_password_nopassword_message">Warning. Without a password, you will not be able to login on a new device if this device is lost or stolen, or if this app is uninstalled.</string>
+    <string name="fragment_setup_password_nopassword_">Warning. Without a password, you will not be able to login on a new device if this device is lost or stolen, or if this app is uninstalled.</string>
+    <string name="fragment_setup_pin_title">Set a 4 Digit PIN</string>
     <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
     <string name="fragment_setup_writeitdown_title">Write it Down!</string>
     <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>

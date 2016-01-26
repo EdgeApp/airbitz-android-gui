@@ -99,6 +99,7 @@ import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.login.LandingFragment;
 import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.login.SetupWriteItDownFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.request.OnAddressRequestListener;
@@ -1357,7 +1358,7 @@ public class NavigationActivity extends ActionBarActivity
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
         Bundle bundle = new Bundle();
-        bundle.putString(SetupUsernameFragment.USERNAME, userName);
+        bundle.putString(SetupWriteItDownFragment.USERNAME, userName);
         Fragment frag = new SetupUsernameFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);

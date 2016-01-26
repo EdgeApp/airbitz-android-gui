@@ -31,51 +31,52 @@
 
 package com.airbitz.fragments.login;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
-import com.airbitz.api.AccountSettings;
+import com.airbitz.api.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2/26/15.
  */
-public class SetupWriteItDownFragment extends BaseFragment implements NavigationActivity.OnBackPress {
+public class SetupPinFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
-    public static final String USERNAME = "com.airbitz.setupwriteitdown.username";
-    public static final String PASSWORD = "com.airbitz.setupwriteitdown.password";
-    public static final String PIN = "com.airbitz.setupwriteitdown.pin";
+    public static final int MIN_PIN_LENGTH = 4;
+    public static String PIN = "com.airbitz.setuppin.pin";
 
     private String mUsername;
-    private String mPassword;
-    private String mPin;
-
+    private EditText mWithdrawalPinEditText;
     private Button mNextButton;
-    private HighlightOnPressButton mShowButton;
-    private boolean mShow = true;
-    private LinearLayout mShowContainer;
-    private LinearLayout mHideContainer;
-    private TextView mTitleTextView;
-    private TextView mUsernameTextView;
-    private TextView mPasswordTextView;
-    private TextView mPinTextView;
     private CoreAPI mCoreAPI;
     private View mView;
 
@@ -86,42 +87,58 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
-        setBackEnabled(false);
+        setBackEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_setup_writeitdown, container, false);
+        mView = inflater.inflate(R.layout.fragment_setup_pin, container, false);
+
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.fragment_setup_titles);
+        getBaseActivity().setSupportActionBar(mToolbar);
+        getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getBaseActivity().getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mNextButton = (Button) mView.findViewById(R.id.fragment_setup_next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mNextButton.setClickable(false);
                 goNext();
             }
         });
 
-        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.fragment_setup_titles);
+        mWithdrawalPinEditText = (EditText) mView.findViewById(R.id.fragment_password_pin_edittext);
+        mWithdrawalPinEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mShowButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_setup_writeitdown_show);
-        mShowButton.setOnClickListener(new View.OnClickListener() {
+        mWithdrawalPinEditText.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        final TextWatcher mPINTextWatcher = new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                mShow = !mShow;
-                enableShow(mShow);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() >= 4) {
+                    mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
+                }
+            }
+        };
+        mWithdrawalPinEditText.addTextChangedListener(mPINTextWatcher);
+
+        mWithdrawalPinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    mActivity.showSoftKeyboard(mWithdrawalPinEditText);
+                } else {
+                }
             }
         });
-
-        mShowContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_show_container);
-        mHideContainer = (LinearLayout) mView.findViewById(R.id.fragment_setup_writeitdown_hide_container);
-
-        mUsernameTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_username_text);
-        mPasswordTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_password_text);
-        mPinTextView = (TextView) mView.findViewById(R.id.fragment_setup_writeitdown_pin_text);
-
         return mView;
     }
 
@@ -132,19 +149,6 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
                 return onBackPress();
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void enableShow(boolean show) {
-        if(show) {
-            mShowButton.setText(R.string.fragment_setup_writeitdown_show);
-            mShowContainer.setVisibility(View.VISIBLE);
-            mHideContainer.setVisibility(View.GONE);
-        }
-        else {
-            mShowButton.setText(R.string.fragment_setup_writeitdown_hide);
-            mShowContainer.setVisibility(View.GONE);
-            mHideContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -160,32 +164,41 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     }
 
     private void goNext() {
-        AirbitzApplication.Login(mUsername, mPassword);
-        try {
-            mCoreAPI.SetPin(mPin);
-        } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 1 error:");
+        mActivity.hideSoftKeyboard(mWithdrawalPinEditText);
+        // if they entered a valid mUsername or old mPassword
+        if (pinFieldIsValid()) {
+            launchSetupPassword();
+        }
+    }
+
+    private void launchSetupPassword() {
+        SetupPasswordFragment fragment = new SetupPasswordFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SetupWriteItDownFragment.USERNAME, mUsername);
+        bundle.putString(SetupWriteItDownFragment.PIN, mWithdrawalPinEditText.getText().toString());
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
+
+        // Save username if the user hits back
+        getArguments().putString(SetupPinFragment.PIN, mWithdrawalPinEditText.getText().toString());
+    }
+
+    private boolean pinFieldIsValid() {
+        boolean bpinNameFieldIsValid = true;
+
+        // if the pin isn't long enough
+        if (mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
+            bpinNameFieldIsValid = false;
+            mActivity.ShowFadingDialog(getResources().getString(R.string.activity_signup_insufficient_pin));
         }
 
-        mCoreAPI.setupAccountSettings();
-        mCoreAPI.startAllAsyncUpdates();
-
-        AccountSettings settings = mCoreAPI.coreSettings();
-        if (null != settings)
-            settings.setRecoveryReminderCount(0);
-
-        try {
-            settings.save();
-        } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 2 error:");
-        }
-        mActivity.UserJustLoggedIn(true);
+        return bpinNameFieldIsValid;
     }
 
     @Override
     public boolean onBackPress() {
         mActivity.hideSoftKeyboard(getView());
-        // Do not go back
+        mActivity.popFragment();
         return true;
     }
 
@@ -193,14 +206,10 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     public void onResume() {
         super.onResume();
         enableNextButton(true);
-        enableShow(mShow);
-        Bundle bundle = getArguments();
-        mUsername = bundle.getString(USERNAME);
-        mPassword = bundle.getString(PASSWORD, "");
-        mPin = bundle.getString(PIN);
 
-        mUsernameTextView.setText(mUsername);
-        mPasswordTextView.setText(mPassword);
-        mPinTextView.setText(mPin);
+        Bundle bundle = getArguments();
+        mUsername = bundle.getString(SetupWriteItDownFragment.USERNAME);
+
+        mWithdrawalPinEditText.requestFocus();
     }
 }
