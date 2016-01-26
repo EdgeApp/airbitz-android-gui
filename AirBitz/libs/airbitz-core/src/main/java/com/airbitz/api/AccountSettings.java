@@ -40,11 +40,11 @@ import java.util.Map;
 public class AccountSettings {
     private static String TAG = CoreAPI.class.getSimpleName();
 
-    private CoreAPI mApi;
+    private CoreAPI mCoreAPI;
     private tABC_AccountSettings mSettings;
 
     protected AccountSettings(CoreAPI api) {
-        mApi = api;
+        mCoreAPI = api;
     }
 
     protected AccountSettings load() throws AirbitzException {
@@ -53,14 +53,14 @@ public class AccountSettings {
         SWIGTYPE_p_long lp = core.new_longp();
         SWIGTYPE_p_p_sABC_AccountSettings pAccountSettings = core.longp_to_ppAccountSettings(lp);
 
-        core.ABC_LoadAccountSettings(mApi.getUsername(), mApi.getPassword(), pAccountSettings, error);
+        core.ABC_LoadAccountSettings(mCoreAPI.getUsername(), mCoreAPI.getPassword(), pAccountSettings, error);
         if (error.getCode() == tABC_CC.ABC_CC_Ok) {
             mSettings = new tABC_AccountSettings(core.longp_value(lp), false);
             if (mSettings.getCurrencyNum() == 0) {
                 setupDefaultCurrency();
             }
         } else {
-            throw new AirbitzException(mApi.getContext(), error.getCode(), error);
+            throw new AirbitzException(mCoreAPI.getContext(), error.getCode(), error);
         }
         return this;
     }
@@ -70,19 +70,19 @@ public class AccountSettings {
     }
 
     protected void setupDefaultCurrency() {
-        settings().setCurrencyNum(mApi.defaultCurrencyNum());
+        settings().setCurrencyNum(mCoreAPI.defaultCurrencyNum());
         try {
             save();
         } catch (AirbitzException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "setupDefaultCurrency error:");
         }
     }
 
     public void save() throws AirbitzException {
         tABC_Error error = new tABC_Error();
-        core.ABC_UpdateAccountSettings(mApi.getUsername(), mApi.getPassword(), mSettings, error);
+        core.ABC_UpdateAccountSettings(mCoreAPI.getUsername(), mCoreAPI.getPassword(), mSettings, error);
         if (error.getCode() != tABC_CC.ABC_CC_Ok) {
-            throw new AirbitzException(mApi.getContext(), error.getCode(), error);
+            throw new AirbitzException(mCoreAPI.getContext(), error.getCode(), error);
         }
     }
 

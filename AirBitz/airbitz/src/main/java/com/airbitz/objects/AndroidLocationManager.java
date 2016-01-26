@@ -41,6 +41,8 @@ import android.util.Log;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.airbitz.api.CoreAPI;
+
 public class AndroidLocationManager {
 
     public static final String TAG = AndroidLocationManager.class.getSimpleName();
@@ -89,7 +91,7 @@ public class AndroidLocationManager {
         }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            Log.d(TAG, "Listener added: " + listener);
+            CoreAPI.debugLevel(1, "Listener added: " + listener);
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -112,7 +114,7 @@ public class AndroidLocationManager {
                     MIN_TIME_MILLIS, MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
-            Log.d(TAG, "", e);
+            CoreAPI.debugLevel(1, "attemptConnection 1 error" + e.toString());
         }
         try {
             mLocationManager.requestLocationUpdates(
@@ -120,7 +122,7 @@ public class AndroidLocationManager {
                     MIN_TIME_MILLIS, NETWORK_MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
-            Log.e(TAG, "", e);
+            CoreAPI.debugLevel(1, "attemptConnection 2 error" + e.toString());
         }
     }
 
@@ -139,7 +141,7 @@ public class AndroidLocationManager {
             return;
         }
         mCurrentLocation = location;
-        Log.d(TAG, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
+        CoreAPI.debugLevel(1, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
                 + mCurrentLocation.getLongitude());
         if (mObservers != null) {
             for (CurrentLocationManager.OnCurrentLocationChange l : mObservers) {

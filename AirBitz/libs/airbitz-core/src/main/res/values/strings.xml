@@ -25,4 +25,7 @@
     <string name="string_connection_error_server">Connection Error: Cannot reach server</string>
 
     <string name="insufficient_amount">Amount too small</string>
+
+    <string name="account_needs_password_title">WARNING: missing password</string>
+    <string name="account_needs_password_message">Account \'%1$s\' needs a password. Account is not accessible on a new device without a password.</string>
 </resources>

@@ -47,6 +47,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
+import com.airbitz.api.CoreAPI;
 
 /**
  * Created on 2/22/14.
@@ -111,7 +112,7 @@ public class SuccessFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mBundle = this.getArguments();
         if (mBundle == null) {
-            Log.d(TAG, "Bundle is null");
+            CoreAPI.debugLevel(1, "Bundle is null");
         }
         mActivity = (NavigationActivity) getActivity();
         mActivity.hideNavBar();

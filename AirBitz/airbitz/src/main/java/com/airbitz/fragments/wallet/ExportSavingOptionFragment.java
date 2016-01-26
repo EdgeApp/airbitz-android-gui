@@ -822,7 +822,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 out.close();
                 ((NavigationActivity) getActivity()).ShowFadingDialog("File saved: " + saveName());
             } catch (Throwable t) {
-                Log.d(TAG, "createFileFromString failed for " + file.getAbsolutePath());
+                CoreAPI.debugLevel(1, "createFileFromString failed for " + file.getAbsolutePath());
             }
         }
     }

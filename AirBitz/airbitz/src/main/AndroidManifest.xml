@@ -117,10 +117,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
                 <data android:scheme="hbits" />
-
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <data android:scheme="hbits" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
@@ -140,8 +144,9 @@
             android:name="com.google.android.maps"
             android:required="false" />
 
-        <receiver android:name=".objects.AirbitzAlertReceiver" >
-        </receiver>
+        <receiver android:name=".objects.AirbitzAlertReceiver" />
+        <receiver android:name=".objects.PasswordCheckReceiver"/>
+
         <receiver android:name=".objects.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

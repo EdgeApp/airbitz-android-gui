@@ -72,14 +72,10 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
     private final String TAG = getClass().getSimpleName();
 
-    public static String USERNAME = "com.airbitz.setupusername.username";
     public static int USERNAME_MIN_LENGTH = 3;
 
     private EditText mUserNameEditText;
     private Button mNextButton;
-//    private HighlightOnPressButton mBackButton;
-//    private TextView mTitleTextView;
-//    private View mUserNameRedRingCover;
     private CheckUsernameTask mCheckUsernameTask;
     private CoreAPI mCoreAPI;
     private View mView;
@@ -139,11 +135,6 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-//                if (mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH || mUserNameEditText.getText().toString().trim().length() < USERNAME_MIN_LENGTH) {
-//                    mUserNameRedRingCover.setVisibility(View.VISIBLE);
-//                } else {
-//                    mUserNameRedRingCover.setVisibility(View.GONE);
-//                }
             }
 
             @Override
@@ -215,15 +206,15 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         }
     }
 
-    private void launchSetupPassword() {
-        SetupPasswordFragment fragment = new SetupPasswordFragment();
+    private void launchSetupPin() {
+        SetupPinFragment fragment = new SetupPinFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(SetupPasswordFragment.USERNAME, mUserNameEditText.getText().toString());
+        bundle.putString(SetupWriteItDownFragment.USERNAME, mUserNameEditText.getText().toString());
         fragment.setArguments(bundle);
         mActivity.pushFragment(fragment);
 
         // Save username if the user hits back
-        getArguments().putString(USERNAME, mUserNameEditText.getText().toString());
+        getArguments().putString(SetupWriteItDownFragment.USERNAME, mUserNameEditText.getText().toString());
     }
 
     @Override
@@ -238,8 +229,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         super.onResume();
         Bundle bundle = getArguments();
         enableNextButton(true);
-        if (bundle.containsKey(USERNAME)) {
-            mUserNameEditText.setText(bundle.getString(USERNAME));
+        if (bundle.containsKey(SetupWriteItDownFragment.USERNAME)) {
+            mUserNameEditText.setText(bundle.getString(SetupWriteItDownFragment.USERNAME));
         }
         mHandler.post(new Runnable() {
             @Override
@@ -264,7 +255,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             try {
                 return mCoreAPI.accountAvailable(username);
             } catch (AirbitzException e) {
-                Log.d(TAG, "", e);
+                CoreAPI.debugLevel(1, "CheckUsernameTask error:");
                 return e.getMessage();
             }
         }
@@ -273,7 +264,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         protected void onPostExecute(String result) {
             onCancelled();
             if(result == null) {
-                launchSetupPassword();
+                launchSetupPin();
             }
             else {
                 mActivity.ShowFadingDialog(result);

@@ -82,7 +82,7 @@ public class QRCamera extends PictureCamera {
             }
         }
         if (rawResult != null) {
-            Log.d(TAG, "QR code found " + rawResult.getText());
+            CoreAPI.debugLevel(1, "QR code found " + rawResult.getText());
             return rawResult.getText();
         } else {
             return null;
@@ -91,9 +91,9 @@ public class QRCamera extends PictureCamera {
 
     public String attemptDecodePicture(Bitmap thumbnail) {
         if (thumbnail == null) {
-            Log.d(TAG, "No picture selected");
+            CoreAPI.debugLevel(1, "No picture selected");
         } else {
-            Log.d(TAG, "Picture selected");
+            CoreAPI.debugLevel(1, "Picture selected");
             Result rawResult = null;
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
@@ -125,10 +125,10 @@ public class QRCamera extends PictureCamera {
                 }
             }
             if (rawResult != null) {
-                Log.d(TAG, "QR code found " + rawResult.getText());
+                CoreAPI.debugLevel(1, "QR code found " + rawResult.getText());
                 return rawResult.getText();
             } else {
-                Log.d(TAG, "Picture No QR code found");
+                CoreAPI.debugLevel(1, "Picture No QR code found");
             }
         }
         return null;

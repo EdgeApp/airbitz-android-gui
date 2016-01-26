@@ -16,7 +16,7 @@
         android:adjustViewBounds="true"
         android:padding="2dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ico_dots" />
+        android:src="@drawable/ic_dots" />
 
     <ImageView
         android:id="@+id/imageview_arrow"

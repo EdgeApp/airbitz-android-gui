@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
 
-        <ExpandableListView
+        <ListView
             android:id="@+id/fragment_buysell_listview"
             android:groupIndicator="@null"
             android:layout_width="match_parent"

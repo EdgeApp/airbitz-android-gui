@@ -206,7 +206,9 @@ public class WalletAddFragment extends BaseFragment
         @Override
         protected void onPreExecute() {
             if(isAdded()) {
-                mActivity.showModalProgress(true);
+                String msg = mActivity.getString(R.string.fragment_signup_creating_wallet);
+                int timeout = mActivity.getResources().getInteger(R.integer.alert_hold_time_forever);
+                mActivity.ShowFadingDialog(msg, null, timeout, false);
             }
         }
 
@@ -223,13 +225,12 @@ public class WalletAddFragment extends BaseFragment
         protected void onPostExecute(final Boolean success) {
             mAddWalletTask = null;
             if(isAdded()) {
-                mActivity.showModalProgress(false);
                 if (!success) {
+                    CoreAPI.debugLevel(1, "AddWalletTask failed");
                     mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_created_wallet_failed));
-                    Log.d(TAG, "AddWalletTask failed");
                 } else {
-                    mActivity.ShowFadingDialog(String.format(getString(R.string.fragment_wallets_created_wallet), mWalletName));
                     WalletAddFragment.popFragment(mActivity);
+                    mActivity.ShowFadingDialog(String.format(getString(R.string.fragment_wallets_created_wallet), mWalletName));
                 }
             }
         }

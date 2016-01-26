@@ -141,6 +141,7 @@ dependencies {
     compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
         transitive = true
     }
+    compile 'com.github.teneighty:ShowEdittextPassword:7a9aba2'
     compile 'com.balysv.materialmenu:material-menu-toolbar:1.5.4'
     compile 'com.android.support:design:22.2.0'
     compile 'com.android.support:support-v4:21.0.+'

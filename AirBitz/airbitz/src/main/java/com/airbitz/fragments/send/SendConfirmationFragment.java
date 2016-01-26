@@ -136,6 +136,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private String mCategory;
     private String mNotes;
     private Boolean mLocked = false;
+    private Boolean mSignOnly = false;
     private Boolean mIsUUID;
     private long mAmountMax;
     private long mAmountToSendSatoshi = -1;
@@ -278,7 +279,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAuthorizationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "PIN field focus changed");
+                CoreAPI.debugLevel(1, "PIN field focus changed");
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     mActivity.showSoftKeyboard(mAuthorizationEdittext);
@@ -311,7 +312,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "Bitcoin field clicked");
+                CoreAPI.debugLevel(1, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
                 showCalculator();
             }
@@ -361,7 +362,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         View.OnTouchListener setCursorAtEnd = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "Prevent OS keyboard");
+                CoreAPI.debugLevel(1, "Prevent OS keyboard");
                 final EditText edittext = (EditText) v;
                 edittext.onTouchEvent(event);
                 edittext.post(new Runnable() {
@@ -403,7 +404,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     case MotionEvent.ACTION_MOVE:
                         moveX = event.getRawX() - mLeftThreshold;
                         float leftSlide = moveX - mSlideHalfWidth;
-                        Log.d(TAG, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
+                        CoreAPI.debugLevel(1, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
                                 + mLeftThreshold + ", " + mRightThreshold + ", " + leftSlide + ", " + mConfirmSwipeButton.getWidth());
                         if (leftSlide < 0) {
                             mConfirmSwipeButton.setX(0);
@@ -532,7 +533,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     protected void onExchangeRatesChange() {
         super.onExchangeRatesChange();
-Log.d(TAG, " ++++++++++ onExchangeRatesChange()");
         checkFields();
         checkAuthorization();
     }
@@ -541,7 +541,6 @@ Log.d(TAG, " ++++++++++ onExchangeRatesChange()");
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
-Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
         checkFields();
         checkAuthorization();
     }
@@ -764,12 +763,13 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
             mSuccessFragment.setArguments(bundle);
             if (null != exitHandler) {
-                mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.BUYSELL.ordinal());
+                mActivity.pushFragment(mSuccessFragment);
             } else {
                 mActivity.pushFragment(mSuccessFragment, NavigationActivity.Tabs.SEND.ordinal());
             }
 
-            mSendOrTransferTask = new SendOrTransferTask(mWallet, mAmountFiat);
+            mSpendTarget.setAmountFiat(mAmountFiat);
+            mSendOrTransferTask = new SendOrTransferTask(mWallet);
             mSendOrTransferTask.execute();
             hideCalculator();
         }
@@ -832,7 +832,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
 
         bundle = this.getArguments();
         if (bundle == null) {
-            Log.d(TAG, "Send confirmation bundle is null");
+            CoreAPI.debugLevel(1, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -842,6 +842,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
+            mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
             if (mIsUUID) {
                 mToWallet = mCoreApi.getWalletFromUUID(mUUIDorURI);
             }
@@ -978,22 +979,22 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
 
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "Max calculation called");
+            CoreAPI.debugLevel(1, "Max calculation called");
         }
 
         @Override
         protected Long doInBackground(Void... params) {
-            Log.d(TAG, "Max calculation started");
+            CoreAPI.debugLevel(1, "Max calculation started");
             return mSpendTarget.maxSpendable(mWallet.getUUID());
         }
 
         @Override
         protected void onPostExecute(final Long max) {
-            Log.d(TAG, "Max calculation finished");
+            CoreAPI.debugLevel(1, "Max calculation finished");
             mMaxAmountTask = null;
             if (isAdded()) {
                 if (max < 0) {
-                    Log.d(TAG, "Max calculation error");
+                    CoreAPI.debugLevel(1, "Max calculation error");
                 }
                 mMaxLocked = false;
                 mAmountMax = max;
@@ -1027,7 +1028,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
 
         @Override
         protected Long doInBackground(Void... params) {
-            Log.d(TAG, "Fee calculation started");
+            CoreAPI.debugLevel(1, "Fee calculation started");
             String dest = mIsUUID ? mWallet.getUUID() : mUUIDorURI;
             try {
                 return mSpendTarget.calcSendFees(mWallet.getUUID());
@@ -1039,7 +1040,7 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
 
         @Override
         protected void onPostExecute(final Long fees) {
-            Log.d(TAG, "Fee calculation ended");
+            CoreAPI.debugLevel(1, "Fee calculation ended");
             if (isAdded()) {
                 mCalculateFeesTask = null;
                 mFees = fees;
@@ -1055,37 +1056,41 @@ Log.d(TAG, " ++++++++++ onWalletsLoaded() " + mWallet.getCurrencyNum());
     }
 
     public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
-        private final double mAmountFiat;
         private Wallet mFromWallet;
 
-        SendOrTransferTask(Wallet fromWallet, double amountFiat) {
+        SendOrTransferTask(Wallet fromWallet) {
             mFromWallet = fromWallet;
-            mAmountFiat = amountFiat;
         }
 
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "SEND called");
+            CoreAPI.debugLevel(1, "SEND called");
         }
 
         @Override
         protected String doInBackground(Void... params) {
-            Log.d(TAG, "Initiating SEND");
+            CoreAPI.debugLevel(1, "Initiating SEND");
             try {
                 // Hack: Give the fragment manager time to finish
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }
-            return mSpendTarget.approve(mFromWallet.getUUID(), mAmountFiat);
+            if (mSignOnly) {
+                // Returns raw tx
+                return mSpendTarget.signTx(mFromWallet.getUUID());
+            } else {
+                // Returns txid
+                return mSpendTarget.approve(mFromWallet.getUUID());
+            }
         }
 
         @Override
         protected void onPostExecute(final String txResult) {
-            Log.d(TAG, "SEND done");
+            CoreAPI.debugLevel(1, "SEND done");
             mSendOrTransferTask = null;
             if (txResult == null) {
-                Log.d(TAG, "Error during send ");
+                CoreAPI.debugLevel(1, "Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
                     if (null == exitHandler) {

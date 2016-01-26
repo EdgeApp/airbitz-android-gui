@@ -5,7 +5,6 @@
 <!--
 <resources>
     <string name="airbitz_api_key">AIRBITZ_API_KEY_HERE</string>
-    <string name="chain_api_key">CHAINCOM_API_KEY_HERE</string>
     <string name="hiddenbitz_key">HIDDENBITZ_KEY_HERE</string>
     <string name="google_maps_api_key">GOOGLE_KEY_HERE</string>
     <string name="airbitz_business_directory_key">AIRBITZ_BD_KEY_HERE</string>
