@@ -85,7 +85,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = context.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        long intervalLast = prefs.getLong(LAST_PASSWORD_CHECK, System.currentTimeMillis());
+        long intervalLast = prefs.getLong(LAST_PASSWORD_CHECK, 0);
         long now = System.currentTimeMillis();
 
         if ((now - intervalLast) < MAX_REPEAT) {
