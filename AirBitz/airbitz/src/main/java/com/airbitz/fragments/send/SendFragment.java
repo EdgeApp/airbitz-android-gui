@@ -33,6 +33,7 @@ package com.airbitz.fragments.send;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,10 +50,10 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreAPI;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.models.Wallet;
-import com.airbitz.api.CoreAPI;
 
 public class SendFragment extends ScanFragment {
 
@@ -136,6 +137,7 @@ public class SendFragment extends ScanFragment {
 
     @Override
     public void onCameraScanResult(String result) {
+        Log.d(TAG, result);
         CoreAPI.debugLevel(1, "checking result = " + result);
         if (result != null) {
             showProcessing();
@@ -156,8 +158,16 @@ public class SendFragment extends ScanFragment {
         if (!TextUtils.isEmpty(parsedUri)) {
             askBitidLogin(parsedUri, text);
         } else {
-            mSpendTask = new NewSpendTask();
-            mSpendTask.execute(text);
+            Uri uri = Uri.parse(text);
+            Log.d(TAG, uri.toString());
+            if (uri != null && ("airbitz-ret".equals(uri.getScheme())
+                        || "bitcoin-ret".equals(uri.getScheme())
+                        || "x-callback-url".equals(uri.getHost()))) {
+				mActivity.handleRequestForPaymentUri(uri);
+            } else {
+                mSpendTask = new NewSpendTask();
+                mSpendTask.execute(text);
+            }
         }
     }
 

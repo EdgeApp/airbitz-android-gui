@@ -1025,7 +1025,7 @@ public class NavigationActivity extends ActionBarActivity
     /*
      * Handle bitcoin-ret or x-callback-url Uri's coming from OS
      */
-    private void handleRequestForPaymentUri(Uri uri) {
+    public void handleRequestForPaymentUri(Uri uri) {
         AddressRequestFragment fragment = new AddressRequestFragment();
         fragment.setOnAddressRequestListener(this);
         Bundle bundle = new Bundle();
