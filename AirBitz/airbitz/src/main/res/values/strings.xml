@@ -690,6 +690,9 @@
     <string name="plugin_glidera_title">USA and Canada</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
 
-
     <string name="intent_choose_an_email">Choose an Email client:</string>
+
+    <string name="plugin_filechooser_title">Upload File</string>
+    <string name="plugin_filechooser_use_camera">Use Camera</string>
+    <string name="plugin_filechooser_use_photo">Use Photo Album</string>
 </resources>

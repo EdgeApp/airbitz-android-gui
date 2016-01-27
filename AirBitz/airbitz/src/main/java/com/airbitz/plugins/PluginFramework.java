@@ -239,7 +239,7 @@ public class PluginFramework {
         public void showAlert(String title, String message, boolean showSpinner);
         public void hideAlert();
         public void setTitle(String title);
-        public void launchCamera(final String cbid);
+        public void launchFileSelection(final String cbid);
         public CoreAPI.SpendTarget launchSend(final String cbid, final String uuid, final String address,
                                       final long amountSatoshi, final double amountFiat,
                                       final String label, final String category, final String notes,
@@ -454,7 +454,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void requestFile(String cbid) {
-            handler.launchCamera(cbid);
+            handler.launchFileSelection(cbid);
         }
 
         @JavascriptInterface
@@ -622,6 +622,7 @@ public class PluginFramework {
 
     static final int INTENT_UPLOAD_CODE = 10;
     static final int CAPTURE_IMAGE_CODE = 20;
+    static final int CHOOSE_IMAGE_CODE = 30;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
