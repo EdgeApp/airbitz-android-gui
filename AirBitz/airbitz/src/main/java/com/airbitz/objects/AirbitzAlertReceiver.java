@@ -120,15 +120,15 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         mHandler.postDelayed(murderPendingTasks, ALERT_TIME_TO_LIVE_MILLIS);
 
         if(type.equals(ALERT_NOTIFICATION_TYPE)) {
-            mNotificationTask = new NotificationTask(context);
+            mNotificationTask = new NotificationTask(AirbitzApplication.getContext());
             mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(type.equals(ALERT_NEW_BUSINESS_TYPE)) {
-            mNewBusinessTask = new NewBusinessTask(context);
+            mNewBusinessTask = new NewBusinessTask(AirbitzApplication.getContext());
             mNewBusinessTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(type.equals(ALERT_OTPRESET_TYPE)) {
-            mOTPResetCheckTask = new OTPResetCheckTask(context);
+            mOTPResetCheckTask = new OTPResetCheckTask(AirbitzApplication.getContext());
             mOTPResetCheckTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }

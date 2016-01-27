@@ -28,7 +28,9 @@ public class AirbitzException extends Exception {
         return AirbitzException.errorMap(null, mCode, mError);
     }
     static String errorMap(Context context, tABC_CC code, tABC_Error error) {
-        if (code == tABC_CC.ABC_CC_AccountAlreadyExists) {
+        if (context == null) {
+            return error.getSzDescription();
+        } else if (code == tABC_CC.ABC_CC_AccountAlreadyExists) {
             return context.getString(R.string.server_error_account_already_exists);
         }
         else if (code == tABC_CC.ABC_CC_AccountDoesNotExist) {
