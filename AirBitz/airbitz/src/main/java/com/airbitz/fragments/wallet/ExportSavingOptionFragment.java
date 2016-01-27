@@ -458,7 +458,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 }
                 int year = today.get(Calendar.YEAR);
                 String tempDay = "";
-                if (today.get(Calendar.MONTH) == 2) {
+                if (today.get(Calendar.MONTH) == 1) {
                     if (year % 4 != 0) {
                         tempDay = "28";
                     } else if (year % 100 != 0) {
@@ -468,7 +468,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                     } else {
                         tempDay = "29";
                     }
-                } else if (today.get(Calendar.MONTH) == 1 || today.get(Calendar.MONTH) == 3 || today.get(Calendar.MONTH) == 5 || today.get(Calendar.MONTH) == 7 || today.get(Calendar.MONTH) == 8 || today.get(Calendar.MONTH) == 10 || today.get(Calendar.MONTH) == 12) {
+                } else if (today.get(Calendar.MONTH) == 0 || today.get(Calendar.MONTH) == 2 || today.get(Calendar.MONTH) == 4 || today.get(Calendar.MONTH) == 6 || today.get(Calendar.MONTH) == 7 || today.get(Calendar.MONTH) == 9 || today.get(Calendar.MONTH) == 11) {
                     tempDay = "31";
                 } else {
                     tempDay = "30";
