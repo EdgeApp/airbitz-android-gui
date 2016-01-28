@@ -377,7 +377,7 @@ public class WalletBaseFragment extends BaseFragment
 
     protected void updateTitle() {
         if (mTitleView != null) {
-            if (mLoading) {
+            if (mLoading || null == mWallet) {
                 mTitleView.setText(R.string.string_loading);
             } else {
                 mTitleView.setText(mWallet.getName());
