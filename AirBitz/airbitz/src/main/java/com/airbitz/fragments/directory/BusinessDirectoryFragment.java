@@ -107,6 +107,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     Handler mHandler = new Handler();
     View view;
+    private boolean mIncludeCategories;
     private LinearLayout mNearYouLayout;
     private View mFragHeader;
     private ViewGroup mBusinessLayout;
@@ -173,7 +174,10 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
         // Add a header
         mBusinessLayout = (ViewGroup) inflater.inflate(R.layout.inc_directory_categories, null, false);
-        mVenueListView.addHeaderView(mBusinessLayout, null, false);
+        mIncludeCategories = mActivity.getResources().getBoolean(R.bool.include_directory_categories);
+        if (mIncludeCategories) {
+            mVenueListView.addHeaderView(mBusinessLayout, null, false);
+        }
 
         // Add a footer
         mViewGroupLoading = (ViewGroup) inflater.inflate(R.layout.loading_indicator, null, false);
@@ -367,7 +371,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     private void updateNearYouSticky() {
         int firstVisibleItem = mVenueListView.getFirstVisiblePosition();
-        View first = mVenueListView.getChildAt(1); // first item not the header
+
+        View first = mVenueListView.getChildAt(mIncludeCategories ? 1 : 0); // first item not the header
         if (first != null && firstVisibleItem==0) {
             mNearYouLayout.setY(first.getY() + mFragHeader.getMeasuredHeight());
         } else if (firstVisibleItem > 0) {
