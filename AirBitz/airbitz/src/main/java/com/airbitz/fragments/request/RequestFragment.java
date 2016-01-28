@@ -840,9 +840,11 @@ public class RequestFragment extends WalletBaseFragment implements
         if (mCreateBitmapTask != null) {
             mCreateBitmapTask.cancel(true);
         }
-        // Create a new request and qr code
-        mCreateBitmapTask = new CreateBitmapTask(mWallet, mAmountSatoshi);
-        mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (null != mWallet) {
+            // Create a new request and qr code
+            mCreateBitmapTask = new CreateBitmapTask(mWallet, mAmountSatoshi);
+            mCreateBitmapTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     /*
