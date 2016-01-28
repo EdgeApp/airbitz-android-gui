@@ -724,7 +724,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         if(!mCoreApi.PasswordExists()) {
             mPasswordEditText.setVisibility(View.GONE);
         }
-        else if (type == ExportTypes.PrivateSeed.ordinal()) {
+        if (type == ExportTypes.PrivateSeed.ordinal()) {
             mDatesLayout.setVisibility(View.GONE);
             mLastPeriodLayout.setVisibility(View.GONE);
             mThisPeriodLayout.setVisibility(View.GONE);
