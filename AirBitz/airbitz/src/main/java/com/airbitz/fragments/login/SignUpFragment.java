@@ -322,7 +322,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
-            mUserNameEditText.requestFocus();
+            mPasswordEditText.requestFocus();
         }
         else if (mMode == CHANGE_PASSWORD) {
             // change mUsername label, title
@@ -339,6 +339,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
+            mPasswordEditText.requestFocus();
         }
         else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
