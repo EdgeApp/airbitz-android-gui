@@ -1286,6 +1286,11 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    public void UserJustLoggedIn(boolean passwordLogin, boolean showLoadingMessages) {
+        mWalletsLoadedReceiver.mShowMessages = showLoadingMessages;
+        UserJustLoggedIn(passwordLogin);
+    }
+
     public void UserJustLoggedIn(boolean passwordLogin) {
         showNavBar();
         checkDailyLimitPref();
@@ -1514,10 +1519,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void LoginNow(String username, String password, boolean newDevice) {
-        mWalletsLoadedReceiver.mShowMessages = newDevice;
-
         AirbitzApplication.Login(username, password);
-        UserJustLoggedIn(password != null);
+        UserJustLoggedIn(password != null, newDevice);
         mDrawerAccount.setText(username);
     }
 

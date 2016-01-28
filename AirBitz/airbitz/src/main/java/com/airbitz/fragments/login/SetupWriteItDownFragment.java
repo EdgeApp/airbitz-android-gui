@@ -179,7 +179,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         } catch (AirbitzException e) {
             CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 2 error:");
         }
-        mActivity.UserJustLoggedIn(true);
+        mActivity.UserJustLoggedIn(true, false);
     }
 
     @Override
