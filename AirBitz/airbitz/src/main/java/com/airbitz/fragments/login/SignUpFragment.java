@@ -322,7 +322,12 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
-            mPasswordEditText.requestFocus();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    mPasswordEditText.requestFocus();
+                    mActivity.showSoftKeyboard(mPasswordEditText);
+                }
+            }, 1000);
         }
         else if (mMode == CHANGE_PASSWORD) {
             // change mUsername label, title
@@ -340,6 +345,12 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
             mPasswordEditText.requestFocus();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    mActivity.showSoftKeyboard(mPasswordEditText);
+                    mActivity.showSoftKeyboard(mPasswordEditText);
+                }
+            }, 1000);
         }
         else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
