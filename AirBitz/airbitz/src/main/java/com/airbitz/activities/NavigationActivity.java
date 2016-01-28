@@ -125,6 +125,7 @@ import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
 import com.airbitz.plugins.GiftCardFragment;
 import com.airbitz.plugins.PluginFragment;
+import com.airbitz.plugins.PluginCheck;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -373,6 +374,9 @@ public class NavigationActivity extends ActionBarActivity
         manager.registerReceiver(mDataSyncReceiver, new IntentFilter(CoreAPI.DATASYNC_UPDATE_ACTION));
         manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(CoreAPI.OTP_ERROR_ACTION));
         manager.registerReceiver(mOtpResetReceiver, new IntentFilter(CoreAPI.OTP_RESET_ACTION));
+
+        // Let's see what plugins are enabled
+        PluginCheck.checkEnabledPlugins();
     }
 
     @Override

@@ -31,33 +31,15 @@
 
 package com.airbitz.plugins;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
-import com.airbitz.fragments.BaseFragment;
-import com.airbitz.utils.Common;
-import com.airbitz.plugins.PluginFramework.Plugin;
-
-import java.util.List;
 
 public class GiftCardFragment extends BasePluginList {
 
-    public GiftCardFragment() {
-        mPlugins = PluginFramework.getPluginsGrouped().get(PluginFramework.GIFT_CARDS);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPlugins.clear();
+        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.GIFT_CARDS));
     }
 
     @Override
