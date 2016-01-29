@@ -2688,7 +2688,7 @@ public class CoreAPI {
         mWatcherHandler.sendEmptyMessage(LAST);
         while (mWatcherHandler != null && mWatcherHandler.hasMessages(LAST)) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(1000);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }
@@ -2722,7 +2722,7 @@ public class CoreAPI {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e(TAG, "", e);
             }
         }
         for (String uuid : mWatcherTasks.keySet()) {

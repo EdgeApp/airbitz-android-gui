@@ -578,7 +578,7 @@ public class LandingFragment extends BaseFragment implements
                     });
         }
         if (isPinLogin) {
-            mHandler.postDelayed(delayedShowPinKeyboard, 300);
+            mHandler.postDelayed(delayedShowPinKeyboard, 500);
             mPinLoginMode = true;
             mPinFailedCount = 0;
 
@@ -727,7 +727,7 @@ public class LandingFragment extends BaseFragment implements
     public void onFadingDialogFinished() {
         mActivity.setFadingDialogListener(null);
         refreshView(true, true);
-        mHandler.postDelayed(delayedShowPinKeyboard, 100);
+        mHandler.postDelayed(delayedShowPinKeyboard, 500);
     }
 
     final Runnable delayedShowPinKeyboard = new Runnable() {

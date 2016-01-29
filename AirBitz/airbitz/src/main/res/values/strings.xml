@@ -373,6 +373,7 @@
     <string name="fragment_wallets_add_wallet">Add Wallet</string>
     <string name="fragment_wallets_deleting_wallet">Deleting wallet...</string>
     <string name="fragment_wallets_unable_to_delete_wallet">Unable to delete wallet</string>
+    <string name="fragment_wallets_delete_has_funds">Cannot delete wallet as it contains funds. Please transfer out funds first.</string>
     <string name="fragment_wallets_delete_wallet_confirm_title">Delete Wallet?</string>
     <string name="fragment_wallets_delete_wallet_confirm_message">Are you sure you want to delete %1$s?</string>
     <string name="fragment_wallets_delete_wallet_second_confirm_title">Delete Wallet: %1$s?</string>
@@ -690,6 +691,9 @@
     <string name="plugin_glidera_title">USA and Canada</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
 
-
     <string name="intent_choose_an_email">Choose an Email client:</string>
+
+    <string name="plugin_filechooser_title">Upload File</string>
+    <string name="plugin_filechooser_use_camera">Use Camera</string>
+    <string name="plugin_filechooser_use_photo">Use Photo Album</string>
 </resources>

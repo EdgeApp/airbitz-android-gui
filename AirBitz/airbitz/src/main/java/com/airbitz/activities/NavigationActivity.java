@@ -125,6 +125,7 @@ import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
 import com.airbitz.plugins.GiftCardFragment;
 import com.airbitz.plugins.PluginFragment;
+import com.airbitz.plugins.PluginCheck;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -373,6 +374,9 @@ public class NavigationActivity extends ActionBarActivity
         manager.registerReceiver(mDataSyncReceiver, new IntentFilter(CoreAPI.DATASYNC_UPDATE_ACTION));
         manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(CoreAPI.OTP_ERROR_ACTION));
         manager.registerReceiver(mOtpResetReceiver, new IntentFilter(CoreAPI.OTP_RESET_ACTION));
+
+        // Let's see what plugins are enabled
+        PluginCheck.checkEnabledPlugins();
     }
 
     @Override
@@ -1282,6 +1286,11 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    public void UserJustLoggedIn(boolean passwordLogin, boolean showLoadingMessages) {
+        mWalletsLoadedReceiver.mShowMessages = showLoadingMessages;
+        UserJustLoggedIn(passwordLogin);
+    }
+
     public void UserJustLoggedIn(boolean passwordLogin) {
         showNavBar();
         checkDailyLimitPref();
@@ -1510,10 +1519,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void LoginNow(String username, String password, boolean newDevice) {
-        mWalletsLoadedReceiver.mShowMessages = newDevice;
-
         AirbitzApplication.Login(username, password);
-        UserJustLoggedIn(password != null);
+        UserJustLoggedIn(password != null, newDevice);
         mDrawerAccount.setText(username);
     }
 
@@ -2267,6 +2274,11 @@ public class NavigationActivity extends ActionBarActivity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
+        if (!getResources().getBoolean(R.bool.include_buysell)) {
+            mDrawerBuySell.setVisibility(View.GONE);
+        } else {
+            mDrawerBuySell.setVisibility(View.VISIBLE);
+        }
 
         mDrawerShop = (Button) findViewById(R.id.item_drawer_shop);
         mDrawerShop.setOnClickListener(new View.OnClickListener() {
@@ -2276,6 +2288,11 @@ public class NavigationActivity extends ActionBarActivity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
+        if (!getResources().getBoolean(R.bool.include_shop)) {
+            mDrawerShop.setVisibility(View.GONE);
+        } else {
+            mDrawerShop.setVisibility(View.VISIBLE);
+        }
 
         mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
         mDrawerImport.setOnClickListener(new View.OnClickListener() {

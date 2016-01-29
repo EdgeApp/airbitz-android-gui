@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/activity_signup_username_hint"
-            android:layout_marginTop="25.4dp" />
+            android:layout_marginTop="30dp" />
 
         <TextView
             android:id="@+id/activity_signup_password_help"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/activity_signup_username_edittext"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:gravity="left|center_vertical"
             android:paddingLeft="6.3dp"
             android:paddingRight="6.3dp"

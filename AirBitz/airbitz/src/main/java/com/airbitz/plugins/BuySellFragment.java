@@ -35,8 +35,11 @@ import com.airbitz.R;
 
 public class BuySellFragment extends BasePluginList {
 
-    public BuySellFragment() {
-        mPlugins = PluginFramework.getPluginsGrouped().get(PluginFramework.BUYSELL);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPlugins.clear();
+        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.BUYSELL));
     }
 
     @Override

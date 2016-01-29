@@ -72,12 +72,12 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
     final private static int MAX_REPEAT = 1000 * 60 * 60 * 24; // 1 day max
 
     public static void setup(Context context) {
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, PasswordCheckReceiver.class);
 
         PendingIntent pi = PendingIntent.getBroadcast(context, ALARM_NOTIFICATION_CODE,
-			intent, PendingIntent.FLAG_NO_CREATE);
+			intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		if (pi != null) {
+            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), REPEAT_NOTIFICATION_MILLIS, pi);
 		}
     }
@@ -99,6 +99,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
 		}
 
         for (String account : accounts) {
+            Log.d(TAG, "Checking account " + account);
             if (!api.hasPassword(account)) {
 				buildNotification(context, account);
 			}

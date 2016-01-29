@@ -79,11 +79,13 @@ public class PluginFramework {
         String provider;
         String country;
         int imageResId;
+        boolean enabled;
 
         Map<String, String> env;
 
         Plugin() {
             env = new HashMap<String, String>();
+            enabled = true;
         }
     }
 
@@ -100,6 +102,8 @@ public class PluginFramework {
     static class PluginList {
         List<Plugin> mPlugins;
         Map<String, List<Plugin>> mPluginsGrouped;
+
+        public String[] checkPluginIds = {"11139", "11140", "11141"};
 
         PluginList() {
             CoreAPI api = CoreAPI.getApi();
@@ -153,6 +157,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Whole Foods");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Whole-Foods-Market-128px.png");
             plugin.env.put("BIZID", "11139");
+            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AGroceries");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -168,6 +173,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Walmart");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/WalMart-128px.png");
             plugin.env.put("BIZID", "11140");
+            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AShopping");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -183,6 +189,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Home Depot");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Home-Depot-square-128px.png");
             plugin.env.put("BIZID", "11141");
+            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AHome Improvement");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -217,29 +224,72 @@ public class PluginFramework {
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
         }
+
+        public void setPluginStatus(String bizId, boolean enabled) {
+            Log.d(TAG, "Checking " + bizId + " " + enabled);
+            for (Plugin plugin : mPlugins) {
+                String pBizId = plugin.env.get("BIZID");
+                if (null == pBizId) {
+                    continue;
+                }
+                if (pBizId.equals(bizId)) {
+                    plugin.enabled = enabled;
+                    Log.d(TAG, "set " + bizId + " " + enabled);
+                    return;
+                }
+            }
+            Log.d(TAG, "Not set " + bizId + " " + enabled);
+        }
+
+        public List<Plugin> filteredPlugins() {
+            List<Plugin> filtered = new LinkedList<Plugin>();
+            for (Plugin plugin : mInstance.mPlugins) {
+                if (plugin.enabled) {
+                    filtered.add(plugin);
+                }
+            }
+            return filtered;
+        }
+
+        public Map<String, List<Plugin>> filteredGroupPlugins() {
+            Map<String, List<Plugin>> filtered = new HashMap<String, List<Plugin>>();
+            for (String t : getTags()) {
+                filtered.put(t, new LinkedList<Plugin>());
+            }
+            for (String t : getTags()) {
+                for (Plugin plugin : mPluginsGrouped.get(t)) {
+                    Log.d(TAG, plugin.name + " " + plugin.enabled);
+                    if (plugin.enabled) {
+                        filtered.get(t).add(plugin);
+                    }
+                }
+            }
+            return filtered;
+        }
     }
 
     private static PluginList mInstance;
 
-    public static List<Plugin> getPlugins() {
+    public static PluginList getPluginObjects() {
         if (mInstance == null) {
             mInstance = new PluginList();
         }
-        return mInstance.mPlugins;
+        return mInstance;
+    }
+
+    public static List<Plugin> getPlugins() {
+        return getPluginObjects().filteredPlugins();
     }
 
     public static Map<String, List<Plugin>> getPluginsGrouped() {
-        if (mInstance == null) {
-            mInstance = new PluginList();
-        }
-        return mInstance.mPluginsGrouped;
+        return getPluginObjects().filteredGroupPlugins();
     }
 
     public interface UiHandler {
         public void showAlert(String title, String message, boolean showSpinner);
         public void hideAlert();
         public void setTitle(String title);
-        public void launchCamera(final String cbid);
+        public void launchFileSelection(final String cbid);
         public CoreAPI.SpendTarget launchSend(final String cbid, final String uuid, final String address,
                                       final long amountSatoshi, final double amountFiat,
                                       final String label, final String category, final String notes,
@@ -454,7 +504,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void requestFile(String cbid) {
-            handler.launchCamera(cbid);
+            handler.launchFileSelection(cbid);
         }
 
         @JavascriptInterface
@@ -622,6 +672,7 @@ public class PluginFramework {
 
     static final int INTENT_UPLOAD_CODE = 10;
     static final int CAPTURE_IMAGE_CODE = 20;
+    static final int CHOOSE_IMAGE_CODE = 30;
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;

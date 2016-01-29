@@ -72,6 +72,9 @@ import com.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 
+import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.io.ByteArrayOutputStream;
 import java.net.URISyntaxException;
 import java.util.Stack;
@@ -226,41 +229,75 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         mFramework.updateDenomation();
     }
 
-    private String mCameraId;
+    private String mFileId;
     private Uri mImageUri;
-    public void launchCamera(String cbid) {
-        mCameraId = cbid;
+    public void launchFileSelection(String cbid) {
+        mFileId = cbid;
 
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, "photo.jpg");
-                values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
-                mImageUri = mActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
+        builder.content(R.string.plugin_filechooser_title)
+               .cancelable(false)
+               .theme(Theme.LIGHT)
+               .positiveText(R.string.plugin_filechooser_use_camera)
+               .negativeText(R.string.plugin_filechooser_use_photo)
+               .neutralText(R.string.string_cancel)
+               .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        launchCamera();
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        launchFileChooser();
+                    }
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+               });
+        builder.show();
+    }
 
-                //create new Intent
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                mActivity.startActivityForResult(intent, PluginFramework.CAPTURE_IMAGE_CODE);
-            }
-        });
+    private void launchFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        mActivity.startActivityForResult(Intent.createChooser(intent, "File Chooser"), PluginFramework.CHOOSE_IMAGE_CODE);
+    }
+
+    private void launchCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "photo.jpg");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+        mImageUri = mActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        //create new Intent
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        mActivity.startActivityForResult(intent, PluginFramework.CAPTURE_IMAGE_CODE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode) {
-            if (Activity.RESULT_OK == resultCode) {
-                mImageTask = new ImageEncodeTask(mActivity, mImageUri, mFramework);
+        Uri result = mImageUri;
+        if (PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
+            mImageUri = intent == null || resultCode != Activity.RESULT_OK
+                ? null : intent.getData();
+        }
+        if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode
+                || PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
+            if (Activity.RESULT_OK == resultCode && null != result) {
+                mImageTask = new ImageEncodeTask(mActivity, result, mFramework);
                 mImageTask.execute();
             } else if (Activity.RESULT_CANCELED == resultCode) {
-                mFramework.sendBack(mCameraId);
-                mCameraId = null;
+                mFramework.sendBack(mFileId);
+                mFileId = null;
                 mImageUri = null;
             }
         } else if (PluginFramework.INTENT_UPLOAD_CODE == requestCode) {
-            Uri result = intent == null || resultCode != Activity.RESULT_OK
+            Uri uri = intent == null || resultCode != Activity.RESULT_OK
                 ? null  : intent.getData();
-            mFramework.uploadCallback(result);
+            mFramework.uploadCallback(uri);
         }
     }
 
@@ -380,8 +417,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
 
-        public void launchCamera(final String cbid) {
-            PluginFragment.this.launchCamera(cbid);
+        public void launchFileSelection(final String cbid) {
+            PluginFragment.this.launchFileSelection(cbid);
         }
 
         public SpendTarget launchSend(final String cbid, final String uuid, final String address,
@@ -559,11 +596,11 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         @Override
         protected void onPostExecute(String encoded) {
             if (encoded != null) {
-                mFramework.sendImage(mCameraId, encoded);
+                mFramework.sendImage(mFileId, encoded);
             } else {
-                mFramework.sendBack(mCameraId);
+                mFramework.sendBack(mFileId);
             }
-            mCameraId = null;
+            mFileId = null;
             mImageUri = null;
         }
     }

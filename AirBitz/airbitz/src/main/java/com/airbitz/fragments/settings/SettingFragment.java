@@ -632,9 +632,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             bundle.putBoolean(START_CHANGE_PASSWORD, false);
         }
 
-        if(!mCoreAPI.PasswordExists()) {
-            mPinReloginSwitch.setEnabled(false);
-        }
+        mPinReloginSwitch.setEnabled(mCoreAPI.PasswordExists());
 
         mCoreSettings = mCoreAPI.newCoreSettings();
         loadSettings(mCoreSettings);

@@ -53,6 +53,7 @@ import com.airbitz.utils.Common;
 import com.airbitz.plugins.PluginFramework.Plugin;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public abstract class BasePluginList extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
@@ -64,6 +65,7 @@ public abstract class BasePluginList extends BaseFragment {
 
     public BasePluginList() {
         setBackEnabled(true);
+        mPlugins = new ArrayList<Plugin>();
     }
 
     @Override
