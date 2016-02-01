@@ -1362,7 +1362,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         @Override
         protected List<Business> doInBackground(String... strings) {
-            return api.getHttpAutoCompleteBusiness(strings[0], "", "");
+            return api.getHttpAutoCompleteBusiness(strings[0], "", "", "");
         }
 
         @Override

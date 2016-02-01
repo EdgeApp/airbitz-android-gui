@@ -9,4 +9,5 @@
     <bool name="include_buysell">true</bool>
     <bool name="include_shop">true</bool>
     <bool name="include_directory_categories">true</bool>
+    <string name="lock_directory_category"></string>
 </resources>

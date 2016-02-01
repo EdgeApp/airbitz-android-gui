@@ -26,6 +26,7 @@
                     android:id="@+id/fragment_setup_username_edittext"
                     android:hint="@string/activity_signup_username_hint"
                     android:layout_marginTop="10dp"
+                    android:imeOptions="actionDone"
                     style="@style/EditText" />
 
                 </RelativeLayout>

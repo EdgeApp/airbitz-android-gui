@@ -134,6 +134,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
     private AsyncTask<String, Void, String> mGetVenuesAsyncTask;
     private GetVenuesByBoundTask mGetVenuesByBoundAsyncTask;
     private MapBuilder.MapShim mMapShim;
+    private String mLockedCategory = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -336,6 +337,12 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
                 }
             }
         });
+
+        if (!TextUtils.isEmpty(mActivity.getString(R.string.lock_directory_category))) {
+            mLockedCategory = mActivity.getString(R.string.lock_directory_category);
+        } else {
+            mLockedCategory = "";
+        }
 
         return view;
     }
@@ -597,10 +604,11 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
             CoreAPI.debugLevel(1, "params: " + params[0] + " " + params[1] + " " + params[2]);
-            if (mBusinessType.equalsIgnoreCase("category")) {
+            if (!TextUtils.isEmpty(mLockedCategory)) {
+                return mApi.getSearchByBoundsAndBusiness(params[0], params[1], mLockedCategory, params[2], PAGE_SIZE, "", "");
+            } else if (mBusinessType.equalsIgnoreCase("category")) {
                 return mApi.getSearchByBoundsAndBusiness(params[0], "", params[1], params[2], PAGE_SIZE, "", "");
             } else {
-
                 return mApi.getSearchByBoundsAndBusiness(params[0], params[1], "", params[2], PAGE_SIZE, "", "");
             }
         }

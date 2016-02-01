@@ -177,15 +177,23 @@ public class LandingFragment extends BaseFragment implements
                 }
             }
         });
+        mUserNameEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (TextUtils.isEmpty(mUserNameEditText.getText())) {
+                    toggleAccountList();
+                }
+            }
+        });
         mUserNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                showAccountsList(false);
+                if (!TextUtils.isEmpty(s)) {
+                    showAccountsList(false);
+                }
             }
 
             @Override
@@ -476,12 +484,12 @@ public class LandingFragment extends BaseFragment implements
                             public void onClick(DialogInterface dialog, int id) {
                                 mUserNameEditText.setText("");
                                 mUsername = "";
-                                refreshView(false, false);
-                                showAccountsList(false);
-                                showOthersList(false);
                                 if (!mCoreAPI.deleteAccount(account)) {
                                     mActivity.ShowFadingDialog("Account could not be deleted.");
                                 }
+                                showAccountsList(false);
+                                showOthersList(false);
+                                refreshView(false, false);
                                 dialog.dismiss();
                             }
                         })
@@ -494,6 +502,14 @@ public class LandingFragment extends BaseFragment implements
                         });
         AlertDialog confirmDialog = builder.create();
         confirmDialog.show();
+    }
+
+    private void toggleAccountList() {
+        if (mAccountsListView.getVisibility() == View.VISIBLE) {
+            showAccountsList(false);
+        } else {
+            showAccountsList(true);
+        }
     }
 
     private void showAccountsList(boolean show) {
@@ -563,7 +579,6 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void refreshView(boolean isPinLogin, boolean isKeyboardUp, boolean isTransition) {
-        showAccountsList(false);
         if (isTransition) {
             mBlackoutView.setVisibility(View.VISIBLE);
             mBlackoutView.setAlpha(1f);
@@ -632,7 +647,6 @@ public class LandingFragment extends BaseFragment implements
                 mDetailTextView.setVisibility(View.VISIBLE);
                 mLandingSubtextView.setVisibility(View.VISIBLE);
             }
-            showAccountsList(false);
         }
     }
 

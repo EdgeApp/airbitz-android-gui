@@ -32,6 +32,7 @@
 package com.airbitz.fragments.directory;
 
 import android.app.FragmentTransaction;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,6 +51,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbitz.R;
@@ -89,6 +92,7 @@ public class BusinessSearchFragment extends BaseFragment implements
     private String mBusinessType = "business";
     private String mLocationWords = "";
     private boolean locationEnabled = false;
+    private String mLockedCategory = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +115,17 @@ public class BusinessSearchFragment extends BaseFragment implements
         View view = inflater.inflate(R.layout.fragment_business_search, container, false);
 
         mSearchButton = (ImageButton) view.findViewById(R.id.search_button);
+        View searchForm = view.findViewById(R.id.search_form);
         mQueryField = (EditText) view.findViewById(R.id.query);
+        if (!TextUtils.isEmpty(mActivity.getString(R.string.lock_directory_category))) {
+            mQueryField.setVisibility(View.GONE);
+            mQueryField.setText(mActivity.getString(R.string.lock_directory_category));
+
+			Resources r = getResources();
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) searchForm.getLayoutParams();
+            param.height = r.getDimensionPixelSize(R.dimen.search_form_height_half);
+            searchForm.setLayoutParams(param);
+        }
         mLocationField = (EditText) view.findViewById(R.id.location);
         mLocationField.setText(R.string.current_location);
         mSearchListView = (ListView) view.findViewById(R.id.category_list);
@@ -277,6 +291,13 @@ public class BusinessSearchFragment extends BaseFragment implements
         });
         mBusinessSearchAdapter = new BusinessSearchAdapter(mActivity, mBusinessList);
         mLocationAdapter = new LocationAdapter(mActivity, mLocationList);
+
+        if (!TextUtils.isEmpty(mActivity.getString(R.string.lock_directory_category))) {
+            mLockedCategory = mActivity.getString(R.string.lock_directory_category);
+        } else {
+            mLockedCategory = "";
+        }
+
         return view;
     }
 
@@ -309,7 +330,11 @@ public class BusinessSearchFragment extends BaseFragment implements
         mCurrentLocation = mLocationManager.getLocation();
         mLocationManager.addLocationChangeListener(this);
 
-        mQueryField.requestFocus();
+		if (TextUtils.isEmpty(mLockedCategory)) {
+			mQueryField.requestFocus();
+		} else {
+			mLocationField.requestFocus();
+		}
         mActivity.showSoftKeyboard(mQueryField);
         if (!TextUtils.isEmpty(mQueryField.getText().toString())) {
             mQueryField.setSelection(mQueryField.getText().toString().length());
@@ -350,7 +375,7 @@ public class BusinessSearchFragment extends BaseFragment implements
         @Override
         protected List<Business> doInBackground(String... strings) {
             List<Business> jsonParsingResult =
-                api.getHttpAutoCompleteBusiness(strings[0], strings[1], strings[2]);
+                api.getHttpAutoCompleteBusiness(strings[0], mLockedCategory, strings[1], strings[2]);
             return jsonParsingResult;
         }
 

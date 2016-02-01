@@ -200,11 +200,15 @@ public class DirectoryApi {
         return getRequest(API_HIDDENBITZ + token);
     }
 
-    public String getSearchByTerm(String term, String page_size, String page, String sort){
+    public String getSearchByTerm(String term, String category, String page_size, String page, String sort){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("term", term));
         if(getLanguageCode() != null) {
             params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+
+        if(category.length() != 0){
+            params.add(new BasicNameValuePair("category", category));
         }
 
         if(page_size.length() != 0){
@@ -243,19 +247,23 @@ public class DirectoryApi {
         return getRequest(API_SEARCH, createURLParams(params));
     }
 
-    public String getSearchByLatLong(String latlong, String page_size, String page, String sort){
+    public String getSearchByLatLong(String latlong, String term, String category, String page_size, String page, String sort){
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("ll", latlong));
 
-        if(page_size.length() != 0){
+        if (page_size.length() != 0){
             params.add(new BasicNameValuePair("page_size", page_size));
         }
-
-        if(page.length() != 0){
+        if (page.length() != 0){
             params.add(new BasicNameValuePair("page", page));
         }
-
-        if(sort.length() != 0){
+        if (term.length()>0){
+            params.add(new BasicNameValuePair("term", term));
+        }
+        if (category.length()>0){
+            params.add(new BasicNameValuePair("category", category));
+        }
+        if (sort.length() != 0){
             params.add(new BasicNameValuePair("sort", sort));
         }
         return getRequest(API_SEARCH, createURLParams(params));
@@ -484,7 +492,7 @@ public class DirectoryApi {
 
     }
 
-    public List<Business> getHttpAutoCompleteBusiness(String term, String location, String ll){
+    public List<Business> getHttpAutoCompleteBusiness(String term, String category, String location, String ll){
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -495,6 +503,10 @@ public class DirectoryApi {
 
         if(getLanguageCode() != null) {
             params.add(new BasicNameValuePair("lang", getLanguageCode()));
+        }
+
+        if(category.length() > 0){
+            params.add(new BasicNameValuePair("category", category));
         }
 
         if(location.length() > 0){

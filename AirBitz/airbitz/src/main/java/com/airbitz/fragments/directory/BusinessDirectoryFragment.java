@@ -130,6 +130,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     private String mNextUrl = null;
     private VenuesTask mVenuesTask;
     private Location mCurrentLocation = null;
+    private String mLockedCategory = "";
 
     Runnable mLocationTimeout = new Runnable() {
         @Override
@@ -177,6 +178,11 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mIncludeCategories = mActivity.getResources().getBoolean(R.bool.include_directory_categories);
         if (mIncludeCategories) {
             mVenueListView.addHeaderView(mBusinessLayout, null, false);
+        }
+        if (!TextUtils.isEmpty(mActivity.getString(R.string.lock_directory_category))) {
+            mLockedCategory = mActivity.getString(R.string.lock_directory_category);
+        } else {
+            mLockedCategory = "";
         }
 
         // Add a footer
@@ -459,9 +465,9 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             if (params.length > 0 && !TextUtils.isEmpty(params[0])) {
                 return mApi.getRequest(params[0]);
             } else if (mLatLng != null && !mLatLng.isEmpty()) {
-                return mApi.getSearchByLatLong(mLatLng, String.valueOf(PAGE_SIZE), "", "1");
+                return mApi.getSearchByLatLong(mLatLng, "", mLockedCategory, String.valueOf(PAGE_SIZE), "", "1");
             } else {
-                return mApi.getSearchByTerm("", String.valueOf(PAGE_SIZE), "", "1");
+                return mApi.getSearchByTerm("", mLockedCategory, String.valueOf(PAGE_SIZE), "", "1");
             }
         }
 
