@@ -206,6 +206,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mNextButton.requestFocus();
+                    goNext();
                     return true;
                 }
                 return false;

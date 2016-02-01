@@ -153,11 +153,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         mUserNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-//                    if(mUserNameRedRingCover.getVisibility() != View.VISIBLE)
-                    {
-                        goNext();
-                    }
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    goNext();
                     return true;
                 }
                 return false;
