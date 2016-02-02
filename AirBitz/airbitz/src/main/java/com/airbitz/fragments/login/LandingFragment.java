@@ -202,6 +202,17 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
+        mUserNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    mPasswordEditText.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         mPasswordLayout = mView.findViewById(R.id.fragment_landing_password_layout);
         mPasswordEditText = (EditText) mView.findViewById(R.id.fragment_landing_password_edittext);
         mPasswordEditText.setTypeface(NavigationActivity.latoRegularTypeFace);
