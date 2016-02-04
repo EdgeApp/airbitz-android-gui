@@ -1106,11 +1106,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     saveInvalidEntryCount(0);
                     AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
                     mActivity.popFragment(); // stop the sending screen
+                    mFundsSent = true;
                     if (null != exitHandler) {
                         mActivity.popFragment();
                         exitHandler.success(txResult);
                     } else {
-                        mFundsSent = true;
                         String returnUrl = mSpendTarget.getSpend().getSzRet();
                         mActivity.onSentFunds(mFromWallet.getUUID(), txResult, returnUrl);
                     }
