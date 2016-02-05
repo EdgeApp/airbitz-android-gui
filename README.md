@@ -1,85 +1,43 @@
 airbitz-android-gui
 =========================
 
-### Setup dependencies repositories
+### Building
 
-1. Clone the core and the android repository.
+The Airbitz android application comes in 3 flavors. Production, Testnet and
+Develop. To build it issue one of the following commands:
 
-    ```bash
-    git clone https://github.com/Airbitz/airbitz-core.git
-    git clone https://github.com/Airbitz/airbitz-android-gui.git
-    ```
-1. Download and install the Android NDK
-https://developer.android.com/tools/sdk/ndk/index.html#download
+    ./gradlew installDevelopDebug
 
-1. Download and install Java JDK7 
-https://jdk7.java.net/download.html
+    ./gradlew installNettestDebug
 
-1. Download and install SWIG
-    ```bash
-    brew install swig
-    ./mkabc
-    ```
+    ./gradlew installProdDebug
 
-1. Build the core. This requires ndk to be in your path.
+#### Plugins
 
-    ```bash
-    cd airbitz-android-gui
-    ./mkabc
-    ```
+Airbitz includes [airbitz-plugins][plugins] which are HTML5 single page
+applications that are included in the APK. If you have setup the
+[airbitz-plugins][plugins] repository you can automatically build them with the
+following gradle command.
 
-1.  In order to work with Google Maps and the Airbitz Business Directory, you
-    need to copy the sample all_keys-sample.xml file to all_keys.xml.
+    ./gradlew copyAirbitzPlugins
 
-    ```bash
-    cd airbitz-android-gui/AirBitz/airbitz/src/prod/res/values
-    cp all_keys-sample.xml all_keys.xml
-    ```
+#### API Keys
 
-1. Replace the various keys in the all_keys.xml file with your Google Maps API key, Hockey App API key, and Airbitz Business Directory API key    
+In order to work with Airbitz servers, Google Maps, or any plugin partners
+([glidera][glidera], [foldapp][foldapp], [clevercoin][clevercoin]), you'll need
+API keys. They are placed in an xml file called keys.xml in
+`src/prod/res/values` or `src/nettest/res/values` or `src/develop/res/values`.
 
-1. Copy the XML file from prod to debug directory
-    ```bash
-    cp ./AirBitz/airbitz/src/prod/res/values/all_keys.xml ./AirBitz/airbitz/src/debug/res/values/all_keys.xml
-    ```
+### Airbitz APIs
 
-### Build with Android studio
+This app is build heavily on [airbitz-core-java][java-core] which leverages
+[airbitz-core][core]. If you are interested in the underlying security,
+and possibly using it in your application, please see our [API overview][library].
 
-1. Install Android Studio on your machine: http://developer.android.com/sdk/index.html
-1. Download Github and install, or use Github from a browser.
-1. Open and sign into Github, on the left side click on Airbitz.  Click on the button 'Clone to Computer' for the repository 'Airbitz/airbitz-android-gui' and select where you want to save.
-1. Open Android Studio.  It might ask for a Java Runtime Environment which you can get here: http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
-1. Select Import Non-Android Studio project, navigate to where you pulled the repository from Github, select 'Airbitz' and hit ok.
-1. Click through the next pages, making sure that the Gradle Environment and wrapper is selected if it pops up. It has been built with Gradle and so shouldn't need it.
-1. Sometime during the installation/opening of Android Studio, the SDK manager should open, if it doesn't once you have Android Studio open, go to Tools->Android->SDK Manager.
-1. In the SDK manager you will select the packages you need to install
-
-   Currently they are: 
-   
-*   Tools->Android SDK Tools 24.0.2
-*   Tools->Android SDK Platform-tools 21
-*   Tools->Android SDK Build-tools Rev  21.1.1
-*   Android 5.0.1 (API 21)->SDK Platform
-*   Android 5.0.1 (API 21)->Google APIs
-*   Extras->Android Support Repository
-*   Extras->Android Support Library
-*   Extras->Google Play Services
-*   Extras->Google Repository
-*   Extras->Google USB Driver (if not Mac)
-
-   Some of the Extras might not be available at first, install the others and they should be there.
-    
-1. To run Airbitz, click the solid green arrow on the toolbar at the top of the
-   window. It might take a second but it will pop up a window in which you can
-   select what to run it on.  If you have devices plugged in via USB they will
-   show up here, if not you can create an emulator from the popup but I would
-   recommend not doing this if possible as it takes forever to load, and is
-   slow and difficult to interact with. Running on a physical Android device is
-   much better.
-
-### Build and install with gradle
-
-```bash
-cd airbitz-android-gui/Airbitz
-./gradlew installProdDebug
-```
+[plugins]: https://github.com/Airbitz/airbitz-plugins.git
+[glidera]: https://glidera.io 
+[foldapp]: https://foldapp.com
+[clevercoin]: https://corporate.clevercoin.com
+[core]: https://github.com/Airbitz/airbitz-core.git
+[java-core]: https://github.com/Airbitz/airbitz-core-java.git
+[library]: https://airbitz.co/developer-api-library/
