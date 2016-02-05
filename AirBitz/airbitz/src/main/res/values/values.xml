@@ -10,4 +10,17 @@
     <bool name="include_shop">true</bool>
     <bool name="include_directory_categories">true</bool>
     <string name="lock_directory_category"></string>
+
+    <!-- Start API keys -->
+    <string name="google_maps_api_key"></string>
+    <string name="airbitz_business_directory_key"></string>
+    <string name="hockey_key"></string>
+    <string name="airbitz_api_key"></string>
+    <string name="hiddenbitz_key"></string>
+    <string name="glidera_client_id"></string>
+    <string name="clevercoin_api_key"></string>
+    <string name="clevercoin_api_label"></string>
+    <string name="clevercoin_api_secret"></string>
+    <string name="fold_api_key"></string>
+    <!-- End API keys -->
 </resources>

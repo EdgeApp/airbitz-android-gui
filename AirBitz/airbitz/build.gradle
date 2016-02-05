@@ -1,48 +1,10 @@
 import java.util.regex.Pattern
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
-        maven {
-            url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/'
-        }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
-    }
-}
 apply plugin: 'com.android.application'
-
-repositories {
-    jcenter()
-    mavenCentral()
-    maven {
-        url 'https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/'
-    }
-    maven {
-        url "https://jitpack.io"
-    }
-}
-
-task buildAirbitzCore(type:Exec) {
-    workingDir '../../'
-    commandLine './mkabc'
-}
-
-task copyAirbitzCore(type:Exec) {
-    workingDir '../../'
-    commandLine './cpabc'
-}
 
 task buildAirbitzPlugins(type:Exec) {
     workingDir '../../'
     commandLine './mkplugin'
-}
-
-task cleanAirbitzCore(type:Exec) {
-    workingDir '../../'
-    commandLine './cleanabc'
 }
 
 android {
@@ -57,9 +19,6 @@ android {
     }
 
     productFlavors {
-        dev {
-            applicationId 'com.airbitz.dev'
-        }
         develop {
             applicationId 'com.airbitz.develop'
         }
@@ -132,8 +91,6 @@ if (hasProperty('storeFile')) {
 }
 
 dependencies {
-    // compile 'com.squareup.leakcanary:leakcanary-android:1.3'
-    // compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
         transitive = true
     }
@@ -148,8 +105,12 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+
+    developCompile 'co.airbitz:airbitz-core-android:0.0.1@aar'
+    prodCompile 'co.airbitz:airbitz-core-android:0.0.1@aar'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.0.1@aar'
+
     compile project(':libs:bitbeacon')
     compile project(':libs:airbitz-directory')
-    compile project(':libs:airbitz-core')
 }
 
