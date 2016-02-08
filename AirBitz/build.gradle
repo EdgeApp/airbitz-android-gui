@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        // mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -11,10 +10,11 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenLocal()
         mavenCentral()
-        maven {
-            url 'https://airbitz.co/media/maven' 
-        }
+        // maven {
+        //     url 'https://airbitz.co/media/maven' 
+        // }
         maven {
             url "https://jitpack.io"
         }

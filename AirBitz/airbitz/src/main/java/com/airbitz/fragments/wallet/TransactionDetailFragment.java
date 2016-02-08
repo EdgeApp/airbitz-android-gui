@@ -92,6 +92,7 @@ import com.airbitz.adapters.TransactionDetailSearchAdapter;
 import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
 import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.TxOutput;
 import com.airbitz.api.directory.Business;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.api.directory.BusinessSearchResult;
@@ -964,7 +965,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             int start;
             int end;
             if (null != tx.getOutputs()) {
-                for (CoreAPI.TxOutput output : tx.getOutputs()) {
+                for (TxOutput output : tx.getOutputs()) {
                     start = 0;
                     SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
                     SpannableString address = new SpannableString(output.getAddress());

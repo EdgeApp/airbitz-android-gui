@@ -89,6 +89,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.AccountSettings;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.TxOutput;
 import com.airbitz.bitbeacon.BeaconRequest;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.HelpFragment;
@@ -757,7 +758,7 @@ public class RequestFragment extends WalletBaseFragment implements
             return false;
         }
         CoreAPI.debugLevel(1, "isShowingQRCodeFor: hasOutputs");
-        for (CoreAPI.TxOutput output : tx.getOutputs()) {
+        for (TxOutput output : tx.getOutputs()) {
             CoreAPI.debugLevel(1, output.getmInput() + " " + mAddress + " " + output.getAddress());
             if (!output.getmInput() && mAddress.equals(output.getAddress())) {
                 return true;

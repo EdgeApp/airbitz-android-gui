@@ -66,6 +66,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
 import com.airbitz.api.AirbitzException;
 import com.airbitz.api.CoreAPI;
+import com.airbitz.api.QuestionChoice;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
@@ -574,7 +575,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
      * Represents an asynchronous question fetch task
      */
     public class GetRecoveryQuestions extends AsyncTask<Void, Void, Boolean> {
-        CoreAPI.QuestionChoice[] mChoices;
+        QuestionChoice[] mChoices;
 
         @Override
         public void onPreExecute() {
@@ -586,7 +587,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mChoices = mCoreAPI.GetQuestionChoices();
             if (mChoices.length > 0) {
 
-                for (CoreAPI.QuestionChoice choice : mChoices) {
+                for (QuestionChoice choice : mChoices) {
                     String category = choice.getCategory();
                     if (category.equals("string")) {
                         mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
