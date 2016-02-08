@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;

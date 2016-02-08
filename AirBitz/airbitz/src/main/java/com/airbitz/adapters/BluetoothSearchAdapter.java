@@ -45,7 +45,7 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.bitbeacon.BleDevice;
-import com.airbitz.models.Contact;
+import co.airbitz.models.Contact;
 
 import java.util.List;
 

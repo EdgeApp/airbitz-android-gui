@@ -49,10 +49,10 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.models.Transaction;
-import com.airbitz.models.Wallet;
+import co.airbitz.models.Transaction;
+import co.airbitz.models.Wallet;
 import com.airbitz.utils.RoundedTransformation;
 
 import com.squareup.picasso.Picasso;

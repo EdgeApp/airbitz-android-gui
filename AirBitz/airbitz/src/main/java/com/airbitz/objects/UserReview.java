@@ -41,9 +41,9 @@ import android.view.ContextThemeWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.models.Transaction;
-import com.airbitz.models.Wallet;
+import co.airbitz.api.CoreAPI;
+import co.airbitz.models.Transaction;
+import co.airbitz.models.Wallet;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 

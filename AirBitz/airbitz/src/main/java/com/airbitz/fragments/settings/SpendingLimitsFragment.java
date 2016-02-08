@@ -50,7 +50,7 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;

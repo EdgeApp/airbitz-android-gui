@@ -56,7 +56,7 @@ import com.airbitz.adapters.TouchImageViewPagerAdapter;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.widgets.TouchImageView;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -44,7 +44,7 @@ import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.utils.Common;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Picasso;

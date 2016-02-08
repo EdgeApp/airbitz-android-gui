@@ -65,7 +65,7 @@ import com.airbitz.api.directory.LocationSearchResult;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 import java.util.List;
 import java.util.LinkedList;

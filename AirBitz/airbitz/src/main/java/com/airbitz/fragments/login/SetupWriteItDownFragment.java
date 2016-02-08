@@ -47,9 +47,9 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzException;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.api.AccountSettings;
+import co.airbitz.api.AirbitzException;
+import co.airbitz.api.CoreAPI;
+import co.airbitz.api.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 

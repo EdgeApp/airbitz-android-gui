@@ -12,7 +12,7 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 import java.util.List;
 
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 public class CameraManager {
     final String TAG = getClass().getSimpleName();

@@ -64,7 +64,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.objects.CurrentLocationManager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;

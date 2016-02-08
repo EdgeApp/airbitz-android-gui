@@ -49,11 +49,11 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
-import com.airbitz.models.Wallet;
+import co.airbitz.models.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -48,13 +48,13 @@ import android.widget.EditText;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
-import com.airbitz.models.Wallet;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.models.Wallet;
+import co.airbitz.api.CoreAPI;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;

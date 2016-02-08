@@ -63,8 +63,8 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletChoiceAdapter;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.models.Wallet;
+import co.airbitz.api.CoreAPI;
+import co.airbitz.models.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;

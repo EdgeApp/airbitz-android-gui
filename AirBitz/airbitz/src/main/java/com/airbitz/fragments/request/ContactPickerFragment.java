@@ -62,8 +62,8 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import com.airbitz.models.Contact;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.models.Contact;
+import co.airbitz.api.CoreAPI;
 
 
 import java.util.ArrayList;

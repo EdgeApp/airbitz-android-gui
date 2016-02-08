@@ -54,7 +54,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.adapters.SettingsCategoryAdapter;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.objects.CategoryWidget;
 
 import java.util.ArrayList;

@@ -41,8 +41,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
-import com.airbitz.models.Wallet;
+import co.airbitz.api.CoreAPI;
+import co.airbitz.models.Wallet;
 
 import java.util.List;
 

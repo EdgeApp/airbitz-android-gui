@@ -50,7 +50,7 @@ import android.widget.LinearLayout;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.login.SignUpFragment;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;

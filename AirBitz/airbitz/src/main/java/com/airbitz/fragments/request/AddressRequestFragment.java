@@ -43,7 +43,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.utils.Common;
 

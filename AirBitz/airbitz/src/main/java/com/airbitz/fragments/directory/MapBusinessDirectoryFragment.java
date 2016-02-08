@@ -85,7 +85,7 @@ import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;

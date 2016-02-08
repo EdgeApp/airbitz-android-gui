@@ -71,7 +71,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.airbitz.adapters.WalletAdapter;
-import com.airbitz.models.Wallet;
+import co.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.List;

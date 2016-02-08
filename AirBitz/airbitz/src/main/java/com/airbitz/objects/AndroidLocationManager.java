@@ -41,7 +41,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 public class AndroidLocationManager {
 

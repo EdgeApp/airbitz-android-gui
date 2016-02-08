@@ -46,7 +46,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.login.SignUpFragment;
 
 public class UploadLogAlert {

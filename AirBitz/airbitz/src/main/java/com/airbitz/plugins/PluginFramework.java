@@ -48,8 +48,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.airbitz.R;
-import com.airbitz.models.Wallet;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.models.Wallet;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.AirbitzApplication;
 
 import java.util.HashMap;

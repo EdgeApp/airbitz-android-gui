@@ -55,8 +55,8 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.AirbitzException;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.AirbitzException;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 

@@ -61,14 +61,14 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.api.CoreAPI.SpendTarget;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI.SpendTarget;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.CameraFragment;
 import com.airbitz.objects.PictureCamera;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
-import com.airbitz.models.Wallet;
+import co.airbitz.models.Wallet;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 

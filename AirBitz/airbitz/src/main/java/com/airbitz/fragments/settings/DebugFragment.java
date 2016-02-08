@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import com.airbitz.BuildConfig;
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.UploadLogAlert;
 

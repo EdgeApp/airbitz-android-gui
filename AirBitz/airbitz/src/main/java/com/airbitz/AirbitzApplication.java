@@ -41,7 +41,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.airbitz.objects.AirbitzRequestHandler;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 import com.squareup.picasso.Picasso;
 

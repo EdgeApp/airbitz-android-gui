@@ -44,9 +44,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import com.airbitz.models.Wallet;
+import co.airbitz.models.Wallet;
 
 import java.util.HashMap;
 import java.util.List;

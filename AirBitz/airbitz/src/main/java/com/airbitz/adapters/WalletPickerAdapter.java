@@ -40,8 +40,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.models.Wallet;
-import com.airbitz.models.WalletPickerEnum;
+import co.airbitz.models.Wallet;
+import co.airbitz.models.WalletPickerEnum;
 
 import java.util.List;
 

@@ -46,7 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 /**
  * Created by matt on 6/30/14.

@@ -63,7 +63,7 @@ import com.airbitz.adapters.ImageViewPagerAdapter;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.api.directory.Category;

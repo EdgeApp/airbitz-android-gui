@@ -47,7 +47,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
-import com.airbitz.api.CoreAPI;
+import co.airbitz.api.CoreAPI;
 
 /**
  * Created on 2/22/14.
