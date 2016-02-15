@@ -47,12 +47,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
 import com.airbitz.utils.RoundedTransformation;
 
 import com.squareup.picasso.Picasso;
@@ -64,9 +65,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created on 2/13/14.
- */
 public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private final String TAG = getClass().getSimpleName();
@@ -76,7 +74,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private boolean mSearch;
     private boolean mIsBitcoin = true;
     private int mCurrencyNum;
-    private CoreAPI mCoreAPI;
+    private Account mAccount;
     private List<Transaction> mListTransaction;
     private long[] mRunningSatoshi;
     private int mRound, mDimen;
@@ -90,8 +88,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mContext = context;
         mListTransaction = listTransaction;
         createRunningSatoshi();
-        mCoreAPI = CoreAPI.getApi();
-
+        mAccount = AirbitzApplication.getAccount();
         mPicasso = AirbitzApplication.getPicasso();
 
         mFormatter = new SimpleDateFormat("MMM dd h:mm aa", Locale.getDefault());
@@ -226,7 +223,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         viewHolder.nameTextView.setText(name);
 
         String btcSymbol;
-        String btcSymbolBalance = mCoreAPI.getUserBTCSymbol();
+        String btcSymbolBalance = mAccount.getUserBTCSymbol();
         Boolean bPositive;
 
         if (transactionSatoshis < 0) {
@@ -238,12 +235,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
 
         if (mSearch) {
-            String btcCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, true);
+            String btcCurrency = mAccount.formatSatoshi(transactionSatoshisAbs, true);
             viewHolder.creditAmountTextView.setText(btcCurrency);
 
             String fiatCurrency = "";
             if (mWallet != null && mWallet.getCurrencyNum() != -1) {
-                fiatCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+                fiatCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
             } else {
                 fiatCurrency = "";
             }
@@ -264,14 +261,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
             if (mIsBitcoin) {
-                String walletCurrency = mCoreAPI.formatSatoshi(transactionSatoshisAbs, false);
-                String totalCurrency = mCoreAPI.formatSatoshi(mRunningSatoshi[position], false);
+                String walletCurrency = mAccount.formatSatoshi(transactionSatoshisAbs, false);
+                String totalCurrency = mAccount.formatSatoshi(mRunningSatoshi[position], false);
 
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
             } else {
-                String walletCurrency = mCoreAPI.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
-                String totalCurrency = mCoreAPI.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
+                String walletCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+                String totalCurrency = mAccount.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
                 viewHolder.runningTotalTextView.setText(totalCurrency);

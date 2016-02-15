@@ -61,16 +61,22 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.SpendTarget;
+import co.airbitz.core.UnsentTransaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.CurrencyFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.utils.Common;
@@ -81,10 +87,10 @@ import java.lang.reflect.Method;
  * Created on 2/21/14.
  */
 public class SendConfirmationFragment extends WalletBaseFragment implements
-        CoreAPI.OnPasswordCheckListener,
+        Account.OnPasswordCheckListener,
         Calculator.OnCalculatorKey,
         CurrencyFragment.OnCurrencySelectedListener {
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
 
     private final String TAG = getClass().getSimpleName();
 
@@ -174,11 +180,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private Handler mHandler = new Handler();
     static final int KEYBOARD_ANIM = 250;
 
-    private CoreAPI.SpendTarget mSpendTarget = null;
+    private SpendTarget mSpendTarget = null;
 
     public interface OnExitHandler {
         public void error();
-        public void success(String txId);
+        public void success(String txId, UnsentTransaction utx);
         public void back();
     }
 
@@ -186,7 +192,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     public SendConfirmationFragment() {}
 
-    public void setSpendTarget(CoreAPI.SpendTarget target) {
+    public void setSpendTarget(SpendTarget target) {
         mSpendTarget = target;
     }
 
@@ -201,7 +207,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         bundle = this.getArguments();
 
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
 
         mAutoUpdatingTextFields = true;
         mPositionNavBar = false;
@@ -280,7 +286,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAuthorizationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                CoreAPI.debugLevel(1, "PIN field focus changed");
+                AirbitzCore.debugLevel(1, "PIN field focus changed");
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     mActivity.showSoftKeyboard(mAuthorizationEdittext);
@@ -313,7 +319,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CoreAPI.debugLevel(1, "Bitcoin field clicked");
+                AirbitzCore.debugLevel(1, "Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
                 showCalculator();
             }
@@ -363,7 +369,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         View.OnTouchListener setCursorAtEnd = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                CoreAPI.debugLevel(1, "Prevent OS keyboard");
+                AirbitzCore.debugLevel(1, "Prevent OS keyboard");
                 final EditText edittext = (EditText) v;
                 edittext.onTouchEvent(event);
                 edittext.post(new Runnable() {
@@ -405,7 +411,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     case MotionEvent.ACTION_MOVE:
                         moveX = event.getRawX() - mLeftThreshold;
                         float leftSlide = moveX - mSlideHalfWidth;
-                        CoreAPI.debugLevel(1, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
+                        AirbitzCore.debugLevel(1, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
                                 + mLeftThreshold + ", " + mRightThreshold + ", " + leftSlide + ", " + mConfirmSwipeButton.getWidth());
                         if (leftSlide < 0) {
                             mConfirmSwipeButton.setX(0);
@@ -447,7 +453,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mChangeFiatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = mCoreAPI.getCurrencyCode(mCurrencyNum);
+                String code = Currencies.instance().getCurrencyCode(mCurrencyNum);
 
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(code);
@@ -579,26 +585,26 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mCurrencyNum = mWallet.getCurrencyNum();
         }
 
-        mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
-        mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mCurrencyNum));
+        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
+        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
 
         if (!mLocked) {
             if (btc) {
-                mAmountToSendSatoshi = mCoreApi.denominationToSatoshi(mBitcoinField.getText().toString());
+                mAmountToSendSatoshi = mAccount.denominationToSatoshi(mBitcoinField.getText().toString());
                 mSpendTarget.setSpendAmount(mAmountToSendSatoshi);
                 if (TextUtils.isEmpty(mBitcoinField.getText())) {
                     mFiatField.setText("");
                 } else {
-                    mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                    mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
                 }
             } else {
-                long satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
+                long satoshi = mAccount.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
                 mAmountToSendSatoshi = satoshi;
                 mSpendTarget.setSpendAmount(satoshi);
                 if (TextUtils.isEmpty(mFiatField.getText())) {
                     mBitcoinField.setText("");
                 } else {
-                    mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+                    mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
                 }
             }
         }
@@ -648,7 +654,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mCurrencyNum = mWallet.getCurrencyNum();
         }
 
-        mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
+        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
 
         if (error == null || 0 == mAmountToSendSatoshi) {
             if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
@@ -665,18 +671,18 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mBitcoinField.setTextColor(color);
                 mFiatField.setTextColor(color);
 
-                String coinFeeString = "+ " + mCoreApi.formatSatoshi(fees, false);
-                mBTCDenominationTextView.setText(coinFeeString + " " + mCoreApi.getDefaultBTCDenomination());
+                String coinFeeString = "+ " + mAccount.formatSatoshi(fees, false);
+                mBTCDenominationTextView.setText(coinFeeString + " " + mAccount.getDefaultBTCDenomination());
 
-                double fiatFee = mCoreApi.SatoshiToCurrency(fees, mCurrencyNum);
-                String fiatFeeString = "+ " + mCoreApi.formatCurrency(fiatFee, mCurrencyNum, false);
-                mFiatDenominationTextView.setText(fiatFeeString + " " + mCoreApi.getCurrencyAcronym(mCurrencyNum));
-                mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mCurrencyNum));
+                double fiatFee = mAccount.SatoshiToCurrency(fees, mCurrencyNum);
+                String fiatFeeString = "+ " + mAccount.formatCurrency(fiatFee, mCurrencyNum, false);
+                mFiatDenominationTextView.setText(fiatFeeString + " " + Currencies.instance().getCurrencyAcronym(mCurrencyNum));
+                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
 
                 mSlideLayout.setVisibility(View.VISIBLE);
                 if (0 == mAmountToSendSatoshi) {
-                    mBTCDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-                    mFiatDenominationTextView.setText(mCoreApi.getCurrencyAcronym(mCurrencyNum));
+                    mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+                    mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
                 }
             }
         } else {
@@ -684,8 +690,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
-            mBTCDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-            mFiatDenominationTextView.setText(mCoreApi.getCurrencyAcronym(mCurrencyNum));
+            mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+            mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
@@ -721,7 +727,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             return;
         }
 
-        String userPIN = mCoreApi.GetUserPIN();
+        String userPIN = mAccount.GetUserPIN();
          if (mPinRequired && enteredPIN != null && userPIN != null && !userPIN.equals(enteredPIN)) {
              mInvalidEntryCount += 1;
              saveInvalidEntryCount(mInvalidEntryCount);
@@ -740,7 +746,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             resetSlider();
         } else if (mPasswordRequired) {
              mActivity.showModalProgress(true);
-             mCoreApi.SetOnPasswordCheckListener(this, mAuthorizationEdittext.getText().toString());
+             mAccount.SetOnPasswordCheckListener(this, mAuthorizationEdittext.getText().toString());
         } else {
              continueChecks();
          }
@@ -802,17 +808,19 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mPasswordRequired = false;
         mPinRequired = false;
 
-        long dailyLimit = mCoreApi.GetDailySpendLimit();
-        boolean dailyLimitSetting = mCoreApi.GetDailySpendLimitSetting();
+        long dailyLimit = CoreWrapper.getDailySpendLimit(mActivity, mAccount);
+        boolean dailyLimitSetting = CoreWrapper.getDailySpendLimitSetting(mActivity, mAccount);
 
         if (mToWallet == null && dailyLimitSetting
-            && (mAmountToSendSatoshi + mCoreApi.GetTotalSentToday(mWallet) >= dailyLimit)) {
+            && (mAmountToSendSatoshi + mWallet.GetTotalSentToday() >= dailyLimit)) {
             // Show password
             mPasswordRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
             mAuthorizationTextView.setText(getString(R.string.send_confirmation_enter_send_password));
             mAuthorizationEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else if (mToWallet == null && mCoreApi.GetPINSpendLimitSetting() && mAmountToSendSatoshi >= mCoreApi.GetPINSpendLimit() && !AirbitzApplication.recentlyLoggedIn()) {
+        } else if (mToWallet == null && CoreWrapper.getPinSpendLimitSetting(mAccount)
+                    && mAmountToSendSatoshi >= CoreWrapper.getPinSpendLimit(mAccount)
+                    && !AirbitzApplication.recentlyLoggedIn()) {
             // Show PIN pad
             mPinRequired = true;
             mAuthorizationLayout.setVisibility(View.VISIBLE);
@@ -839,7 +847,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         bundle = this.getArguments();
         if (bundle == null) {
-            CoreAPI.debugLevel(1, "Send confirmation bundle is null");
+            AirbitzCore.debugLevel(1, "Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -851,7 +859,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
             mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
             if (mIsUUID) {
-                mToWallet = mCoreApi.getWalletFromUUID(mUUIDorURI);
+                mToWallet = mAccount.getWalletFromUUID(mUUIDorURI);
             }
         }
 
@@ -861,7 +869,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             _destUUID = mSpendTarget.getSpend().getSzDestUUID();
             if (_destUUID != null) {
                 mIsUUID = true;
-                mToWallet = mCoreApi.getWalletFromUUID(_destUUID);
+                mToWallet = mAccount.getWalletFromUUID(_destUUID);
             }
             mAmountToSendSatoshi = mSpendTarget.getSpendAmount();
             mLocked = !mSpendTarget.getSpend().getAmountMutable();
@@ -909,9 +917,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         if (mAmountToSendSatoshi > 0) {
-            mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+            mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWallet != null) {
-                mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
             }
             calculateFees();
         } else {
@@ -928,11 +936,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
-        mBTCSignTextview.setText(mCoreApi.getUserBTCSymbol());
-        mBTCDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(mCoreApi.getCurrencyAcronym(mCurrencyNum));
-        mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
-        mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mCurrencyNum));
+        mBTCSignTextview.setText(mAccount.getUserBTCSymbol());
+        mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+        mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
+        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
+        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
 
         mAutoUpdatingTextFields = false;
 
@@ -982,32 +990,32 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            CoreAPI.debugLevel(1, "Max calculation called");
+            AirbitzCore.debugLevel(1, "Max calculation called");
         }
 
         @Override
         protected Long doInBackground(Void... params) {
-            CoreAPI.debugLevel(1, "Max calculation started");
-            return mSpendTarget.maxSpendable(mWallet.getUUID());
+            AirbitzCore.debugLevel(1, "Max calculation started");
+            return mSpendTarget.maxSpendable();
         }
 
         @Override
         protected void onPostExecute(final Long max) {
-            CoreAPI.debugLevel(1, "Max calculation finished");
+            AirbitzCore.debugLevel(1, "Max calculation finished");
             mMaxAmountTask = null;
             if (isAdded()) {
                 if (max < 0) {
-                    CoreAPI.debugLevel(1, "Max calculation error");
+                    AirbitzCore.debugLevel(1, "Max calculation error");
                 }
                 mMaxLocked = false;
                 mAmountMax = max;
                 mAmountToSendSatoshi = max;
                 mSpendTarget.setSpendAmount(max);
                 mAutoUpdatingTextFields = true;
-                mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
-                mFiatSignTextView.setText(mCoreApi.getCurrencyDenomination(mCurrencyNum));
-                mConversionTextView.setText(mCoreApi.BTCtoFiatConversion(mCurrencyNum));
-                mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
+                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
+                mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
 
                 checkAuthorization();
                 calculateFees();
@@ -1031,10 +1039,10 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected Long doInBackground(Void... params) {
-            CoreAPI.debugLevel(1, "Fee calculation started");
+            AirbitzCore.debugLevel(1, "Fee calculation started");
             String dest = mIsUUID ? mWallet.getUUID() : mUUIDorURI;
             try {
-                return mSpendTarget.calcSendFees(mWallet.getUUID());
+                return mSpendTarget.calcSendFees();
             } catch (AirbitzException e) {
                 mFailureException = e;
                 return 0L;
@@ -1043,7 +1051,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPostExecute(final Long fees) {
-            CoreAPI.debugLevel(1, "Fee calculation ended");
+            AirbitzCore.debugLevel(1, "Fee calculation ended");
             if (isAdded()) {
                 mCalculateFeesTask = null;
                 mFees = fees;
@@ -1060,6 +1068,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     public class SendOrTransferTask extends AsyncTask<Void, Void, String> {
         private Wallet mFromWallet;
+        private UnsentTransaction mUnsent;
+        private String mError;
 
         SendOrTransferTask(Wallet fromWallet) {
             mFromWallet = fromWallet;
@@ -1067,37 +1077,43 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            CoreAPI.debugLevel(1, "SEND called");
+            AirbitzCore.debugLevel(1, "SEND called");
         }
 
         @Override
         protected String doInBackground(Void... params) {
-            CoreAPI.debugLevel(1, "Initiating SEND");
+            AirbitzCore.debugLevel(1, "Initiating SEND");
             try {
                 // Hack: Give the fragment manager time to finish
                 Thread.sleep(1000);
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }
-            if (mSignOnly) {
-                // Returns raw tx
-                return mSpendTarget.signTx(mFromWallet.getUUID());
-            } else {
-                // Returns txid
-                return mSpendTarget.approve(mFromWallet.getUUID());
+            try {
+                if (mSignOnly) {
+                    // Returns raw tx
+                    mUnsent = mSpendTarget.sign();
+                    return mUnsent.base16Tx();
+                } else {
+                    // Returns txid
+                    return mSpendTarget.signBroadcastSave().getID();
+                }
+            } catch (AirbitzException e) {
+                mError = e.getMessage();
             }
+            return null;
         }
 
         @Override
         protected void onPostExecute(final String txResult) {
-            CoreAPI.debugLevel(1, "SEND done");
+            AirbitzCore.debugLevel(1, "SEND done");
             mSendOrTransferTask = null;
             if (txResult == null) {
-                CoreAPI.debugLevel(1, "Error during send ");
+                AirbitzCore.debugLevel(1, "Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
                     if (null == exitHandler) {
-                        mDelayedMessage = mActivity.getResources().getString(R.string.fragment_send_confirmation_send_error_title);
+                        mDelayedMessage = mError;
                         mHandler.postDelayed(mDelayedErrorMessage, 500);
                     } else {
                         mActivity.popFragment(); // stop the sending screen
@@ -1112,7 +1128,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mFundsSent = true;
                     if (null != exitHandler) {
                         mActivity.popFragment();
-                        exitHandler.success(txResult);
+                        exitHandler.success(txResult, mUnsent);
                     } else {
                         String returnUrl = mSpendTarget.getSpend().getSzRet();
                         mActivity.onSentFunds(mFromWallet.getUUID(), txResult, returnUrl);

@@ -59,12 +59,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletChoiceAdapter;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.models.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class WalletBaseFragment extends BaseFragment
     protected View mCloseSearch;
     protected TextView mSubtitleView;
     protected ImageView mDropdownIcon;
-    protected CoreAPI mCoreApi;
+    protected Account mAccount;
     protected boolean mSearching = false;
     protected boolean mHomeEnabled = true;
     protected boolean mDrawerEnabled = false;
@@ -105,7 +105,7 @@ public class WalletBaseFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreApi = CoreAPI.getApi();
+        mAccount = AirbitzApplication.getAccount();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         mLoading = true;
         // Check for cached wallets
@@ -225,7 +225,7 @@ public class WalletBaseFragment extends BaseFragment
     }
 
     protected List<Wallet> fetchCoreWallets() {
-        return mCoreApi.getCoreActiveWallets();
+        return mAccount.getCoreActiveWallets();
     }
 
     protected void fetchWallets() {
@@ -249,7 +249,7 @@ public class WalletBaseFragment extends BaseFragment
             }
         }
         if (uuid != null) {
-            mWallet = mCoreApi.getWalletFromUUID(uuid);
+            mWallet = mAccount.getWalletFromUUID(uuid);
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
@@ -330,10 +330,10 @@ public class WalletBaseFragment extends BaseFragment
         }
 
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.registerReceiver(mExchangeReceiver, new IntentFilter(CoreAPI.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(CoreAPI.WALLETS_RELOADED_ACTION));
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Account.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(Account.WALLETS_RELOADED_ACTION));
 
-        mCoreApi.reloadWallets();
+        mAccount.reloadWallets();
         if (mWallets != null && mWallets.size() > 0) {
             onWalletsLoaded();
         }

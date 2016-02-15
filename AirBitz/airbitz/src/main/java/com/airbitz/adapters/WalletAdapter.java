@@ -43,32 +43,32 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Wallet;
+import com.airbitz.api.WalletWrapper;
+
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import co.airbitz.models.Wallet;
 
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created on 2/12/14.
- */
-public class WalletAdapter extends ArrayAdapter<Wallet> {
+public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
 
     public static final String DRAG_TAG = "DragTag";
     final int INVALID_ID = -1;
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
     HashMap<String, Integer> mArchivedIdMap = new HashMap<String, Integer>();
     private Context mContext;
-    private List<Wallet> mWalletList;
+    private List<WalletWrapper> mWalletList;
     private int selectedViewPos = -1;
     private int mSelectedWalletPos = -1;
     private boolean hoverFirstHeader = false;
     private boolean hoverSecondHeader = false;
     private int nextId = 0;
     private boolean mIsBitcoin = true;
-    private CoreAPI mCoreAPI;
+    private Account mAccount;
     private boolean closeAfterArchive = false;
     private int archivePos;
     private ImageView mArchiveButton;
@@ -95,18 +95,17 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         mHeaderButtonListener = listener;
     }
 
-    public WalletAdapter(Context context, List<Wallet> walletList) {
+    public WalletAdapter(Context context, List<WalletWrapper> walletList) {
         super(context, R.layout.item_listview_wallets, walletList);
         mContext = context;
         mWalletList = walletList;
-        for (Wallet wallet : mWalletList) {
+        for (WalletWrapper wallet : mWalletList) {
             if (wallet.isArchiveHeader()) {
                 archivePos = mWalletList.indexOf(wallet);
             }
             addWallet(wallet);
         }
-        mCoreAPI = CoreAPI.getApi();
-
+        mAccount = AirbitzApplication.getAccount();
         mBitcoinTypeface = Typeface.createFromAsset(context.getAssets(), "font/Lato-Regular.ttf");
     }
 
@@ -146,7 +145,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         }
     }
 
-    public void addWallet(Wallet wallet) {
+    public void addWallet(WalletWrapper wallet) {
         if (mArchivedIdMap.containsKey(wallet.getUUID())) {
             mIdMap.put(wallet.getUUID(), mArchivedIdMap.get(wallet.getUUID()));
             mArchivedIdMap.remove(wallet.getUUID());
@@ -159,11 +158,12 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     public void swapWallets() {
         archivePos++;
         for (int i = 0; i < mWalletList.size(); ++i) {
-            if (mWalletList.get(i).isArchiveHeader()) {
+            WalletWrapper wallet = mWalletList.get(i);
+            if (wallet.isArchiveHeader()) {
                 archivePos = i;
             }
-            if (!mIdMap.containsKey(mWalletList.get(i).getUUID())) {
-                mIdMap.put(mWalletList.get(i).getUUID(), nextId);
+            if (!mIdMap.containsKey(wallet.getUUID())) {
+                mIdMap.put(wallet.getUUID(), nextId);
                 nextId++;
             }
         }
@@ -183,11 +183,11 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
     }
 
     @Override
-    public Wallet getItem(int position) {
+    public WalletWrapper getItem(int position) {
         return super.getItem(position);
     }
 
-    public List<Wallet> getList() {
+    public List<WalletWrapper> getList() {
         return mWalletList;
     }
 
@@ -197,16 +197,16 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Wallet wallet = mWalletList.get(position);
-        if (mWalletList.get(position).isHeader()) {
+        WalletWrapper wallet = mWalletList.get(position);
+        if (wallet.isHeader()) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_header, parent, false);
-        } else if (mWalletList.get(position).isArchiveHeader()) {
+        } else if (wallet.isArchiveHeader()) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_listview_wallets_archive_header, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_archive_header_text);
             final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_archive_header_image);
-            if (mWalletList.get(position).isArchiveHeader()) {
+            if (wallet.isArchiveHeader()) {
                 imageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -244,7 +244,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
             TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
             TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
             View drag = convertView.findViewById(R.id.menu_container);
-            if (archivePos == 2 && !wallet.isArchived()) {
+            if (archivePos == 2 && !wallet.wallet().isArchived()) {
                 drag.setVisibility(View.INVISIBLE);
             } else {
                 drag.setVisibility(View.VISIBLE);
@@ -252,16 +252,16 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
             titleTextView.setTypeface(mBitcoinTypeface);
             amountTextView.setTypeface(mBitcoinTypeface);
-            if (wallet.isLoading()) {
+            if (wallet.wallet().isLoading()) {
                 titleTextView.setText(R.string.loading);
             } else {
-                titleTextView.setText(wallet.getName());
+                titleTextView.setText(wallet.wallet().getName());
             }
             if (mIsBitcoin) {
-                amountTextView.setText(mCoreAPI.formatSatoshi(wallet.getBalanceSatoshi(), true));
+                amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().getBalanceSatoshi(), true));
             } else {
-                long satoshi = wallet.getBalanceSatoshi();
-                String temp = mCoreAPI.FormatCurrency(satoshi, mCurrencyNum, false, true);
+                long satoshi = wallet.wallet().getBalanceSatoshi();
+                String temp = mAccount.FormatCurrency(satoshi, mCurrencyNum, false, true);
                 amountTextView.setText(temp);
             }
 
@@ -272,7 +272,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
                 convertView.setSelected(false);
             }
 
-            final Wallet menuWallet = wallet;
+            final Wallet menuWallet = wallet.wallet();
             final PopupMenu popupMenu = new PopupMenu(mContext, drag);
             popupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, mContext.getString(R.string.string_rename));
             popupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, mContext.getString(R.string.string_delete));
@@ -316,7 +316,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
 
     @Override
     public boolean areAllItemsEnabled() {
-        for (Wallet w : mWalletList) {
+        for (WalletWrapper w : mWalletList) {
             return !w.isLoading();
         }
         return true;
@@ -332,7 +332,7 @@ public class WalletAdapter extends ArrayAdapter<Wallet> {
         if (position < 0 || position >= mIdMap.size() || mWalletList.size() == 0 || position > mWalletList.size() - 1) {
             return INVALID_ID;
         }
-        Wallet item = mWalletList.get(position);
+        WalletWrapper item = mWalletList.get(position);
         return mIdMap.get(item.getUUID());
     }
 

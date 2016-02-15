@@ -58,17 +58,18 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.SpendTarget;
+import co.airbitz.core.UnsentTransaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI.SpendTarget;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.CameraFragment;
-import com.airbitz.objects.PictureCamera;
 import com.airbitz.fragments.ScanFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
-import co.airbitz.models.Wallet;
+import com.airbitz.objects.PictureCamera;
 import com.airbitz.plugins.PluginFramework.Plugin;
 import com.airbitz.plugins.PluginFramework.UiHandler;
 
@@ -222,7 +223,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         }
         // We do this after webview is resumed so current wallet is inserted
         // into plugin
-        CoreAPI.getApi().reloadWallets();
+        mAccount.reloadWallets();
         if (mWallet != null) {
             mFramework.setWallet(mWallet);
         }
@@ -426,9 +427,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                                       final String label, final String category, final String notes,
                                       final long bizId, final boolean signOnly) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
-                public void success(String txId) {
+                public void success(String txId, UnsentTransaction unsent) {
                     if (signOnly) {
-                        mFramework.signSuccess(cbid, uuid, txId);
+                        mFramework.signSuccess(cbid, uuid, unsent);
                     } else {
                         mFramework.sendSuccess(cbid, uuid, txId);
                     }
@@ -445,8 +446,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     mSendConfirmation = null;
                 }
             };
-            final CoreAPI api = CoreAPI.getApi();
-            final SpendTarget target = api.getNewSpendTarget();
+            final SpendTarget target = mWallet.newSpendTarget();
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     if (target.spendNewInternal(address, label, category, notes, amountSatoshi)) {

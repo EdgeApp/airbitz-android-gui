@@ -57,6 +57,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -87,12 +88,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Categories;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -114,8 +123,6 @@ import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
@@ -124,8 +131,8 @@ import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
 import com.airbitz.plugins.GiftCardFragment;
-import com.airbitz.plugins.PluginFragment;
 import com.airbitz.plugins.PluginCheck;
+import com.airbitz.plugins.PluginFragment;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.ListViewUtility;
 
@@ -173,12 +180,12 @@ public class NavigationActivity extends ActionBarActivity
 
             if (extras != null) {
                 if (networkIsAvailable()) {
-                    CoreAPI.debugLevel(1, "Connection available");
-                    mCoreAPI.restoreConnectivity();
+                    AirbitzCore.debugLevel(1, "Connection available");
+                    mCoreAPI.connectivity(true);
                     mConnectivityNotified = false;
                 } else { // has connection
-                    CoreAPI.debugLevel(1, "Connection NOT available");
-                    mCoreAPI.lostConnectivity();
+                    AirbitzCore.debugLevel(1, "Connection NOT available");
+                    mCoreAPI.connectivity(false);
                     if (!mConnectivityNotified) {
                         ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
                     }
@@ -191,7 +198,7 @@ public class NavigationActivity extends ActionBarActivity
     int mNavBarStart;
     String mUUID, mTxId;
     Handler mHandler = new Handler();
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
     private Uri mDataUri;
     private boolean keyBoardUp = false;
     private boolean mCalcLocked = false;
@@ -359,21 +366,21 @@ public class NavigationActivity extends ActionBarActivity
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(CoreAPI.WALLET_LOADING_START_ACTION);
-        filter.addAction(CoreAPI.WALLET_LOADING_STATUS_ACTION);
-        filter.addAction(CoreAPI.WALLETS_ALL_LOADED_ACTION);
-        filter.addAction(CoreAPI.WALLETS_LOADING_BITCOIN_ACTION);
-        filter.addAction(CoreAPI.WALLETS_LOADED_BITCOIN_ACTION);
+        filter.addAction(Account.WALLET_LOADING_START_ACTION);
+        filter.addAction(Account.WALLET_LOADING_STATUS_ACTION);
+        filter.addAction(Account.WALLETS_ALL_LOADED_ACTION);
+        filter.addAction(Account.WALLETS_LOADING_BITCOIN_ACTION);
+        filter.addAction(Account.WALLETS_LOADED_BITCOIN_ACTION);
         mWalletsLoadedReceiver = new WalletReceiver();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.registerReceiver(mWalletsLoadedReceiver, filter);
-        manager.registerReceiver(mExchangeReceiver, new IntentFilter(CoreAPI.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(CoreAPI.BLOCKHEIGHT_CHANGE_ACTION));
-        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(CoreAPI.INCOMING_BITCOIN_ACTION));
-        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(CoreAPI.REMOTE_PASSWORD_CHANGE_ACTION));
-        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(CoreAPI.DATASYNC_UPDATE_ACTION));
-        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(CoreAPI.OTP_ERROR_ACTION));
-        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(CoreAPI.OTP_RESET_ACTION));
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Account.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(Account.BLOCKHEIGHT_CHANGE_ACTION));
+        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Account.INCOMING_BITCOIN_ACTION));
+        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Account.REMOTE_PASSWORD_CHANGE_ACTION));
+        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Account.DATASYNC_UPDATE_ACTION));
+        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Account.OTP_ERROR_ACTION));
+        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Account.OTP_RESET_ACTION));
 
         // Let's see what plugins are enabled
         PluginCheck.checkEnabledPlugins();
@@ -460,12 +467,12 @@ public class NavigationActivity extends ActionBarActivity
     private void setCoreListeners(NavigationActivity activity) {
     }
 
-    public static CoreAPI initiateCore(Context context) {
-        CoreAPI api = CoreAPI.getApi(context);
-        String seed = CoreAPI.getSeedData();
+    public static AirbitzCore initiateCore(Context context) {
+        AirbitzCore api = AirbitzCore.getApi(context);
+        String seed = AirbitzCore.getSeedData();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        api.Initialize(context, airbitzApiKey, hiddenbitzKey, seed, seed.length());
+        api.init(context, airbitzApiKey, hiddenbitzKey, seed, seed.length());
         return api;
     }
 
@@ -563,15 +570,15 @@ public class NavigationActivity extends ActionBarActivity
         Fragment frag = mNavStacks[id].peek();
         Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null)
-            CoreAPI.debugLevel(1, "switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
+            AirbitzCore.debugLevel(1, "switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
         else
-            CoreAPI.debugLevel(1, "switchFragmentThread no fragment showing yet ");
+            AirbitzCore.debugLevel(1, "switchFragmentThread no fragment showing yet ");
 
-        CoreAPI.debugLevel(1, "switchFragmentThread pending transactions executed ");
+        AirbitzCore.debugLevel(1, "switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
         if (frag.isAdded()) {
-            CoreAPI.debugLevel(1, "Fragment already added, detaching and attaching");
+            AirbitzCore.debugLevel(1, "Fragment already added, detaching and attaching");
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
@@ -579,20 +586,20 @@ public class NavigationActivity extends ActionBarActivity
                 transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
             }
             transaction.replace(R.id.activityLayout, frag);
-            CoreAPI.debugLevel(1, "switchFragmentThread replace executed.");
+            AirbitzCore.debugLevel(1, "switchFragmentThread replace executed.");
         }
         transaction.commit();
-        CoreAPI.debugLevel(1, "switchFragmentThread transactions committed.");
+        AirbitzCore.debugLevel(1, "switchFragmentThread transactions committed.");
         fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null) {
-            CoreAPI.debugLevel(1, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
+            AirbitzCore.debugLevel(1, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
         } else {
-            CoreAPI.debugLevel(1, "switchFragmentThread showing frag is null");
+            AirbitzCore.debugLevel(1, "switchFragmentThread showing frag is null");
         }
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
-        CoreAPI.debugLevel(1, "switchFragmentThread switch to threadId " + mNavThreadId);
+        AirbitzCore.debugLevel(1, "switchFragmentThread switch to threadId " + mNavThreadId);
 
         getFragmentManager().executePendingTransactions();
         resetDrawerButtons();
@@ -836,7 +843,7 @@ public class NavigationActivity extends ActionBarActivity
             mNavThreadId = Tabs.BD.ordinal();
         } else {
             DisplayLoginOverlay(false);
-            mCoreAPI.restoreConnectivity();
+            mCoreAPI.connectivity(true);
         }
         updateDrawer(AirbitzApplication.isLoggedIn());
         switchFragmentThread(mNavThreadId);
@@ -907,7 +914,7 @@ public class NavigationActivity extends ActionBarActivity
 
         activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
-        mCoreAPI.lostConnectivity();
+        mCoreAPI.connectivity(false);
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
         PasswordCheckReceiver.setup(this);
@@ -950,7 +957,7 @@ public class NavigationActivity extends ActionBarActivity
         final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        CoreAPI.debugLevel(1, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
+        AirbitzCore.debugLevel(1, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
 
         if (PasswordCheckReceiver.USER_SWITCH.equals(action)) {
             saveCachedLoginName(intent.getStringExtra(PasswordCheckReceiver.USERNAME));
@@ -959,7 +966,7 @@ public class NavigationActivity extends ActionBarActivity
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
-            CoreAPI.debugLevel(1, "Notification type found");
+            AirbitzCore.debugLevel(1, "Notification type found");
                 mNotificationTask = new NotificationTask();
                 mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -995,7 +1002,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void processUri(Uri uri) {
         if(uri == null || uri.getScheme() == null) {
-            CoreAPI.debugLevel(1, "Null uri or uri.scheme");
+            AirbitzCore.debugLevel(1, "Null uri or uri.scheme");
             return;
         }
 
@@ -1008,7 +1015,7 @@ public class NavigationActivity extends ActionBarActivity
         if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
             if (2 <= path.size()) {
-                CoreAPI.debugLevel(1, uri.toString());
+                AirbitzCore.debugLevel(1, uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme)
@@ -1062,7 +1069,7 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin:<address> Uri's coming from OS
      */
     private void handleBitcoinUri(Uri dataUri) {
-        CoreAPI.debugLevel(1, "Received onBitcoin with uri = " + dataUri.toString());
+        AirbitzCore.debugLevel(1, "Received onBitcoin with uri = " + dataUri.toString());
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         Bundle bundle = new Bundle();
@@ -1072,7 +1079,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onIncomingBitcoin(String walletUUID, String txId) {
-        CoreAPI.debugLevel(1, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
+        Wallet wallet = AirbitzApplication.getAccount().getWalletFromCore(walletUUID);
+        AirbitzCore.debugLevel(1, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
         mTxId = txId;
 
@@ -1086,7 +1094,7 @@ public class NavigationActivity extends ActionBarActivity
 
         /* If showing QR code, launch receiving screen*/
         RequestFragment f = requestMatchesQR(mUUID, mTxId);
-        CoreAPI.debugLevel(1, "RequestFragment? " + f);
+        AirbitzCore.debugLevel(1, "RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff <= 0) {
@@ -1100,7 +1108,7 @@ public class NavigationActivity extends ActionBarActivity
                 AudioPlayer.play(this, R.raw.bitcoin_received_partial);
             }
         } else {
-            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            Transaction tx = wallet.getTransaction(txId);
             if (null != tx) {
                 if (tx.getAmountSatoshi() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
@@ -1116,7 +1124,7 @@ public class NavigationActivity extends ActionBarActivity
             Bundle bundle = new Bundle();
             bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
             bundle.putString(Transaction.TXID, mTxId);
-            bundle.putString(Wallet.WALLET_UUID, mUUID);
+            bundle.putString(WalletWrapper.WALLET_UUID, mUUID);
             switchToWallets(bundle);
             resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
         }
@@ -1131,16 +1139,17 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void showIncomingDialog(String uuid, String txId, boolean withTeaching) {
-        Wallet wallet = mCoreAPI.getWalletFromUUID(uuid);
-        Transaction transaction = mCoreAPI.getTransaction(uuid, txId);
-        String coinValue = mCoreAPI.formatSatoshi(transaction.getAmountSatoshi(), true);
+        Account account = AirbitzApplication.getAccount();
+        Wallet wallet = account.getWalletFromUUID(uuid);
+        Transaction transaction = wallet.getTransaction(txId);
+        String coinValue = account.formatSatoshi(transaction.getAmountSatoshi(), true);
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.getAmountFiat() == 0.0) {
-            currencyValue = mCoreAPI.FormatCurrency(transaction.getAmountSatoshi(), wallet.getCurrencyNum(),
+            currencyValue = account.FormatCurrency(transaction.getAmountSatoshi(), wallet.getCurrencyNum(),
                     false, true);
         } else {
-            currencyValue = mCoreAPI.formatCurrency(transaction.getAmountFiat(),
+            currencyValue = account.formatCurrency(transaction.getAmountFiat(),
                     wallet.getCurrencyNum(), true);
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
@@ -1186,7 +1195,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onSentFunds(String walletUUID, String txId, String returnUrl) {
-        CoreAPI.debugLevel(1, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
+        AirbitzCore.debugLevel(1, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
         if(manager != null) {
@@ -1197,14 +1206,14 @@ public class NavigationActivity extends ActionBarActivity
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
         bundle.putBoolean(WalletsFragment.CREATE, true);
         bundle.putString(Transaction.TXID, txId);
-        bundle.putString(Wallet.WALLET_UUID, walletUUID);
+        bundle.putString(WalletWrapper.WALLET_UUID, walletUUID);
         bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
-        CoreAPI.debugLevel(1, "onSentFunds calling switchToWallets");
+        AirbitzCore.debugLevel(1, "onSentFunds calling switchToWallets");
         switchToWallets(bundle);
 
         while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
-            CoreAPI.debugLevel(1, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+            AirbitzCore.debugLevel(1, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
             mNavStacks[Tabs.SEND.ordinal()].pop();
         }
         Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
@@ -1212,14 +1221,14 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void updateWalletListener() {
-        mCoreAPI.reloadWallets();
+        AirbitzApplication.getAccount().reloadWallets();
     }
 
     private void gotoDetailsNow() {
         Bundle bundle = new Bundle();
         bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_REQUEST);
         bundle.putString(Transaction.TXID, mTxId);
-        bundle.putString(Wallet.WALLET_UUID, mUUID);
+        bundle.putString(WalletWrapper.WALLET_UUID, mUUID);
         switchToWallets(bundle);
 
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
@@ -1294,8 +1303,9 @@ public class NavigationActivity extends ActionBarActivity
     public void UserJustLoggedIn(boolean passwordLogin) {
         showNavBar();
         checkDailyLimitPref();
-        mCoreAPI.setupAccountSettings();
-        mCoreAPI.startAllAsyncUpdates();
+        Account account = AirbitzApplication.getAccount();
+        account.setupAccountSettings();
+        account.startAllAsyncUpdates();
         if (mDataUri != null) {
             processUri(mDataUri);
             mDataUri = null;
@@ -1306,36 +1316,34 @@ public class NavigationActivity extends ActionBarActivity
             switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = account.coreSettings();
         if (settings != null) {
             if (!settings.getBDisablePINLogin() && passwordLogin) {
-                mCoreAPI.PinSetup();
+                account.pinSetup();
             }
         }
 
-        List<String> cats = mCoreAPI.loadCategories();
-        if (cats.size() == 0)
+        List<String> cats = account.categories().loadCategories();
+        if (cats.size() == 0) {
             createDefaultCategories();
+        }
 
         DisplayLoginOverlay(false, true);
 
         boolean checkPassword = false;
         // if the user has a password, increment PIN login count
-        if (mCoreAPI.PasswordExists()) {
-            checkPassword = mCoreAPI.incrementPinCount();
+        if (account.passwordExists()) {
+            checkPassword = account.incrementPinCount();
         }
 
-        if(!passwordLogin && !mCoreAPI.PasswordExists()) {
+        if (!passwordLogin && !account.passwordExists()) {
             showPasswordSetAlert();
-        }
-        else if (!passwordLogin && checkPassword) {
+        } else if (!passwordLogin && checkPassword) {
             mPasswordCheck = new RememberPasswordCheck(this);
             mPasswordCheck.showPasswordCheckAlert();
-        }
-        else {
+        } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-
         updateDrawer(true);
         resetDrawerButtons();
     }
@@ -1422,8 +1430,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            AirbitzApplication.Logout();
-            mCoreAPI.logout();
+            AirbitzApplication.logout();
             return true;
         }
 
@@ -1489,7 +1496,23 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public boolean networkIsAvailable() {
-        return mCoreAPI.hasConnectivity();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if ("WIFI".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    AirbitzCore.debugLevel(1, "Connection is WIFI");
+                    return true;
+                }
+            }
+            if ("MOBILE".equalsIgnoreCase(ni.getTypeName())) {
+                if (ni.isConnected()) {
+                    AirbitzCore.debugLevel(1, "Connection is MOBILE");
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean loginExpired() {
@@ -1498,10 +1521,11 @@ public class NavigationActivity extends ActionBarActivity
 
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
-        CoreAPI.debugLevel(1, "delta logout time = " + milliDelta);
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AirbitzCore.debugLevel(1, "delta logout time = " + milliDelta);
+        Account account = AirbitzApplication.getAccount();
+        AccountSettings settings = account.coreSettings();
         if (settings != null) {
-            if (milliDelta > settings.getMinutesAutoLogout() * 60 * 1000) {
+            if (milliDelta > settings.getSecondsAutoLogout() * 1000) {
                 Logout();
                 return true;
             }
@@ -1518,10 +1542,10 @@ public class NavigationActivity extends ActionBarActivity
         public boolean onBackPress();
     }
 
-    public void LoginNow(String username, String password, boolean newDevice) {
-        AirbitzApplication.Login(username, password);
-        UserJustLoggedIn(password != null, newDevice);
-        mDrawerAccount.setText(username);
+    public void LoginNow(Account account, boolean newDevice) {
+        AirbitzApplication.Login(account);
+        UserJustLoggedIn(account.wasPasswordLogin(), newDevice);
+        mDrawerAccount.setText(account.getUsername());
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
@@ -1850,7 +1874,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void checkFirstWalletSetup() {
-        List<String> wallets = mCoreAPI.loadWalletUUIDs();
+        Account account = AirbitzApplication.getAccount();
+        List<String> wallets = account.loadWalletUUIDs();
         if (wallets.size() <= 0) {
             mWalletSetup = new SetupFirstWalletTask();
             mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -1874,23 +1899,17 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // Set default currency
-            mCoreAPI.SetupDefaultCurrency();
+            Account account = AirbitzApplication.getAccount();
+            account.SetupDefaultCurrency();
 
             // Create the Wallet
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
-            AccountSettings settings = mCoreAPI.coreSettings();
+            AccountSettings settings = account.coreSettings();
             if (settings != null) {
-                return mCoreAPI.createWallet(
-                        AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(),
-                        walletName, settings.getCurrencyNum());
+                return account.createWallet(walletName, settings.getCurrencyNum());
             } else {
-                return mCoreAPI.createWallet(
-                        AirbitzApplication.getUsername(),
-                        AirbitzApplication.getPassword(),
-                        walletName, mCoreAPI.defaultCurrencyNum());
+                return account.createWallet(walletName, Currencies.instance().defaultCurrencyNum());
             }
         }
 
@@ -1908,8 +1927,8 @@ public class NavigationActivity extends ActionBarActivity
                 // Dismiss dialog
                 NavigationActivity.this.DismissFadingDialog();
             }
-            mCoreAPI.setupAccountSettings();
-            mCoreAPI.startAllAsyncUpdates();
+            AirbitzApplication.getAccount().setupAccountSettings();
+            AirbitzApplication.getAccount().startAllAsyncUpdates();
         }
 
         @Override
@@ -1923,12 +1942,14 @@ public class NavigationActivity extends ActionBarActivity
         String[] defaults =
             getResources().getStringArray(R.array.category_defaults);
 
-        for (String cat : defaults)
-            mCoreAPI.addCategory(cat);
+        Categories categories = AirbitzApplication.getAccount().categories();
+        for (String cat : defaults) {
+            categories.addCategory(cat);
+        }
 
-        List<String> cats = mCoreAPI.loadCategories();
+        List<String> cats = categories.loadCategories();
         if (cats.size() == 0 || cats.get(0).equals(defaults)) {
-            CoreAPI.debugLevel(1, "Category creation failed");
+            AirbitzCore.debugLevel(1, "Category creation failed");
         }
     }
 
@@ -1970,7 +1991,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected void onPostExecute(final String response) {
-            CoreAPI.debugLevel(1, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
+            AirbitzCore.debugLevel(1, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
             if(response != null && response.length() != 0) {
                 mNotificationMap = getAndroidMessages(response);
                 if(mNotificationMap.size() > 0) {
@@ -1978,7 +1999,7 @@ public class NavigationActivity extends ActionBarActivity
                 }
             }
             else {
-                CoreAPI.debugLevel(1, "No Notification response");
+                AirbitzCore.debugLevel(1, "No Notification response");
             }
             mNotificationTask = null;
         }
@@ -2108,12 +2129,11 @@ public class NavigationActivity extends ActionBarActivity
 
     private void checkDailyLimitPref() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-
-        // On first install/load, copy synchronized to local setting
-        if(!prefs.contains(CoreAPI.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
+        if (!prefs.contains(CoreWrapper.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername())) {
+            Account account = AirbitzApplication.getAccount();
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(CoreAPI.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimit());
-            editor.putBoolean(CoreAPI.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), mCoreAPI.GetDailySpendLimitSetting());
+            editor.putLong(CoreWrapper.DAILY_LIMIT_PREF + AirbitzApplication.getUsername(), CoreWrapper.getDailySpendLimit(this, account));
+            editor.putBoolean(CoreWrapper.DAILY_LIMIT_SETTING_PREF + AirbitzApplication.getUsername(), CoreWrapper.getDailySpendLimitSetting(this, account));
             editor.apply();
         }
     }
@@ -2366,14 +2386,17 @@ public class NavigationActivity extends ActionBarActivity
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(!mDrawerExchangeUpdated) {
-                    AccountSettings settings = mCoreAPI.coreSettings();
-                    if (settings != null) {
-                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
-                        mDrawerExchangeUpdated = true;
-                    } else {
-                        mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
-                        mDrawerExchangeUpdated = true;
+                if (!mDrawerExchangeUpdated) {
+                    Account account = AirbitzApplication.getAccount();
+                    if (account != null) {
+                        AccountSettings settings = account.coreSettings();
+                        if (settings != null) {
+                            mDrawerExchange.setText(account.BTCtoFiatConversion(settings.getCurrencyNum()));
+                            mDrawerExchangeUpdated = true;
+                        } else {
+                            mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrencyNum()));
+                            mDrawerExchangeUpdated = true;
+                        }
                     }
                 }
             }
@@ -2555,26 +2578,26 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (CoreAPI.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
+            if (Account.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
                 if (mShowMessages) {
                     showMessage(context.getString(R.string.loading_wallets));
                 }
-            } else if (CoreAPI.WALLET_LOADING_STATUS_ACTION.equals(intent.getAction())) {
-                int complete = intent.getIntExtra(CoreAPI.WALLETS_LOADED_TOTAL, -1);
-                int total = intent.getIntExtra(CoreAPI.WALLETS_TOTAL, -1);
+            } else if (Account.WALLET_LOADING_STATUS_ACTION.equals(intent.getAction())) {
+                int complete = intent.getIntExtra(Account.WALLETS_LOADED_TOTAL, -1);
+                int total = intent.getIntExtra(Account.WALLETS_TOTAL, -1);
                 if (total >= 0) {
                     showMessage(context.getString(R.string.loading_n_wallets, complete, total));
                 } else {
                     showMessage(context.getString(R.string.loading_wallets));
                 }
-            } else if (CoreAPI.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
+            } else if (Account.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
                 showMessage(context.getString(R.string.loading_transactions));
-            } else if (CoreAPI.WALLETS_LOADING_BITCOIN_ACTION.equals(intent.getAction())) {
+            } else if (Account.WALLETS_LOADING_BITCOIN_ACTION.equals(intent.getAction())) {
                 if (mDataLoaded) {
                     showMessage(context.getString(R.string.loading_transactions));
                 }
-            } else if (CoreAPI.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
+            } else if (Account.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
                 NavigationActivity.this.DismissFadingDialog();
             }
         }
@@ -2583,7 +2606,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            CoreAPI.debugLevel(1, "Block Height received");
+            AirbitzCore.debugLevel(1, "Block Height received");
             updateWalletListener();
         }
     };
@@ -2591,7 +2614,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mDataSyncReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            CoreAPI.debugLevel(1, "Data Sync received");
+            AirbitzCore.debugLevel(1, "Data Sync received");
             updateWalletListener();
         }
     };
@@ -2599,8 +2622,8 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mIncomingBitcoinReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String uuid = intent.getStringExtra(CoreAPI.WALLET_UUID);
-            String txId = intent.getStringExtra(CoreAPI.WALLET_TXID);
+            String uuid = intent.getStringExtra(Account.WALLET_UUID);
+            String txId = intent.getStringExtra(Account.WALLET_TXID);
             onIncomingBitcoin(uuid, txId);
         };
     };
@@ -2608,11 +2631,12 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mExchangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            AccountSettings settings = mCoreAPI.coreSettings();
+            Account account = AirbitzApplication.getAccount();
+            AccountSettings settings = account.coreSettings();
             if (settings != null) {
-                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(settings.getCurrencyNum()));
+                mDrawerExchange.setText(account.BTCtoFiatConversion(settings.getCurrencyNum()));
             } else {
-                mDrawerExchange.setText(mCoreAPI.BTCtoFiatConversion(mCoreAPI.defaultCurrencyNum()));
+                mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrencyNum()));
             }
 
         }
@@ -2621,7 +2645,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mRemotePasswordChange = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            CoreAPI.debugLevel(1, "Remote Password received");
+            AirbitzCore.debugLevel(1, "Remote Password received");
             if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
                 showRemotePasswordChangeDialog();
             }
@@ -2631,7 +2655,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mOtpErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String secret = intent.getStringExtra(CoreAPI.OTP_SECRET);
+            String secret = intent.getStringExtra(Account.OTP_SECRET);
             if (secret != null) {
                 mHandler.post(mShowOTPSkew);
             } else {

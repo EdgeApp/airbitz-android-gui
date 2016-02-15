@@ -39,24 +39,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Wallet;
 import com.airbitz.R;
+import com.airbitz.AirbitzApplication;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.models.Wallet;
 
 import java.util.List;
 
 public class WalletChoiceAdapter extends ArrayAdapter {
 
     private Context mContext;
+    private Account mAccount;
     private List<Wallet> mWalletList;
-    private CoreAPI mCoreAPI;
 
     public WalletChoiceAdapter(Context context, List<Wallet> walletList) {
         super(context, R.layout.item_request_wallet_spinner, walletList);
         mContext = context;
         mWalletList = walletList;
-        mCoreAPI = CoreAPI.getApi();
+        mAccount = AirbitzApplication.getAccount();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class WalletChoiceAdapter extends ArrayAdapter {
 
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
         amountTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-        amountTextView.setText(mCoreAPI.formatSatoshi(wallet.getBalanceSatoshi(), true));
+        amountTextView.setText(mAccount.formatSatoshi(wallet.getBalanceSatoshi(), true));
         return convertView;
     }
 }

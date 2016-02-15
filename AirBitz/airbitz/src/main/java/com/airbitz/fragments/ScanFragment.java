@@ -69,19 +69,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Wallet;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.adapters.WalletOtherAdapter;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.bitbeacon.BeaconSend;
 import com.airbitz.bitbeacon.BleDevice;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.QRCamera;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -130,7 +130,7 @@ public abstract class ScanFragment
     protected View mView;
     protected View mButtonBar;
     protected QRCamera mQRCamera;
-    protected CoreAPI mCoreApi;
+    protected AirbitzCore mCoreApi;
     protected ClipboardManager mClipboard;
 
     /**
@@ -180,7 +180,7 @@ public abstract class ScanFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mClipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        mCoreApi = CoreAPI.getApi();
+        mCoreApi = AirbitzCore.getApi();
 
         mView = inflater.inflate(R.layout.fragment_scan, container, false);
 
@@ -314,7 +314,7 @@ public abstract class ScanFragment
     public void onResume() {
         super.onResume();
         if (mBeaconSend != null) {
-            AccountSettings settings = mCoreApi.coreSettings();
+            AccountSettings settings = mAccount.coreSettings();
             if (settings != null && settings.getBNameOnPayments()) {
                 String name = settings.getSzFullName();
                 mBeaconSend.setBroadcastName(name);

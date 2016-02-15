@@ -70,8 +70,9 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.AccountsAdapter;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -123,7 +124,7 @@ public class LandingFragment extends BaseFragment implements
     private PINLoginTask mPINLoginTask;
     private PasswordLoginTask mPasswordLoginTask;
 
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
     private NavigationActivity mActivity;
     private Handler mHandler = new Handler();
 
@@ -144,7 +145,7 @@ public class LandingFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
         mActivity = (NavigationActivity) getActivity();
         saveInvalidEntryCount(0);
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
@@ -246,7 +247,7 @@ public class LandingFragment extends BaseFragment implements
                 if (++mAccountTaps < 5) {
                     return;
                 }
-                CoreAPI.debugLevel(0, "Uploading logs from Landing screen");
+                AirbitzCore.debugLevel(0, "Uploading logs from Landing screen");
                 UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
                 uploadLogAlert.showUploadLogAlert();
                 mAccountTaps = 0;
@@ -327,7 +328,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mAccounts.get(position);
-                if (mCoreAPI.PinLoginExists(mUsername)) {
+                if (mCoreAPI.accountHasPin(mUsername)) {
                     saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
@@ -345,7 +346,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mOtherAccounts.get(position);
-                if (mCoreAPI.PinLoginExists(mUsername)) {
+                if (mCoreAPI.accountHasPin(mUsername)) {
                     saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
@@ -552,9 +553,9 @@ public class LandingFragment extends BaseFragment implements
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         if(mActivity.networkIsAvailable()) {
-            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.PinLoginExists(mUsername)) {
+            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPin(mUsername)) {
                 mPinEditText.setText("");
-                CoreAPI.debugLevel(1, "showing pin login for " + mUsername);
+                AirbitzCore.debugLevel(1, "showing pin login for " + mUsername);
                 refreshView(true, true, true);
                 return;
             }
@@ -562,7 +563,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
-        CoreAPI.debugLevel(1, "showing password login for " + mUsername);
+        AirbitzCore.debugLevel(1, "showing password login for " + mUsername);
         refreshView(false, false, true);
     }
 
@@ -577,7 +578,7 @@ public class LandingFragment extends BaseFragment implements
     public void refreshViewAndUsername() {
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-        mPinLoginMode = mCoreAPI.PinLoginExists(mUsername);
+        mPinLoginMode = mCoreAPI.accountHasPin(mUsername);
         refreshView();
     }
 
@@ -684,7 +685,7 @@ public class LandingFragment extends BaseFragment implements
             mPin = mPinEditText.getText().toString();
             mFirstLogin = isFirstLogin();
             mPINLoginTask = new PINLoginTask();
-            mPINLoginTask.execute(mUsername, mPinEditText.getText().toString());
+            mPINLoginTask.execute(mUsername, mPinEditText.getText().toString(), null);
         }
         else {
             mActivity.ShowFadingDialog(getString(R.string.server_error_no_connection));
@@ -695,6 +696,7 @@ public class LandingFragment extends BaseFragment implements
         String mUsername;
         String mPin;
         AirbitzException mFailureException;
+        Account mAccount;
 
         @Override
         protected void onPreExecute() {
@@ -706,8 +708,9 @@ public class LandingFragment extends BaseFragment implements
         protected Boolean doInBackground(String... params) {
             mUsername = params[0];
             mPin = params[1];
+            String secret = params[2];
             try {
-                mCoreAPI.PinLogin(mUsername, mPin);
+                mAccount = mCoreAPI.pinLogin(mUsername, mPin, secret);
                 return true;
             } catch (AirbitzException e) {
                 mFailureException = e;
@@ -723,7 +726,7 @@ public class LandingFragment extends BaseFragment implements
 
             if (success) {
                 mPinEditText.clearFocus();
-                mActivity.LoginNow(mUsername, null, mFirstLogin);
+                mActivity.LoginNow(mAccount, mFirstLogin);
             } else if (mFailureException.isBadPassword()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
@@ -781,6 +784,7 @@ public class LandingFragment extends BaseFragment implements
 
     public class PasswordLoginTask extends AsyncTask<String, Void, Boolean> {
         AirbitzException mFailureException = null;
+        Account mAccount;
 
         @Override
         protected void onPreExecute() {
@@ -791,12 +795,14 @@ public class LandingFragment extends BaseFragment implements
         protected Boolean doInBackground(String... params) {
             mUsername = (String) params[0];
             mPassword = (String) params[1];
+            String secret = (String) params[2];
             try {
-                mCoreAPI.SignIn(mUsername, mPassword);
-                AirbitzApplication.Login(mUsername, mPassword);
-                mCoreAPI.setupAccountSettings();
+                mAccount = mCoreAPI.passwordLogin(mUsername, mPassword, secret);
+                AirbitzApplication.Login(mAccount);
+                mAccount.setupAccountSettings();
                 return true;
             } catch (AirbitzException e) {
+                Log.e(TAG, "", e);
                 mFailureException = e;
                 return false;
             }
@@ -806,7 +812,7 @@ public class LandingFragment extends BaseFragment implements
         protected void onPostExecute(final Boolean success) {
             mActivity.showModalProgress(false);
             mPasswordLoginTask = null;
-            signInComplete(mFailureException);
+            signInComplete(mAccount, mFailureException);
         }
 
         @Override
@@ -816,15 +822,14 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
-    private void signInComplete(AirbitzException error) {
+    private void signInComplete(Account account, AirbitzException error) {
         saveUsername(mUsername);
         if (error == null) {
             mActivity.hideSoftKeyboard(mPasswordEditText);
             mPassword = mPasswordEditText.getText().toString();
             mPasswordEditText.setText("");
-            mActivity.LoginNow(mUsername, mPassword, mFirstLogin);
+            mActivity.LoginNow(account, mFirstLogin);
         } else if (error.isOtpError()) {
-            mCoreAPI.otpSetError(error);
             launchTwoFactorMenu();
         } else {
             mActivity.ShowFadingDialog(error.getMessage());
@@ -856,18 +861,13 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void twoFactorSignIn(String secret) {
-        try {
-            mCoreAPI.OtpKeySet(mUsername, secret);
-        } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "twoFactorSignIn error:");
-        }
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
             mPINLoginTask = new PINLoginTask();
-            mPINLoginTask.execute(mUsername, mPin);
+            mPINLoginTask.execute(mUsername, mPin, secret);
         } else {
             mPasswordLoginTask = new PasswordLoginTask();
-            mPasswordLoginTask.execute(mUsername, mPassword);
+            mPasswordLoginTask.execute(mUsername, mPassword, secret);
         }
     }
 
@@ -934,7 +934,7 @@ public class LandingFragment extends BaseFragment implements
         } else {
             mFirstLogin = isFirstLogin();
             mPasswordLoginTask = new PasswordLoginTask();
-            mPasswordLoginTask.execute(username, password);
+            mPasswordLoginTask.execute(username, password, null);
         }
     }
 
@@ -948,9 +948,9 @@ public class LandingFragment extends BaseFragment implements
         @Override
         protected String doInBackground(String... params) {
             try {
-                return mCoreAPI.GetRecoveryQuestionsForUser(params[0]);
+                return mCoreAPI.getRecoveryQuestionsForUser(params[0]);
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "GetRecoveryQuestionsTask error:");
+                AirbitzCore.debugLevel(1, "GetRecoveryQuestionsTask error:");
                 return e.getMessage();
             }
         }
@@ -958,7 +958,6 @@ public class LandingFragment extends BaseFragment implements
         @Override
         protected void onPostExecute(String questionString) {
             mActivity.showModalProgress(false);
-
             mRecoveryQuestionsTask = null;
 
             if (questionString == null) {
@@ -969,7 +968,7 @@ public class LandingFragment extends BaseFragment implements
                 if (questions.length > 1) { // questions came back
                     mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if (questions.length == 1) { // Error string
-                    CoreAPI.debugLevel(1, questionString);
+                    AirbitzCore.debugLevel(1, questionString);
                     mActivity.ShowFadingDialog(questions[0]);
                 }
             }

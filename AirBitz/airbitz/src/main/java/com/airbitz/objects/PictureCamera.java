@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -98,7 +98,7 @@ public class PictureCamera implements Camera.PreviewCallback {
         // Get back camera unless there is none, then try the front camera - fix for Nexus 7
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras == 0) {
-            CoreAPI.debugLevel(1, "No cameras!");
+            AirbitzCore.debugLevel(1, "No cameras!");
             return -1;
         }
 
@@ -163,7 +163,7 @@ public class PictureCamera implements Camera.PreviewCallback {
         if (mCameraManager.getCamera() != null) {
             mPreviewFrame.removeView(mPreview);
         }
-        CoreAPI.debugLevel(1, "stopping camera");
+        AirbitzCore.debugLevel(1, "stopping camera");
         mCameraManager.previewOff();
         mCameraManager.stopPreview();
         mCameraManager.release();

@@ -47,10 +47,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.login.SignUpFragment;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -60,12 +62,14 @@ import java.util.List;
 public class RememberPasswordCheck {
 
     private NavigationActivity mActivity;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
     private PasswordOkTask mPasswordTask;
 
     public RememberPasswordCheck(NavigationActivity activity) {
         this.mActivity = activity;
-        this.mCoreAPI = CoreAPI.getApi();
+        this.mCoreAPI = AirbitzCore.getApi();
+        this.mAccount = AirbitzApplication.getAccount();
     }
 
     public void showPasswordCheckAlert() {
@@ -170,7 +174,7 @@ public class RememberPasswordCheck {
 
         @Override
         protected Boolean doInBackground(String... passwords) {
-            return mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), passwords[0]);
+            return mAccount.passwordOk(passwords[0]);
         }
 
         @Override

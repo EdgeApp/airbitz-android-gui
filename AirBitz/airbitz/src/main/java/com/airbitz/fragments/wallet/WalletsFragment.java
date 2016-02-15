@@ -61,15 +61,19 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletAdapter;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.CoreAPI;
-import com.airbitz.fragments.WalletBaseFragment;
+import com.airbitz.api.CoreWrapper;
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.fragments.HelpFragment;
-import co.airbitz.models.Wallet;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
@@ -96,7 +100,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     private DynamicListView mWalletListView;
     private WalletAdapter mWalletAdapter;
     private View mProgress;
-    private List<Wallet> mLatestWalletList = new ArrayList<Wallet>();
+    private List<WalletWrapper> mLatestWalletList = new ArrayList<WalletWrapper>();
     private boolean mArchiveClosed = false;
     private DeleteWalletTask mDeleteTask;
 
@@ -125,7 +129,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     protected List<Wallet> fetchCoreWallets() {
-        return mCoreApi.getCoreWallets(false);
+        return mAccount.getCoreWallets(false);
     }
 
     @Override
@@ -176,7 +180,7 @@ public class WalletsFragment extends WalletBaseFragment implements
                     return;
                 }
                 WalletAdapter a = (WalletAdapter) adapterView.getAdapter();
-                Wallet wallet = a.getList().get(i);
+                WalletWrapper wallet = a.getList().get(i);
                 if (wallet.isHeader()) {
                 } else if (wallet.isArchiveHeader()) {
                     mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_wallets_archive_help), getResources().getInteger(R.integer.alert_hold_time_help_popups));
@@ -190,7 +194,7 @@ public class WalletsFragment extends WalletBaseFragment implements
                     a.setSelectedWallet(i);
                     view.setSelected(true);
 
-                    walletChanged(wallet);
+                    walletChanged(wallet.wallet());
 
                     mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.WALLET.ordinal());
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
@@ -199,7 +203,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         });
         mWalletListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                Wallet wallet = mLatestWalletList.get(pos);
+                WalletWrapper wallet = mLatestWalletList.get(pos);
                 if (wallet.isHeader() || wallet.isArchiveHeader()) {
                     return true;
                 }
@@ -287,10 +291,9 @@ public class WalletsFragment extends WalletBaseFragment implements
     @Override
     public void onListReordering(boolean started) {
         if (!started) {
-            mCoreApi.setWalletOrder(mLatestWalletList);
-            // Update current wallet incase it became archived
-            mWallet = mCoreApi.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
-            mCoreApi.reloadWallets();
+            mAccount.walletReorder(CoreWrapper.unwrap(mLatestWalletList));
+            mWallet = mAccount.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
+            mAccount.reloadWallets();
         }
     }
 
@@ -307,22 +310,23 @@ public class WalletsFragment extends WalletBaseFragment implements
     }
 
     private void updateWalletList(boolean archiveClosed) {
-        List<Wallet> walletList = getWallets(archiveClosed);
+        List<WalletWrapper> walletList = getWallets(archiveClosed);
         if (walletList != null && !walletList.isEmpty()) {
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
         }
         long totalSatoshis = 0;
         int currencyNum;
-        AccountSettings settings = mCoreApi.coreSettings();
-        if (settings != null)
+        AccountSettings settings = mAccount.coreSettings();
+        if (settings != null) {
             currencyNum = settings.getCurrencyNum();
-        else
-            currencyNum = mCoreApi.defaultCurrencyNum();
+        } else {
+            currencyNum = Currencies.instance().defaultCurrencyNum();
+        }
 
-        for (Wallet w : walletList) {
-            if (!w.isArchived()) {
-                totalSatoshis += w.getBalanceSatoshi();
+        for (WalletWrapper w : walletList) {
+            if (w.wallet() != null && !w.wallet().isArchived()) {
+                totalSatoshis += w.wallet().getBalanceSatoshi();
             }
         }
         mWalletAdapter.swapWallets();
@@ -333,40 +337,35 @@ public class WalletsFragment extends WalletBaseFragment implements
         mWalletAdapter.notifyDataSetChanged();
 
         if (mHeaderTotal != null && null != mWallet) {
-            mFiatSelect.setText(mCoreApi.currencyCodeLookup(currencyNum));
-            mBitcoinSelect.setText(mCoreApi.getDefaultBTCDenomination());
+            mFiatSelect.setText(Currencies.instance().currencyCodeLookup(currencyNum));
+            mBitcoinSelect.setText(mAccount.getDefaultBTCDenomination());
             if (mOnBitcoinMode) {
-                mHeaderTotal.setText(mCoreApi.formatSatoshi(totalSatoshis, true));
+                mHeaderTotal.setText(mAccount.formatSatoshi(totalSatoshis, true));
             } else {
-                mHeaderTotal.setText(mCoreApi.FormatCurrency(totalSatoshis, currencyNum, false, true));
+                mHeaderTotal.setText(mAccount.FormatCurrency(totalSatoshis, currencyNum, false, true));
             }
         }
     }
 
-    private List<Wallet> getWallets(boolean archiveClosed) {
-        List<Wallet> list = new ArrayList<Wallet>();
+    private List<WalletWrapper> getWallets(boolean archiveClosed) {
+        List<WalletWrapper> list = new ArrayList<WalletWrapper>();
         List<Wallet> coreList = mWallets;
 
         if (coreList == null) {
             return null;
         }
 
-        Wallet headerWallet = new Wallet(Wallet.WALLET_HEADER_ID);
-        headerWallet.setUUID(Wallet.WALLET_HEADER_ID);
-        list.add(headerWallet);//Wallet HEADER
-        // Loop through and find non-archived wallets first
+        list.add(new WalletWrapper(WalletWrapper.WALLET_HEADER_ID));
         for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.getName() != null)
-                list.add(wallet);
+            if (!wallet.isArchived() && wallet.getName() != null) {
+                list.add(new WalletWrapper(wallet));
+            }
         }
-        Wallet archiveWallet = new Wallet(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        archiveWallet.setUUID(Wallet.WALLET_ARCHIVE_HEADER_ID);
-        list.add(archiveWallet); //Archive HEADER
-
+        list.add(new WalletWrapper(WalletWrapper.WALLET_ARCHIVE_HEADER_ID));
         if (!archiveClosed) {
             for (Wallet wallet : coreList) {
                 if (wallet.isArchived() && wallet.getName() != null) {
-                    list.add(wallet);
+                    list.add(new WalletWrapper(wallet));
                 }
             }
         }
@@ -406,9 +405,8 @@ public class WalletsFragment extends WalletBaseFragment implements
                             if (wallet.getUUID().equals(mWallet.getUUID())) {
                                 mWallet = wallet;
                             }
-                            wallet.setName(walletName);
-                            mCoreApi.renameWallet(wallet);
-                            mCoreApi.reloadWallets();
+                            wallet.walletRename(walletName);
+                            mAccount.reloadWallets();
                             dialog.dismiss();
                             updateTitle();
                         }
@@ -492,7 +490,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreApi.removeWallet(mWallet.getUUID());
+            return mWallet.walletRemove();
         }
 
         @Override

@@ -42,26 +42,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+
+import com.airbitz.AirbitzApplication;
 import com.airbitz.BuildConfig;
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.UploadLogAlert;
 
 public class DebugFragment extends BaseFragment {
 
     View mView;
-    CoreAPI mCoreApi;
     private Button mClearWatchersButton;
     private Button mUploadLogButton;
+    private Account mAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreApi = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
+        mAccount = AirbitzApplication.getAccount();
     }
 
     @Override
@@ -85,7 +88,7 @@ public class DebugFragment extends BaseFragment {
         mUploadLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CoreAPI.debugLevel(0, "Uploading logs from Debug Settings");
+                AirbitzCore.debugLevel(0, "Uploading logs from Debug Settings");
                 UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
                 uploadLogAlert.showUploadLogAlert();
             }
@@ -97,9 +100,9 @@ public class DebugFragment extends BaseFragment {
         TextView appVersionTextView = (TextView) mView.findViewById(R.id.debug_app_version_text);
         appVersionTextView.setText(appVersion);
 
-        ((TextView) mView.findViewById(R.id.debug_network_version_text)).setText(CoreAPI.getApi().isTestNet() ? "Testnet" : "Mainnet");
+        ((TextView) mView.findViewById(R.id.debug_network_version_text)).setText(AirbitzCore.getApi().isTestNet() ? "Testnet" : "Mainnet");
 
-        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(CoreAPI.getApi().getCoreVersion());
+        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(AirbitzCore.getApi().version());
 
         return mView;
     }
@@ -134,11 +137,11 @@ public class DebugFragment extends BaseFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCoreApi.stopWatchers();
-            mCoreApi.deleteWatcherCache();
-            mCoreApi.startWatchers();
-            mCoreApi.startBitcoinUpdates();
-            mCoreApi.waitOnWatchers();
+            mAccount.stopWatchers();
+            mAccount.deleteWatcherCache();
+            mAccount.startWatchers();
+            mAccount.startBitcoinUpdates();
+            mAccount.waitOnWatchers();
             return null;
         }
 

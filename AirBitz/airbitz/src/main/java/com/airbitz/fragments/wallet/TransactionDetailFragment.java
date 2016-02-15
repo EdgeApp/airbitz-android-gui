@@ -84,15 +84,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.TxOutput;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
-import co.airbitz.api.TxOutput;
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.api.directory.Business;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.api.directory.BusinessSearchResult;
@@ -106,8 +112,6 @@ import com.airbitz.fragments.directory.DirectoryDetailFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.fragments.settings.SettingFragment;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.Common;
@@ -444,7 +448,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit && isResumed()) {
-                    CoreAPI.debugLevel(1, "editable=" + editable.toString());
+                    AirbitzCore.debugLevel(1, "editable=" + editable.toString());
                     updateBlanks(editable.toString());
                     createNewCategoryChoices(editable.toString());
                 }
@@ -597,7 +601,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCategories.clear();
         mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
-        List<String> catStrings = mCoreApi.loadCategories();
+        List<String> catStrings = mAccount.categories().loadCategories();
         for(String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
                 originalStrings.add(cat);
@@ -671,22 +675,22 @@ public class TransactionDetailFragment extends WalletBaseFragment
         bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
-                CoreAPI.debugLevel(1, "SEND");
+                AirbitzCore.debugLevel(1, "SEND");
                 mFromSend = true;
                 setCurrentType(getString(R.string.fragment_category_expense));
             } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
-                CoreAPI.debugLevel(1, "REQUEST");
+                AirbitzCore.debugLevel(1, "REQUEST");
                 setCurrentType(getString(R.string.fragment_category_income));
             }
 
-            mWalletUUID = bundle.getString(Wallet.WALLET_UUID);
+            mWalletUUID = bundle.getString(WalletWrapper.WALLET_UUID);
             mTxId = bundle.getString(Transaction.TXID);
             if (mWalletUUID.isEmpty()) {
-                CoreAPI.debugLevel(1, "no detail info");
+                AirbitzCore.debugLevel(1, "no detail info");
             } else if (mWallet == null || mTransaction == null) {
-                mWallet = mCoreApi.getWalletFromUUID(mWalletUUID);
-                mTransaction = mCoreApi.getTransaction(mWalletUUID, mTxId);
+                mWallet = mAccount.getWalletFromUUID(mWalletUUID);
+                mTransaction = mWallet.getTransaction(mTxId);
 
                 if (mTransaction != null) {
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.getCategory())) {
@@ -705,31 +709,31 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         if(mContactNames == null || mContactNames.isEmpty()) {
-            CoreAPI.debugLevel(1, "Getting Contact List");
+            AirbitzCore.debugLevel(1, "Getting Contact List");
             getContactsList();
         }
 
         if(mTransaction != null) {
-            CoreAPI.debugLevel(1, "Updating view");
+            AirbitzCore.debugLevel(1, "Updating view");
             FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
-            CoreAPI.debugLevel(1, "Getting original categories");
+            AirbitzCore.debugLevel(1, "Getting original categories");
             setupOriginalCategories();
         }
 
         mCategoryAdapter.setOnNewCategoryListener(this);
-        CoreAPI.debugLevel(1, "OnResume finished");
+        AirbitzCore.debugLevel(1, "OnResume finished");
     }
 
     @Override
     protected void setDefaultWallet() {
         Bundle bundle = getArguments();
-        String uuid = bundle.getString(Wallet.WALLET_UUID);
+        String uuid = bundle.getString(WalletWrapper.WALLET_UUID);
         setDefaultWallet(uuid);
         if (mWallet == null && uuid != null) {
-            mWallet = mCoreApi.getWalletFromUUID(uuid);
+            mWallet = mAccount.getWalletFromUUID(uuid);
         }
         mLoading = false;
     }
@@ -746,13 +750,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mActivity.startActivity(intent);
         }
         else {
-            CoreAPI.debugLevel(1, "Return URL does not begin with http or https");
+            AirbitzCore.debugLevel(1, "Return URL does not begin with http or https");
         }
     }
 
     private void done() {
         String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
-        mCoreApi.addCategory(category);
+        mAccount.categories().addCategory(category);
         mActivity.onBackPressed();
     }
 
@@ -885,7 +889,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     e.printStackTrace();
                 }
             } else {
-                CoreAPI.debugLevel(1, "loading remote " + payeeImage.toString());
+                AirbitzCore.debugLevel(1, "loading remote " + payeeImage.toString());
                 mPicasso.with(getActivity())
                         .load(payeeImage)
                         .transform(new RoundedTransformation(round, round))
@@ -926,7 +930,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mBizIds.containsKey(mPayeeEditText.getText().toString())) {
             mBizId = mBizIds.get(mPayeeEditText.getText().toString());
         }
-        CoreAPI.debugLevel(1, "Biz ID: " + String.valueOf(mBizId));
+        AirbitzCore.debugLevel(1, "Biz ID: " + String.valueOf(mBizId));
     }
 
 
@@ -950,13 +954,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void showAdvancedDetails(boolean hasFocus) {
-        Transaction tx = mCoreApi.getTransaction(mWalletUUID, mTxId);
+        Transaction tx = mWallet.getTransaction(mTxId);
         if (hasFocus && tx != null) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;
             SpannableStringBuilder outAddresses = new SpannableStringBuilder();
             String finalBaseUrl;
-            if (mCoreApi.isTestNet()) {
+            if (AirbitzCore.getApi().isTestNet()) {
                 finalBaseUrl = "https://testnet.blockexplorer.com/";
             } else { // LIVE
                 finalBaseUrl = "https://blockexplorer.com/";
@@ -967,7 +971,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (null != tx.getOutputs()) {
                 for (TxOutput output : tx.getOutputs()) {
                     start = 0;
-                    SpannableString val = new SpannableString(mCoreApi.formatSatoshi(output.getmValue()));
+                    SpannableString val = new SpannableString(mAccount.formatSatoshi(output.getmValue()));
                     SpannableString address = new SpannableString(output.getAddress());
                     end = address.length();
                     final String txUrl = finalBaseUrl + "address/" + output.getAddress();
@@ -1031,7 +1035,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
-            s.append(mCoreApi.formatSatoshi(netSum))
+            s.append(mAccount.formatSatoshi(netSum))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -1061,7 +1065,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(mCoreApi.formatSatoshi(feesSatoshi, true))
+            s.append(mAccount.formatSatoshi(feesSatoshi, true))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1100,28 +1104,28 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String feeFormatted;
         if (transaction.getAmountSatoshi() < 0) {
             coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
-            feeFormatted = "+" + mCoreApi.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
+            feeFormatted = "+" + mAccount.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
         } else {
             coinValue = transaction.getAmountSatoshi();
             feeFormatted = "";
         }
 
-        mBitcoinValueTextview.setText(mCoreApi.formatSatoshi(coinValue, false));
+        mBitcoinValueTextview.setText(mAccount.formatSatoshi(coinValue, false));
 
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.getAmountFiat() == 0.0) {
-            currencyValue = mCoreApi.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
+            currencyValue = mAccount.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
                     false, false);
         } else {
-            currencyValue = mCoreApi.formatCurrency(transaction.getAmountFiat(),
+            currencyValue = mAccount.formatCurrency(transaction.getAmountFiat(),
                     mWallet.getCurrencyNum(), false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+        mFiatDenominationLabel.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
 
-        mBitcoinSignTextview.setText(mCoreApi.getDefaultBTCDenomination());
+        mBitcoinSignTextview.setText(mAccount.getDefaultBTCDenomination());
 
         mBTCFeeTextView.setText(feeFormatted);
         mSearchListView.setVisibility(View.GONE);
@@ -1138,7 +1142,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
                     s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-//                    CoreAPI.debugLevel(1, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
+//                    AirbitzCore.debugLevel(1, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1161,7 +1165,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         for (String type : orderedCategories) {
-//            CoreAPI.debugLevel(1, "Searching for "+type);
+//            AirbitzCore.debugLevel(1, "Searching for "+type);
             addMatchesForPrefix(type, match);
         }
         if (null != mCategoryAdapter) {
@@ -1180,7 +1184,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     public void onNewCategory(String categoryName) {
         if (!categoryName.substring(categoryName.indexOf(':') + 1).trim().isEmpty()) {
             mCategories.add(new Category(categoryName, ""));
-            mCoreApi.addCategory(categoryName);
+            mAccount.categories().addCategory(categoryName);
         }
 
         setCategoryText(categoryName);
@@ -1243,7 +1247,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                             if (thumbnail != null) {
                                 Uri uri = Uri.parse(thumbnail);
                                 mCombinedPhotos.put(business.getName(), uri);
-//                                CoreAPI.debugLevel(1, "Adding " + business.getName() + " thumbnail");
+//                                AirbitzCore.debugLevel(1, "Adding " + business.getName() + " thumbnail");
                             }
                         }
                     }
@@ -1334,7 +1338,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             transaction.setAmountFiat(amountFiat);
             transaction.setmBizId(Bizid);
             try {
-                mCoreApi.storeTransaction(mTransaction);
+                mTransaction.save();
             } catch (AirbitzException e) {
                 return e;
             }
@@ -1469,7 +1473,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void FindBizIdThumbnail(String name, long id) {
         if (id != 0) {
-            CoreAPI.debugLevel(1, "Finding bizid thumbnail for "+name);
+            AirbitzCore.debugLevel(1, "Finding bizid thumbnail for "+name);
             GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1497,7 +1501,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             }
             if (business != null && business.getSquareImageLink() != null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
-                CoreAPI.debugLevel(1, "Got " + uri);
+                AirbitzCore.debugLevel(1, "Got " + uri);
                 mCombinedPhotos.put(mName, uri);
                 updatePhoto();
                 updateBizId();
@@ -1526,7 +1530,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return mCoreApi.needsRecoveryReminder(mWallet);
+            return CoreWrapper.needsRecoveryReminder(mAccount, mWallet);
         }
 
         @Override
@@ -1537,7 +1541,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mReminderTask = null;
             if (mFromRequest && needsReminder && !mHasReminded) {
                 mHasReminded = true;
-                mCoreApi.incRecoveryReminder();
+                CoreWrapper.incRecoveryReminder(mAccount);
                 ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                         getString(R.string.transaction_details_recovery_reminder_message));
             } else {

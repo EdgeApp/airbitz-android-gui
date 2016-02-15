@@ -41,7 +41,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.airbitz.objects.AirbitzRequestHandler;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.Account;
 
 import com.squareup.picasso.Picasso;
 
@@ -61,7 +61,7 @@ public class AirbitzApplication extends Application {
     private static String ARCHIVE_HEADER_STATE = "archiveClosed";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
 
-    private static Login airbitzLogin = new Login();
+    private static Account sAccount;
     private static long mBackgroundedTime = 0;
     private static long mLoginTime = 0;
     private static Context mContext;
@@ -88,7 +88,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static boolean isLoggedIn() {
-        return airbitzLogin.getUsername() != null;
+        return sAccount != null ? sAccount.isLoggedIn() : false;
     }
 
     public static boolean isDebugging() {
@@ -96,30 +96,24 @@ public class AirbitzApplication extends Application {
         return (appInfo != null && ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0));
     }
 
-    public static void Login(String uname, String password) {
-        if (uname != null) {
-            airbitzLogin.setUsername(uname);
-            airbitzLogin.setPassword(password);
-            CoreAPI.getApi().setCredentials(uname, password);
+    public static void Login(Account account) {
+        sAccount = account;
+        if (sAccount.getUsername() != null) {
             mLoginTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-            editor.putString(LOGIN_NAME, uname);
+            editor.putString(LOGIN_NAME, sAccount.getUsername());
             editor.apply();
         }
     }
 
-    public static void Logout() {
+    public static void logout() {
+        sAccount.logout();
         setCurrentWallet(null);
-        airbitzLogin = new Login();
-        CoreAPI.getApi().setCredentials(null, null);
+        sAccount = null;
     }
 
     public static String getUsername() {
-        return airbitzLogin.getUsername();
-    }
-
-    public static String getPassword() {
-        return airbitzLogin.getPassword();
+        return sAccount != null ? sAccount.getUsername() : null;
     }
 
     public static String getCurrentWallet() {
@@ -128,6 +122,10 @@ public class AirbitzApplication extends Application {
 
     public static void setCurrentWallet(String uuid) {
         mWalletUuid = uuid;
+    }
+
+    public static Account getAccount() {
+        return sAccount;
     }
 
     private static String CLIENT_ID_PREF = "client_id";
@@ -246,27 +244,5 @@ public class AirbitzApplication extends Application {
 
     public static Stack<Fragment>[] getFragmentStack() {
         return mFragmentStack;
-    }
-
-    private static class Login {
-        private String mUsername = null;
-        private String mPassword = null;
-        private String mWalletUuid = null;
-
-        public String getUsername() {
-            return mUsername;
-        }
-
-        public void setUsername(String name) {
-            mUsername = name;
-        }
-
-        public String getPassword() {
-            return mPassword;
-        }
-
-        public void setPassword(String password) {
-            mPassword = password;
-        }
     }
 }

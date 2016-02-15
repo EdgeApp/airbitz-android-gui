@@ -70,8 +70,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.adapters.WalletAdapter;
-import co.airbitz.models.Wallet;
 import com.airbitz.utils.ListViewUtility;
 
 import java.util.List;
@@ -125,7 +125,7 @@ public class DynamicListView extends ListView {
     private long mBelowItemId = INVALID_ID;
     private final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
-    public List<Wallet> mWalletList;
+    public List<WalletWrapper> mWalletList;
     private Context mContext;
     private int mLastEventY = -1;
     private int mDownY = -1;
@@ -558,7 +558,7 @@ public class DynamicListView extends ListView {
                 public void onAnimationEnd(Animator animation) {
                     int pos = getPositionForID(mMobileItemId);
                     if (pos > ((WalletAdapter) getAdapter()).getArchivePos() && archiveClosed) {
-                        Wallet w = mWalletList.remove(pos);
+                        WalletWrapper w = mWalletList.remove(pos);
                         mWalletList.add(((WalletAdapter) getAdapter()).getArchivePos() + 1, w);
                     }
                     mAboveItemId = INVALID_ID;
@@ -640,7 +640,7 @@ public class DynamicListView extends ListView {
         return false;
     }
 
-    public void setWalletList(List<Wallet> walletList) {
+    public void setWalletList(List<WalletWrapper> walletList) {
         mWalletList = walletList;
     }
 

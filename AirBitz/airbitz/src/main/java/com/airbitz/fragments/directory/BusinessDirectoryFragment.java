@@ -68,7 +68,7 @@ import android.widget.TextView;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.VenueAdapter;
 import com.airbitz.api.DirectoryWrapper;
@@ -392,7 +392,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         if (mCurrentLocation != null) {
             latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
         }
-        CoreAPI.debugLevel(1, "LocationManager Location = " + latLon);
+        AirbitzCore.debugLevel(1, "LocationManager Location = " + latLon);
 
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
@@ -402,7 +402,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     public void queryWithoutLocation() {
-        CoreAPI.debugLevel(1, "Query without location");
+        AirbitzCore.debugLevel(1, "Query without location");
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }

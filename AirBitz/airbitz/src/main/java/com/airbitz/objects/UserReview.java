@@ -38,12 +38,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.view.ContextThemeWrapper;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
@@ -93,14 +94,13 @@ public class UserReview {
 
     public static boolean transactionCountTriggered() {
         if(AirbitzApplication.isLoggedIn()) {
-            List<Wallet> walletList = CoreAPI.getApi().getCoreWallets(true);
-            if(walletList != null) {
+            Account account = AirbitzApplication.getAccount();
+            List<Wallet> walletList = account.getCoreWallets(true);
+            if (null != walletList) {
                 int transactionCount = 0;
-                for(Wallet wallet : walletList) {
-                    if(!wallet.isArchiveHeader() && !wallet.isHeader()) {
-                        List<Transaction> transactions = wallet.getTransactions();
-                        transactionCount += transactions.size();
-                    }
+                for (Wallet wallet : walletList) {
+                    List<Transaction> transactions = wallet.getTransactions();
+                    transactionCount += transactions.size();
                 }
                 return transactionCount > MAX_TRANSACTIONS;
             }

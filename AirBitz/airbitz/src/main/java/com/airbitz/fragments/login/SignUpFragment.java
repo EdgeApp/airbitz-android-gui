@@ -60,13 +60,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.PasswordRule;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.utils.Common;
@@ -102,21 +103,18 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     private ImageView mSwitchImage3;
     private ImageView mSwitchImage4;
     private TextView mTimeTextView;
-    private CreateAccountTask mCreateAccountTask;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
     private View mView;
     private Handler mHandler = new Handler();
 
-    /**
-     * Represents an asynchronous account creation task
-     */
     private ChangeTask mChangeTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
+        mAccount = AirbitzApplication.getAccount();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -287,7 +285,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     @Override
     public String getTitle() {
         mMode = getArguments().getInt(MODE);
-        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
+        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mAccount.passwordExists())) {
             return mActivity.getString(R.string.activity_signup_title_change_password);
         } else if (mMode == CHANGE_PASSWORD) {
             return mActivity.getString(R.string.activity_signup_title_change_password);
@@ -305,7 +303,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         }
 
         mMode = bundle.getInt(MODE);
-        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mCoreAPI.PasswordExists())) {
+        if (mMode == CHANGE_PASSWORD_NO_VERIFY || (mMode == CHANGE_PASSWORD && !mAccount.passwordExists())) {
             // hide mUsername
             mUserNameEditText.setVisibility(View.GONE);
             mHintTextView.setVisibility(View.INVISIBLE);
@@ -328,8 +326,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     mActivity.showSoftKeyboard(mPasswordEditText);
                 }
             }, 1000);
-        }
-        else if (mMode == CHANGE_PASSWORD) {
+        } else if (mMode == CHANGE_PASSWORD) {
             // change mUsername label, title
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_old_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -344,13 +341,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // hide PIN
             mWithdrawalPinEditText.setVisibility(View.GONE);
             mWithdrawalLabel.setVisibility(View.GONE);
-            mPasswordEditText.requestFocus();
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    mActivity.showSoftKeyboard(mPasswordEditText);
-                    mActivity.showSoftKeyboard(mPasswordEditText);
-                }
-            }, 1000);
         }
         else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
             mPasswordEditText.setHint(getResources().getString(R.string.activity_signup_new_password));
@@ -368,7 +358,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mUserNameEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mUserNameEditText.setTypeface(Typeface.DEFAULT);
-            mUserNameEditText.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
+            mUserNameEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
             mPasswordForPINEditText = mUserNameEditText;
             mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -388,7 +378,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean checkPasswordRules(String password) {
-        List<PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<PasswordRule> rules = mCoreAPI.passwordRules(password);
 
         if (rules.isEmpty()) {
             return false;
@@ -420,7 +410,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     break;
             }
         }
-        mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
+        mTimeTextView.setText(GetCrackString(mCoreAPI.passwordSecondsToCrack(password)));
         return bNewPasswordFieldsAreValid;
     }
 
@@ -446,14 +436,14 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         boolean bUserNameFieldIsValid = true;
 
         // if we are signing up for a new account
-        if (mMode == CHANGE_PASSWORD_NO_VERIFY || !(mCoreAPI.PasswordExists() && (mMode == CHANGE_PASSWORD ||
+        if (mMode == CHANGE_PASSWORD_NO_VERIFY || !(mAccount.passwordExists() && (mMode == CHANGE_PASSWORD ||
             mMode == CHANGE_PIN))) {
             bUserNameFieldIsValid = true;
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
             // if the mPassword is wrong
-            if (!mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mUserNameEditText.getText().toString())) {
+            if (!mAccount.passwordOk(mUserNameEditText.getText().toString())) {
                 bUserNameFieldIsValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_current_password));
             }
@@ -492,7 +482,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         // if we are signing up for a new account
         if (mMode != CHANGE_PASSWORD && mMode != CHANGE_PASSWORD_NO_VERIFY) {
             // if the pin isn't long enough
-            if (mCoreAPI.PasswordExists() && mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
+            if (mAccount.passwordExists() && mWithdrawalPinEditText.getText().toString().length() < MIN_PIN_LENGTH) {
                 bpinNameFieldIsValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_insufficient_pin));
             }
@@ -577,7 +567,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
         @Override
         protected Boolean doInBackground(String... params) {
-            mCoreAPI.stopAllAsyncUpdates();
+            mAccount.stopAllAsyncUpdates();
 
             String answers = params[0];
             mUsername = params[1];
@@ -585,15 +575,15 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             try {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     mUsername = AirbitzApplication.getUsername();
-                    mCoreAPI.ChangePassword(mPassword);
+                    mAccount.passwordSetup(mPassword);
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    mCoreAPI.ChangePasswordWithRecoveryAnswers(mUsername, answers, mPassword, mPin);
+                    mAccount.recoverySetup(answers);
                 } else {
-                    mCoreAPI.SetPin(mPin);
-                    AccountSettings settings = mCoreAPI.coreSettings();
+                    mAccount.SetPin(mPin);
+                    AccountSettings settings = mAccount.coreSettings();
                     if (settings != null) {
                         if (!settings.getBDisablePINLogin()) {
-                            mCoreAPI.PinSetup();
+                            mAccount.pinSetup();
                         }
                     }
                 }
@@ -608,16 +598,14 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         protected void onPostExecute(final Boolean success) {
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
-                    AirbitzApplication.Login(mUsername, mPassword);
-                    mCoreAPI.PinSetup();
+                    mAccount.pinSetup();
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    AirbitzApplication.Login(mUsername, mPassword);
                     try {
-                        mCoreAPI.SetPin(mPin);
-                        mCoreAPI.PinSetup();
+                        mAccount.SetPin(mPin);
+                        mAccount.pinSetup();
                     } catch (AirbitzException e) {
-                        CoreAPI.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:");
+                        AirbitzCore.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:");
                     }
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
@@ -634,7 +622,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 mNextButton.setClickable(true);
             }
             mActivity.showModalProgress(false);
-            mCoreAPI.startAllAsyncUpdates();
+            mAccount.startAllAsyncUpdates();
             mChangeTask = null;
             super.onPostExecute(success);
         }
@@ -643,71 +631,8 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         protected void onCancelled() {
             mChangeTask = null;
             mNextButton.setClickable(true);
-            mCoreAPI.startAllAsyncUpdates();
+            mAccount.startAllAsyncUpdates();
             mActivity.showModalProgress(false);
-        }
-    }
-
-    /**
-     * Represents an asynchronous account creation task
-     */
-    public class CreateAccountTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        private final String mPassword;
-        private final String mPin;
-        private String mFailureReason;
-
-        CreateAccountTask(String email, String password, String pin) {
-            mUsername = email;
-            mPassword = password;
-            mPin = pin;
-            mActivity.ShowFadingDialog(getString(R.string.fragment_signup_creating_account), getResources().getInteger(R.integer.alert_hold_time_forever), false);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                mCoreAPI.createAccount(mUsername, String.valueOf(mPassword));
-                return true;
-            } catch (AirbitzException e) {
-                mFailureReason = e.getMessage();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mCreateAccountTask = null;
-            if (success) {
-                AirbitzApplication.Login(mUsername, mPassword);
-                try {
-                    mCoreAPI.SetPin(mPin);
-                } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "SignUpFragment SetPIN error:");
-                }
-
-                mCoreAPI.setupAccountSettings();
-                mCoreAPI.startAllAsyncUpdates();
-
-                AccountSettings settings = mCoreAPI.coreSettings();
-                settings.setRecoveryReminderCount(0);
-                try {
-                    settings.save();
-                } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "SignUpFragment settings.save() error:");
-                }
-
-                mActivity.UserJustLoggedIn(true);
-            } else {
-                mActivity.ShowFadingDialog(mFailureReason);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mCreateAccountTask = null;
-            mActivity.DismissFadingDialog();
         }
     }
 }

@@ -70,13 +70,15 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.BitcoinDenomination;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.BitcoinDenomination;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -128,7 +130,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private List<String> mDistanceItems;
     private int mCurrencyNum;
     private List<String> mExchanges;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
     private View mView;
     private AccountSettings mCoreSettings;
     private NavigationActivity mActivity;
@@ -137,7 +140,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
+        mAccount = AirbitzApplication.getAccount();
         mActivity = ((NavigationActivity)getActivity());
         setHasOptionsMenu(true);
     }
@@ -154,7 +158,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mView = i.inflate(R.layout.fragment_setting, container, false);
         }
 
-        mCurrencyItems = mCoreAPI.getCurrencyCodeAndDescriptionArray();
+        mCurrencyItems = Currencies.instance().getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
@@ -276,16 +280,16 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 if(isChecked && mCoreSettings.getBDisablePINLogin()) {
-                    CoreAPI.debugLevel(1, "Enabling PIN");
+                    AirbitzCore.debugLevel(1, "Enabling PIN");
                     new mPinSetupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 } else if(!isChecked) {
-                    CoreAPI.debugLevel(1, "Disabling PIN");
+                    AirbitzCore.debugLevel(1, "Disabling PIN");
                     mCoreSettings.setBDisablePINLogin(true);
                     try {
                         mCoreSettings.save();
-                        mCoreAPI.PINLoginDelete(AirbitzApplication.getUsername());
+                        mAccount.pinLoginDelete(AirbitzApplication.getUsername());
                     } catch (AirbitzException e) {
-                        CoreAPI.debugLevel(1, "SettingFragment PINLoginDelete error");
+                        AirbitzCore.debugLevel(1, "SettingFragment PINLoginDelete error");
                     }
                 }
             }
@@ -330,18 +334,19 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         });
 
-        AccountSettings settings = mCoreAPI.coreSettings();
-        if (settings != null)
+        AccountSettings settings = mAccount.coreSettings();
+        if (settings != null) {
             mCurrencyNum = settings.getCurrencyNum();
-        else
-            mCurrencyNum = mCoreAPI.defaultCurrencyNum();
+        } else {
+            mCurrencyNum = Currencies.instance().defaultCurrencyNum();
+        }
 
-        String defaultCode = mCoreAPI.getCurrencyCode(mCurrencyNum);
+        String defaultCode = Currencies.instance().getCurrencyCode(mCurrencyNum);
         mDefaultCurrencyButton.setText(defaultCode);
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = mCoreAPI.getCurrencyCode(mCurrencyNum);
+                String code = Currencies.instance().getCurrencyCode(mCurrencyNum);
 
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(code);
@@ -393,11 +398,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Bitcoin denomination
         BitcoinDenomination denomination = settings.getBitcoinDenomination();
         if (denomination != null) {
-            if (denomination.getDenominationType() == CoreAPI.ABC_DENOMINATION_BTC) {
+            if (denomination.getDenominationType() == Account.ABC_DENOMINATION_BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
-            } else if (denomination.getDenominationType() == CoreAPI.ABC_DENOMINATION_MBTC) {
+            } else if (denomination.getDenominationType() == Account.ABC_DENOMINATION_MBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_mbitcoin);
-            } else if (denomination.getDenominationType() == CoreAPI.ABC_DENOMINATION_UBTC) {
+            } else if (denomination.getDenominationType() == Account.ABC_DENOMINATION_UBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_ubitcoin);
             }
         }
@@ -413,7 +418,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //Options
         //Autologoff
-        mAutoLogoffManager.setMinutes(settings.getMinutesAutoLogout());
+        mAutoLogoffManager.setSeconds(settings.getSecondsAutoLogout());
         // Pin Relogin
         mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
         // NFC
@@ -435,24 +440,24 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     private void saveDenomination() {
-        if(mCoreSettings == null) {
-            mCoreSettings = mCoreAPI.newCoreSettings();
+        if (mCoreSettings == null) {
+            mCoreSettings = mAccount.newCoreSettings();
         }
         //Bitcoin denomination
         BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
         if (denomination != null) {
             if (mmBitcoinButton.isChecked()) {
-                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_MBTC);
+                denomination.setDenominationType(Account.ABC_DENOMINATION_MBTC);
             } else if (muBitcoinButton.isChecked()) {
-                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_UBTC);
+                denomination.setDenominationType(Account.ABC_DENOMINATION_UBTC);
             } else {
-                denomination.setDenominationType(CoreAPI.ABC_DENOMINATION_BTC);
+                denomination.setDenominationType(Account.ABC_DENOMINATION_BTC);
             }
         }
     }
 
     private void saveCurrentSettings() {
-        mCoreSettings = mCoreAPI.newCoreSettings();
+        mCoreSettings = mAccount.newCoreSettings();
         if (mCoreSettings == null) {
             return;
         }
@@ -469,7 +474,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //Options
         //Autologoff
-        mCoreSettings.setMinutesAutoLogout(mAutoLogoffManager.getMinutes());
+        mCoreSettings.setSecondsAutoLogout(mAutoLogoffManager.getSeconds());
 
         //PinRelogin is saved during click
 
@@ -487,7 +492,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "SettingFragment saveCurrentSettings error");
+                AirbitzCore.debugLevel(1, "SettingFragment saveCurrentSettings error");
             }
         }
     }
@@ -601,7 +606,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                                 int num = picker.getValue();
                                 button.setText(items.get(num));
                                 saveCurrentSettings();
-                                mCoreAPI.updateExchangeRates();
+                                mAccount.updateExchangeRates();
                             }
                         }
                 )
@@ -632,9 +637,9 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             bundle.putBoolean(START_CHANGE_PASSWORD, false);
         }
 
-        mPinReloginSwitch.setEnabled(mCoreAPI.PasswordExists());
+        mPinReloginSwitch.setEnabled(mAccount.passwordExists());
 
-        mCoreSettings = mCoreAPI.newCoreSettings();
+        mCoreSettings = mAccount.newCoreSettings();
         loadSettings(mCoreSettings);
     }
 
@@ -651,7 +656,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mCurrencyNum = num;
         saveCurrentSettings();
         mDefaultCurrencyButton.setText(
-            mCoreAPI.getCurrencyCode(mCurrencyNum));
+            Currencies.instance().getCurrencyCode(mCurrencyNum));
         mActivity.ShowFadingDialog(
             getString(R.string.settings_currency_change_note_popup),
             getResources().getInteger(R.integer.alert_hold_time_help_popups));
@@ -666,7 +671,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         private AlertDialog mDialog;
         private Button mButton;
         private Activity mActivity;
-        private int mMinutes;
+        private int mSeconds;
         private NumberPicker mNumberPicker;
         private NumberPicker mTextPicker;
 
@@ -676,6 +681,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mAutoLogoffStrings.add(mActivity.getString(R.string.settings_days));
             mAutoLogoffStrings.add(mActivity.getString(R.string.settings_hours));
             mAutoLogoffStrings.add(mActivity.getString(R.string.settings_minutes));
+            mAutoLogoffStrings.add(mActivity.getString(R.string.settings_seconds));
         }
 
         private void setButtonText() {
@@ -689,20 +695,23 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mButton.setText(timeText);
         }
 
-        public int getMinutes() {
-            return mMinutes;
+        public int getSeconds() {
+            return mSeconds;
         }
 
-        public void setMinutes(int minutes) {
-            this.mMinutes = minutes;
-            if (mMinutes < MAX_TIME_VALUE) {
-                mNumberSelection = mMinutes;
+        public void setSeconds(int seconds) {
+            this.mSeconds = seconds;
+            if (mSeconds < 60) {
+                mNumberSelection = mSeconds;
+                mTextSelection = 3;
+            } else if (mSeconds < 60 * 60) {
+                mNumberSelection = mSeconds / 60;
                 mTextSelection = 2;
-            } else if (mMinutes < 24 * MAX_TIME_VALUE) {
-                mNumberSelection = mMinutes / 60;
+            } else if (mSeconds < 60 * 60 * 24) {
+                mNumberSelection = mSeconds / 60 / 60;
                 mTextSelection = 1;
             } else {
-                mNumberSelection = mMinutes / (24 * MAX_TIME_VALUE);
+                mNumberSelection = mSeconds / 60 / 60 / 24;
                 mTextSelection = 0;
             }
             setButtonText();
@@ -720,7 +729,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mTextPicker = new NumberPicker(
                     new ContextThemeWrapper(mActivity, R.style.AlertDialogCustomLight));
 
-            mTextPicker.setMaxValue(2);
+            mTextPicker.setMaxValue(3);
             mTextPicker.setMinValue(0);
             mTextPicker.setDisplayedValues(mAutoLogoffStrings.toArray(new String[mAutoLogoffStrings.size()]));
             mTextPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
@@ -765,11 +774,13 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                                     mNumberSelection = mNumberPicker.getValue();
                                     mTextSelection = mTextPicker.getValue();
                                     if (mTextSelection == 0) {
-                                        mMinutes = mNumberSelection * 60 * 24;
+                                        mSeconds = mNumberSelection * 60 * 60 * 24;
                                     } else if (mTextSelection == 1) {
-                                        mMinutes = mNumberSelection * 60;
+                                        mSeconds = mNumberSelection * 60 * 60;
                                     } else if (mTextSelection == 2) {
-                                        mMinutes = mNumberSelection;
+                                        mSeconds = mNumberSelection * 60;
+                                    } else if (mTextSelection == 3) {
+                                        mSeconds = mNumberSelection;
                                     }
                                     setButtonText();
                                 }
@@ -803,12 +814,12 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         @Override
         protected Void doInBackground(Void... params) {
-            mCoreAPI.PinSetupBlocking();
+            mAccount.pinSetupBlocking();
             mCoreSettings.setBDisablePINLogin(false);
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "SettingFragment mPinSetupTask error");
+                AirbitzCore.debugLevel(1, "SettingFragment mPinSetupTask error");
             }
             return null;
         }

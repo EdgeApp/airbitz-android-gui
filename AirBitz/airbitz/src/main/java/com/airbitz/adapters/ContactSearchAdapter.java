@@ -43,7 +43,8 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
-import co.airbitz.models.Contact;
+import com.airbitz.models.Contact;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

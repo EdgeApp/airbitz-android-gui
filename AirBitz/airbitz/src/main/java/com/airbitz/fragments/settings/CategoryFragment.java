@@ -50,11 +50,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Categories;
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.fragments.BaseFragment;
 import com.airbitz.adapters.SettingsCategoryAdapter;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.CategoryWidget;
 
 import java.util.ArrayList;
@@ -66,7 +68,6 @@ import java.util.HashSet;
 public class CategoryFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
 
-    private CoreAPI mCoreAPI;
     private Toolbar mToolbar;
 
     private Button mCancelButton;
@@ -79,11 +80,14 @@ public class CategoryFragment extends BaseFragment {
     private List<String> mCategories;
     private List<String> mCurrentCategories;
     private SaveTask mSaveTask;
+    private Account mAccount;
+    private Categories mAccountCategories;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
+        mAccount = AirbitzApplication.getAccount();
+        mAccountCategories = mAccount.categories();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -104,7 +108,7 @@ public class CategoryFragment extends BaseFragment {
         mCategories = new ArrayList<String>();
         mCurrentCategories = new ArrayList<String>();
 
-        mCategories = removeBlankSubcategories(mCoreAPI.loadCategories());
+        mCategories = removeBlankSubcategories(mAccountCategories.loadCategories());
         Collections.sort(mCategories);
         mCurrentCategories.addAll(mCategories);
 
@@ -291,17 +295,17 @@ public class CategoryFragment extends BaseFragment {
     }
 
     private void saveAllChanges() {
-        List<String> coreCategories = mCoreAPI.loadCategories();
+        List<String> coreCategories = mAccountCategories.loadCategories();
         // Remove any categories first
         for (String category : coreCategories) {
             if (!mCategories.contains(category)) {
-                mCoreAPI.removeCategory(category);
+                mAccountCategories.removeCategory(category);
             }
         }
 
         // Add any categories
         for (String category : mCategories) {
-            mCoreAPI.addCategory(category);
+            mAccountCategories.addCategory(category);
         }
     }
 

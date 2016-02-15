@@ -52,10 +52,13 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.utils.Common;
+
+import co.airbitz.core.Account;
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
 
 import java.util.List;
 
@@ -71,15 +74,15 @@ public class WalletAddFragment extends BaseFragment
     private LinearLayout mAddWalletCurrencyLayout;
 
     private List<String> mCurrencyList;
-    private CoreAPI mCoreAPI;
     private NavigationActivity mActivity;
     private View mView;
     private AddWalletTask mAddWalletTask;
+    private Account mAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
+        mAccount = AirbitzApplication.getAccount();
         mActivity = (NavigationActivity) getActivity();
 
         setHasOptionsMenu(true);
@@ -110,16 +113,16 @@ public class WalletAddFragment extends BaseFragment
             }
         });
 
-        mCurrencyList = mCoreAPI.getCurrencyCodeAndDescriptionArray();
+        mCurrencyList = Currencies.instance().getCurrencyCodeAndDescriptionArray();
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, R.layout.item_currency_small, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mAccount.coreSettings();
         int num;
         if (settings != null)
             num = settings.getCurrencyNum();
         else
-            num = mCoreAPI.defaultCurrencyNum();
-        String defaultCode = mCoreAPI.getCurrencyCode(num);
+            num = Currencies.instance().defaultCurrencyNum();
+        String defaultCode = Currencies.instance().getCurrencyCode(num);
         for (int i=0; i<mCurrencyList.size(); i++) {
             if (mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
                 mAddWalletCurrencySpinner.setSelection(i);
@@ -176,7 +179,7 @@ public class WalletAddFragment extends BaseFragment
 
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
-            int[] nums = mCoreAPI.getCoreCurrencyNumbers();
+            int[] nums = Currencies.instance().getCoreCurrencyNumbers();
             int currencyNum = nums[mAddWalletCurrencySpinner.getSelectedItemPosition()];
 
             mAddWalletTask = new AddWalletTask(mAddWalletNameEditText.getText().toString(), currencyNum);
@@ -214,10 +217,8 @@ public class WalletAddFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            boolean success = mCoreAPI.createWallet(AirbitzApplication.getUsername(), AirbitzApplication.getPassword(),
-                    mWalletName, mCurrencyNum);
-
-            mCoreAPI.reloadWallets();
+            boolean success = mAccount.createWallet(mWalletName, mCurrencyNum);
+            mAccount.reloadWallets();
             return success;
         }
 
@@ -226,7 +227,7 @@ public class WalletAddFragment extends BaseFragment
             mAddWalletTask = null;
             if(isAdded()) {
                 if (!success) {
-                    CoreAPI.debugLevel(1, "AddWalletTask failed");
+                    AirbitzCore.debugLevel(1, "AddWalletTask failed");
                     mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_created_wallet_failed));
                 } else {
                     WalletAddFragment.popFragment(mActivity);

@@ -42,8 +42,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.ReceiveAddress;
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.utils.Common;
 
@@ -71,6 +72,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
     private String _successUrl;
     private String _errorUrl;
     private String _cancelUrl;
+    private ReceiveAddress mReceiver;
 
     // Callback when finished
     private OnAddressRequestListener mOnAddressRequest;
@@ -135,7 +137,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
                 _errorUrl = map.get("x-error");
                 _cancelUrl = map.get("x-cancel");
             } catch (UnsupportedEncodingException e) {
-                CoreAPI.debugLevel(1, "Unsupported uri exception");
+                AirbitzCore.debugLevel(1, "Unsupported uri exception");
             }
         } else {
             strName = "An app ";
@@ -160,7 +162,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
                 query = "?address=";
             }
             try {
-                query += URLEncoder.encode(mRequestURI, "utf-8") + "&x-source=Airbitz";
+                query += URLEncoder.encode(mReceiver.uri().replace("?", "&"), "utf-8") + "&x-source=Airbitz";
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -170,9 +172,8 @@ public class AddressRequestFragment extends WalletBaseFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
-                mCoreApi.finalizeRequest(mWallet.getUUID(), mRequestID);
-            }
-            else {
+                mReceiver.finalizeRequest();
+            } else {
                 Uri errorUri = Uri.parse(_errorUrl);
                 Intent errorIntent = new Intent(Intent.ACTION_VIEW, errorUri);
                 if (errorIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -181,7 +182,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
             }
         }
         // finish
-        if(mOnAddressRequest != null) {
+        if (mOnAddressRequest != null) {
             mOnAddressRequest.onAddressRequest();
         }
     }
@@ -210,20 +211,11 @@ public class AddressRequestFragment extends WalletBaseFragment {
         }
     }
 
-    String mRequestID;
-    String mRequestAddress;
-    String mRequestURI;
     private void createRequest() {
-        mRequestID = "";
-        mRequestAddress = "";
-        mRequestURI = "";
-
-        mRequestID = mCoreApi.createReceiveRequestFor(mWallet, strName, strNotes, strCategory, 0, 0);
-        if(mRequestID != null) {
-            mCoreApi.getQRCodeBitmap(mWallet.getUUID(), mRequestID);
-            mRequestURI = mCoreApi.getRequestURI();
-            mRequestURI = mRequestURI.replace("?", "&");
-            mRequestAddress = mCoreApi.getRequestAddress(mWallet.getUUID(), mRequestID);
-        }
+        ReceiveAddress.Builder builder = mWallet.receiveRequestBuilders().amount(0);
+        builder.meta().name(strName);
+        builder.meta().category(strCategory);
+        builder.meta().notes(strNotes);
+        mReceiver = builder.build();
     }
 }

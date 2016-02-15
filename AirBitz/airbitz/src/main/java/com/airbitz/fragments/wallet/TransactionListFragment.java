@@ -66,20 +66,23 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.adapters.WalletAdapter;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -274,7 +277,7 @@ public class TransactionListFragment extends WalletBaseFragment
                     mTransactionAdapter.selectItem(view, newIdx);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString(Wallet.WALLET_UUID, mWallet.getUUID());
+                    bundle.putString(WalletWrapper.WALLET_UUID, mWallet.getUUID());
                     bundle.putString(Transaction.TXID, trans.getID());
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
@@ -392,7 +395,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
 
         mTransactionTask = new TransactionTask(mSearchQuery);
-        mTransactionTask.execute(mWallet);
+        mTransactionTask.execute();
     }
 
     private void updateTransactionsListView(List<Transaction> transactions) {
@@ -459,10 +462,10 @@ public class TransactionListFragment extends WalletBaseFragment
                 totalSatoshis += t.getAmountSatoshi();
             }
 
-            mBottomType.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-            mTopType.setText(mCoreApi.getDefaultBTCDenomination());
-            mBitCoinBalanceButton.setText(mCoreApi.formatSatoshi(totalSatoshis, true));
-            String temp = mCoreApi.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
+            mBottomType.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
+            mTopType.setText(mAccount.getDefaultBTCDenomination());
+            mBitCoinBalanceButton.setText(mAccount.formatSatoshi(totalSatoshis, true));
+            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
             mFiatBalanceButton.setText(temp);
 
             if (mOnBitcoinMode) {
@@ -527,7 +530,7 @@ public class TransactionListFragment extends WalletBaseFragment
     @Override
     public void onRefresh() {
         if (mWallet != null) {
-            mCoreApi.connectWatcher(mWallet.getUUID());
+            mAccount.connectWatcher(mWallet.getUUID());
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -546,9 +549,9 @@ public class TransactionListFragment extends WalletBaseFragment
         @Override
         protected List<Transaction> doInBackground(Wallet... wallet) {
             if (TextUtils.isEmpty(query)) {
-                return mCoreApi.loadAllTransactions(wallet[0]);
+                return mWallet.loadAllTransactions();
             } else {
-                return mCoreApi.searchTransactionsIn(wallet[0], query);
+                return mWallet.searchTransactionsIn(query);
             }
         }
 

@@ -46,14 +46,14 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.SpendTarget;
+import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
-import co.airbitz.models.Wallet;
 
 public class SendFragment extends ScanFragment {
 
@@ -138,7 +138,6 @@ public class SendFragment extends ScanFragment {
     @Override
     public void onCameraScanResult(String result) {
         Log.d(TAG, result);
-        CoreAPI.debugLevel(1, "checking result = " + result);
         if (result != null) {
             showProcessing();
             processText(result);
@@ -154,7 +153,7 @@ public class SendFragment extends ScanFragment {
 
     @Override
     protected void processText(String text) {
-        String parsedUri = mCoreApi.parseBitidUri(text);
+        String parsedUri = mAccount.parseBitidUri(text);
         if (!TextUtils.isEmpty(parsedUri)) {
             askBitidLogin(parsedUri, text);
         } else {
@@ -199,7 +198,7 @@ public class SendFragment extends ScanFragment {
     public class BitidLoginTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... text) {
-            return mCoreApi.bitidLogin(text[0]);
+            return mAccount.bitidLogin(text[0]);
         }
 
         @Override
@@ -223,10 +222,10 @@ public class SendFragment extends ScanFragment {
     }
 
     public class NewSpendTask extends AsyncTask<String, Void, Boolean> {
-        CoreAPI.SpendTarget target;
+        SpendTarget target;
 
         NewSpendTask() {
-            target = mCoreApi.getNewSpendTarget();
+            target = mWallet.newSpendTarget();
         }
 
         @Override
@@ -252,12 +251,12 @@ public class SendFragment extends ScanFragment {
     }
 
     protected void transferWalletSelected(Wallet w) {
-        CoreAPI.SpendTarget target = mCoreApi.getNewSpendTarget();
+        SpendTarget target = mWallet.newSpendTarget();
         target.newTransfer(w.getUUID());
         launchSendConfirmation(target);
     }
 
-    public void launchSendConfirmation(CoreAPI.SpendTarget target) {
+    public void launchSendConfirmation(SpendTarget target) {
         hideProcessing();
         if (mWallet == null) {
             return;

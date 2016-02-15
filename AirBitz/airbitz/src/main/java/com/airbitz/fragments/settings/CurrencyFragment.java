@@ -44,10 +44,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import co.airbitz.core.Currencies;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 
 import java.util.List;
@@ -62,7 +62,6 @@ public class CurrencyFragment extends BaseFragment {
 
     private NavigationActivity mActivity;
     private OnCurrencySelectedListener mListener;
-    private CoreAPI mApi;
     private CurrencyAdapter mAdapter;
     private List<String> mOrigDescriptions;
     private List<String> mOrigCodes;
@@ -138,11 +137,11 @@ public class CurrencyFragment extends BaseFragment {
             }
         });
 
-        mApi = CoreAPI.getApi();
-        mOrigDescriptions = mApi.getCurrencyCodeAndDescriptionArray();
-        mOrigCodes = mApi.getCurrencyCodeArray();
-        mDescriptions = mApi.getCurrencyCodeAndDescriptionArray();
-        mCodes = mApi.getCurrencyCodeArray();
+        final Currencies currencies = Currencies.instance();
+        mOrigDescriptions = currencies.getCurrencyCodeAndDescriptionArray();
+        mOrigCodes = currencies.getCurrencyCodeArray();
+        mDescriptions = currencies.getCurrencyCodeAndDescriptionArray();
+        mCodes = currencies.getCurrencyCodeArray();
 
         mAdapter = new CurrencyAdapter(getActivity(), mDescriptions);
         mListView = (ListView) view.findViewById(R.id.listview_currency);
@@ -153,7 +152,7 @@ public class CurrencyFragment extends BaseFragment {
                 mActivity.getFragmentManager().executePendingTransactions();
 
                 String code = mCodes.get(i);
-                int num = mApi.getCurrencyNumberFromCode(code);
+                int num = currencies.getCurrencyNumberFromCode(code);
                 if (num > 0) {
                     if (mListener != null) {
                         mListener.onCurrencySelected(num);

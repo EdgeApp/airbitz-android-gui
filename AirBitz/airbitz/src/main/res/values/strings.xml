@@ -288,6 +288,7 @@
     <string name="settings_days">Day(s)</string>
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
+    <string name="settings_seconds">Second(s)</string>
     <string name="settings_nfc_turn_on_title">Activate NFC</string>
     <string name="settings_nfc_turn_on_message">NFC is used to enable tap-to-pay with supported merchants. Would you like to turn it on now?</string>
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>

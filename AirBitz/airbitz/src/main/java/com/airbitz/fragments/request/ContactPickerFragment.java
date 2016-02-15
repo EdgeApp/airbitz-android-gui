@@ -62,9 +62,9 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.ContactSearchAdapter;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
-import co.airbitz.models.Contact;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.models.Contact;
 
+import co.airbitz.core.AirbitzCore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,7 +296,7 @@ public class ContactPickerFragment
                     cursor.close();
                 }
             }        }
-        CoreAPI.debugLevel(1, "total search time: " + (System.currentTimeMillis() - startMillis));
+        AirbitzCore.debugLevel(1, "total search time: " + (System.currentTimeMillis() - startMillis));
         return contacts;
     }
 

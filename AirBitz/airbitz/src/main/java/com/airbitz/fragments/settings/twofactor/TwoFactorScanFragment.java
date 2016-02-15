@@ -48,18 +48,14 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.QRCamera;
 
-/**
- * Two Factor Authentication Scan
- * Created 2/6/15
- */
 public class TwoFactorScanFragment extends BaseFragment implements
         QRCamera.OnScanResult {
     private final String TAG = getClass().getSimpleName();
@@ -71,12 +67,12 @@ public class TwoFactorScanFragment extends BaseFragment implements
     QRCamera mQRCamera;
     RelativeLayout mCameraLayout;
     private TextView mTitleTextView;
-    private CoreAPI mCoreAPI;
 
     boolean mSuccess = false;
     boolean mStoreSecret = false;
     boolean mTestSecret = false;
     String mUsername;
+    String mSecret;
 
     //************** Callback for notification of two factor results
     OnTwoFactorQRScanResult mOnTwoFactorQRScanResult;
@@ -91,9 +87,6 @@ public class TwoFactorScanFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCoreAPI = CoreAPI.getApi();
-
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -189,17 +182,11 @@ public class TwoFactorScanFragment extends BaseFragment implements
     }
 
     boolean storeSecret(String secret) {
-        try {
-            mCoreAPI.OtpKeySet(mUsername, secret);
-            return true;
-        } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "storeSecret error:");
-            return false;
-        }
+        mSecret = secret;
+        return true;
     }
 
-    void testSecret()
-    {
+    void testSecret() {
         if (true) {
             exit();
         } else {

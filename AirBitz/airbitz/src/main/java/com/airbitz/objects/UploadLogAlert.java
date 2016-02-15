@@ -41,23 +41,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import co.airbitz.core.AirbitzCore;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.login.SignUpFragment;
 
 public class UploadLogAlert {
 
     private NavigationActivity mActivity;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
     private UploadLogsTask mUploadLogsTask;
 
     public UploadLogAlert(NavigationActivity activity) {
         this.mActivity = activity;
-        this.mCoreAPI = CoreAPI.getApi();
+        this.mCoreAPI = AirbitzCore.getApi();
     }
 
     public void showUploadLogAlert() {
@@ -119,12 +119,12 @@ public class UploadLogAlert {
 
         @Override
         protected Boolean doInBackground(String... usermsg) {
-            CoreAPI.debugLevel(0, usermsg[0]);
+            AirbitzCore.debugLevel(0, usermsg[0]);
             int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
             String versionName = com.airbitz.BuildConfig.VERSION_NAME;
             String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
 
-            CoreAPI.debugLevel(0, "App Version:" + appVersion);
+            AirbitzCore.debugLevel(0, "App Version:" + appVersion);
             return mCoreAPI.uploadLogs();
         }
 

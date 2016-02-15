@@ -84,26 +84,32 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import co.airbitz.core.AccountSettings;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.ReceiveAddress;
+import co.airbitz.core.Transaction;
+import co.airbitz.core.TxOutput;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AccountSettings;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.TxOutput;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.bitbeacon.BeaconRequest;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.SettingFragment;
-import co.airbitz.models.Contact;
-import co.airbitz.models.Transaction;
-import co.airbitz.models.Wallet;
+import com.airbitz.models.Contact;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.DessertView;
 import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -131,7 +137,8 @@ public class RequestFragment extends WalletBaseFragment implements
     private TextView mOtherDenominationTextView;
     private TextView mOtherAmountTextView;
     private Calculator mCalculator;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private ReceiveAddress mReceiver;
     private View mView;
     private View mBottomButtons;
 
@@ -178,7 +185,7 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
         mActivity = (NavigationActivity) getActivity();
         mBeaconRequest = new BeaconRequest(mActivity);
         mBeaconRequest.setRequestListener(this);
@@ -407,22 +414,22 @@ public class RequestFragment extends WalletBaseFragment implements
     private void updateConversion() {
         if (null != mWallet){
             if (mAmountIsBitcoin) {
-                long satoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
-                String currency = mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
-                mDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-                mOtherDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
+                long satoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
+                String currency = mAccount.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false);
+                mDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+                mOtherDenominationTextView.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
                 mOtherAmountTextView.setText(currency);
             } else {
-                long satoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
-                mDenominationTextView.setText(mCoreApi.currencyCodeLookup(mWallet.getCurrencyNum()));
-                mOtherDenominationTextView.setText(mCoreApi.getDefaultBTCDenomination());
-                mOtherAmountTextView.setText(mCoreAPI.formatSatoshi(satoshi, false));
+                long satoshi = mAccount.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
+                mDenominationTextView.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
+                mOtherDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+                mOtherAmountTextView.setText(mAccount.formatSatoshi(satoshi, false));
             }
             if (TextUtils.isEmpty(mAmountField.getText())) {
                 mOtherAmountTextView.setText("");
             }
             int currencyNum = mWallet.getCurrencyNum();
-            mConverterTextView.setText(mCoreAPI.BTCtoFiatConversion(currencyNum));
+            mConverterTextView.setText(mAccount.BTCtoFiatConversion(currencyNum));
             updateMode();
         }
     }
@@ -435,18 +442,18 @@ public class RequestFragment extends WalletBaseFragment implements
         Wallet wallet = mWallet;
         if (mAmountIsBitcoin) {
             String bitcoin = mAmountField.getText().toString();
-            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
-                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+            if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
+                mAmountSatoshi = mAccount.denominationToSatoshi(bitcoin);
             } else {
-                CoreAPI.debugLevel(1, "Too much bitcoin");
+                AirbitzCore.debugLevel(1, "Too much bitcoin");
             }
         } else {
             String fiat = mAmountField.getText().toString();
             try {
-                if (!mCoreAPI.TooMuchFiat(fiat, wallet.getCurrencyNum())) {
-                    mAmountSatoshi = mCoreApi.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
+                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.getCurrencyNum())) {
+                    mAmountSatoshi = mAccount.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
                 } else {
-                    CoreAPI.debugLevel(1, "Too much fiat");
+                    AirbitzCore.debugLevel(1, "Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -483,7 +490,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mAccount.coreSettings();
         if (settings != null && settings.getBNameOnPayments()) {
             String name = settings.getSzFullName();
             mBeaconRequest.setBroadcastName(name);
@@ -510,7 +517,7 @@ public class RequestFragment extends WalletBaseFragment implements
             mSavedCurrency = null;
         } else {
             if (mAmountIsBitcoin) {
-                mSavedSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+                mSavedSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
                 mSavedCurrency = null;
             } else {
                 mSavedCurrency = mAmountField.getText().toString();
@@ -540,7 +547,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mAutoUpdatingTextFields = true;
         if (mSavedSatoshi != null) {
-            mAmountField.setText(mCoreAPI.formatSatoshi(mSavedSatoshi, false));
+            mAmountField.setText(mAccount.formatSatoshi(mSavedSatoshi, false));
         } else if (mSavedCurrency != null) {
             mAmountField.setText(mSavedCurrency);
         }
@@ -627,7 +634,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mAccount.coreSettings();
         if (settings != null) {
             if (settings.getBNameOnPayments()) {
                 name = settings.getSzFullName();
@@ -647,7 +654,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
         startActivity(Intent.createChooser(intent, "SMS"));
 
-        mCoreAPI.finalizeRequest(contact, "SMS", mId, mWallet);
+        finalizeRequest(contact, "SMS");
     }
 
     private void startEmail() {
@@ -672,7 +679,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = mAccount.coreSettings();
         if (settings != null) {
             if (settings.getBNameOnPayments()) {
                 name = settings.getSzFullName();
@@ -684,7 +691,7 @@ public class RequestFragment extends WalletBaseFragment implements
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
         startActivity(Intent.createChooser(intent, "email"));
 
-        mCoreAPI.finalizeRequest(contact, "Email", mId, mWallet);
+        finalizeRequest(contact, "Email");
     }
 
     private void showNoQRAttached(final Contact contact) {
@@ -705,8 +712,8 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private String fillTemplate(int id, String fullName) {
-        String amountBTC = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 8);
-        String amountBits = mCoreAPI.formatSatoshi(mAmountSatoshi, false, 2);
+        String amountBTC = mAccount.formatSatoshi(mAmountSatoshi, false, 8);
+        String amountBits = mAccount.formatSatoshi(mAmountSatoshi, false, 2);
 
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
@@ -749,22 +756,22 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
-        CoreAPI.debugLevel(1, "isShowingQRCodeFor: " + walletUUID + " " + txId);
-        Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: " + walletUUID + " " + txId);
+        Transaction tx = mWallet.getTransaction(txId);
         if (null == tx)
             return false;
 
         if (tx.getOutputs() == null || mAddress == null) {
             return false;
         }
-        CoreAPI.debugLevel(1, "isShowingQRCodeFor: hasOutputs");
+        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: hasOutputs");
         for (TxOutput output : tx.getOutputs()) {
-            CoreAPI.debugLevel(1, output.getmInput() + " " + mAddress + " " + output.getAddress());
+            AirbitzCore.debugLevel(1, output.getmInput() + " " + mAddress + " " + output.getAddress());
             if (!output.getmInput() && mAddress.equals(output.getAddress())) {
                 return true;
             }
         }
-        CoreAPI.debugLevel(1, "isShowingQRCodeFor: noMatch");
+        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: noMatch");
         return false;
     }
 
@@ -773,9 +780,9 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public long requestDifference(String walletUUID, String txId) {
-        CoreAPI.debugLevel(1, "requestDifference: " + walletUUID + " " + txId);
+        AirbitzCore.debugLevel(1, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
-            Transaction tx = mCoreAPI.getTransaction(walletUUID, txId);
+            Transaction tx = mWallet.getTransaction(txId);
             return mAmountSatoshi - tx.getAmountSatoshi();
         } else {
             return 0;
@@ -783,17 +790,17 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public void showDonation(String uuid, String txId) {
-        Transaction tx = mCoreApi.getTransaction(uuid, txId);
+        Transaction tx = mWallet.getTransaction(txId);
         showDonation(tx.getAmountSatoshi());
     }
 
     public void showDonation(long amount) {
         mDessertView.setOkIcon();
         mDessertView.getLine1().setText(R.string.string_payment_received);
-        mDessertView.getLine2().setText(mCoreAPI.formatSatoshi(amount, true));
+        mDessertView.getLine2().setText(mAccount.formatSatoshi(amount, true));
         mDessertView.getLine3().setVisibility(View.VISIBLE);
         mDessertView.getLine3().setText(
-            mCoreApi.FormatCurrency(amount, mWallet.getCurrencyNum(), false, true));
+            mAccount.FormatCurrency(amount, mWallet.getCurrencyNum(), false, true));
         mDessertView.show();
 
         createNewQRBitmap();
@@ -809,12 +816,12 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mReceivedTextView.setText(
                 String.format(getResources().getString(R.string.bitcoin_received),
-                        mCoreAPI.formatSatoshi(mOriginalAmountSatoshi - mAmountSatoshi, true))
+                        mAccount.formatSatoshi(mOriginalAmountSatoshi - mAmountSatoshi, true))
         );
         mRemainingTextView.setVisibility(View.VISIBLE);
         mRemainingTextView.setText(
                 String.format(getResources().getString(R.string.bitcoin_remaining),
-                        mCoreAPI.formatSatoshi(mAmountSatoshi, true))
+                        mAccount.formatSatoshi(mAmountSatoshi, true))
         );
 
         mDessertView.setWarningIcon();
@@ -830,9 +837,9 @@ public class RequestFragment extends WalletBaseFragment implements
     public void amountChanged() {
         if (mWallet != null) {
             if (mAmountIsBitcoin) {
-                mAmountSatoshi = mCoreAPI.denominationToSatoshi(mAmountField.getText().toString());
+                mAmountSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
             } else {
-                mAmountSatoshi = mCoreApi.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
+                mAmountSatoshi = mAccount.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.getCurrencyNum());
             }
             updateConversion();
             createNewQRBitmap();
@@ -856,7 +863,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         if(mRequestURI != null) {
-            CoreAPI.debugLevel(1, "Creating NFC request: " + mRequestURI);
+            AirbitzCore.debugLevel(1, "Creating NFC request: " + mRequestURI);
             return new NdefMessage(NdefRecord.createUri(mRequestURI));
         }
         else
@@ -874,10 +881,10 @@ public class RequestFragment extends WalletBaseFragment implements
 
         private Wallet wallet;
         private long satoshis;
-        private String requestId;
         private String address;
         private String uri;
         private Bitmap qrBitmap;
+        private ReceiveAddress receiver;
 
         public CreateBitmapTask(Wallet wallet, long satoshis) {
             this.satoshis = satoshis;
@@ -890,16 +897,13 @@ public class RequestFragment extends WalletBaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            CoreAPI.debugLevel(1, "Starting Receive Request at:" + System.currentTimeMillis());
-            requestId = mCoreAPI.createReceiveRequestFor(wallet, "", "", satoshis);
-            address = mCoreAPI.getRequestAddress(wallet.getUUID(), requestId);
+            AirbitzCore.debugLevel(1, "Starting Receive Request at:" + System.currentTimeMillis());
+            receiver = wallet.receiveRequestBuilders().amount(satoshis).build();
+            address = receiver.address();
             try {
-                // data in barcode is like bitcoin:address?amount=0.001
-                CoreAPI.debugLevel(1, "Starting QRCodeBitmap at:" + System.currentTimeMillis());
-                qrBitmap = mCoreAPI.getQRCodeBitmap(wallet.getUUID(), requestId);
+                qrBitmap = mCoreAPI.qrEncode(receiver.qrcode());
                 qrBitmap = Common.AddWhiteBorder(qrBitmap);
-                CoreAPI.debugLevel(1, "Ending QRCodeBitmap at:" + System.currentTimeMillis());
-                uri = mCoreAPI.getRequestURI();
+                uri = receiver.uri();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -909,10 +913,11 @@ public class RequestFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPostExecute(Boolean success) {
-            mId = requestId;
+            mId = address;
             mAddress = address;
             mQRBitmap = qrBitmap;
             mRequestURI = uri;
+            mReceiver = receiver;
             if (isAdded()) {
                 onCancelled();
                 if(success) {
@@ -923,7 +928,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         mQRView.setImageBitmap(mQRBitmap);
                         mQRProgress.setVisibility(View.GONE);
                     }
-                    mCoreAPI.prioritizeAddress(mAddress, mWallet.getUUID());
+                    mReceiver.prioritize(true);
                     alignQrCode();
                 }
             }
@@ -1008,7 +1013,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (animation.getAnimatedFraction() == 1.0f) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
-                        CoreAPI.debugLevel(1, "Last");
+                        AirbitzCore.debugLevel(1, "Last");
                         alignQrCode();
                     }
                 }, 100);
@@ -1029,30 +1034,30 @@ public class RequestFragment extends WalletBaseFragment implements
         if (mAmountIsBitcoin) {
             String fiat = mAmountField.getText().toString();
             try {
-                if (!mCoreAPI.TooMuchFiat(fiat, mWallet.getCurrencyNum())) {
-                    mAmountSatoshi = mCoreApi.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
+                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.getCurrencyNum())) {
+                    mAmountSatoshi = mAccount.parseFiatToSatoshi(fiat, mWallet.getCurrencyNum());
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {
-                        mAmountField.setText(mCoreAPI.formatSatoshi(mAmountSatoshi, false));
+                        mAmountField.setText(mAccount.formatSatoshi(mAmountSatoshi, false));
                     }
                 } else {
-                    CoreAPI.debugLevel(1, "Too much fiat");
+                    AirbitzCore.debugLevel(1, "Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
             }
         } else {
             String bitcoin = mAmountField.getText().toString();
-            if (!mCoreAPI.TooMuchBitcoin(bitcoin)) {
-                mAmountSatoshi = mCoreAPI.denominationToSatoshi(bitcoin);
+            if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
+                mAmountSatoshi = mAccount.denominationToSatoshi(bitcoin);
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
-                    mAmountField.setText(mCoreAPI.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false));
+                    mAmountField.setText(mAccount.FormatCurrency(mAmountSatoshi, mWallet.getCurrencyNum(), false, false));
                 }
             } else {
-                CoreAPI.debugLevel(1, "Too much bitcoin");
+                AirbitzCore.debugLevel(1, "Too much bitcoin");
             }
         }
         updateConversion();
@@ -1132,7 +1137,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public void onRefresh() {
         if (mWallet != null) {
-            mCoreAPI.connectWatcher(mWallet.getUUID());
+            mAccount.connectWatcher(mWallet.getUUID());
         }
         mActivity.showModalProgress(true);
         new Handler().postDelayed(new Runnable() {
@@ -1141,5 +1146,31 @@ public class RequestFragment extends WalletBaseFragment implements
                 mActivity.showModalProgress(false);
             }
         }, 1000);
+    }
+
+    public void finalizeRequest(Contact contact, String type) {
+		if (mReceiver == null) {
+			return;
+		}
+		if (contact.getName() != null) {
+			mReceiver.meta().name(contact.getName());
+		} else if (contact.getEmail()!=null) {
+			mReceiver.meta().name(contact.getEmail());
+		} else if (contact.getPhone()!=null) {
+			mReceiver.meta().name(contact.getPhone());
+		}
+		Calendar now = Calendar.getInstance();
+		String notes = String.format("%s / %s requested via %s on %s.",
+				mAccount.formatSatoshi(mReceiver.amountSatoshi()),
+				mAccount.formatDefaultCurrency(mReceiver.meta().fiat()),
+				type,
+				String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));
+
+		mReceiver.meta().notes(notes);
+		if (null == mReceiver.meta().category()) {
+			mReceiver.meta().category("");
+		}
+		mReceiver.finalizeRequest();
+		mReceiver = null;
     }
 }

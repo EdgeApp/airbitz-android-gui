@@ -46,14 +46,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
-import co.airbitz.models.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;

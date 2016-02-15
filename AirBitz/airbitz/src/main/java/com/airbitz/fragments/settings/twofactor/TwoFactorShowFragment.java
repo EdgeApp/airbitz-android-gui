@@ -55,11 +55,13 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -77,7 +79,8 @@ public class TwoFactorShowFragment extends BaseFragment
     private Switch mEnabledSwitch;
     private TextView mTitleTextView;
     private LinearLayout mRequestView;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
 
     CompoundButton.OnCheckedChangeListener mStateListener = new CompoundButton.OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -88,7 +91,8 @@ public class TwoFactorShowFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
+        mAccount = AirbitzApplication.getAccount();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
@@ -199,7 +203,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void initUI() {
         mPassword.setText("");
-        mPassword.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
+        mPassword.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
 
         updateTwoFactorUI(false);
 
@@ -209,7 +213,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void updateTwoFactorUI(boolean enabled) {
         mRequestView.setVisibility(View.GONE);
-        mImportButton.setVisibility(mCoreAPI.hasOTPError() ? View.VISIBLE : View.GONE);
+        mImportButton.setVisibility(mAccount.hasOTPError() ? View.VISIBLE : View.GONE);
         quietlyFlipSwitch(enabled);
         mEnabledSwitch.setText(getString(enabled ? R.string.fragment_twofactor_show_enabled : R.string.fragment_twofactor_show_disabled));
         mQRViewLayout.setVisibility(enabled ? View.VISIBLE : View.GONE);
@@ -244,7 +248,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected AirbitzException doInBackground(Void... params) {
             try {
-                mCoreAPI.otpAuthGet();
+                mAccount.otpAuthGet();
                 return null;
             } catch (AirbitzException e) {
                 return e;
@@ -254,7 +258,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onPostExecute(final AirbitzException error) {
             onCancelled();
-            updateTwoFactorUI(mCoreAPI.isTwoFactorOn());
+            updateTwoFactorUI(mAccount.isTwoFactorOn());
             if (error == null) {
                 checkSecret(mMsg);
             } else {
@@ -270,16 +274,16 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void checkSecret(boolean bMsg) {
-        if (mCoreAPI.isTwoFactorOn()) {
-            if (mCoreAPI.GetTwoFactorSecret() == null) {
+        if (mAccount.isTwoFactorOn()) {
+            if (mAccount.getTwoFactorSecret() == null) {
                 mQRViewLayout.setVisibility(View.GONE);
             } else {
                 mQRViewLayout.setVisibility(View.VISIBLE);
             }
         }
-        showQrCode(mCoreAPI.isTwoFactorOn());
+        showQrCode(mAccount.isTwoFactorOn());
 
-        if (mCoreAPI.GetTwoFactorSecret() != null) {
+        if (mAccount.getTwoFactorSecret() != null) {
             mActivity.showModalProgress(true);
             checkRequest();
             if (bMsg) {
@@ -294,7 +298,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void showQrCode(boolean show) {
         if (show) {
-            Bitmap bitmap = mCoreAPI.getTwoFactorQRCodeBitmap();
+            Bitmap bitmap = mAccount.getTwoFactorQRCodeBitmap();
             if(bitmap != null) {
                 bitmap = Common.AddWhiteBorder(bitmap);
                 mQRView.setImageBitmap(bitmap);
@@ -374,7 +378,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString());
+            return mAccount.passwordOk(mPassword.getText().toString());
         }
 
         @Override
@@ -418,10 +422,10 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mCoreAPI.enableTwoFactor(this.isChecked);
+                mAccount.otpSetup();
                 return true;
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "SwitchFlippedTask error");
+                AirbitzCore.debugLevel(1, "SwitchFlippedTask error");
                 return false;
             }
         }
@@ -441,13 +445,11 @@ public class TwoFactorShowFragment extends BaseFragment
         }
     }
 
-    private void confirmRequest()
-    {
-        if(mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
+    private void confirmRequest() {
+        if (mAccount.passwordOk(mPassword.getText().toString())) {
             mConfirmRequestTask = new ConfirmRequestTask();
             mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
-        else {
+        } else {
             mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
         }
@@ -463,10 +465,10 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected AirbitzException doInBackground(Void... params) {
             try {
-                mCoreAPI.enableTwoFactor(false);
+                mAccount.otpDisable();
                 return null;
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "ConfirmRequestTask error");
+                AirbitzCore.debugLevel(1, "ConfirmRequestTask error");
                 return e;
             }
         }
@@ -490,7 +492,7 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private void cancelRequest() {
-        if (mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPassword.getText().toString())) {
+        if (mAccount.passwordOk(mPassword.getText().toString())) {
             mCancelRequestTask = new CancelRequestTask();
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
@@ -509,7 +511,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected AirbitzException doInBackground(Void... params) {
             try {
-                mCoreAPI.cancelTwoFactorRequest();
+                mAccount.otpResetCancel();
                 return null;
             } catch (AirbitzException e) {
                 return e;

@@ -44,10 +44,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
@@ -58,10 +59,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Two Factor Authentication Menu
- * Created 2/5/15
- */
 public class TwoFactorMenuFragment extends BaseFragment implements
     TwoFactorScanFragment.OnTwoFactorQRScanResult {
     private final String TAG = getClass().getSimpleName();
@@ -77,7 +74,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     private Button mScanButton;
     private Button mResetButton;
     private TextView mResetDescription, mResetDate;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
 
     OnTwoFactorMenuResult mOnTwoFactorMenuResult;
 
@@ -92,8 +89,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
-
+        mCoreAPI = AirbitzCore.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -203,9 +199,6 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         mActivity.pushFragment(fragment);
     }
 
-    /**
-     * Reset Two Factor Authentication
-     */
     private ResetTask mResetTask;
     public class ResetTask extends AsyncTask<Void, Void, String> {
 
@@ -220,7 +213,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         protected String doInBackground(Void... params) {
             String message = null;
             try {
-                mCoreAPI.otpReset(mUsername);
+                mCoreAPI.otpResetRequest(mUsername);
                 message = getString(R.string.fragment_twofactor_menu_reset_requested);
             } catch (AirbitzException e) {
                 message = e.getMessage();

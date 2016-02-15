@@ -56,7 +56,7 @@ import com.airbitz.adapters.TouchImageViewPagerAdapter;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.widgets.TouchImageView;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +195,7 @@ public class ViewPagerFragment extends BaseFragment
             int progress = mSeekBar.getProgress();
             int nearestValue = Math.round(progress / mScale);
             int val = (progress * (mSeekBar.getWidth() - 2 * mSeekBar.getThumbOffset())) / mSeekBar.getMax();
-            CoreAPI.debugLevel(1, "Seekbar progress = "+progress+", val = "+val);
+            AirbitzCore.debugLevel(1, "Seekbar progress = "+progress+", val = "+val);
             mCounterView.setText(String.valueOf(nearestValue + 1) + "/" + mImageViews.size());
             mCounterView.setX(mSeekBar.getX() + val + (mSeekBar.getThumbOffset()) - (mCounterView.getWidth() / 2));
         }
@@ -208,7 +208,7 @@ public class ViewPagerFragment extends BaseFragment
     private void crossfade(final TouchImageView image) {
         Drawable drawable = image.getDrawable();
         if (drawable == null) {
-            CoreAPI.debugLevel(1, "drawable null");
+            AirbitzCore.debugLevel(1, "drawable null");
             return;
         }
 

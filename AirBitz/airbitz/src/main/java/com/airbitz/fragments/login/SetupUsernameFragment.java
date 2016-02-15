@@ -55,8 +55,8 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.objects.HighlightOnPressButton;
@@ -77,7 +77,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     private EditText mUserNameEditText;
     private Button mNextButton;
     private CheckUsernameTask mCheckUsernameTask;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
     private View mView;
     private Handler mHandler = new Handler();
     private Toolbar mToolbar;
@@ -86,7 +86,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -252,7 +252,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             try {
                 return mCoreAPI.accountAvailable(username);
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "CheckUsernameTask error:");
+                AirbitzCore.debugLevel(1, "CheckUsernameTask error:");
                 return e.getMessage();
             }
         }

@@ -56,18 +56,14 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.PasswordRule;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created on 2/26/15.
- */
 public class SetupPinFragment extends BaseFragment implements NavigationActivity.OnBackPress {
     private final String TAG = getClass().getSimpleName();
 
@@ -77,14 +73,11 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
     private String mUsername;
     private EditText mWithdrawalPinEditText;
     private Button mNextButton;
-    private CoreAPI mCoreAPI;
     private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);

@@ -55,8 +55,8 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 
@@ -111,7 +111,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.getString(R.string.app_name));
         String type = intent.getStringExtra(TYPE);
         if(type == null) {
-            CoreAPI.debugLevel(1, "type is null");
+            AirbitzCore.debugLevel(1, "type is null");
             return;
         }
         //Acquire the lock
@@ -252,7 +252,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(final String response) {
-            CoreAPI.debugLevel(1, "Notification response of " + mMessageId + "," + mBuildNumber + ": " + response);
+            AirbitzCore.debugLevel(1, "Notification response of " + mMessageId + "," + mBuildNumber + ": " + response);
             if (response != null && response.length() != 0) {
                 sendNotifications(mContext, response);
             }
@@ -344,7 +344,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
                 lastTime = formatUTC(date);
             }
-            CoreAPI.debugLevel(1, "LastTime: " + lastTime);
+            AirbitzCore.debugLevel(1, "LastTime: " + lastTime);
 
             DirectoryApi api = DirectoryWrapper.getApi();
             return api.getNewBusinesses(lastTime, latLong, "100000");
@@ -352,7 +352,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(final String response) {
-            CoreAPI.debugLevel(1, "New Business response: "+response);
+            AirbitzCore.debugLevel(1, "New Business response: "+response);
             if(response != null && response.length() != 0) {
                 if(hasAlerts(response)) {
                     issueOSNotification(mContext, mContext.getString(R.string.alert_new_business_message), ALERT_NEW_BUSINESS_CODE);
@@ -375,12 +375,12 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
 
     public class OTPResetCheckTask extends AsyncTask<Void, Void, List<String>> {
         Context mContext;
-        CoreAPI mCoreAPI;
+        AirbitzCore mCoreAPI;
 
         OTPResetCheckTask(Context context) {
             mContext = context;
             mCoreAPI = NavigationActivity.initiateCore(context);
-            CoreAPI.debugLevel(1, "OTPResetCheck started");
+            AirbitzCore.debugLevel(1, "OTPResetCheck started");
         }
 
         @Override
@@ -398,7 +398,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                         pendings.add(name);
                     }
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "OTPResetCheckTask error");
+                    AirbitzCore.debugLevel(1, "OTPResetCheckTask error");
                 }
             }
 
@@ -408,7 +408,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(final List<String> pendings) {
             for(String name : pendings) {
-                CoreAPI.debugLevel(1, "OTP reset requested for: " + name);
+                AirbitzCore.debugLevel(1, "OTP reset requested for: " + name);
                 String message = String.format(mContext.getString(R.string.twofactor_reset_message), name);
                 issueOSNotification(mContext, message, ALERT_OTPRESET_CODE);
             }

@@ -47,10 +47,15 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.airbitz.R;
-import co.airbitz.models.Wallet;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.ReceiveAddress;
+import co.airbitz.core.SpendTarget;
+import co.airbitz.core.UnsentTransaction;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
+import com.airbitz.R;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -106,7 +111,7 @@ public class PluginFramework {
         public String[] checkPluginIds = {"11139", "11140", "11141"};
 
         PluginList() {
-            CoreAPI api = CoreAPI.getApi();
+            AirbitzCore api = AirbitzCore.getApi();
             mPlugins = new LinkedList<Plugin>();
             mPluginsGrouped = new HashMap<String, List<Plugin>>();
             for (String t : getTags()) {
@@ -290,7 +295,7 @@ public class PluginFramework {
         public void hideAlert();
         public void setTitle(String title);
         public void launchFileSelection(final String cbid);
-        public CoreAPI.SpendTarget launchSend(final String cbid, final String uuid, final String address,
+        public SpendTarget launchSend(final String cbid, final String uuid, final String address,
                                       final long amountSatoshi, final double amountFiat,
                                       final String label, final String category, final String notes,
                                       long bizId, boolean signOnly);
@@ -314,7 +319,7 @@ public class PluginFramework {
         }
 
         protected void onPostExecute(String data) {
-            CoreAPI.debugLevel(1, cbid + " " + data);
+            AirbitzCore.debugLevel(1, cbid + " " + data);
             mFramework.loadUrl(String.format(JS_CALLBACK, cbid, data));
         }
     }
@@ -396,36 +401,41 @@ public class PluginFramework {
     }
 
     private static class PluginReceiveRequest implements ToJson {
-        String requestId;
-        String address;
+        ReceiveAddress address;
 
         public PluginReceiveRequest(Wallet wallet, String name, String category, String notes, long amountSatoshi, double amountFiat, long bizId) {
-            CoreAPI api = CoreAPI.getApi();
-            requestId = api.createReceiveRequestFor(wallet, name, notes, category, amountFiat, amountSatoshi, bizId);
-            address = api.getRequestAddress(wallet.getUUID(), requestId);
+            ReceiveAddress.Builder builder = wallet.receiveRequestBuilders().amount(amountSatoshi);
+            builder.meta().name(name);
+            builder.meta().notes(notes);
+            builder.meta().category(category);
+            builder.meta().fiat(amountFiat);
+            builder.meta().bizid(bizId);
+            address = builder.build();
         }
 
         public Object toJson() throws JSONException {
             JSONObject object = new JSONObject();
-            object.put("requestId", requestId);
-            object.put("address", address);
+            object.put("requestId", address.address());
+            object.put("address", address.address());
             return object;
         }
     }
 
     private static class PluginContext {
         Context context;
-        CoreAPI api;
+        AirbitzCore api;
+        Account account;
         UiHandler handler;
         Plugin plugin;
         PluginFramework framework;
 
         // Holds signed pending spends
-        CoreAPI.SpendTarget mTarget = null;
-
+        SpendTarget mTarget = null;
+        UnsentTransaction mUnsent = null;
 
         PluginContext(PluginFramework framework, Plugin plugin, UiHandler handler) {
-            this.api = CoreAPI.getApi();
+            this.account = AirbitzApplication.getAccount();
+            this.api = AirbitzCore.getApi();
             this.framework = framework;
             this.plugin = plugin;
             this.handler = handler;
@@ -433,13 +443,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String bitidAddress(String uri, String message) {
-            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            Account.BitidSignature bitid = account.bitidSignature(uri, message);
             return bitid.address;
         }
 
         @JavascriptInterface
         public String bitidSignature(String uri, String message) {
-            CoreAPI.BitidSignature bitid = api.bitidSignature(uri, message);
+            Account.BitidSignature bitid = account.bitidSignature(uri, message);
             return bitid.signature;
         }
 
@@ -463,7 +473,7 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    List<Wallet> coreWallets = api.getCoreActiveWallets();
+                    List<Wallet> coreWallets = account.getCoreActiveWallets();
                     if (null == coreWallets) {
                         return jsonError().toString();
                     }
@@ -489,11 +499,12 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    Wallet wallet = api.getWalletFromUUID(walletUUID);
+                    Wallet wallet = account.getWalletFromUUID(walletUUID);
                     if (null != wallet) {
-                        return jsonResult(
-                            new PluginReceiveRequest(wallet, name, category, notes,
-                                                     amountSatoshi, amountFiat, bizId)).toString();
+                        PluginReceiveRequest request = new PluginReceiveRequest(
+                            wallet, name, category, notes,
+                            amountSatoshi, amountFiat, bizId);
+                        return jsonResult(request).toString();
                     } else {
                         return jsonError().toString();
                     }
@@ -524,7 +535,7 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    if (mTarget != null && mTarget.broadcastTx(uuid, rawTx)) {
+                    if (mUnsent != null && mUnsent.broadcast()) {
                         return jsonSuccess().toString();
                     } else {
                         return jsonError().toString();
@@ -536,9 +547,11 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String saveTx(String uuid, String rawTx) {
-            if (mTarget != null) {
-                String id =  mTarget.saveTx(uuid, rawTx);
+            if (mUnsent != null) {
+                mUnsent.save();
+                String id = mUnsent.txId();
                 mTarget = null;
+                mUnsent = null;
                 return id;
             } else {
                 return null;
@@ -547,61 +560,63 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String finalizeRequest(String walletUUID, String requestId) {
-            JsonValue value = new JsonValue<Boolean>(api.finalizeRequest(walletUUID, requestId));
+            Wallet wallet = account.getWalletFromUUID(walletUUID);
+            JsonValue value = new JsonValue<Boolean>(wallet.finalizeRequest(requestId));
             return jsonResult(value).toString();
         }
 
         @JavascriptInterface
         public void writeData(String key, String value) {
-            CoreAPI.debugLevel(1, "writeData: " + key + ": " + value);
-            api.pluginDataSet(plugin.pluginId, key, value);
+            AirbitzCore.debugLevel(1, "writeData: " + key + ": " + value);
+            account.data(plugin.pluginId).set(key, value);
         }
 
         @JavascriptInterface
         public void clearData() {
-            CoreAPI.debugLevel(1, "clearData");
-            api.pluginDataClear(plugin.pluginId);
+            AirbitzCore.debugLevel(1, "clearData");
+            account.data(plugin.pluginId).clear();
         }
 
         @JavascriptInterface
         public String readData(String key) {
-            String s =  api.pluginDataGet(plugin.pluginId, key);
-            CoreAPI.debugLevel(1, "readData: " + key + ": " + s);
+            String s = account.data(plugin.pluginId).get(key);
+            AirbitzCore.debugLevel(1, "readData: " + key + ": " + s);
             return s;
         }
 
         @JavascriptInterface
         public String getBtcDenomination() {
-            return jsonResult(new JsonValue<String>(api.getDefaultBTCDenomination())).toString();
+            return jsonResult(
+                    new JsonValue<String>(account.getDefaultBTCDenomination())).toString();
         }
 
         @JavascriptInterface
         public String satoshiToCurrency(long satoshi, int currencyNum) {
-            double currency = api.SatoshiToCurrency(satoshi, currencyNum);
+            double currency = account.SatoshiToCurrency(satoshi, currencyNum);
             return jsonResult(new JsonValue<Double>(currency)).toString();
         }
 
         @JavascriptInterface
         public String currencyToSatoshi(String currency, int currencyNum) {
-            long satoshi = api.CurrencyToSatoshi(Double.parseDouble(currency), currencyNum);
+            long satoshi = account.CurrencyToSatoshi(Double.parseDouble(currency), currencyNum);
             return jsonResult(new JsonValue<Long>(satoshi)).toString();
         }
 
         @JavascriptInterface
         public String formatSatoshi(long satoshi, boolean withSymbol) {
-            String formatted = api.formatSatoshi(satoshi, withSymbol);
+            String formatted = account.formatSatoshi(satoshi, withSymbol);
             return jsonResult(new JsonValue<String>(formatted)).toString();
         }
 
         @JavascriptInterface
         public String formatCurrency(String currency, int currencyNum, boolean withSymbol) {
-            String formatted = api.formatCurrency(Double.parseDouble(currency), currencyNum, withSymbol);
+            String formatted = account.formatCurrency(Double.parseDouble(currency), currencyNum, withSymbol);
             return jsonResult(new JsonValue<String>(formatted)).toString();
         }
 
         @JavascriptInterface
         public String getConfig(String key) {
-            CoreAPI.debugLevel(1, "key/value " + key + ":" + plugin.env.get(key));
+            AirbitzCore.debugLevel(1, "key/value " + key + ":" + plugin.env.get(key));
             return plugin.env.get(key);
         }
 
@@ -622,7 +637,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void debugLevel(int level, String text) {
-            CoreAPI.debugLevel(1, text);
+            AirbitzCore.debugLevel(1, text);
         }
 
         @JavascriptInterface
@@ -657,14 +672,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void launchExternal(String uri) {
-            CoreAPI.debugLevel(1, "launchExternal");
+            AirbitzCore.debugLevel(1, "launchExternal");
             handler.launchExternal(uri);
         }
     }
 
     private UiHandler handler;
     private WebView mWebView;
-    private CoreAPI mCoreAPI;
     private Wallet mWallet;
     private String mLastUrl;
     private ValueCallback<Uri> mUploadCallback;
@@ -676,7 +690,6 @@ public class PluginFramework {
 
     public PluginFramework(UiHandler handler) {
         this.handler = handler;
-        mCoreAPI = CoreAPI.getApi();
     }
 
     public void setup() {
@@ -705,7 +718,8 @@ public class PluginFramework {
     }
 
     public void updateDenomation() {
-        String denomination = mCoreAPI.getDefaultBTCDenomination();
+        Account account = AirbitzApplication.getAccount();
+        String denomination = account.getDefaultBTCDenomination();
         loadUrl(String.format(JS_DENOM_UPDATE, jsonResult(new JsonValue(denomination)).toString()));
     }
 
@@ -718,9 +732,9 @@ public class PluginFramework {
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(txid)).toString()));
     }
 
-    public void signSuccess(String cbid, String walletUUID, String hex) {
-        CoreAPI.debugLevel(1, hex);
-        loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(hex)).toString()));
+    public void signSuccess(String cbid, String walletUUID, UnsentTransaction unsent) {
+        AirbitzCore.debugLevel(1, unsent.base16Tx());
+        loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(unsent.base16Tx())).toString()));
     }
 
     public void sendImage(String cbid, String imageEncoded) {
@@ -769,7 +783,7 @@ public class PluginFramework {
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                CoreAPI.debugLevel(1, message + " -- From line " + lineNumber);
+                AirbitzCore.debugLevel(1, message + " -- From line " + lineNumber);
             }
 
             public void openFileChooser(ValueCallback<Uri> uploadCallback) {
@@ -814,7 +828,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                CoreAPI.debugLevel(1, url);
+                AirbitzCore.debugLevel(1, url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin
@@ -868,7 +882,6 @@ public class PluginFramework {
             mWebView.loadUrl("about:blank");
         }
         mWebView = null;
-        mCoreAPI = null;
         mWallet = null;
     }
 }

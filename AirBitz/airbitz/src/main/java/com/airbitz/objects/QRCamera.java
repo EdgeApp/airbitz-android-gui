@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.airbitz.R;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -82,7 +82,7 @@ public class QRCamera extends PictureCamera {
             }
         }
         if (rawResult != null) {
-            CoreAPI.debugLevel(1, "QR code found " + rawResult.getText());
+            AirbitzCore.debugLevel(1, "QR code found " + rawResult.getText());
             return rawResult.getText();
         } else {
             return null;
@@ -91,9 +91,9 @@ public class QRCamera extends PictureCamera {
 
     public String attemptDecodePicture(Bitmap thumbnail) {
         if (thumbnail == null) {
-            CoreAPI.debugLevel(1, "No picture selected");
+            AirbitzCore.debugLevel(1, "No picture selected");
         } else {
-            CoreAPI.debugLevel(1, "Picture selected");
+            AirbitzCore.debugLevel(1, "Picture selected");
             Result rawResult = null;
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
@@ -125,10 +125,10 @@ public class QRCamera extends PictureCamera {
                 }
             }
             if (rawResult != null) {
-                CoreAPI.debugLevel(1, "QR code found " + rawResult.getText());
+                AirbitzCore.debugLevel(1, "QR code found " + rawResult.getText());
                 return rawResult.getText();
             } else {
-                CoreAPI.debugLevel(1, "Picture No QR code found");
+                AirbitzCore.debugLevel(1, "Picture No QR code found");
             }
         }
         return null;

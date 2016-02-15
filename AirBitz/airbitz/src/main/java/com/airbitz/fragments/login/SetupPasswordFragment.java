@@ -56,14 +56,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.PasswordRule;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     private ImageView mRule1Image, mRule2Image, mRule3Image, mRule4Image;
     private TextView mRule1Text, mRule2Text, mRule3Text, mRule4Text;
     private TextView mTimeTextView;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
     private View mView;
     private Handler mHandler = new Handler();
     private String mUsername;
@@ -98,7 +100,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(true);
@@ -284,7 +286,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private List<String> checkPasswordRules(String password) {
-        List<PasswordRule> rules = mCoreAPI.GetPasswordRules(password);
+        List<PasswordRule> rules = mCoreAPI.passwordRules(password);
         List<String> ruleFails = new ArrayList<>();
 
         if (rules.isEmpty()) {
@@ -320,7 +322,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                     break;
             }
         }
-        mTimeTextView.setText(GetCrackString(mCoreAPI.GetPasswordSecondsToCrack(password)));
+        mTimeTextView.setText(GetCrackString(mCoreAPI.passwordSecondsToCrack(password)));
         return ruleFails;
     }
 
@@ -457,8 +459,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     }
 
     CreateAccountTask mCreateAccountTask;
-    public class CreateAccountTask extends AsyncTask<Void, Void, String> {
-
+    class CreateAccountTask extends AsyncTask<Void, Void, String> {
         private final char[] mPassword;
         private String mPasswordString;
 
@@ -470,11 +471,13 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         @Override
         protected String doInBackground(Void... params) {
             mPasswordString = null;
-            if(mPassword != null) {
+            if (mPassword != null) {
                 mPasswordString = String.valueOf(mPassword);
             }
             try {
-                return mCoreAPI.createAccountAndPin(mUsername, mPasswordString, mPin);
+                Account account = mCoreAPI.createAccount(mUsername, mPasswordString, mPin);
+                AirbitzApplication.Login(account);
+                return null;
             } catch (AirbitzException e) {
                 return e.getMessage();
             }

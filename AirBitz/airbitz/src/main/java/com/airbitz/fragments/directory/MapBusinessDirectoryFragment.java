@@ -85,7 +85,7 @@ import com.airbitz.fragments.maps.MapBuilder;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
 import com.airbitz.utils.Common;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -325,14 +325,14 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if (locationEnabled && null != mCurrentLocation) {
-                    CoreAPI.debugLevel(1, "LocateMe button good");
+                    AirbitzCore.debugLevel(1, "LocateMe button good");
                     MapLatLng currentLatLng =
                             new MapLatLng(mCurrentLocation.getLatitude(),
                                     mCurrentLocation.getLongitude());
                     drawCurrentLocationMarker(mCurrentLocation);
                     mMapShim.animateCamera(currentLatLng);
                 } else {
-                    CoreAPI.debugLevel(1, getString(R.string.no_location_found));
+                    AirbitzCore.debugLevel(1, getString(R.string.no_location_found));
                     Common.noLocationSnack(mActivity, getView());
                 }
             }
@@ -603,7 +603,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
-            CoreAPI.debugLevel(1, "params: " + params[0] + " " + params[1] + " " + params[2]);
+            AirbitzCore.debugLevel(1, "params: " + params[0] + " " + params[1] + " " + params[2]);
             if (!TextUtils.isEmpty(mLockedCategory)) {
                 return mApi.getSearchByBoundsAndBusiness(params[0], params[1], mLockedCategory, params[2], PAGE_SIZE, "", "");
             } else if (mBusinessType.equalsIgnoreCase("category")) {

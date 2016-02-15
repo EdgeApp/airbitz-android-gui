@@ -59,14 +59,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Currencies;
+import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
-import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.HelpFragment;
+import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.request.RequestFragment;
-import co.airbitz.models.Wallet;
 import com.airbitz.objects.FileSaveLocationDialog;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
@@ -201,14 +204,14 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        data = mCoreApi.getPrivateSeed(wallet);
+                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                        data = mWallet.getPrivateSeed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
                     }
                 } else {
-                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                    data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
                     if(data == null || data.isEmpty()) {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(
                                 getString(R.string.export_saving_option_no_transactions_message));
@@ -236,15 +239,15 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        data = mCoreApi.getPrivateSeed(wallet);
+                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                        data = mWallet.getPrivateSeed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
                     }
                 }
                 else {
-                    data = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                    data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
 
                     if(data == null || data.isEmpty()) {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(
@@ -265,8 +268,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String dataOrFile;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        dataOrFile = mCoreApi.getPrivateSeed(wallet);
+                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                        dataOrFile = mWallet.getPrivateSeed();
                     } else {
                         dataOrFile = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
@@ -281,7 +284,6 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mGoogleDriveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//TODO
             }
         });
 
@@ -303,8 +305,9 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             @Override
             public void onClick(View view) {
                 if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()) {
-                    if(mCoreApi.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
-                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed), mCoreApi.getPrivateSeed(mWallet));
+                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed),
+                            mWallet.getPrivateSeed());
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
@@ -721,7 +724,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     }
 
     private void setupUI(int type) {
-        if(!mCoreApi.PasswordExists()) {
+        if (!mAccount.passwordExists()) {
             mPasswordEditText.setVisibility(View.GONE);
         }
         if (type == ExportTypes.PrivateSeed.ordinal()) {
@@ -736,7 +739,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
         // for now just hard code
         if (type == ExportTypes.CSV.ordinal()) {
-            String temp = mCoreApi.GetCSVExportData(wallet.getUUID(), mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+            String temp = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
             if (temp != null) {
                 if(temp.isEmpty()) {
                     ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
@@ -747,15 +750,12 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 }
             }
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
-            filepath = Common.createTempFileFromString("export.txt", mCoreApi.getPrivateSeed(wallet));
+            filepath = Common.createTempFileFromString("export.txt", mWallet.getPrivateSeed());
         } else if (type == ExportTypes.Quicken.ordinal()) {
-//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
             return null;
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
-//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportQuicken" ofType:@"QIF"];
             return null;
         } else if (type == ExportTypes.PDF.ordinal()) {
-//                output = [[NSBundle mainBundle] pathForResource:@"WalletExportPDF" ofType:@"pdf"];
             return null;
         }
         return filepath;
@@ -822,7 +822,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 out.close();
                 ((NavigationActivity) getActivity()).ShowFadingDialog("File saved: " + saveName());
             } catch (Throwable t) {
-                CoreAPI.debugLevel(1, "createFileFromString failed for " + file.getAbsolutePath());
+                AirbitzCore.debugLevel(1, "createFileFromString failed for " + file.getAbsolutePath());
             }
         }
     }

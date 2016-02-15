@@ -65,7 +65,7 @@ import com.airbitz.api.directory.LocationSearchResult;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.CurrentLocationManager;
 import com.airbitz.utils.CacheUtil;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -206,7 +206,7 @@ public class BusinessSearchFragment extends BaseFragment implements
                     mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
                     mBusinessAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, text, mLocationWords, latLong);
                 } catch (Exception e) {
-                    CoreAPI.debugLevel(1, "BusinessSearchFragment onCreateView error" + e.toString());
+                    AirbitzCore.debugLevel(1, "BusinessSearchFragment onCreateView error" + e.toString());
                 }
             }
         });

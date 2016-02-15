@@ -47,19 +47,19 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 
-/**
- * Created on 2/10/14.
- */
 public class SpendingLimitsFragment extends BaseFragment
-    implements CoreAPI.OnPasswordCheckListener {
+    implements Account.OnPasswordCheckListener {
     private final String TAG = getClass().getSimpleName();
 
     private EditText mPasswordEditText;
@@ -71,13 +71,15 @@ public class SpendingLimitsFragment extends BaseFragment
     private Switch mPINSwitch;
     private EditText mPINEditText;
     private TextView mPINDenominationTextView;
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCoreAPI = CoreAPI.getApi();
+        mAccount = AirbitzApplication.getAccount();
+        mCoreAPI = AirbitzCore.getApi();
 
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
@@ -176,36 +178,35 @@ public class SpendingLimitsFragment extends BaseFragment
     public void onResume() {
         super.onResume();
 
-        if(!mCoreAPI.PasswordExists()) {
+        if (!mAccount.passwordExists()) {
             mPasswordEditText.setVisibility(View.GONE);
         }
 
-        mDailyEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetDailySpendLimit(), false));
-        mDailySwitch.setChecked(mCoreAPI.GetDailySpendLimitSetting());
-        mDailyDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
+        mDailyEditText.setText(mAccount.formatSatoshi(CoreWrapper.getDailySpendLimit(mActivity, mAccount), false));
+        mDailySwitch.setChecked(CoreWrapper.getDailySpendLimitSetting(mActivity, mAccount));
+        mDailyDenominationTextView.setText(mAccount.getUserBTCSymbol());
 
-        mPINSwitch.setChecked(mCoreAPI.GetPINSpendLimitSetting());
-        mPINEditText.setText(mCoreAPI.formatSatoshi(mCoreAPI.GetPINSpendLimit(), false));
-        mPINDenominationTextView.setText(mCoreAPI.getUserBTCSymbol());
+        mPINSwitch.setChecked(CoreWrapper.getPinSpendLimitSetting(mAccount));
+        mPINEditText.setText(mAccount.formatSatoshi(CoreWrapper.getPinSpendLimit(mAccount), false));
+        mPINDenominationTextView.setText(mAccount.getUserBTCSymbol());
         adjustTextColors();
     }
 
 
     private void goSave() {
         mActivity.showModalProgress(true);
-        mCoreAPI.SetOnPasswordCheckListener(this, mPasswordEditText.getText().toString());
+        mAccount.SetOnPasswordCheckListener(this, mPasswordEditText.getText().toString());
     }
 
     @Override
     public void onPasswordCheck(boolean passwordOkay) {
         mActivity.showModalProgress(false);
         if(passwordOkay) {
-            long satoshis = mCoreAPI.denominationToSatoshi(mDailyEditText.getText().toString());
-            mCoreAPI.SetDailySpendSatoshis(satoshis);
-            mCoreAPI.SetDailySpendLimitSetting(mDailySwitch.isChecked());
-
-            mCoreAPI.SetPINSpendSatoshis(mCoreAPI.denominationToSatoshi(mPINEditText.getText().toString()));
-            mCoreAPI.SetPINSpendLimitSetting(mPINSwitch.isChecked());
+            long satoshis = mAccount.denominationToSatoshi(mDailyEditText.getText().toString());
+            CoreWrapper.setDailySpendSatoshis(mActivity, mAccount, satoshis);
+            CoreWrapper.setDailySpendLimitSetting(mActivity, mAccount, mDailySwitch.isChecked());
+            CoreWrapper.setPinSpendSatoshis(mActivity, mAccount, mAccount.denominationToSatoshi(mPINEditText.getText().toString()));
+            CoreWrapper.setPinSpendLimitSetting(mActivity, mAccount, mPINSwitch.isChecked());
 
             mActivity.popFragment();
         } else {

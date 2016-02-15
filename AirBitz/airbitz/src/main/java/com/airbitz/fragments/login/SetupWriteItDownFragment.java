@@ -47,9 +47,10 @@ import android.widget.TextView;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.AccountSettings;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AccountSettings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -76,14 +77,11 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     private TextView mUsernameTextView;
     private TextView mPasswordTextView;
     private TextView mPinTextView;
-    private CoreAPI mCoreAPI;
     private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCoreAPI = CoreAPI.getApi();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(false);
@@ -160,24 +158,18 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
     }
 
     private void goNext() {
-        AirbitzApplication.Login(mUsername, mPassword);
-        try {
-            mCoreAPI.SetPin(mPin);
-        } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 1 error:");
-        }
+        Account account = AirbitzApplication.getAccount();
+        account.setupAccountSettings();
+        account.startAllAsyncUpdates();
 
-        mCoreAPI.setupAccountSettings();
-        mCoreAPI.startAllAsyncUpdates();
-
-        AccountSettings settings = mCoreAPI.coreSettings();
+        AccountSettings settings = account.coreSettings();
         if (null != settings)
             settings.setRecoveryReminderCount(0);
 
         try {
             settings.save();
         } catch (AirbitzException e) {
-            CoreAPI.debugLevel(1, "SetupWriteItDownFragment.goNext 2 error:");
+            AirbitzCore.debugLevel(1, "SetupWriteItDownFragment.goNext 2 error:");
         }
         mActivity.UserJustLoggedIn(true, false);
     }

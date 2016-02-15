@@ -54,7 +54,7 @@ import android.util.Log;
 import com.airbitz.R;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
             return;
         }
 
-        CoreAPI api = CoreAPI.getApi(context);
+        AirbitzCore api = AirbitzCore.getApi(context);
         List<String> accounts = api.listAccounts();
 		if (null == accounts) {
 			return;
@@ -100,7 +100,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
 
         for (String account : accounts) {
             Log.d(TAG, "Checking account " + account);
-            if (!api.hasPassword(account)) {
+            if (!api.accountHasPassword(account)) {
 				buildNotification(context, account);
 			}
         }

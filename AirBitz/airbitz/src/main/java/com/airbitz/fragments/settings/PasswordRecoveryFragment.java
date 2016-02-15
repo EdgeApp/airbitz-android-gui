@@ -60,13 +60,16 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.QuestionChoice;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.PasswordRecoveryAdapter;
-import co.airbitz.api.AirbitzException;
-import co.airbitz.api.CoreAPI;
-import co.airbitz.api.QuestionChoice;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
@@ -117,15 +120,16 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private List<String> mMustQuestions;
     private boolean mSaved = false;
 
-    private CoreAPI mCoreAPI;
+    private AirbitzCore mCoreAPI;
+    private Account mAccount;
     private NavigationActivity mActivity;
     private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCoreAPI = CoreAPI.getApi();
+        mCoreAPI = AirbitzCore.getApi();
+        mAccount = AirbitzApplication.getAccount();
         mActivity = (NavigationActivity) getActivity();
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
@@ -144,7 +148,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
             if (mMode == CHANGE_QUESTIONS) {
-                mPasswordEditText.setVisibility(mCoreAPI.PasswordExists() ? View.VISIBLE : View.GONE);
+                mPasswordEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
             } else if (mMode == FORGOT_PASSWORD) {
                 mPasswordEditText.setVisibility(View.GONE);
@@ -161,7 +165,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AttemptSignupOrChange();
+                attemptSignupOrChange(null);
             }
         });
 
@@ -216,14 +220,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mActivity.hideSoftKeyboard(mQuestionViews.get(0));
             mActivity.showModalProgress(true);
             if (mTwoFactorSuccess) {
-                try {
-                    mCoreAPI.OtpKeySet(getArguments().getString(USERNAME), mTwoFactorSecret);
-                    AttemptSignupOrChange();
-                } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment onResume error");
-                }
-            }
-            else {
+                attemptSignupOrChange(mTwoFactorSecret);
+            } else {
                 mActivity.ShowOkMessageDialog(getString(R.string.fragment_two_factor_scan_unable_import_title),
                         getString(R.string.twofactor_unable_import_token));
             }
@@ -301,14 +299,14 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         return true;
     }
 
-    private void AttemptSignupOrChange() {
+    private void attemptSignupOrChange(String token) {
         //verify that all six questions have been selected
         boolean allQuestionsSelected = true;
         boolean allAnswersValid = true;
         mQuestions = "";
         mAnswers = "";
 
-        if (mMode == CHANGE_QUESTIONS && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), mPasswordEditText.getText().toString())) {
+        if (mMode == CHANGE_QUESTIONS && !mAccount.passwordOk(mPasswordEditText.getText().toString())) {
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
@@ -354,17 +352,13 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     private void attemptCommitQuestions() {
-        String password = null;
-        if(mMode == CHANGE_QUESTIONS) {
-            password = mPasswordEditText.getText().toString();
-        }
-        else {
-            password = AirbitzApplication.getPassword();
-        }
-        if(!mCoreAPI.PasswordExists() && !mCoreAPI.PasswordOK(AirbitzApplication.getUsername(), password)) {
-            mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_recovery_mismatch_title),
-                    getResources().getString(R.string.fragment_recovery_mismatch_message));
-            return;
+        if (mMode == CHANGE_QUESTIONS) {
+            String password = mPasswordEditText.getText().toString();
+            if (!mAccount.passwordExists() && !mAccount.passwordOk(password)) {
+                mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_recovery_mismatch_title),
+                        getResources().getString(R.string.fragment_recovery_mismatch_message));
+                return;
+            }
         }
         mSaveQuestionsTask = new SaveQuestionsTask(mQuestions, mAnswers);
         mSaveQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -505,19 +499,21 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             username = params[1];
             boolean result = false;
             try {
-                result = mCoreAPI.recoveryAnswers(answers, username);
+                Account account = mCoreAPI.recoveryLogin(username, answers, mTwoFactorSecret);
+                AirbitzApplication.Login(account);
+                result = true;
             } catch (AirbitzException e) {
                 mFailureException = e;
                 return false;
             }
 
             // If we have otp enabled, persist the token
-            String secret = mCoreAPI.GetTwoFactorSecret();
+            String secret = mAccount.getTwoFactorSecret();
             if (secret != null) {
                 try {
-                    mCoreAPI.OtpKeySet(username, secret);
+                    mCoreAPI.otpKeySet(username, secret);
                 } catch (AirbitzException e) {
-                    CoreAPI.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error");
+                    AirbitzCore.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error");
                 }
             }
             return result;
@@ -536,7 +532,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                mCoreAPI.otpSetError(mFailureException);
+                mAccount.otpSetError(mFailureException);
                 if (mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
@@ -584,7 +580,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            mChoices = mCoreAPI.GetQuestionChoices();
+            mChoices = mCoreAPI.recoveryQuestionChoices();
             if (mChoices.length > 0) {
 
                 for (QuestionChoice choice : mChoices) {
@@ -605,7 +601,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
-                CoreAPI.debugLevel(1, "No Questions");
+                AirbitzCore.debugLevel(1, "No Questions");
                 return false;
             }
         }
@@ -652,10 +648,10 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mCoreAPI.SaveRecoveryAnswers(mQuestions, mAnswers, mPasswordEditText.getText().toString());
+                mAccount.saveRecoveryAnswers(mQuestions, mAnswers);
                 return true;
             } catch (AirbitzException e) {
-                CoreAPI.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error");
+                AirbitzCore.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error");
                 return false;
             }
         }
@@ -669,7 +665,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             } else {
                 mSaved = true;
                 mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                mCoreAPI.clearRecoveryReminder();
+                CoreWrapper.clearRecoveryReminder(mAccount);
             }
         }
 
@@ -717,11 +713,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    CoreAPI.debugLevel(1, "spinner selection");
+                    AirbitzCore.debugLevel(1, "spinner selection");
                     if (ignoreSelected || mMode == FORGOT_PASSWORD) return;
 
                     chosenQuestion = currentQuestionList.get(i);
-                    CoreAPI.debugLevel(1, "spinner selection not ignored=" + chosenQuestion);
+                    AirbitzCore.debugLevel(1, "spinner selection not ignored=" + chosenQuestion);
                     if (mType == QuestionType.STRING) {
                         if (mStringCategory.containsKey(chosenQuestion))
                             mCharLimit = mStringCategory.get(chosenQuestion);

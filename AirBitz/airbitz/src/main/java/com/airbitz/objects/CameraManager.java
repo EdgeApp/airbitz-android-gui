@@ -12,7 +12,7 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 import java.util.List;
 
-import co.airbitz.api.CoreAPI;
+import co.airbitz.core.AirbitzCore;
 
 public class CameraManager {
     final String TAG = getClass().getSimpleName();
@@ -198,51 +198,51 @@ public class CameraManager {
         @Override
         public void handleMessage(final Message msg) {
             try {
-                CoreAPI.debugLevel(1, "handleMessage");
+                AirbitzCore.debugLevel(1, "handleMessage");
                 if (mCamera == null) {
                     mSig.open();
                     return;
                 }
                 switch (msg.what) {
                     case RELEASE:
-                        CoreAPI.debugLevel(1, "RELEASE");
+                        AirbitzCore.debugLevel(1, "RELEASE");
                         mCamera.setPreviewCallback(null);
                         mCamera.release();
                         mCamera = null;
                         break;
 
                     case UNLOCK:
-                        CoreAPI.debugLevel(1, "UNLOCK");
+                        AirbitzCore.debugLevel(1, "UNLOCK");
                         mCamera.unlock();
                         break;
 
                     case LOCK:
-                        CoreAPI.debugLevel(1, "LOCK");
+                        AirbitzCore.debugLevel(1, "LOCK");
                         mCamera.lock();
                         break;
 
                     case START_PREVIEW:
-                        CoreAPI.debugLevel(1, "START_PREVIEW");
+                        AirbitzCore.debugLevel(1, "START_PREVIEW");
                         mCamera.startPreview();
                         return;
 
                     case STOP_PREVIEW:
-                        CoreAPI.debugLevel(1, "STOP_PREVIEW");
+                        AirbitzCore.debugLevel(1, "STOP_PREVIEW");
                         mCamera.stopPreview();
                         break;
 
                     case AUTO_FOCUS:
-                        CoreAPI.debugLevel(1, "AUTO_FOCUS");
+                        AirbitzCore.debugLevel(1, "AUTO_FOCUS");
                         mCamera.autoFocus(null);
                         break;
 
                     case CANCEL_AUTO_FOCUS:
-                        CoreAPI.debugLevel(1, "CANCEL_AUTO_FOCUS");
+                        AirbitzCore.debugLevel(1, "CANCEL_AUTO_FOCUS");
                         mCamera.cancelAutoFocus();
                         break;
 
                     case FLASH_ON: {
-                        CoreAPI.debugLevel(1, "FLASH_ON");
+                        AirbitzCore.debugLevel(1, "FLASH_ON");
                         Camera.Parameters parameters = mCamera.getParameters();
                         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                         mCamera.setParameters(parameters);
@@ -251,7 +251,7 @@ public class CameraManager {
                     }
 
                     case FLASH_OFF: {
-                        CoreAPI.debugLevel(1, "FLASH_OFF");
+                        AirbitzCore.debugLevel(1, "FLASH_OFF");
                         Camera.Parameters parameters = mCamera.getParameters();
                         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                         mCamera.setParameters(parameters);
@@ -260,23 +260,23 @@ public class CameraManager {
                     }
 
                     case PREVIEW_ON:
-                        CoreAPI.debugLevel(1, "PREVIEW_ON");
+                        AirbitzCore.debugLevel(1, "PREVIEW_ON");
                         mPreviewing = true;
                         break;
 
                     case PREVIEW_OFF:
-                        CoreAPI.debugLevel(1, "PREVIEW_OFF");
+                        AirbitzCore.debugLevel(1, "PREVIEW_OFF");
                         mPreviewing = false;
                         break;
 
                     case GET_PARAMETERS:
-                        CoreAPI.debugLevel(1, "GET_PARAMETERS");
+                        AirbitzCore.debugLevel(1, "GET_PARAMETERS");
                         mParameters = mCamera.getParameters();
                         mSig.open();
                         break;
 
                     case SET_PARAMETERS:
-                        CoreAPI.debugLevel(1, "SET_PARAMETERS");
+                        AirbitzCore.debugLevel(1, "SET_PARAMETERS");
                         mCamera.setParameters((Camera.Parameters) msg.obj);
                         mSig.open();
                         break;
@@ -290,7 +290,7 @@ public class CameraManager {
                         mSig.open();
 
                     case TAKE_PICTURE:
-                        CoreAPI.debugLevel(1, "TAKE_PICTURE");
+                        AirbitzCore.debugLevel(1, "TAKE_PICTURE");
                         mCamera.takePicture(mShutterCallback, null, null, mJpegCallback);
                         break;
 
