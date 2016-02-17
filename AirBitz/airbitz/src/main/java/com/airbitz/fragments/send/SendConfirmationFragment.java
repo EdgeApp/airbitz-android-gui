@@ -72,14 +72,14 @@ import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.CurrencyFragment;
-import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
-import com.airbitz.utils.Common;
+import com.airbitz.objects.PasswordCheckRunnable;
 
 import java.lang.reflect.Method;
 
@@ -87,7 +87,7 @@ import java.lang.reflect.Method;
  * Created on 2/21/14.
  */
 public class SendConfirmationFragment extends WalletBaseFragment implements
-        Account.OnPasswordCheckListener,
+        PasswordCheckRunnable.OnPasswordCheckListener,
         Calculator.OnCalculatorKey,
         CurrencyFragment.OnCurrencySelectedListener {
     private AirbitzCore mCoreAPI;
@@ -746,7 +746,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             resetSlider();
         } else if (mPasswordRequired) {
              mActivity.showModalProgress(true);
-             mAccount.SetOnPasswordCheckListener(this, mAuthorizationEdittext.getText().toString());
+             mHandler.post(new PasswordCheckRunnable(mAccount, mAuthorizationEdittext.getText().toString(), this));
         } else {
              continueChecks();
          }
@@ -773,7 +773,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             // show the sending screen
             SuccessFragment mSuccessFragment = new SuccessFragment();
             Bundle bundle = new Bundle();
-            bundle.putString(WalletsFragment.FROM_SOURCE, SuccessFragment.TYPE_SEND);
+            bundle.putString(Constants.WALLET_FROM, SuccessFragment.TYPE_SEND);
             mSuccessFragment.setArguments(bundle);
             if (null != exitHandler) {
                 mActivity.pushFragment(mSuccessFragment);
@@ -859,7 +859,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
             mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
             if (mIsUUID) {
-                mToWallet = mAccount.getWalletFromUUID(mUUIDorURI);
+                mToWallet = mAccount.getWallet(mUUIDorURI);
             }
         }
 
@@ -869,7 +869,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             _destUUID = mSpendTarget.getSpend().getSzDestUUID();
             if (_destUUID != null) {
                 mIsUUID = true;
-                mToWallet = mAccount.getWalletFromUUID(_destUUID);
+                mToWallet = mAccount.getWallet(_destUUID);
             }
             mAmountToSendSatoshi = mSpendTarget.getSpendAmount();
             mLocked = !mSpendTarget.getSpend().getAmountMutable();

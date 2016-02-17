@@ -61,10 +61,12 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletChoiceAdapter;
+import com.airbitz.api.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +227,7 @@ public class WalletBaseFragment extends BaseFragment
     }
 
     protected List<Wallet> fetchCoreWallets() {
-        return mAccount.getCoreActiveWallets();
+        return mAccount.getActiveWallets();
     }
 
     protected void fetchWallets() {
@@ -249,7 +251,7 @@ public class WalletBaseFragment extends BaseFragment
             }
         }
         if (uuid != null) {
-            mWallet = mAccount.getWalletFromUUID(uuid);
+            mWallet = mAccount.getWallet(uuid);
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens
@@ -330,8 +332,8 @@ public class WalletBaseFragment extends BaseFragment
         }
 
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Account.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(Account.WALLETS_RELOADED_ACTION));
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(Constants.WALLETS_RELOADED_ACTION));
 
         mAccount.reloadWallets();
         if (mWallets != null && mWallets.size() > 0) {

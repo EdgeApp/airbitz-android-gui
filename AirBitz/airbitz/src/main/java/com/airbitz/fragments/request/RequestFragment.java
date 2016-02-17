@@ -490,7 +490,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        AccountSettings settings = mAccount.coreSettings();
+        AccountSettings settings = mAccount.settings();
         if (settings != null && settings.getBNameOnPayments()) {
             String name = settings.getSzFullName();
             mBeaconRequest.setBroadcastName(name);
@@ -634,7 +634,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mAccount.coreSettings();
+        AccountSettings settings = mAccount.settings();
         if (settings != null) {
             if (settings.getBNameOnPayments()) {
                 name = settings.getSzFullName();
@@ -679,7 +679,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mAccount.coreSettings();
+        AccountSettings settings = mAccount.settings();
         if (settings != null) {
             if (settings.getBNameOnPayments()) {
                 name = settings.getSzFullName();

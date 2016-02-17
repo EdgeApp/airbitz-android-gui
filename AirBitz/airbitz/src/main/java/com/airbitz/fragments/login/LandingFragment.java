@@ -799,7 +799,6 @@ public class LandingFragment extends BaseFragment implements
             try {
                 mAccount = mCoreAPI.passwordLogin(mUsername, mPassword, secret);
                 AirbitzApplication.Login(mAccount);
-                mAccount.setupAccountSettings();
                 return true;
             } catch (AirbitzException e) {
                 Log.e(TAG, "", e);

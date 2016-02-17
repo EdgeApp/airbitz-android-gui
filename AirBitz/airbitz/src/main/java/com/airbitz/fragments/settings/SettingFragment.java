@@ -334,7 +334,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         });
 
-        AccountSettings settings = mAccount.coreSettings();
+        AccountSettings settings = mAccount.settings();
         if (settings != null) {
             mCurrencyNum = settings.getCurrencyNum();
         } else {
@@ -441,7 +441,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
     private void saveDenomination() {
         if (mCoreSettings == null) {
-            mCoreSettings = mAccount.newCoreSettings();
+            mCoreSettings = mAccount.settings();
         }
         //Bitcoin denomination
         BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
@@ -457,7 +457,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     private void saveCurrentSettings() {
-        mCoreSettings = mAccount.newCoreSettings();
+        mCoreSettings = mAccount.settings();
         if (mCoreSettings == null) {
             return;
         }
@@ -639,7 +639,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         mPinReloginSwitch.setEnabled(mAccount.passwordExists());
 
-        mCoreSettings = mAccount.newCoreSettings();
+        mCoreSettings = mAccount.settings();
         loadSettings(mCoreSettings);
     }
 

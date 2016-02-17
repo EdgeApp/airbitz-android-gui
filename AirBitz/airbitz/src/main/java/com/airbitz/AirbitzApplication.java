@@ -40,8 +40,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.airbitz.objects.AirbitzRequestHandler;
 import co.airbitz.core.Account;
+import com.airbitz.api.CoreWrapper;
+import com.airbitz.objects.AirbitzRequestHandler;
 
 import com.squareup.picasso.Picasso;
 
@@ -98,6 +99,7 @@ public class AirbitzApplication extends Application {
 
     public static void Login(Account account) {
         sAccount = account;
+        CoreWrapper.setupAccount(mContext, sAccount);
         if (sAccount.getUsername() != null) {
             mLoginTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();

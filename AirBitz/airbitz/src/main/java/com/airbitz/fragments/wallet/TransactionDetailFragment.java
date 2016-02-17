@@ -96,9 +96,9 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
 import com.airbitz.adapters.TransactionDetailCategoryAdapter;
 import com.airbitz.adapters.TransactionDetailSearchAdapter;
+import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
-import com.airbitz.api.WalletWrapper;
 import com.airbitz.api.directory.Business;
 import com.airbitz.api.directory.BusinessDetail;
 import com.airbitz.api.directory.BusinessSearchResult;
@@ -674,22 +674,22 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         bundle = getArguments();
         if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
+            if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_SEND)) {
                 AirbitzCore.debugLevel(1, "SEND");
                 mFromSend = true;
                 setCurrentType(getString(R.string.fragment_category_expense));
-            } else if (bundle.getString(WalletsFragment.FROM_SOURCE) != null && bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)) {
+            } else if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 AirbitzCore.debugLevel(1, "REQUEST");
                 setCurrentType(getString(R.string.fragment_category_income));
             }
 
-            mWalletUUID = bundle.getString(WalletWrapper.WALLET_UUID);
-            mTxId = bundle.getString(Transaction.TXID);
+            mWalletUUID = bundle.getString(Constants.WALLET_UUID);
+            mTxId = bundle.getString(Constants.WALLET_TXID);
             if (mWalletUUID.isEmpty()) {
                 AirbitzCore.debugLevel(1, "no detail info");
             } else if (mWallet == null || mTransaction == null) {
-                mWallet = mAccount.getWalletFromUUID(mWalletUUID);
+                mWallet = mAccount.getWallet(mWalletUUID);
                 mTransaction = mWallet.getTransaction(mTxId);
 
                 if (mTransaction != null) {
@@ -730,10 +730,10 @@ public class TransactionDetailFragment extends WalletBaseFragment
     @Override
     protected void setDefaultWallet() {
         Bundle bundle = getArguments();
-        String uuid = bundle.getString(WalletWrapper.WALLET_UUID);
+        String uuid = bundle.getString(Constants.WALLET_UUID);
         setDefaultWallet(uuid);
         if (mWallet == null && uuid != null) {
-            mWallet = mAccount.getWalletFromUUID(uuid);
+            mWallet = mAccount.getWallet(uuid);
         }
         mLoading = false;
     }

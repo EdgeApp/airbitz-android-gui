@@ -33,6 +33,7 @@ package com.airbitz.fragments.settings;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -57,9 +58,10 @@ import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.PasswordCheckRunnable;
 
 public class SpendingLimitsFragment extends BaseFragment
-    implements Account.OnPasswordCheckListener {
+    implements PasswordCheckRunnable.OnPasswordCheckListener {
     private final String TAG = getClass().getSimpleName();
 
     private EditText mPasswordEditText;
@@ -73,6 +75,8 @@ public class SpendingLimitsFragment extends BaseFragment
     private TextView mPINDenominationTextView;
     private AirbitzCore mCoreAPI;
     private Account mAccount;
+
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +199,8 @@ public class SpendingLimitsFragment extends BaseFragment
 
     private void goSave() {
         mActivity.showModalProgress(true);
-        mAccount.SetOnPasswordCheckListener(this, mPasswordEditText.getText().toString());
+        mHandler.post(
+            new PasswordCheckRunnable(mAccount, mPasswordEditText.getText().toString(), this));
     }
 
     @Override

@@ -580,7 +580,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                     mAccount.recoverySetup(answers);
                 } else {
                     mAccount.SetPin(mPin);
-                    AccountSettings settings = mAccount.coreSettings();
+                    AccountSettings settings = mAccount.settings();
                     if (settings != null) {
                         if (!settings.getBDisablePINLogin()) {
                             mAccount.pinSetup();

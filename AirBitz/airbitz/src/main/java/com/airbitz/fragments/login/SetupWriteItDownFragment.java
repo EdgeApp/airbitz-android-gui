@@ -159,10 +159,9 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
 
     private void goNext() {
         Account account = AirbitzApplication.getAccount();
-        account.setupAccountSettings();
         account.startAllAsyncUpdates();
 
-        AccountSettings settings = account.coreSettings();
+        AccountSettings settings = account.settings();
         if (null != settings)
             settings.setRecoveryReminderCount(0);
 

@@ -72,10 +72,12 @@ import android.widget.RelativeLayout;
 import co.airbitz.core.AccountSettings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Wallet;
+
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.adapters.WalletOtherAdapter;
+import com.airbitz.api.Constants;
 import com.airbitz.bitbeacon.BeaconSend;
 import com.airbitz.bitbeacon.BleDevice;
 import com.airbitz.bitbeacon.BleUtil;
@@ -314,7 +316,7 @@ public abstract class ScanFragment
     public void onResume() {
         super.onResume();
         if (mBeaconSend != null) {
-            AccountSettings settings = mAccount.coreSettings();
+            AccountSettings settings = mAccount.settings();
             if (settings != null && settings.getBNameOnPayments()) {
                 String name = settings.getSzFullName();
                 mBeaconSend.setBroadcastName(name);
@@ -580,7 +582,7 @@ public abstract class ScanFragment
         super.onWalletsLoaded();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            if (bundle.getString(WalletsFragment.FROM_SOURCE, "").equals(NavigationActivity.URI_SOURCE)) {
+            if (bundle.getString(Constants.WALLET_FROM, "").equals(NavigationActivity.URI_SOURCE)) {
                 String uriData = bundle.getString(NavigationActivity.URI_DATA);
                 bundle.putString(NavigationActivity.URI_DATA, ""); //to clear the URI_DATA after reading once
                 if (!uriData.isEmpty()) {

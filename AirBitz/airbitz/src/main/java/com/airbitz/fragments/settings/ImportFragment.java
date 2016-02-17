@@ -52,6 +52,7 @@ import co.airbitz.core.Wallet;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.Constants;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.HelpFragment;
@@ -132,7 +133,7 @@ public class ImportFragment extends ScanFragment {
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(getActivity())
-            .registerReceiver(mSweepReceiver, new IntentFilter(Account.WALLET_SWEEP_ACTION));
+            .registerReceiver(mSweepReceiver, new IntentFilter(Constants.WALLET_SWEEP_ACTION));
 
         Bundle args = getArguments();
         if (args != null && args.getString(URI) != null
@@ -265,8 +266,8 @@ public class ImportFragment extends ScanFragment {
     BroadcastReceiver mSweepReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String txID = intent.getStringExtra(Account.WALLET_TXID);
-            long amount = intent.getLongExtra(Account.AMOUNT_SWEPT, 0);
+            String txID = intent.getStringExtra(Constants.WALLET_TXID);
+            long amount = intent.getLongExtra(Constants.AMOUNT_SWEPT, 0);
             AirbitzCore.debugLevel(1, "OnWalletSweep called with ID:" + txID + " and satoshis:" + amount);
 
             showBusyLayout(null, false);

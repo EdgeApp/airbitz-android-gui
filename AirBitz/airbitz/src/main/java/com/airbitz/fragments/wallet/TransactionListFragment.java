@@ -76,7 +76,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.adapters.WalletAdapter;
-import com.airbitz.api.WalletWrapper;
+import com.airbitz.api.Constants;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
@@ -277,8 +277,8 @@ public class TransactionListFragment extends WalletBaseFragment
                     mTransactionAdapter.selectItem(view, newIdx);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString(WalletWrapper.WALLET_UUID, mWallet.getUUID());
-                    bundle.putString(Transaction.TXID, trans.getID());
+                    bundle.putString(Constants.WALLET_UUID, mWallet.getUUID());
+                    bundle.putString(Constants.WALLET_TXID, trans.getID());
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
 
@@ -294,9 +294,9 @@ public class TransactionListFragment extends WalletBaseFragment
     @Override
     public void onResume() {
         Bundle bundle = this.getArguments();
-        if (bundle != null && bundle.getBoolean(WalletsFragment.CREATE)) {
+        if (bundle != null && bundle.getBoolean(Constants.WALLET_CREATE)) {
             mPositionNavBar = false;
-            bundle.putBoolean(WalletsFragment.CREATE, false);
+            bundle.putBoolean(Constants.WALLET_CREATE, false);
             buildFragments(bundle);
             super.onResume();
             mPositionNavBar = true;
@@ -375,8 +375,8 @@ public class TransactionListFragment extends WalletBaseFragment
     }
 
     private void buildFragments(Bundle bundle) {
-        if (bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_REQUEST)
-                || bundle.getString(WalletsFragment.FROM_SOURCE).equals(SuccessFragment.TYPE_SEND)) {
+        if (bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_REQUEST)
+                || bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_SEND)) {
             Fragment details = new TransactionDetailFragment();
             details.setArguments(bundle);
             mActivity.pushFragment(details, NavigationActivity.Tabs.WALLET.ordinal());

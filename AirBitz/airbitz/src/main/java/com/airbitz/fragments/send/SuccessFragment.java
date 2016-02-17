@@ -45,8 +45,10 @@ import android.widget.TextView;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.Constants;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
+
 import co.airbitz.core.AirbitzCore;
 
 /**
@@ -135,7 +137,7 @@ public class SuccessFragment extends BaseFragment {
         mTitleTextView = (TextView) mView.findViewById(R.id.title);
         mLogoImageView = (ImageView) mView.findViewById(R.id.imageview_logo);
 
-        String fromSource = mBundle.getString(WalletsFragment.FROM_SOURCE);
+        String fromSource = mBundle.getString(Constants.WALLET_FROM);
         if (fromSource.contains(TYPE_REQUEST)) {
             mTitleTextView.setText(getString(R.string.request_title));
             mSendingTextView.setText(getString(R.string.received_success_receiving));

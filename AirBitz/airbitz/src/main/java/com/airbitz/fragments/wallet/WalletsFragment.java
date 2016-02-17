@@ -89,9 +89,6 @@ public class WalletsFragment extends WalletBaseFragment implements
     WalletAdapter.OnHeaderButtonPress,
     WalletAdapter.WalletMenuListener {
 
-    public static final String FROM_SOURCE = "com.airbitz.WalletsFragment.FROM_SOURCE";
-    public static final String CREATE = "com.airbitz.WalletsFragment.CREATE";
-
     public final String TAG = getClass().getSimpleName();
 
     private View mWalletsHeader;
@@ -129,7 +126,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     protected List<Wallet> fetchCoreWallets() {
-        return mAccount.getCoreWallets(false);
+        return mAccount.getWallets();
     }
 
     @Override
@@ -292,7 +289,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     public void onListReordering(boolean started) {
         if (!started) {
             mAccount.walletReorder(CoreWrapper.unwrap(mLatestWalletList));
-            mWallet = mAccount.getWalletFromUUID(AirbitzApplication.getCurrentWallet());
+            mWallet = mAccount.getWallet(AirbitzApplication.getCurrentWallet());
             mAccount.reloadWallets();
         }
     }
@@ -317,7 +314,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
         long totalSatoshis = 0;
         int currencyNum;
-        AccountSettings settings = mAccount.coreSettings();
+        AccountSettings settings = mAccount.settings();
         if (settings != null) {
             currencyNum = settings.getCurrencyNum();
         } else {
