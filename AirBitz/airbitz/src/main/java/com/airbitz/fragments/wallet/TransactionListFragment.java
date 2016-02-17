@@ -394,7 +394,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mTransactionAdapter.setWallet(mWallet);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
 
-        mTransactionTask = new TransactionTask(mSearchQuery);
+        mTransactionTask = new TransactionTask(mSearchQuery, mWallet);
         mTransactionTask.execute();
     }
 
@@ -540,18 +540,20 @@ public class TransactionListFragment extends WalletBaseFragment
         }
     }
 
-    class TransactionTask extends AsyncTask<Wallet, Integer, List<Transaction>> {
+    class TransactionTask extends AsyncTask<Void, Integer, List<Transaction>> {
         String query;
-        public TransactionTask(String query) {
+        Wallet wallet;
+        public TransactionTask(String query, Wallet wallet) {
             this.query = query;
+            this.wallet = wallet;
         }
 
         @Override
-        protected List<Transaction> doInBackground(Wallet... wallet) {
+        protected List<Transaction> doInBackground(Void... params) {
             if (TextUtils.isEmpty(query)) {
-                return mWallet.loadAllTransactions();
+                return wallet.loadAllTransactions();
             } else {
-                return mWallet.searchTransactionsIn(query);
+                return wallet.searchTransactionsIn(query);
             }
         }
 

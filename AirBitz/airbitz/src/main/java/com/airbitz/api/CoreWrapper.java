@@ -58,8 +58,6 @@ public class CoreWrapper {
             public void userAccountChanged() {
                 manager.sendBroadcast(new Intent(Constants.DATASYNC_UPDATE_ACTION));
             }
-            public void userWalletChanged(Wallet wallet) {
-            }
             public void userWalletsLoading() {
                 manager.sendBroadcast(new Intent(Constants.WALLET_LOADING_START_ACTION));
             }
