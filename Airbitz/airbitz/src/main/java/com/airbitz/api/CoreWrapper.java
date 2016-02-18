@@ -43,8 +43,9 @@ import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 
-import java.util.List;
+import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 
 public class CoreWrapper {
     public static void setupAccount(Context context, Account account) {
@@ -92,14 +93,14 @@ public class CoreWrapper {
             }
             public void userIncomingBitcoin(Wallet wallet, Transaction transaction) {
                 Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
-                intent.putExtra(Constants.WALLET_UUID, wallet.getUUID());
+                intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
             }
             public void userSweep(Wallet wallet, Transaction transaction) {
                 Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
-                intent.putExtra(Constants.WALLET_UUID, wallet.getUUID());
+                intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
-                intent.putExtra(Constants.AMOUNT_SWEPT, transaction.getBalance());
+                intent.putExtra(Constants.AMOUNT_SWEPT, transaction.amount());
                 manager.sendBroadcast(intent);
             }
 
@@ -297,7 +298,7 @@ public class CoreWrapper {
                 return false;
             }
 
-            if (wallet.getBalanceSatoshi() < 10000000) {
+            if (wallet.balance() < 10000000) {
                 // they do not have enough money to care
                 return false;
             }
@@ -310,4 +311,22 @@ public class CoreWrapper {
         }
         return true;
     }
+
+    public static long getTotalSentToday(Wallet wallet) {
+        Calendar beginning = Calendar.getInstance();
+        long end = beginning.getTimeInMillis() / 1000;
+        beginning.set(Calendar.HOUR_OF_DAY, 0);
+        beginning.set(Calendar.MINUTE, 0);
+        long start = beginning.getTimeInMillis() / 1000;
+
+        long sum = 0;
+        List<Transaction> list = wallet.transactions(start, end);
+        for (Transaction tx : list) {
+            if (tx.amount() < 0) {
+                sum -= tx.amount();
+            }
+        }
+        return sum;
+    }
+
 }

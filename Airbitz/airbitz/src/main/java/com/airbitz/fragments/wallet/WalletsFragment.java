@@ -323,7 +323,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         for (WalletWrapper w : walletList) {
             if (w.wallet() != null && !w.wallet().isArchived()) {
-                totalSatoshis += w.wallet().getBalanceSatoshi();
+                totalSatoshis += w.wallet().balance();
             }
         }
         mWalletAdapter.swapWallets();
@@ -354,14 +354,14 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         list.add(new WalletWrapper(WalletWrapper.WALLET_HEADER_ID));
         for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.getName() != null) {
+            if (!wallet.isArchived() && wallet.name() != null) {
                 list.add(new WalletWrapper(wallet));
             }
         }
         list.add(new WalletWrapper(WalletWrapper.WALLET_ARCHIVE_HEADER_ID));
         if (!archiveClosed) {
             for (Wallet wallet : coreList) {
-                if (wallet.isArchived() && wallet.getName() != null) {
+                if (wallet.isArchived() && wallet.name() != null) {
                     list.add(new WalletWrapper(wallet));
                 }
             }
@@ -379,8 +379,8 @@ public class WalletsFragment extends WalletBaseFragment implements
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.alert_rename_wallet, null);
         final EditText editText = (EditText) view.findViewById(R.id.wallet_name);
-        editText.setText(wallet.getName());
-        editText.setSelection(wallet.getName().length());
+        editText.setText(wallet.name());
+        editText.setSelection(wallet.name().length());
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_wallets_rename_wallet))
@@ -399,10 +399,10 @@ public class WalletsFragment extends WalletBaseFragment implements
                         if (TextUtils.isEmpty(walletName)) {
                             editText.setError(getString(R.string.fragment_wallets_wallet_name_required));
                         } else {
-                            if (wallet.getUUID().equals(mWallet.getUUID())) {
+                            if (wallet.id().equals(mWallet.id())) {
                                 mWallet = wallet;
                             }
-                            wallet.walletRename(walletName);
+                            wallet.name(walletName);
                             mAccount.reloadWallets();
                             dialog.dismiss();
                             updateTitle();
@@ -418,14 +418,14 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     public void deleteWallet(final Wallet wallet) {
-        if (wallet.getBalanceSatoshi() > 0) {
+        if (wallet.balance() > 0) {
             mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_delete_has_funds));
             return;
         }
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_wallets_delete_wallet_confirm_title))
                .titleColorRes(R.color.colorPrimaryDark)
-               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_confirm_message), wallet.getName()))
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_confirm_message), wallet.name()))
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_delete))
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -447,9 +447,9 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     public void deleteWalletConfirmConfirm(final Wallet wallet) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
-        builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), wallet.getName()))
+        builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), wallet.name()))
                .titleColorRes(R.color.colorPrimaryDark)
-               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), wallet.getName()))
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), wallet.name()))
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_delete))
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))

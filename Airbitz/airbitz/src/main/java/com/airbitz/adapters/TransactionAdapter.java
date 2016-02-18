@@ -100,7 +100,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
-        mCurrencyNum = mWallet.getCurrencyNum();
+        mCurrencyNum = mWallet.currencyNum();
     }
 
     public void setLoading(boolean loading) {
@@ -112,7 +112,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         long total = 0;
         for (int i = mListTransaction.size() - 1; i > -1; i--) {
-            total += mListTransaction.get(i).getAmountSatoshi();
+            total += mListTransaction.get(i).amount();
             mRunningSatoshi[i] = total;
         }
     }
@@ -185,10 +185,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         Transaction transaction = mListTransaction.get(position);
 
-        String dateString = mFormatter.format(transaction.getDate() * 1000);
+        String dateString = mFormatter.format(transaction.date() * 1000);
         viewHolder.dateTextView.setText(dateString);
 
-        long transactionSatoshis = transaction.getAmountSatoshi();
+        long transactionSatoshis = transaction.amount();
         long transactionSatoshisAbs = Math.abs(transactionSatoshis);
         final int placeholder = transactionSatoshis > 0
             ? R.drawable.ic_request : R.drawable.ic_send;
@@ -196,12 +196,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             ? R.drawable.bg_icon_request : R.drawable.bg_icon_send;
         viewHolder.contactImageViewFrame.setVisibility(View.VISIBLE);
 
-        String name = transaction.getName();
+        String name = transaction.meta().name();
         String uri = null;
-        if (0 < transaction.getmBizId()) {
-            uri = "airbitz://business/" + transaction.getmBizId();
+        if (0 < transaction.meta().bizid()) {
+            uri = "airbitz://business/" + transaction.meta().bizid();
         } else {
-            uri = "airbitz://person/" + transaction.getName();
+            uri = "airbitz://person/" + transaction.meta().name();
         }
         final ImageView img = viewHolder.contactImageView;
         img.setImageResource(placeholder);
@@ -239,7 +239,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.creditAmountTextView.setText(btcCurrency);
 
             String fiatCurrency = "";
-            if (mWallet != null && mWallet.getCurrencyNum() != -1) {
+            if (mWallet != null && mWallet.currencyNum() != -1) {
                 fiatCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
             } else {
                 fiatCurrency = "";
@@ -275,20 +275,20 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             }
         }
         if (mSearch) {
-            viewHolder.confirmationsTextView.setText(transaction.getCategory());
+            viewHolder.confirmationsTextView.setText(transaction.meta().category());
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
         } else {
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
             if (transaction.isSyncing()) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.synchronizing));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
-            } else if (transaction.getConfirmations() <= 0) {
+            } else if (transaction.confirmations() <= 0) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
-            } else if (transaction.getConfirmations() >= 6) {
+            } else if (transaction.confirmations() >= 6) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_confirmed));
             } else {
-                viewHolder.confirmationsTextView.setText(transaction.getConfirmations() + mContext.getString(R.string.fragment_wallet_confirmations));
+                viewHolder.confirmationsTextView.setText(transaction.confirmations() + mContext.getString(R.string.fragment_wallet_confirmations));
             }
         }
         return convertView;

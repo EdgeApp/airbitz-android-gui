@@ -286,7 +286,7 @@ public class ImportFragment extends ScanFragment {
             mHandler.removeCallbacks(sweepNotFoundRunner);
 
             clearSweepAddress();
-            mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
+            mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.id(), mSweptAmount);
             mSweptAmount = -1;
         }
     };
@@ -305,7 +305,7 @@ public class ImportFragment extends ScanFragment {
             mHandler.removeCallbacks(sweepNotFoundRunner);
             showBusyLayout(null, false);
 
-            mActivity.showHiddenBitsTransaction(mSweptID, mWallet.getUUID(), mSweptAmount,
+            mActivity.showHiddenBitsTransaction(mSweptID, mWallet.id(), mSweptAmount,
                     mMessage, mZeroMessage, mTweet);
 
             mSweptAmount = -1;

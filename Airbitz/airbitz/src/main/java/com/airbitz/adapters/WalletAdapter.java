@@ -146,11 +146,11 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
     }
 
     public void addWallet(WalletWrapper wallet) {
-        if (mArchivedIdMap.containsKey(wallet.getUUID())) {
-            mIdMap.put(wallet.getUUID(), mArchivedIdMap.get(wallet.getUUID()));
-            mArchivedIdMap.remove(wallet.getUUID());
+        if (mArchivedIdMap.containsKey(wallet.id())) {
+            mIdMap.put(wallet.id(), mArchivedIdMap.get(wallet.id()));
+            mArchivedIdMap.remove(wallet.id());
         } else {
-            mIdMap.put(wallet.getUUID(), nextId);
+            mIdMap.put(wallet.id(), nextId);
             nextId++;
         }
     }
@@ -162,8 +162,8 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
             if (wallet.isArchiveHeader()) {
                 archivePos = i;
             }
-            if (!mIdMap.containsKey(wallet.getUUID())) {
-                mIdMap.put(wallet.getUUID(), nextId);
+            if (!mIdMap.containsKey(wallet.id())) {
+                mIdMap.put(wallet.id(), nextId);
                 nextId++;
             }
         }
@@ -252,15 +252,15 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
 
             titleTextView.setTypeface(mBitcoinTypeface);
             amountTextView.setTypeface(mBitcoinTypeface);
-            if (wallet.wallet().isLoading()) {
+            if (!wallet.wallet().isSynced()) {
                 titleTextView.setText(R.string.loading);
             } else {
-                titleTextView.setText(wallet.wallet().getName());
+                titleTextView.setText(wallet.wallet().name());
             }
             if (mIsBitcoin) {
-                amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().getBalanceSatoshi(), true));
+                amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().balance(), true));
             } else {
-                long satoshi = wallet.wallet().getBalanceSatoshi();
+                long satoshi = wallet.wallet().balance();
                 String temp = mAccount.FormatCurrency(satoshi, mCurrencyNum, false, true);
                 amountTextView.setText(temp);
             }
@@ -317,14 +317,16 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
     @Override
     public boolean areAllItemsEnabled() {
         for (WalletWrapper w : mWalletList) {
-            return !w.isLoading();
+            if (!w.isSynced()) {
+                return false;
+            }
         }
         return true;
     }
 
     @Override
     public boolean isEnabled(int position) {
-        return !mWalletList.get(position).isLoading();
+        return mWalletList.get(position).isSynced();
     }
 
     @Override
@@ -333,7 +335,7 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
             return INVALID_ID;
         }
         WalletWrapper item = mWalletList.get(position);
-        return mIdMap.get(item.getUUID());
+        return mIdMap.get(item.id());
     }
 
     @Override

@@ -360,7 +360,7 @@ public abstract class ScanFragment
             return;
         }
         for (Wallet wallet : mWallets) {
-            if (mWallet != null && mWallet.getUUID() != null && !wallet.getUUID().equals(mWallet.getUUID())) {
+            if (mWallet != null && mWallet.id() != null && !wallet.id().equals(mWallet.id())) {
                 mOtherWalletsList.add(wallet);
             }
         }

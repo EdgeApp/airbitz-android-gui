@@ -601,7 +601,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCategories.clear();
         mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
-        List<String> catStrings = mAccount.categories().loadCategories();
+        List<String> catStrings = mAccount.categories().list();
         for(String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
                 originalStrings.add(cat);
@@ -642,7 +642,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         try {
             String fiatString = mFiatValueEdittext.getText().toString();
             double fiatAmount = Double.parseDouble(fiatString);
-            if (mTransaction.getAmountSatoshi() < 0 && fiatAmount > 0) {
+            if (mTransaction.amount() < 0 && fiatAmount > 0) {
                 mFiatValueEdittext.setText("-" + fiatString);
             }
         } catch (Exception e) {
@@ -693,15 +693,15 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 mTransaction = mWallet.getTransaction(mTxId);
 
                 if (mTransaction != null) {
-                    if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.getCategory())) {
-                        mTransaction.setCategory(currentType);
+                    if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.meta().category())) {
+                        mTransaction.meta().category(currentType);
                     } else {
-                        setCurrentType(mTransaction.getCategory());
+                        setCurrentType(mTransaction.meta().category());
                     }
                     // if there is a bizId, add it as the first one of the map
-                    if (mTransaction.getmBizId() != 0) {
-                        mBizIds.put(mTransaction.getName(), mTransaction.getmBizId());
-                        mBizId = mTransaction.getmBizId();
+                    if (mTransaction.meta().bizid() != 0) {
+                        mBizIds.put(mTransaction.meta().name(), mTransaction.meta().bizid());
+                        mBizId = mTransaction.meta().bizid();
                     }
                     UpdateView(mTransaction);
                 }
@@ -715,7 +715,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         if(mTransaction != null) {
             AirbitzCore.debugLevel(1, "Updating view");
-            FindBizIdThumbnail(mTransaction.getName(), mTransaction.getmBizId());
+            FindBizIdThumbnail(mTransaction.meta().name(), mTransaction.meta().bizid());
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
@@ -756,7 +756,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void done() {
         String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
-        mAccount.categories().addCategory(category);
+        mAccount.categories().insert(category);
         mActivity.onBackPressed();
     }
 
@@ -968,13 +968,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
             int start;
             int end;
-            if (null != tx.getOutputs()) {
-                for (TxOutput output : tx.getOutputs()) {
+            if (null != tx.outputs()) {
+                for (TxOutput output : tx.outputs()) {
                     start = 0;
-                    SpannableString val = new SpannableString(mAccount.formatSatoshi(output.getmValue()));
-                    SpannableString address = new SpannableString(output.getAddress());
+                    SpannableString val = new SpannableString(mAccount.formatSatoshi(output.amount()));
+                    SpannableString address = new SpannableString(output.address());
                     end = address.length();
-                    final String txUrl = finalBaseUrl + "address/" + output.getAddress();
+                    final String txUrl = finalBaseUrl + "address/" + output.address();
                     ClickableSpan span = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -992,9 +992,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     full.append("\n");
 
-                    if (output.getmInput()) {
+                    if (output.isInput()) {
                         inAddresses.append(full);
-                        inSum += output.getmValue();
+                        inSum += output.amount();
                     } else {
                         outAddresses.append(full);
                     }
@@ -1015,9 +1015,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(tx.getmMalleableID());
+            s.append(tx.malId());
             end = s.length();
-            final String txIdLink = finalBaseUrl + "tx/" + tx.getmMalleableID();
+            final String txIdLink = finalBaseUrl + "tx/" + tx.malId();
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
@@ -1088,25 +1088,25 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void UpdateView(Transaction transaction) {
         doEdit = true;
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.getDate() * 1000);
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.date() * 1000);
         mDateTextView.setText(dateString);
 
         String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
                 mActivity.getResources().getString(R.string.transaction_details_to);
-        mToFromName.setText(pretext + transaction.getWalletName());
+        mToFromName.setText(pretext + mWallet.name());
 
-        mPayeeEditText.setText(transaction.getName());
+        mPayeeEditText.setText(transaction.meta().name());
         updatePhoto();
-        mNoteEdittext.setText(transaction.getNotes());
-        setCategoryText(transaction.getCategory());
+        mNoteEdittext.setText(transaction.meta().notes());
+        setCategoryText(transaction.meta().category());
 
         long coinValue = 0;
         String feeFormatted;
-        if (transaction.getAmountSatoshi() < 0) {
-            coinValue = transaction.getAmountSatoshi() + transaction.getMinerFees() + transaction.getABFees();
+        if (transaction.amount() < 0) {
+            coinValue = transaction.amount() + transaction.getMinerFees() + transaction.getABFees();
             feeFormatted = "+" + mAccount.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
         } else {
-            coinValue = transaction.getAmountSatoshi();
+            coinValue = transaction.amount();
             feeFormatted = "";
         }
 
@@ -1114,16 +1114,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         String currencyValue = null;
         // If no value set, then calculate it
-        if (transaction.getAmountFiat() == 0.0) {
-            currencyValue = mAccount.FormatCurrency(coinValue, mWallet.getCurrencyNum(),
+        if (transaction.meta().fiat() == 0.0) {
+            currencyValue = mAccount.FormatCurrency(coinValue, mWallet.currencyNum(),
                     false, false);
         } else {
-            currencyValue = mAccount.formatCurrency(transaction.getAmountFiat(),
-                    mWallet.getCurrencyNum(), false);
+            currencyValue = mAccount.formatCurrency(transaction.meta().fiat(),
+                    mWallet.currencyNum(), false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
+        mFiatDenominationLabel.setText(Currencies.instance().currencyCodeLookup(mWallet.currencyNum()));
 
         mBitcoinSignTextview.setText(mAccount.getDefaultBTCDenomination());
 
@@ -1184,7 +1184,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     public void onNewCategory(String categoryName) {
         if (!categoryName.substring(categoryName.indexOf(':') + 1).trim().isEmpty()) {
             mCategories.add(new Category(categoryName, ""));
-            mAccount.categories().addCategory(categoryName);
+            mAccount.categories().insert(categoryName);
         }
 
         setCategoryText(categoryName);
@@ -1326,17 +1326,17 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         @Override
         protected AirbitzException doInBackground(Void... voids) {
-            transaction.setName(Payee);
-            transaction.setCategory(Category);
-            transaction.setNotes(Note);
+            transaction.meta().name(Payee);
+            transaction.meta().category(Category);
+            transaction.meta().notes(Note);
             double amountFiat;
             try {
                 amountFiat = Double.valueOf(Fiat);
             } catch (Exception e) {
                 amountFiat = 0.0;
             }
-            transaction.setAmountFiat(amountFiat);
-            transaction.setmBizId(Bizid);
+            transaction.meta().fiat(amountFiat);
+            transaction.meta().bizid(Bizid);
             try {
                 mTransaction.save();
             } catch (AirbitzException e) {

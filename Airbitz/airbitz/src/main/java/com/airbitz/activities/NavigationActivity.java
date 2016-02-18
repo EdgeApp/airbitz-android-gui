@@ -1110,7 +1110,7 @@ public class NavigationActivity extends ActionBarActivity
         } else {
             Transaction tx = wallet.getTransaction(txId);
             if (null != tx) {
-                if (tx.getAmountSatoshi() > 0) {
+                if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
                     showIncomingBitcoinDialog();
                     updateWalletListener();
@@ -1142,15 +1142,15 @@ public class NavigationActivity extends ActionBarActivity
         Account account = AirbitzApplication.getAccount();
         Wallet wallet = account.getWallet(uuid);
         Transaction transaction = wallet.getTransaction(txId);
-        String coinValue = account.formatSatoshi(transaction.getAmountSatoshi(), true);
+        String coinValue = account.formatSatoshi(transaction.amount(), true);
         String currencyValue = null;
         // If no value set, then calculate it
-        if (transaction.getAmountFiat() == 0.0) {
-            currencyValue = account.FormatCurrency(transaction.getAmountSatoshi(), wallet.getCurrencyNum(),
+        if (transaction.amount() == 0.0) {
+            currencyValue = account.FormatCurrency(transaction.amount(), wallet.currencyNum(),
                     false, true);
         } else {
-            currencyValue = account.formatCurrency(transaction.getAmountFiat(),
-                    wallet.getCurrencyNum(), true);
+            currencyValue = account.formatCurrency(transaction.amount(),
+                    wallet.currencyNum(), true);
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         if(withTeaching) {
@@ -1322,7 +1322,7 @@ public class NavigationActivity extends ActionBarActivity
             }
         }
 
-        List<String> cats = account.categories().loadCategories();
+        List<String> cats = account.categories().list();
         if (cats.size() == 0) {
             createDefaultCategories();
         }
@@ -1942,10 +1942,10 @@ public class NavigationActivity extends ActionBarActivity
 
         Categories categories = AirbitzApplication.getAccount().categories();
         for (String cat : defaults) {
-            categories.addCategory(cat);
+            categories.insert(cat);
         }
 
-        List<String> cats = categories.loadCategories();
+        List<String> cats = categories.list();
         if (cats.size() == 0 || cats.get(0).equals(defaults)) {
             AirbitzCore.debugLevel(1, "Category creation failed");
         }

@@ -205,7 +205,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
-                        data = mWallet.getPrivateSeed();
+                        data = mWallet.seed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
@@ -240,7 +240,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
-                        data = mWallet.getPrivateSeed();
+                        data = mWallet.seed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
@@ -269,7 +269,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 String dataOrFile;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
-                        dataOrFile = mWallet.getPrivateSeed();
+                        dataOrFile = mWallet.seed();
                     } else {
                         dataOrFile = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
@@ -306,8 +306,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             public void onClick(View view) {
                 if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()) {
                     if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
-                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.getName() + " " + getString(R.string.export_saving_option_private_seed),
-                            mWallet.getPrivateSeed());
+                        ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.name() + " " + getString(R.string.export_saving_option_private_seed),
+                            mWallet.seed());
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
@@ -750,7 +750,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 }
             }
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
-            filepath = Common.createTempFileFromString("export.txt", mWallet.getPrivateSeed());
+            filepath = Common.createTempFileFromString("export.txt", mWallet.seed());
         } else if (type == ExportTypes.Quicken.ordinal()) {
             return null;
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
@@ -791,7 +791,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
         intent.putExtra(Intent.EXTRA_STREAM, file);
-        intent.putExtra(Intent.EXTRA_TEXT, wallet.getName());
+        intent.putExtra(Intent.EXTRA_TEXT, wallet.name());
 
         try {
             startActivity(intent);
@@ -830,7 +830,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private String saveName() {
         String filename = mFromButton.getText().toString() + "-" + mToButton.getText().toString() + ".csv";
         if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-            filename = mWallet.getName()+".txt";
+            filename = mWallet.name()+".txt";
         }
 
         return filename.replace("/", "_");

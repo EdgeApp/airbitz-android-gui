@@ -68,7 +68,7 @@ public class WalletOtherAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
         textView.setTypeface(mBitcoinTypeface);
-        textView.setText(wallet.getName() + " (" + mAccount.formatSatoshi(wallet.getBalanceSatoshi(), true) + ")");
+        textView.setText(wallet.name() + " (" + mAccount.formatSatoshi(wallet.balance(), true) + ")");
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
 
         return convertView;

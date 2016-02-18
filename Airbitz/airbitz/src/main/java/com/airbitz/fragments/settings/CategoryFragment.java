@@ -108,7 +108,7 @@ public class CategoryFragment extends BaseFragment {
         mCategories = new ArrayList<String>();
         mCurrentCategories = new ArrayList<String>();
 
-        mCategories = removeBlankSubcategories(mAccountCategories.loadCategories());
+        mCategories = removeBlankSubcategories(mAccountCategories.list());
         Collections.sort(mCategories);
         mCurrentCategories.addAll(mCategories);
 
@@ -295,17 +295,17 @@ public class CategoryFragment extends BaseFragment {
     }
 
     private void saveAllChanges() {
-        List<String> coreCategories = mAccountCategories.loadCategories();
+        List<String> coreCategories = mAccountCategories.list();
         // Remove any categories first
         for (String category : coreCategories) {
             if (!mCategories.contains(category)) {
-                mAccountCategories.removeCategory(category);
+                mAccountCategories.remove(category);
             }
         }
 
         // Add any categories
         for (String category : mCategories) {
-            mAccountCategories.addCategory(category);
+            mAccountCategories.insert(category);
         }
     }
 

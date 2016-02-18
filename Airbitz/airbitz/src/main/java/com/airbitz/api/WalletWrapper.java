@@ -46,17 +46,17 @@ public class WalletWrapper {
 
     public WalletWrapper(Wallet wallet) {
         mWallet = wallet;
-        mId = wallet.getUUID();
+        mId = wallet.id();
     }
 
-    public boolean isLoading() {
+    public boolean isSynced() {
         if (mWallet != null) {
-            return mWallet.isLoading();
+            return mWallet.isSynced();
         }
         return true;
     }
 
-    public String getUUID() {
+    public String id() {
         return mId;
     }
 

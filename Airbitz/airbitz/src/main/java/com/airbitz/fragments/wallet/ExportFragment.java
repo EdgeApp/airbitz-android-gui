@@ -154,7 +154,7 @@ public class ExportFragment extends WalletBaseFragment {
     }
 
     private void gotoExportSavings(int type) {
-        ExportSavingOptionFragment.pushFragment(mActivity, mWallet.getUUID(), type);
+        ExportSavingOptionFragment.pushFragment(mActivity, mWallet.id(), type);
     }
 
     public static void pushFragment(NavigationActivity mActivity) {

@@ -246,7 +246,7 @@ public class WalletBaseFragment extends BaseFragment
     protected void setDefaultWallet(String uuid) {
         if (uuid == null) {
             if (mWallets != null && mWallets.size() > 0) {
-                uuid = mWallets.get(0).getUUID();
+                uuid = mWallets.get(0).id();
                 AirbitzApplication.setCurrentWallet(uuid);
             }
         }
@@ -258,14 +258,14 @@ public class WalletBaseFragment extends BaseFragment
         if (mWallet != null
                 && !mAllowArchived
                 && mWallet.isArchived()
-                && mWallet.getUUID().equals(AirbitzApplication.getCurrentWallet())) {
+                && mWallet.id().equals(AirbitzApplication.getCurrentWallet())) {
             if (mWallets != null && mWallets.size() > 0) {
-                uuid = mWallets.get(0).getUUID();
+                uuid = mWallets.get(0).id();
                 AirbitzApplication.setCurrentWallet(uuid);
             }
         }
         if (mWallet != null) {
-            mLoading = mWallet.isLoading();
+            mLoading = !mWallet.isSynced();
         }
     }
 
@@ -382,7 +382,7 @@ public class WalletBaseFragment extends BaseFragment
             if (mLoading || null == mWallet) {
                 mTitleView.setText(R.string.string_loading);
             } else {
-                mTitleView.setText(mWallet.getName());
+                mTitleView.setText(mWallet.name());
             }
         }
         if (mSubtitleView != null && !TextUtils.isEmpty(getSubtitle())) {
@@ -393,7 +393,7 @@ public class WalletBaseFragment extends BaseFragment
 
     protected void walletChanged(Wallet newWallet) {
         mWallet = newWallet;
-        AirbitzApplication.setCurrentWallet(mWallet.getUUID());
+        AirbitzApplication.setCurrentWallet(mWallet.id());
         updateTitle();
         if (mDropDownEnabled) {
             hideWalletList();

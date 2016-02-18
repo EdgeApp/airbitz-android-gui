@@ -252,7 +252,7 @@ public class SendFragment extends ScanFragment {
 
     protected void transferWalletSelected(Wallet w) {
         SpendTarget target = mWallet.newSpendTarget();
-        target.newTransfer(w.getUUID());
+        target.newTransfer(w.id());
         launchSendConfirmation(target);
     }
 
@@ -264,7 +264,7 @@ public class SendFragment extends ScanFragment {
         SendConfirmationFragment fragment = new SendConfirmationFragment();
         fragment.setSpendTarget(target);
         Bundle bundle = new Bundle();
-        bundle.putString(FROM_WALLET_UUID, mWallet.getUUID());
+        bundle.putString(FROM_WALLET_UUID, mWallet.id());
         fragment.setArguments(bundle);
         if (mActivity != null) {
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());

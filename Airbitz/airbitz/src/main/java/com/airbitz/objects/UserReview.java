@@ -99,7 +99,7 @@ public class UserReview {
             if (null != walletList) {
                 int transactionCount = 0;
                 for (Wallet wallet : walletList) {
-                    List<Transaction> transactions = wallet.getTransactions();
+                    List<Transaction> transactions = wallet.transactions();
                     transactionCount += transactions.size();
                 }
                 return transactionCount > MAX_TRANSACTIONS;

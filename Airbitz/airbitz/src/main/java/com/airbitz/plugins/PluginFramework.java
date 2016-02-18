@@ -392,10 +392,10 @@ public class PluginFramework {
 
         public Object toJson() throws JSONException {
             JSONObject object = new JSONObject();
-            object.put("id", wallet.getUUID());
-            object.put("name", wallet.getName());
-            object.put("currencyNum", wallet.getCurrencyNum());
-            object.put("balance", wallet.getBalanceSatoshi());
+            object.put("id", wallet.id());
+            object.put("name", wallet.name());
+            object.put("currencyNum", wallet.currencyNum());
+            object.put("balance", wallet.balance());
             return object;
         }
     }
@@ -574,7 +574,7 @@ public class PluginFramework {
         @JavascriptInterface
         public void clearData() {
             AirbitzCore.debugLevel(1, "clearData");
-            account.data(plugin.pluginId).clear();
+            account.data(plugin.pluginId).removeAll();
         }
 
         @JavascriptInterface

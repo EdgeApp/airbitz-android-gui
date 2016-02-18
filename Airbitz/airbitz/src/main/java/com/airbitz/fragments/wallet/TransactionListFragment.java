@@ -242,7 +242,7 @@ public class TransactionListFragment extends WalletBaseFragment
                 mActivity.hideSoftKeyboard(mSendButton);
                 mSendButton.setClickable(false);
                 Bundle bundle = new Bundle();
-                bundle.putString(RequestFragment.FROM_UUID, mWallet.getUUID());
+                bundle.putString(RequestFragment.FROM_UUID, mWallet.id());
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.REQUEST.ordinal());
                 mActivity.switchFragmentThread(NavigationActivity.Tabs.REQUEST.ordinal(), bundle);
                 mSendButton.setClickable(true);
@@ -255,7 +255,7 @@ public class TransactionListFragment extends WalletBaseFragment
                 mActivity.hideSoftKeyboard(mSendButton);
                 mRequestButton.setClickable(false);
                 Bundle bundle = new Bundle();
-                bundle.putString(SendFragment.UUID, mWallet.getUUID());
+                bundle.putString(SendFragment.UUID, mWallet.id());
                 mActivity.resetFragmentThreadToBaseFragment(NavigationActivity.Tabs.SEND.ordinal());
                 mActivity.switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), bundle);
                 mRequestButton.setClickable(true);
@@ -277,7 +277,7 @@ public class TransactionListFragment extends WalletBaseFragment
                     mTransactionAdapter.selectItem(view, newIdx);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.WALLET_UUID, mWallet.getUUID());
+                    bundle.putString(Constants.WALLET_UUID, mWallet.id());
                     bundle.putString(Constants.WALLET_TXID, trans.getID());
                     Fragment fragment = new TransactionDetailFragment();
                     fragment.setArguments(bundle);
@@ -384,7 +384,7 @@ public class TransactionListFragment extends WalletBaseFragment
     }
 
     private void startTransactionTask() {
-        if (mWallet == null || mWallet.isLoading()) {
+        if (mWallet == null || !mWallet.isSynced()) {
             return;
         }
         if (mTransactionTask != null) {
@@ -456,16 +456,16 @@ public class TransactionListFragment extends WalletBaseFragment
 
     // Sum all transactions and show in total
     private void updateBalances() {
-        if (mTransactions != null && mWallet != null && !mWallet.isLoading()) {
+        if (mTransactions != null && mWallet != null && mWallet.isSynced()) {
             long totalSatoshis = 0;
             for (Transaction t : mTransactions) {
-                totalSatoshis += t.getAmountSatoshi();
+                totalSatoshis += t.amount();
             }
 
-            mBottomType.setText(Currencies.instance().currencyCodeLookup(mWallet.getCurrencyNum()));
+            mBottomType.setText(Currencies.instance().currencyCodeLookup(mWallet.currencyNum()));
             mTopType.setText(mAccount.getDefaultBTCDenomination());
             mBitCoinBalanceButton.setText(mAccount.formatSatoshi(totalSatoshis, true));
-            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.getCurrencyNum(), false, true);
+            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.currencyNum(), false, true);
             mFiatBalanceButton.setText(temp);
 
             if (mOnBitcoinMode) {
@@ -530,7 +530,7 @@ public class TransactionListFragment extends WalletBaseFragment
     @Override
     public void onRefresh() {
         if (mWallet != null) {
-            mAccount.connectWatcher(mWallet.getUUID());
+            mAccount.connectWatcher(mWallet.id());
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -551,9 +551,9 @@ public class TransactionListFragment extends WalletBaseFragment
         @Override
         protected List<Transaction> doInBackground(Void... params) {
             if (TextUtils.isEmpty(query)) {
-                return wallet.loadAllTransactions();
+                return wallet.transactions();
             } else {
-                return wallet.searchTransactionsIn(query);
+                return wallet.transactionsSearch(query);
             }
         }
 

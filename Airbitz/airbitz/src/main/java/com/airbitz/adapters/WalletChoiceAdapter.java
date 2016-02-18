@@ -67,11 +67,11 @@ public class WalletChoiceAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.item_listview_wallet_choice, parent, false);
 
         TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
-        titleTextView.setText(wallet.getName());
+        titleTextView.setText(wallet.name());
 
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
         amountTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-        amountTextView.setText(mAccount.formatSatoshi(wallet.getBalanceSatoshi(), true));
+        amountTextView.setText(mAccount.formatSatoshi(wallet.balance(), true));
         return convertView;
     }
 }
