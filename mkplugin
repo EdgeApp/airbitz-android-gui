@@ -9,6 +9,6 @@ cd ../airbitz-plugins
 gulp glidera-android
 gulp foldapp-android
 gulp clevercoin-android
-cp build/android/glidera/index.html ${CURRENT_DIR}/AirBitz/airbitz/src/main/assets/glidera.html
-cp build/android/foldapp/index.html ${CURRENT_DIR}/AirBitz/airbitz/src/main/assets/foldapp.html
-cp build/android/clevercoin/index.html ${CURRENT_DIR}/AirBitz/airbitz/src/main/assets/clevercoin.html
+cp build/android/glidera/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/glidera.html
+cp build/android/foldapp/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/foldapp.html
+cp build/android/clevercoin/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/clevercoin.html
