@@ -59,6 +59,7 @@ import co.airbitz.core.Account;
 import co.airbitz.core.AccountSettings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Currencies;
+import co.airbitz.core.Currencies.CurrencyEntry;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class WalletAddFragment extends BaseFragment
     private Spinner mAddWalletCurrencySpinner;
     private LinearLayout mAddWalletCurrencyLayout;
 
-    private List<String> mCurrencyList;
+    private List<CurrencyEntry> mCurrencyList;
     private NavigationActivity mActivity;
     private View mView;
     private AddWalletTask mAddWalletTask;
@@ -113,18 +114,18 @@ public class WalletAddFragment extends BaseFragment
             }
         });
 
-        mCurrencyList = Currencies.instance().getCurrencyCodeAndDescriptionArray();
+        mCurrencyList = Currencies.instance().getCurrencies();
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, R.layout.item_currency_small, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
         AccountSettings settings = mAccount.settings();
-        int num;
-        if (settings != null)
-            num = settings.getCurrencyNum();
-        else
-            num = Currencies.instance().defaultCurrencyNum();
-        String defaultCode = Currencies.instance().getCurrencyCode(num);
-        for (int i=0; i<mCurrencyList.size(); i++) {
-            if (mCurrencyList.get(i).substring(0, 3).equals(defaultCode)) {
+        String currencyCode;
+        if (settings != null) {
+            currencyCode = settings.currencyCode();
+        } else {
+            currencyCode = Currencies.instance().defaultCurrency().code;
+        }
+        for (int i = 0; i < mCurrencyList.size(); i++) {
+            if (mCurrencyList.get(i).code.equals(currencyCode)) {
                 mAddWalletCurrencySpinner.setSelection(i);
                 break;
             }
@@ -179,10 +180,10 @@ public class WalletAddFragment extends BaseFragment
 
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
-            int[] nums = Currencies.instance().getCoreCurrencyNumbers();
-            int currencyNum = nums[mAddWalletCurrencySpinner.getSelectedItemPosition()];
+            int index = mAddWalletCurrencySpinner.getSelectedItemPosition();
+            CurrencyEntry c = mCurrencyList.get(index);
 
-            mAddWalletTask = new AddWalletTask(mAddWalletNameEditText.getText().toString(), currencyNum);
+            mAddWalletTask = new AddWalletTask(mAddWalletNameEditText.getText().toString(), c.code);
             mAddWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
             Common.alertBadWalletName(this.mActivity);
@@ -199,11 +200,11 @@ public class WalletAddFragment extends BaseFragment
     public class AddWalletTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mWalletName;
-        private final int mCurrencyNum;
+        private final String mCurrency;
 
-        AddWalletTask(String walletName, int currencyNum) {
+        AddWalletTask(String walletName, String currency) {
             mWalletName = walletName;
-            mCurrencyNum = currencyNum;
+            mCurrency = currency;
         }
 
         @Override
@@ -217,7 +218,7 @@ public class WalletAddFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            boolean success = mAccount.createWallet(mWalletName, mCurrencyNum);
+            boolean success = mAccount.createWallet(mWalletName, mCurrency);
             mAccount.reloadWallets();
             return success;
         }

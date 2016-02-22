@@ -253,8 +253,8 @@ public class CoreWrapper {
         return account.denominationToSatoshi(bitcoin) > Constants.MAX_SATOSHI;
     }
 
-    public static boolean tooMuchFiat(Account account, String fiat, int currencyNum) {
-        double maxFiat = account.SatoshiToCurrency((long) Constants.MAX_SATOSHI, currencyNum);
+    public static boolean tooMuchFiat(Account account, String fiat, String currencyCode) {
+        double maxFiat = account.SatoshiToCurrency((long) Constants.MAX_SATOSHI, currencyCode);
         double val = 0.0;
         try {
             val = Double.parseDouble(fiat);

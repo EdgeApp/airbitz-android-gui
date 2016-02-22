@@ -126,9 +126,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private TextView mAccountTitle;
     private Button mExchangeButton;
     private AutoLogoffDialogManager mAutoLogoffManager;
-    private List<String> mCurrencyItems;
     private List<String> mDistanceItems;
-    private int mCurrencyNum;
+    private String mCurrencyCode;
     private List<String> mExchanges;
     private AirbitzCore mCoreAPI;
     private Account mAccount;
@@ -158,7 +157,6 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mView = i.inflate(R.layout.fragment_setting, container, false);
         }
 
-        mCurrencyItems = Currencies.instance().getCurrencyCodeAndDescriptionArray();
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
 
@@ -336,20 +334,17 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         AccountSettings settings = mAccount.settings();
         if (settings != null) {
-            mCurrencyNum = settings.getCurrencyNum();
+            mCurrencyCode = settings.currencyCode();
         } else {
-            mCurrencyNum = Currencies.instance().defaultCurrencyNum();
+            mCurrencyCode = Currencies.instance().defaultCurrency().code;
         }
 
-        String defaultCode = Currencies.instance().getCurrencyCode(mCurrencyNum);
-        mDefaultCurrencyButton.setText(defaultCode);
+        mDefaultCurrencyButton.setText(mCurrencyCode);
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = Currencies.instance().getCurrencyCode(mCurrencyNum);
-
                 CurrencyFragment fragment = new CurrencyFragment();
-                fragment.setSelected(code);
+                fragment.setSelected(mCurrencyCode);
                 fragment.setOnCurrencySelectedListener(SettingFragment.this);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
@@ -485,7 +480,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         saveBLEPref(mBLESwitch.isChecked());
 
         // Default Currency
-        mCoreSettings.setCurrencyNum(mCurrencyNum);
+        mCoreSettings.currencyCode(mCurrencyCode);
         mCoreSettings.setExchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {
@@ -652,11 +647,10 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     @Override
-    public void onCurrencySelected(int num) {
-        mCurrencyNum = num;
+    public void onCurrencySelected(String code) {
+        mCurrencyCode = code;
         saveCurrentSettings();
-        mDefaultCurrencyButton.setText(
-            Currencies.instance().getCurrencyCode(mCurrencyNum));
+        mDefaultCurrencyButton.setText(mCurrencyCode);
         mActivity.ShowFadingDialog(
             getString(R.string.settings_currency_change_note_popup),
             getResources().getInteger(R.integer.alert_hold_time_help_popups));

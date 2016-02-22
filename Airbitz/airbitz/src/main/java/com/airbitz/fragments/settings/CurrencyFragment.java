@@ -44,29 +44,30 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import co.airbitz.core.Currencies.CurrencyEntry;
 import co.airbitz.core.Currencies;
+
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CurrencyAdapter;
 import com.airbitz.fragments.BaseFragment;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class CurrencyFragment extends BaseFragment {
     private final String TAG = getClass().getSimpleName();
     public static String CURRENCY = "currency";
 
     public static interface OnCurrencySelectedListener {
-        public void onCurrencySelected(int currencyNum);
+        public void onCurrencySelected(String currencyCode);
     }
 
     private NavigationActivity mActivity;
     private OnCurrencySelectedListener mListener;
     private CurrencyAdapter mAdapter;
-    private List<String> mOrigDescriptions;
-    private List<String> mOrigCodes;
-    private List<String> mDescriptions;
-    private List<String> mCodes;
+    private List<CurrencyEntry> mOrigCurrencies;
+    private List<CurrencyEntry> mCurrencies;
     private ListView mListView;
     private EditText mSearch;
     private View mSearchClose;
@@ -110,16 +111,15 @@ public class CurrencyFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String query = editable.toString();
-                mDescriptions.clear(); mCodes.clear();
+                mCurrencies.clear();
                 if (TextUtils.isEmpty(query)) {
-                    mDescriptions.addAll(mOrigDescriptions);
-                    mCodes.addAll(mOrigCodes);
+                    mCurrencies.addAll(mOrigCurrencies);
                 } else {
-                    for (int i = 0; i < mOrigDescriptions.size(); ++i) {
-                        String d = mOrigDescriptions.get(i);
-                        if (d.toLowerCase().contains(query.toLowerCase())) {
-                            mDescriptions.add(mOrigDescriptions.get(i));
-                            mCodes.add(mOrigCodes.get(i));
+                    for (int i = 0; i < mOrigCurrencies.size(); ++i) {
+                        CurrencyEntry d = mOrigCurrencies.get(i);
+                        if (d.description.toLowerCase().contains(query.toLowerCase())
+                            || d.code.toLowerCase().contains(query.toLowerCase())) {
+                            mCurrencies.add(mOrigCurrencies.get(i));
                         }
                     }
                 }
@@ -137,26 +137,19 @@ public class CurrencyFragment extends BaseFragment {
             }
         });
 
-        final Currencies currencies = Currencies.instance();
-        mOrigDescriptions = currencies.getCurrencyCodeAndDescriptionArray();
-        mOrigCodes = currencies.getCurrencyCodeArray();
-        mDescriptions = currencies.getCurrencyCodeAndDescriptionArray();
-        mCodes = currencies.getCurrencyCodeArray();
+        mOrigCurrencies = Currencies.instance().getCurrencies();
+        mCurrencies = new ArrayList<CurrencyEntry>();
+        mCurrencies.addAll(mOrigCurrencies);
 
-        mAdapter = new CurrencyAdapter(getActivity(), mDescriptions);
+        mAdapter = new CurrencyAdapter(getActivity(), mCurrencies);
         mListView = (ListView) view.findViewById(R.id.listview_currency);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 mActivity.popFragment();
                 mActivity.getFragmentManager().executePendingTransactions();
-
-                String code = mCodes.get(i);
-                int num = currencies.getCurrencyNumberFromCode(code);
-                if (num > 0) {
-                    if (mListener != null) {
-                        mListener.onCurrencySelected(num);
-                    }
+                if (mListener != null) {
+                    mListener.onCurrencySelected(mCurrencies.get(i).code);
                 }
             }
         });
@@ -178,8 +171,8 @@ public class CurrencyFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         if (!TextUtils.isEmpty(mSelected)) {
-            for (int i = 0; i < mCodes.size(); ++i) {
-                if (mSelected.equals(mCodes.get(i))) {
+            for (int i = 0; i < mCurrencies.size(); ++i) {
+                if (mSelected.equals(mCurrencies.get(i).code)) {
                     mListView.setSelection(i);
                 }
             }

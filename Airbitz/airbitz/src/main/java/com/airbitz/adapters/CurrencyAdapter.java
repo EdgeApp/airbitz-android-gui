@@ -42,32 +42,25 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 
+import co.airbitz.core.Currencies.CurrencyEntry;
+
 import java.util.List;
 
-/**
- * Created by matt on 7/4/14.
- */
-public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable {
+public class CurrencyAdapter extends ArrayAdapter<CurrencyEntry> {
 
     private Context mContext;
-    private List<String> mCurrencies;
+    private List<CurrencyEntry> mCurrencies;
     private int mResCurrencySpinner;
 
-    public CurrencyAdapter(Context context, List<String> currencies) {
+    public CurrencyAdapter(Context context, List<CurrencyEntry> currencies) {
         this(context, R.layout.item_currency_spinner, currencies);
     }
 
-    public CurrencyAdapter(Context context, int resSpinner, List<String> currencies) {
+    public CurrencyAdapter(Context context, int resSpinner, List<CurrencyEntry> currencies) {
         super(context, resSpinner, currencies);
         mResCurrencySpinner = resSpinner;
         mContext = context;
         mCurrencies = currencies;
-    }
-
-
-    @Override
-    public String getItem(int position) {
-        return mCurrencies.get(position);
     }
 
     @Override
@@ -75,22 +68,19 @@ public class CurrencyAdapter extends ArrayAdapter<String> implements Filterable 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResCurrencySpinner, parent, false);
 
-        String pair = mCurrencies.get(position);
-
+        CurrencyEntry pair = mCurrencies.get(position);
         TextView code = (TextView) convertView.findViewById(R.id.textview_currency);
-        String[] tuple = pair.split(" - ");
         if (mResCurrencySpinner == R.layout.item_currency_spinner) {
             TextView desc = (TextView) convertView.findViewById(R.id.textview_description);
-            if (tuple.length == 2) {
-                code.setText(tuple[0]);
-                desc.setText(tuple[1]);
-            } else {
-                code.setText(tuple[0]);
-                desc.setText("");
-            }
+            code.setText(pair.code);
+            desc.setText(pair.description);
         } else {
-            code.setText(tuple[0]);
+            code.setText(pair.code);
         }
         return convertView;
     }
+
+	public View getDropDownView(int position, View convertView, ViewGroup parent) {
+		return getView(position, convertView, parent);
+	}
 }

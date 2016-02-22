@@ -394,7 +394,7 @@ public class PluginFramework {
             JSONObject object = new JSONObject();
             object.put("id", wallet.id());
             object.put("name", wallet.name());
-            object.put("currencyNum", wallet.currencyNum());
+            object.put("currency", wallet.currencyCode());
             object.put("balance", wallet.balance());
             return object;
         }
@@ -591,14 +591,14 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
-        public String satoshiToCurrency(long satoshi, int currencyNum) {
-            double currency = account.SatoshiToCurrency(satoshi, currencyNum);
-            return jsonResult(new JsonValue<Double>(currency)).toString();
+        public String satoshiToCurrency(long satoshi, String currency) {
+            double amount = account.SatoshiToCurrency(satoshi, currency);
+            return jsonResult(new JsonValue<Double>(amount)).toString();
         }
 
         @JavascriptInterface
-        public String currencyToSatoshi(String currency, int currencyNum) {
-            long satoshi = account.CurrencyToSatoshi(Double.parseDouble(currency), currencyNum);
+        public String currencyToSatoshi(String amountFiat, String currency) {
+            long satoshi = account.CurrencyToSatoshi(Double.parseDouble(amountFiat), currency);
             return jsonResult(new JsonValue<Long>(satoshi)).toString();
         }
 
@@ -609,8 +609,8 @@ public class PluginFramework {
         }
 
         @JavascriptInterface
-        public String formatCurrency(String currency, int currencyNum, boolean withSymbol) {
-            String formatted = account.formatCurrency(Double.parseDouble(currency), currencyNum, withSymbol);
+        public String formatCurrency(String amountFiat, String currency, boolean withSymbol) {
+            String formatted = account.formatCurrency(Double.parseDouble(amountFiat), currency, withSymbol);
             return jsonResult(new JsonValue<String>(formatted)).toString();
         }
 

@@ -86,7 +86,6 @@ import android.widget.Toast;
 
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
 import co.airbitz.core.Wallet;
@@ -1115,15 +1114,15 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.meta().fiat() == 0.0) {
-            currencyValue = mAccount.FormatCurrency(coinValue, mWallet.currencyNum(),
+            currencyValue = mAccount.FormatCurrency(coinValue, mWallet.currencyCode(),
                     false, false);
         } else {
             currencyValue = mAccount.formatCurrency(transaction.meta().fiat(),
-                    mWallet.currencyNum(), false);
+                    mWallet.currencyCode(), false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(Currencies.instance().currencyCodeLookup(mWallet.currencyNum()));
+        mFiatDenominationLabel.setText(mWallet.currencyCode());
 
         mBitcoinSignTextview.setText(mAccount.getDefaultBTCDenomination());
 

@@ -73,7 +73,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private boolean mLoading;
     private boolean mSearch;
     private boolean mIsBitcoin = true;
-    private int mCurrencyNum;
+    private String mCurrencyCode;
     private Account mAccount;
     private List<Transaction> mListTransaction;
     private long[] mRunningSatoshi;
@@ -100,7 +100,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
-        mCurrencyNum = mWallet.currencyNum();
+        mCurrencyCode = mWallet.currencyCode();
     }
 
     public void setLoading(boolean loading) {
@@ -239,8 +239,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.creditAmountTextView.setText(btcCurrency);
 
             String fiatCurrency = "";
-            if (mWallet != null && mWallet.currencyNum() != -1) {
-                fiatCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
+            if (mWallet != null && mWallet.isSynced()) {
+                fiatCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyCode, false, true);
             } else {
                 fiatCurrency = "";
             }
@@ -267,8 +267,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
             } else {
-                String walletCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyNum, false, true);
-                String totalCurrency = mAccount.FormatCurrency(mRunningSatoshi[position], mCurrencyNum, false, true);
+                String walletCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyCode, false, true);
+                String totalCurrency = mAccount.FormatCurrency(mRunningSatoshi[position], mCurrencyCode, false, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
                 viewHolder.runningTotalTextView.setText(totalCurrency);

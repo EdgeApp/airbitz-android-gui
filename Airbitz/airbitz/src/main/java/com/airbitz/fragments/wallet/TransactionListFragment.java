@@ -67,7 +67,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 
@@ -462,10 +461,10 @@ public class TransactionListFragment extends WalletBaseFragment
                 totalSatoshis += t.amount();
             }
 
-            mBottomType.setText(Currencies.instance().currencyCodeLookup(mWallet.currencyNum()));
+            mBottomType.setText(mWallet.currencyCode());
             mTopType.setText(mAccount.getDefaultBTCDenomination());
             mBitCoinBalanceButton.setText(mAccount.formatSatoshi(totalSatoshis, true));
-            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.currencyNum(), false, true);
+            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.currencyCode(), false, true);
             mFiatBalanceButton.setText(temp);
 
             if (mOnBitcoinMode) {

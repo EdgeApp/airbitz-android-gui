@@ -1146,11 +1146,9 @@ public class NavigationActivity extends ActionBarActivity
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.amount() == 0.0) {
-            currencyValue = account.FormatCurrency(transaction.amount(), wallet.currencyNum(),
-                    false, true);
+            currencyValue = account.FormatCurrency(transaction.amount(), wallet.currencyCode(), false, true);
         } else {
-            currencyValue = account.formatCurrency(transaction.amount(),
-                    wallet.currencyNum(), true);
+            currencyValue = account.formatCurrency(transaction.amount(), wallet.currencyCode(), true);
         }
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         if(withTeaching) {
@@ -1906,9 +1904,9 @@ public class NavigationActivity extends ActionBarActivity
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
             AccountSettings settings = account.settings();
             if (settings != null) {
-                return account.createWallet(walletName, settings.getCurrencyNum());
+                return account.createWallet(walletName, settings.currencyCode());
             } else {
-                return account.createWallet(walletName, Currencies.instance().defaultCurrencyNum());
+                return account.createWallet(walletName, Currencies.instance().defaultCurrency().code);
             }
         }
 
@@ -2389,10 +2387,10 @@ public class NavigationActivity extends ActionBarActivity
                     if (account != null) {
                         AccountSettings settings = account.settings();
                         if (settings != null) {
-                            mDrawerExchange.setText(account.BTCtoFiatConversion(settings.getCurrencyNum()));
+                            mDrawerExchange.setText(account.BTCtoFiatConversion(settings.currencyCode()));
                             mDrawerExchangeUpdated = true;
                         } else {
-                            mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrencyNum()));
+                            mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrency().code));
                             mDrawerExchangeUpdated = true;
                         }
                     }
@@ -2632,9 +2630,9 @@ public class NavigationActivity extends ActionBarActivity
             Account account = AirbitzApplication.getAccount();
             AccountSettings settings = account.settings();
             if (settings != null) {
-                mDrawerExchange.setText(account.BTCtoFiatConversion(settings.getCurrencyNum()));
+                mDrawerExchange.setText(account.BTCtoFiatConversion(settings.currencyCode()));
             } else {
-                mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrencyNum()));
+                mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrency().code));
             }
 
         }

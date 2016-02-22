@@ -114,9 +114,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private TextView mConversionTextView;
     private Button mMaxButton;
     private Button mChangeFiatButton;
-    private int mCurrencyNum;
+    private String mCurrency;
     private boolean mSendConfirmationOverrideCurrencyMode = false;
-    private int mSendConfirmationCurrencyNumOverride;
+    private String mSendConfirmationCurrencyOverride;
 
     private Bundle bundle;
 
@@ -453,10 +453,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mChangeFiatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = Currencies.instance().getCurrencyCode(mCurrencyNum);
-
                 CurrencyFragment fragment = new CurrencyFragment();
-                fragment.setSelected(code);
+                fragment.setSelected(mCurrency);
                 fragment.setOnCurrencySelectedListener(SendConfirmationFragment.this);
 
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
@@ -527,8 +525,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     }
 
     @Override
-    public void onCurrencySelected(int num) {
-        mSendConfirmationCurrencyNumOverride = num;
+    public void onCurrencySelected(String code) {
+        mSendConfirmationCurrencyOverride = code;
         mSendConfirmationOverrideCurrencyMode = true;
         updateTextFieldContents(mBtcMode);
     }
@@ -580,13 +578,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private void updateTextFieldContents(boolean btc) {
         mAutoUpdatingTextFields = true;
         if (mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
+            mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrencyNum = mWallet.currencyNum();
+            mCurrency = mWallet.currencyCode();
         }
 
-        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
-        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
+        mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
+        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrency));
 
         if (!mLocked) {
             if (btc) {
@@ -595,10 +593,10 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 if (TextUtils.isEmpty(mBitcoinField.getText())) {
                     mFiatField.setText("");
                 } else {
-                    mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                    mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrency, false, false));
                 }
             } else {
-                long satoshi = mAccount.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
+                long satoshi = mAccount.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrency);
                 mAmountToSendSatoshi = satoshi;
                 mSpendTarget.setSpendAmount(satoshi);
                 if (TextUtils.isEmpty(mFiatField.getText())) {
@@ -649,12 +647,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAutoUpdatingTextFields = true;
         int color;
         if (mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
+            mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrencyNum = mWallet.currencyNum();
+            mCurrency = mWallet.currencyCode();
         }
 
-        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
+        mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
 
         if (error == null || 0 == mAmountToSendSatoshi) {
             if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
@@ -674,15 +672,15 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 String coinFeeString = "+ " + mAccount.formatSatoshi(fees, false);
                 mBTCDenominationTextView.setText(coinFeeString + " " + mAccount.getDefaultBTCDenomination());
 
-                double fiatFee = mAccount.SatoshiToCurrency(fees, mCurrencyNum);
-                String fiatFeeString = "+ " + mAccount.formatCurrency(fiatFee, mCurrencyNum, false);
-                mFiatDenominationTextView.setText(fiatFeeString + " " + Currencies.instance().getCurrencyAcronym(mCurrencyNum));
-                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
+                double fiatFee = mAccount.SatoshiToCurrency(fees, mCurrency);
+                String fiatFeeString = "+ " + mAccount.formatCurrency(fiatFee, mCurrency, false);
+                mFiatDenominationTextView.setText(fiatFeeString + " " + mCurrency);
+                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrency));
 
                 mSlideLayout.setVisibility(View.VISIBLE);
                 if (0 == mAmountToSendSatoshi) {
                     mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
-                    mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
+                    mFiatDenominationTextView.setText(mCurrency);
                 }
             }
         } else {
@@ -691,7 +689,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
             mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
-            mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
+            mFiatDenominationTextView.setText(mCurrency);
             mConversionTextView.setTextColor(Color.RED);
             mBitcoinField.setTextColor(Color.RED);
             mFiatField.setTextColor(Color.RED);
@@ -911,15 +909,15 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         if (mSendConfirmationOverrideCurrencyMode) {
-            mCurrencyNum = mSendConfirmationCurrencyNumOverride;
+            mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrencyNum = mWallet.currencyNum();
+            mCurrency = mWallet.currencyCode();
         }
 
         if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
             if (mWallet != null) {
-                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrency, false, false));
             }
             calculateFees();
         } else {
@@ -938,9 +936,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBTCSignTextview.setTypeface(mBitcoinTypeface);
         mBTCSignTextview.setText(mAccount.getUserBTCSymbol());
         mBTCDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
-        mFiatDenominationTextView.setText(Currencies.instance().getCurrencyAcronym(mCurrencyNum));
-        mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
-        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
+        mFiatDenominationTextView.setText(mCurrency);
+        mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
+        mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrency));
 
         mAutoUpdatingTextFields = false;
 
@@ -1012,9 +1010,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mAmountToSendSatoshi = max;
                 mSpendTarget.setSpendAmount(max);
                 mAutoUpdatingTextFields = true;
-                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
-                mFiatSignTextView.setText(Currencies.instance().getCurrencyDenomination(mCurrencyNum));
-                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrencyNum));
+                mFiatField.setText(mAccount.FormatCurrency(mAmountToSendSatoshi, mCurrency, false, false));
+                mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
+                mConversionTextView.setText(mAccount.BTCtoFiatConversion(mCurrency));
                 mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
 
                 checkAuthorization();

@@ -313,12 +313,12 @@ public class WalletsFragment extends WalletBaseFragment implements
             mLatestWalletList.addAll(walletList);
         }
         long totalSatoshis = 0;
-        int currencyNum;
+        String currencyCode;
         AccountSettings settings = mAccount.settings();
         if (settings != null) {
-            currencyNum = settings.getCurrencyNum();
+            currencyCode = settings.currencyCode();
         } else {
-            currencyNum = Currencies.instance().defaultCurrencyNum();
+            currencyCode = Currencies.instance().defaultCurrency().code;
         }
 
         for (WalletWrapper w : walletList) {
@@ -328,18 +328,18 @@ public class WalletsFragment extends WalletBaseFragment implements
         }
         mWalletAdapter.swapWallets();
         mWalletAdapter.setIsBitcoin(mOnBitcoinMode);
-        mWalletAdapter.setCurrencyNum(currencyNum);
+        mWalletAdapter.setCurrency(currencyCode);
         mWalletAdapter.setArchiveButtonState(!archiveClosed);
         mWalletListView.setArchiveClosed(archiveClosed);
         mWalletAdapter.notifyDataSetChanged();
 
         if (mHeaderTotal != null && null != mWallet) {
-            mFiatSelect.setText(Currencies.instance().currencyCodeLookup(currencyNum));
+            mFiatSelect.setText(currencyCode);
             mBitcoinSelect.setText(mAccount.getDefaultBTCDenomination());
             if (mOnBitcoinMode) {
                 mHeaderTotal.setText(mAccount.formatSatoshi(totalSatoshis, true));
             } else {
-                mHeaderTotal.setText(mAccount.FormatCurrency(totalSatoshis, currencyNum, false, true));
+                mHeaderTotal.setText(mAccount.FormatCurrency(totalSatoshis, currencyCode, false, true));
             }
         }
     }
