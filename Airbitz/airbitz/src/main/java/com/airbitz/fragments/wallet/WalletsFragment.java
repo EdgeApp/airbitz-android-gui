@@ -311,6 +311,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         if (walletList != null && !walletList.isEmpty()) {
             mLatestWalletList.clear();
             mLatestWalletList.addAll(walletList);
+            mWalletAdapter.updateArchive();
         }
         long totalSatoshis = 0;
         String currencyCode;

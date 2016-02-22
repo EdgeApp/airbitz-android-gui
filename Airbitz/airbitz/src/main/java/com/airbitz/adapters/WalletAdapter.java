@@ -206,37 +206,26 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
             convertView = inflater.inflate(R.layout.item_listview_wallets_archive_header, parent, false);
             TextView textView = (TextView) convertView.findViewById(R.id.item_listview_wallets_archive_header_text);
             final ImageView imageButton = (ImageView) convertView.findViewById(R.id.item_listview_wallets_archive_header_image);
-            if (wallet.isArchiveHeader()) {
-                imageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(mHeaderButtonListener != null) {
-                            mHeaderButtonListener.OnHeaderButtonPressed();
-                        }
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mHeaderButtonListener != null) {
+                        mHeaderButtonListener.OnHeaderButtonPressed();
                     }
-                });
-                textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
-                mArchiveButton = imageButton;
-                imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
-                if (mArchiveOpen) {
-                    mArchiveButton.setRotation(180);
                 }
-                archivePos = position;
+            });
+            textView.setText(mContext.getString(R.string.fragment_wallets_list_archive_title));
+            mArchiveButton = imageButton;
+            imageButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.collapse_up));
+            if (mArchiveOpen) {
+                mArchiveButton.setRotation(180);
+            }
+            archivePos = position;
 
-                if (hoverSecondHeader) {
-                    convertView.setVisibility(View.INVISIBLE);
-                } else {
-                    convertView.setVisibility(View.VISIBLE);
-                }
+            if (hoverSecondHeader) {
+                convertView.setVisibility(View.INVISIBLE);
             } else {
-                textView.setText("");
-                textView.setBackgroundResource(android.R.color.transparent);
-                imageButton.setImageResource(android.R.color.transparent);
-                if (hoverFirstHeader) {
-                    convertView.setVisibility(View.INVISIBLE);
-                } else {
-                    convertView.setVisibility(View.VISIBLE);
-                }
+                convertView.setVisibility(View.VISIBLE);
             }
         } else {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
