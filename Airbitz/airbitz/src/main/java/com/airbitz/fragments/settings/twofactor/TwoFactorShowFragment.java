@@ -258,7 +258,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onPostExecute(final AirbitzException error) {
             onCancelled();
-            updateTwoFactorUI(mAccount.isTwoFactorOn());
+            updateTwoFactorUI(mAccount.isOtpEnabled());
             if (error == null) {
                 checkSecret(mMsg);
             } else {
@@ -274,16 +274,16 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void checkSecret(boolean bMsg) {
-        if (mAccount.isTwoFactorOn()) {
-            if (mAccount.getTwoFactorSecret() == null) {
+        if (mAccount.isOtpEnabled()) {
+            if (mAccount.otpSecret() == null) {
                 mQRViewLayout.setVisibility(View.GONE);
             } else {
                 mQRViewLayout.setVisibility(View.VISIBLE);
             }
         }
-        showQrCode(mAccount.isTwoFactorOn());
+        showQrCode(mAccount.isOtpEnabled());
 
-        if (mAccount.getTwoFactorSecret() != null) {
+        if (mAccount.otpSecret() != null) {
             mActivity.showModalProgress(true);
             checkRequest();
             if (bMsg) {
@@ -298,7 +298,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void showQrCode(boolean show) {
         if (show) {
-            Bitmap bitmap = mAccount.getTwoFactorQRCodeBitmap();
+            Bitmap bitmap = mAccount.otpQrCodeBitmap();
             if(bitmap != null) {
                 bitmap = Common.AddWhiteBorder(bitmap);
                 mQRView.setImageBitmap(bitmap);
@@ -338,7 +338,7 @@ public class TwoFactorShowFragment extends BaseFragment
         AirbitzException error = null;
         boolean pending = false;
         try {
-            pending = mCoreAPI.isTwoFactorResetPending(AirbitzApplication.getUsername());
+            pending = mCoreAPI.isOtpResetPending(AirbitzApplication.getUsername());
         } catch (AirbitzException e) {
             error = e;
         }
@@ -378,7 +378,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mAccount.passwordOk(mPassword.getText().toString());
+            return mAccount.checkPassword(mPassword.getText().toString());
         }
 
         @Override
@@ -446,7 +446,7 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private void confirmRequest() {
-        if (mAccount.passwordOk(mPassword.getText().toString())) {
+        if (mAccount.checkPassword(mPassword.getText().toString())) {
             mConfirmRequestTask = new ConfirmRequestTask();
             mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {
@@ -492,7 +492,7 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     private void cancelRequest() {
-        if (mAccount.passwordOk(mPassword.getText().toString())) {
+        if (mAccount.checkPassword(mPassword.getText().toString())) {
             mCancelRequestTask = new CancelRequestTask();
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         } else {

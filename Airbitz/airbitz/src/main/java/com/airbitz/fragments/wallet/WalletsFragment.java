@@ -336,11 +336,12 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         if (mHeaderTotal != null && null != mWallet) {
             mFiatSelect.setText(currencyCode);
-            mBitcoinSelect.setText(mAccount.getDefaultBTCDenomination());
+
+            mBitcoinSelect.setText(CoreWrapper.defaultBTCDenomination(mAccount));
             if (mOnBitcoinMode) {
                 mHeaderTotal.setText(mAccount.formatSatoshi(totalSatoshis, true));
             } else {
-                mHeaderTotal.setText(mAccount.FormatCurrency(totalSatoshis, currencyCode, false, true));
+                mHeaderTotal.setText(mAccount.formatCurrency(totalSatoshis, currencyCode, false, true));
             }
         }
     }

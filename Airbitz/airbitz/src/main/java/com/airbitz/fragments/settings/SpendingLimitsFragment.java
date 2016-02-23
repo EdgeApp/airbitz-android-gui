@@ -188,11 +188,11 @@ public class SpendingLimitsFragment extends BaseFragment
 
         mDailyEditText.setText(mAccount.formatSatoshi(CoreWrapper.getDailySpendLimit(mActivity, mAccount), false));
         mDailySwitch.setChecked(CoreWrapper.getDailySpendLimitSetting(mActivity, mAccount));
-        mDailyDenominationTextView.setText(mAccount.getUserBTCSymbol());
+        mDailyDenominationTextView.setText(CoreWrapper.userBtcSymbol(mAccount));
 
         mPINSwitch.setChecked(CoreWrapper.getPinSpendLimitSetting(mAccount));
         mPINEditText.setText(mAccount.formatSatoshi(CoreWrapper.getPinSpendLimit(mAccount), false));
-        mPINDenominationTextView.setText(mAccount.getUserBTCSymbol());
+        mPINDenominationTextView.setText(CoreWrapper.userBtcSymbol(mAccount));
         adjustTextColors();
     }
 

@@ -65,11 +65,13 @@ import co.airbitz.core.AccountSettings;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.PasswordRule;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.objects.PinSetupTask;
 import com.airbitz.utils.Common;
 
 import java.util.List;
@@ -443,7 +445,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
             // if the mPassword is wrong
-            if (!mAccount.passwordOk(mUserNameEditText.getText().toString())) {
+            if (!mAccount.checkPassword(mUserNameEditText.getText().toString())) {
                 bUserNameFieldIsValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_incorrect_current_password));
             }
@@ -579,11 +581,11 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mAccount.recoverySetup(answers);
                 } else {
-                    mAccount.SetPin(mPin);
+                    mAccount.pin(mPin);
                     AccountSettings settings = mAccount.settings();
                     if (settings != null) {
-                        if (!settings.getBDisablePINLogin()) {
-                            mAccount.pinSetup();
+                        if (!settings.disablePINLogin()) {
+                            pinSetup();
                         }
                     }
                 }
@@ -594,16 +596,20 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             return true;
         }
 
+        private void pinSetup() {
+            new PinSetupTask(mActivity, mAccount).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        }
+
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
-                    mAccount.pinSetup();
+                    pinSetup();
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     try {
-                        mAccount.SetPin(mPin);
-                        mAccount.pinSetup();
+                        mAccount.pin(mPin);
+                        pinSetup();
                     } catch (AirbitzException e) {
                         AirbitzCore.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:");
                     }

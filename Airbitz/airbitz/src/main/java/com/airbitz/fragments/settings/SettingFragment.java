@@ -76,15 +76,18 @@ import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Currencies;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
+import com.airbitz.objects.PinSetupTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -277,12 +280,12 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
-                if(isChecked && mCoreSettings.getBDisablePINLogin()) {
+                if(isChecked && mCoreSettings.disablePINLogin()) {
                     AirbitzCore.debugLevel(1, "Enabling PIN");
-                    new mPinSetupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                    new PinSetupTask(mActivity, mAccount).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                 } else if(!isChecked) {
                     AirbitzCore.debugLevel(1, "Disabling PIN");
-                    mCoreSettings.setBDisablePINLogin(true);
+                    mCoreSettings.disablePINLogin(true);
                     try {
                         mCoreSettings.save();
                         mAccount.pinLoginDelete(AirbitzApplication.getUsername());
@@ -391,31 +394,29 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
     private void loadSettings(AccountSettings settings) {
         //Bitcoin denomination
-        BitcoinDenomination denomination = settings.getBitcoinDenomination();
+        BitcoinDenomination denomination = settings.bitcoinDenomination();
         if (denomination != null) {
-            if (denomination.getDenominationType() == Account.ABC_DENOMINATION_BTC) {
+            if (denomination.getDenominationType() == BitcoinDenomination.BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
-            } else if (denomination.getDenominationType() == Account.ABC_DENOMINATION_MBTC) {
+            } else if (denomination.getDenominationType() == BitcoinDenomination.MBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_mbitcoin);
-            } else if (denomination.getDenominationType() == Account.ABC_DENOMINATION_UBTC) {
+            } else if (denomination.getDenominationType() == BitcoinDenomination.UBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_ubitcoin);
             }
         }
 
-        //Credentials
-
         //User Name
-        mSendNameSwitch.setChecked(settings.getBNameOnPayments());
-        mFirstEditText.setText(settings.getFirstName());
-        mLastEditText.setText(settings.getLastName());
-        mNicknameEditText.setText(settings.getNickname());
+        mSendNameSwitch.setChecked(settings.nameOnPayments());
+        mFirstEditText.setText(settings.firstName());
+        mLastEditText.setText(settings.lastName());
+        mNicknameEditText.setText(settings.nickname());
 
 
         //Options
         //Autologoff
-        mAutoLogoffManager.setSeconds(settings.getSecondsAutoLogout());
+        mAutoLogoffManager.setSeconds(settings.secondsAutoLogout());
         // Pin Relogin
-        mPinReloginSwitch.setChecked(!settings.getBDisablePINLogin());
+        mPinReloginSwitch.setChecked(!settings.disablePINLogin());
         // NFC
         if (mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());
@@ -430,8 +431,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mDefaultDistanceButton.setText(getResources().getStringArray(R.array.distance_list)[getDistancePref()]);
 
         //Default Exchange
-        mExchanges = mCoreAPI.getExchangeRateSources();
-        mExchangeButton.setText(mCoreSettings.getExchangeRateSource());
+        mExchanges = mCoreAPI.exchangeRateSources();
+        mExchangeButton.setText(mCoreSettings.exchangeRateSource());
     }
 
     private void saveDenomination() {
@@ -439,14 +440,14 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mCoreSettings = mAccount.settings();
         }
         //Bitcoin denomination
-        BitcoinDenomination denomination = mCoreSettings.getBitcoinDenomination();
+        BitcoinDenomination denomination = mCoreSettings.bitcoinDenomination();
         if (denomination != null) {
             if (mmBitcoinButton.isChecked()) {
-                denomination.setDenominationType(Account.ABC_DENOMINATION_MBTC);
+                denomination.setDenominationType(BitcoinDenomination.MBTC);
             } else if (muBitcoinButton.isChecked()) {
-                denomination.setDenominationType(Account.ABC_DENOMINATION_UBTC);
+                denomination.setDenominationType(BitcoinDenomination.UBTC);
             } else {
-                denomination.setDenominationType(Account.ABC_DENOMINATION_BTC);
+                denomination.setDenominationType(BitcoinDenomination.BTC);
             }
         }
     }
@@ -463,13 +464,13 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //User Name
         mCoreSettings.showNameOnPayments(mSendNameSwitch.isChecked());
-        mCoreSettings.setFirstName(mFirstEditText.getText().toString());
-        mCoreSettings.setLastName(mLastEditText.getText().toString());
-        mCoreSettings.setNickName(mNicknameEditText.getText().toString());
+        mCoreSettings.firstName(mFirstEditText.getText().toString());
+        mCoreSettings.lastName(mLastEditText.getText().toString());
+        mCoreSettings.nickName(mNicknameEditText.getText().toString());
 
         //Options
         //Autologoff
-        mCoreSettings.setSecondsAutoLogout(mAutoLogoffManager.getSeconds());
+        mCoreSettings.secondsAutoLogout(mAutoLogoffManager.getSeconds());
 
         //PinRelogin is saved during click
 
@@ -481,7 +482,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         // Default Currency
         mCoreSettings.currencyCode(mCurrencyCode);
-        mCoreSettings.setExchangeRateSource(mExchangeButton.getText().toString());
+        mCoreSettings.exchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {
             try {
@@ -793,42 +794,6 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mDialog.show();
         }
     }
-
-    /**
-     * Save Questions if Signing up or Changing questions
-     */
-    public class mPinSetupTask extends AsyncTask<Void, Void, Void> {
-
-        mPinSetupTask() { }
-
-        @Override
-        public void onPreExecute() {
-            mActivity.showModalProgress(true);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            mAccount.pinSetupBlocking();
-            mCoreSettings.setBDisablePINLogin(false);
-            try {
-                mCoreSettings.save();
-            } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "SettingFragment mPinSetupTask error");
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final Void success) {
-            onCancelled();
-        }
-
-        @Override
-        protected void onCancelled() {
-            mActivity.showModalProgress(false);
-        }
-    }
-
 
     private boolean isNFCcapable() {
         final NfcManager nfcManager = (NfcManager) getActivity().getSystemService(Context.NFC_SERVICE);

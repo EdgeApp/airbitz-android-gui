@@ -204,7 +204,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         data = mWallet.seed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
@@ -239,7 +239,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String data = null;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         data = mWallet.seed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
@@ -268,7 +268,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 Wallet wallet = mWallet;
                 String dataOrFile;
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         dataOrFile = mWallet.seed();
                     } else {
                         dataOrFile = null;
@@ -305,7 +305,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             @Override
             public void onClick(View view) {
                 if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.name() + " " + getString(R.string.export_saving_option_private_seed),
                             mWallet.seed());
                     } else {

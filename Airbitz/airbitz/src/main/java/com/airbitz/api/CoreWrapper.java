@@ -34,23 +34,33 @@ package com.airbitz.api;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AccountSettings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
+import co.airbitz.core.BitcoinDenomination;
+import co.airbitz.core.Currencies;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class CoreWrapper {
+    public static double SATOSHI_PER_BTC = 1E8;
+    public static double SATOSHI_PER_mBTC = 1E5;
+    public static double SATOSHI_PER_uBTC = 1E2;
+
     public static void setupAccount(Context context, Account account) {
         final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        account.setCallbacks(new Account.Callbacks() {
+        account.callbacks(new Account.Callbacks() {
             public void userRemotePasswordChange() {
                 manager.sendBroadcast(new Intent(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
             }
@@ -141,12 +151,12 @@ public class CoreWrapper {
 
     public static boolean getDailySpendLimitSetting(Context context, Account account) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        if (prefs.contains(Constants.DAILY_LIMIT_SETTING_PREF + account.getUsername())) {
-            return prefs.getBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.getUsername(), true);
+        if (prefs.contains(Constants.DAILY_LIMIT_SETTING_PREF + account.username())) {
+            return prefs.getBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.username(), true);
         } else {
             AccountSettings settings = account.settings();
             if (settings != null) {
-                return settings.getBDailySpendLimit();
+                return settings.dailySpendLimit();
             }
             return false;
         }
@@ -157,13 +167,13 @@ public class CoreWrapper {
         if (settings == null) {
             return;
         }
-        settings.setBDailySpendLimit(set);
+        settings.dailySpendLimit(set);
         try {
             settings.save();
 
             SharedPreferences prefs = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.getUsername(), set);
+            editor.putBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.username(), set);
             editor.apply();
         } catch (AirbitzException e) {
             AirbitzCore.debugLevel(1, "SetDailySpendLimitSetting error:");
@@ -172,12 +182,12 @@ public class CoreWrapper {
 
    public static long getDailySpendLimit(Context context, Account account) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        if (prefs.contains(Constants.DAILY_LIMIT_PREF + account.getUsername())) {
-            return prefs.getLong(Constants.DAILY_LIMIT_PREF + account.getUsername(), 0);
+        if (prefs.contains(Constants.DAILY_LIMIT_PREF + account.username())) {
+            return prefs.getLong(Constants.DAILY_LIMIT_PREF + account.username(), 0);
         } else {
             AccountSettings settings = account.settings();
             if (settings != null) {
-                return settings.getDailySpendLimitSatoshis();
+                return settings.dailySpendLimitSatoshis();
             }
             return 0;
         }
@@ -188,13 +198,13 @@ public class CoreWrapper {
         if (settings == null) {
             return;
         }
-        settings.setDailySpendLimitSatoshis(spendLimit);
+        settings.dailySpendLimitSatoshis(spendLimit);
         try {
             settings.save();
 
             SharedPreferences prefs = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(Constants.DAILY_LIMIT_PREF + account.getUsername(), spendLimit);
+            editor.putLong(Constants.DAILY_LIMIT_PREF + account.username(), spendLimit);
             editor.apply();
         } catch (AirbitzException e) {
             AirbitzCore.debugLevel(1, "setDailySpendSatoshis error:");
@@ -204,7 +214,7 @@ public class CoreWrapper {
     public static boolean getPinSpendLimitSetting(Account account) {
         AccountSettings settings = account.settings();
         if (settings != null) {
-            return settings.getSpendRequirePin();
+            return settings.spendRequirePin();
         }
         return true;
     }
@@ -214,7 +224,7 @@ public class CoreWrapper {
         if (settings == null) {
             return;
         }
-        settings.setSpendRequirePin(set);
+        settings.spendRequirePin(set);
         try {
             settings.save();
         } catch (AirbitzException e) {
@@ -225,7 +235,7 @@ public class CoreWrapper {
     public static long getPinSpendLimit(Account account) {
         AccountSettings settings = account.settings();
         if (settings != null) {
-            return settings.getSpendRequirePinSatoshis();
+            return settings.spendRequirePinSatoshis();
         }
         return 0;
     }
@@ -235,7 +245,7 @@ public class CoreWrapper {
         if (settings == null) {
             return;
         }
-        settings.setSpendRequirePinSatoshis(spendLimit);
+        settings.spendRequirePinSatoshis(spendLimit);
         try {
             settings.save();
         } catch (AirbitzException e) {
@@ -254,7 +264,7 @@ public class CoreWrapper {
     }
 
     public static boolean tooMuchFiat(Account account, String fiat, String currencyCode) {
-        double maxFiat = account.SatoshiToCurrency((long) Constants.MAX_SATOSHI, currencyCode);
+        double maxFiat = account.satoshiToCurrency((long) Constants.MAX_SATOSHI, currencyCode);
         double val = 0.0;
         try {
             val = Double.parseDouble(fiat);
@@ -279,9 +289,9 @@ public class CoreWrapper {
         if (settings == null) {
             return;
         }
-        int reminderCount = settings.settings().getRecoveryReminderCount();
+        int reminderCount = settings.recoveryReminderCount();
         reminderCount += val;
-        settings.settings().setRecoveryReminderCount(reminderCount);
+        settings.recoveryReminderCount(reminderCount);
         try {
             settings.save();
         } catch (AirbitzException e) {
@@ -292,7 +302,7 @@ public class CoreWrapper {
     public static boolean needsRecoveryReminder(Account account, Wallet wallet) {
         AccountSettings settings = account.settings();
         if (settings != null) {
-            int reminderCount = settings.settings().getRecoveryReminderCount();
+            int reminderCount = settings.recoveryReminderCount();
             if (reminderCount >= RECOVERY_REMINDER_COUNT) {
                 // We reminded them enough
                 return false;
@@ -303,7 +313,7 @@ public class CoreWrapper {
                 return false;
             }
 
-            if (account.hasRecoveryQuestionsSet()) {
+            if (AirbitzCore.getApi().accountHasRecovery(account.username())) {
                 // Recovery questions already set
                 clearRecoveryReminder(account);
                 return false;
@@ -329,4 +339,115 @@ public class CoreWrapper {
         return sum;
     }
 
+    public static String defaultBTCDenomination(Account account) {
+        AccountSettings settings = account.settings();
+        if(settings == null) {
+            return "";
+        }
+        BitcoinDenomination bitcoinDenomination =
+            settings.bitcoinDenomination();
+        if (bitcoinDenomination == null) {
+            AirbitzCore.debugLevel(1, "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return bitcoinDenomination.btcLabel();
+    }
+
+    public static boolean incrementPinCount(Account account) {
+        AccountSettings settings = account.settings();
+        if (settings == null) {
+            return false;
+        }
+        int pinLoginCount = settings.pinLoginCount();
+        pinLoginCount++;
+        settings.pinLoginCount(pinLoginCount);
+        try {
+            settings.save();
+            if (pinLoginCount == 3
+                    || pinLoginCount == 10
+                    || pinLoginCount == 40
+                    || pinLoginCount == 100) {
+                return true;
+            }
+        } catch (AirbitzException e) {
+            AirbitzCore.debugLevel(1, "incrementPinCount error:");
+            return false;
+        }
+        return false;
+    }
+
+    public static String userBtcSymbol(Account account) {
+        AccountSettings settings = account.settings();
+        if (settings == null) {
+            return "";
+        }
+        BitcoinDenomination bitcoinDenomination =
+            settings.bitcoinDenomination();
+        if (bitcoinDenomination == null) {
+            AirbitzCore.debugLevel(1, "Bad bitcoin denomination from core settings");
+            return "";
+        }
+        return bitcoinDenomination.btcSymbol();
+    }
+
+    public static String btcToFiatConversion(Account account, String currency) {
+        AccountSettings settings = account.settings();
+        if (settings != null) {
+            BitcoinDenomination denomination =
+                settings.bitcoinDenomination();
+            long satoshi = 100;
+            int fiatDecimals = 2;
+            String amtBTCDenom = "1 ";
+            if (denomination != null) {
+                switch (denomination.getDenominationType()) {
+                    case BitcoinDenomination.BTC:
+                        satoshi = (long) SATOSHI_PER_BTC;
+                        fiatDecimals = 2;
+                        amtBTCDenom = "1 ";
+                        break;
+                    case BitcoinDenomination.MBTC:
+                        satoshi = (long) SATOSHI_PER_mBTC;
+                        fiatDecimals = 3;
+                        amtBTCDenom = "1 ";
+                        break;
+                    case BitcoinDenomination.UBTC:
+                        satoshi = (long) SATOSHI_PER_uBTC;
+                        fiatDecimals = 3;
+                        amtBTCDenom = "1000 ";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            double o = account.satoshiToCurrency(satoshi, currency);
+            if (denomination.getDenominationType() == BitcoinDenomination.UBTC) {
+                // unit of 'bits' is so small it's useless to show it's conversion rate
+                // Instead show "1000 bits = $0.253 USD"
+                o = o * 1000;
+            }
+            String amount = account.formatCurrency(o, currency, true, fiatDecimals);
+            return amtBTCDenom + denomination.btcLabel() + " = " + amount + " " + currency;
+        }
+        return "";
+    }
+
+    public static String getSeedData() {
+        String strSeed = "";
+
+        strSeed += Build.MANUFACTURER;
+        strSeed += Build.DEVICE;
+        strSeed += Build.SERIAL;
+
+        long time = System.nanoTime();
+        ByteBuffer bb1 = ByteBuffer.allocate(8);
+        bb1.putLong(time);
+        strSeed += bb1.array();
+
+        Random r = new SecureRandom();
+        ByteBuffer bb2 = ByteBuffer.allocate(4);
+        bb2.putInt(r.nextInt());
+        strSeed += bb2.array();
+
+        return strSeed;
+    }
 }

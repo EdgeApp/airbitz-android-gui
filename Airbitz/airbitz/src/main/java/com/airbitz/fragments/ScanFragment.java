@@ -317,8 +317,8 @@ public abstract class ScanFragment
         super.onResume();
         if (mBeaconSend != null) {
             AccountSettings settings = mAccount.settings();
-            if (settings != null && settings.getBNameOnPayments()) {
-                String name = settings.getSzFullName();
+            if (settings != null && settings.nameOnPayments()) {
+                String name = settings.fullName();
                 mBeaconSend.setBroadcastName(name);
             } else {
                 mBeaconSend.setBroadcastName(

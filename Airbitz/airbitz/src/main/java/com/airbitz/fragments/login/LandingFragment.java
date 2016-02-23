@@ -437,7 +437,7 @@ public class LandingFragment extends BaseFragment implements
         setPinViews(0);
 
         mAccounts.clear();
-        mAccounts.addAll(mCoreAPI.listAccounts());
+        mAccounts.addAll(mCoreAPI.accountListLocal());
         if (mAccounts.isEmpty())
         {
             mUserNameEditText.setVisibility(View.GONE);
@@ -450,7 +450,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private List<String> otherAccounts(String username) {
-        List<String> accounts = mCoreAPI.listAccounts();
+        List<String> accounts = mCoreAPI.accountListLocal();
         List<String> others = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
             if(!accounts.get(i).equals(username)) {
@@ -463,7 +463,7 @@ public class LandingFragment extends BaseFragment implements
     private void showOthersList(boolean show)
     {
         mOtherAccounts.clear();
-        mOtherAccounts.addAll(mCoreAPI.listAccounts());
+        mOtherAccounts.addAll(mCoreAPI.accountListLocal());
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
             if(mOtherAccountsAdapter.getCount() > 4) {
@@ -496,7 +496,7 @@ public class LandingFragment extends BaseFragment implements
                             public void onClick(DialogInterface dialog, int id) {
                                 mUserNameEditText.setText("");
                                 mUsername = "";
-                                if (!mCoreAPI.deleteAccount(account)) {
+                                if (!mCoreAPI.accountDeleteLocal(account)) {
                                     mActivity.ShowFadingDialog("Account could not be deleted.");
                                 }
                                 showAccountsList(false);
@@ -526,7 +526,7 @@ public class LandingFragment extends BaseFragment implements
 
     private void showAccountsList(boolean show) {
         mAccounts.clear();
-        mAccounts.addAll(mCoreAPI.listAccounts());
+        mAccounts.addAll(mCoreAPI.accountListLocal());
         mAccountsAdapter.notifyDataSetChanged();
         if(show && !mAccounts.isEmpty()) {
             if(mAccountsAdapter.getCount() > 4) {
@@ -947,7 +947,7 @@ public class LandingFragment extends BaseFragment implements
         @Override
         protected String doInBackground(String... params) {
             try {
-                return mCoreAPI.getRecoveryQuestionsForUser(params[0]);
+                return mCoreAPI.recoveryQuestions(params[0]);
             } catch (AirbitzException e) {
                 AirbitzCore.debugLevel(1, "GetRecoveryQuestionsTask error:");
                 return e.getMessage();

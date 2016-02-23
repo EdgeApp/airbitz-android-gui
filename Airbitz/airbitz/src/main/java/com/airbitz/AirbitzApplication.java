@@ -100,10 +100,10 @@ public class AirbitzApplication extends Application {
     public static void Login(Account account) {
         sAccount = account;
         CoreWrapper.setupAccount(mContext, sAccount);
-        if (sAccount.getUsername() != null) {
+        if (sAccount.username() != null) {
             mLoginTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-            editor.putString(LOGIN_NAME, sAccount.getUsername());
+            editor.putString(LOGIN_NAME, sAccount.username());
             editor.apply();
         }
     }
@@ -115,7 +115,7 @@ public class AirbitzApplication extends Application {
     }
 
     public static String getUsername() {
-        return sAccount != null ? sAccount.getUsername() : null;
+        return sAccount != null ? sAccount.username() : null;
     }
 
     public static String getCurrentWallet() {

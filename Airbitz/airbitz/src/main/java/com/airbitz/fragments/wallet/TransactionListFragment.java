@@ -76,6 +76,7 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.adapters.WalletAdapter;
 import com.airbitz.api.Constants;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
@@ -462,9 +463,9 @@ public class TransactionListFragment extends WalletBaseFragment
             }
 
             mBottomType.setText(mWallet.currencyCode());
-            mTopType.setText(mAccount.getDefaultBTCDenomination());
+            mTopType.setText(CoreWrapper.defaultBTCDenomination(mAccount));
             mBitCoinBalanceButton.setText(mAccount.formatSatoshi(totalSatoshis, true));
-            String temp = mAccount.FormatCurrency(totalSatoshis, mWallet.currencyCode(), false, true);
+            String temp = mAccount.formatCurrency(totalSatoshis, mWallet.currencyCode(), false, true);
             mFiatBalanceButton.setText(temp);
 
             if (mOnBitcoinMode) {
@@ -529,7 +530,7 @@ public class TransactionListFragment extends WalletBaseFragment
     @Override
     public void onRefresh() {
         if (mWallet != null) {
-            mAccount.connectWatcher(mWallet.id());
+            mWallet.walletReconnect();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

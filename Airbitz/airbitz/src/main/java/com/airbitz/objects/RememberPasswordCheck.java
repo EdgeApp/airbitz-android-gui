@@ -174,7 +174,7 @@ public class RememberPasswordCheck {
 
         @Override
         protected Boolean doInBackground(String... passwords) {
-            return mAccount.passwordOk(passwords[0]);
+            return mAccount.checkPassword(passwords[0]);
         }
 
         @Override

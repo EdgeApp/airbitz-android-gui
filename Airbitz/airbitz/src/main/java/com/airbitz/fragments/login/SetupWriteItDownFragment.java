@@ -162,9 +162,9 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         account.startAllAsyncUpdates();
 
         AccountSettings settings = account.settings();
-        if (null != settings)
-            settings.setRecoveryReminderCount(0);
-
+        if (null != settings) {
+            settings.recoveryReminderCount(0);
+        }
         try {
             settings.save();
         } catch (AirbitzException e) {

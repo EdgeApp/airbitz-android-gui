@@ -138,7 +138,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         mUsername = bundle.getString(USERNAME);
 
         try {
-            String date = mCoreAPI.getTwoFactorDate();
+            String date = mCoreAPI.otpResetDate();
             if (date == null || date.isEmpty()) {
                 mResetDate.setVisibility(View.GONE);
                 mResetDescription.setVisibility(View.GONE);

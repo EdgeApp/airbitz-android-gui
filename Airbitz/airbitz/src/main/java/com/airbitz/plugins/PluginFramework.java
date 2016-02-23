@@ -56,6 +56,7 @@ import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.CoreWrapper;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -587,18 +588,18 @@ public class PluginFramework {
         @JavascriptInterface
         public String getBtcDenomination() {
             return jsonResult(
-                    new JsonValue<String>(account.getDefaultBTCDenomination())).toString();
+                    new JsonValue<String>(CoreWrapper.defaultBTCDenomination(account))).toString();
         }
 
         @JavascriptInterface
         public String satoshiToCurrency(long satoshi, String currency) {
-            double amount = account.SatoshiToCurrency(satoshi, currency);
+            double amount = account.satoshiToCurrency(satoshi, currency);
             return jsonResult(new JsonValue<Double>(amount)).toString();
         }
 
         @JavascriptInterface
         public String currencyToSatoshi(String amountFiat, String currency) {
-            long satoshi = account.CurrencyToSatoshi(Double.parseDouble(amountFiat), currency);
+            long satoshi = account.currencyToSatoshi(Double.parseDouble(amountFiat), currency);
             return jsonResult(new JsonValue<Long>(satoshi)).toString();
         }
 
@@ -719,7 +720,7 @@ public class PluginFramework {
 
     public void updateDenomation() {
         Account account = AirbitzApplication.getAccount();
-        String denomination = account.getDefaultBTCDenomination();
+        String denomination = CoreWrapper.defaultBTCDenomination(account);
         loadUrl(String.format(JS_DENOM_UPDATE, jsonResult(new JsonValue(denomination)).toString()));
     }
 

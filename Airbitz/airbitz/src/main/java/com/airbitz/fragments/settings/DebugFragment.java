@@ -137,21 +137,21 @@ public class DebugFragment extends BaseFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mAccount.stopWatchers();
-            mAccount.deleteWatcherCache();
-            mAccount.startWatchers();
-            mAccount.startBitcoinUpdates();
+            mAccount.stopAllAsyncUpdates();
             mAccount.waitOnWatchers();
+            mAccount.deleteWatcherCache();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
+            mAccount.startAllAsyncUpdates();
             lockButton(mClearWatchersButton, true);
         }
 
         @Override
         protected void onCancelled() {
+            mAccount.startAllAsyncUpdates();
             lockButton(mClearWatchersButton, true);
         }
     }

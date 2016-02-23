@@ -250,7 +250,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         protected String doInBackground(String... params) {
             String username = params[0];
             try {
-                return mCoreAPI.accountAvailable(username);
+                return mCoreAPI.usernameAvailable(username);
             } catch (AirbitzException e) {
                 AirbitzCore.debugLevel(1, "CheckUsernameTask error:");
                 return e.getMessage();

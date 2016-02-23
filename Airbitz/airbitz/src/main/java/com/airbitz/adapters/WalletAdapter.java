@@ -250,7 +250,7 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
                 amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().balance(), true));
             } else {
                 long satoshi = wallet.wallet().balance();
-                String temp = mAccount.FormatCurrency(satoshi, mCurrency, false, true);
+                String temp = mAccount.formatCurrency(satoshi, mCurrency, false, true);
                 amountTextView.setText(temp);
             }
 

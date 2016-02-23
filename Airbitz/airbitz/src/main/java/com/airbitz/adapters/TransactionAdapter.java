@@ -53,6 +53,7 @@ import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.utils.RoundedTransformation;
 
@@ -223,7 +224,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         viewHolder.nameTextView.setText(name);
 
         String btcSymbol;
-        String btcSymbolBalance = mAccount.getUserBTCSymbol();
+        String btcSymbolBalance = CoreWrapper.userBtcSymbol(mAccount);
         Boolean bPositive;
 
         if (transactionSatoshis < 0) {
@@ -240,7 +241,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
             String fiatCurrency = "";
             if (mWallet != null && mWallet.isSynced()) {
-                fiatCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyCode, false, true);
+                fiatCurrency = mAccount.formatCurrency(transactionSatoshis, mCurrencyCode, false, true);
             } else {
                 fiatCurrency = "";
             }
@@ -267,8 +268,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
             } else {
-                String walletCurrency = mAccount.FormatCurrency(transactionSatoshis, mCurrencyCode, false, true);
-                String totalCurrency = mAccount.FormatCurrency(mRunningSatoshi[position], mCurrencyCode, false, true);
+                String walletCurrency = mAccount.formatCurrency(transactionSatoshis, mCurrencyCode, false, true);
+                String totalCurrency = mAccount.formatCurrency(mRunningSatoshi[position], mCurrencyCode, false, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
                 viewHolder.runningTotalTextView.setText(totalCurrency);

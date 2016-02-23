@@ -391,10 +391,10 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         protected List<String> doInBackground(Void... params) {
             List<String> pendings = new ArrayList<String>();
 
-            List<String> accounts = mCoreAPI.listAccounts();
+            List<String> accounts = mCoreAPI.accountListLocal();
             for(String name : accounts) {
                 try {
-                    if (!name.isEmpty() && mCoreAPI.isTwoFactorResetPending(name)) {
+                    if (!name.isEmpty() && mCoreAPI.isOtpResetPending(name)) {
                         pendings.add(name);
                     }
                 } catch (AirbitzException e) {

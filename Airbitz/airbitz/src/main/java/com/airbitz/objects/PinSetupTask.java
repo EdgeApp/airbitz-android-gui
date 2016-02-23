@@ -31,29 +31,48 @@
 
 package com.airbitz.objects;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Build;
+
 import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 
-public class PasswordCheckRunnable implements Runnable {
-    private String mPassword;
-    private Account mAccount;
-    private OnPasswordCheckListener mListener;
+import com.airbitz.activities.NavigationActivity;
 
-    public interface OnPasswordCheckListener {
-        void onPasswordCheck(boolean passwordOkay);
-    }
+public class PinSetupTask extends AsyncTask<Void, Void, Void> {
+    Account mAccount;
+    NavigationActivity activity;
 
-    public PasswordCheckRunnable(Account account, String password, OnPasswordCheckListener listener) {
+    public PinSetupTask(NavigationActivity activity, Account account) {
         mAccount = account;
-        mPassword = password;
-        mListener = listener;
     }
 
-    public void run() {
-        boolean check = mAccount.checkPassword(mPassword);
-        if (mListener != null) {
-            mListener.onPasswordCheck(check);
-            mListener = null;
+    @Override
+    public void onPreExecute() {
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+        mAccount.pinSetup();
+        mAccount.settings().disablePINLogin(false);
+        try {
+            mAccount.settings().save();
+        } catch (AirbitzException e) {
+            AirbitzCore.debugLevel(1, "SettingFragment mPinSetupTask error");
         }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(final Void success) {
+        onCancelled();
+    }
+
+    @Override
+    protected void onCancelled() {
     }
 }
-

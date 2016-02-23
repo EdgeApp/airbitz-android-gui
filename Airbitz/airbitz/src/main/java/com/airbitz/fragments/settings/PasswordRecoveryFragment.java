@@ -306,7 +306,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         mQuestions = "";
         mAnswers = "";
 
-        if (mMode == CHANGE_QUESTIONS && !mAccount.passwordOk(mPasswordEditText.getText().toString())) {
+        if (mMode == CHANGE_QUESTIONS && !mAccount.checkPassword(mPasswordEditText.getText().toString())) {
             mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_incorrect_password));
             return;
         }
@@ -354,7 +354,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private void attemptCommitQuestions() {
         if (mMode == CHANGE_QUESTIONS) {
             String password = mPasswordEditText.getText().toString();
-            if (!mAccount.passwordExists() && !mAccount.passwordOk(password)) {
+            if (!mAccount.passwordExists() && !mAccount.checkPassword(password)) {
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_recovery_mismatch_title),
                         getResources().getString(R.string.fragment_recovery_mismatch_message));
                 return;
@@ -508,7 +508,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             }
 
             // If we have otp enabled, persist the token
-            String secret = mAccount.getTwoFactorSecret();
+            String secret = mAccount.otpSecret();
             if (secret != null) {
                 try {
                     mCoreAPI.otpKeySet(username, secret);

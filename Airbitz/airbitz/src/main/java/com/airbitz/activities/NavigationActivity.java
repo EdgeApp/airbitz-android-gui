@@ -127,6 +127,7 @@ import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.PasswordCheckReceiver;
+import com.airbitz.objects.PinSetupTask;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
@@ -469,10 +470,10 @@ public class NavigationActivity extends ActionBarActivity
 
     public static AirbitzCore initiateCore(Context context) {
         AirbitzCore api = AirbitzCore.getApi(context);
-        String seed = AirbitzCore.getSeedData();
+        String seed = CoreWrapper.getSeedData();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        api.init(context, airbitzApiKey, hiddenbitzKey, seed, seed.length());
+        api.init(context, airbitzApiKey, hiddenbitzKey, seed);
         return api;
     }
 
@@ -1146,7 +1147,7 @@ public class NavigationActivity extends ActionBarActivity
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.amount() == 0.0) {
-            currencyValue = account.FormatCurrency(transaction.amount(), wallet.currencyCode(), false, true);
+            currencyValue = account.formatCurrency(transaction.amount(), wallet.currencyCode(), false, true);
         } else {
             currencyValue = account.formatCurrency(transaction.amount(), wallet.currencyCode(), true);
         }
@@ -1315,8 +1316,8 @@ public class NavigationActivity extends ActionBarActivity
         checkFirstWalletSetup();
         AccountSettings settings = account.settings();
         if (settings != null) {
-            if (!settings.getBDisablePINLogin() && passwordLogin) {
-                account.pinSetup();
+            if (!settings.disablePINLogin() && passwordLogin) {
+                new PinSetupTask(this, account).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
         }
 
@@ -1330,7 +1331,7 @@ public class NavigationActivity extends ActionBarActivity
         boolean checkPassword = false;
         // if the user has a password, increment PIN login count
         if (account.passwordExists()) {
-            checkPassword = account.incrementPinCount();
+            checkPassword = CoreWrapper.incrementPinCount(account);
         }
 
         if (!passwordLogin && !account.passwordExists()) {
@@ -1522,7 +1523,7 @@ public class NavigationActivity extends ActionBarActivity
         Account account = AirbitzApplication.getAccount();
         AccountSettings settings = account.settings();
         if (settings != null) {
-            if (milliDelta > settings.getSecondsAutoLogout() * 1000) {
+            if (milliDelta > settings.secondsAutoLogout() * 1000) {
                 Logout();
                 return true;
             }
@@ -1542,7 +1543,7 @@ public class NavigationActivity extends ActionBarActivity
     public void LoginNow(Account account, boolean newDevice) {
         AirbitzApplication.Login(account);
         UserJustLoggedIn(account.wasPasswordLogin(), newDevice);
-        mDrawerAccount.setText(account.getUsername());
+        mDrawerAccount.setText(account.username());
     }
 
     Runnable mProgressDialogKiller = new Runnable() {
@@ -1897,7 +1898,6 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         protected Boolean doInBackground(Void... params) {
             Account account = AirbitzApplication.getAccount();
-            account.SetupDefaultCurrency();
 
             // Create the Wallet
             String walletName =
@@ -2387,10 +2387,10 @@ public class NavigationActivity extends ActionBarActivity
                     if (account != null) {
                         AccountSettings settings = account.settings();
                         if (settings != null) {
-                            mDrawerExchange.setText(account.BTCtoFiatConversion(settings.currencyCode()));
+                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
                             mDrawerExchangeUpdated = true;
                         } else {
-                            mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrency().code));
+                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
                             mDrawerExchangeUpdated = true;
                         }
                     }
@@ -2514,7 +2514,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private List<String> otherAccounts(String username) {
-        List<String> accounts = mCoreAPI.listAccounts();
+        List<String> accounts = mCoreAPI.accountListLocal();
         List<String> others = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
             if(!accounts.get(i).equals(username)) {
@@ -2540,7 +2540,7 @@ public class NavigationActivity extends ActionBarActivity
                 .setPositiveButton(getResources().getString(R.string.string_yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if (!mCoreAPI.deleteAccount(account)) {
+                                if (!mCoreAPI.accountDeleteLocal(account)) {
                                     ShowFadingDialog("Account could not be deleted.");
                                 }
                                 showOthersList("", false);
@@ -2630,9 +2630,9 @@ public class NavigationActivity extends ActionBarActivity
             Account account = AirbitzApplication.getAccount();
             AccountSettings settings = account.settings();
             if (settings != null) {
-                mDrawerExchange.setText(account.BTCtoFiatConversion(settings.currencyCode()));
+                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
             } else {
-                mDrawerExchange.setText(account.BTCtoFiatConversion(Currencies.instance().defaultCurrency().code));
+                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
             }
 
         }

@@ -415,20 +415,20 @@ public class RequestFragment extends WalletBaseFragment implements
         if (null != mWallet){
             if (mAmountIsBitcoin) {
                 long satoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
-                String currency = mAccount.FormatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false);
-                mDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+                String currency = mAccount.formatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false);
+                mDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherDenominationTextView.setText(mWallet.currencyCode());
                 mOtherAmountTextView.setText(currency);
             } else {
                 long satoshi = mAccount.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.currencyCode());
                 mDenominationTextView.setText(mWallet.currencyCode());
-                mOtherDenominationTextView.setText(mAccount.getDefaultBTCDenomination());
+                mOtherDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherAmountTextView.setText(mAccount.formatSatoshi(satoshi, false));
             }
             if (TextUtils.isEmpty(mAmountField.getText())) {
                 mOtherAmountTextView.setText("");
             }
-            mConverterTextView.setText(mAccount.BTCtoFiatConversion(mWallet.currencyCode()));
+            mConverterTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mWallet.currencyCode()));
             updateMode();
         }
     }
@@ -490,8 +490,8 @@ public class RequestFragment extends WalletBaseFragment implements
     public void onResume() {
         super.onResume();
         AccountSettings settings = mAccount.settings();
-        if (settings != null && settings.getBNameOnPayments()) {
-            String name = settings.getSzFullName();
+        if (settings != null && settings.nameOnPayments()) {
+            String name = settings.fullName();
             mBeaconRequest.setBroadcastName(name);
         } else {
             mBeaconRequest.setBroadcastName(
@@ -635,8 +635,8 @@ public class RequestFragment extends WalletBaseFragment implements
         String name = getString(R.string.request_qr_unknown);
         AccountSettings settings = mAccount.settings();
         if (settings != null) {
-            if (settings.getBNameOnPayments()) {
-                name = settings.getSzFullName();
+            if (settings.nameOnPayments()) {
+                name = settings.fullName();
                 if (name == null) {
                     name = getString(R.string.request_qr_unknown);
                 }
@@ -680,8 +680,8 @@ public class RequestFragment extends WalletBaseFragment implements
         String name = getString(R.string.request_qr_unknown);
         AccountSettings settings = mAccount.settings();
         if (settings != null) {
-            if (settings.getBNameOnPayments()) {
-                name = settings.getSzFullName();
+            if (settings.nameOnPayments()) {
+                name = settings.fullName();
             }
         }
 
@@ -799,7 +799,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mDessertView.getLine2().setText(mAccount.formatSatoshi(amount, true));
         mDessertView.getLine3().setVisibility(View.VISIBLE);
         mDessertView.getLine3().setText(
-            mAccount.FormatCurrency(amount, mWallet.currencyCode(), false, true));
+            mAccount.formatCurrency(amount, mWallet.currencyCode(), false, true));
         mDessertView.show();
 
         createNewQRBitmap();
@@ -1053,7 +1053,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
-                    mAmountField.setText(mAccount.FormatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false));
+                    mAmountField.setText(mAccount.formatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false));
                 }
             } else {
                 AirbitzCore.debugLevel(1, "Too much bitcoin");
@@ -1136,7 +1136,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public void onRefresh() {
         if (mWallet != null) {
-            mAccount.connectWatcher(mWallet.id());
+            mWallet.walletReconnect();
         }
         mActivity.showModalProgress(true);
         new Handler().postDelayed(new Runnable() {
