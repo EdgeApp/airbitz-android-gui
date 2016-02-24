@@ -48,6 +48,7 @@ import android.widget.EditText;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.R;
@@ -170,23 +171,25 @@ public class ImportFragment extends ScanFragment {
         String entry = token != null ? token : uriString;
 
         showBusyLayout(entry, true);
-        mSweptAddress = mWallet.sweepKey(entry);
+        try {
+            mSweptAddress = mWallet.sweepKey(entry);
 
-        if (mSweptAddress != null && !mSweptAddress.isEmpty()) {
-            mHandler.postDelayed(sweepNotFoundRunner, 30000);
+            if (mSweptAddress != null && !mSweptAddress.isEmpty()) {
+                mHandler.postDelayed(sweepNotFoundRunner, 30000);
 
-            if(token != null) { // also issue hidden bits
-                int hBitzIDLength = 4;
-                if(mSweptAddress.length() >= hBitzIDLength) {
-                    String lastFourChars = mSweptAddress.substring(mSweptAddress.length() - hBitzIDLength, mSweptAddress.length());
-                    HiddenBitsApiTask task = new HiddenBitsApiTask();
-                    task.execute(lastFourChars);
-                }
-                else {
-                    AirbitzCore.debugLevel(1, "HiddenBits token error");
+                if(token != null) { // also issue hidden bits
+                    int hBitzIDLength = 4;
+                    if(mSweptAddress.length() >= hBitzIDLength) {
+                        String lastFourChars = mSweptAddress.substring(mSweptAddress.length() - hBitzIDLength, mSweptAddress.length());
+                        HiddenBitsApiTask task = new HiddenBitsApiTask();
+                        task.execute(lastFourChars);
+                    }
+                    else {
+                        AirbitzCore.debugLevel(1, "HiddenBits token error");
+                    }
                 }
             }
-        } else {
+        } catch (AirbitzException e) {
             showBusyLayout(null, false);
             showMessageAndStartCameraDialog(R.string.import_title, R.string.import_wallet_private_key_invalid);
         }

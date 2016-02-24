@@ -64,53 +64,68 @@ public class CoreWrapper {
             public void userRemotePasswordChange() {
                 manager.sendBroadcast(new Intent(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
             }
+
             public void userLoggedOut() {
             }
+
             public void userAccountChanged() {
                 manager.sendBroadcast(new Intent(Constants.DATASYNC_UPDATE_ACTION));
             }
+
             public void userWalletsLoading() {
                 manager.sendBroadcast(new Intent(Constants.WALLET_LOADING_START_ACTION));
             }
+
             public void userWalletStatusChange(int loaded, int total) {
                 Intent intent = new Intent(Constants.WALLET_LOADING_STATUS_ACTION);
                 intent.putExtra(Constants.WALLETS_LOADED_TOTAL, loaded);
                 intent.putExtra(Constants.WALLETS_TOTAL, total);
                 manager.sendBroadcast(intent);
             }
+
             public void userWalletsLoaded() {
                 manager.sendBroadcast(
                     new Intent(Constants.WALLETS_ALL_LOADED_ACTION));
             }
+
             public void userWalletsChanged() {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
+
             public void userOTPRequired(String secret) {
                 Intent intent = new Intent(Constants.OTP_ERROR_ACTION);
                 intent.putExtra(Constants.OTP_SECRET, secret);
                 manager.sendBroadcast(intent);
             }
+
             public void userOtpResetPending() {
                 manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
             }
+
             public void userExchangeRateChanged() {
                 manager.sendBroadcast(new Intent(Constants.EXCHANGE_RATE_UPDATED_ACTION));
             }
+
             public void userBlockHeightChanged() {
                 manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
             }
+
             public void userBalanceUpdate() {
+                manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
+
             public void userIncomingBitcoin(Wallet wallet, Transaction transaction) {
                 Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
+                manager.sendBroadcast(intent);
             }
-            public void userSweep(Wallet wallet, Transaction transaction) {
+
+            public void userSweep(Wallet wallet, Transaction transaction, long amountSwept) {
                 Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
-                intent.putExtra(Constants.AMOUNT_SWEPT, transaction.amount());
+                intent.putExtra(Constants.AMOUNT_SWEPT, amountSwept);
                 manager.sendBroadcast(intent);
             }
 

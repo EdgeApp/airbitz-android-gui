@@ -45,10 +45,13 @@ import com.airbitz.activities.NavigationActivity;
 
 public class PinSetupTask extends AsyncTask<Void, Void, Void> {
     Account mAccount;
-    NavigationActivity activity;
+    NavigationActivity mActivity;
+    String mPin;
 
-    public PinSetupTask(NavigationActivity activity, Account account) {
+    public PinSetupTask(NavigationActivity activity, Account account, String pin) {
         mAccount = account;
+        mPin = pin;
+        mActivity = activity;
     }
 
     @Override
@@ -57,9 +60,8 @@ public class PinSetupTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        mAccount.pinSetup();
-        mAccount.settings().disablePINLogin(false);
         try {
+            mAccount.pinSetup(mPin);
             mAccount.settings().save();
         } catch (AirbitzException e) {
             AirbitzCore.debugLevel(1, "SettingFragment mPinSetupTask error");

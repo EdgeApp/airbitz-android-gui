@@ -280,15 +280,17 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
-                if(isChecked && mCoreSettings.disablePINLogin()) {
-                    AirbitzCore.debugLevel(1, "Enabling PIN");
-                    new PinSetupTask(mActivity, mAccount).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-                } else if(!isChecked) {
-                    AirbitzCore.debugLevel(1, "Disabling PIN");
-                    mCoreSettings.disablePINLogin(true);
+                if(isChecked && mCoreSettings.disablePinLogin()) {
+                    mAccount.settings().disablePinLogin(false);
                     try {
                         mCoreSettings.save();
-                        mAccount.pinLoginDelete(AirbitzApplication.getUsername());
+                    } catch (AirbitzException e) {
+                        AirbitzCore.debugLevel(1, "SettingFragment PINLoginDelete error");
+                    }
+                } else if(!isChecked) {
+                    mCoreSettings.disablePinLogin(true);
+                    try {
+                        mCoreSettings.save();
                     } catch (AirbitzException e) {
                         AirbitzCore.debugLevel(1, "SettingFragment PINLoginDelete error");
                     }
@@ -416,7 +418,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Autologoff
         mAutoLogoffManager.setSeconds(settings.secondsAutoLogout());
         // Pin Relogin
-        mPinReloginSwitch.setChecked(!settings.disablePINLogin());
+        mPinReloginSwitch.setChecked(!settings.disablePinLogin());
         // NFC
         if (mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());

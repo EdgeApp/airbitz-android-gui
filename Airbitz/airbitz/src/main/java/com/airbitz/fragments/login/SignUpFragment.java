@@ -581,13 +581,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mAccount.recoverySetup(answers);
                 } else {
-                    mAccount.pin(mPin);
-                    AccountSettings settings = mAccount.settings();
-                    if (settings != null) {
-                        if (!settings.disablePINLogin()) {
-                            pinSetup();
-                        }
-                    }
+                    pinSetup(mPin);
                 }
             } catch (AirbitzException e) {
                 mFailureException = e;
@@ -596,23 +590,16 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             return true;
         }
 
-        private void pinSetup() {
-            new PinSetupTask(mActivity, mAccount).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        private void pinSetup(String pin) {
+            new PinSetupTask(mActivity, mAccount, pin).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
-                    pinSetup();
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    try {
-                        mAccount.pin(mPin);
-                        pinSetup();
-                    } catch (AirbitzException e) {
-                        AirbitzCore.debugLevel(1, "SignUpFragment SetPIN/PinSetup error:");
-                    }
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal());

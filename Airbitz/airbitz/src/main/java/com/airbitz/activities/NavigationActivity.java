@@ -127,7 +127,6 @@ import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.PasswordCheckReceiver;
-import com.airbitz.objects.PinSetupTask;
 import com.airbitz.objects.RememberPasswordCheck;
 import com.airbitz.objects.UserReview;
 import com.airbitz.plugins.BuySellFragment;
@@ -1314,12 +1313,6 @@ public class NavigationActivity extends ActionBarActivity
             switchFragmentThread(Tabs.WALLET.ordinal(), false);
         }
         checkFirstWalletSetup();
-        AccountSettings settings = account.settings();
-        if (settings != null) {
-            if (!settings.disablePINLogin() && passwordLogin) {
-                new PinSetupTask(this, account).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-            }
-        }
 
         List<String> cats = account.categories().list();
         if (cats.size() == 0) {
