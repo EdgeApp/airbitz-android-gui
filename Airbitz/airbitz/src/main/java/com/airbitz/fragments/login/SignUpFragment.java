@@ -61,7 +61,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.PasswordRule;

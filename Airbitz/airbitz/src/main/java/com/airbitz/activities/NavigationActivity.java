@@ -89,7 +89,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.Categories;
 import co.airbitz.core.Currencies;
 import co.airbitz.core.AirbitzCore;
@@ -1219,7 +1219,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void updateWalletListener() {
-        AirbitzApplication.getAccount().reloadWallets();
+        if (null != AirbitzApplication.getAccount()) {
+            AirbitzApplication.getAccount().reloadWallets();
+        }
     }
 
     private void gotoDetailsNow() {
@@ -1391,7 +1393,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void Logout() {
-        if(mNavStacks[mNavThreadId].size()>1) { // ensure onPause called
+        mHandler.post(mHideSnack);
+        if (mNavStacks[mNavThreadId].size() > 1) { // ensure onPause called
             Fragment fragment = mNavStacks[mNavThreadId].peek();
             getFragmentManager().executePendingTransactions();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -1514,7 +1517,7 @@ public class NavigationActivity extends ActionBarActivity
 
         AirbitzCore.debugLevel(1, "delta logout time = " + milliDelta);
         Account account = AirbitzApplication.getAccount();
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             if (milliDelta > settings.secondsAutoLogout() * 1000) {
                 Logout();
@@ -1895,7 +1898,7 @@ public class NavigationActivity extends ActionBarActivity
             // Create the Wallet
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
-            AccountSettings settings = account.settings();
+            Settings settings = account.settings();
             if (settings != null) {
                 return account.createWallet(walletName, settings.currencyCode());
             } else {
@@ -2424,7 +2427,7 @@ public class NavigationActivity extends ActionBarActivity
                 if (!mDrawerExchangeUpdated) {
                     Account account = AirbitzApplication.getAccount();
                     if (account != null) {
-                        AccountSettings settings = account.settings();
+                        Settings settings = account.settings();
                         if (settings != null) {
                             mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
                             mDrawerExchangeUpdated = true;
@@ -2673,7 +2676,7 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             Account account = AirbitzApplication.getAccount();
-            AccountSettings settings = account.settings();
+            Settings settings = account.settings();
             if (settings != null) {
                 mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
             } else {

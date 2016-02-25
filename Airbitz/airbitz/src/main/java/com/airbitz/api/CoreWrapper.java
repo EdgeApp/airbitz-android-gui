@@ -38,7 +38,7 @@ import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
@@ -175,7 +175,7 @@ public class CoreWrapper {
         if (prefs.contains(Constants.DAILY_LIMIT_SETTING_PREF + account.username())) {
             return prefs.getBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.username(), true);
         } else {
-            AccountSettings settings = account.settings();
+            Settings settings = account.settings();
             if (settings != null) {
                 return settings.dailySpendLimit();
             }
@@ -184,7 +184,7 @@ public class CoreWrapper {
     }
 
     public static void setDailySpendLimitSetting(Context context, Account account, boolean set) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return;
         }
@@ -206,7 +206,7 @@ public class CoreWrapper {
         if (prefs.contains(Constants.DAILY_LIMIT_PREF + account.username())) {
             return prefs.getLong(Constants.DAILY_LIMIT_PREF + account.username(), 0);
         } else {
-            AccountSettings settings = account.settings();
+            Settings settings = account.settings();
             if (settings != null) {
                 return settings.dailySpendLimitSatoshis();
             }
@@ -215,7 +215,7 @@ public class CoreWrapper {
     }
 
     public static void setDailySpendSatoshis(Context context, Account account, long spendLimit) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return;
         }
@@ -233,7 +233,7 @@ public class CoreWrapper {
     }
 
     public static boolean getPinSpendLimitSetting(Account account) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             return settings.spendRequirePin();
         }
@@ -241,7 +241,7 @@ public class CoreWrapper {
     }
 
     public static void setPinSpendLimitSetting(Context context, Account account, boolean set) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return;
         }
@@ -254,7 +254,7 @@ public class CoreWrapper {
     }
 
     public static long getPinSpendLimit(Account account) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             return settings.spendRequirePinSatoshis();
         }
@@ -262,7 +262,7 @@ public class CoreWrapper {
     }
 
     public static void setPinSpendSatoshis(Context context, Account account, long spendLimit) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return;
         }
@@ -306,7 +306,7 @@ public class CoreWrapper {
     }
 
     private static void incRecoveryReminder(Account account, int val) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return;
         }
@@ -321,7 +321,7 @@ public class CoreWrapper {
     }
 
     public static boolean needsRecoveryReminder(Account account, Wallet wallet) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             int reminderCount = settings.recoveryReminderCount();
             if (reminderCount >= RECOVERY_REMINDER_COUNT) {
@@ -361,7 +361,7 @@ public class CoreWrapper {
     }
 
     public static String defaultBTCDenomination(Account account) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if(settings == null) {
             return "";
         }
@@ -375,7 +375,7 @@ public class CoreWrapper {
     }
 
     public static boolean incrementPinCount(Account account) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return false;
         }
@@ -398,7 +398,7 @@ public class CoreWrapper {
     }
 
     public static String userBtcSymbol(Account account) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings == null) {
             return "";
         }
@@ -412,7 +412,7 @@ public class CoreWrapper {
     }
 
     public static String btcToFiatConversion(Account account, String currency) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             BitcoinDenomination denomination =
                 settings.bitcoinDenomination();
@@ -473,7 +473,7 @@ public class CoreWrapper {
     }
 
     public static String formatDefaultCurrency(Account account, double in) {
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (settings != null) {
             String pre = settings.bitcoinDenomination().btcSymbol();
             String out = String.format("%.3f", in);

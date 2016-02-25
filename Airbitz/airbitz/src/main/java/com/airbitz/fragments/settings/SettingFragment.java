@@ -46,7 +46,6 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -70,8 +69,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import static android.provider.Settings.ACTION_BLUETOOTH_SETTINGS;
+
 import co.airbitz.core.Account;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
 import co.airbitz.core.AirbitzCore;
@@ -135,7 +136,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private AirbitzCore mCoreAPI;
     private Account mAccount;
     private View mView;
-    private AccountSettings mCoreSettings;
+    private Settings mCoreSettings;
     private NavigationActivity mActivity;
 
     @Override
@@ -337,7 +338,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         });
 
-        AccountSettings settings = mAccount.settings();
+        Settings settings = mAccount.settings();
         if (settings != null) {
             mCurrencyCode = settings.currencyCode();
         } else {
@@ -394,7 +395,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         }
     }
 
-    private void loadSettings(AccountSettings settings) {
+    private void loadSettings(Settings settings) {
         //Bitcoin denomination
         BitcoinDenomination denomination = settings.bitcoinDenomination();
         if (denomination != null) {
@@ -872,7 +873,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (SettingFragment.this.isAdded()) {
-                                    startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
+                                    startActivity(new Intent(ACTION_BLUETOOTH_SETTINGS));
                                 }
                                 dialog.cancel();
                             }

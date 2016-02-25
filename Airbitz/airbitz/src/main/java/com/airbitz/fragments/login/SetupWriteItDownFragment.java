@@ -50,7 +50,7 @@ import com.airbitz.activities.NavigationActivity;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -161,7 +161,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         Account account = AirbitzApplication.getAccount();
         account.startAllAsyncUpdates();
 
-        AccountSettings settings = account.settings();
+        Settings settings = account.settings();
         if (null != settings) {
             settings.recoveryReminderCount(0);
         }

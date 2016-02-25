@@ -84,7 +84,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Currencies;
 import co.airbitz.core.ReceiveAddress;
@@ -413,7 +413,6 @@ public class RequestFragment extends WalletBaseFragment implements
     private void updateConversion() {
         if (null != mWallet){
             if (mAmountIsBitcoin) {
-                long satoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
                 String currency = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false);
                 mDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherDenominationTextView.setText(mWallet.currencyCode());
@@ -484,7 +483,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        AccountSettings settings = mAccount.settings();
+        Settings settings = mAccount.settings();
         if (settings != null && settings.nameOnPayments()) {
             String name = settings.fullName();
             mBeaconRequest.setBroadcastName(name);
@@ -628,7 +627,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mAccount.settings();
+        Settings settings = mAccount.settings();
         if (settings != null) {
             if (settings.nameOnPayments()) {
                 name = settings.fullName();
@@ -673,7 +672,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         getString(R.string.app_name)));
 
         String name = getString(R.string.request_qr_unknown);
-        AccountSettings settings = mAccount.settings();
+        Settings settings = mAccount.settings();
         if (settings != null) {
             if (settings.nameOnPayments()) {
                 name = settings.fullName();

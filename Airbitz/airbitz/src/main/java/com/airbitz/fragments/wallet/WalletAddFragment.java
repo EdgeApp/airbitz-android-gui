@@ -56,7 +56,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.utils.Common;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Currencies;
 import co.airbitz.core.Currencies.CurrencyEntry;
@@ -117,7 +117,7 @@ public class WalletAddFragment extends BaseFragment
         mCurrencyList = Currencies.instance().getCurrencies();
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, R.layout.item_currency_small, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
-        AccountSettings settings = mAccount.settings();
+        Settings settings = mAccount.settings();
         String currencyCode;
         if (settings != null) {
             currencyCode = settings.currencyCode();

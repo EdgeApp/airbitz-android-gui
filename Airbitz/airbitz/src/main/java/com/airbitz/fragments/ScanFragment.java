@@ -69,7 +69,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import co.airbitz.core.AccountSettings;
+import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Wallet;
 
@@ -316,7 +316,7 @@ public abstract class ScanFragment
     public void onResume() {
         super.onResume();
         if (mBeaconSend != null) {
-            AccountSettings settings = mAccount.settings();
+            Settings settings = mAccount.settings();
             if (settings != null && settings.nameOnPayments()) {
                 String name = settings.fullName();
                 mBeaconSend.setBroadcastName(name);
