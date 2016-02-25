@@ -464,9 +464,10 @@ public class TransactionListFragment extends WalletBaseFragment
 
             mBottomType.setText(mWallet.currencyCode());
             mTopType.setText(CoreWrapper.defaultBTCDenomination(mAccount));
-            mBitCoinBalanceButton.setText(mAccount.formatSatoshi(totalSatoshis, true));
-            String temp = mAccount.formatCurrency(totalSatoshis, mWallet.currencyCode(), false, true);
-            mFiatBalanceButton.setText(temp);
+            mBitCoinBalanceButton.setText(
+				mAccount.formatSatoshi(totalSatoshis, true));
+            mFiatBalanceButton.setText(
+				CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currencyCode(), true));
 
             if (mOnBitcoinMode) {
                 mButtonMover.setText(mBitCoinBalanceButton.getText());

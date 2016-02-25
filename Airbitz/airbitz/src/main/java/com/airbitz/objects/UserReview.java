@@ -95,7 +95,7 @@ public class UserReview {
     public static boolean transactionCountTriggered() {
         if(AirbitzApplication.isLoggedIn()) {
             Account account = AirbitzApplication.getAccount();
-            List<Wallet> walletList = account.getWallets();
+            List<Wallet> walletList = account.wallets();
             if (null != walletList) {
                 int transactionCount = 0;
                 for (Wallet wallet : walletList) {

@@ -732,6 +732,8 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
                 mPinEditText.requestFocus();
             } else if (mFailureException.isOtpError()) {
+                AirbitzApplication.setOtpError(true);
+                AirbitzApplication.setOtpResetDate(mFailureException.otpResetDate());
                 launchTwoFactorMenu();
             } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
@@ -829,6 +831,8 @@ public class LandingFragment extends BaseFragment implements
             mPasswordEditText.setText("");
             mActivity.LoginNow(account, mFirstLogin);
         } else if (error.isOtpError()) {
+            AirbitzApplication.setOtpError(true);
+            AirbitzApplication.setOtpResetDate(error.otpResetDate());
             launchTwoFactorMenu();
         } else {
             mActivity.ShowFadingDialog(error.getMessage());

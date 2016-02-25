@@ -81,6 +81,7 @@ public class TwoFactorShowFragment extends BaseFragment
     private LinearLayout mRequestView;
     private AirbitzCore mCoreAPI;
     private Account mAccount;
+    private boolean isOtpEnabled = false;;
 
     CompoundButton.OnCheckedChangeListener mStateListener = new CompoundButton.OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -159,7 +160,6 @@ public class TwoFactorShowFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
-
         initUI();
     }
 
@@ -213,7 +213,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void updateTwoFactorUI(boolean enabled) {
         mRequestView.setVisibility(View.GONE);
-        mImportButton.setVisibility(mAccount.hasOTPError() ? View.VISIBLE : View.GONE);
+        mImportButton.setVisibility(AirbitzApplication.hasOtpError() ? View.VISIBLE : View.GONE);
         quietlyFlipSwitch(enabled);
         mEnabledSwitch.setText(getString(enabled ? R.string.fragment_twofactor_show_enabled : R.string.fragment_twofactor_show_disabled));
         mQRViewLayout.setVisibility(enabled ? View.VISIBLE : View.GONE);
@@ -235,9 +235,11 @@ public class TwoFactorShowFragment extends BaseFragment
     private CheckStatusTask mCheckStatusTask;
     public class CheckStatusTask extends AsyncTask<Void, Void, AirbitzException> {
         boolean mMsg;
+        boolean mEnabled;
 
         CheckStatusTask(boolean bMsg) {
             mMsg = bMsg;
+            mEnabled = false;
         }
 
         @Override
@@ -248,7 +250,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected AirbitzException doInBackground(Void... params) {
             try {
-                mAccount.otpAuthGet();
+                mEnabled = mAccount.otpAuthGet();
                 return null;
             } catch (AirbitzException e) {
                 return e;
@@ -258,7 +260,8 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected void onPostExecute(final AirbitzException error) {
             onCancelled();
-            updateTwoFactorUI(mAccount.isOtpEnabled());
+            isOtpEnabled = mEnabled;
+            updateTwoFactorUI(isOtpEnabled);
             if (error == null) {
                 checkSecret(mMsg);
             } else {
@@ -274,14 +277,14 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void checkSecret(boolean bMsg) {
-        if (mAccount.isOtpEnabled()) {
+        if (isOtpEnabled) {
             if (mAccount.otpSecret() == null) {
                 mQRViewLayout.setVisibility(View.GONE);
             } else {
                 mQRViewLayout.setVisibility(View.VISIBLE);
             }
         }
-        showQrCode(mAccount.isOtpEnabled());
+        showQrCode(isOtpEnabled);
 
         if (mAccount.otpSecret() != null) {
             mActivity.showModalProgress(true);
@@ -422,7 +425,11 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mAccount.otpSetup();
+                if (isChecked) {
+                    mAccount.otpSetup();
+                } else {
+                    mAccount.otpDisable();
+                }
                 return true;
             } catch (AirbitzException e) {
                 AirbitzCore.debugLevel(1, "SwitchFlippedTask error");
@@ -434,7 +441,8 @@ public class TwoFactorShowFragment extends BaseFragment
         protected void onPostExecute(final Boolean success) {
             onCancelled();
             if (success) {
-                updateTwoFactorUI(this.isChecked);
+                isOtpEnabled = isChecked;
+                updateTwoFactorUI(isOtpEnabled);
                 checkSecret(true);
             }
         }

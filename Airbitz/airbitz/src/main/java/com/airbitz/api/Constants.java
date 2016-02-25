@@ -67,6 +67,8 @@ public class Constants {
 
     public static final String OTP_ERROR_ACTION = "com.airbitz.notifications.otp_error_action";
     public static final String OTP_RESET_ACTION = "com.airbitz.notifications.otp_reset_action";
+    public static final String OTP_SKEW_ACTION = "com.airbitz.notifications.otp_skew_action";
+    public static final String OTP_RESET_DATE = "com.airbitz.otp_reset_date";
     public static final String OTP_SECRET = "com.airbitz.otp_secret";
 
     public static final String AMOUNT_SWEPT = "co.airbitz.amount_swept";

@@ -48,6 +48,8 @@ import co.airbitz.core.Wallet;
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,36 +94,40 @@ public class CoreWrapper {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
 
-            public void userOTPRequired(String secret) {
+            public void otpSkew() {
+                manager.sendBroadcast(new Intent(Constants.OTP_SKEW_ACTION));
+            }
+
+            public void otpRequired(String resetDate) {
                 Intent intent = new Intent(Constants.OTP_ERROR_ACTION);
-                intent.putExtra(Constants.OTP_SECRET, secret);
+                intent.putExtra(Constants.OTP_RESET_DATE, resetDate);
                 manager.sendBroadcast(intent);
             }
 
-            public void userOtpResetPending() {
+            public void otpResetPending() {
                 manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
             }
 
-            public void userExchangeRateChanged() {
+            public void exchangeRateChanged() {
                 manager.sendBroadcast(new Intent(Constants.EXCHANGE_RATE_UPDATED_ACTION));
             }
 
-            public void userBlockHeightChanged() {
+            public void blockHeightChanged() {
                 manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
             }
 
-            public void userBalanceUpdate() {
+            public void balanceUpdate() {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
 
-            public void userIncomingBitcoin(Wallet wallet, Transaction transaction) {
+            public void incomingBitcoin(Wallet wallet, Transaction transaction) {
                 Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
                 manager.sendBroadcast(intent);
             }
 
-            public void userSweep(Wallet wallet, Transaction transaction, long amountSwept) {
+            public void sweep(Wallet wallet, Transaction transaction, long amountSwept) {
                 Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
                 intent.putExtra(Constants.WALLET_TXID, transaction.getID());
@@ -129,11 +135,11 @@ public class CoreWrapper {
                 manager.sendBroadcast(intent);
             }
 
-            public void userBitcoinLoading() {
+            public void bitcoinLoading() {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_LOADING_BITCOIN_ACTION));
             }
 
-            public void userBitcoinLoaded() {
+            public void bitcoinLoaded() {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_LOADED_BITCOIN_ACTION));
             }
         });
@@ -464,5 +470,40 @@ public class CoreWrapper {
         strSeed += bb2.array();
 
         return strSeed;
+    }
+
+    public static String formatDefaultCurrency(Account account, double in) {
+        AccountSettings settings = account.settings();
+        if (settings != null) {
+            String pre = settings.bitcoinDenomination().btcSymbol();
+            String out = String.format("%.3f", in);
+            return pre+out;
+        }
+        return "";
+    }
+
+    public static long currencyToSatoshi(Account account, String amount, String currency) {
+        try {
+             Number cleanAmount =
+                new DecimalFormat().parse(amount, new ParsePosition(0));
+             if (null == cleanAmount) {
+                 return 0;
+             }
+            double amountFiat = cleanAmount.doubleValue();
+            long satoshi = account.currencyToSatoshi(amountFiat, currency);
+
+            // Round up to nearest 1 bits, .001 mBTC, .00001 BTC
+            satoshi = 100 * (satoshi / 100);
+            return satoshi;
+
+        } catch (NumberFormatException e) {
+            /* Sshhhhh */
+        }
+        return 0;
+    }
+
+    public static String formatCurrency(Account account, long satoshi, String currency, boolean withSymbol) {
+		double o = account.satoshiToCurrency(satoshi, currency);
+		return account.formatCurrency(o, currency, withSymbol);
     }
 }

@@ -49,10 +49,6 @@ import com.squareup.picasso.Picasso;
 import java.util.Stack;
 import java.util.UUID;
 
-/**
- * Created by tom on 6/17/14.
- * Holds App statics for login info during the app lifecycle
- */
 public class AirbitzApplication extends Application {
 
     public static String PREFS = "com.airbitz.prefs";
@@ -70,6 +66,8 @@ public class AirbitzApplication extends Application {
     private static String mClientId;
     private static String mUserAgent;
     private static String mWalletUuid;
+    private static String mOtpResetDate;
+    private static boolean mOtpError;
     private static Picasso mPicasso;
     private static Stack<Fragment>[] mFragmentStack = null;
     private static int mStackThreadId = -1;
@@ -106,6 +104,25 @@ public class AirbitzApplication extends Application {
             editor.putString(LOGIN_NAME, sAccount.username());
             editor.apply();
         }
+        mOtpError = false;
+        mOtpResetDate = null;
+    }
+
+
+    public static void setOtpError(boolean hasError) {
+        mOtpError = hasError;
+    }
+
+    public static boolean hasOtpError() {
+        return mOtpError;
+    }
+
+    public static void setOtpResetDate(String date) {
+        mOtpResetDate = date;
+    }
+
+    public static String otpResetDate() {
+        return mOtpResetDate;
     }
 
     public static void logout() {

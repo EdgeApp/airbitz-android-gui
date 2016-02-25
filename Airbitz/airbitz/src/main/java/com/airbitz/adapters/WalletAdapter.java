@@ -45,6 +45,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.Wallet;
+import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.WalletWrapper;
 
 import com.airbitz.AirbitzApplication;
@@ -250,8 +251,8 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
                 amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().balance(), true));
             } else {
                 long satoshi = wallet.wallet().balance();
-                String temp = mAccount.formatCurrency(satoshi, mCurrency, false, true);
-                amountTextView.setText(temp);
+                amountTextView.setText(
+					CoreWrapper.formatCurrency(mAccount, satoshi, mCurrency, true));
             }
 
             convertView.setBackgroundResource(R.drawable.wallet_list_standard);

@@ -227,7 +227,7 @@ public class WalletBaseFragment extends BaseFragment
     }
 
     protected List<Wallet> fetchCoreWallets() {
-        return mAccount.getActiveWallets();
+        return mAccount.activeWallets();
     }
 
     protected void fetchWallets() {
@@ -251,7 +251,7 @@ public class WalletBaseFragment extends BaseFragment
             }
         }
         if (uuid != null) {
-            mWallet = mAccount.getWallet(uuid);
+            mWallet = mAccount.wallet(uuid);
         }
         // If the user archives the selected wallet:
         //     change the default wallet for other screens

@@ -241,7 +241,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
             String fiatCurrency = "";
             if (mWallet != null && mWallet.isSynced()) {
-                fiatCurrency = mAccount.formatCurrency(transactionSatoshis, mCurrencyCode, false, true);
+                fiatCurrency = CoreWrapper.formatCurrency(mAccount, transactionSatoshis, mCurrencyCode, true);
             } else {
                 fiatCurrency = "";
             }
@@ -268,8 +268,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
             } else {
-                String walletCurrency = mAccount.formatCurrency(transactionSatoshis, mCurrencyCode, false, true);
-                String totalCurrency = mAccount.formatCurrency(mRunningSatoshi[position], mCurrencyCode, false, true);
+                String walletCurrency = CoreWrapper.formatCurrency(mAccount, transactionSatoshis, mCurrencyCode, true);
+                String totalCurrency = CoreWrapper.formatCurrency(mAccount, mRunningSatoshi[position], mCurrencyCode, true);
 
                 viewHolder.creditAmountTextView.setText(walletCurrency);
                 viewHolder.runningTotalTextView.setText(totalCurrency);

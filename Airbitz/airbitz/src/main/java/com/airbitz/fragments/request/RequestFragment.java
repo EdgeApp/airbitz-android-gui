@@ -370,7 +370,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         });
 
-        updateMode();
+        mDenominationTextView.setVisibility(View.VISIBLE);
 
         // Prevent OS keyboard from showing
         try {
@@ -407,7 +407,6 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
-
         updateAmount();
     }
 
@@ -415,12 +414,12 @@ public class RequestFragment extends WalletBaseFragment implements
         if (null != mWallet){
             if (mAmountIsBitcoin) {
                 long satoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
-                String currency = mAccount.formatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false);
+                String currency = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false);
                 mDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherDenominationTextView.setText(mWallet.currencyCode());
                 mOtherAmountTextView.setText(currency);
             } else {
-                long satoshi = mAccount.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.currencyCode());
+                long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currencyCode());
                 mDenominationTextView.setText(mWallet.currencyCode());
                 mOtherDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherAmountTextView.setText(mAccount.formatSatoshi(satoshi, false));
@@ -429,12 +428,8 @@ public class RequestFragment extends WalletBaseFragment implements
                 mOtherAmountTextView.setText("");
             }
             mConverterTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mWallet.currencyCode()));
-            updateMode();
+            mDenominationTextView.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void updateMode() {
-        mDenominationTextView.setVisibility(View.VISIBLE);
     }
 
     private void updateAmount() {
@@ -450,7 +445,7 @@ public class RequestFragment extends WalletBaseFragment implements
             String fiat = mAmountField.getText().toString();
             try {
                 if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currencyCode())) {
-                    mAmountSatoshi = mAccount.parseFiatToSatoshi(fiat, wallet.currencyCode());
+                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currencyCode());
                 } else {
                     AirbitzCore.debugLevel(1, "Too much fiat");
                 }
@@ -756,7 +751,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
         AirbitzCore.debugLevel(1, "isShowingQRCodeFor: " + walletUUID + " " + txId);
-        Transaction tx = mWallet.getTransaction(txId);
+        Transaction tx = mWallet.transaction(txId);
         if (null == tx)
             return false;
 
@@ -781,7 +776,7 @@ public class RequestFragment extends WalletBaseFragment implements
     public long requestDifference(String walletUUID, String txId) {
         AirbitzCore.debugLevel(1, "requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
-            Transaction tx = mWallet.getTransaction(txId);
+            Transaction tx = mWallet.transaction(txId);
             return mAmountSatoshi - tx.amount();
         } else {
             return 0;
@@ -789,7 +784,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public void showDonation(String uuid, String txId) {
-        Transaction tx = mWallet.getTransaction(txId);
+        Transaction tx = mWallet.transaction(txId);
         showDonation(tx.amount());
     }
 
@@ -799,7 +794,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mDessertView.getLine2().setText(mAccount.formatSatoshi(amount, true));
         mDessertView.getLine3().setVisibility(View.VISIBLE);
         mDessertView.getLine3().setText(
-            mAccount.formatCurrency(amount, mWallet.currencyCode(), false, true));
+            CoreWrapper.formatCurrency(mAccount, amount, mWallet.currencyCode(), true));
         mDessertView.show();
 
         createNewQRBitmap();
@@ -838,7 +833,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (mAmountIsBitcoin) {
                 mAmountSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
             } else {
-                mAmountSatoshi = mAccount.parseFiatToSatoshi(mAmountField.getText().toString(), mWallet.currencyCode());
+                mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currencyCode());
             }
             updateConversion();
             createNewQRBitmap();
@@ -1034,11 +1029,12 @@ public class RequestFragment extends WalletBaseFragment implements
             String fiat = mAmountField.getText().toString();
             try {
                 if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.currencyCode())) {
-                    mAmountSatoshi = mAccount.parseFiatToSatoshi(fiat, mWallet.currencyCode());
+                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, mWallet.currencyCode());
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {
-                        mAmountField.setText(mAccount.formatSatoshi(mAmountSatoshi, false));
+                        mAmountField.setText(
+                            mAccount.formatSatoshi(mAmountSatoshi, false));
                     }
                 } else {
                     AirbitzCore.debugLevel(1, "Too much fiat");
@@ -1053,7 +1049,8 @@ public class RequestFragment extends WalletBaseFragment implements
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
-                    mAmountField.setText(mAccount.formatCurrency(mAmountSatoshi, mWallet.currencyCode(), false, false));
+                    mAmountField.setText(
+                        CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false));
                 }
             } else {
                 AirbitzCore.debugLevel(1, "Too much bitcoin");
@@ -1161,7 +1158,7 @@ public class RequestFragment extends WalletBaseFragment implements
 		Calendar now = Calendar.getInstance();
 		String notes = String.format("%s / %s requested via %s on %s.",
 				mAccount.formatSatoshi(mReceiver.amountSatoshi()),
-				mAccount.formatDefaultCurrency(mReceiver.meta().fiat()),
+				CoreWrapper.formatDefaultCurrency(mAccount, mReceiver.meta().fiat()),
 				type,
 				String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));
 

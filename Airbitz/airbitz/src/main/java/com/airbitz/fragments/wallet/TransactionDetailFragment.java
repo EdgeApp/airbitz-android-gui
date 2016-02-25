@@ -688,8 +688,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (mWalletUUID.isEmpty()) {
                 AirbitzCore.debugLevel(1, "no detail info");
             } else if (mWallet == null || mTransaction == null) {
-                mWallet = mAccount.getWallet(mWalletUUID);
-                mTransaction = mWallet.getTransaction(mTxId);
+                mWallet = mAccount.wallet(mWalletUUID);
+                mTransaction = mWallet.transaction(mTxId);
 
                 if (mTransaction != null) {
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.meta().category())) {
@@ -732,7 +732,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String uuid = bundle.getString(Constants.WALLET_UUID);
         setDefaultWallet(uuid);
         if (mWallet == null && uuid != null) {
-            mWallet = mAccount.getWallet(uuid);
+            mWallet = mAccount.wallet(uuid);
         }
         mLoading = false;
     }
@@ -953,7 +953,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void showAdvancedDetails(boolean hasFocus) {
-        Transaction tx = mWallet.getTransaction(mTxId);
+        Transaction tx = mWallet.transaction(mTxId);
         if (hasFocus && tx != null) {
             SpannableStringBuilder inAddresses = new SpannableStringBuilder();
             long inSum = 0;
@@ -1114,8 +1114,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.meta().fiat() == 0.0) {
-            currencyValue = mAccount.formatCurrency(coinValue, mWallet.currencyCode(),
-                    false, false);
+            currencyValue = mAccount.formatCurrency(coinValue, mWallet.currencyCode(), false);
         } else {
             currencyValue = mAccount.formatCurrency(transaction.meta().fiat(),
                     mWallet.currencyCode(), false);

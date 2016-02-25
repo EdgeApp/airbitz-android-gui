@@ -125,6 +125,7 @@ import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
+import com.airbitz.objects.DessertView;
 import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.PasswordCheckReceiver;
 import com.airbitz.objects.RememberPasswordCheck;
@@ -204,6 +205,7 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mCalcLocked = false;
     private boolean mConnectivityNotified = false;
     private View mFragmentContainer;
+    private View mNotificationLayout;
     public LinearLayout mFragmentLayout;
     private LinearLayout mLandingLayout;
     private int mNavThreadId;
@@ -335,6 +337,7 @@ public class NavigationActivity extends ActionBarActivity
 
         mFragmentContainer = findViewById(R.id.fragment_container);
         mFragmentLayout = (LinearLayout) findViewById(R.id.activityLayout);
+        mNotificationLayout = findViewById(R.id.notification);
 
         Common.addStatusBarPadding(this, mFragmentContainer);
 
@@ -380,6 +383,7 @@ public class NavigationActivity extends ActionBarActivity
         manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
         manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
         manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
+        manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
         manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
 
         // Let's see what plugins are enabled
@@ -402,6 +406,7 @@ public class NavigationActivity extends ActionBarActivity
         manager.unregisterReceiver(mRemotePasswordChange);
         manager.unregisterReceiver(mDataSyncReceiver);
         manager.unregisterReceiver(mOtpErrorReceiver);
+        manager.unregisterReceiver(mOtpSkewReceiver);
         manager.unregisterReceiver(mOtpResetReceiver);
     }
 
@@ -1079,7 +1084,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onIncomingBitcoin(String walletUUID, String txId) {
-        Wallet wallet = AirbitzApplication.getAccount().getWallet(walletUUID);
+        Wallet wallet = AirbitzApplication.getAccount().wallet(walletUUID);
         AirbitzCore.debugLevel(1, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
         mTxId = txId;
@@ -1108,7 +1113,7 @@ public class NavigationActivity extends ActionBarActivity
                 AudioPlayer.play(this, R.raw.bitcoin_received_partial);
             }
         } else {
-            Transaction tx = wallet.getTransaction(txId);
+            Transaction tx = wallet.transaction(txId);
             if (null != tx) {
                 if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
@@ -1140,16 +1145,11 @@ public class NavigationActivity extends ActionBarActivity
 
     private void showIncomingDialog(String uuid, String txId, boolean withTeaching) {
         Account account = AirbitzApplication.getAccount();
-        Wallet wallet = account.getWallet(uuid);
-        Transaction transaction = wallet.getTransaction(txId);
+        Wallet wallet = account.wallet(uuid);
+        Transaction transaction = wallet.transaction(txId);
         String coinValue = account.formatSatoshi(transaction.amount(), true);
-        String currencyValue = null;
-        // If no value set, then calculate it
-        if (transaction.amount() == 0.0) {
-            currencyValue = account.formatCurrency(transaction.amount(), wallet.currencyCode(), false, true);
-        } else {
-            currencyValue = account.formatCurrency(transaction.amount(), wallet.currencyCode(), true);
-        }
+        String currencyValue =
+			CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currencyCode(), true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         if(withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
@@ -1866,7 +1866,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void checkFirstWalletSetup() {
         Account account = AirbitzApplication.getAccount();
-        List<String> wallets = account.getWalletIds();
+        List<String> wallets = account.walletIds();
         if (wallets.size() <= 0) {
             mWalletSetup = new SetupFirstWalletTask();
             mWalletSetup.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -2173,6 +2173,52 @@ public class NavigationActivity extends ActionBarActivity
                     mOTPAlertDialog = builder.create();
                     mOTPAlertDialog.show();
             }
+        }
+    };
+
+    final Runnable mShowSnack = new Runnable() {
+        @Override
+        public void run() {
+			if (mNotificationLayout.getVisibility() == View.VISIBLE) {
+				return;
+			}
+			ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", mNotificationLayout.getHeight(), 0f);
+			key.setDuration(250);
+			key.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animator) {
+					mNotificationLayout.setVisibility(View.VISIBLE);
+				}
+
+				@Override
+				public void onAnimationStart(Animator animator) {
+					mNotificationLayout.setVisibility(View.VISIBLE);
+				}
+			});
+			key.start();
+		}
+    };
+
+    final Runnable mHideSnack = new Runnable() {
+        @Override
+        public void run() {
+			if (mNotificationLayout.getVisibility() == View.INVISIBLE) {
+				return;
+			}
+			ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", 0f, mNotificationLayout.getHeight());
+			key.setDuration(250);
+			key.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animator) {
+					mNotificationLayout.setVisibility(View.INVISIBLE);
+				}
+
+				@Override
+				public void onAnimationStart(Animator animator) {
+					mNotificationLayout.setVisibility(View.VISIBLE);
+				}
+			});
+			key.start();
         }
     };
 
@@ -2586,8 +2632,14 @@ public class NavigationActivity extends ActionBarActivity
                 if (mDataLoaded) {
                     showMessage(context.getString(R.string.loading_transactions));
                 }
+				if (!mShowMessages) {
+					mHandler.post(mShowSnack);
+				}
             } else if (Constants.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
                 NavigationActivity.this.DismissFadingDialog();
+				if (!mShowMessages) {
+                    mHandler.post(mHideSnack);
+                }
             }
         }
     };
@@ -2644,12 +2696,17 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mOtpErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String secret = intent.getStringExtra(Constants.OTP_SECRET);
-            if (secret != null) {
-                mHandler.post(mShowOTPSkew);
-            } else {
-                mHandler.post(mShowOTPRequired);
-            }
+            String resetDate = intent.getStringExtra(Constants.OTP_RESET_DATE);
+            AirbitzApplication.setOtpError(true);
+            AirbitzApplication.setOtpResetDate(resetDate);
+            mHandler.post(mShowOTPRequired);
+        }
+    };
+
+    private BroadcastReceiver mOtpSkewReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mHandler.post(mShowOTPSkew);
         }
     };
 

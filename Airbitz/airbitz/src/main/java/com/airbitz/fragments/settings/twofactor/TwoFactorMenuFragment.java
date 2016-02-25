@@ -47,6 +47,7 @@ import android.widget.TextView;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
@@ -137,22 +138,16 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         mTestSecret = bundle.getBoolean(TEST_SECRET, false);
         mUsername = bundle.getString(USERNAME);
 
-        try {
-            String date = mCoreAPI.otpResetDate();
-            if (date == null || date.isEmpty()) {
-                mResetDate.setVisibility(View.GONE);
-                mResetDescription.setVisibility(View.GONE);
-                mResetButton.setVisibility(View.VISIBLE);
-            } else {
-                mResetDate.setVisibility(View.VISIBLE);
-                mResetDescription.setVisibility(View.VISIBLE);
-                mResetButton.setVisibility(View.GONE);
-                mResetDate.setText(formatDate(date));
-            }
-        } catch (AirbitzException e) {
+        String date = AirbitzApplication.otpResetDate();
+        if (date == null || date.isEmpty()) {
             mResetDate.setVisibility(View.GONE);
             mResetDescription.setVisibility(View.GONE);
             mResetButton.setVisibility(View.VISIBLE);
+        } else {
+            mResetDate.setVisibility(View.VISIBLE);
+            mResetDescription.setVisibility(View.VISIBLE);
+            mResetButton.setVisibility(View.GONE);
+            mResetDate.setText(formatDate(date));
         }
     }
 

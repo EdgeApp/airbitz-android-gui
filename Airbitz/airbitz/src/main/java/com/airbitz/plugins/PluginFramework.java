@@ -474,7 +474,7 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    List<Wallet> coreWallets = account.getActiveWallets();
+                    List<Wallet> coreWallets = account.activeWallets();
                     if (null == coreWallets) {
                         return jsonError().toString();
                     }
@@ -500,7 +500,7 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    Wallet wallet = account.getWallet(walletUUID);
+                    Wallet wallet = account.wallet(walletUUID);
                     if (null != wallet) {
                         PluginReceiveRequest request = new PluginReceiveRequest(
                             wallet, name, category, notes,
@@ -561,7 +561,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String finalizeRequest(String walletUUID, String requestId) {
-            Wallet wallet = account.getWallet(walletUUID);
+            Wallet wallet = account.wallet(walletUUID);
             JsonValue value = new JsonValue<Boolean>(wallet.finalizeRequest(requestId));
             return jsonResult(value).toString();
         }

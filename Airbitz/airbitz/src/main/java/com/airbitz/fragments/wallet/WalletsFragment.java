@@ -126,7 +126,7 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     protected List<Wallet> fetchCoreWallets() {
-        return mAccount.getWallets();
+        return mAccount.wallets();
     }
 
     @Override
@@ -289,7 +289,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     public void onListReordering(boolean started) {
         if (!started) {
             mAccount.walletReorder(CoreWrapper.unwrap(mLatestWalletList));
-            mWallet = mAccount.getWallet(AirbitzApplication.getCurrentWallet());
+            mWallet = mAccount.wallet(AirbitzApplication.getCurrentWallet());
             mAccount.reloadWallets();
         }
     }
@@ -341,7 +341,8 @@ public class WalletsFragment extends WalletBaseFragment implements
             if (mOnBitcoinMode) {
                 mHeaderTotal.setText(mAccount.formatSatoshi(totalSatoshis, true));
             } else {
-                mHeaderTotal.setText(mAccount.formatCurrency(totalSatoshis, currencyCode, false, true));
+                mHeaderTotal.setText(
+					CoreWrapper.formatCurrency(mAccount, totalSatoshis, currencyCode, true));
             }
         }
     }

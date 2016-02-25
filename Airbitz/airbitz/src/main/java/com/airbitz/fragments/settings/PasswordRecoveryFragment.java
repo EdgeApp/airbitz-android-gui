@@ -506,16 +506,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mFailureException = e;
                 return false;
             }
-
-            // If we have otp enabled, persist the token
-            String secret = mAccount.otpSecret();
-            if (secret != null) {
-                try {
-                    mCoreAPI.otpKeySet(username, secret);
-                } catch (AirbitzException e) {
-                    AirbitzCore.debugLevel(1, "PasswordRecoveryFragment OtpKeySet error");
-                }
-            }
             return result;
         }
 
@@ -532,7 +522,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                mAccount.otpSetError(mFailureException);
                 if (mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
