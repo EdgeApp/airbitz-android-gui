@@ -43,28 +43,32 @@ import co.airbitz.core.AirbitzException;
 
 import com.airbitz.activities.NavigationActivity;
 
-public class PinSetupTask extends AsyncTask<Void, Void, Void> {
+public class PinChangeTask extends AsyncTask<Void, Void, Void> {
     Account mAccount;
     NavigationActivity mActivity;
-    String mPin;
+    boolean mEnabled;
 
-    public PinSetupTask(NavigationActivity activity, Account account, String pin) {
+    public PinChangeTask(NavigationActivity activity, Account account, boolean enabled) {
         mAccount = account;
-        mPin = pin;
         mActivity = activity;
+        mEnabled = enabled;
     }
 
     @Override
     public void onPreExecute() {
+        mActivity.showModalProgress(true);
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            mAccount.pinSetup(mPin);
-            mAccount.settings().save();
+            if (mEnabled) {
+                mAccount.pinLoginSetup();
+            } else {
+                mAccount.pinLoginDisable();
+            }
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "SettingFragment mPinSetupTask error");
+            AirbitzCore.logi("SettingFragment mPinSetupTask error");
         }
         return null;
     }
@@ -76,5 +80,6 @@ public class PinSetupTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onCancelled() {
+        mActivity.showModalProgress(false);
     }
 }

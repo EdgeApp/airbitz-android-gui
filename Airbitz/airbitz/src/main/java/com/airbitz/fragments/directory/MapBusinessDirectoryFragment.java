@@ -325,14 +325,14 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 if (locationEnabled && null != mCurrentLocation) {
-                    AirbitzCore.debugLevel(1, "LocateMe button good");
+                    AirbitzCore.logi("LocateMe button good");
                     MapLatLng currentLatLng =
                             new MapLatLng(mCurrentLocation.getLatitude(),
                                     mCurrentLocation.getLongitude());
                     drawCurrentLocationMarker(mCurrentLocation);
                     mMapShim.animateCamera(currentLatLng);
                 } else {
-                    AirbitzCore.debugLevel(1, getString(R.string.no_location_found));
+                    AirbitzCore.logi(getString(R.string.no_location_found));
                     Common.noLocationSnack(mActivity, getView());
                 }
             }
@@ -603,7 +603,7 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         @Override
         protected String doInBackground(String... params) {
             final String PAGE_SIZE = "500";
-            AirbitzCore.debugLevel(1, "params: " + params[0] + " " + params[1] + " " + params[2]);
+            AirbitzCore.logi("params: " + params[0] + " " + params[1] + " " + params[2]);
             if (!TextUtils.isEmpty(mLockedCategory)) {
                 return mApi.getSearchByBoundsAndBusiness(params[0], params[1], mLockedCategory, params[2], PAGE_SIZE, "", "");
             } else if (mBusinessType.equalsIgnoreCase("category")) {

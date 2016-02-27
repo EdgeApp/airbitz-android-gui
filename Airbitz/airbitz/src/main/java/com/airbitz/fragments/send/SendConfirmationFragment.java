@@ -286,7 +286,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mAuthorizationEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                AirbitzCore.debugLevel(1, "PIN field focus changed");
+                AirbitzCore.logi("PIN field focus changed");
                 if (hasFocus) {
                     mAutoUpdatingTextFields = true;
                     mActivity.showSoftKeyboard(mAuthorizationEdittext);
@@ -319,7 +319,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AirbitzCore.debugLevel(1, "Bitcoin field clicked");
+                AirbitzCore.logi("Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
                 showCalculator();
             }
@@ -369,7 +369,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         View.OnTouchListener setCursorAtEnd = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                AirbitzCore.debugLevel(1, "Prevent OS keyboard");
+                AirbitzCore.logi("Prevent OS keyboard");
                 final EditText edittext = (EditText) v;
                 edittext.onTouchEvent(event);
                 edittext.post(new Runnable() {
@@ -411,7 +411,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     case MotionEvent.ACTION_MOVE:
                         moveX = event.getRawX() - mLeftThreshold;
                         float leftSlide = moveX - mSlideHalfWidth;
-                        AirbitzCore.debugLevel(1, "Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
+                        AirbitzCore.logi("Move data: leftThreshold, rightThreshold, leftSlide, slideWidth, = "
                                 + mLeftThreshold + ", " + mRightThreshold + ", " + leftSlide + ", " + mConfirmSwipeButton.getWidth());
                         if (leftSlide < 0) {
                             mConfirmSwipeButton.setX(0);
@@ -673,7 +673,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 String coinFeeString = "+ " + mAccount.formatSatoshi(fees, false);
                 mBTCDenominationTextView.setText(coinFeeString + " " + CoreWrapper.defaultBTCDenomination(mAccount));
 
-                double fiatFee = mAccount.satoshiToCurrency(fees, mCurrency);
+                double fiatFee = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(fees, mCurrency);
                 String fiatFeeString = "+ " + mAccount.formatCurrency(fiatFee, mCurrency, false);
                 mFiatDenominationTextView.setText(fiatFeeString + " " + mCurrency);
                 mConversionTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mCurrency));
@@ -845,7 +845,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         bundle = this.getArguments();
         if (bundle == null) {
-            AirbitzCore.debugLevel(1, "Send confirmation bundle is null");
+            AirbitzCore.logi("Send confirmation bundle is null");
         } else {
             mUUIDorURI = bundle.getString(SendFragment.UUID);
             mLabel = bundle.getString(SendFragment.LABEL, "");
@@ -989,22 +989,22 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            AirbitzCore.debugLevel(1, "Max calculation called");
+            AirbitzCore.logi("Max calculation called");
         }
 
         @Override
         protected Long doInBackground(Void... params) {
-            AirbitzCore.debugLevel(1, "Max calculation started");
+            AirbitzCore.logi("Max calculation started");
             return mSpendTarget.maxSpendable();
         }
 
         @Override
         protected void onPostExecute(final Long max) {
-            AirbitzCore.debugLevel(1, "Max calculation finished");
+            AirbitzCore.logi("Max calculation finished");
             mMaxAmountTask = null;
             if (isAdded()) {
                 if (max < 0) {
-                    AirbitzCore.debugLevel(1, "Max calculation error");
+                    AirbitzCore.logi("Max calculation error");
                 }
                 mMaxLocked = false;
                 mAmountMax = max;
@@ -1039,7 +1039,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected Long doInBackground(Void... params) {
-            AirbitzCore.debugLevel(1, "Fee calculation started");
+            AirbitzCore.logi("Fee calculation started");
             String dest = mIsUUID ? mWallet.id() : mUUIDorURI;
             try {
                 return mSpendTarget.calcSendFees();
@@ -1051,7 +1051,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPostExecute(final Long fees) {
-            AirbitzCore.debugLevel(1, "Fee calculation ended");
+            AirbitzCore.logi("Fee calculation ended");
             if (isAdded()) {
                 mCalculateFeesTask = null;
                 mFees = fees;
@@ -1077,12 +1077,12 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPreExecute() {
-            AirbitzCore.debugLevel(1, "SEND called");
+            AirbitzCore.logi("SEND called");
         }
 
         @Override
         protected String doInBackground(Void... params) {
-            AirbitzCore.debugLevel(1, "Initiating SEND");
+            AirbitzCore.logi("Initiating SEND");
             try {
                 // Hack: Give the fragment manager time to finish
                 Thread.sleep(1000);
@@ -1106,10 +1106,10 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         @Override
         protected void onPostExecute(final String txResult) {
-            AirbitzCore.debugLevel(1, "SEND done");
+            AirbitzCore.logi("SEND done");
             mSendOrTransferTask = null;
             if (txResult == null) {
-                AirbitzCore.debugLevel(1, "Error during send ");
+                AirbitzCore.logi("Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
                     if (null == exitHandler) {

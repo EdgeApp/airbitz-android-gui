@@ -195,7 +195,7 @@ public class ViewPagerFragment extends BaseFragment
             int progress = mSeekBar.getProgress();
             int nearestValue = Math.round(progress / mScale);
             int val = (progress * (mSeekBar.getWidth() - 2 * mSeekBar.getThumbOffset())) / mSeekBar.getMax();
-            AirbitzCore.debugLevel(1, "Seekbar progress = "+progress+", val = "+val);
+            AirbitzCore.logi("Seekbar progress = "+progress+", val = "+val);
             mCounterView.setText(String.valueOf(nearestValue + 1) + "/" + mImageViews.size());
             mCounterView.setX(mSeekBar.getX() + val + (mSeekBar.getThumbOffset()) - (mCounterView.getWidth() / 2));
         }
@@ -208,7 +208,7 @@ public class ViewPagerFragment extends BaseFragment
     private void crossfade(final TouchImageView image) {
         Drawable drawable = image.getDrawable();
         if (drawable == null) {
-            AirbitzCore.debugLevel(1, "drawable null");
+            AirbitzCore.logi("drawable null");
             return;
         }
 

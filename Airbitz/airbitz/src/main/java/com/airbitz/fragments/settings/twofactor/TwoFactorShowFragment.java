@@ -432,7 +432,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 }
                 return true;
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "SwitchFlippedTask error");
+                AirbitzCore.logi("SwitchFlippedTask error");
                 return false;
             }
         }
@@ -476,7 +476,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 mAccount.otpDisable();
                 return null;
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "ConfirmRequestTask error");
+                AirbitzCore.logi("ConfirmRequestTask error");
                 return e;
             }
         }

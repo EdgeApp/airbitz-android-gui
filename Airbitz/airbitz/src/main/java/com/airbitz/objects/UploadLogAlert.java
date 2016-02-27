@@ -119,12 +119,12 @@ public class UploadLogAlert {
 
         @Override
         protected Boolean doInBackground(String... usermsg) {
-            AirbitzCore.debugLevel(0, usermsg[0]);
+            AirbitzCore.logi(usermsg[0]);
             int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
             String versionName = com.airbitz.BuildConfig.VERSION_NAME;
             String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
 
-            AirbitzCore.debugLevel(0, "App Version:" + appVersion);
+            AirbitzCore.logi("App Version:" + appVersion);
             return mCoreAPI.uploadLogs();
         }
 

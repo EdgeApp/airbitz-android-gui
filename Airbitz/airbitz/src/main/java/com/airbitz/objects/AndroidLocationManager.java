@@ -91,7 +91,7 @@ public class AndroidLocationManager {
         }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            AirbitzCore.debugLevel(1, "Listener added: " + listener);
+            AirbitzCore.logi("Listener added: " + listener);
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -114,7 +114,7 @@ public class AndroidLocationManager {
                     MIN_TIME_MILLIS, MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
-            AirbitzCore.debugLevel(1, "attemptConnection 1 error" + e.toString());
+            AirbitzCore.logi("attemptConnection 1 error" + e.toString());
         }
         try {
             mLocationManager.requestLocationUpdates(
@@ -122,7 +122,7 @@ public class AndroidLocationManager {
                     MIN_TIME_MILLIS, NETWORK_MIN_DIST_METERS,
                     mManagerListener);
         } catch (IllegalArgumentException e) {
-            AirbitzCore.debugLevel(1, "attemptConnection 2 error" + e.toString());
+            AirbitzCore.logi("attemptConnection 2 error" + e.toString());
         }
     }
 
@@ -141,7 +141,7 @@ public class AndroidLocationManager {
             return;
         }
         mCurrentLocation = location;
-        AirbitzCore.debugLevel(1, "CUR LOC: " + mCurrentLocation.getLatitude() + "; "
+        AirbitzCore.logi("CUR LOC: " + mCurrentLocation.getLatitude() + "; "
                 + mCurrentLocation.getLongitude());
         if (mObservers != null) {
             for (CurrentLocationManager.OnCurrentLocationChange l : mObservers) {

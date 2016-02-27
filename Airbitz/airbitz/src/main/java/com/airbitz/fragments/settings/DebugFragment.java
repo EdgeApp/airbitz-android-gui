@@ -88,7 +88,7 @@ public class DebugFragment extends BaseFragment {
         mUploadLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AirbitzCore.debugLevel(0, "Uploading logs from Debug Settings");
+                AirbitzCore.logi("Uploading logs from Debug Settings");
                 UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
                 uploadLogAlert.showUploadLogAlert();
             }

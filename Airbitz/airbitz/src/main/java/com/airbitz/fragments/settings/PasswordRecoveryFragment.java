@@ -499,7 +499,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             username = params[1];
             boolean result = false;
             try {
-                Account account = mCoreAPI.recoveryLogin(username, answers, mTwoFactorSecret);
+                Account account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
                 AirbitzApplication.Login(account);
                 result = true;
             } catch (AirbitzException e) {
@@ -590,7 +590,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
-                AirbitzCore.debugLevel(1, "No Questions");
+                AirbitzCore.logi("No Questions");
                 return false;
             }
         }
@@ -637,10 +637,10 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mAccount.saveRecoveryAnswers(mQuestions, mAnswers);
+                mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
                 return true;
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "PasswordRecoveryFragment SaveRecoveryAnswers error");
+                AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
                 return false;
             }
         }
@@ -702,11 +702,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    AirbitzCore.debugLevel(1, "spinner selection");
+                    AirbitzCore.logi("spinner selection");
                     if (ignoreSelected || mMode == FORGOT_PASSWORD) return;
 
                     chosenQuestion = currentQuestionList.get(i);
-                    AirbitzCore.debugLevel(1, "spinner selection not ignored=" + chosenQuestion);
+                    AirbitzCore.logi("spinner selection not ignored=" + chosenQuestion);
                     if (mType == QuestionType.STRING) {
                         if (mStringCategory.containsKey(chosenQuestion))
                             mCharLimit = mStringCategory.get(chosenQuestion);

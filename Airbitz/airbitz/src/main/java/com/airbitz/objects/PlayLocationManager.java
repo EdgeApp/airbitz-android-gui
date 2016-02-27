@@ -83,7 +83,7 @@ public class PlayLocationManager implements
         }
         if (!mObservers.contains(listener)) {
             mObservers.add(listener);
-            AirbitzCore.debugLevel(1, "Listener added: " + listener);
+            AirbitzCore.logi("Listener added: " + listener);
         }
         if (null != listener && null != mCurrentLocation) {
             listener.OnCurrentLocationChange(mCurrentLocation);
@@ -92,7 +92,7 @@ public class PlayLocationManager implements
 
     public void removeLocationChangeListener(CurrentLocationManager.OnCurrentLocationChange listener) {
         mObservers.remove(listener);
-        AirbitzCore.debugLevel(1, "Listener removed: " + listener);
+        AirbitzCore.logi("Listener removed: " + listener);
         if (mObservers.size() <= 0 && locationClient.isConnected()) {
             locationClient.disconnect();
         }
@@ -107,7 +107,7 @@ public class PlayLocationManager implements
 
     public void attemptConnection() {
         if (locationClient == null || !locationClient.isConnected() || !locationClient.isConnecting()) {
-            AirbitzCore.debugLevel(1, "Attempting connection");
+            AirbitzCore.logi("Attempting connection");
             locationClient = new GoogleApiClient.Builder(mContext)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -119,7 +119,7 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        AirbitzCore.debugLevel(1, "Connected.");
+        AirbitzCore.logi("Connected.");
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(AndroidLocationManager.MIN_TIME_MILLIS * 2);
@@ -137,13 +137,13 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        AirbitzCore.debugLevel(1, "Suspended. Please re-connect.");
+        AirbitzCore.logi("Suspended. Please re-connect.");
         attemptConnection();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        AirbitzCore.debugLevel(1, "onLocationChanged");
+        AirbitzCore.logi("onLocationChanged");
         if (location.hasAccuracy() && !mObservers.isEmpty()) {
             mCurrentLocation = location;
 
@@ -156,7 +156,7 @@ public class PlayLocationManager implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        AirbitzCore.debugLevel(1, "Connection to LocationClient failed");
+        AirbitzCore.logi("Connection to LocationClient failed");
         attemptConnection();
     }
 }

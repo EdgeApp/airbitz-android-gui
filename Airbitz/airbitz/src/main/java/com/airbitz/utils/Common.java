@@ -120,13 +120,13 @@ public class Common {
             }
             return buf.toString();
         } catch (IOException e) {
-            AirbitzCore.debugLevel(1, "Error opening asset " + name);
+            AirbitzCore.logi("Error opening asset " + name);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    AirbitzCore.debugLevel(1, "Error closing asset " + name);
+                    AirbitzCore.logi("Error closing asset " + name);
                 }
             }
         }
@@ -160,7 +160,7 @@ public class Common {
             PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
             version = info.versionName + " " + String.valueOf(info.versionCode);
         } catch (PackageManager.NameNotFoundException e) {
-            AirbitzCore.debugLevel(1, "Common.java getVersion error" + e.toString());
+            AirbitzCore.logi("Common.java getVersion error" + e.toString());
         }
         return version;
     }
@@ -201,7 +201,7 @@ public class Common {
             out.close();
             return strFile;
         } catch (Throwable t) {
-            AirbitzCore.debugLevel(1, "createFileFromString failed for " + name);
+            AirbitzCore.logi("createFileFromString failed for " + name);
             return null;
         }
     }

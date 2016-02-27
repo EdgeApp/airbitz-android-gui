@@ -82,7 +82,7 @@ public class QRCamera extends PictureCamera {
             }
         }
         if (rawResult != null) {
-            AirbitzCore.debugLevel(1, "QR code found " + rawResult.getText());
+            AirbitzCore.logi("QR code found " + rawResult.getText());
             return rawResult.getText();
         } else {
             return null;
@@ -91,9 +91,9 @@ public class QRCamera extends PictureCamera {
 
     public String attemptDecodePicture(Bitmap thumbnail) {
         if (thumbnail == null) {
-            AirbitzCore.debugLevel(1, "No picture selected");
+            AirbitzCore.logi("No picture selected");
         } else {
-            AirbitzCore.debugLevel(1, "Picture selected");
+            AirbitzCore.logi("Picture selected");
             Result rawResult = null;
             Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
@@ -125,10 +125,10 @@ public class QRCamera extends PictureCamera {
                 }
             }
             if (rawResult != null) {
-                AirbitzCore.debugLevel(1, "QR code found " + rawResult.getText());
+                AirbitzCore.logi("QR code found " + rawResult.getText());
                 return rawResult.getText();
             } else {
-                AirbitzCore.debugLevel(1, "Picture No QR code found");
+                AirbitzCore.logi("Picture No QR code found");
             }
         }
         return null;

@@ -392,7 +392,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         if (mCurrentLocation != null) {
             latLon = "" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
         }
-        AirbitzCore.debugLevel(1, "LocationManager Location = " + latLon);
+        AirbitzCore.logi("LocationManager Location = " + latLon);
 
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
@@ -402,7 +402,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
     }
 
     public void queryWithoutLocation() {
-        AirbitzCore.debugLevel(1, "Query without location");
+        AirbitzCore.logi("Query without location");
         if (mVenuesTask != null && mVenuesTask.getStatus() == AsyncTask.Status.RUNNING) {
             mVenuesTask.cancel(true);
         }

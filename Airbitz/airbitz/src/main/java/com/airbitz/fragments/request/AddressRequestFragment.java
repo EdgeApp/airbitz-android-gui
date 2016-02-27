@@ -137,7 +137,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
                 _errorUrl = map.get("x-error");
                 _cancelUrl = map.get("x-cancel");
             } catch (UnsupportedEncodingException e) {
-                AirbitzCore.debugLevel(1, "Unsupported uri exception");
+                AirbitzCore.logi("Unsupported uri exception");
             }
         } else {
             strName = "An app ";
@@ -212,10 +212,9 @@ public class AddressRequestFragment extends WalletBaseFragment {
     }
 
     private void createRequest() {
-        ReceiveAddress.Builder builder = mWallet.receiveRequestBuilders().amount(0);
-        builder.meta().name(strName);
-        builder.meta().category(strCategory);
-        builder.meta().notes(strNotes);
-        mReceiver = builder.build();
+        mReceiver = mWallet.receiveRequest().amount(0);
+        mReceiver.meta().name(strName);
+        mReceiver.meta().category(strCategory);
+        mReceiver.meta().notes(strNotes);
     }
 }

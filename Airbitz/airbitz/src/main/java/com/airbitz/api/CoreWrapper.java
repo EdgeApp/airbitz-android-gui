@@ -197,7 +197,7 @@ public class CoreWrapper {
             editor.putBoolean(Constants.DAILY_LIMIT_SETTING_PREF + account.username(), set);
             editor.apply();
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "SetDailySpendLimitSetting error:");
+            AirbitzCore.logi("SetDailySpendLimitSetting error:");
         }
     }
 
@@ -228,7 +228,7 @@ public class CoreWrapper {
             editor.putLong(Constants.DAILY_LIMIT_PREF + account.username(), spendLimit);
             editor.apply();
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "setDailySpendSatoshis error:");
+            AirbitzCore.logi("setDailySpendSatoshis error:");
         }
     }
 
@@ -249,7 +249,7 @@ public class CoreWrapper {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "setPinSpendLimitSetting error:");
+            AirbitzCore.logi("setPinSpendLimitSetting error:");
         }
     }
 
@@ -270,7 +270,7 @@ public class CoreWrapper {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "SetPINSpendSatoshis error:");
+            AirbitzCore.logi("SetPINSpendSatoshis error:");
         }
     }
 
@@ -285,7 +285,7 @@ public class CoreWrapper {
     }
 
     public static boolean tooMuchFiat(Account account, String fiat, String currencyCode) {
-        double maxFiat = account.satoshiToCurrency((long) Constants.MAX_SATOSHI, currencyCode);
+        double maxFiat = AirbitzCore.getApi().exchangeCache().satoshiToCurrency((long) Constants.MAX_SATOSHI, currencyCode);
         double val = 0.0;
         try {
             val = Double.parseDouble(fiat);
@@ -316,7 +316,7 @@ public class CoreWrapper {
         try {
             settings.save();
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "incRecoveryReminder error:");
+            AirbitzCore.logi("incRecoveryReminder error:");
         }
     }
 
@@ -351,9 +351,11 @@ public class CoreWrapper {
         long start = beginning.getTimeInMillis() / 1000;
 
         long sum = 0;
-        List<Transaction> list = wallet.transactions(start, end);
+        List<Transaction> list = wallet.transactions();
         for (Transaction tx : list) {
-            if (tx.amount() < 0) {
+            if (tx.amount() < 0
+                    && tx.date().getTime() >= start
+                    && tx.date().getTime() <= end) {
                 sum -= tx.amount();
             }
         }
@@ -368,7 +370,7 @@ public class CoreWrapper {
         BitcoinDenomination bitcoinDenomination =
             settings.bitcoinDenomination();
         if (bitcoinDenomination == null) {
-            AirbitzCore.debugLevel(1, "Bad bitcoin denomination from core settings");
+            AirbitzCore.logi("Bad bitcoin denomination from core settings");
             return "";
         }
         return bitcoinDenomination.btcLabel();
@@ -391,7 +393,7 @@ public class CoreWrapper {
                 return true;
             }
         } catch (AirbitzException e) {
-            AirbitzCore.debugLevel(1, "incrementPinCount error:");
+            AirbitzCore.logi("incrementPinCount error:");
             return false;
         }
         return false;
@@ -405,7 +407,7 @@ public class CoreWrapper {
         BitcoinDenomination bitcoinDenomination =
             settings.bitcoinDenomination();
         if (bitcoinDenomination == null) {
-            AirbitzCore.debugLevel(1, "Bad bitcoin denomination from core settings");
+            AirbitzCore.logi("Bad bitcoin denomination from core settings");
             return "";
         }
         return bitcoinDenomination.btcSymbol();
@@ -440,7 +442,7 @@ public class CoreWrapper {
                         break;
                 }
             }
-            double o = account.satoshiToCurrency(satoshi, currency);
+            double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
             if (denomination.getDenominationType() == BitcoinDenomination.UBTC) {
                 // unit of 'bits' is so small it's useless to show it's conversion rate
                 // Instead show "1000 bits = $0.253 USD"
@@ -450,26 +452,6 @@ public class CoreWrapper {
             return amtBTCDenom + denomination.btcLabel() + " = " + amount + " " + currency;
         }
         return "";
-    }
-
-    public static String getSeedData() {
-        String strSeed = "";
-
-        strSeed += Build.MANUFACTURER;
-        strSeed += Build.DEVICE;
-        strSeed += Build.SERIAL;
-
-        long time = System.nanoTime();
-        ByteBuffer bb1 = ByteBuffer.allocate(8);
-        bb1.putLong(time);
-        strSeed += bb1.array();
-
-        Random r = new SecureRandom();
-        ByteBuffer bb2 = ByteBuffer.allocate(4);
-        bb2.putInt(r.nextInt());
-        strSeed += bb2.array();
-
-        return strSeed;
     }
 
     public static String formatDefaultCurrency(Account account, double in) {
@@ -490,7 +472,7 @@ public class CoreWrapper {
                  return 0;
              }
             double amountFiat = cleanAmount.doubleValue();
-            long satoshi = account.currencyToSatoshi(amountFiat, currency);
+            long satoshi = AirbitzCore.getApi().exchangeCache().currencyToSatoshi(amountFiat, currency);
 
             // Round up to nearest 1 bits, .001 mBTC, .00001 BTC
             satoshi = 100 * (satoshi / 100);
@@ -503,7 +485,7 @@ public class CoreWrapper {
     }
 
     public static String formatCurrency(Account account, long satoshi, String currency, boolean withSymbol) {
-		double o = account.satoshiToCurrency(satoshi, currency);
+		double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
 		return account.formatCurrency(o, currency, withSymbol);
     }
 }

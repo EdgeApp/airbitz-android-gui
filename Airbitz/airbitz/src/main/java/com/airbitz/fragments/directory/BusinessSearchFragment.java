@@ -206,7 +206,7 @@ public class BusinessSearchFragment extends BaseFragment implements
                     mBusinessAutoCompleteAsyncTask = new BusinessAutoCompleteAsynctask(cachedBusiness);
                     mBusinessAutoCompleteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, text, mLocationWords, latLong);
                 } catch (Exception e) {
-                    AirbitzCore.debugLevel(1, "BusinessSearchFragment onCreateView error" + e.toString());
+                    AirbitzCore.logi("BusinessSearchFragment onCreateView error" + e.toString());
                 }
             }
         });

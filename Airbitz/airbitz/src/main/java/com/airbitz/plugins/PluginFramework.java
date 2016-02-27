@@ -320,7 +320,7 @@ public class PluginFramework {
         }
 
         protected void onPostExecute(String data) {
-            AirbitzCore.debugLevel(1, cbid + " " + data);
+            AirbitzCore.logi(cbid + " " + data);
             mFramework.loadUrl(String.format(JS_CALLBACK, cbid, data));
         }
     }
@@ -405,13 +405,13 @@ public class PluginFramework {
         ReceiveAddress address;
 
         public PluginReceiveRequest(Wallet wallet, String name, String category, String notes, long amountSatoshi, double amountFiat, long bizId) {
-            ReceiveAddress.Builder builder = wallet.receiveRequestBuilders().amount(amountSatoshi);
-            builder.meta().name(name);
-            builder.meta().notes(notes);
-            builder.meta().category(category);
-            builder.meta().fiat(amountFiat);
-            builder.meta().bizid(bizId);
-            address = builder.build();
+            ReceiveAddress address = wallet.receiveRequest();
+            address.amount(amountSatoshi);
+            address.meta().name(name);
+            address.meta().notes(notes);
+            address.meta().category(category);
+            address.meta().fiat(amountFiat);
+            address.meta().bizid(bizId);
         }
 
         public Object toJson() throws JSONException {
@@ -568,20 +568,20 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void writeData(String key, String value) {
-            AirbitzCore.debugLevel(1, "writeData: " + key + ": " + value);
+            AirbitzCore.logi("writeData: " + key + ": " + value);
             account.data(plugin.pluginId).set(key, value);
         }
 
         @JavascriptInterface
         public void clearData() {
-            AirbitzCore.debugLevel(1, "clearData");
+            AirbitzCore.logi("clearData");
             account.data(plugin.pluginId).removeAll();
         }
 
         @JavascriptInterface
         public String readData(String key) {
             String s = account.data(plugin.pluginId).get(key);
-            AirbitzCore.debugLevel(1, "readData: " + key + ": " + s);
+            AirbitzCore.logi("readData: " + key + ": " + s);
             return s;
         }
 
@@ -593,13 +593,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String satoshiToCurrency(long satoshi, String currency) {
-            double amount = account.satoshiToCurrency(satoshi, currency);
+            double amount = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
             return jsonResult(new JsonValue<Double>(amount)).toString();
         }
 
         @JavascriptInterface
         public String currencyToSatoshi(String amountFiat, String currency) {
-            long satoshi = account.currencyToSatoshi(Double.parseDouble(amountFiat), currency);
+            long satoshi = AirbitzCore.getApi().exchangeCache().currencyToSatoshi(Double.parseDouble(amountFiat), currency);
             return jsonResult(new JsonValue<Long>(satoshi)).toString();
         }
 
@@ -617,7 +617,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String getConfig(String key) {
-            AirbitzCore.debugLevel(1, "key/value " + key + ":" + plugin.env.get(key));
+            AirbitzCore.logi("key/value " + key + ":" + plugin.env.get(key));
             return plugin.env.get(key);
         }
 
@@ -638,7 +638,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void debugLevel(int level, String text) {
-            AirbitzCore.debugLevel(1, text);
+            AirbitzCore.logi(text);
         }
 
         @JavascriptInterface
@@ -673,7 +673,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void launchExternal(String uri) {
-            AirbitzCore.debugLevel(1, "launchExternal");
+            AirbitzCore.logi("launchExternal");
             handler.launchExternal(uri);
         }
     }
@@ -734,7 +734,7 @@ public class PluginFramework {
     }
 
     public void signSuccess(String cbid, String walletUUID, UnsentTransaction unsent) {
-        AirbitzCore.debugLevel(1, unsent.base16Tx());
+        AirbitzCore.logi(unsent.base16Tx());
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(unsent.base16Tx())).toString()));
     }
 
@@ -784,7 +784,7 @@ public class PluginFramework {
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-                AirbitzCore.debugLevel(1, message + " -- From line " + lineNumber);
+                AirbitzCore.logi(message + " -- From line " + lineNumber);
             }
 
             public void openFileChooser(ValueCallback<Uri> uploadCallback) {
@@ -829,7 +829,7 @@ public class PluginFramework {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                AirbitzCore.debugLevel(1, url);
+                AirbitzCore.logi(url);
                 if (url.contains("airbitz://")) {
                     Uri uri = Uri.parse(url);
                     // If this is an airbitz URI plugin

@@ -296,7 +296,7 @@ public class ContactPickerFragment
                     cursor.close();
                 }
             }        }
-        AirbitzCore.debugLevel(1, "total search time: " + (System.currentTimeMillis() - startMillis));
+        AirbitzCore.logi("total search time: " + (System.currentTimeMillis() - startMillis));
         return contacts;
     }
 

@@ -114,7 +114,7 @@ public class SuccessFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mBundle = this.getArguments();
         if (mBundle == null) {
-            AirbitzCore.debugLevel(1, "Bundle is null");
+            AirbitzCore.logi("Bundle is null");
         }
         mActivity = (NavigationActivity) getActivity();
         mActivity.hideNavBar();

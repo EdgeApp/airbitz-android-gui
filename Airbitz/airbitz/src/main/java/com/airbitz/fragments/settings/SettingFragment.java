@@ -88,7 +88,7 @@ import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.CurrencyFragment.OnCurrencySelectedListener;
 import com.airbitz.fragments.settings.twofactor.TwoFactorShowFragment;
-import com.airbitz.objects.PinSetupTask;
+import com.airbitz.objects.PinChangeTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -280,21 +280,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mPinReloginSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Save the state here
-                if(isChecked && mCoreSettings.disablePinLogin()) {
-                    mAccount.settings().disablePinLogin(false);
-                    try {
-                        mCoreSettings.save();
-                    } catch (AirbitzException e) {
-                        AirbitzCore.debugLevel(1, "SettingFragment PINLoginDelete error");
-                    }
-                } else if(!isChecked) {
-                    mCoreSettings.disablePinLogin(true);
-                    try {
-                        mCoreSettings.save();
-                    } catch (AirbitzException e) {
-                        AirbitzCore.debugLevel(1, "SettingFragment PINLoginDelete error");
-                    }
+                boolean alreadySet = AirbitzCore.getApi().accountHasPin(mAccount.username());
+                if (!alreadySet && isChecked) {
+                    new PinChangeTask(mActivity, mAccount, true).execute();
+                } else if (alreadySet && !isChecked) {
+                    new PinChangeTask(mActivity, mAccount, false).execute();
                 }
             }
         });
@@ -419,7 +409,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Autologoff
         mAutoLogoffManager.setSeconds(settings.secondsAutoLogout());
         // Pin Relogin
-        mPinReloginSwitch.setChecked(!settings.disablePinLogin());
+        if (AirbitzCore.getApi().accountHasPin(mAccount.username())) {
+            mPinReloginSwitch.setChecked(true);
+        } else {
+            mPinReloginSwitch.setChecked(false);
+        }
         // NFC
         if (mNFCSwitch.getVisibility() == View.VISIBLE) {
             mNFCSwitch.setChecked(getNFCPref());
@@ -491,7 +485,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             try {
                 mCoreSettings.save();
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "SettingFragment saveCurrentSettings error");
+                AirbitzCore.logi("SettingFragment saveCurrentSettings error");
             }
         }
     }

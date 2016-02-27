@@ -247,7 +247,7 @@ public class LandingFragment extends BaseFragment implements
                 if (++mAccountTaps < 5) {
                     return;
                 }
-                AirbitzCore.debugLevel(0, "Uploading logs from Landing screen");
+                AirbitzCore.logi("Uploading logs from Landing screen");
                 UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
                 uploadLogAlert.showUploadLogAlert();
                 mAccountTaps = 0;
@@ -555,7 +555,7 @@ public class LandingFragment extends BaseFragment implements
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPin(mUsername)) {
                 mPinEditText.setText("");
-                AirbitzCore.debugLevel(1, "showing pin login for " + mUsername);
+                AirbitzCore.logi("showing pin login for " + mUsername);
                 refreshView(true, true, true);
                 return;
             }
@@ -563,7 +563,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
         }
 
-        AirbitzCore.debugLevel(1, "showing password login for " + mUsername);
+        AirbitzCore.logi("showing password login for " + mUsername);
         refreshView(false, false, true);
     }
 
@@ -953,7 +953,7 @@ public class LandingFragment extends BaseFragment implements
             try {
                 return mCoreAPI.recoveryQuestions(params[0]);
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "GetRecoveryQuestionsTask error:");
+                AirbitzCore.logi("GetRecoveryQuestionsTask error:");
                 return e.getMessage();
             }
         }
@@ -971,7 +971,7 @@ public class LandingFragment extends BaseFragment implements
                 if (questions.length > 1) { // questions came back
                     mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
                 } else if (questions.length == 1) { // Error string
-                    AirbitzCore.debugLevel(1, questionString);
+                    AirbitzCore.logi(questionString);
                     mActivity.ShowFadingDialog(questions[0]);
                 }
             }

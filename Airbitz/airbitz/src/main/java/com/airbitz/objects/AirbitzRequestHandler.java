@@ -98,14 +98,14 @@ public class AirbitzRequestHandler extends RequestHandler {
     @Override
     public Result load(Request request, int networkPolicy) throws IOException {
         Uri uri = request.uri;
-        AirbitzCore.debugLevel(1, request.uri.toString());
+        AirbitzCore.logi(request.uri.toString());
         switch (matcher.match(uri)) {
         case ID_CONTACT:
-            AirbitzCore.debugLevel(1, "ID_CONTACT");
+            AirbitzCore.logi("ID_CONTACT");
             InputStream is = getContactStream(uri);
             return is != null ? new Result(is, LoadedFrom.DISK) : null;
         case ID_BIZ:
-            AirbitzCore.debugLevel(1, "ID_BIZ");
+            AirbitzCore.logi("ID_BIZ");
             return fetchBizLink(request, networkPolicy);
         default:
             throw new IllegalStateException("Invalid uri: " + uri);
@@ -136,13 +136,13 @@ public class AirbitzRequestHandler extends RequestHandler {
                 }
                 mBizIds.put(bizId, biz.getSquareImageLink());
                 thumbnail = Uri.parse(biz.getSquareImageLink());
-                AirbitzCore.debugLevel(1, "Fetch..." + thumbnail.toString());
+                AirbitzCore.logi("Fetch..." + thumbnail.toString());
             } else {
                 thumbnail = Uri.parse(mBizIds.get(bizId));
             }
             return networkFetch(request, thumbnail, networkPolicy);
         } catch (Exception e) {
-            AirbitzCore.debugLevel(1, "exception");
+            AirbitzCore.logi("exception");
             Log.e(TAG, request.uri.getPath(), e);
         }
         return null;

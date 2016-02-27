@@ -181,11 +181,11 @@ public class NavigationActivity extends ActionBarActivity
 
             if (extras != null) {
                 if (networkIsAvailable()) {
-                    AirbitzCore.debugLevel(1, "Connection available");
+                    AirbitzCore.logi("Connection available");
                     mCoreAPI.connectivity(true);
                     mConnectivityNotified = false;
                 } else { // has connection
-                    AirbitzCore.debugLevel(1, "Connection NOT available");
+                    AirbitzCore.logi("Connection NOT available");
                     mCoreAPI.connectivity(false);
                     if (!mConnectivityNotified) {
                         ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
@@ -474,10 +474,9 @@ public class NavigationActivity extends ActionBarActivity
 
     public static AirbitzCore initiateCore(Context context) {
         AirbitzCore api = AirbitzCore.getApi(context);
-        String seed = CoreWrapper.getSeedData();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        api.init(context, airbitzApiKey, hiddenbitzKey, seed);
+        api.init(context, airbitzApiKey, hiddenbitzKey);
         return api;
     }
 
@@ -575,15 +574,15 @@ public class NavigationActivity extends ActionBarActivity
         Fragment frag = mNavStacks[id].peek();
         Fragment fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null)
-            AirbitzCore.debugLevel(1, "switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
+            AirbitzCore.logi("switchFragmentThread frag, fragShown is " + frag.getClass().getSimpleName() + ", " + fragShown.getClass().getSimpleName());
         else
-            AirbitzCore.debugLevel(1, "switchFragmentThread no fragment showing yet ");
+            AirbitzCore.logi("switchFragmentThread no fragment showing yet ");
 
-        AirbitzCore.debugLevel(1, "switchFragmentThread pending transactions executed ");
+        AirbitzCore.logi("switchFragmentThread pending transactions executed ");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction().disallowAddToBackStack();
         if (frag.isAdded()) {
-            AirbitzCore.debugLevel(1, "Fragment already added, detaching and attaching");
+            AirbitzCore.logi("Fragment already added, detaching and attaching");
             transaction.detach(mNavStacks[mNavThreadId].peek());
             transaction.attach(frag);
         } else {
@@ -591,20 +590,20 @@ public class NavigationActivity extends ActionBarActivity
                 transaction.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
             }
             transaction.replace(R.id.activityLayout, frag);
-            AirbitzCore.debugLevel(1, "switchFragmentThread replace executed.");
+            AirbitzCore.logi("switchFragmentThread replace executed.");
         }
         transaction.commit();
-        AirbitzCore.debugLevel(1, "switchFragmentThread transactions committed.");
+        AirbitzCore.logi("switchFragmentThread transactions committed.");
         fragShown = getFragmentManager().findFragmentById(R.id.activityLayout);
         if (fragShown != null) {
-            AirbitzCore.debugLevel(1, "switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
+            AirbitzCore.logi("switchFragmentThread showing frag is " + fragShown.getClass().getSimpleName());
         } else {
-            AirbitzCore.debugLevel(1, "switchFragmentThread showing frag is null");
+            AirbitzCore.logi("switchFragmentThread showing frag is null");
         }
         AirbitzApplication.setLastNavTab(id);
         mNavThreadId = id;
 
-        AirbitzCore.debugLevel(1, "switchFragmentThread switch to threadId " + mNavThreadId);
+        AirbitzCore.logi("switchFragmentThread switch to threadId " + mNavThreadId);
 
         getFragmentManager().executePendingTransactions();
         resetDrawerButtons();
@@ -962,7 +961,7 @@ public class NavigationActivity extends ActionBarActivity
         final String type = intent.getType();
         final String scheme = intentUri != null ? intentUri.getScheme() : null;
 
-        AirbitzCore.debugLevel(1, "New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
+        AirbitzCore.logi("New Intent action=" + action + ", data=" + intentUri + ", type=" + type + ", scheme=" + scheme);
 
         if (PasswordCheckReceiver.USER_SWITCH.equals(action)) {
             saveCachedLoginName(intent.getStringExtra(PasswordCheckReceiver.USERNAME));
@@ -971,7 +970,7 @@ public class NavigationActivity extends ActionBarActivity
                 (SettingFragment.getNFCPref() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)))) {
             processUri(intentUri);
         } else if(type != null && type.equals(AirbitzAlertReceiver.ALERT_NOTIFICATION_TYPE)) {
-            AirbitzCore.debugLevel(1, "Notification type found");
+            AirbitzCore.logi("Notification type found");
                 mNotificationTask = new NotificationTask();
                 mNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1007,7 +1006,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private void processUri(Uri uri) {
         if(uri == null || uri.getScheme() == null) {
-            AirbitzCore.debugLevel(1, "Null uri or uri.scheme");
+            AirbitzCore.logi("Null uri or uri.scheme");
             return;
         }
 
@@ -1020,7 +1019,7 @@ public class NavigationActivity extends ActionBarActivity
         if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
             if (2 <= path.size()) {
-                AirbitzCore.debugLevel(1, uri.toString());
+                AirbitzCore.logi(uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme)
@@ -1074,7 +1073,7 @@ public class NavigationActivity extends ActionBarActivity
      * Handle bitcoin:<address> Uri's coming from OS
      */
     private void handleBitcoinUri(Uri dataUri) {
-        AirbitzCore.debugLevel(1, "Received onBitcoin with uri = " + dataUri.toString());
+        AirbitzCore.logi("Received onBitcoin with uri = " + dataUri.toString());
         resetFragmentThreadToBaseFragment(Tabs.SEND.ordinal());
 
         Bundle bundle = new Bundle();
@@ -1085,7 +1084,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public void onIncomingBitcoin(String walletUUID, String txId) {
         Wallet wallet = AirbitzApplication.getAccount().wallet(walletUUID);
-        AirbitzCore.debugLevel(1, "onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
+        AirbitzCore.logi("onIncomingBitcoin uuid, txid = " + walletUUID + ", " + txId);
         mUUID = walletUUID;
         mTxId = txId;
 
@@ -1099,7 +1098,7 @@ public class NavigationActivity extends ActionBarActivity
 
         /* If showing QR code, launch receiving screen*/
         RequestFragment f = requestMatchesQR(mUUID, mTxId);
-        AirbitzCore.debugLevel(1, "RequestFragment? " + f);
+        AirbitzCore.logi("RequestFragment? " + f);
         if (f != null) {
             long diff = f.requestDifference(mUUID, mTxId);
             if (diff <= 0) {
@@ -1193,7 +1192,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void onSentFunds(String walletUUID, String txId, String returnUrl) {
-        AirbitzCore.debugLevel(1, "onSentFunds uuid, txid = " + walletUUID + ", " + txId);
+        AirbitzCore.logi("onSentFunds uuid, txid = " + walletUUID + ", " + txId);
 
         FragmentManager manager = getFragmentManager();
         if(manager != null) {
@@ -1207,11 +1206,11 @@ public class NavigationActivity extends ActionBarActivity
         bundle.putString(Constants.WALLET_UUID, walletUUID);
         bundle.putString(SendFragment.RETURN_URL, returnUrl);
 
-        AirbitzCore.debugLevel(1, "onSentFunds calling switchToWallets");
+        AirbitzCore.logi("onSentFunds calling switchToWallets");
         switchToWallets(bundle);
 
         while (mNavStacks[Tabs.SEND.ordinal()].size() > 0) {
-            AirbitzCore.debugLevel(1, "Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
+            AirbitzCore.logi("Send thread removing " + mNavStacks[Tabs.SEND.ordinal()].peek().getClass().getSimpleName());
             mNavStacks[Tabs.SEND.ordinal()].pop();
         }
         Fragment frag = getNewBaseFragement(Tabs.SEND.ordinal());
@@ -1495,13 +1494,13 @@ public class NavigationActivity extends ActionBarActivity
         for (NetworkInfo ni : netInfo) {
             if ("WIFI".equalsIgnoreCase(ni.getTypeName())) {
                 if (ni.isConnected()) {
-                    AirbitzCore.debugLevel(1, "Connection is WIFI");
+                    AirbitzCore.logi("Connection is WIFI");
                     return true;
                 }
             }
             if ("MOBILE".equalsIgnoreCase(ni.getTypeName())) {
                 if (ni.isConnected()) {
-                    AirbitzCore.debugLevel(1, "Connection is MOBILE");
+                    AirbitzCore.logi("Connection is MOBILE");
                     return true;
                 }
             }
@@ -1515,7 +1514,7 @@ public class NavigationActivity extends ActionBarActivity
 
         long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
 
-        AirbitzCore.debugLevel(1, "delta logout time = " + milliDelta);
+        AirbitzCore.logi("delta logout time = " + milliDelta);
         Account account = AirbitzApplication.getAccount();
         Settings settings = account.settings();
         if (settings != null) {
@@ -1941,7 +1940,7 @@ public class NavigationActivity extends ActionBarActivity
 
         List<String> cats = categories.list();
         if (cats.size() == 0 || cats.get(0).equals(defaults)) {
-            AirbitzCore.debugLevel(1, "Category creation failed");
+            AirbitzCore.logi("Category creation failed");
         }
     }
 
@@ -1983,7 +1982,7 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected void onPostExecute(final String response) {
-            AirbitzCore.debugLevel(1, "Notification response of "+mMessageId+","+mBuildNumber+": " + response);
+            AirbitzCore.logi("Notification response of "+mMessageId+","+mBuildNumber+": " + response);
             if(response != null && response.length() != 0) {
                 mNotificationMap = getAndroidMessages(response);
                 if(mNotificationMap.size() > 0) {
@@ -1991,7 +1990,7 @@ public class NavigationActivity extends ActionBarActivity
                 }
             }
             else {
-                AirbitzCore.debugLevel(1, "No Notification response");
+                AirbitzCore.logi("No Notification response");
             }
             mNotificationTask = null;
         }
@@ -2650,7 +2649,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            AirbitzCore.debugLevel(1, "Block Height received");
+            AirbitzCore.logi("Block Height received");
             updateWalletListener();
         }
     };
@@ -2658,7 +2657,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mDataSyncReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            AirbitzCore.debugLevel(1, "Data Sync received");
+            AirbitzCore.logi("Data Sync received");
             updateWalletListener();
         }
     };
@@ -2689,7 +2688,7 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mRemotePasswordChange = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            AirbitzCore.debugLevel(1, "Remote Password received");
+            AirbitzCore.logi("Remote Password received");
             if (!(mNavStacks[mNavThreadId].peek() instanceof SignUpFragment)) {
                 showRemotePasswordChangeDialog();
             }

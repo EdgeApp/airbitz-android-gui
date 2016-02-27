@@ -71,7 +71,6 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
-import com.airbitz.objects.PinSetupTask;
 import com.airbitz.utils.Common;
 
 import java.util.List;
@@ -423,7 +422,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             // if we are signing up a new account
             if (mChangeTask == null) {
                     mChangeTask = new ChangeTask();
-                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getArguments().getString(PasswordRecoveryFragment.QUESTIONS),
+                    mChangeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                             getArguments().getString(PasswordRecoveryFragment.USERNAME));
             }
         }
@@ -570,18 +569,17 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         @Override
         protected Boolean doInBackground(String... params) {
             mAccount.stopAllAsyncUpdates();
-
-            String answers = params[0];
-            mUsername = params[1];
+            mUsername = params[0];
             mPassword = mPasswordEditText.getText().toString();
             try {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     mUsername = AirbitzApplication.getUsername();
                     mAccount.passwordSetup(mPassword);
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    mAccount.recoverySetup(answers);
+                    mAccount.passwordSetup(mPassword);
+                    mAccount.pin(mPin);
                 } else {
-                    pinSetup(mPin);
+                    mAccount.pin(mPin);
                 }
             } catch (AirbitzException e) {
                 mFailureException = e;
@@ -590,19 +588,16 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             return true;
         }
 
-        private void pinSetup(String pin) {
-            new PinSetupTask(mActivity, mAccount, pin).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
-
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
+                    mActivity.popFragment();
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
-                    mActivity.switchFragmentThread(NavigationActivity.Tabs.MORE.ordinal());
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
                 }

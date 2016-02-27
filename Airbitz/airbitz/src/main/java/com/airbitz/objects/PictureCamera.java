@@ -98,7 +98,7 @@ public class PictureCamera implements Camera.PreviewCallback {
         // Get back camera unless there is none, then try the front camera - fix for Nexus 7
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras == 0) {
-            AirbitzCore.debugLevel(1, "No cameras!");
+            AirbitzCore.logi("No cameras!");
             return -1;
         }
 
@@ -163,7 +163,7 @@ public class PictureCamera implements Camera.PreviewCallback {
         if (mCameraManager.getCamera() != null) {
             mPreviewFrame.removeView(mPreview);
         }
-        AirbitzCore.debugLevel(1, "stopping camera");
+        AirbitzCore.logi("stopping camera");
         mCameraManager.previewOff();
         mCameraManager.stopPreview();
         mCameraManager.release();

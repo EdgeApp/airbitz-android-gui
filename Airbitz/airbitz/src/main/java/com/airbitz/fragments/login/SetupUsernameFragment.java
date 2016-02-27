@@ -252,7 +252,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             try {
                 return mCoreAPI.usernameAvailable(username);
             } catch (AirbitzException e) {
-                AirbitzCore.debugLevel(1, "CheckUsernameTask error:");
+                AirbitzCore.logi("CheckUsernameTask error:");
                 return e.getMessage();
             }
         }

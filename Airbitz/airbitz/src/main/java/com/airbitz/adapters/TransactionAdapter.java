@@ -186,7 +186,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
         Transaction transaction = mListTransaction.get(position);
 
-        String dateString = mFormatter.format(transaction.date() * 1000);
+        String dateString = mFormatter.format(transaction.date());
         viewHolder.dateTextView.setText(dateString);
 
         long transactionSatoshis = transaction.amount();

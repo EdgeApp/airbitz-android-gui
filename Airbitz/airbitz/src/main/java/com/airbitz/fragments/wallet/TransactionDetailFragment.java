@@ -447,7 +447,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!doEdit && isResumed()) {
-                    AirbitzCore.debugLevel(1, "editable=" + editable.toString());
+                    AirbitzCore.logi("editable=" + editable.toString());
                     updateBlanks(editable.toString());
                     createNewCategoryChoices(editable.toString());
                 }
@@ -674,19 +674,19 @@ public class TransactionDetailFragment extends WalletBaseFragment
         bundle = getArguments();
         if (bundle != null) {
             if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_SEND)) {
-                AirbitzCore.debugLevel(1, "SEND");
+                AirbitzCore.logi("SEND");
                 mFromSend = true;
                 setCurrentType(getString(R.string.fragment_category_expense));
             } else if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
-                AirbitzCore.debugLevel(1, "REQUEST");
+                AirbitzCore.logi("REQUEST");
                 setCurrentType(getString(R.string.fragment_category_income));
             }
 
             mWalletUUID = bundle.getString(Constants.WALLET_UUID);
             mTxId = bundle.getString(Constants.WALLET_TXID);
             if (mWalletUUID.isEmpty()) {
-                AirbitzCore.debugLevel(1, "no detail info");
+                AirbitzCore.logi("no detail info");
             } else if (mWallet == null || mTransaction == null) {
                 mWallet = mAccount.wallet(mWalletUUID);
                 mTransaction = mWallet.transaction(mTxId);
@@ -708,22 +708,22 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         if(mContactNames == null || mContactNames.isEmpty()) {
-            AirbitzCore.debugLevel(1, "Getting Contact List");
+            AirbitzCore.logi("Getting Contact List");
             getContactsList();
         }
 
         if(mTransaction != null) {
-            AirbitzCore.debugLevel(1, "Updating view");
+            AirbitzCore.logi("Updating view");
             FindBizIdThumbnail(mTransaction.meta().name(), mTransaction.meta().bizid());
         }
 
         if(mOriginalCategories == null || mOriginalCategories.isEmpty() || mCategoryAdapter == null) {
-            AirbitzCore.debugLevel(1, "Getting original categories");
+            AirbitzCore.logi("Getting original categories");
             setupOriginalCategories();
         }
 
         mCategoryAdapter.setOnNewCategoryListener(this);
-        AirbitzCore.debugLevel(1, "OnResume finished");
+        AirbitzCore.logi("OnResume finished");
     }
 
     @Override
@@ -749,7 +749,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mActivity.startActivity(intent);
         }
         else {
-            AirbitzCore.debugLevel(1, "Return URL does not begin with http or https");
+            AirbitzCore.logi("Return URL does not begin with http or https");
         }
     }
 
@@ -888,7 +888,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     e.printStackTrace();
                 }
             } else {
-                AirbitzCore.debugLevel(1, "loading remote " + payeeImage.toString());
+                AirbitzCore.logi("loading remote " + payeeImage.toString());
                 mPicasso.with(getActivity())
                         .load(payeeImage)
                         .transform(new RoundedTransformation(round, round))
@@ -929,7 +929,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mBizIds.containsKey(mPayeeEditText.getText().toString())) {
             mBizId = mBizIds.get(mPayeeEditText.getText().toString());
         }
-        AirbitzCore.debugLevel(1, "Biz ID: " + String.valueOf(mBizId));
+        AirbitzCore.logi("Biz ID: " + String.valueOf(mBizId));
     }
 
 
@@ -1087,7 +1087,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void UpdateView(Transaction transaction) {
         doEdit = true;
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.date() * 1000);
+        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.date());
         mDateTextView.setText(dateString);
 
         String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
@@ -1140,7 +1140,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
                     s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-//                    AirbitzCore.debugLevel(1, "Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
+//                    AirbitzCore.logi("Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1163,7 +1163,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
 
         for (String type : orderedCategories) {
-//            AirbitzCore.debugLevel(1, "Searching for "+type);
+//            AirbitzCore.logi("Searching for "+type);
             addMatchesForPrefix(type, match);
         }
         if (null != mCategoryAdapter) {
@@ -1245,7 +1245,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                             if (thumbnail != null) {
                                 Uri uri = Uri.parse(thumbnail);
                                 mCombinedPhotos.put(business.getName(), uri);
-//                                AirbitzCore.debugLevel(1, "Adding " + business.getName() + " thumbnail");
+//                                AirbitzCore.logi("Adding " + business.getName() + " thumbnail");
                             }
                         }
                     }
@@ -1471,7 +1471,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void FindBizIdThumbnail(String name, long id) {
         if (id != 0) {
-            AirbitzCore.debugLevel(1, "Finding bizid thumbnail for "+name);
+            AirbitzCore.logi("Finding bizid thumbnail for "+name);
             GetBizIdThumbnailAsyncTask task = new GetBizIdThumbnailAsyncTask(name, id);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1499,7 +1499,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             }
             if (business != null && business.getSquareImageLink() != null) {
                 Uri uri = Uri.parse(business.getSquareImageLink());
-                AirbitzCore.debugLevel(1, "Got " + uri);
+                AirbitzCore.logi("Got " + uri);
                 mCombinedPhotos.put(mName, uri);
                 updatePhoto();
                 updateBizId();

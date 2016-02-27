@@ -438,7 +438,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
                 mAmountSatoshi = mAccount.denominationToSatoshi(bitcoin);
             } else {
-                AirbitzCore.debugLevel(1, "Too much bitcoin");
+                AirbitzCore.logi("Too much bitcoin");
             }
         } else {
             String fiat = mAmountField.getText().toString();
@@ -446,7 +446,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currencyCode())) {
                     mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currencyCode());
                 } else {
-                    AirbitzCore.debugLevel(1, "Too much fiat");
+                    AirbitzCore.logi("Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -749,7 +749,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public boolean isShowingQRCodeFor(String walletUUID, String txId) {
-        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: " + walletUUID + " " + txId);
+        AirbitzCore.logi("isShowingQRCodeFor: " + walletUUID + " " + txId);
         Transaction tx = mWallet.transaction(txId);
         if (null == tx)
             return false;
@@ -757,14 +757,14 @@ public class RequestFragment extends WalletBaseFragment implements
         if (tx.outputs() == null || mAddress == null) {
             return false;
         }
-        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: hasOutputs");
+        AirbitzCore.logi("isShowingQRCodeFor: hasOutputs");
         for (TxOutput output : tx.outputs()) {
-            AirbitzCore.debugLevel(1, output.isInput() + " " + mAddress + " " + output.address());
+            AirbitzCore.logi(output.isInput() + " " + mAddress + " " + output.address());
             if (!output.isInput() && mAddress.equals(output.address())) {
                 return true;
             }
         }
-        AirbitzCore.debugLevel(1, "isShowingQRCodeFor: noMatch");
+        AirbitzCore.logi("isShowingQRCodeFor: noMatch");
         return false;
     }
 
@@ -773,7 +773,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public long requestDifference(String walletUUID, String txId) {
-        AirbitzCore.debugLevel(1, "requestDifference: " + walletUUID + " " + txId);
+        AirbitzCore.logi("requestDifference: " + walletUUID + " " + txId);
         if (mAmountSatoshi > 0) {
             Transaction tx = mWallet.transaction(txId);
             return mAmountSatoshi - tx.amount();
@@ -856,7 +856,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         if(mRequestURI != null) {
-            AirbitzCore.debugLevel(1, "Creating NFC request: " + mRequestURI);
+            AirbitzCore.logi("Creating NFC request: " + mRequestURI);
             return new NdefMessage(NdefRecord.createUri(mRequestURI));
         }
         else
@@ -890,8 +890,8 @@ public class RequestFragment extends WalletBaseFragment implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            AirbitzCore.debugLevel(1, "Starting Receive Request at:" + System.currentTimeMillis());
-            receiver = wallet.receiveRequestBuilders().amount(satoshis).build();
+            AirbitzCore.logi("Starting Receive Request at:" + System.currentTimeMillis());
+            receiver = wallet.receiveRequest().amount(satoshis);
             address = receiver.address();
             try {
                 qrBitmap = mCoreAPI.qrEncode(receiver.qrcode());
@@ -1006,7 +1006,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (animation.getAnimatedFraction() == 1.0f) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
-                        AirbitzCore.debugLevel(1, "Last");
+                        AirbitzCore.logi("Last");
                         alignQrCode();
                     }
                 }, 100);
@@ -1036,7 +1036,7 @@ public class RequestFragment extends WalletBaseFragment implements
                             mAccount.formatSatoshi(mAmountSatoshi, false));
                     }
                 } else {
-                    AirbitzCore.debugLevel(1, "Too much fiat");
+                    AirbitzCore.logi("Too much fiat");
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -1052,7 +1052,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false));
                 }
             } else {
-                AirbitzCore.debugLevel(1, "Too much bitcoin");
+                AirbitzCore.logi("Too much bitcoin");
             }
         }
         updateConversion();
@@ -1156,7 +1156,7 @@ public class RequestFragment extends WalletBaseFragment implements
 		}
 		Calendar now = Calendar.getInstance();
 		String notes = String.format("%s / %s requested via %s on %s.",
-				mAccount.formatSatoshi(mReceiver.amountSatoshi()),
+				mAccount.formatSatoshi(mReceiver.amount()),
 				CoreWrapper.formatDefaultCurrency(mAccount, mReceiver.meta().fiat()),
 				type,
 				String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));

@@ -156,7 +156,7 @@ public class DirectoryDetailFragment extends BaseFragment
         locationEnabled = CurrentLocationManager.locationEnabled(getActivity());
         Common.disabledNotification(mActivity, mView);
 
-        AirbitzCore.debugLevel(1, "Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
+        AirbitzCore.logi("Business ID: " + mBusinessId + ", Business Distance = " + mBusinessDistance);
 
         mCategoriesTextView = (TextView) mView.findViewById(R.id.textview_categories);
         mCategoriesTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
@@ -299,7 +299,7 @@ public class DirectoryDetailFragment extends BaseFragment
                 latLong = String.valueOf(currentLoc.getLatitude());
                 latLong += "," + String.valueOf(currentLoc.getLongitude());
             }
-            AirbitzCore.debugLevel(1, "LocationManager Location = "+latLong);
+            AirbitzCore.logi("LocationManager Location = "+latLong);
             return mApi.getBusinessByIdAndLatLong(params[0], latLong);
         }
 
