@@ -31,7 +31,10 @@
 
 package com.airbitz.api;
 
+import android.content.Context;
+
 import co.airbitz.core.Wallet;
+import com.airbitz.R;
 
 public class WalletWrapper {
     public static final String WALLET_HEADER_ID = "xkmODCMdsokmKOSDnvOSDvnoMSDMSsdcslkmdcwlksmdcL";
@@ -47,6 +50,14 @@ public class WalletWrapper {
     public WalletWrapper(Wallet wallet) {
         mWallet = wallet;
         mId = wallet.id();
+    }
+
+    public String name(Context context) {
+        if (isSynced()) {
+            return mWallet.name();
+        } else {
+            return context.getString(R.string.loading);
+        }
     }
 
     public boolean isSynced() {

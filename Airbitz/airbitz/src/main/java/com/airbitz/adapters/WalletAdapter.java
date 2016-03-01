@@ -245,7 +245,7 @@ public class WalletAdapter extends ArrayAdapter<WalletWrapper> {
             if (!wallet.wallet().isSynced()) {
                 titleTextView.setText(R.string.loading);
             } else {
-                titleTextView.setText(wallet.wallet().name());
+                titleTextView.setText(wallet.name(mContext));
             }
             if (mIsBitcoin) {
                 amountTextView.setText(mAccount.formatSatoshi(wallet.wallet().balance(), true));

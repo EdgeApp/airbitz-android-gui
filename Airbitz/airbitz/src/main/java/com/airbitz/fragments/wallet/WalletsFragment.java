@@ -357,14 +357,14 @@ public class WalletsFragment extends WalletBaseFragment implements
 
         list.add(new WalletWrapper(WalletWrapper.WALLET_HEADER_ID));
         for (Wallet wallet : coreList) {
-            if (!wallet.isArchived() && wallet.name() != null) {
+            if (!wallet.isArchived()) {
                 list.add(new WalletWrapper(wallet));
             }
         }
         list.add(new WalletWrapper(WalletWrapper.WALLET_ARCHIVE_HEADER_ID));
         if (!archiveClosed) {
             for (Wallet wallet : coreList) {
-                if (wallet.isArchived() && wallet.name() != null) {
+                if (wallet.isArchived()) {
                     list.add(new WalletWrapper(wallet));
                 }
             }
