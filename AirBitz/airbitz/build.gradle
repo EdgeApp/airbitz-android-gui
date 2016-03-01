@@ -73,6 +73,14 @@ android {
         coinbtm {
             applicationId 'com.coinbtm.rackwallet'
         }
+
+        coinsource {
+            applicationId 'com.coinsource.wallet'
+        }
+
+        athena {
+            applicationId 'com.athenabitcoin.wallet'
+        }
     }
 
     packagingOptions {
