@@ -61,10 +61,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.Settings;
-import co.airbitz.core.AirbitzException;
+import co.airbitz.core.AirbitzCore.PasswordRulesCheck;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.PasswordRule;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.Settings;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -73,6 +73,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.utils.Common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,9 +101,13 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     private LinearLayout mPopupContainer;
     private View mWidgetContainer;
     private ImageView mSwitchImage1;
+    private TextView mSwitchText1;
     private ImageView mSwitchImage2;
+    private TextView mSwitchText2;
     private ImageView mSwitchImage3;
+    private TextView mSwitchText3;
     private ImageView mSwitchImage4;
+    private TextView mSwitchText4;
     private TextView mTimeTextView;
     private AirbitzCore mCoreAPI;
     private Account mAccount;
@@ -143,9 +148,13 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         mWithdrawalLabel = (TextView) mView.findViewById(R.id.activity_signup_withdrawal_textview);
 
         mSwitchImage1 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_1);
+        mSwitchText1 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_1);
         mSwitchImage2 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_2);
+        mSwitchText2 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_2);
         mSwitchImage3 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_3);
+        mSwitchText3 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_3);
         mSwitchImage4 = (ImageView) mView.findViewById(R.id.activity_signup_switch_image_4);
+        mSwitchText4 = (TextView) mView.findViewById(R.id.activity_signup_switch_text_4);
 
         mTimeTextView = (TextView) mView.findViewById(R.id.activity_signup_time_textview);
 
@@ -379,40 +388,35 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private boolean checkPasswordRules(String password) {
-        List<PasswordRule> rules = mCoreAPI.passwordRules(password);
+		PasswordRulesCheck rules = mCoreAPI.passwordRulesCheck(password);
+		List<String> fails = new ArrayList<String>();
 
-        if (rules.isEmpty()) {
-            return false;
-        }
+		mSwitchImage1.setImageResource(!rules.tooShort ? R.drawable.green_check : R.drawable.white_dot);
+		mSwitchText1.setText(String.format(getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		if (rules.tooShort) {
+			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		}
 
-        boolean bNewPasswordFieldsAreValid = true;
-        for (int i = 0; i < rules.size(); i++) {
-            PasswordRule pRule = rules.get(i);
-            boolean passed = pRule.getBPassed();
-            if (!passed) {
-                bNewPasswordFieldsAreValid = false;
-            }
+		mSwitchImage2.setImageResource(!rules.noNumber ? R.drawable.green_check : R.drawable.white_dot);
+        mSwitchText2.setText(R.string.password_rule_no_number);
+		if (rules.noNumber) {
+			fails.add(mActivity.getString(R.string.password_rule_no_number));
+		}
 
-            int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
-            switch (i) {
-                case 0:
-                    mSwitchImage1.setImageResource(resource);
-                    break;
-                case 1:
-                    mSwitchImage2.setImageResource(resource);
-                    break;
-                case 2:
-                    mSwitchImage3.setImageResource(resource);
-                    break;
-                case 3:
-                    mSwitchImage4.setImageResource(resource);
-                    break;
-                default:
-                    break;
-            }
-        }
-        mTimeTextView.setText(GetCrackString(mCoreAPI.passwordSecondsToCrack(password)));
-        return bNewPasswordFieldsAreValid;
+		mSwitchImage3.setImageResource(!rules.noUpperCase ? R.drawable.green_check : R.drawable.white_dot);
+        mSwitchText3.setText(R.string.password_rule_no_uppercase);
+		if (rules.noUpperCase) {
+			fails.add(mActivity.getString(R.string.password_rule_no_uppercase));
+		}
+
+		mSwitchImage4.setImageResource(!rules.noLowerCase ? R.drawable.green_check : R.drawable.white_dot);
+        mSwitchText4.setText(R.string.password_rule_no_lowercase);
+		if (rules.noLowerCase) {
+			fails.add(mActivity.getString(R.string.password_rule_no_lowercase));
+		}
+
+        mTimeTextView.setText(Common.getCrackString(mActivity, rules.secondsToCrack));
+        return fails.isEmpty();
     }
 
     private void goNext() {
@@ -492,33 +496,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         return bpinNameFieldIsValid;
     }
 
-    private String GetCrackString(double secondsToCrack) {
-        String crackString = getResources().getString(R.string.activity_signup_time_to_crack);
-        if (secondsToCrack < 60.0) {
-            crackString += String.format("%.2f ", secondsToCrack);
-            crackString += getResources().getString(R.string.activity_signup_seconds);
-        } else if (secondsToCrack < 3600) {
-            crackString += String.format("%.2f ", secondsToCrack / 60.0);
-            crackString += getResources().getString(R.string.activity_signup_minutes);
-        } else if (secondsToCrack < 86400) {
-            crackString += String.format("%.2f ", secondsToCrack / 3600.0);
-            crackString += getResources().getString(R.string.activity_signup_hours);
-        } else if (secondsToCrack < 604800) {
-            crackString += String.format("%.2f ", secondsToCrack / 86400.0);
-            crackString += getResources().getString(R.string.activity_signup_days);
-        } else if (secondsToCrack < 2419200) {
-            crackString += String.format("%.2f ", secondsToCrack / 604800.0);
-            crackString += getResources().getString(R.string.activity_signup_weeks);
-        } else if (secondsToCrack < 29030400) {
-            crackString += String.format("%.2f ", secondsToCrack / 2419200.0);
-            crackString += getResources().getString(R.string.activity_signup_months);
-        } else {
-            crackString += String.format("%.2f ", secondsToCrack / 29030400.0);
-            crackString += getResources().getString(R.string.activity_signup_years);
-        }
-        return crackString;
-    }
-
     @Override
     public boolean onBackPress() {
         mActivity.hideSoftKeyboard(getView());
@@ -593,7 +570,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
-                    mActivity.popFragment();
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();

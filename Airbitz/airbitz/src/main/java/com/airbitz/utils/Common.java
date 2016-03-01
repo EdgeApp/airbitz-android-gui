@@ -436,4 +436,31 @@ public class Common {
         textView.setTextColor(Color.WHITE);
         bar.show();
     }
+
+    public static String getCrackString(Activity activity, double secondsToCrack) {
+        String crackString = activity.getString(R.string.activity_signup_time_to_crack);
+        if (secondsToCrack < 60.0) {
+            crackString += String.format("%.2f ", secondsToCrack);
+            crackString += activity.getString(R.string.activity_signup_seconds);
+        } else if (secondsToCrack < 3600) {
+            crackString += String.format("%.2f ", secondsToCrack / 60.0);
+            crackString += activity.getString(R.string.activity_signup_minutes);
+        } else if (secondsToCrack < 86400) {
+            crackString += String.format("%.2f ", secondsToCrack / 3600.0);
+            crackString += activity.getString(R.string.activity_signup_hours);
+        } else if (secondsToCrack < 604800) {
+            crackString += String.format("%.2f ", secondsToCrack / 86400.0);
+            crackString += activity.getString(R.string.activity_signup_days);
+        } else if (secondsToCrack < 2419200) {
+            crackString += String.format("%.2f ", secondsToCrack / 604800.0);
+            crackString += activity.getString(R.string.activity_signup_weeks);
+        } else if (secondsToCrack < 29030400) {
+            crackString += String.format("%.2f ", secondsToCrack / 2419200.0);
+            crackString += activity.getString(R.string.activity_signup_months);
+        } else {
+            crackString += String.format("%.2f ", secondsToCrack / 29030400.0);
+            crackString += activity.getString(R.string.activity_signup_years);
+        }
+        return crackString;
+    }
 }

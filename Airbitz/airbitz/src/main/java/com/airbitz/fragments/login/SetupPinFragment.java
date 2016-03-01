@@ -57,7 +57,6 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import co.airbitz.core.AirbitzException;
-import co.airbitz.core.PasswordRule;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 

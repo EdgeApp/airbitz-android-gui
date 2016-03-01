@@ -59,13 +59,14 @@ import android.widget.TextView;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.PasswordRule;
+import co.airbitz.core.AirbitzCore.PasswordRulesCheck;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
+import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,44 +287,35 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
     // if the new mPassword fields are bad, an appropriate message box is displayed
     // note: this function is aware of the 'mode' of the view controller and will check and display appropriately
     private List<String> checkPasswordRules(String password) {
-        List<PasswordRule> rules = mCoreAPI.passwordRules(password);
-        List<String> ruleFails = new ArrayList<>();
+		PasswordRulesCheck rules = mCoreAPI.passwordRulesCheck(password);
+		List<String> fails = new ArrayList<String>();
 
-        if (rules.isEmpty()) {
-            return ruleFails;
-        }
+		mRule1Image.setImageResource(!rules.tooShort ? R.drawable.green_check : R.drawable.white_dot);
+		mRule1Text.setText(String.format(getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		if (rules.tooShort) {
+			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		}
 
-        for (int i = 0; i < rules.size(); i++) {
-            PasswordRule pRule = rules.get(i);
-            boolean passed = pRule.getBPassed();
-            if (!passed) {
-                ruleFails.add(pRule.getSzDescription());
-            }
+		mRule2Image.setImageResource(!rules.noNumber ? R.drawable.green_check : R.drawable.white_dot);
+		mRule2Text.setText(R.string.password_rule_no_number);
+		if (rules.noNumber) {
+			fails.add(mActivity.getString(R.string.password_rule_no_number));
+		}
 
-            int resource = passed ? R.drawable.green_check : R.drawable.white_dot;
-            switch (i) {
-                case 0:
-                    mRule1Image.setImageResource(resource);
-                    mRule1Text.setText(pRule.getSzDescription());
-                    break;
-                case 1:
-                    mRule2Image.setImageResource(resource);
-                    mRule2Text.setText(pRule.getSzDescription());
-                    break;
-                case 2:
-                    mRule3Image.setImageResource(resource);
-                    mRule3Text.setText(pRule.getSzDescription());
-                    break;
-                case 3:
-                    mRule4Image.setImageResource(resource);
-                    mRule4Text.setText(pRule.getSzDescription());
-                    break;
-                default:
-                    break;
-            }
-        }
-        mTimeTextView.setText(GetCrackString(mCoreAPI.passwordSecondsToCrack(password)));
-        return ruleFails;
+		mRule3Image.setImageResource(!rules.noUpperCase ? R.drawable.green_check : R.drawable.white_dot);
+		mRule3Text.setText(R.string.password_rule_no_uppercase);
+		if (rules.noUpperCase) {
+			fails.add(mActivity.getString(R.string.password_rule_no_uppercase));
+		}
+
+		mRule4Image.setImageResource(!rules.noLowerCase ? R.drawable.green_check : R.drawable.white_dot);
+		mRule4Text.setText(R.string.password_rule_no_lowercase);
+		if (rules.noLowerCase) {
+			fails.add(mActivity.getString(R.string.password_rule_no_lowercase));
+		}
+
+        mTimeTextView.setText(Common.getCrackString(mActivity, rules.secondsToCrack));
+        return fails;
     }
 
     private void goNext() {
@@ -387,33 +379,6 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             }
 
         return bNewPasswordFieldsAreValid;
-    }
-
-    private String GetCrackString(double secondsToCrack) {
-        String crackString = getResources().getString(R.string.activity_signup_time_to_crack);
-        if (secondsToCrack < 60.0) {
-            crackString += String.format("%.2f ", secondsToCrack);
-            crackString += getResources().getString(R.string.activity_signup_seconds);
-        } else if (secondsToCrack < 3600) {
-            crackString += String.format("%.2f ", secondsToCrack / 60.0);
-            crackString += getResources().getString(R.string.activity_signup_minutes);
-        } else if (secondsToCrack < 86400) {
-            crackString += String.format("%.2f ", secondsToCrack / 3600.0);
-            crackString += getResources().getString(R.string.activity_signup_hours);
-        } else if (secondsToCrack < 604800) {
-            crackString += String.format("%.2f ", secondsToCrack / 86400.0);
-            crackString += getResources().getString(R.string.activity_signup_days);
-        } else if (secondsToCrack < 2419200) {
-            crackString += String.format("%.2f ", secondsToCrack / 604800.0);
-            crackString += getResources().getString(R.string.activity_signup_weeks);
-        } else if (secondsToCrack < 29030400) {
-            crackString += String.format("%.2f ", secondsToCrack / 2419200.0);
-            crackString += getResources().getString(R.string.activity_signup_months);
-        } else {
-            crackString += String.format("%.2f ", secondsToCrack / 29030400.0);
-            crackString += getResources().getString(R.string.activity_signup_years);
-        }
-        return crackString;
     }
 
     @Override

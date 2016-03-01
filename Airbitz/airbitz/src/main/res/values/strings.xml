@@ -698,4 +698,9 @@
     <string name="plugin_filechooser_title">Upload File</string>
     <string name="plugin_filechooser_use_camera">Use Camera</string>
     <string name="plugin_filechooser_use_photo">Use Photo Album</string>
+
+    <string name="password_rule_no_uppercase">Must have at least one upper case letter</string>
+    <string name="password_rule_no_lowercase">Must have at least one lower case letter</string>
+    <string name="password_rule_no_number">Must have at least one number</string>
+    <string name="password_rule_too_short">Must have at least %1$s characters</string>
 </resources>
