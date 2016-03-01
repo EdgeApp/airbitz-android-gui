@@ -413,20 +413,20 @@ public class RequestFragment extends WalletBaseFragment implements
     private void updateConversion() {
         if (null != mWallet){
             if (mAmountIsBitcoin) {
-                String currency = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false);
+                String currency = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false);
                 mDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
-                mOtherDenominationTextView.setText(mWallet.currencyCode());
+                mOtherDenominationTextView.setText(mWallet.currency().code);
                 mOtherAmountTextView.setText(currency);
             } else {
-                long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currencyCode());
-                mDenominationTextView.setText(mWallet.currencyCode());
+                long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currency().code);
+                mDenominationTextView.setText(mWallet.currency().code);
                 mOtherDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherAmountTextView.setText(mAccount.formatSatoshi(satoshi, false));
             }
             if (TextUtils.isEmpty(mAmountField.getText())) {
                 mOtherAmountTextView.setText("");
             }
-            mConverterTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mWallet.currencyCode()));
+            mConverterTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mWallet.currency().code));
             mDenominationTextView.setVisibility(View.VISIBLE);
         }
     }
@@ -443,8 +443,8 @@ public class RequestFragment extends WalletBaseFragment implements
         } else {
             String fiat = mAmountField.getText().toString();
             try {
-                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currencyCode())) {
-                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currencyCode());
+                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currency().code)) {
+                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currency().code);
                 } else {
                     AirbitzCore.logi("Too much fiat");
                 }
@@ -793,7 +793,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mDessertView.getLine2().setText(mAccount.formatSatoshi(amount, true));
         mDessertView.getLine3().setVisibility(View.VISIBLE);
         mDessertView.getLine3().setText(
-            CoreWrapper.formatCurrency(mAccount, amount, mWallet.currencyCode(), true));
+            CoreWrapper.formatCurrency(mAccount, amount, mWallet.currency().code, true));
         mDessertView.show();
 
         createNewQRBitmap();
@@ -832,7 +832,7 @@ public class RequestFragment extends WalletBaseFragment implements
             if (mAmountIsBitcoin) {
                 mAmountSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
             } else {
-                mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currencyCode());
+                mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currency().code);
             }
             updateConversion();
             createNewQRBitmap();
@@ -1027,8 +1027,8 @@ public class RequestFragment extends WalletBaseFragment implements
         if (mAmountIsBitcoin) {
             String fiat = mAmountField.getText().toString();
             try {
-                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.currencyCode())) {
-                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, mWallet.currencyCode());
+                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.currency().code)) {
+                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, mWallet.currency().code);
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {
@@ -1049,7 +1049,7 @@ public class RequestFragment extends WalletBaseFragment implements
                     mAmountField.setText("");
                 } else {
                     mAmountField.setText(
-                        CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currencyCode(), false));
+                        CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false));
                 }
             } else {
                 AirbitzCore.logi("Too much bitcoin");

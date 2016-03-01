@@ -330,7 +330,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         Settings settings = mAccount.settings();
         if (settings != null) {
-            mCurrencyCode = settings.currencyCode();
+            mCurrencyCode = settings.currency().code;
         } else {
             mCurrencyCode = Currencies.instance().defaultCurrency().code;
         }
@@ -478,7 +478,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         saveBLEPref(mBLESwitch.isChecked());
 
         // Default Currency
-        mCoreSettings.currencyCode(mCurrencyCode);
+        mCoreSettings.currency(mCurrencyCode);
         mCoreSettings.exchangeRateSource(mExchangeButton.getText().toString());
 
         if (AirbitzApplication.isLoggedIn()) {

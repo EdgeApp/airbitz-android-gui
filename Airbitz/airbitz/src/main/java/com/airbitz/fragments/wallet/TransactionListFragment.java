@@ -462,12 +462,12 @@ public class TransactionListFragment extends WalletBaseFragment
                 totalSatoshis += t.amount();
             }
 
-            mBottomType.setText(mWallet.currencyCode());
+            mBottomType.setText(mWallet.currency().code);
             mTopType.setText(CoreWrapper.defaultBTCDenomination(mAccount));
             mBitCoinBalanceButton.setText(
 				mAccount.formatSatoshi(totalSatoshis, true));
             mFiatBalanceButton.setText(
-				CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currencyCode(), true));
+				CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currency().code, true));
 
             if (mOnBitcoinMode) {
                 mButtonMover.setText(mBitCoinBalanceButton.getText());

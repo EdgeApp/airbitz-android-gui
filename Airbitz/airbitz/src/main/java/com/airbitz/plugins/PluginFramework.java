@@ -395,7 +395,7 @@ public class PluginFramework {
             JSONObject object = new JSONObject();
             object.put("id", wallet.id());
             object.put("name", wallet.name());
-            object.put("currency", wallet.currencyCode());
+            object.put("currency", wallet.currency().code);
             object.put("balance", wallet.balance());
             return object;
         }

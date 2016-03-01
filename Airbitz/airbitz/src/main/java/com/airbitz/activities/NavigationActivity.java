@@ -1148,7 +1148,7 @@ public class NavigationActivity extends ActionBarActivity
         Transaction transaction = wallet.transaction(txId);
         String coinValue = account.formatSatoshi(transaction.amount(), true);
         String currencyValue =
-			CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currencyCode(), true);
+			CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         if(withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
@@ -1899,7 +1899,7 @@ public class NavigationActivity extends ActionBarActivity
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
             Settings settings = account.settings();
             if (settings != null) {
-                return account.createWallet(walletName, settings.currencyCode());
+                return account.createWallet(walletName, settings.currency().code);
             } else {
                 return account.createWallet(walletName, Currencies.instance().defaultCurrency().code);
             }
@@ -2428,7 +2428,7 @@ public class NavigationActivity extends ActionBarActivity
                     if (account != null) {
                         Settings settings = account.settings();
                         if (settings != null) {
-                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
+                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
                             mDrawerExchangeUpdated = true;
                         } else {
                             mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
@@ -2677,7 +2677,7 @@ public class NavigationActivity extends ActionBarActivity
             Account account = AirbitzApplication.getAccount();
             Settings settings = account.settings();
             if (settings != null) {
-                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currencyCode()));
+                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
             } else {
                 mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
             }

@@ -1114,14 +1114,14 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.meta().fiat() == 0.0) {
-            currencyValue = mAccount.formatCurrency(coinValue, mWallet.currencyCode(), false);
+            currencyValue = mAccount.formatCurrency(coinValue, mWallet.currency().code, false);
         } else {
             currencyValue = mAccount.formatCurrency(transaction.meta().fiat(),
-                    mWallet.currencyCode(), false);
+                    mWallet.currency().code, false);
         }
         mFiatValue = currencyValue;
         mFiatValueEdittext.setText(currencyValue);
-        mFiatDenominationLabel.setText(mWallet.currencyCode());
+        mFiatDenominationLabel.setText(mWallet.currency().code);
 
         mBitcoinSignTextview.setText(CoreWrapper.defaultBTCDenomination(mAccount));
 

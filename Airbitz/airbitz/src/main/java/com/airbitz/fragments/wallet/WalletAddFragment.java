@@ -120,7 +120,7 @@ public class WalletAddFragment extends BaseFragment
         Settings settings = mAccount.settings();
         String currencyCode;
         if (settings != null) {
-            currencyCode = settings.currencyCode();
+            currencyCode = settings.currency().code;
         } else {
             currencyCode = Currencies.instance().defaultCurrency().code;
         }

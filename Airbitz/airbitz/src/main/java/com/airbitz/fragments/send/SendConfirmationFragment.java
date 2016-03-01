@@ -580,7 +580,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrency = mWallet.currencyCode();
+            mCurrency = mWallet.currency().code;
         }
 
         mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
@@ -650,7 +650,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrency = mWallet.currencyCode();
+            mCurrency = mWallet.currency().code;
         }
 
         mFiatSignTextView.setText(Currencies.instance().currencySymbol(mCurrency));
@@ -911,7 +911,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
         } else {
-            mCurrency = mWallet.currencyCode();
+            mCurrency = mWallet.currency().code;
         }
 
         if (mAmountToSendSatoshi > 0) {

@@ -101,7 +101,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     public void setWallet(Wallet wallet) {
         mWallet = wallet;
-        mCurrencyCode = mWallet.currencyCode();
+        mCurrencyCode = mWallet.currency().code;
     }
 
     public void setLoading(boolean loading) {

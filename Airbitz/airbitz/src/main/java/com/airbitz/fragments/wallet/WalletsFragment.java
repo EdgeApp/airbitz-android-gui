@@ -317,7 +317,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         String currencyCode;
         Settings settings = mAccount.settings();
         if (settings != null) {
-            currencyCode = settings.currencyCode();
+            currencyCode = settings.currency().code;
         } else {
             currencyCode = Currencies.instance().defaultCurrency().code;
         }
