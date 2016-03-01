@@ -7,6 +7,7 @@
     <!-- Generic strings -->
     <string name="string_ok">OK</string>
     <string name="string_yes">Yes</string>
+    <string name="string_bundle">Bundle</string>
     <string name="string_no">No</string>
     <string name="string_continue">Continue</string>
     <string name="string_change">Change</string>
