@@ -48,6 +48,7 @@ import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.login.SignUpFragment;
+import com.airbitz.utils.AccountDump;
 
 public class UploadLogAlert {
 
@@ -80,6 +81,12 @@ public class UploadLogAlert {
                                 String pw = input.getText().toString();
                                 mUploadLogsTask = new UploadLogsTask();
                                 mUploadLogsTask.execute(pw);
+                            }
+                        })
+                .setNeutralButton(mActivity.getResources().getString(R.string.string_bundle),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                AccountDump.shareAccountData(mActivity);
                             }
                         })
                 .setNegativeButton(mActivity.getResources().getString(R.string.string_cancel),

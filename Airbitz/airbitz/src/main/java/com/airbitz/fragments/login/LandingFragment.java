@@ -78,6 +78,7 @@ import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.UploadLogAlert;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.AccountDump;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -445,6 +446,8 @@ public class LandingFragment extends BaseFragment implements
         }
 
         mView.setOnTouchListener(mActivity);
+
+        AccountDump.cleanUp(getActivity());
 
         return mView;
     }
