@@ -13,9 +13,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven {
-            url 'https://airbitz.co/media/maven' 
-        }
-        maven {
             url "https://jitpack.io"
         }
     }
