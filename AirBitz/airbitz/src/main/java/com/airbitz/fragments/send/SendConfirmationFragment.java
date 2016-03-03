@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -54,9 +55,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -523,7 +524,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onCurrencySelected(int num) {
         mSendConfirmationCurrencyNumOverride = num;
         mSendConfirmationOverrideCurrencyMode = true;
-        checkFields();
+        updateTextFieldContents(mBtcMode);
     }
 
     public void setExitHandler(OnExitHandler handler) {
@@ -533,14 +534,15 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     protected void onExchangeRatesChange() {
         super.onExchangeRatesChange();
-        checkFields();
-        checkAuthorization();
+        updateTextFieldContents(mBtcMode);
     }
-
 
     @Override
     public void onWalletsLoaded() {
         super.onWalletsLoaded();
+        if (mFundsSent) {
+            return;
+        }
         checkFields();
         checkAuthorization();
     }
@@ -570,9 +572,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     }
 
     private void updateTextFieldContents(boolean btc) {
-        double currency;
-        long satoshi;
-
         mAutoUpdatingTextFields = true;
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrencyNum = mSendConfirmationCurrencyNumOverride;
@@ -587,12 +586,20 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             if (btc) {
                 mAmountToSendSatoshi = mCoreApi.denominationToSatoshi(mBitcoinField.getText().toString());
                 mSpendTarget.setSpendAmount(mAmountToSendSatoshi);
-                mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                if (TextUtils.isEmpty(mBitcoinField.getText())) {
+                    mFiatField.setText("");
+                } else {
+                    mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
+                }
             } else {
-                satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
+                long satoshi = mCoreApi.parseFiatToSatoshi(mFiatField.getText().toString(), mCurrencyNum);
                 mAmountToSendSatoshi = satoshi;
                 mSpendTarget.setSpendAmount(satoshi);
-                mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+                if (TextUtils.isEmpty(mFiatField.getText())) {
+                    mBitcoinField.setText("");
+                } else {
+                    mBitcoinField.setText(mCoreApi.formatSatoshi(mAmountToSendSatoshi, false));
+                }
             }
         }
         mAutoUpdatingTextFields = false;
@@ -907,10 +914,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mFiatField.setText(mCoreApi.FormatCurrency(mAmountToSendSatoshi, mCurrencyNum, false, false));
             }
             calculateFees();
-
-            if (mAuthorizationLayout.getVisibility() == View.VISIBLE) {
-                mAuthorizationEdittext.requestFocus();
-            }
         } else {
             mFiatField.setText("");
             mBitcoinField.setText("");
@@ -1106,11 +1109,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     saveInvalidEntryCount(0);
                     AudioPlayer.play(mActivity, R.raw.bitcoin_sent);
                     mActivity.popFragment(); // stop the sending screen
+                    mFundsSent = true;
                     if (null != exitHandler) {
                         mActivity.popFragment();
                         exitHandler.success(txResult);
                     } else {
-                        mFundsSent = true;
                         String returnUrl = mSpendTarget.getSpend().getSzRet();
                         mActivity.onSentFunds(mFromWallet.getUUID(), txResult, returnUrl);
                     }

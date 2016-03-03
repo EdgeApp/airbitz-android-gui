@@ -258,8 +258,6 @@ public class BusinessSearchFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> adapterView,
                                     View view, int position, long l) {
-                boolean locationFieldShouldFocus = false;
-
                 if (mQueryField.isFocused()) {
                     final BusinessSearchAdapter businessSearchAdapter = (BusinessSearchAdapter) mSearchListView.getAdapter();
                     final Business business = businessSearchAdapter.getItem(position);
@@ -273,7 +271,7 @@ public class BusinessSearchFragment extends BaseFragment implements
                     } else {
                         CacheUtil.writeCachedBusinessSearchData(getActivity(),
                                 businessSearchAdapter.getItem(position));
-                        locationFieldShouldFocus = true;
+                        mLocationField.requestFocus();
                     }
                 } else if (mLocationField.isFocused()) {
                     final LocationAdapter locationAdapter = (LocationAdapter) mSearchListView.getAdapter();
@@ -281,11 +279,7 @@ public class BusinessSearchFragment extends BaseFragment implements
                     mLocationField.setText(location.getLocationName());
                     CacheUtil.writeCachedLocationSearchData(getActivity(),
                             location.getLocationName());
-                }
-                if (locationFieldShouldFocus) {
-                    mLocationField.requestFocus();
-                } else {
-                    mQueryField.requestFocus();
+                    submitForm();
                 }
             }
         });
