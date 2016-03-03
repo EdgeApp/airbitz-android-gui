@@ -572,12 +572,23 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         static final int MAX_HEIGHT = 1000;
 
         private Bitmap resize(Bitmap bitmap) {
-            if (bitmap.getHeight() > MAX_HEIGHT || bitmap.getWidth() > MAX_WIDTH) {
-                return Bitmap.createScaledBitmap(
-                    bitmap, MAX_WIDTH, MAX_HEIGHT, false);
+            int desiredWidth = bitmap.getWidth();
+            int desiredHeight = bitmap.getHeight();
+            if (bitmap.getHeight() > bitmap.getWidth()) {
+                if (bitmap.getHeight() > MAX_HEIGHT) {
+                    double ratio = (double) MAX_HEIGHT / (double) bitmap.getHeight();
+                    desiredHeight = (int) ((double) bitmap.getHeight() * ratio);
+                    desiredWidth = (int) ((double) bitmap.getWidth() * ratio);
+                }
             } else {
-                return bitmap;
+                if (bitmap.getWidth() > MAX_WIDTH) {
+                    double ratio = ((double) MAX_WIDTH / (double) bitmap.getWidth());
+                    desiredHeight = (int) ((double) bitmap.getHeight() * ratio);
+                    desiredWidth = (int) ((double) bitmap.getWidth() * ratio);
+                }
             }
+            return Bitmap.createScaledBitmap(
+                bitmap, desiredWidth, desiredHeight, false);
         }
 
         @Override
