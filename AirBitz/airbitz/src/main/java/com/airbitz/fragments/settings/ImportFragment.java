@@ -286,7 +286,7 @@ public class ImportFragment extends ScanFragment {
                 checkHiddenBitsAsyncData();
             } else {
                 clearSweepAddress();
-                mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.id(), mSweptAmount);
+                mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
                 mSweptAmount = -1;
             }
         }
