@@ -1797,35 +1797,6 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void ShowHiddenBitsTweet(String title, String reason, final String tweet) {
-        if (!this.isFinishing()) {
-            if (mMessageDialog != null) {
-                mMessageDialog.dismiss();
-            }
-            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
-            builder.setMessage(reason)
-                    .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.string_ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // invoke Twitter to send tweet
-                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
-                                    startActivity(i);
-                                    dialog.dismiss();
-                                }
-                            })
-                    .setNegativeButton(getResources().getString(R.string.string_no),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-            mMessageDialog = builder.create();
-            if (title != null) {
-                mMessageDialog.setTitle(title);
-            }
-            mMessageDialog.show();
-        }
         AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
         builder.setMessage(reason)
                 .setCancelable(false)
@@ -1834,7 +1805,7 @@ public class NavigationActivity extends ActionBarActivity
                             public void onClick(DialogInterface dialog, int id) {
                                 // invoke Twitter to send tweet
                                 Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse("http://twitter.com/post?message=" + Uri.encode(tweet)));
+                                i.setData(Uri.parse(String.format("https://twitter.com/intent/tweet?text=%s", Uri.encode(tweet))));
                                 startActivity(i);
                                 dialog.dismiss();
                             }
