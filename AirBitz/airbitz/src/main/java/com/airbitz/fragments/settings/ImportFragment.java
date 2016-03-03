@@ -85,10 +85,14 @@ public class ImportFragment extends ScanFragment {
                 mQRCamera.startScanning();
             }
             if (isVisible()) {
-                clearSweepAddress();
+                mSweptAmount = 0;
+                if (mTweet != null) {
+                    checkHiddenBitsAsyncData();
+                } else {
+                    mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
+                                            getString(R.string.import_wallet_timeout_message));
+                }
                 mSweptAmount = -1;
-                mActivity.ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
-                    getString(R.string.import_wallet_timeout_message));
             }
         }
     };
@@ -206,18 +210,20 @@ public class ImportFragment extends ScanFragment {
     // Returns null if not a HiddenBits token
     public static String getHiddenBitsToken(String uriIn) {
         final String HBITS_SCHEME = "hbits";
-        if(uriIn == null) {
+        if (uriIn == null) {
             return null;
         }
 
-        Uri uri = Uri.parse(uriIn);
-        String scheme = uri.getScheme();
-        if (scheme != null && scheme.equalsIgnoreCase(HBITS_SCHEME)) {
-            Log.d("ImportFragment", "Good HiddenBits URI");
-            return uri.toString().substring(scheme.length()+3);
+        if (uriIn.contains(HBITS_SCHEME)) {
+            Uri uri = Uri.parse(uriIn);
+            String scheme = uri.getScheme();
+            if (scheme != null) {
+                return uri.toString().substring(scheme.length() + 3);
+            } else {
+                return null;
+            }
         } else {
-            Log.d("ImportFragment", "HiddenBits failed for: " + uriIn);
-            return null;
+            return uriIn;
         }
     }
 
@@ -273,19 +279,16 @@ public class ImportFragment extends ScanFragment {
             mSweptID = txID;
             mSweptAmount = amount;
 
-            String token = getHiddenBitsToken(mSweptAddress);
-            if(token != null) { // hidden bitz
-                // Check to see if both paths are done
-                checkHiddenBitsAsyncData();
-                return;
-            }
-
             // if a private address sweep
             mHandler.removeCallbacks(sweepNotFoundRunner);
 
-            clearSweepAddress();
-            mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.getUUID(), mSweptAmount);
-            mSweptAmount = -1;
+            if (mTweet != null) {
+                checkHiddenBitsAsyncData();
+            } else {
+                clearSweepAddress();
+                mActivity.showPrivateKeySweepTransaction(mSweptID, mWallet.id(), mSweptAmount);
+                mSweptAmount = -1;
+            }
         }
     };
 
@@ -293,6 +296,7 @@ public class ImportFragment extends ScanFragment {
         // Clear out sweep info
         mSweptAddress = "";
     }
+
 
     // This is only called for HiddenBits
     private void checkHiddenBitsAsyncData() {
