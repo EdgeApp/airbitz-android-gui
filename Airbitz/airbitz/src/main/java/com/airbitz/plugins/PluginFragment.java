@@ -282,7 +282,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Uri result = mImageUri;
         if (PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
-            mImageUri = intent == null || resultCode != Activity.RESULT_OK
+            result = intent == null || resultCode != Activity.RESULT_OK
                 ? null : intent.getData();
         }
         if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode
