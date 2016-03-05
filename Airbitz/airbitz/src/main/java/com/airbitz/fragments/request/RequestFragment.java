@@ -938,7 +938,11 @@ public class RequestFragment extends WalletBaseFragment implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && SettingFragment.getBLEPref() &&
                 BleUtil.isBleAdvertiseAvailable(mActivity)) {
             mBeaconRequest.stop();
-            mBeaconRequest.startRepeated(mRequestURI);
+            try {
+                mBeaconRequest.startRepeated(mRequestURI);
+            } catch (Exception e) {
+                AirbitzCore.loge("Unable to start beacon request");
+            }
         }
     }
 
