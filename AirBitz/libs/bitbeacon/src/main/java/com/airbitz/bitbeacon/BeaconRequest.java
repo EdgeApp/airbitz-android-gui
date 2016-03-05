@@ -133,6 +133,10 @@ public class BeaconRequest {
         mBleAdvertiser = adapter.getBluetoothLeAdvertiser();
         AirbitzGattServerCallback bgsc = new AirbitzGattServerCallback();
         mGattServer = BleUtil.getManager(mContext).openGattServer(mContext, bgsc);
+        if (null == mGattServer) {
+            Log.i(TAG, "openGattServer returned null. Unable to start ble service");
+            return;
+        }
         bgsc.setupServices(mContext, mGattServer, data);
 
         mAdvCallback = new AdvertiseCallback() {
