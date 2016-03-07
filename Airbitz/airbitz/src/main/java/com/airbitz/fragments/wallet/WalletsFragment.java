@@ -314,14 +314,8 @@ public class WalletsFragment extends WalletBaseFragment implements
             mWalletAdapter.updateArchive();
         }
         long totalSatoshis = 0;
-        String currencyCode;
         Settings settings = mAccount.settings();
-        if (settings != null) {
-            currencyCode = settings.currency().code;
-        } else {
-            currencyCode = Currencies.instance().defaultCurrency().code;
-        }
-
+        String currencyCode = settings.currency().code;
         for (WalletWrapper w : walletList) {
             if (w.wallet() != null && !w.wallet().isArchived()) {
                 totalSatoshis += w.wallet().balance();

@@ -42,21 +42,21 @@ import android.widget.TextView;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 
-import co.airbitz.core.Currencies.CurrencyEntry;
+import co.airbitz.core.CoreCurrency;
 
 import java.util.List;
 
-public class CurrencyAdapter extends ArrayAdapter<CurrencyEntry> {
+public class CurrencyAdapter extends ArrayAdapter<CoreCurrency> {
 
     private Context mContext;
-    private List<CurrencyEntry> mCurrencies;
+    private List<CoreCurrency> mCurrencies;
     private int mResCurrencySpinner;
 
-    public CurrencyAdapter(Context context, List<CurrencyEntry> currencies) {
+    public CurrencyAdapter(Context context, List<CoreCurrency> currencies) {
         this(context, R.layout.item_currency_spinner, currencies);
     }
 
-    public CurrencyAdapter(Context context, int resSpinner, List<CurrencyEntry> currencies) {
+    public CurrencyAdapter(Context context, int resSpinner, List<CoreCurrency> currencies) {
         super(context, resSpinner, currencies);
         mResCurrencySpinner = resSpinner;
         mContext = context;
@@ -68,7 +68,7 @@ public class CurrencyAdapter extends ArrayAdapter<CurrencyEntry> {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResCurrencySpinner, parent, false);
 
-        CurrencyEntry pair = mCurrencies.get(position);
+        CoreCurrency pair = mCurrencies.get(position);
         TextView code = (TextView) convertView.findViewById(R.id.textview_currency);
         if (mResCurrencySpinner == R.layout.item_currency_spinner) {
             TextView desc = (TextView) convertView.findViewById(R.id.textview_description);

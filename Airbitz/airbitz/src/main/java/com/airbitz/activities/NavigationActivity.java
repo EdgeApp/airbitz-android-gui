@@ -1869,11 +1869,7 @@ public class NavigationActivity extends ActionBarActivity
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
             Settings settings = account.settings();
-            if (settings != null) {
-                return account.createWallet(walletName, settings.currency().code);
-            } else {
-                return account.createWallet(walletName, Currencies.instance().defaultCurrency().code);
-            }
+            return account.createWallet(walletName, settings.currency().code);
         }
 
         @Override
@@ -2398,13 +2394,8 @@ public class NavigationActivity extends ActionBarActivity
                     Account account = AirbitzApplication.getAccount();
                     if (account != null) {
                         Settings settings = account.settings();
-                        if (settings != null) {
-                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
-                            mDrawerExchangeUpdated = true;
-                        } else {
-                            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
-                            mDrawerExchangeUpdated = true;
-                        }
+                        mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
+                        mDrawerExchangeUpdated = true;
                     }
                 }
             }
@@ -2647,12 +2638,7 @@ public class NavigationActivity extends ActionBarActivity
         public void onReceive(Context context, Intent intent) {
             Account account = AirbitzApplication.getAccount();
             Settings settings = account.settings();
-            if (settings != null) {
-                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
-            } else {
-                mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, Currencies.instance().defaultCurrency().code));
-            }
-
+            mDrawerExchange.setText(CoreWrapper.btcToFiatConversion(account, settings.currency().code));
         }
     };
 

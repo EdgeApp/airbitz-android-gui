@@ -425,7 +425,7 @@ public class CoreWrapper {
             int fiatDecimals = 2;
             String amtBTCDenom = "1 ";
             if (denomination != null) {
-                switch (denomination.getDenominationType()) {
+                switch (denomination.type()) {
                     case BitcoinDenomination.BTC:
                         satoshi = (long) SATOSHI_PER_BTC;
                         fiatDecimals = 2;
@@ -446,7 +446,7 @@ public class CoreWrapper {
                 }
             }
             double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
-            if (denomination.getDenominationType() == BitcoinDenomination.UBTC) {
+            if (denomination.type() == BitcoinDenomination.UBTC) {
                 // unit of 'bits' is so small it's useless to show it's conversion rate
                 // Instead show "1000 bits = $0.253 USD"
                 o = o * 1000;

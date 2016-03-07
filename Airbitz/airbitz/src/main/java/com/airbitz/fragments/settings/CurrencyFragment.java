@@ -44,8 +44,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import co.airbitz.core.Currencies.CurrencyEntry;
-import co.airbitz.core.Currencies;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.CoreCurrency;
 
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -66,8 +66,8 @@ public class CurrencyFragment extends BaseFragment {
     private NavigationActivity mActivity;
     private OnCurrencySelectedListener mListener;
     private CurrencyAdapter mAdapter;
-    private List<CurrencyEntry> mOrigCurrencies;
-    private List<CurrencyEntry> mCurrencies;
+    private List<CoreCurrency> mOrigCurrencies;
+    private List<CoreCurrency> mCurrencies;
     private ListView mListView;
     private EditText mSearch;
     private View mSearchClose;
@@ -116,7 +116,7 @@ public class CurrencyFragment extends BaseFragment {
                     mCurrencies.addAll(mOrigCurrencies);
                 } else {
                     for (int i = 0; i < mOrigCurrencies.size(); ++i) {
-                        CurrencyEntry d = mOrigCurrencies.get(i);
+                        CoreCurrency d = mOrigCurrencies.get(i);
                         if (d.description.toLowerCase().contains(query.toLowerCase())
                             || d.code.toLowerCase().contains(query.toLowerCase())) {
                             mCurrencies.add(mOrigCurrencies.get(i));
@@ -137,8 +137,8 @@ public class CurrencyFragment extends BaseFragment {
             }
         });
 
-        mOrigCurrencies = Currencies.instance().getCurrencies();
-        mCurrencies = new ArrayList<CurrencyEntry>();
+        mOrigCurrencies = AirbitzCore.getApi().currencies();
+        mCurrencies = new ArrayList<CoreCurrency>();
         mCurrencies.addAll(mOrigCurrencies);
 
         mAdapter = new CurrencyAdapter(getActivity(), mCurrencies);

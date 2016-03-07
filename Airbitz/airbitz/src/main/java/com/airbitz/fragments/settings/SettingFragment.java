@@ -329,11 +329,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         });
 
         Settings settings = mAccount.settings();
-        if (settings != null) {
-            mCurrencyCode = settings.currency().code;
-        } else {
-            mCurrencyCode = Currencies.instance().defaultCurrency().code;
-        }
+        mCurrencyCode = settings.currency().code;
 
         mDefaultCurrencyButton.setText(mCurrencyCode);
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
@@ -389,11 +385,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Bitcoin denomination
         BitcoinDenomination denomination = settings.bitcoinDenomination();
         if (denomination != null) {
-            if (denomination.getDenominationType() == BitcoinDenomination.BTC) {
+            if (denomination.type() == BitcoinDenomination.BTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_bitcoin);
-            } else if (denomination.getDenominationType() == BitcoinDenomination.MBTC) {
+            } else if (denomination.type() == BitcoinDenomination.MBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_mbitcoin);
-            } else if (denomination.getDenominationType() == BitcoinDenomination.UBTC) {
+            } else if (denomination.type() == BitcoinDenomination.UBTC) {
                 mDenominationGroup.check(R.id.settings_denomination_buttons_ubitcoin);
             }
         }

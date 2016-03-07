@@ -58,8 +58,7 @@ import com.airbitz.utils.Common;
 import co.airbitz.core.Account;
 import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
-import co.airbitz.core.Currencies.CurrencyEntry;
+import co.airbitz.core.CoreCurrency;
 
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class WalletAddFragment extends BaseFragment
     private Spinner mAddWalletCurrencySpinner;
     private LinearLayout mAddWalletCurrencyLayout;
 
-    private List<CurrencyEntry> mCurrencyList;
+    private List<CoreCurrency> mCurrencyList;
     private NavigationActivity mActivity;
     private View mView;
     private AddWalletTask mAddWalletTask;
@@ -114,16 +113,11 @@ public class WalletAddFragment extends BaseFragment
             }
         });
 
-        mCurrencyList = Currencies.instance().getCurrencies();
+        mCurrencyList = AirbitzCore.getApi().currencies();
         CurrencyAdapter mCurrencyAdapter = new CurrencyAdapter(mActivity, R.layout.item_currency_small, mCurrencyList);
         mAddWalletCurrencySpinner.setAdapter(mCurrencyAdapter);
         Settings settings = mAccount.settings();
-        String currencyCode;
-        if (settings != null) {
-            currencyCode = settings.currency().code;
-        } else {
-            currencyCode = Currencies.instance().defaultCurrency().code;
-        }
+        String currencyCode = settings.currency().code;
         for (int i = 0; i < mCurrencyList.size(); i++) {
             if (mCurrencyList.get(i).code.equals(currencyCode)) {
                 mAddWalletCurrencySpinner.setSelection(i);
@@ -181,7 +175,7 @@ public class WalletAddFragment extends BaseFragment
     private void goDone() {
         if (!Common.isBadWalletName(mAddWalletNameEditText.getText().toString())) {
             int index = mAddWalletCurrencySpinner.getSelectedItemPosition();
-            CurrencyEntry c = mCurrencyList.get(index);
+            CoreCurrency c = mCurrencyList.get(index);
 
             mAddWalletTask = new AddWalletTask(mAddWalletNameEditText.getText().toString(), c.code);
             mAddWalletTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
