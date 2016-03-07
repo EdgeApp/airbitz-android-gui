@@ -952,12 +952,15 @@ public class TransactionDetailFragment extends WalletBaseFragment
         baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
     }
 
+	private long inSum = 0;
+	private SpannableStringBuilder inAddresses;
+	private SpannableStringBuilder outAddresses;
+
     private void showAdvancedDetails(boolean hasFocus) {
         Transaction tx = mWallet.transaction(mTxId);
         if (hasFocus && tx != null) {
-            SpannableStringBuilder inAddresses = new SpannableStringBuilder();
-            long inSum = 0;
-            SpannableStringBuilder outAddresses = new SpannableStringBuilder();
+            inAddresses = new SpannableStringBuilder();
+            outAddresses = new SpannableStringBuilder();
             String finalBaseUrl;
             if (AirbitzCore.getApi().isTestNet()) {
                 finalBaseUrl = "https://testnet.blockexplorer.com/";
@@ -965,57 +968,30 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 finalBaseUrl = "https://blockexplorer.com/";
             }
 
-            int start;
-            int end;
             if (null != tx.outputs()) {
+                for (TxOutput input : tx.inputs()) {
+                    appendOutput(input, finalBaseUrl);
+                }
                 for (TxOutput output : tx.outputs()) {
-                    start = 0;
-                    SpannableString val = new SpannableString(mAccount.formatSatoshi(output.amount()));
-                    SpannableString address = new SpannableString(output.address());
-                    end = address.length();
-                    final String txUrl = finalBaseUrl + "address/" + output.address();
-                    ClickableSpan span = new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse(txUrl));
-                            mActivity.startActivity(i);
-                        }
-                    };
-                    address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    SpannableStringBuilder full = new SpannableStringBuilder();
-                    full.append(address);
-                    full.append("\n");
-                    start = full.length();
-                    full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    full.append("\n");
-
-                    if (output.isInput()) {
-                        inAddresses.append(full);
-                        inSum += output.amount();
-                    } else {
-                        outAddresses.append(full);
-                    }
+                    appendOutput(output, finalBaseUrl);
                 }
             } else {
                 inAddresses.append(getString(R.string.transaction_details_outputs_unavailable));
                 inAddresses.append("\n");
             }
 
-            long feesSatoshi = tx.getABFees() + tx.getMinerFees();
+            long feesSatoshi = tx.providerFees() + tx.minerFees();
             long netSum = inSum - feesSatoshi;
 
             SpannableStringBuilder s = new SpannableStringBuilder();
-            start = 0;
-            end = 0;
+            int start = 0;
             s.append(getString(R.string.transaction_details_advanced_txid)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
             start = s.length();
             s.append(tx.malId());
-            end = s.length();
+            int end = s.length();
             final String txIdLink = finalBaseUrl + "tx/" + tx.malId();
             ClickableSpan url = new ClickableSpan() {
                 @Override
@@ -1074,6 +1050,37 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
     }
 
+    private void appendOutput(TxOutput output, String finalBaseUrl) {
+		SpannableString val = new SpannableString(mAccount.formatSatoshi(output.amount()));
+		SpannableString address = new SpannableString(output.address());
+		int start = 0;
+		int end = address.length();
+		final String txUrl = finalBaseUrl + "address/" + output.address();
+		ClickableSpan span = new ClickableSpan() {
+			@Override
+			public void onClick(View widget) {
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(txUrl));
+				mActivity.startActivity(i);
+			}
+		};
+		address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		SpannableStringBuilder full = new SpannableStringBuilder();
+		full.append(address);
+		full.append("\n");
+		start = full.length();
+		full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		full.append("\n");
+
+		if (output.isInput()) {
+			inAddresses.append(full);
+			inSum += output.amount();
+		} else {
+			outAddresses.append(full);
+		}
+    }
+
     private void setCategoryText(String textWithCategory) {
         setCurrentType(textWithCategory);
         String strippedTerm = "";
@@ -1102,8 +1109,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
         long coinValue = 0;
         String feeFormatted;
         if (transaction.amount() < 0) {
-            coinValue = transaction.amount() + transaction.getMinerFees() + transaction.getABFees();
-            feeFormatted = "+" + mAccount.formatSatoshi(transaction.getMinerFees() + transaction.getABFees(), false) + getString(R.string.transaction_details_advanced_fee);
+            coinValue = transaction.amount() + transaction.minerFees() + transaction.providerFees();
+            feeFormatted = "+" + mAccount.formatSatoshi(transaction.minerFees() + transaction.providerFees(), false) + getString(R.string.transaction_details_advanced_fee);
         } else {
             coinValue = transaction.amount();
             feeFormatted = "";
