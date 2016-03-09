@@ -491,4 +491,9 @@ public class CoreWrapper {
 		double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
 		return account.formatCurrency(o, currency, withSymbol);
     }
+
+    private static int CONFIRMED_CONFIRMATION_COUNT = 3;
+    public boolean isConfirmed(Transaction t) {
+        return t.height() >= CONFIRMED_CONFIRMATION_COUNT;
+    }
 }

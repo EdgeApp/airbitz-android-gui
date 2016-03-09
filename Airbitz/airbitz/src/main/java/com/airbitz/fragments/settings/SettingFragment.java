@@ -280,7 +280,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mPinReloginSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                boolean alreadySet = AirbitzCore.getApi().accountHasPin(mAccount.username());
+                boolean alreadySet = mAccount.accountHasPin();
                 if (!alreadySet && isChecked) {
                     new PinChangeTask(mActivity, mAccount, true).execute();
                 } else if (alreadySet && !isChecked) {
@@ -405,7 +405,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Autologoff
         mAutoLogoffManager.setSeconds(settings.secondsAutoLogout());
         // Pin Relogin
-        if (AirbitzCore.getApi().accountHasPin(mAccount.username())) {
+        if (mAccount.accountHasPin()) {
             mPinReloginSwitch.setChecked(true);
         } else {
             mPinReloginSwitch.setChecked(false);
