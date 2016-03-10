@@ -345,6 +345,7 @@ public abstract class ScanFragment
             showProcessing();
         }
         updateWalletOtherList();
+        updatePasteDialog();
 
         mClipboard.addPrimaryClipChangedListener(mClipboardHandler);
     }
