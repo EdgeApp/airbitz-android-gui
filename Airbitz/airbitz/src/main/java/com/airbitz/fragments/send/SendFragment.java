@@ -47,8 +47,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.ParsedUri;
 import co.airbitz.core.SpendTarget;
 import co.airbitz.core.Wallet;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -153,20 +157,44 @@ public class SendFragment extends ScanFragment {
 
     @Override
     protected void processText(String text) {
-        String parsedUri = mAccount.parseBitidUri(text);
-        if (!TextUtils.isEmpty(parsedUri)) {
-            askBitidLogin(parsedUri, text);
-        } else {
-            Uri uri = Uri.parse(text);
-            Log.d(TAG, uri.toString());
-            if (uri != null && ("airbitz-ret".equals(uri.getScheme())
-                        || "bitcoin-ret".equals(uri.getScheme())
-                        || "x-callback-url".equals(uri.getHost()))) {
-				mActivity.handleRequestForPaymentUri(uri);
-            } else {
-                mSpendTask = new NewSpendTask();
-                mSpendTask.execute(text);
+        try {
+            ParsedUri parsed = AirbitzCore.getApi().parseUri(text);
+            switch (parsed.type()) {
+			case BITID:
+				askBitidLogin(parsed.bitid(), text);
+				return;
+			case ADDRESS:
+			case PRIVATE_KEY: {
+				SpendTarget target = mWallet.newSpendTarget();
+				if (target.newSpend(parsed.address())) {
+					launchSendConfirmation(target);
+				} else {
+					showMessageAndStartCameraDialog(
+						R.string.fragment_send_failure_title,
+						R.string.fragment_send_confirmation_invalid_bitcoin_address);
+				}
+				return;
+			}
+			case PAYMENT_PROTO:
+				mSpendTask = new NewSpendTask();
+				mSpendTask.execute(parsed.paymentProto());
+				return;
+			default:
+				break;
             }
+        } catch (AirbitzException e) {
+            AirbitzCore.loge(e.getMessage());
+        }
+        Uri uri = Uri.parse(text);
+        Log.d(TAG, uri.toString());
+        if (uri != null && ("airbitz-ret".equals(uri.getScheme())
+                    || "bitcoin-ret".equals(uri.getScheme())
+                    || "x-callback-url".equals(uri.getHost()))) {
+            mActivity.handleRequestForPaymentUri(uri);
+        } else {
+			showMessageAndStartCameraDialog(
+				R.string.fragment_send_failure_title,
+				R.string.fragment_send_confirmation_invalid_bitcoin_address);
         }
     }
 

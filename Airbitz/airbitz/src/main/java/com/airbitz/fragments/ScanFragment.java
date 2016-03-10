@@ -37,6 +37,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ClipboardManager.OnPrimaryClipChangedListener;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,9 +53,10 @@ import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.text.ClipboardManager;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -68,9 +71,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.Settings;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.R;
@@ -340,6 +345,8 @@ public abstract class ScanFragment
             showProcessing();
         }
         updateWalletOtherList();
+
+        mClipboard.addPrimaryClipChangedListener(mClipboardHandler);
     }
 
     @Override
@@ -376,6 +383,7 @@ public abstract class ScanFragment
         if (mBeaconSend != null) {
             mBeaconSend.close();
         }
+        mClipboard.removePrimaryClipChangedListener(mClipboardHandler);
     }
 
     @Override
@@ -416,16 +424,11 @@ public abstract class ScanFragment
         builder.show();
     }
 
+    private MaterialDialog mPasteDialog = null;
     protected void showAddressDialog() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.alert_address_form, null);
         final EditText editText = (EditText) view.findViewById(R.id.address);
-
-        final String pasteData = fromClipboard();
-        String pasteText = getResources().getString(R.string.string_paste);
-        if (!TextUtils.isEmpty(pasteData) && isValidAddress(pasteData)) {
-            pasteText = getResources().getString(R.string.string_paste_address, pasteData.substring(0, 3)) + "...";
-        }
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getAddressDialogTitle())
@@ -433,7 +436,7 @@ public abstract class ScanFragment
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_done))
                .negativeText(getResources().getString(R.string.string_cancel))
-               .neutralText(pasteText)
+               .neutralText(getResources().getString(R.string.string_paste))
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -449,7 +452,9 @@ public abstract class ScanFragment
                         processText(pasteData);
                     }
                 });
-        builder.show();
+        mPasteDialog = builder.show();
+
+        updatePasteDialog();
     }
 
     // Start the Bluetooth search
@@ -593,9 +598,13 @@ public abstract class ScanFragment
         updateWalletOtherList();
     }
 
-    // TODO: this should call down into the core to verify its a valid address
     protected boolean isValidAddress(String address) {
-       return address != null && address.length() >= 10;
+        try {
+            AirbitzCore.getApi().parseUri(address);
+            return true;
+        } catch (AirbitzException e) {
+            return false;
+        }
     }
 
     protected String fromClipboard() {
@@ -675,4 +684,28 @@ public abstract class ScanFragment
             mActivity.getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
     }
+
+    private void updatePasteDialog() {
+        if (mPasteDialog == null) {
+            return;
+        }
+        TextView view = (TextView) mPasteDialog.findViewById(R.id.buttonDefaultNeutral);
+        if (view == null) {
+            return;
+        }
+        String text = fromClipboard();
+        if (isValidAddress(text)) {
+            view.setVisibility(View.VISIBLE);
+            view.setText(
+                getResources().getString(R.string.string_paste_address, text.substring(0, 3)) + "...");
+        } else {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private OnPrimaryClipChangedListener mClipboardHandler = new OnPrimaryClipChangedListener() {
+        public void onPrimaryClipChanged() {
+            updatePasteDialog();
+        }
+    };
 }
