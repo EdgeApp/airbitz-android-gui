@@ -50,7 +50,7 @@ import android.webkit.WebViewClient;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.ReceiveAddress;
-import co.airbitz.core.SpendTarget;
+import co.airbitz.core.Spend;
 import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Wallet;
 
@@ -296,10 +296,10 @@ public class PluginFramework {
         public void hideAlert();
         public void setTitle(String title);
         public void launchFileSelection(final String cbid);
-        public SpendTarget launchSend(final String cbid, final String uuid, final String address,
-                                      final long amountSatoshi, final double amountFiat,
-                                      final String label, final String category, final String notes,
-                                      long bizId, boolean signOnly);
+        public Spend launchSend(final String cbid, final String uuid, final String address,
+                                final long amountSatoshi, final double amountFiat,
+                                final String label, final String category, final String notes,
+                                long bizId, boolean signOnly);
         public void showNavBar();
         public void hideNavBar();
         public void back();
@@ -431,7 +431,7 @@ public class PluginFramework {
         PluginFramework framework;
 
         // Holds signed pending spends
-        SpendTarget mTarget = null;
+        Spend mTarget = null;
         UnsentTransaction mUnsent = null;
 
         PluginContext(PluginFramework framework, Plugin plugin, UiHandler handler) {

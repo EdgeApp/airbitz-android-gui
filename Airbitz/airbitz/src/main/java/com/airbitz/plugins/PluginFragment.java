@@ -60,7 +60,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
-import co.airbitz.core.SpendTarget;
+import co.airbitz.core.Spend;
 import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Wallet;
 
@@ -424,10 +424,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             PluginFragment.this.launchFileSelection(cbid);
         }
 
-        public SpendTarget launchSend(final String cbid, final String uuid, final String address,
-                                      final long amountSatoshi, final double amountFiat,
-                                      final String label, final String category, final String notes,
-                                      final long bizId, final boolean signOnly) {
+        public Spend launchSend(final String cbid, final String uuid, final String address,
+                                final long amountSatoshi, final double amountFiat,
+                                final String label, final String category, final String notes,
+                                final long bizId, final boolean signOnly) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
                 public void success(String txId, UnsentTransaction unsent) {
                     if (signOnly) {
@@ -449,7 +449,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 }
             };
             try {
-                final SpendTarget target = mWallet.newSpendTarget();
+                final Spend target = mWallet.newSpend();
                 target.addAddress(address, amountSatoshi);
                 target.meta().name(label)
                                 .category(category)

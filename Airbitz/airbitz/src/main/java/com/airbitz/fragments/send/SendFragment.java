@@ -50,7 +50,6 @@ import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.ParsedUri;
-import co.airbitz.core.SpendTarget;
 import co.airbitz.core.PaymentRequest;
 import co.airbitz.core.Wallet;
 
