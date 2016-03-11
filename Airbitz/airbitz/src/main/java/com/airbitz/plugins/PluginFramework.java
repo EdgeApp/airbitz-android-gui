@@ -405,7 +405,7 @@ public class PluginFramework {
         ReceiveAddress address;
 
         public PluginReceiveRequest(Wallet wallet, String name, String category, String notes, long amountSatoshi, double amountFiat, long bizId) {
-            ReceiveAddress address = wallet.receiveRequest();
+            address = wallet.receiveRequest();
             address.amount(amountSatoshi);
             address.meta().name(name);
             address.meta().notes(notes);
