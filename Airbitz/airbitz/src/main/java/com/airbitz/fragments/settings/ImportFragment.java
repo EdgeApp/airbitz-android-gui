@@ -49,6 +49,7 @@ import android.widget.EditText;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
+import co.airbitz.core.ParsedUri;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.R;
@@ -176,19 +177,19 @@ public class ImportFragment extends ScanFragment {
 
         showBusyLayout(entry, true);
         try {
-            mSweptAddress = mWallet.sweepKey(entry);
-
-            if (mSweptAddress != null && !mSweptAddress.isEmpty()) {
+            ParsedUri uri = AirbitzCore.getApi().parseUri(uriString);
+            mWallet.sweepKey(uri.privateKey());
+            mSweptAddress = uri.address();
+            if (!TextUtils.isEmpty(mSweptAddress)) {
                 mHandler.postDelayed(sweepNotFoundRunner, 30000);
 
-                if(token != null) { // also issue hidden bits
+                if (token != null) { // also issue hidden bits
                     int hBitzIDLength = 4;
-                    if(mSweptAddress.length() >= hBitzIDLength) {
+                    if (mSweptAddress.length() >= hBitzIDLength) {
                         String lastFourChars = mSweptAddress.substring(mSweptAddress.length() - hBitzIDLength, mSweptAddress.length());
                         HiddenBitsApiTask task = new HiddenBitsApiTask();
                         task.execute(lastFourChars);
-                    }
-                    else {
+                    } else {
                         AirbitzCore.logi("HiddenBits token error");
                     }
                 }

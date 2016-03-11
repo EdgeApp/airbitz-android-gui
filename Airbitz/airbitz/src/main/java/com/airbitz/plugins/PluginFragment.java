@@ -58,6 +58,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import co.airbitz.core.SpendTarget;
 import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Wallet;
@@ -446,15 +448,21 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     mSendConfirmation = null;
                 }
             };
-            final SpendTarget target = mWallet.newSpendTarget();
-            getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    if (target.spendNewInternal(address, label, category, notes, amountSatoshi)) {
-                        target.setBizId(bizId);
-                        target.setAmountFiat(amountFiat);
+            try {
+                final SpendTarget target = mWallet.newSpendTarget();
+                target.addAddress(address, amountSatoshi);
+                target.meta().name(label)
+                                .category(category)
+                                .notes(notes)
+                                .fiat(amountFiat)
+                                .bizid(bizId);
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
                         mSendConfirmation = new SendConfirmationFragment();
-                        mSendConfirmation.setSpendTarget(target);
                         mSendConfirmation.setExitHandler(exitHandler);
+                        mSendConfirmation.setSpendTarget(target);
+                        mSendConfirmation.setPaymentRequest(null);
+                        mSendConfirmation.setDestWallet(null);
 
                         Bundle bundle = new Bundle();
                         bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
@@ -465,9 +473,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
                         ((NavigationActivity) getActivity()).pushFragment(mSendConfirmation);
                     }
-                }
-            });
-            return target;
+                });
+                return target;
+            } catch (AirbitzException e) {
+                AirbitzCore.getApi().loge(e.getMessage());
+            }
+            return null;
         }
 
         public void showNavBar() {

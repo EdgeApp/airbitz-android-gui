@@ -398,7 +398,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mSendNameSwitch.setChecked(settings.nameOnPayments());
         mFirstEditText.setText(settings.firstName());
         mLastEditText.setText(settings.lastName());
-        mNicknameEditText.setText(settings.nickname());
+        mNicknameEditText.setText(settings.nickName());
 
 
         //Options

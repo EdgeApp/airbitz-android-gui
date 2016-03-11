@@ -51,6 +51,7 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.ParsedUri;
 import co.airbitz.core.SpendTarget;
+import co.airbitz.core.PaymentRequest;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -67,7 +68,7 @@ public class SendFragment extends ScanFragment {
     private final String FIRST_BLE_USAGE_COUNT = "com.airbitz.fragments.send.firstusageblecount";
 
     private BitidLoginTask mBitidTask;
-    private NewSpendTask mSpendTask;
+    private PaymentProtoFetch mPaymentTask;
     Handler mHandler = new Handler();
 
     public SendFragment() {
@@ -92,9 +93,9 @@ public class SendFragment extends ScanFragment {
             mBitidTask.cancel(true);
             mBitidTask = null;
         }
-        if (mSpendTask != null) {
-            mSpendTask.cancel(true);
-            mSpendTask = null;
+        if (mPaymentTask != null) {
+            mPaymentTask.cancel(true);
+            mPaymentTask = null;
         }
     }
 
@@ -160,27 +161,20 @@ public class SendFragment extends ScanFragment {
         try {
             ParsedUri parsed = AirbitzCore.getApi().parseUri(text);
             switch (parsed.type()) {
-			case BITID:
-				askBitidLogin(parsed.bitid(), text);
-				return;
-			case ADDRESS:
-			case PRIVATE_KEY: {
-				SpendTarget target = mWallet.newSpendTarget();
-				if (target.newSpend(parsed.address())) {
-					launchSendConfirmation(target);
-				} else {
-					showMessageAndStartCameraDialog(
-						R.string.fragment_send_failure_title,
-						R.string.fragment_send_confirmation_invalid_bitcoin_address);
-				}
-				return;
-			}
-			case PAYMENT_PROTO:
-				mSpendTask = new NewSpendTask();
-				mSpendTask.execute(parsed.paymentProto());
-				return;
-			default:
-				break;
+            case BITID:
+                askBitidLogin(parsed.bitid(), text);
+                return;
+            case PAYMENT_PROTO:
+                mPaymentTask = new PaymentProtoFetch(parsed);
+                mPaymentTask.execute();
+                return;
+            case ADDRESS:
+            case PRIVATE_KEY: {
+                launchSendConfirmation(parsed, null, null);
+                return;
+            }
+            default:
+                break;
             }
         } catch (AirbitzException e) {
             AirbitzCore.loge(e.getMessage());
@@ -192,9 +186,9 @@ public class SendFragment extends ScanFragment {
                     || "x-callback-url".equals(uri.getHost()))) {
             mActivity.handleRequestForPaymentUri(uri);
         } else {
-			showMessageAndStartCameraDialog(
-				R.string.fragment_send_failure_title,
-				R.string.fragment_send_confirmation_invalid_bitcoin_address);
+            showMessageAndStartCameraDialog(
+                R.string.fragment_send_failure_title,
+                R.string.fragment_send_confirmation_invalid_bitcoin_address);
         }
     }
 
@@ -249,48 +243,60 @@ public class SendFragment extends ScanFragment {
         }
     }
 
-    public class NewSpendTask extends AsyncTask<String, Void, Boolean> {
-        SpendTarget target;
-
-        NewSpendTask() {
-            target = mWallet.newSpendTarget();
+    public class PaymentProtoFetch extends AsyncTask<Void, Void, Boolean> {
+        ParsedUri mParsedUri;
+        PaymentRequest mRequest;
+        PaymentProtoFetch(ParsedUri uri) {
+            mParsedUri = uri;
         }
 
         @Override
-        protected Boolean doInBackground(String... text) {
-            return target.newSpend(text[0]);
+        public void onPreExecute() {
+            showProcessing();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                mRequest = mParsedUri.fetchPaymentRequest();
+                return true;
+            } catch (AirbitzException e) {
+                return false;
+            }
         }
 
         @Override
         protected void onPostExecute(final Boolean result) {
             if (result) {
-                launchSendConfirmation(target);
+                launchSendConfirmation(mParsedUri, mRequest, null);
             } else {
                 showMessageAndStartCameraDialog(
                     R.string.fragment_send_failure_title,
                     R.string.fragment_send_confirmation_invalid_bitcoin_address);
-                hideProcessing();
             }
+            hideProcessing();
         }
 
         @Override
         protected void onCancelled() {
+            hideProcessing();
         }
     }
 
-    protected void transferWalletSelected(Wallet w) {
-        SpendTarget target = mWallet.newSpendTarget();
-        target.newTransfer(w.id());
-        launchSendConfirmation(target);
+    protected void transferWalletSelected(Wallet destWallet) {
+        launchSendConfirmation(null, null, destWallet);
     }
 
-    public void launchSendConfirmation(SpendTarget target) {
+    public void launchSendConfirmation(ParsedUri parsedUri, PaymentRequest request, Wallet destWallet) {
         hideProcessing();
         if (mWallet == null) {
             return;
         }
         SendConfirmationFragment fragment = new SendConfirmationFragment();
-        fragment.setSpendTarget(target);
+        fragment.setParsedUri(parsedUri);
+        fragment.setPaymentRequest(request);
+        fragment.setDestWallet(destWallet);
+
         Bundle bundle = new Bundle();
         bundle.putString(FROM_WALLET_UUID, mWallet.id());
         fragment.setArguments(bundle);

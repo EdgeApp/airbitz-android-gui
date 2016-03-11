@@ -891,7 +891,9 @@ public class RequestFragment extends WalletBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             AirbitzCore.logi("Starting Receive Request at:" + System.currentTimeMillis());
-            receiver = wallet.receiveRequest().amount(satoshis);
+            receiver = wallet.receiveRequest()
+                .amount(satoshis)
+                .uriLabel(mAccount.settings().displayName());
             address = receiver.address();
             try {
                 qrBitmap = mCoreAPI.qrEncode(receiver.qrcode());
