@@ -235,11 +235,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mBtcMode = true;
         }
         */
-        try {
-            mSpendTarget = mWallet.newSpendTarget();
-        } catch (AirbitzException e) {
-            AirbitzCore.getApi().loge(e.getMessage());
-        }
     }
 
     @Override
@@ -907,7 +902,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         if (mPaymentRequest != null) {
-            sendTo = mPaymentRequest.merchant();
+            sendTo = mPaymentRequest.domain();
             mAmountToSendSatoshi = mPaymentRequest.amount();
         } else if (mParsedUri != null) {
             sendTo = mParsedUri.label();
@@ -915,9 +910,16 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 sendTo = mParsedUri.address();
             }
             mAmountToSendSatoshi = mParsedUri.amount();
+            if (sendTo != null && sendTo.length() > 20) {
+                sendTo = sendTo.substring(0, 5)
+                    + "..." + sendTo.substring(sendTo.length() - 5, sendTo.length());
+            }
+        } else if (mDestWallet != null) {
+            sendTo = mDestWallet.name();
         } else {
             sendTo = "";
         }
+        mToEdittext.setText(sendTo);
         mLocked = mPaymentRequest != null || mOverrideSpend != null;
 
         mBitcoinField.setEnabled(!mLocked);
@@ -930,19 +932,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mMaxButton.setVisibility(View.VISIBLE);
         }
 
-        if (mDestWallet != null) {
-            mToEdittext.setText(mDestWallet.name());
-        } else {
-            String temp = sendTo;
-            if (sendTo != null && sendTo.length() > 20) {
-                temp = sendTo.substring(0, 5) + "..." + sendTo.substring(sendTo.length() - 5, sendTo.length());
-            }
-            mToEdittext.setText(temp);
-        }
-
         mBitcoinField = (EditText) mView.findViewById(R.id.button_bitcoin_balance);
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
+
+        mSpendTarget = newSpendTarget(mAmountToSendSatoshi);
 
         checkFields();
         checkAuthorization();
