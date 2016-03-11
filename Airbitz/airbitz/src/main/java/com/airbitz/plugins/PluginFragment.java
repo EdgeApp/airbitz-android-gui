@@ -452,10 +452,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 final Spend target = mWallet.newSpend();
                 target.addAddress(address, amountSatoshi);
                 target.meta().name(label)
-                                .category(category)
-                                .notes(notes)
-                                .fiat(amountFiat)
-                                .bizid(bizId);
+                             .category(category)
+                             .notes(notes)
+                             .fiat(amountFiat)
+                             .bizid(bizId);
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         mSendConfirmation = new SendConfirmationFragment();
@@ -465,6 +465,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         mSendConfirmation.setDestWallet(null);
 
                         Bundle bundle = new Bundle();
+                        bundle.putString(ScanFragment.LABEL, address);
+                        bundle.putLong(ScanFragment.AMOUNT_SATOSHI, amountSatoshi);
                         bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
                         bundle.putString(ScanFragment.FROM_WALLET_UUID, uuid);
                         bundle.putBoolean(ScanFragment.LOCKED, true);

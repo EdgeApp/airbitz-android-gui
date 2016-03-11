@@ -879,11 +879,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         // showing after a send when the fragment are being popped from the stack
         mBitcoinField.setOnFocusChangeListener(mAmountFocusListener);
         mFiatField.setOnFocusChangeListener(mAmountFocusListener);
-//        mView.requestFocus();
-
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
         bundle = this.getArguments();
+
         if (bundle == null) {
             AirbitzCore.logi("Send confirmation bundle is null");
         } else {
@@ -901,7 +899,9 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
 
-        if (mPaymentRequest != null) {
+        if (mLabel != null) {
+            sendTo = mLabel;
+        } else if (mPaymentRequest != null) {
             sendTo = mPaymentRequest.domain();
             mAmountToSendSatoshi = mPaymentRequest.amount();
         } else if (mParsedUri != null) {
@@ -916,8 +916,6 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         } else if (mDestWallet != null) {
             sendTo = mDestWallet.name();
-        } else {
-            sendTo = "";
         }
         mToEdittext.setText(sendTo);
         mLocked = mPaymentRequest != null || mOverrideSpend != null;
