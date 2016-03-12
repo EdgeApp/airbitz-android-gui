@@ -275,6 +275,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.runningTotalTextView.setText(totalCurrency);
             }
         }
+        int bh = mWallet.blockHeight();
+        int th = transaction.height();
+        int confirmations = bh == 0 || th == 0 ? 0 : (bh - th) + 1;
         if (mSearch) {
             viewHolder.confirmationsTextView.setText(transaction.meta().category());
             viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
@@ -283,13 +286,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             if (transaction.isSyncing()) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.synchronizing));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
-            } else if (transaction.height() <= 0) {
+            } else if (confirmations <= 0) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
-            } else if (transaction.height() >= 6) {
+            } else if (confirmations >= 6) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_confirmed));
             } else {
-                viewHolder.confirmationsTextView.setText(transaction.height() + mContext.getString(R.string.fragment_wallet_confirmations));
+                viewHolder.confirmationsTextView.setText(confirmations + mContext.getString(R.string.fragment_wallet_confirmations));
             }
         }
         return convertView;

@@ -899,7 +899,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
 
-        if (mLabel != null) {
+        if (!TextUtils.isEmpty(mLabel)) {
             sendTo = mLabel;
         } else if (mPaymentRequest != null) {
             sendTo = mPaymentRequest.domain();
@@ -1134,7 +1134,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     return mUnsent.base16Tx();
                 } else {
                     // Returns txid
-                    return mSpendTarget.signBroadcastSave().getID();
+                    return mSpendTarget.signBroadcastSave().id();
                 }
             } catch (AirbitzException e) {
                 mError = e.getMessage();

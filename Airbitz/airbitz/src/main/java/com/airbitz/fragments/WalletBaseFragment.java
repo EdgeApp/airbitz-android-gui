@@ -60,6 +60,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -295,6 +296,9 @@ public class WalletBaseFragment extends BaseFragment
         }
     }
 
+    protected void blockHeightUpdate() {
+    }
+
     protected void setupWalletViews(View view) {
         mWalletList = (ListView) view.findViewById(R.id.wallet_choices);
         mWalletList.setVisibility(View.GONE);
@@ -334,6 +338,7 @@ public class WalletBaseFragment extends BaseFragment
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
         manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
         manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(Constants.WALLETS_RELOADED_ACTION));
+        manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(Constants.BLOCKHEIGHT_CHANGE_ACTION));
 
         mAccount.reloadWallets();
         if (mWallets != null && mWallets.size() > 0) {
@@ -349,6 +354,7 @@ public class WalletBaseFragment extends BaseFragment
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
         manager.unregisterReceiver(mExchangeReceiver);
         manager.unregisterReceiver(mWalletLoadedReceiver);
+        manager.unregisterReceiver(mBlockHeightReceiver);
     }
 
     protected boolean finishedResume() {
@@ -563,6 +569,14 @@ public class WalletBaseFragment extends BaseFragment
         @Override
         public void onReceive(Context context, Intent intent) {
             onWalletsLoaded();
+        }
+    };
+
+    private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AirbitzCore.logi("Block Height received");
+            blockHeightUpdate();
         }
     };
 }

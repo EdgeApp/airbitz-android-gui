@@ -378,7 +378,6 @@ public class NavigationActivity extends ActionBarActivity
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.registerReceiver(mWalletsLoadedReceiver, filter);
         manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(Constants.BLOCKHEIGHT_CHANGE_ACTION));
         manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Constants.INCOMING_BITCOIN_ACTION));
         manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
         manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
@@ -401,7 +400,6 @@ public class NavigationActivity extends ActionBarActivity
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.unregisterReceiver(mWalletsLoadedReceiver);
         manager.unregisterReceiver(mExchangeReceiver);
-        manager.unregisterReceiver(mBlockHeightReceiver);
         manager.unregisterReceiver(mIncomingBitcoinReceiver);
         manager.unregisterReceiver(mRemotePasswordChange);
         manager.unregisterReceiver(mDataSyncReceiver);
@@ -1148,7 +1146,7 @@ public class NavigationActivity extends ActionBarActivity
         Transaction transaction = wallet.transaction(txId);
         String coinValue = account.formatSatoshi(transaction.amount(), true);
         String currencyValue =
-			CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+            CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
         if(withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
@@ -2148,46 +2146,46 @@ public class NavigationActivity extends ActionBarActivity
     final Runnable mShowSnack = new Runnable() {
         @Override
         public void run() {
-			if (mNotificationLayout.getVisibility() == View.VISIBLE) {
-				return;
-			}
-			ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", mNotificationLayout.getHeight(), 0f);
-			key.setDuration(250);
-			key.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animator) {
-					mNotificationLayout.setVisibility(View.VISIBLE);
-				}
+            if (mNotificationLayout.getVisibility() == View.VISIBLE) {
+                return;
+            }
+            ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", mNotificationLayout.getHeight(), 0f);
+            key.setDuration(250);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mNotificationLayout.setVisibility(View.VISIBLE);
+                }
 
-				@Override
-				public void onAnimationStart(Animator animator) {
-					mNotificationLayout.setVisibility(View.VISIBLE);
-				}
-			});
-			key.start();
-		}
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mNotificationLayout.setVisibility(View.VISIBLE);
+                }
+            });
+            key.start();
+        }
     };
 
     final Runnable mHideSnack = new Runnable() {
         @Override
         public void run() {
-			if (mNotificationLayout.getVisibility() == View.INVISIBLE) {
-				return;
-			}
-			ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", 0f, mNotificationLayout.getHeight());
-			key.setDuration(250);
-			key.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animator) {
-					mNotificationLayout.setVisibility(View.INVISIBLE);
-				}
+            if (mNotificationLayout.getVisibility() == View.INVISIBLE) {
+                return;
+            }
+            ObjectAnimator key = ObjectAnimator.ofFloat(mNotificationLayout, "translationY", 0f, mNotificationLayout.getHeight());
+            key.setDuration(250);
+            key.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mNotificationLayout.setVisibility(View.INVISIBLE);
+                }
 
-				@Override
-				public void onAnimationStart(Animator animator) {
-					mNotificationLayout.setVisibility(View.VISIBLE);
-				}
-			});
-			key.start();
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    mNotificationLayout.setVisibility(View.VISIBLE);
+                }
+            });
+            key.start();
         }
     };
 
@@ -2567,6 +2565,9 @@ public class NavigationActivity extends ActionBarActivity
     class WalletReceiver extends BroadcastReceiver {
         public boolean mDataLoaded = false;
         public boolean mShowMessages = false;
+        // The core only reports completion once so we don't want to show the
+        // sync-ing notification more than once.
+        public boolean mBitcoinFinishedBefore = false;
 
         private void showMessage(String message) {
             if (mShowMessages) {
@@ -2596,23 +2597,17 @@ public class NavigationActivity extends ActionBarActivity
                 if (mDataLoaded) {
                     showMessage(context.getString(R.string.loading_transactions));
                 }
-				if (!mShowMessages) {
-					mHandler.post(mShowSnack);
-				}
+                mBitcoinFinishedBefore = false;
+                if (!mShowMessages && !mBitcoinFinishedBefore) {
+                    // mHandler.post(mShowSnack);
+                }
             } else if (Constants.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
                 NavigationActivity.this.DismissFadingDialog();
-				if (!mShowMessages) {
-                    mHandler.post(mHideSnack);
+                if (!mShowMessages && !mBitcoinFinishedBefore) {
+                    // mHandler.post(mHideSnack);
                 }
+                mBitcoinFinishedBefore = true;
             }
-        }
-    };
-
-    private BroadcastReceiver mBlockHeightReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            AirbitzCore.logi("Block Height received");
-            updateWalletListener();
         }
     };
 
