@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -93,16 +94,25 @@ public class DirectoryApi {
         return SERVER_ROOT;
     }
 
-    public String getRequest(String url){
-        return getRequest(url, "");
+    public String getRequest(String url) {
+        return request(url, "", "GET");
     }
 
     public String getRequest(String url, String params) {
+        return request(url, params, "GET");
+    }
+
+    public String postRequest(String url, String body) {
+        // JSONObject escapes / for some reason...
+        return request(url, body.replace("\\",""), "POST");
+    }
+
+    private String request(String url, String params, String method) {
         StringBuffer stringBuffer = new StringBuffer("");
         BufferedReader bufferedReader = null;
         HttpsURLConnection urlConnection = null;
-        Log.d(TAG, url + params);
-        if (mApiCache.get(url + params) != null) {
+        Log.d(TAG, method + ": " + url + " " + params);
+        if ("GET".equals(method) && mApiCache.get(url + params) != null) {
             return (String) mApiCache.get(url + params);
         }
         try {
@@ -112,13 +122,34 @@ public class DirectoryApi {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tm, null);
 
-            URL sendUrl = new URL(url + params);
+            URL sendUrl = null;
+            if ("POST".equalsIgnoreCase(method)) {
+                sendUrl = new URL(url);
+            } else {
+                sendUrl = new URL(url + params);
+            }
             urlConnection = (HttpsURLConnection) sendUrl.openConnection();
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
-
             urlConnection.setRequestProperty("Authorization", "Token " + mToken + "");
             urlConnection.setRequestProperty("User-Agent", mUserAgent);
             urlConnection.setRequestProperty("X-Client-ID", mClientId);
+            urlConnection.setRequestMethod(method);
+            if ("POST".equalsIgnoreCase(method)) {
+                urlConnection.setRequestProperty("Content-Length", "" +
+                    Integer.toString(params.getBytes().length));
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setUseCaches(false);
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+            }
+
+            if ("POST".equalsIgnoreCase(method)) {
+                DataOutputStream wr = new DataOutputStream(
+                    urlConnection.getOutputStream ());
+                wr.writeBytes(params);
+                wr.flush();
+                wr.close();
+            }
 
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(in));

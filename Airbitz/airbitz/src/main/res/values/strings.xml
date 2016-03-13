@@ -281,6 +281,9 @@
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Logout</string>
     <string name="settings_button_debug">Debug</string>
+    <string name="settings_button_affiliate">Get affiliate link</string>
+    <string name="settings_button_share_affiliate">Share affiliate link</string>
+    <string name="settings_button_affiliate_unable">Unable to generate an affiliate link at this time.</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>
     <string name="settings_categories_income">Income:</string>

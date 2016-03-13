@@ -81,7 +81,10 @@ import co.airbitz.core.Currencies;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.Affiliates;
 import com.airbitz.api.CoreWrapper;
+import com.airbitz.api.DirectoryWrapper;
+import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
@@ -125,6 +128,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private EditText mNicknameEditText;
     private Button mAutoLogoffButton;
     private Button mDebugButton;
+    private Button mAffiliateButton;
     private Button mDefaultCurrencyButton;
     private Button mDefaultDistanceButton;
     private TextView mAccountTitle;
@@ -138,6 +142,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private View mView;
     private Settings mCoreSettings;
     private NavigationActivity mActivity;
+    private AffiliateTask mAffiliateTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -197,6 +202,20 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
         });
+
+        mAffiliateButton = (Button) mView.findViewById(R.id.settings_button_affiliate);
+        if (!mActivity.getResources().getBoolean(R.bool.include_affiliate_link)) {
+            mAffiliateButton.setVisibility(View.GONE);
+        } else {
+            mAffiliateButton.setVisibility(View.VISIBLE);
+            mAffiliateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mAffiliateTask = new AffiliateTask(mActivity, mAccount);
+                    mAffiliateTask.execute();
+                }
+            });
+        }
 
         mCategoryContainer = (Button) mView.findViewById(R.id.settings_button_category);
         mCategoryContainer.setOnClickListener(new View.OnClickListener() {
@@ -638,6 +657,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         if (AirbitzApplication.isLoggedIn()) {
             saveCurrentSettings();
         }
+
+        if (mAffiliateTask != null) {
+            mAffiliateTask.cancel(true);
+            mAffiliateTask = null;
+        }
     }
 
     @Override
@@ -876,5 +900,47 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                             }
                         });
         builder.create().show();
+    }
+
+    private static class AffiliateTask extends AsyncTask<Void, Void, String> {
+        Affiliates affiliate;
+        NavigationActivity activity;
+        AffiliateTask(NavigationActivity activity, Account account) {
+            this.affiliate = new Affiliates(account);
+            this.activity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            activity.showModalProgress(true);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return affiliate.affiliateCampaignUrl();
+        }
+
+        @Override
+        protected void onCancelled() {
+            activity.showModalProgress(false);
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onPostExecute(String results) {
+            super.onPostExecute(results);
+            activity.showModalProgress(false);
+            if (results != null) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, results);
+                activity.startActivity(Intent.createChooser(share,
+                    activity.getString(R.string.settings_button_share_affiliate)));
+            } else {
+                activity.ShowFadingDialog(
+                    activity.getString(R.string.settings_button_affiliate_unable),
+                    activity.getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+        }
     }
 }
