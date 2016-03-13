@@ -208,7 +208,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
         protected String doInBackground(Void... params) {
             String message = null;
             try {
-                mCoreAPI.otpResetRequest(mUsername);
+                mCoreAPI.otpResetRequest(mUsername, AirbitzApplication.otpResetToken());
                 message = getString(R.string.fragment_twofactor_menu_reset_requested);
             } catch (AirbitzException e) {
                 message = e.getMessage();

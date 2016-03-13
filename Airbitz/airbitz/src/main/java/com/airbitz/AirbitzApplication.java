@@ -67,6 +67,7 @@ public class AirbitzApplication extends Application {
     private static String mUserAgent;
     private static String mWalletUuid;
     private static String mOtpResetDate;
+    private static String mOtpResetToken;
     private static boolean mOtpError;
     private static Picasso mPicasso;
     private static Stack<Fragment>[] mFragmentStack = null;
@@ -106,6 +107,7 @@ public class AirbitzApplication extends Application {
         }
         mOtpError = false;
         mOtpResetDate = null;
+        mOtpResetToken = null;
     }
 
 
@@ -123,6 +125,14 @@ public class AirbitzApplication extends Application {
 
     public static String otpResetDate() {
         return mOtpResetDate;
+    }
+
+    public static void setOtpResetToken(String token) {
+        mOtpResetToken = token;
+    }
+
+    public static String otpResetToken() {
+        return mOtpResetToken;
     }
 
     public static void logout() {

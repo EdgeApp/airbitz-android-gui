@@ -737,6 +737,7 @@ public class LandingFragment extends BaseFragment implements
             } else if (mFailureException.isOtpError()) {
                 AirbitzApplication.setOtpError(true);
                 AirbitzApplication.setOtpResetDate(mFailureException.otpResetDate());
+                AirbitzApplication.setOtpResetToken(mFailureException.otpResetToken());
                 launchTwoFactorMenu();
             } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
@@ -836,6 +837,7 @@ public class LandingFragment extends BaseFragment implements
         } else if (error.isOtpError()) {
             AirbitzApplication.setOtpError(true);
             AirbitzApplication.setOtpResetDate(error.otpResetDate());
+            AirbitzApplication.setOtpResetToken(error.otpResetToken());
             launchTwoFactorMenu();
         } else {
             mActivity.ShowFadingDialog(error.getMessage());
