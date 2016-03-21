@@ -212,7 +212,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
     }
 
     private void createRequest() {
-        mReceiver = mWallet.receiveRequest().amount(0);
+        mReceiver = mWallet.newReceiveRequest().amount(0);
         mReceiver.meta().name(strName);
         mReceiver.meta().category(strCategory);
         mReceiver.meta().notes(strNotes);
