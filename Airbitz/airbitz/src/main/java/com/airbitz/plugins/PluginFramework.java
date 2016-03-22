@@ -562,7 +562,8 @@ public class PluginFramework {
         @JavascriptInterface
         public String finalizeRequest(String walletUUID, String requestId) {
             Wallet wallet = account.wallet(walletUUID);
-            JsonValue value = new JsonValue<Boolean>(wallet.finalizeRequest(requestId));
+            ReceiveAddress request = wallet.fetchReceiveRequest(requestId);
+            JsonValue value = new JsonValue<Boolean>(request.finalizeRequest());
             return jsonResult(value).toString();
         }
 
