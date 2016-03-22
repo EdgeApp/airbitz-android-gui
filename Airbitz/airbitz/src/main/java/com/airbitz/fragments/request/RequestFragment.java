@@ -1149,28 +1149,28 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     public void finalizeRequest(Contact contact, String type) {
-		if (mReceiver == null) {
-			return;
-		}
-		if (contact.getName() != null) {
-			mReceiver.meta().name(contact.getName());
-		} else if (contact.getEmail()!=null) {
-			mReceiver.meta().name(contact.getEmail());
-		} else if (contact.getPhone()!=null) {
-			mReceiver.meta().name(contact.getPhone());
-		}
-		Calendar now = Calendar.getInstance();
-		String notes = String.format("%s / %s requested via %s on %s.",
-				mAccount.formatSatoshi(mReceiver.amount()),
-				CoreWrapper.formatDefaultCurrency(mAccount, mReceiver.meta().fiat()),
-				type,
-				String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));
+        if (mReceiver == null) {
+            return;
+        }
+        if (contact.getName() != null) {
+            mReceiver.meta().name(contact.getName());
+        } else if (contact.getEmail()!=null) {
+            mReceiver.meta().name(contact.getEmail());
+        } else if (contact.getPhone()!=null) {
+            mReceiver.meta().name(contact.getPhone());
+        }
+        Calendar now = Calendar.getInstance();
+        String notes = String.format("%s / %s requested via %s on %s.",
+                mAccount.formatSatoshi(mReceiver.amount()),
+                CoreWrapper.formatDefaultCurrency(mAccount, mReceiver.meta().fiat()),
+                type,
+                String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));
 
-		mReceiver.meta().notes(notes);
-		if (null == mReceiver.meta().category()) {
-			mReceiver.meta().category("");
-		}
-		mReceiver.finalizeRequest();
-		mReceiver = null;
+        mReceiver.meta().notes(notes);
+        if (null == mReceiver.meta().category()) {
+            mReceiver.meta().category("");
+        }
+        mReceiver.finalizeRequest();
+        mReceiver = null;
     }
 }
