@@ -72,11 +72,11 @@ import android.widget.TextView;
 import static android.provider.Settings.ACTION_BLUETOOTH_SETTINGS;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.Settings;
+import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
-import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
+import co.airbitz.core.CoreCurrency;
+import co.airbitz.core.Settings;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -665,8 +665,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     @Override
-    public void onCurrencySelected(String code) {
-        mCurrencyCode = code;
+    public void onCurrencySelected(CoreCurrency currency) {
+        mCurrencyCode = currency.code;
         saveCurrentSettings();
         mDefaultCurrencyButton.setText(mCurrencyCode);
         mActivity.ShowFadingDialog(

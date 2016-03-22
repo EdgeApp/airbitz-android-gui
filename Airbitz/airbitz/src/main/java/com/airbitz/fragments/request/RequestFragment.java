@@ -84,10 +84,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.ReceiveAddress;
+import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
 import co.airbitz.core.Wallet;

@@ -89,10 +89,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.Settings;
-import co.airbitz.core.Categories;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Categories;
+import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 

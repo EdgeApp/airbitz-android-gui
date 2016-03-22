@@ -573,16 +573,16 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (mChoices.length > 0) {
 
                 for (QuestionChoice choice : mChoices) {
-                    String category = choice.getCategory();
+                    String category = choice.category();
                     if (category.equals("string")) {
-                        mStringCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        mStringQuestions.add(choice.getQuestion());
+                        mStringCategory.put(choice.question(), (int) choice.minLength());
+                        mStringQuestions.add(choice.question());
                     } else if (category.equals("numeric")) {
-                        mNumericCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        mNumericQuestions.add(choice.getQuestion());
+                        mNumericCategory.put(choice.question(), (int) choice.minLength());
+                        mNumericQuestions.add(choice.question());
                     } else if (category.equals("must")) {
-                        mMustCategory.put(choice.getQuestion(), (int) choice.getMinLength());
-                        mMustQuestions.add(choice.getQuestion());
+                        mMustCategory.put(choice.question(), (int) choice.minLength());
+                        mMustQuestions.add(choice.question());
                     }
                 }
                 mStringQuestions.add(getString(R.string.activity_recovery_question_default));

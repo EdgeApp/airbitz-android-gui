@@ -63,7 +63,6 @@ import android.widget.TextView;
 
 import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -336,7 +335,7 @@ public class WalletsFragment extends WalletBaseFragment implements
                 mHeaderTotal.setText(mAccount.formatSatoshi(totalSatoshis, true));
             } else {
                 mHeaderTotal.setText(
-					CoreWrapper.formatCurrency(mAccount, totalSatoshis, currencyCode, true));
+                    CoreWrapper.formatCurrency(mAccount, totalSatoshis, currencyCode, true));
             }
         }
     }

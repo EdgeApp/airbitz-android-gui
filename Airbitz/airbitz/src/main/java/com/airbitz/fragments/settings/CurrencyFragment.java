@@ -60,7 +60,7 @@ public class CurrencyFragment extends BaseFragment {
     public static String CURRENCY = "currency";
 
     public static interface OnCurrencySelectedListener {
-        public void onCurrencySelected(String currencyCode);
+        public void onCurrencySelected(CoreCurrency currency);
     }
 
     private NavigationActivity mActivity;
@@ -149,7 +149,7 @@ public class CurrencyFragment extends BaseFragment {
                 mActivity.popFragment();
                 mActivity.getFragmentManager().executePendingTransactions();
                 if (mListener != null) {
-                    mListener.onCurrencySelected(mCurrencies.get(i).code);
+                    mListener.onCurrencySelected(mCurrencies.get(i));
                 }
             }
         });

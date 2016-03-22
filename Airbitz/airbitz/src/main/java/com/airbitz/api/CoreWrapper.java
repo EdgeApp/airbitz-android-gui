@@ -42,7 +42,6 @@ import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 
@@ -488,8 +487,8 @@ public class CoreWrapper {
     }
 
     public static String formatCurrency(Account account, long satoshi, String currency, boolean withSymbol) {
-		double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
-		return account.formatCurrency(o, currency, withSymbol);
+        double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
+        return account.formatCurrency(o, currency, withSymbol);
     }
 
     private static int CONFIRMED_CONFIRMATION_COUNT = 3;

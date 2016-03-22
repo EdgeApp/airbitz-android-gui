@@ -61,7 +61,6 @@ import android.widget.TimePicker;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Currencies;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
