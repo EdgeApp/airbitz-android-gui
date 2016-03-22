@@ -741,7 +741,7 @@ public class LandingFragment extends BaseFragment implements
                 launchTwoFactorMenu();
             } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
-                mActivity.ShowFadingDialog(mFailureException.getMessage());
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
                 mPinFailedCount++;
                 if (mPinFailedCount >= MAX_PIN_FAILS) {
                     abortPermanently();
@@ -840,7 +840,7 @@ public class LandingFragment extends BaseFragment implements
             AirbitzApplication.setOtpResetToken(error.otpResetToken());
             launchTwoFactorMenu();
         } else {
-            mActivity.ShowFadingDialog(error.getMessage());
+            mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
         }
     }
 
@@ -959,7 +959,7 @@ public class LandingFragment extends BaseFragment implements
                 return mCoreAPI.recoveryQuestions(params[0]);
             } catch (AirbitzException e) {
                 AirbitzCore.logi("GetRecoveryQuestionsTask error:");
-                return e.getMessage();
+                return Common.errorMap(mActivity, e);
             }
         }
 

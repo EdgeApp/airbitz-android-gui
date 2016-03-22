@@ -241,30 +241,32 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     /**
      * Determine if username available
      */
-    public class CheckUsernameTask extends AsyncTask<String, Void, String> {
+    public class CheckUsernameTask extends AsyncTask<String, Void, Boolean> {
+        AirbitzException mFailureException;
         CheckUsernameTask() {
             mActivity.showModalProgress(true);
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             String username = params[0];
             try {
                 return mCoreAPI.usernameAvailable(username);
             } catch (AirbitzException e) {
                 AirbitzCore.logi("CheckUsernameTask error:");
-                return e.getMessage();
+                mFailureException = e;
             }
+            return false;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean result) {
             onCancelled();
-            if(result == null) {
+            if (result) {
                 launchSetupPin();
-            }
-            else {
-                mActivity.ShowFadingDialog(result);
+            } else {
+                mActivity.ShowFadingDialog(
+                    Common.errorMap(mActivity, mFailureException));
             }
         }
 

@@ -211,7 +211,7 @@ public class TwoFactorMenuFragment extends BaseFragment implements
                 mCoreAPI.otpResetRequest(mUsername, AirbitzApplication.otpResetToken());
                 message = getString(R.string.fragment_twofactor_menu_reset_requested);
             } catch (AirbitzException e) {
-                message = e.getMessage();
+                message = Common.errorMap(mActivity, e);
             }
             return message;
         }

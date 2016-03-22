@@ -350,7 +350,7 @@ public class TwoFactorShowFragment extends BaseFragment
         } else {
             mRequestView.setVisibility(View.GONE);
             if (null != error) {
-                mActivity.ShowFadingDialog(error.getMessage());
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
             }
         }
         mActivity.showModalProgress(false);
@@ -488,7 +488,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 mActivity.ShowFadingDialog("Request confirmed, Two Factor off.");
                 updateTwoFactorUI(false);
             } else {
-                mActivity.ShowFadingDialog(error.getMessage());
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
             }
         }
 
@@ -533,7 +533,7 @@ public class TwoFactorShowFragment extends BaseFragment
                 mActivity.ShowFadingDialog("Reset Cancelled.");
                 mRequestView.setVisibility(View.GONE);
             } else {
-                mActivity.ShowFadingDialog(error.getMessage());
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
             }
         }
 

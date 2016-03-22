@@ -471,7 +471,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public static AirbitzCore initiateCore(Context context) {
-        AirbitzCore api = AirbitzCore.getApi(context);
+        AirbitzCore api = AirbitzCore.getApi();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
         api.init(context, airbitzApiKey, hiddenbitzKey);

@@ -444,7 +444,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                 AirbitzApplication.Login(account);
                 return null;
             } catch (AirbitzException e) {
-                return e.getMessage();
+                return Common.errorMap(mActivity, e);
             }
         }
 

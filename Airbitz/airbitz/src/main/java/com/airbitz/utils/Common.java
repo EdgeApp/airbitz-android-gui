@@ -62,9 +62,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import co.airbitz.core.AirbitzCore;
 import com.airbitz.objects.CurrentLocationManager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -462,5 +463,44 @@ public class Common {
             crackString += activity.getString(R.string.activity_signup_years);
         }
         return crackString;
+    }
+
+    public static String errorMap(Context context, AirbitzException e) {
+        if (e.isAccountAlreadyExists()) {
+            return context.getString(R.string.server_error_account_already_exists);
+        } else if (e.isAccountDoesNotExist()) {
+            return context.getString(R.string.server_error_account_does_not_exists);
+        } else if (e.isBadPassword()) {
+            return context.getString(R.string.server_error_bad_password);
+        } else if (e.isWalletAlreadyExists()) {
+            return context.getString(R.string.server_error_wallet_exists);
+        } else if (e.isInvalidWalletId()) {
+            return context.getString(R.string.server_error_invalid_wallet);
+        } else if (e.isUrlError()) {
+            return context.getString(R.string.string_connection_error_server);
+        } else if (e.isServerError()) {
+            return context.getString(R.string.server_error_no_connection);
+        } else if (e.isNoRecoveryQuestions()) {
+            return context.getString(R.string.server_error_no_recovery_questions);
+        } else if (e.isNotSupported()) {
+            return context.getString(R.string.server_error_not_supported);
+        } else if (e.isInsufficientFunds()) {
+            return context.getString(R.string.server_error_insufficient_funds);
+        } else if (e.isSpendDust()) {
+            return context.getString(R.string.insufficient_amount);
+        } else if (e.isSynchronizing()) {
+            return context.getString(R.string.server_error_synchronizing);
+        } else if (e.isNonNumericPin()) {
+            return context.getString(R.string.server_error_non_numeric_pin);
+        } else if (e.isInvalidPinWait()) {
+            int wait = e.waitSeconds();
+            if (0 < wait) {
+                return context.getString(R.string.server_error_invalid_pin_wait, wait);
+            } else {
+                return context.getString(R.string.server_error_bad_pin);
+            }
+        } else {
+            return context.getString(R.string.server_error_other);
+        }
     }
 }

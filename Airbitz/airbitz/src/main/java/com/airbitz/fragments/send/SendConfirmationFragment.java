@@ -83,6 +83,7 @@ import com.airbitz.fragments.settings.CurrencyFragment;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.PasswordCheckRunnable;
+import com.airbitz.utils.Common;
 
 import java.lang.reflect.Method;
 
@@ -725,7 +726,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 }
             }
         } else {
-            mConversionTextView.setText(error.getMessage());
+            mConversionTextView.setText(Common.errorMap(mActivity, error));
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
             mConversionTextView.setCompoundDrawablePadding(10);
             mConversionTextView.setBackgroundResource(R.color.white_haze);
@@ -1137,7 +1138,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     return mSpendTarget.signBroadcastSave().id();
                 }
             } catch (AirbitzException e) {
-                mError = e.getMessage();
+                mError = Common.errorMap(mActivity, e);
             }
             return null;
         }
