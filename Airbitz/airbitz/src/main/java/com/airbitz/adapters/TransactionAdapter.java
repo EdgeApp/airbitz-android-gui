@@ -49,6 +49,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.Transaction;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -236,7 +237,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
 
         if (mSearch) {
-            String btcCurrency = mAccount.formatSatoshi(transactionSatoshisAbs, true);
+            String btcCurrency = Utils.formatSatoshi(mAccount, transactionSatoshisAbs, true);
             viewHolder.creditAmountTextView.setText(btcCurrency);
 
             String fiatCurrency = "";
@@ -262,8 +263,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
             if (mIsBitcoin) {
-                String walletCurrency = mAccount.formatSatoshi(transactionSatoshisAbs, false);
-                String totalCurrency = mAccount.formatSatoshi(mRunningSatoshi[position], false);
+                String walletCurrency = Utils.formatSatoshi(mAccount, transactionSatoshisAbs, false);
+                String totalCurrency = Utils.formatSatoshi(mAccount, mRunningSatoshi[position], false);
 
                 viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
                 viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);

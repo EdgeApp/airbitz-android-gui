@@ -93,6 +93,7 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Categories;
 import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -1141,7 +1142,7 @@ public class NavigationActivity extends ActionBarActivity
         Account account = AirbitzApplication.getAccount();
         Wallet wallet = account.wallet(uuid);
         Transaction transaction = wallet.transaction(txId);
-        String coinValue = account.formatSatoshi(transaction.amount(), true);
+        String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
         String currencyValue =
             CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);

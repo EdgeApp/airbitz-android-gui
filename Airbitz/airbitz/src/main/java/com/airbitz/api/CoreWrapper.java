@@ -38,11 +38,12 @@ import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.Settings;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.BitcoinDenomination;
+import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import java.nio.ByteBuffer;
@@ -283,7 +284,7 @@ public class CoreWrapper {
         } catch(NumberFormatException e) {
             // ignore any non-double
         }
-        return account.denominationToSatoshi(bitcoin) > Constants.MAX_SATOSHI;
+        return Utils.btcStringToSatoshi(account, bitcoin) > Constants.MAX_SATOSHI;
     }
 
     public static boolean tooMuchFiat(Account account, String fiat, String currencyCode) {
@@ -450,7 +451,7 @@ public class CoreWrapper {
                 // Instead show "1000 bits = $0.253 USD"
                 o = o * 1000;
             }
-            String amount = account.formatCurrency(o, currency, true, fiatDecimals);
+            String amount = Utils.formatCurrency(o, currency, true, fiatDecimals);
             return amtBTCDenom + denomination.btcLabel() + " = " + amount + " " + currency;
         }
         return "";
@@ -488,7 +489,7 @@ public class CoreWrapper {
 
     public static String formatCurrency(Account account, long satoshi, String currency, boolean withSymbol) {
         double o = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(satoshi, currency);
-        return account.formatCurrency(o, currency, withSymbol);
+        return Utils.formatCurrency(o, currency, withSymbol);
     }
 
     private static int CONFIRMED_CONFIRMATION_COUNT = 3;

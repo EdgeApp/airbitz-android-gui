@@ -84,10 +84,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.R;
@@ -1010,7 +1011,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n");
 
-            s.append(mAccount.formatSatoshi(netSum))
+            s.append(Utils.formatSatoshi(mAccount, netSum))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.append("\n\n");
@@ -1040,7 +1041,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(mAccount.formatSatoshi(feesSatoshi, true))
+            s.append(Utils.formatSatoshi(mAccount, feesSatoshi, true))
                     .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1051,7 +1052,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void appendOutput(TxOutput output, String finalBaseUrl) {
-		SpannableString val = new SpannableString(mAccount.formatSatoshi(output.amount()));
+		SpannableString val = new SpannableString(Utils.formatSatoshi(mAccount, output.amount()));
 		SpannableString address = new SpannableString(output.address());
 		int start = 0;
 		int end = address.length();
@@ -1110,20 +1111,20 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String feeFormatted;
         if (transaction.amount() < 0) {
             coinValue = transaction.amount() + transaction.minerFees() + transaction.providerFees();
-            feeFormatted = "+" + mAccount.formatSatoshi(transaction.minerFees() + transaction.providerFees(), false) + getString(R.string.transaction_details_advanced_fee);
+            feeFormatted = "+" + Utils.formatSatoshi(mAccount, transaction.minerFees() + transaction.providerFees(), false) + getString(R.string.transaction_details_advanced_fee);
         } else {
             coinValue = transaction.amount();
             feeFormatted = "";
         }
 
-        mBitcoinValueTextview.setText(mAccount.formatSatoshi(coinValue, false));
+        mBitcoinValueTextview.setText(Utils.formatSatoshi(mAccount, coinValue, false));
 
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.meta().fiat() == 0.0) {
-            currencyValue = mAccount.formatCurrency(coinValue, mWallet.currency().code, false);
+            currencyValue = Utils.formatCurrency(coinValue, mWallet.currency().code, false);
         } else {
-            currencyValue = mAccount.formatCurrency(transaction.meta().fiat(),
+            currencyValue = Utils.formatCurrency(transaction.meta().fiat(),
                     mWallet.currency().code, false);
         }
         mFiatValue = currencyValue;

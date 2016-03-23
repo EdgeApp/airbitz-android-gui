@@ -89,6 +89,7 @@ import co.airbitz.core.ReceiveAddress;
 import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -420,7 +421,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currency().code);
                 mDenominationTextView.setText(mWallet.currency().code);
                 mOtherDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
-                mOtherAmountTextView.setText(mAccount.formatSatoshi(satoshi, false));
+                mOtherAmountTextView.setText(Utils.formatSatoshi(mAccount, satoshi, false));
             }
             if (TextUtils.isEmpty(mAmountField.getText())) {
                 mOtherAmountTextView.setText("");
@@ -435,7 +436,7 @@ public class RequestFragment extends WalletBaseFragment implements
         if (mAmountIsBitcoin) {
             String bitcoin = mAmountField.getText().toString();
             if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
-                mAmountSatoshi = mAccount.denominationToSatoshi(bitcoin);
+                mAmountSatoshi = Utils.btcStringToSatoshi(mAccount, bitcoin);
             } else {
                 AirbitzCore.logi("Too much bitcoin");
             }
@@ -509,7 +510,7 @@ public class RequestFragment extends WalletBaseFragment implements
             mSavedCurrency = null;
         } else {
             if (mAmountIsBitcoin) {
-                mSavedSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
+                mSavedSatoshi = Utils.btcStringToSatoshi(mAccount, mAmountField.getText().toString());
                 mSavedCurrency = null;
             } else {
                 mSavedCurrency = mAmountField.getText().toString();
@@ -539,7 +540,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mAutoUpdatingTextFields = true;
         if (mSavedSatoshi != null) {
-            mAmountField.setText(mAccount.formatSatoshi(mSavedSatoshi, false));
+            mAmountField.setText(Utils.formatSatoshi(mAccount, mSavedSatoshi, false));
         } else if (mSavedCurrency != null) {
             mAmountField.setText(mSavedCurrency);
         }
@@ -704,8 +705,8 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private String fillTemplate(int id, String fullName) {
-        String amountBTC = mAccount.formatSatoshi(mAmountSatoshi, false, 8);
-        String amountBits = mAccount.formatSatoshi(mAmountSatoshi, false, 2);
+        String amountBTC = Utils.formatSatoshi(mAccount, mAmountSatoshi, false, 8);
+        String amountBits = Utils.formatSatoshi(mAccount, mAmountSatoshi, false, 2);
 
         String bitcoinURL = "bitcoin://";
         String redirectURL = mRequestURI;
@@ -789,7 +790,7 @@ public class RequestFragment extends WalletBaseFragment implements
     public void showDonation(long amount) {
         mDessertView.setOkIcon();
         mDessertView.getLine1().setText(R.string.string_payment_received);
-        mDessertView.getLine2().setText(mAccount.formatSatoshi(amount, true));
+        mDessertView.getLine2().setText(Utils.formatSatoshi(mAccount, amount, true));
         mDessertView.getLine3().setVisibility(View.VISIBLE);
         mDessertView.getLine3().setText(
             CoreWrapper.formatCurrency(mAccount, amount, mWallet.currency().code, true));
@@ -808,12 +809,12 @@ public class RequestFragment extends WalletBaseFragment implements
 
         mReceivedTextView.setText(
                 String.format(getResources().getString(R.string.bitcoin_received),
-                        mAccount.formatSatoshi(mOriginalAmountSatoshi - mAmountSatoshi, true))
+                        Utils.formatSatoshi(mAccount, mOriginalAmountSatoshi - mAmountSatoshi, true))
         );
         mRemainingTextView.setVisibility(View.VISIBLE);
         mRemainingTextView.setText(
                 String.format(getResources().getString(R.string.bitcoin_remaining),
-                        mAccount.formatSatoshi(mAmountSatoshi, true))
+                        Utils.formatSatoshi(mAccount, mAmountSatoshi, true))
         );
 
         mDessertView.setWarningIcon();
@@ -829,7 +830,7 @@ public class RequestFragment extends WalletBaseFragment implements
     public void amountChanged() {
         if (mWallet != null) {
             if (mAmountIsBitcoin) {
-                mAmountSatoshi = mAccount.denominationToSatoshi(mAmountField.getText().toString());
+                mAmountSatoshi = Utils.btcStringToSatoshi(mAccount, mAmountField.getText().toString());
             } else {
                 mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currency().code);
             }
@@ -1038,7 +1039,7 @@ public class RequestFragment extends WalletBaseFragment implements
                         mAmountField.setText("");
                     } else {
                         mAmountField.setText(
-                            mAccount.formatSatoshi(mAmountSatoshi, false));
+                            Utils.formatSatoshi(mAccount, mAmountSatoshi, false));
                     }
                 } else {
                     AirbitzCore.logi("Too much fiat");
@@ -1049,7 +1050,7 @@ public class RequestFragment extends WalletBaseFragment implements
         } else {
             String bitcoin = mAmountField.getText().toString();
             if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
-                mAmountSatoshi = mAccount.denominationToSatoshi(bitcoin);
+                mAmountSatoshi = Utils.btcStringToSatoshi(mAccount, bitcoin);
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
@@ -1161,7 +1162,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
         Calendar now = Calendar.getInstance();
         String notes = String.format("%s / %s requested via %s on %s.",
-                mAccount.formatSatoshi(mReceiver.amount()),
+                Utils.formatSatoshi(mAccount, mReceiver.amount()),
                 CoreWrapper.formatDefaultCurrency(mAccount, mReceiver.meta().fiat()),
                 type,
                 String.format("%1$tA %1$tb %1$td %1$tY at %1$tI:%1$tM", now));

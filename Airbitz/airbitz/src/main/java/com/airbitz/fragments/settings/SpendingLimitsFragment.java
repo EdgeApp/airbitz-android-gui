@@ -50,6 +50,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.Utils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -186,12 +187,12 @@ public class SpendingLimitsFragment extends BaseFragment
             mPasswordEditText.setVisibility(View.GONE);
         }
 
-        mDailyEditText.setText(mAccount.formatSatoshi(CoreWrapper.getDailySpendLimit(mActivity, mAccount), false));
+        mDailyEditText.setText(Utils.formatSatoshi(mAccount, CoreWrapper.getDailySpendLimit(mActivity, mAccount), false));
         mDailySwitch.setChecked(CoreWrapper.getDailySpendLimitSetting(mActivity, mAccount));
         mDailyDenominationTextView.setText(CoreWrapper.userBtcSymbol(mAccount));
 
         mPINSwitch.setChecked(CoreWrapper.getPinSpendLimitSetting(mAccount));
-        mPINEditText.setText(mAccount.formatSatoshi(CoreWrapper.getPinSpendLimit(mAccount), false));
+        mPINEditText.setText(Utils.formatSatoshi(mAccount, CoreWrapper.getPinSpendLimit(mAccount), false));
         mPINDenominationTextView.setText(CoreWrapper.userBtcSymbol(mAccount));
         adjustTextColors();
     }
@@ -207,10 +208,10 @@ public class SpendingLimitsFragment extends BaseFragment
     public void onPasswordCheck(boolean passwordOkay) {
         mActivity.showModalProgress(false);
         if(passwordOkay) {
-            long satoshis = mAccount.denominationToSatoshi(mDailyEditText.getText().toString());
+            long satoshis = Utils.btcStringToSatoshi(mAccount, mDailyEditText.getText().toString());
             CoreWrapper.setDailySpendSatoshis(mActivity, mAccount, satoshis);
             CoreWrapper.setDailySpendLimitSetting(mActivity, mAccount, mDailySwitch.isChecked());
-            CoreWrapper.setPinSpendSatoshis(mActivity, mAccount, mAccount.denominationToSatoshi(mPINEditText.getText().toString()));
+            CoreWrapper.setPinSpendSatoshis(mActivity, mAccount, Utils.btcStringToSatoshi(mAccount, mPINEditText.getText().toString()));
             CoreWrapper.setPinSpendLimitSetting(mActivity, mAccount, mPINSwitch.isChecked());
 
             mActivity.popFragment();

@@ -70,6 +70,7 @@ import co.airbitz.core.ParsedUri;
 import co.airbitz.core.PaymentRequest;
 import co.airbitz.core.Spend;
 import co.airbitz.core.UnsentTransaction;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -606,7 +607,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         if (!mLocked) {
             if (btc) {
-                mAmountToSendSatoshi = mAccount.denominationToSatoshi(mBitcoinField.getText().toString());
+                mAmountToSendSatoshi = Utils.btcStringToSatoshi(mAccount, mBitcoinField.getText().toString());
                 mSpendTarget = newSpend(mAmountToSendSatoshi);
                 if (TextUtils.isEmpty(mBitcoinField.getText())) {
                     mFiatField.setText("");
@@ -621,7 +622,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 if (TextUtils.isEmpty(mFiatField.getText())) {
                     mBitcoinField.setText("");
                 } else {
-                    mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
+                    mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
                 }
             }
         }
@@ -711,11 +712,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mBitcoinField.setTextColor(color);
                 mFiatField.setTextColor(color);
 
-                String coinFeeString = "+ " + mAccount.formatSatoshi(fees, false);
+                String coinFeeString = "+ " + Utils.formatSatoshi(mAccount, fees, false);
                 mBTCDenominationTextView.setText(coinFeeString + " " + CoreWrapper.defaultBTCDenomination(mAccount));
 
                 double fiatFee = AirbitzCore.getApi().exchangeCache().satoshiToCurrency(fees, mCurrency.code);
-                String fiatFeeString = "+ " + mAccount.formatCurrency(fiatFee, mCurrency.code, false);
+                String fiatFeeString = "+ " + Utils.formatCurrency(fiatFee, mCurrency.code, false);
                 mFiatDenominationTextView.setText(fiatFeeString + " " + mCurrency.code);
                 mConversionTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mCurrency.code));
 
@@ -955,7 +956,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         if (mAmountToSendSatoshi > 0) {
-            mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
+            mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
             if (mWallet != null) {
                 mFiatField.setText(
                     CoreWrapper.formatCurrency(mAccount, mAmountToSendSatoshi, mCurrency.code, false));
@@ -1055,7 +1056,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     CoreWrapper.formatCurrency(mAccount, mAmountToSendSatoshi, mCurrency.code, false));
                 mFiatSignTextView.setText(mCurrency.symbol);
                 mConversionTextView.setText(CoreWrapper.btcToFiatConversion(mAccount, mCurrency.code));
-                mBitcoinField.setText(mAccount.formatSatoshi(mAmountToSendSatoshi, false));
+                mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
 
                 checkAuthorization();
                 calculateFees();

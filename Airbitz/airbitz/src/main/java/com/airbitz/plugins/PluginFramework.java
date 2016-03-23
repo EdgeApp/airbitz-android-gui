@@ -52,6 +52,7 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.ReceiveAddress;
 import co.airbitz.core.Spend;
 import co.airbitz.core.UnsentTransaction;
+import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
@@ -606,13 +607,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String formatSatoshi(long satoshi, boolean withSymbol) {
-            String formatted = account.formatSatoshi(satoshi, withSymbol);
+            String formatted = Utils.formatSatoshi(account, satoshi, withSymbol);
             return jsonResult(new JsonValue<String>(formatted)).toString();
         }
 
         @JavascriptInterface
         public String formatCurrency(String amountFiat, String currency, boolean withSymbol) {
-            String formatted = account.formatCurrency(Double.parseDouble(amountFiat), currency, withSymbol);
+            String formatted = Utils.formatCurrency(Double.parseDouble(amountFiat), currency, withSymbol);
             return jsonResult(new JsonValue<String>(formatted)).toString();
         }
 
