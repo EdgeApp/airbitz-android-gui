@@ -545,7 +545,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 
         @Override
         protected Boolean doInBackground(String... params) {
-            mAccount.stopAllAsyncUpdates();
+            mAccount.stopBackgroundTasks();
             mUsername = params[0];
             mPassword = mPasswordEditText.getText().toString();
             try {
@@ -586,7 +586,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                 mNextButton.setClickable(true);
             }
             mActivity.showModalProgress(false);
-            mAccount.startAllAsyncUpdates();
+            mAccount.startBackgroundTasks();
             mChangeTask = null;
             super.onPostExecute(success);
         }
@@ -595,7 +595,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         protected void onCancelled() {
             mChangeTask = null;
             mNextButton.setClickable(true);
-            mAccount.startAllAsyncUpdates();
+            mAccount.startBackgroundTasks();
             mActivity.showModalProgress(false);
         }
     }

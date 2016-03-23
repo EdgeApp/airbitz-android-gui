@@ -1299,7 +1299,7 @@ public class NavigationActivity extends ActionBarActivity
         showNavBar();
         checkDailyLimitPref();
         Account account = AirbitzApplication.getAccount();
-        account.startAllAsyncUpdates();
+        account.startBackgroundTasks();
         if (mDataUri != null) {
             processUri(mDataUri);
             mDataUri = null;
@@ -1880,7 +1880,7 @@ public class NavigationActivity extends ActionBarActivity
                 // Dismiss dialog
                 NavigationActivity.this.DismissFadingDialog();
             }
-            AirbitzApplication.getAccount().startAllAsyncUpdates();
+            AirbitzApplication.getAccount().startBackgroundTasks();
         }
 
         @Override
