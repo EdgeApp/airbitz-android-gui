@@ -115,7 +115,6 @@ import com.airbitz.fragments.request.RequestFragment;
 import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
-import com.airbitz.fragments.settings.ImportFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
@@ -215,7 +214,6 @@ public class NavigationActivity extends ActionBarActivity
             new TransactionListFragment(),
             new WalletsFragment(),
             new SettingFragment(),
-            new ImportFragment(),
             new BuySellFragment(),
             new GiftCardFragment(),
     };
@@ -1029,7 +1027,7 @@ public class NavigationActivity extends ActionBarActivity
                 || "airbitz-ret".equals(scheme)) {
             handleRequestForPaymentUri(uri);
         }
-        else if (ImportFragment.getHiddenBitsToken(uri.toString()) != null) {
+        else if (SendFragment.getHiddenBitsToken(uri.toString()) != null) {
             gotoImportNow(uri);
         }
     }
@@ -1231,9 +1229,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void gotoImportNow(Uri uri) {
-        switchFragmentThread(Tabs.IMPORT.ordinal());
+        switchFragmentThread(Tabs.SEND.ordinal());
 
-        ImportFragment fragment = (ImportFragment) mNavStacks[Tabs.IMPORT.ordinal()].peek();
+        SendFragment fragment = (SendFragment) mNavStacks[Tabs.SEND.ordinal()].peek();
         fragment.processAddress(uri.toString());
     }
 
@@ -1475,10 +1473,8 @@ public class NavigationActivity extends ActionBarActivity
             case 5:
                 return new SettingFragment();
             case 6:
-                return new ImportFragment();
-            case 7:
                 return new BuySellFragment();
-            case 8:
+            case 7:
                 return new GiftCardFragment();
             default:
                 return null;
@@ -1523,7 +1519,7 @@ public class NavigationActivity extends ActionBarActivity
         return false;
     }
 
-    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, IMPORT, BUYSELL, SHOP}
+    public enum Tabs {BD, REQUEST, SEND, WALLET, WALLETS, MORE, BUYSELL, SHOP}
 
     //************************ Connectivity support
 
@@ -2315,6 +2311,7 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerShop.setVisibility(View.VISIBLE);
         }
 
+        /*
         mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
         mDrawerImport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2324,6 +2321,7 @@ public class NavigationActivity extends ActionBarActivity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
+        */
 
         mDrawerLogout = (Button) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
@@ -2421,8 +2419,6 @@ public class NavigationActivity extends ActionBarActivity
             resetDrawerButtons(mDrawerRequest);
         } else if (mNavThreadId == Tabs.MORE.ordinal()) {
             resetDrawerButtons(mDrawerSettings);
-        } else if (mNavThreadId == Tabs.IMPORT.ordinal()) {
-            resetDrawerButtons(mDrawerImport);
         } else if (mNavThreadId == Tabs.BUYSELL.ordinal()) {
             resetDrawerButtons(mDrawerBuySell);
         } else if (mNavThreadId == Tabs.SHOP.ordinal()) {
@@ -2438,7 +2434,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerWallets.setSelected(false);
         mDrawerBuySell.setSelected(false);
         mDrawerShop.setSelected(false);
-        mDrawerImport.setSelected(false);
+        // mDrawerImport.setSelected(false);
         mDrawerSettings.setSelected(false);
         mDrawerLogout.setSelected(false);
         if (button != null) {

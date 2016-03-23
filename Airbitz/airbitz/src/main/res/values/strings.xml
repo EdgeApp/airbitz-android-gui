@@ -355,6 +355,10 @@
     <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds to:</string>
     <string name="fragment_send_create_wallet_to_transfer">Create a new wallet to transfer funds to</string>
 
+    <string name="fragment_send_import_or_send_title">Bitcoin Private Key with Public Address</string>
+    <string name="fragment_send_import_or_send_import_funds">Import Funds</string>
+    <string name="fragment_send_import_or_send_send_funds">Send Funds</string>
+
     <!-- Strings for Send Confirmation fragment -->
     <string name="send_confirmation_title">Send Confirmation</string>
     <string name="send_confirmation_from_title">From:</string>

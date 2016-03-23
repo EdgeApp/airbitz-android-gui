@@ -147,12 +147,14 @@
                             android:drawableLeft="@drawable/ic_wallets_dark"
                             style="@style/DrawerButton"/>
 
+                        <!--
                         <Button
                             android:id="@+id/item_drawer_import"
                             android:drawableLeft="@drawable/ic_import_dark"
                             android:singleLine="false"
                             android:text="@string/drawer_import"
                             style="@style/DrawerButton" />
+                            -->
 
                         <Button
                             android:id="@+id/item_drawer_directory"
