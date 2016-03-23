@@ -109,7 +109,6 @@ public class LandingFragment extends BaseFragment implements
     private EditText mPasswordEditText;
     private EditText mPinEditText;
     private View mPinLayout;
-    private List<ImageView> mPinViews;
     private View mBlackoutView;
 
     private HighlightOnPressImageButton mBackButton;
@@ -373,7 +372,6 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void afterTextChanged(Editable editable) {
                 // set views based on length
-                setPinViews(mPinEditText.length());
                 if (mPinEditText.length() >= 4) {
                     if (mActivity.networkIsAvailable()) {
                         mActivity.hideSoftKeyboard(mPinEditText);
@@ -424,18 +422,11 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
-        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, 50);
+        ObjectAnimator rightBounce = ObjectAnimator.ofFloat(mRightArrow, "translationX", 0, -25);
         rightBounce.setRepeatCount(3);
         rightBounce.setDuration(500);
         rightBounce.setRepeatMode(ValueAnimator.REVERSE);
         rightBounce.start();
-
-        mPinViews = new ArrayList<ImageView>();
-        mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_one));
-        mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_two));
-        mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_three));
-        mPinViews.add((ImageView) mView.findViewById(R.id.fragment_landing_pin_four));
-        setPinViews(0);
 
         mAccounts.clear();
         mAccounts.addAll(mCoreAPI.accountListLocal());
@@ -618,16 +609,8 @@ public class LandingFragment extends BaseFragment implements
             mPasswordLayout.setVisibility(View.GONE);
             mForgotPasswordButton.setVisibility(View.GONE);
 
-            String out = String.format(getString(R.string.fragment_landing_please_enter_pin), mUsername);
-            int start = out.indexOf(mUsername);
-
-            SpannableStringBuilder s = new SpannableStringBuilder();
-            s.append(out).setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_pin_entry_username_text)), start, start + mUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            mCurrentUserText.setText(s);
-
+            mCurrentUserText.setText(mUsername);
             mCreateAccountButton.setText(getString(R.string.fragment_landing_switch_user));
-
             mSwipeLayout.setVisibility(View.VISIBLE);
             if (isKeyboardUp) {
                 mLandingSubtextView.setVisibility(View.GONE);
@@ -661,16 +644,6 @@ public class LandingFragment extends BaseFragment implements
             } else {
                 mDetailTextView.setVisibility(View.VISIBLE);
                 mLandingSubtextView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    private void setPinViews(int length) {
-        for(int i=0; i<mPinViews.size(); i++) {
-            if(i >= length) {
-                mPinViews.get(i).setVisibility(View.GONE);
-            } else {
-                mPinViews.get(i).setVisibility(View.VISIBLE);
             }
         }
     }

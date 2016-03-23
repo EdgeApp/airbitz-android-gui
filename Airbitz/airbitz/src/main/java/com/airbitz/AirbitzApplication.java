@@ -136,7 +136,9 @@ public class AirbitzApplication extends Application {
     }
 
     public static void logout() {
-        sAccount.logout();
+        if (null != sAccount) {
+            sAccount.logout();
+        }
         setCurrentWallet(null);
         sAccount = null;
     }

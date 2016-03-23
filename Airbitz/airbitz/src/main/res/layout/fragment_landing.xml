@@ -104,6 +104,31 @@
                     android:text="@string/fragment_landing_signup_button"
                     style="@style/BlueButton" />
 
+                <LinearLayout
+                    android:id="@+id/fragment_landing_forgot_password_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="25dp"
+                    android:clickable="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/fragment_landing_create_account"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/fragment_landing_forgot_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/fragment_landing_forgot_password"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/color_forgot_password_text"
+                        android:textSize="15dp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+
                 <ListView
                     android:id="@+id/fragment_landing_account_listview"
                     android:layout_width="match_parent"
@@ -127,7 +152,6 @@
                     android:id="@+id/fragment_landing_current_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/fragment_landing_please_enter_pin"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:gravity="center"
@@ -139,87 +163,28 @@
 
                 <LinearLayout
                     android:id="@+id/fragment_landing_pin_buttons"
-                    android:layout_width="220dp"
-                    android:layout_height="36dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/fragment_landing_current_user"
-                    android:layout_marginBottom="20dp">
+                    android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1" >
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/emboss_down"/>
-                        <ImageView
-                            android:id="@+id/fragment_landing_pin_one"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/white_circle"
-                            android:visibility="gone"/>
-                        </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1" >
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/emboss_down"/>
-                        <ImageView
-                            android:id="@+id/fragment_landing_pin_two"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/white_circle"
-                            android:visibility="gone"/>
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1" >
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/emboss_down"/>
-                        <ImageView
-                            android:id="@+id/fragment_landing_pin_three"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/white_circle"
-                            android:visibility="gone"/>
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1" >
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/emboss_down"/>
-                        <ImageView
-                            android:id="@+id/fragment_landing_pin_four"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/white_circle"
-                            android:visibility="gone"/>
-                    </RelativeLayout>
+                    <EditText
+                        android:id="@+id/fragment_landing_pin_edittext"
+                        android:layout_width="100dp"
+                        android:layout_height="37.8dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberPassword"
+                        android:clickable="true"
+                        android:visibility="visible" 
+                        android:textColor="@android:color/white"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        style="@style/LandingEditText"
+                    />
+
                 </LinearLayout>
 
                 <Button
@@ -227,20 +192,9 @@
                     android:layout_below="@id/fragment_landing_pin_buttons"
                     android:layout_centerHorizontal="true"
                     android:text="@string/fragment_landing_switch_user"
-                    style="@style/BlueButton" />
-
-                <EditText
-                    android:id="@+id/fragment_landing_pin_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:cursorVisible="false"
-                    android:layout_below="@id/fragment_landing_current_user"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberPassword"
-                    android:background="@android:color/transparent"
-                    android:textColor="@android:color/transparent"
-                    android:clickable="true"
-                    android:visibility="visible" />
+                    style="@style/BlueButton"
+                    android:textSize="12dp"
+                    android:background="@null" />
 
                 <ListView
                     android:id="@+id/fragment_landing_other_account_listview"
@@ -259,11 +213,12 @@
             android:id="@+id/fragment_landing_swipe_layout"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/fragment_landing_entries_layout"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:visibility="visible">
 
             <TextView
@@ -283,30 +238,6 @@
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@string/fragment_landing_arrow_description"
                 android:src="@drawable/ico_arrow_right" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fragment_landing_forgot_password_button"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:clickable="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="visible">
-
-            <TextView
-                android:id="@+id/fragment_landing_forgot_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/fragment_landing_forgot_password"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/color_forgot_password_text"
-                android:textSize="15dp"
-                android:textStyle="bold"/>
-
         </LinearLayout>
 
     </RelativeLayout>

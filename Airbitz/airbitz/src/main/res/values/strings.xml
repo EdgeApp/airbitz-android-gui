@@ -134,7 +134,6 @@
     <string name="fragment_landing_signin_button">Sign In</string>
     <string name="fragment_landing_signup_button">Sign Up</string>
     <string name="fragment_landing_forgot_password">Forgot Password</string>
-    <string name="fragment_landing_please_enter_pin">Enter PIN for (%1$s)</string>
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Exit PIN Login</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
