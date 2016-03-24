@@ -201,17 +201,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mFetchAllQuestionsTask = new GetRecoveryQuestions();
                 mFetchAllQuestionsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             } else {
-                String questionString = getArguments().getString(QUESTIONS);
-                if (questionString != null) {
-                    String[] questions = questionString.split("\n");
+                String[] questions = getArguments().getStringArray(QUESTIONS);
+                if (questions != null) {
                     InitializeRecoveryViews(questions, answers);
                 }
             }
         } else { // coming back from signup page
             answers = mAnswers.split("\n");
-            String questionString = getArguments().getString(QUESTIONS);
-            if (questionString != null) {
-                String[] questions = questionString.split("\n");
+            String[] questions = getArguments().getStringArray(QUESTIONS);
+            if (questions != null) {
                 InitializeRecoveryViews(questions, answers);
             }
         }

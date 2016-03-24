@@ -49,6 +49,7 @@ import android.webkit.WebViewClient;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import co.airbitz.core.ReceiveAddress;
 import co.airbitz.core.Spend;
 import co.airbitz.core.UnsentTransaction;
@@ -537,11 +538,15 @@ public class PluginFramework {
             CallbackTask task = new CallbackTask(cbid, framework) {
                 @Override
                 public String doInBackground(Void... v) {
-                    if (mUnsent != null && mUnsent.broadcast()) {
-                        return jsonSuccess().toString();
-                    } else {
-                        return jsonError().toString();
+                    try {
+                        if (mUnsent != null) {
+                            mUnsent.broadcast();
+                            return jsonSuccess().toString();
+                        }
+                    } catch (AirbitzException e) {
+                        AirbitzCore.loge(e.getMessage());
                     }
+                    return jsonError().toString();
                 }
             };
             task.execute();
@@ -848,10 +853,10 @@ public class PluginFramework {
                     view.loadUrl(url);
                     return true;
                 } else if (url.contains("mailto:")) {
-					Uri uri = Uri.parse(url);
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.intent_choose_an_email)));
-					return true;
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.intent_choose_an_email)));
+                    return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }

@@ -299,7 +299,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mPinReloginSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                boolean alreadySet = mAccount.accountHasPin();
+                boolean alreadySet = mAccount.accountHasPinLogin();
                 if (!alreadySet && isChecked) {
                     new PinChangeTask(mActivity, mAccount, true).execute();
                 } else if (alreadySet && !isChecked) {
@@ -424,7 +424,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         //Autologoff
         mAutoLogoffManager.setSeconds(settings.secondsAutoLogout());
         // Pin Relogin
-        if (mAccount.accountHasPin()) {
+        if (mAccount.accountHasPinLogin()) {
             mPinReloginSwitch.setChecked(true);
         } else {
             mPinReloginSwitch.setChecked(false);
@@ -443,7 +443,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mDefaultDistanceButton.setText(getResources().getStringArray(R.array.distance_list)[getDistancePref()]);
 
         //Default Exchange
-        mExchanges = mCoreAPI.exchangeRateSources();
+        mExchanges = mCoreAPI.exchangeCache().exchangeRateSources();
         mExchangeButton.setText(mCoreSettings.exchangeRateSource());
     }
 

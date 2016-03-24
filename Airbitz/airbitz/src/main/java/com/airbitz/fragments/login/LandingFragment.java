@@ -328,7 +328,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mAccounts.get(position);
-                if (mCoreAPI.accountHasPin(mUsername)) {
+                if (mCoreAPI.accountHasPinLogin(mUsername)) {
                     saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
@@ -346,7 +346,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mUsername = mOtherAccounts.get(position);
-                if (mCoreAPI.accountHasPin(mUsername)) {
+                if (mCoreAPI.accountHasPinLogin(mUsername)) {
                     saveUsername(mUsername);
                     refreshView(true, true);
                 } else {
@@ -429,7 +429,7 @@ public class LandingFragment extends BaseFragment implements
         rightBounce.start();
 
         mAccounts.clear();
-        mAccounts.addAll(mCoreAPI.accountListLocal());
+        mAccounts.addAll(mCoreAPI.listLocalAccounts());
         if (mAccounts.isEmpty())
         {
             mUserNameEditText.setVisibility(View.GONE);
@@ -444,7 +444,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private List<String> otherAccounts(String username) {
-        List<String> accounts = mCoreAPI.accountListLocal();
+        List<String> accounts = mCoreAPI.listLocalAccounts();
         List<String> others = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
             if(!accounts.get(i).equals(username)) {
@@ -457,7 +457,7 @@ public class LandingFragment extends BaseFragment implements
     private void showOthersList(boolean show)
     {
         mOtherAccounts.clear();
-        mOtherAccounts.addAll(mCoreAPI.accountListLocal());
+        mOtherAccounts.addAll(mCoreAPI.listLocalAccounts());
         mOtherAccountsAdapter.notifyDataSetChanged();
         if(show && !mOtherAccounts.isEmpty()) {
             if(mOtherAccountsAdapter.getCount() > 4) {
@@ -520,7 +520,7 @@ public class LandingFragment extends BaseFragment implements
 
     private void showAccountsList(boolean show) {
         mAccounts.clear();
-        mAccounts.addAll(mCoreAPI.accountListLocal());
+        mAccounts.addAll(mCoreAPI.listLocalAccounts());
         mAccountsAdapter.notifyDataSetChanged();
         if(show && !mAccounts.isEmpty()) {
             if(mAccountsAdapter.getCount() > 4) {
@@ -547,7 +547,7 @@ public class LandingFragment extends BaseFragment implements
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         if(mActivity.networkIsAvailable()) {
-            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPin(mUsername)) {
+            if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPinLogin(mUsername)) {
                 mPinEditText.setText("");
                 AirbitzCore.logi("showing pin login for " + mUsername);
                 refreshView(true, true, true);
@@ -572,7 +572,7 @@ public class LandingFragment extends BaseFragment implements
     public void refreshViewAndUsername() {
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-        mPinLoginMode = mCoreAPI.accountHasPin(mUsername);
+        mPinLoginMode = mCoreAPI.accountHasPinLogin(mUsername);
         refreshView();
     }
 
@@ -818,7 +818,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private boolean isFirstLogin() {
-        return !mCoreAPI.accountSyncExistsLocal(mUsername);
+        return !mCoreAPI.accountExistsLocal(mUsername);
     }
 
     private void launchTwoFactorMenu() {
@@ -919,7 +919,8 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
-    public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String> {
+    public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String[]> {
+        AirbitzException mFailureException;
 
         @Override
         public void onPreExecute() {
@@ -927,31 +928,28 @@ public class LandingFragment extends BaseFragment implements
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             try {
                 return mCoreAPI.recoveryQuestions(params[0]);
             } catch (AirbitzException e) {
                 AirbitzCore.logi("GetRecoveryQuestionsTask error:");
-                return Common.errorMap(mActivity, e);
+                mFailureException = e;
+                return null;
             }
         }
 
         @Override
-        protected void onPostExecute(String questionString) {
+        protected void onPostExecute(String[] questions) {
             mActivity.showModalProgress(false);
             mRecoveryQuestionsTask = null;
 
-            if (questionString == null) {
+            if (mFailureException != null) {
+                mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
+            } else if (questions == null || questions.length == 0) {
                 mActivity.ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
                         getString(R.string.fragment_forgot_no_recovery_questions_text));
             } else { // Some message or questions
-                String[] questions = questionString.split("\n");
-                if (questions.length > 1) { // questions came back
-                    mActivity.startRecoveryQuestions(questionString, mUserNameEditText.getText().toString());
-                } else if (questions.length == 1) { // Error string
-                    AirbitzCore.logi(questionString);
-                    mActivity.ShowFadingDialog(questions[0]);
-                }
+                mActivity.startRecoveryQuestions(questions, mUserNameEditText.getText().toString());
             }
         }
 

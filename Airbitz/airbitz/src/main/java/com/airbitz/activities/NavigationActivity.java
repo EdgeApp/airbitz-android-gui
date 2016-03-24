@@ -1353,11 +1353,11 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public void startRecoveryQuestions(String questions, String username) {
+    public void startRecoveryQuestions(String[] questions, String username) {
         hideNavBar();
         Bundle bundle = new Bundle();
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
-        bundle.putString(PasswordRecoveryFragment.QUESTIONS, questions);
+        bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
         Fragment frag = new PasswordRecoveryFragment();
         frag.setArguments(bundle);
@@ -2511,7 +2511,7 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private List<String> otherAccounts(String username) {
-        List<String> accounts = mCoreAPI.accountListLocal();
+        List<String> accounts = mCoreAPI.listLocalAccounts();
         List<String> others = new ArrayList<String>();
         for(int i=0; i< accounts.size(); i++) {
             if(!accounts.get(i).equals(username)) {

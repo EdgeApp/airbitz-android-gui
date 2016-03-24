@@ -57,9 +57,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AirbitzException;
-import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzCore.Constants;
 import co.airbitz.core.AirbitzCore.PasswordRulesCheck;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
+
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -290,10 +292,12 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
 		PasswordRulesCheck rules = mCoreAPI.passwordRulesCheck(password);
 		List<String> fails = new ArrayList<String>();
 
+        Constants constants = AirbitzCore.getApi().constants();
+
 		mRule1Image.setImageResource(!rules.tooShort ? R.drawable.green_check : R.drawable.white_dot);
-		mRule1Text.setText(String.format(getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		mRule1Text.setText(String.format(getString(R.string.password_rule_too_short), constants.MIN_PASSWORD_LENGTH));
 		if (rules.tooShort) {
-			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), rules.minPasswordLength));
+			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), constants.MIN_PASSWORD_LENGTH));
 		}
 
 		mRule2Image.setImageResource(!rules.noNumber ? R.drawable.green_check : R.drawable.white_dot);

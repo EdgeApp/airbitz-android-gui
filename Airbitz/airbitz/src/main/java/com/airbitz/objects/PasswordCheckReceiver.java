@@ -93,7 +93,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
         }
 
         AirbitzCore api = AirbitzCore.getApi();
-        List<String> accounts = api.accountListLocal();
+        List<String> accounts = api.listLocalAccounts();
 		if (null == accounts) {
 			return;
 		}

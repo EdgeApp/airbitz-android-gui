@@ -61,6 +61,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore.Constants;
 import co.airbitz.core.AirbitzCore.PasswordRulesCheck;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
@@ -391,10 +392,12 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
 		PasswordRulesCheck rules = mCoreAPI.passwordRulesCheck(password);
 		List<String> fails = new ArrayList<String>();
 
+        Constants constants = AirbitzCore.getApi().constants();
+
 		mSwitchImage1.setImageResource(!rules.tooShort ? R.drawable.green_check : R.drawable.white_dot);
-		mSwitchText1.setText(String.format(getString(R.string.password_rule_too_short), rules.minPasswordLength));
+		mSwitchText1.setText(String.format(getString(R.string.password_rule_too_short), constants.MIN_PASSWORD_LENGTH));
 		if (rules.tooShort) {
-			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), rules.minPasswordLength));
+			fails.add(String.format(mActivity.getString(R.string.password_rule_too_short), constants.MIN_PASSWORD_LENGTH));
 		}
 
 		mSwitchImage2.setImageResource(!rules.noNumber ? R.drawable.green_check : R.drawable.white_dot);

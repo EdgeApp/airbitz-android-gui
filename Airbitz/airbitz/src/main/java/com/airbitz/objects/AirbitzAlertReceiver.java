@@ -391,7 +391,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         protected List<String> doInBackground(Void... params) {
             List<String> pendings = new ArrayList<String>();
 
-            List<String> accounts = mCoreAPI.accountListLocal();
+            List<String> accounts = mCoreAPI.listLocalAccounts();
             for(String name : accounts) {
                 try {
                     if (!name.isEmpty() && mCoreAPI.isOtpResetPending(name)) {
