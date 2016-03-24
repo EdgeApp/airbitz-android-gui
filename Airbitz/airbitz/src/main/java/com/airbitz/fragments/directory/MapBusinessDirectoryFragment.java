@@ -514,6 +514,9 @@ public class MapBusinessDirectoryFragment extends BaseFragment implements
         mMapShim.clearMarkers();
         if (mVenues.size() > 0) {
             for (BusinessSearchResult biz : mVenues) {
+                if (biz.getLocationObject() == null) {
+                    continue;
+                }
                 MapLatLng ll =
                     new MapLatLng(biz.getLocationObject().getLatitude(),
                                    biz.getLocationObject().getLongitude());
