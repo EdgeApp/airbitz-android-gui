@@ -172,7 +172,9 @@ public class BeaconRequest {
             mGattServer = null;
         }
         if (mBleAdvertiser != null) {
-            mBleAdvertiser.stopAdvertising(mAdvCallback);
+            if (mAdvCallback != null) {
+                mBleAdvertiser.stopAdvertising(mAdvCallback);
+            }
             mBleAdvertiser = null;
             mAdvCallback = null;
         }
