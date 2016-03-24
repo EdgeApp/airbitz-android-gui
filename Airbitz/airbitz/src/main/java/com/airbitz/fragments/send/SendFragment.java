@@ -186,10 +186,11 @@ public class SendFragment extends ScanFragment {
                 mPaymentTask.execute();
                 return;
             case ADDRESS:
-            case PRIVATE_KEY: {
+                launchSendConfirmation(parsed, null, null);
+                return;
+            case PRIVATE_KEY:
                 askImportOrSend(parsed);
                 return;
-            }
             default:
                 break;
             }
