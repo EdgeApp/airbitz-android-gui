@@ -173,6 +173,7 @@ public class SendFragment extends ScanFragment {
 
     @Override
     protected void processText(String text) {
+        hideProcessing();
         try {
             ParsedUri parsed = AirbitzCore.getApi().parseUri(text);
             switch (parsed.type()) {
@@ -180,6 +181,7 @@ public class SendFragment extends ScanFragment {
                 askBitidLogin(parsed.bitid(), text);
                 return;
             case PAYMENT_PROTO:
+                showProcessing();
                 mPaymentTask = new PaymentProtoFetch(parsed);
                 mPaymentTask.execute();
                 return;
