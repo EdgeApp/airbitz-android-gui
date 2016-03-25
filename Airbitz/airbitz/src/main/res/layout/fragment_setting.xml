@@ -234,19 +234,6 @@
                 android:textSize="18dp"
                 android:textStyle="normal" />
 
-            <Button
-                android:id="@+id/settings_button_affiliate"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/btn_blue"
-                android:padding="5dp"
-                android:textAllCaps="false"
-                android:text="@string/settings_button_affiliate"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="normal" />
-
         </LinearLayout>
     </ScrollView>
 

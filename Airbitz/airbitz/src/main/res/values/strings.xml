@@ -121,8 +121,8 @@
     <string name="server_error_invalid_pin_wait">Too many failed login attempts. Please try again in %1$s seconds.</string>
     <string name="server_error_other">An error has occurred.</string>
     <string name="insufficient_amount">Amount too small</string>
-	<string name="account_needs_password_title">WARNING: missing password</string>
-	<string name="account_needs_password_message">Account \'%1$s\' needs a password. Account is not accessible on a new device without a password.</string>
+    <string name="account_needs_password_title">WARNING: missing password</string>
+    <string name="account_needs_password_message">Account \'%1$s\' needs a password. Account is not accessible on a new device without a password.</string>
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the logo</string>
@@ -283,9 +283,6 @@
     <string name="settings_title_yuan">Yuan</string>
     <string name="settings_button_logout">Logout</string>
     <string name="settings_button_debug">Debug</string>
-    <string name="settings_button_affiliate">Get affiliate link</string>
-    <string name="settings_button_share_affiliate">Share affiliate link</string>
-    <string name="settings_button_affiliate_unable">Unable to generate an affiliate link at this time.</string>
     <string name="settings_categories_add_new">Add New</string>
     <string name="settings_categories_expense">Expense:</string>
     <string name="settings_categories_income">Income:</string>
@@ -676,8 +673,16 @@
     <string name="drawer_wallets">Wallets</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_settings">Settings</string>
-    <string name="drawer_import">Import Private Key\n(Airbitz Gift Card)</string>
+    <string name="drawer_affiliates">Affiliates</string>
     <string name="drawer_directory">Directory</string>
+
+    <string name="string_share">Share</string>
+    <string name="string_copy">Copy</string>
+
+    <string name="affiliate_link">Affiliate Link</string>
+    <string name="affiliate_link_copied">Affiliate Link copied to clipboard</string>
+    <string name="affiliate_refer_friends_title">Refer Your Friend</string>
+    <string name="affiliate_refer_friends_body">%1$s\n\nShare this link to receive revenue from users that install and use %2$s. You will receive 0.25%% of all gift card purchases made inside of this app.</string>
 
     <string name="app_name">Airbitz</string>
     <string name="app_homepage">https://airbitz.co</string>

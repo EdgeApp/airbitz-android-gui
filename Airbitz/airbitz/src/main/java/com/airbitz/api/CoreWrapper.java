@@ -98,10 +98,8 @@ public class CoreWrapper {
                 manager.sendBroadcast(new Intent(Constants.OTP_SKEW_ACTION));
             }
 
-            public void otpRequired(String resetDate) {
-                Intent intent = new Intent(Constants.OTP_ERROR_ACTION);
-                intent.putExtra(Constants.OTP_RESET_DATE, resetDate);
-                manager.sendBroadcast(intent);
+            public void otpRequired() {
+                manager.sendBroadcast(new Intent(Constants.OTP_ERROR_ACTION));
             }
 
             public void otpResetPending() {
@@ -116,7 +114,7 @@ public class CoreWrapper {
                 manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
             }
 
-            public void balanceUpdate() {
+            public void balanceUpdate(Wallet wallet, String txid) {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
 

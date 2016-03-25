@@ -31,15 +31,27 @@
 
 package com.airbitz.api;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.airbitz.R;
+import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.directory.DirectoryApi;
+
+import co.airbitz.core.Account;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
 
-import com.airbitz.api.directory.DirectoryApi;
-import co.airbitz.core.Account;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 
 public class Affiliates {
 
@@ -51,12 +63,18 @@ public class Affiliates {
     private static final String AFFILIATES_QUERY = SERVER_ROOT + "affiliates/query";
     private static final String AFFILIATES_TOUCH = SERVER_ROOT + "affiliates/";
 
+    private static final String AFFILIATE_DATA_STORE = "affiliate_program";
+    private static final String AFFILIATE_LINK_DATA = "affiliate_link_beta";
+    private static final String AFFILIATE_INFO_DATA = "affiliate_info_beta";
+
     private DirectoryApi mDirectory;
     private Account mAccount;
+    private String mAffiliateUrl;
 
     public Affiliates(Account account) {
         mDirectory = DirectoryWrapper.getApi();
         mAccount = account;
+        mAffiliateUrl = account.data(AFFILIATE_DATA_STORE).get(AFFILIATE_LINK_DATA);
     }
 
 
@@ -104,9 +122,95 @@ public class Affiliates {
         String bitidUri = affiliateBitidUri();
         if (null != bitidUri) {
             // affiliateBitidRegister
-            Account.BitidSignature bitid = mAccount.bitidSignature(bitidUri, bitidUri);
+            Account.BitidSignature bitid = mAccount.bitidSign(bitidUri, bitidUri);
             return affiliateBitidRegister(bitid.address, bitid.signature, bitidUri, bitid.address);
         }
         return null;
+    }
+
+    public static class AffiliateTask extends AsyncTask<Void, Void, String> {
+        Affiliates affiliate;
+        NavigationActivity activity;
+        Account account;
+
+        public AffiliateTask(NavigationActivity activity, Account account, Affiliates affiliate) {
+            this.account = account;
+            this.affiliate = affiliate;
+            this.activity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            activity.showModalProgress(true);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            if (affiliate.mAffiliateUrl == null) {
+                String url = affiliate.affiliateCampaignUrl();
+                if (url != null) {
+                    account.data(AFFILIATE_DATA_STORE).set(AFFILIATE_LINK_DATA, url);
+                }
+                return url;
+            } else {
+                return affiliate.mAffiliateUrl;
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            activity.showModalProgress(false);
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onPostExecute(final String url) {
+            super.onPostExecute(url);
+            activity.showModalProgress(false);
+
+            affiliate.mAffiliateUrl = url;
+
+            final MaterialDialog.Builder builder = new MaterialDialog.Builder(activity);
+            builder.content(String.format(
+                    activity.getString(R.string.affiliate_refer_friends_body),
+                        url,
+                        activity.getString(R.string.app_name)))
+                .title(R.string.affiliate_refer_friends_title)
+                .theme(Theme.LIGHT)
+                .positiveText(activity.getString(R.string.string_share))
+                .neutralText(activity.getString(R.string.string_copy))
+                .negativeText(activity.getString(R.string.string_cancel))
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        share(activity, url);
+                    }
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        copy(activity, url);
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                });
+            builder.show();
+        }
+
+        private void share(NavigationActivity activity, String url) {
+            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, url);
+            activity.startActivity(Intent.createChooser(share,
+                activity.getString(R.string.string_share)));
+        }
+
+        private void copy(NavigationActivity activity, String url) {
+            ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(activity.getString(R.string.affiliate_link), url);
+            clipboard.setPrimaryClip(clip);
+            activity.ShowFadingDialog(activity.getString(R.string.affiliate_link_copied));
+        }
     }
 }

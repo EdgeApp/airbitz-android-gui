@@ -99,6 +99,7 @@ import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
+import com.airbitz.api.Affiliates;
 import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
@@ -236,6 +237,9 @@ public class NavigationActivity extends ActionBarActivity
 
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
+	private Affiliates mAffiliate;
+    private Affiliates.AffiliateTask mAffiliateTask;
+
     private DrawerLayout mDrawer;
     private FrameLayout mDrawerView;
     private View mDrawerLogin;
@@ -251,7 +255,7 @@ public class NavigationActivity extends ActionBarActivity
     private Button mDrawerWallets;
     private Button mDrawerBuySell;
     private Button mDrawerShop;
-    private Button mDrawerImport;
+    private Button mDrawerAffiliates;
     private Button mDrawerSettings;
     private Button mDrawerLogout;
     private ListView mOtherAccountsListView;
@@ -2312,17 +2316,24 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerShop.setVisibility(View.VISIBLE);
         }
 
-        /*
-        mDrawerImport = (Button) findViewById(R.id.item_drawer_import);
-        mDrawerImport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetFragmentThreadToBaseFragment(Tabs.IMPORT.ordinal());
-                onNavBarSelected(Tabs.IMPORT.ordinal());
-                mDrawer.closeDrawer(mDrawerView);
-            }
-        });
-        */
+        mDrawerAffiliates = (Button) findViewById(R.id.item_drawer_affiliates);
+        if (!getResources().getBoolean(R.bool.include_affiliate_link)) {
+            mDrawerAffiliates.setVisibility(View.GONE);
+        } else {
+            mDrawerAffiliates.setVisibility(View.VISIBLE);
+            mDrawerAffiliates.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+					mAffiliate = new Affiliates(AirbitzApplication.getAccount());
+					if (AirbitzApplication.isLoggedIn()) {
+						mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), mAffiliate);
+						mAffiliateTask.execute();
+					} else {
+						/* TODO: take to sign in */
+					}
+                }
+            });
+        }
 
         mDrawerLogout = (Button) findViewById(R.id.item_drawer_logout);
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
@@ -2646,9 +2657,8 @@ public class NavigationActivity extends ActionBarActivity
     private BroadcastReceiver mOtpErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String resetDate = intent.getStringExtra(Constants.OTP_RESET_DATE);
             AirbitzApplication.setOtpError(true);
-            AirbitzApplication.setOtpResetDate(resetDate);
+            AirbitzApplication.setOtpResetDate(null);
             mHandler.post(mShowOTPRequired);
         }
     };
