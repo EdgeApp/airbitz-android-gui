@@ -250,7 +250,7 @@ public class TwoFactorShowFragment extends BaseFragment
         @Override
         protected AirbitzException doInBackground(Void... params) {
             try {
-                mEnabled = mAccount.otpAuthGet();
+                mEnabled = mAccount.isOtpEnabled();
                 return null;
             } catch (AirbitzException e) {
                 return e;
@@ -301,7 +301,9 @@ public class TwoFactorShowFragment extends BaseFragment
 
     void showQrCode(boolean show) {
         if (show) {
-            Bitmap bitmap = mAccount.otpQrCodeBitmap();
+            AirbitzCore api = AirbitzCore.getApi();
+            Bitmap bitmap = api.qrEncode(
+                api.qrEncode(mAccount.otpSecret()));
             if(bitmap != null) {
                 bitmap = Common.AddWhiteBorder(bitmap);
                 mQRView.setImageBitmap(bitmap);
@@ -426,7 +428,7 @@ public class TwoFactorShowFragment extends BaseFragment
         protected Boolean doInBackground(Void... params) {
             try {
                 if (isChecked) {
-                    mAccount.otpSetup();
+                    mAccount.otpEnable();
                 } else {
                     mAccount.otpDisable();
                 }

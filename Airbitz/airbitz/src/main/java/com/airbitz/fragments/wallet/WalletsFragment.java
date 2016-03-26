@@ -290,7 +290,6 @@ public class WalletsFragment extends WalletBaseFragment implements
         if (!started) {
             mAccount.walletReorder(CoreWrapper.unwrap(mLatestWalletList));
             mWallet = mAccount.wallet(AirbitzApplication.getCurrentWallet());
-            mAccount.reloadWallets();
         }
     }
 
@@ -400,7 +399,6 @@ public class WalletsFragment extends WalletBaseFragment implements
                                 mWallet = wallet;
                             }
                             wallet.name(walletName);
-                            mAccount.reloadWallets();
                             dialog.dismiss();
                             updateTitle();
                         }

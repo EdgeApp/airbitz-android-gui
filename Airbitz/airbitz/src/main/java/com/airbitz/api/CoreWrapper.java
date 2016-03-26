@@ -63,34 +63,31 @@ public class CoreWrapper {
     public static void setupAccount(Context context, Account account) {
         final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
         account.callbacks(new Account.Callbacks() {
-            public void userRemotePasswordChange() {
+            public void remotePasswordChange() {
                 manager.sendBroadcast(new Intent(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
             }
 
-            public void userLoggedOut() {
+            public void loggedOut() {
             }
 
-            public void userAccountChanged() {
+            public void accountChanged() {
                 manager.sendBroadcast(new Intent(Constants.DATASYNC_UPDATE_ACTION));
             }
 
-            public void userWalletsLoading() {
+            public void walletsLoading() {
                 manager.sendBroadcast(new Intent(Constants.WALLET_LOADING_START_ACTION));
             }
 
-            public void userWalletStatusChange(int loaded, int total) {
-                Intent intent = new Intent(Constants.WALLET_LOADING_STATUS_ACTION);
-                intent.putExtra(Constants.WALLETS_LOADED_TOTAL, loaded);
-                intent.putExtra(Constants.WALLETS_TOTAL, total);
-                manager.sendBroadcast(intent);
+            public void walletChanged(Wallet wallet) {
+                manager.sendBroadcast(new Intent(Constants.WALLET_CHANGED_ACTION));
             }
 
-            public void userWalletsLoaded() {
+            public void walletsLoaded() {
                 manager.sendBroadcast(
                     new Intent(Constants.WALLETS_ALL_LOADED_ACTION));
             }
 
-            public void userWalletsChanged() {
+            public void walletsChanged() {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
 
@@ -134,14 +131,6 @@ public class CoreWrapper {
                 // intent.putExtra(Constants.WALLET_TXID, transaction.getID());
                 intent.putExtra(Constants.AMOUNT_SWEPT, amountSwept);
                 manager.sendBroadcast(intent);
-            }
-
-            public void bitcoinLoading() {
-                manager.sendBroadcast(new Intent(Constants.WALLETS_LOADING_BITCOIN_ACTION));
-            }
-
-            public void bitcoinLoaded() {
-                manager.sendBroadcast(new Intent(Constants.WALLETS_LOADED_BITCOIN_ACTION));
             }
         });
     }

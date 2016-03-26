@@ -229,7 +229,6 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         public void run() {
             if (mIncomingDialog != null) {
-                updateWalletListener();
                 mIncomingDialog.dismiss(); // hide dialog
             }
         }
@@ -237,7 +236,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
-	private Affiliates mAffiliate;
+    private Affiliates mAffiliate;
     private Affiliates.AffiliateTask mAffiliateTask;
 
     private DrawerLayout mDrawer;
@@ -372,10 +371,8 @@ public class NavigationActivity extends ActionBarActivity
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.WALLET_LOADING_START_ACTION);
-        filter.addAction(Constants.WALLET_LOADING_STATUS_ACTION);
+        filter.addAction(Constants.WALLET_CHANGED_ACTION);
         filter.addAction(Constants.WALLETS_ALL_LOADED_ACTION);
-        filter.addAction(Constants.WALLETS_LOADING_BITCOIN_ACTION);
-        filter.addAction(Constants.WALLETS_LOADED_BITCOIN_ACTION);
         mWalletsLoadedReceiver = new WalletReceiver();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.registerReceiver(mWalletsLoadedReceiver, filter);
@@ -1117,7 +1114,6 @@ public class NavigationActivity extends ActionBarActivity
                 if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
                     showIncomingBitcoinDialog();
-                    updateWalletListener();
                 }
             }
         }
@@ -1217,12 +1213,6 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[Tabs.SEND.ordinal()].push(frag); // Set first fragment but don't show
     }
 
-    private void updateWalletListener() {
-        if (null != AirbitzApplication.getAccount()) {
-            AirbitzApplication.getAccount().reloadWallets();
-        }
-    }
-
     private void gotoDetailsNow() {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.WALLET_FROM, SuccessFragment.TYPE_REQUEST);
@@ -1262,7 +1252,6 @@ public class NavigationActivity extends ActionBarActivity
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-                                    updateWalletListener();
                                     dialog.cancel();
                                 }
                             }
@@ -1877,8 +1866,6 @@ public class NavigationActivity extends ActionBarActivity
                 NavigationActivity.this.ShowFadingDialog(
                     getResources().getString(R.string.activity_signup_create_wallet_fail));
             } else {
-                // Update UI
-                updateWalletListener();
                 // Add categories
                 createDefaultCategories();
                 // Dismiss dialog
@@ -2324,13 +2311,13 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerAffiliates.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-					mAffiliate = new Affiliates(AirbitzApplication.getAccount());
-					if (AirbitzApplication.isLoggedIn()) {
-						mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), mAffiliate);
-						mAffiliateTask.execute();
-					} else {
-						/* TODO: take to sign in */
-					}
+                    mAffiliate = new Affiliates(AirbitzApplication.getAccount());
+                    if (AirbitzApplication.isLoggedIn()) {
+                        mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), mAffiliate);
+                        mAffiliateTask.execute();
+                    } else {
+                        /* TODO: take to sign in */
+                    }
                 }
             });
         }
@@ -2572,9 +2559,6 @@ public class NavigationActivity extends ActionBarActivity
     class WalletReceiver extends BroadcastReceiver {
         public boolean mDataLoaded = false;
         public boolean mShowMessages = false;
-        // The core only reports completion once so we don't want to show the
-        // sync-ing notification more than once.
-        public boolean mBitcoinFinishedBefore = false;
 
         private void showMessage(String message) {
             if (mShowMessages) {
@@ -2589,31 +2573,23 @@ public class NavigationActivity extends ActionBarActivity
                 if (mShowMessages) {
                     showMessage(context.getString(R.string.loading_wallets));
                 }
-            } else if (Constants.WALLET_LOADING_STATUS_ACTION.equals(intent.getAction())) {
-                int complete = intent.getIntExtra(Constants.WALLETS_LOADED_TOTAL, -1);
-                int total = intent.getIntExtra(Constants.WALLETS_TOTAL, -1);
-                if (total >= 0) {
-                    showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+            } else if (Constants.WALLET_CHANGED_ACTION.equals(intent.getAction())) {
+                List<String> ids = AirbitzApplication.getAccount().walletIds();
+                List<Wallet> wallets = AirbitzApplication.getAccount().wallets();
+                int total = ids == null ? 0 : ids.size();
+                int complete = wallets == null ? 0 : wallets.size();
+                if (total > 0) {
+                    if (total == complete) {
+                        showMessage(context.getString(R.string.loading_transactions));
+                    } else {
+                        showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+                    }
                 } else {
                     showMessage(context.getString(R.string.loading_wallets));
                 }
             } else if (Constants.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
-                showMessage(context.getString(R.string.loading_transactions));
-            } else if (Constants.WALLETS_LOADING_BITCOIN_ACTION.equals(intent.getAction())) {
-                if (mDataLoaded) {
-                    showMessage(context.getString(R.string.loading_transactions));
-                }
-                mBitcoinFinishedBefore = false;
-                if (!mShowMessages && !mBitcoinFinishedBefore) {
-                    // mHandler.post(mShowSnack);
-                }
-            } else if (Constants.WALLETS_LOADED_BITCOIN_ACTION.equals(intent.getAction())) {
                 NavigationActivity.this.DismissFadingDialog();
-                if (!mShowMessages && !mBitcoinFinishedBefore) {
-                    // mHandler.post(mHideSnack);
-                }
-                mBitcoinFinishedBefore = true;
             }
         }
     };
@@ -2622,7 +2598,6 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             AirbitzCore.logi("Data Sync received");
-            updateWalletListener();
         }
     };
 

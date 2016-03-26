@@ -223,9 +223,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             }
             mWebView.loadUrl(mUrl);
         }
-        // We do this after webview is resumed so current wallet is inserted
-        // into plugin
-        mAccount.reloadWallets();
         if (mWallet != null) {
             mFramework.setWallet(mWallet);
         }

@@ -446,13 +446,13 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String bitidAddress(String uri, String message) {
-            Account.BitidSignature bitid = account.bitidSignature(uri, message);
+            Account.BitidSignature bitid = account.bitidSign(uri, message);
             return bitid.address;
         }
 
         @JavascriptInterface
         public String bitidSignature(String uri, String message) {
-            Account.BitidSignature bitid = account.bitidSignature(uri, message);
+            Account.BitidSignature bitid = account.bitidSign(uri, message);
             return bitid.signature;
         }
 

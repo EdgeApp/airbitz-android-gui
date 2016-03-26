@@ -52,10 +52,8 @@ public class Constants {
     public static final String DAILY_LIMIT_SETTING_PREF = "co.airbitz.spendinglimits.dailylimitsetting";
 
     public static final String WALLET_LOADING_START_ACTION = "co.airbitz.notifications.wallets_data_loading_start";
-    public static final String WALLET_LOADING_STATUS_ACTION = "co.airbitz.notifications.wallets_data_loaded";
+    public static final String WALLET_CHANGED_ACTION = "co.airbitz.notifications.wallets_changed";
     public static final String WALLETS_ALL_LOADED_ACTION = "co.airbitz.notifications.all_wallets_data_loaded";
-    public static final String WALLETS_LOADING_BITCOIN_ACTION = "co.airbitz.notifications.bitcoin_data_loading_start";
-    public static final String WALLETS_LOADED_BITCOIN_ACTION = "co.airbitz.notifications.bitcoin_data_loaded";
     public static final String WALLETS_RELOADED_ACTION = "co.airbitz.notifications.wallet_data_reloaded";
 
     public static final String BLOCKHEIGHT_CHANGE_ACTION = "co.airbitz.notifications.block_height_change";

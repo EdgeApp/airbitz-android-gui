@@ -554,9 +554,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             try {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     mUsername = AirbitzApplication.getUsername();
-                    mAccount.passwordSetup(mPassword);
+                    mAccount.passwordChange(mPassword);
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
-                    mAccount.passwordSetup(mPassword);
+                    mAccount.passwordChange(mPassword);
                     mAccount.pin(mPin);
                 } else {
                     mAccount.pin(mPin);

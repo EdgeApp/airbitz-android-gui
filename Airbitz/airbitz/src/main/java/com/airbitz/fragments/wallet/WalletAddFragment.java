@@ -213,7 +213,6 @@ public class WalletAddFragment extends BaseFragment
         @Override
         protected Boolean doInBackground(Void... params) {
             boolean success = mAccount.createWallet(mWalletName, mCurrency);
-            mAccount.reloadWallets();
             return success;
         }
 

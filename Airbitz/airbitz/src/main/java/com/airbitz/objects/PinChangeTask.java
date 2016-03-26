@@ -62,11 +62,7 @@ public class PinChangeTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            if (mEnabled) {
-                mAccount.pinLoginSetup();
-            } else {
-                mAccount.pinLoginDisable();
-            }
+            mAccount.pinLoginSetup(mEnabled);
         } catch (AirbitzException e) {
             AirbitzCore.logi("SettingFragment mPinSetupTask error");
         }

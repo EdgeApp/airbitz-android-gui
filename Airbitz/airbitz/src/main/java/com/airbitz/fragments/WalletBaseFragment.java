@@ -340,7 +340,6 @@ public class WalletBaseFragment extends BaseFragment
         manager.registerReceiver(mWalletLoadedReceiver, new IntentFilter(Constants.WALLETS_RELOADED_ACTION));
         manager.registerReceiver(mBlockHeightReceiver, new IntentFilter(Constants.BLOCKHEIGHT_CHANGE_ACTION));
 
-        mAccount.reloadWallets();
         if (mWallets != null && mWallets.size() > 0) {
             onWalletsLoaded();
         }
