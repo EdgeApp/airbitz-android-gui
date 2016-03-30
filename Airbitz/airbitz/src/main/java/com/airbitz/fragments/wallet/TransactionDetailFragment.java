@@ -991,9 +991,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             s.append("\n");
 
             start = s.length();
-            s.append(tx.malId());
+            s.append(tx.id());
             int end = s.length();
-            final String txIdLink = finalBaseUrl + "tx/" + tx.malId();
+            final String txIdLink = finalBaseUrl + "tx/" + tx.id();
             ClickableSpan url = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
