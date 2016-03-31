@@ -238,6 +238,7 @@ public class NavigationActivity extends ActionBarActivity
 
     private Affiliates mAffiliate;
     private Affiliates.AffiliateTask mAffiliateTask;
+    private Affiliates.AffiliateQueryTask mAffiliateQueryTask;
 
     private DrawerLayout mDrawer;
     private FrameLayout mDrawerView;
@@ -386,6 +387,8 @@ public class NavigationActivity extends ActionBarActivity
 
         // Let's see what plugins are enabled
         PluginCheck.checkEnabledPlugins();
+        mAffiliateQueryTask = new Affiliates.AffiliateQueryTask(this);
+        mAffiliateQueryTask.execute();
     }
 
     @Override

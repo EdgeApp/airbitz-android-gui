@@ -58,6 +58,7 @@ import co.airbitz.core.Wallet;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.Affiliates;
 import com.airbitz.api.CoreWrapper;
 
 import java.util.HashMap;
@@ -298,8 +299,10 @@ public class PluginFramework {
         public void hideAlert();
         public void setTitle(String title);
         public void launchFileSelection(final String cbid);
-        public Spend launchSend(final String cbid, final String uuid, final String address,
-                                final long amountSatoshi, final double amountFiat,
+        public Spend launchSend(final String cbid, final String uuid,
+                                final String address, final long amountSatoshi,
+                                final String address2, final long amountSatoshi2,
+                                final double amountFiat,
                                 final String label, final String category, final String notes,
                                 long bizId, boolean signOnly);
         public void showNavBar();
@@ -524,13 +527,22 @@ public class PluginFramework {
         @JavascriptInterface
         public void requestSpend(String cbid, String uuid, String address, long amountSatoshi,
                                  double amountFiat, String label, String category, String notes, long bizId) {
-            handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, false);
+            handler.launchSend(cbid, uuid, address, amountSatoshi, null, 0, amountFiat, label, category, notes, bizId, false);
+        }
+
+        @JavascriptInterface
+        public void requestSpend2(String cbid, String uuid,
+                                  String address, long amountSatoshi,
+                                  String address2, long amountSatoshi2,
+                                 double amountFiat, String label, String category, String notes, long bizId) {
+            handler.launchSend(cbid, uuid, address, amountSatoshi, address2, amountSatoshi2,
+                amountFiat, label, category, notes, bizId, false);
         }
 
         @JavascriptInterface
         public void requestSign(String cbid, String uuid, String address, long amountSatoshi,
                                 double amountFiat, String label, String category, String notes, long bizId) {
-            mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, amountFiat, label, category, notes, bizId, true);
+            mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, null, 0, amountFiat, label, category, notes, bizId, true);
         }
 
         @JavascriptInterface
@@ -590,6 +602,18 @@ public class PluginFramework {
             String s = account.data(plugin.pluginId).get(key);
             AirbitzCore.logi("readData: " + key + ": " + s);
             return s;
+        }
+
+        @JavascriptInterface
+        public String getAffiliateInfo() {
+            Account account = AirbitzApplication.getAccount();
+            Affiliates affiliate = new Affiliates(account);
+            String info = affiliate.getAffiliateInfo();
+            if (info != null) {
+                return jsonResult(new JsonValue<String>(info)).toString();
+            } else {
+                return jsonError().toString();
+            }
         }
 
         @JavascriptInterface

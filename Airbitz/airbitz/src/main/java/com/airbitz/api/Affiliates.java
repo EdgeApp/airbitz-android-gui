@@ -35,14 +35,19 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.directory.DirectoryApi;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.DataStore;
+import co.airbitz.core.ReceiveAddress;
+import co.airbitz.core.Wallet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,14 +72,36 @@ public class Affiliates {
     private static final String AFFILIATE_LINK_DATA = "affiliate_link_beta";
     private static final String AFFILIATE_INFO_DATA = "affiliate_info_beta";
 
+    private static final String AFFILIATE_LOCAL_CHECKED = "co.airbitz.notifications.affiliate_checked";
+    private static final String AFFILIATE_LOCAL_DATA = "co.airbitz.notifications.affiliate_data";
+
     private DirectoryApi mDirectory;
     private Account mAccount;
     private String mAffiliateUrl;
+    private String mAffiliateInfo;
+
+    public Affiliates() {
+        mDirectory = DirectoryWrapper.getApi();
+    }
 
     public Affiliates(Account account) {
-        mDirectory = DirectoryWrapper.getApi();
+        this();
         mAccount = account;
-        mAffiliateUrl = account.data(AFFILIATE_DATA_STORE).get(AFFILIATE_LINK_DATA);
+
+        DataStore store = account.data(AFFILIATE_DATA_STORE);
+
+        SharedPreferences prefs =
+            AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        String data = prefs.getString(AFFILIATE_LOCAL_DATA, null);
+        if (true || data != null && store.get(AFFILIATE_INFO_DATA) == null) {
+            store.set(AFFILIATE_INFO_DATA, data);
+        }
+        mAffiliateUrl = store.get(AFFILIATE_LINK_DATA);
+        mAffiliateInfo = store.get(AFFILIATE_INFO_DATA);
+    }
+
+    public String getAffiliateInfo() {
+        return mAffiliateInfo;
     }
 
 
@@ -96,13 +123,20 @@ public class Affiliates {
     /**
      * Returns an affiliate URL to share with friends
      */
-    public String affiliateBitidRegister(String address, String signature, String uri, String paymentAddress) {
+    public String affiliateBitidRegister(Context context, String address, String signature, String uri, String paymentAddress) {
         try {
+            Wallet currentWallet = mAccount.wallet(AirbitzApplication.getCurrentWallet());
+            ReceiveAddress request = currentWallet.newReceiveRequest();
+            request.meta().name(context.getString(R.string.app_name))
+                          .category(context.getString(R.string.affiliate_category))
+                          .notes(context.getString(R.string.affiliate_notes));
+            request.finalizeRequest();
+
             JSONObject body = new JSONObject();
             body.put("bitid_address", address);
             body.put("bitid_signature", signature);
             body.put("bitid_url", uri);
-            body.put("payment_address", paymentAddress);
+            body.put("payment_address", request.address());
             String response = mDirectory.postRequest(AFFILIATES_REGISTER, body.toString());
             Log.d(TAG, "" + response);
 
@@ -118,14 +152,44 @@ public class Affiliates {
         return mDirectory.getRequest(AFFILIATES_QUERY);
     }
 
-    public String affiliateCampaignUrl() {
+    public String affiliateCampaignUrl(Context context) {
         String bitidUri = affiliateBitidUri();
         if (null != bitidUri) {
             // affiliateBitidRegister
             Account.BitidSignature bitid = mAccount.bitidSign(bitidUri, bitidUri);
-            return affiliateBitidRegister(bitid.address, bitid.signature, bitidUri, bitid.address);
+            return affiliateBitidRegister(context,bitid.address, bitid.signature, bitidUri, bitid.address);
         }
         return null;
+    }
+
+    public static class AffiliateQueryTask extends AsyncTask<Void, Void, String> {
+        Affiliates affiliate;
+        NavigationActivity activity;
+
+        public AffiliateQueryTask(NavigationActivity activity) {
+            this.affiliate = new Affiliates();;
+            this.activity = activity;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+            if (!prefs.getBoolean(AFFILIATE_LOCAL_CHECKED, false)) {
+                return affiliate.query();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final String response) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(AFFILIATE_LOCAL_CHECKED, true);
+            if (response != null) {
+                editor.putString(AFFILIATE_LOCAL_DATA, response);
+            }
+            editor.apply();
+        }
     }
 
     public static class AffiliateTask extends AsyncTask<Void, Void, String> {
@@ -147,7 +211,7 @@ public class Affiliates {
         @Override
         protected String doInBackground(Void... params) {
             if (affiliate.mAffiliateUrl == null) {
-                String url = affiliate.affiliateCampaignUrl();
+                String url = affiliate.affiliateCampaignUrl(activity);
                 if (url != null) {
                     account.data(AFFILIATE_DATA_STORE).set(AFFILIATE_LINK_DATA, url);
                 }

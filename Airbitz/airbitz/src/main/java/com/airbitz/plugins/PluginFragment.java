@@ -421,8 +421,10 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             PluginFragment.this.launchFileSelection(cbid);
         }
 
-        public Spend launchSend(final String cbid, final String uuid, final String address,
-                                final long amountSatoshi, final double amountFiat,
+        public Spend launchSend(final String cbid, final String uuid,
+                                final String address, final long amountSatoshi,
+                                final String address2, final long amountSatoshi2,
+                                final double amountFiat,
                                 final String label, final String category, final String notes,
                                 final long bizId, final boolean signOnly) {
             final SendConfirmationFragment.OnExitHandler exitHandler = new SendConfirmationFragment.OnExitHandler() {
@@ -448,6 +450,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             try {
                 final Spend target = mWallet.newSpend();
                 target.addAddress(address, amountSatoshi);
+                if (address2 != null) {
+                    target.addAddress(address2, amountSatoshi2);
+                }
                 target.meta().name(label)
                              .category(category)
                              .notes(notes)
