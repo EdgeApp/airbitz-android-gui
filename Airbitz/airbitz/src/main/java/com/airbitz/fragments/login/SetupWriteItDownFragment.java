@@ -44,13 +44,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.Settings;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import co.airbitz.core.AirbitzException;
-import co.airbitz.core.Account;
-import co.airbitz.core.AirbitzCore;
-import co.airbitz.core.Settings;
+import com.airbitz.api.Affiliates;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressButton;
 
@@ -193,5 +195,8 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         mUsernameTextView.setText(mUsername);
         mPasswordTextView.setText(mPassword);
         mPinTextView.setText(mPin);
+
+        Affiliates aff = new Affiliates(AirbitzApplication.getAccount());
+        aff.setupNewAccount();
     }
 }

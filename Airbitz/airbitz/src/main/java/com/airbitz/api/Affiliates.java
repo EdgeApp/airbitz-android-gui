@@ -42,6 +42,7 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.Affiliates;
 import com.airbitz.api.directory.DirectoryApi;
 
 import co.airbitz.core.Account;
@@ -89,15 +90,18 @@ public class Affiliates {
         mAccount = account;
 
         DataStore store = account.data(AFFILIATE_DATA_STORE);
+        mAffiliateUrl = store.get(AFFILIATE_LINK_DATA);
+        mAffiliateInfo = store.get(AFFILIATE_INFO_DATA);
+    }
 
+    public void setupNewAccount() {
+        DataStore store = mAccount.data(AFFILIATE_DATA_STORE);
         SharedPreferences prefs =
             AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         String data = prefs.getString(AFFILIATE_LOCAL_DATA, null);
-        if (true || data != null && store.get(AFFILIATE_INFO_DATA) == null) {
+        if (data != null && store.get(AFFILIATE_INFO_DATA) == null) {
             store.set(AFFILIATE_INFO_DATA, data);
         }
-        mAffiliateUrl = store.get(AFFILIATE_LINK_DATA);
-        mAffiliateInfo = store.get(AFFILIATE_INFO_DATA);
     }
 
     public String getAffiliateInfo() {
@@ -167,7 +171,7 @@ public class Affiliates {
         NavigationActivity activity;
 
         public AffiliateQueryTask(NavigationActivity activity) {
-            this.affiliate = new Affiliates();;
+            this.affiliate = new Affiliates();
             this.activity = activity;
         }
 
