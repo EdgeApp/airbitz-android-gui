@@ -157,7 +157,6 @@ public class SendFragment extends ScanFragment {
 
     @Override
     public void onCameraScanResult(String result) {
-        Log.d(TAG, result);
         if (result != null) {
             showProcessing();
             processText(result);
