@@ -19,7 +19,7 @@ applications that are included in the APK. If you have setup the
 [airbitz-plugins][plugins] repository you can automatically build them with the
 following gradle command.
 
-    ./gradlew copyAirbitzPlugins
+    ./gradlew buildAirbitzPlugins
 
 #### API Keys
 
