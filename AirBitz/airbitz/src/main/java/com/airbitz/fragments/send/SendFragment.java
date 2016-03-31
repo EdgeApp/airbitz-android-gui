@@ -137,7 +137,6 @@ public class SendFragment extends ScanFragment {
 
     @Override
     public void onCameraScanResult(String result) {
-        Log.d(TAG, result);
         CoreAPI.debugLevel(1, "checking result = " + result);
         if (result != null) {
             showProcessing();
