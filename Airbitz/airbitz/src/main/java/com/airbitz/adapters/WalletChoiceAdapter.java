@@ -46,6 +46,7 @@ import co.airbitz.core.Wallet;
 import com.airbitz.R;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.activities.NavigationActivity;
+import com.airbitz.api.WalletWrapper;
 
 import java.util.List;
 
@@ -53,9 +54,9 @@ public class WalletChoiceAdapter extends ArrayAdapter {
 
     private Context mContext;
     private Account mAccount;
-    private List<Wallet> mWalletList;
+    private List<WalletWrapper> mWalletList;
 
-    public WalletChoiceAdapter(Context context, List<Wallet> walletList) {
+    public WalletChoiceAdapter(Context context, List<WalletWrapper> walletList) {
         super(context, R.layout.item_request_wallet_spinner, walletList);
         mContext = context;
         mWalletList = walletList;
@@ -64,16 +65,16 @@ public class WalletChoiceAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Wallet wallet = mWalletList.get(position);
+        WalletWrapper wallet = mWalletList.get(position);
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_listview_wallet_choice, parent, false);
 
         TextView titleTextView = (TextView) convertView.findViewById(R.id.fragment_category_textview_title);
-        titleTextView.setText(wallet.name());
+        titleTextView.setText(wallet.name(mContext));
 
         TextView amountTextView = (TextView) convertView.findViewById(R.id.textview_amount);
         amountTextView.setTypeface(NavigationActivity.latoRegularTypeFace);
-        amountTextView.setText(Utils.formatSatoshi(mAccount, wallet.balance(), true));
+        amountTextView.setText(Utils.formatSatoshi(mAccount, wallet.wallet().balance(), true));
         return convertView;
     }
 }

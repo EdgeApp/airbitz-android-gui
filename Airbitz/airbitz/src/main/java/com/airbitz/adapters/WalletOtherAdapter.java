@@ -38,8 +38,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.WalletWrapper;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.Utils;
@@ -50,11 +52,11 @@ import java.util.List;
 public class WalletOtherAdapter extends ArrayAdapter {
 
     private Context mContext;
-    private List<Wallet> mWalletList;
+    private List<WalletWrapper> mWalletList;
     private Typeface mBitcoinTypeface;
     private Account mAccount;
 
-    public WalletOtherAdapter(Context context, List<Wallet> walletList) {
+    public WalletOtherAdapter(Context context, List<WalletWrapper> walletList) {
         super(context, R.layout.item_request_wallet_spinner, walletList);
         mContext = context;
         mWalletList = walletList;
@@ -64,12 +66,12 @@ public class WalletOtherAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Wallet wallet = mWalletList.get(position);
+        WalletWrapper wallet = mWalletList.get(position);
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.item_request_wallet_spinner_dropdown, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.item_request_wallet_spinner_dropdown_textview);
         textView.setTypeface(mBitcoinTypeface);
-        textView.setText(wallet.name() + " (" + Utils.formatSatoshi(mAccount,wallet.balance(), true) + ")");
+        textView.setText(wallet.name(mContext) + " (" + Utils.formatSatoshi(mAccount, wallet.wallet().balance(), true) + ")");
         textView.setBackground(mContext.getResources().getDrawable(R.drawable.dropdown_item_selector));
 
         return convertView;

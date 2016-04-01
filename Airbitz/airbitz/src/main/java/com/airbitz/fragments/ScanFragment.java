@@ -83,6 +83,8 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.BluetoothSearchAdapter;
 import com.airbitz.adapters.WalletOtherAdapter;
 import com.airbitz.api.Constants;
+import com.airbitz.api.CoreWrapper;
+import com.airbitz.api.WalletWrapper;
 import com.airbitz.bitbeacon.BeaconSend;
 import com.airbitz.bitbeacon.BleDevice;
 import com.airbitz.bitbeacon.BleUtil;
@@ -132,7 +134,7 @@ public abstract class ScanFragment
     private RelativeLayout mBluetoothLayout;
     private ListView mBluetoothListView;
     private BeaconSend mBeaconSend;
-    private List<Wallet> mOtherWalletsList;//NAMES
+    private List<WalletWrapper> mOtherWalletsList;//NAMES
     private String mReturnURL;
     private WalletOtherAdapter mOtherWalletsAdapter;
     protected View mView;
@@ -250,7 +252,7 @@ public abstract class ScanFragment
         });
         mButtonBar = mView.findViewById(R.id.fragment_send_buttons);
 
-        mOtherWalletsList = new ArrayList<Wallet>();
+        mOtherWalletsList = new ArrayList<WalletWrapper>();
         mOtherWalletsAdapter = new WalletOtherAdapter(getActivity(), mOtherWalletsList);
 
         mOtherWalletsListView = (ListView) mView.findViewById(R.id.fragment_send_transfer_list);
@@ -268,8 +270,10 @@ public abstract class ScanFragment
         mOtherWalletsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Wallet w = mOtherWalletsList.get(i-1);
-                transferWalletSelected(w);
+                WalletWrapper w = mOtherWalletsList.get(i-1);
+                if (w.isSynced()) {
+                    transferWalletSelected(w.wallet());
+                }
             }
         });
         if (mMode == RunMode.IMPORT) {
@@ -368,11 +372,7 @@ public abstract class ScanFragment
         if (mWallets == null) {
             return;
         }
-        for (Wallet wallet : mWallets) {
-            if (mWallet != null && mWallet.id() != null && !wallet.id().equals(mWallet.id())) {
-                mOtherWalletsList.add(wallet);
-            }
-        }
+        mOtherWalletsList.addAll(CoreWrapper.wrap(mWallets));
         mOtherWalletsAdapter.notifyDataSetChanged();
     }
 

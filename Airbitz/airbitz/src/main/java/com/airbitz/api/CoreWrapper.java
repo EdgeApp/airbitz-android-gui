@@ -134,8 +134,10 @@ public class CoreWrapper {
 
     public static List<WalletWrapper> wrap(List<Wallet> wallets) {
         List<WalletWrapper> wrapped = new LinkedList<WalletWrapper>();
-        for (Wallet w : wallets) {
-            wrapped.add(new WalletWrapper(w));
+        if (wallets != null) {
+            for (Wallet w : wallets) {
+                wrapped.add(new WalletWrapper(w));
+            }
         }
         return wrapped;
     }

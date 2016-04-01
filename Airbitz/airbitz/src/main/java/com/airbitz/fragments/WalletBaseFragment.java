@@ -68,6 +68,8 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.WalletChoiceAdapter;
 import com.airbitz.api.Constants;
+import com.airbitz.api.CoreWrapper;
+import com.airbitz.api.WalletWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,7 @@ public class WalletBaseFragment extends BaseFragment
 
     protected Handler mHandler = new Handler();
     protected List<Wallet> mWallets;
+    protected List<WalletWrapper> mWrapped;
     protected Wallet mWallet;
     protected ListView mWalletList;
     protected View mWalletsContainer;
@@ -111,9 +114,11 @@ public class WalletBaseFragment extends BaseFragment
         mAccount = AirbitzApplication.getAccount();
         mOnBitcoinMode = AirbitzApplication.getBitcoinSwitchMode();
         mLoading = true;
+        mWrapped = new ArrayList<WalletWrapper>();
         // Check for cached wallets
         if (null == mWallets) {
             mWallets = fetchCoreWallets();
+            mWrapped.addAll(CoreWrapper.wrap(mWallets));
         }
         // Create empty list
         if (null == mWallets) {
@@ -236,6 +241,8 @@ public class WalletBaseFragment extends BaseFragment
         if (tmp != null) {
             mWallets.clear();
             mWallets.addAll(tmp);
+            mWrapped.clear();
+            mWrapped.addAll(CoreWrapper.wrap(mWallets));
         }
     }
 
@@ -305,10 +312,13 @@ public class WalletBaseFragment extends BaseFragment
         mWalletList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                walletChanged(mWallets.get(i));
+                WalletWrapper w = mWrapped.get(i);
+                if (w.isSynced()) {
+                    walletChanged(mWallets.get(i));
+                }
             }
         });
-        mAdapter = new WalletChoiceAdapter(mActivity, mWallets);
+        mAdapter = new WalletChoiceAdapter(mActivity, mWrapped);
         mWalletList.setAdapter(mAdapter);
         mWalletsContainer = mWalletList;
     }
