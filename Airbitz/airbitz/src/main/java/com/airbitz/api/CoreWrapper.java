@@ -111,24 +111,21 @@ public class CoreWrapper {
                 manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
             }
 
-            public void balanceUpdate(Wallet wallet, String txid) {
+            public void balanceUpdate(Wallet wallet, Transaction tx) {
                 manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
             }
 
-            // public void incomingBitcoin(Wallet wallet, Transaction transaction) {
-            public void incomingBitcoin(Wallet wallet, String txid) {
+            public void incomingBitcoin(Wallet wallet, Transaction tx) {
                 Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                intent.putExtra(Constants.WALLET_TXID, txid);
-                // intent.putExtra(Constants.WALLET_TXID, transaction.getID());
+                intent.putExtra(Constants.WALLET_TXID, tx.id());
                 manager.sendBroadcast(intent);
             }
 
-            public void sweep(Wallet wallet, String txid, long amountSwept) {
+            public void sweep(Wallet wallet, Transaction tx, long amountSwept) {
                 Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                intent.putExtra(Constants.WALLET_TXID, txid);
-                // intent.putExtra(Constants.WALLET_TXID, transaction.getID());
+                intent.putExtra(Constants.WALLET_TXID, tx.id());
                 intent.putExtra(Constants.AMOUNT_SWEPT, amountSwept);
                 manager.sendBroadcast(intent);
             }
