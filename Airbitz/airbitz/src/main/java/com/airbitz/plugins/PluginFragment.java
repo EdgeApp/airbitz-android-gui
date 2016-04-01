@@ -469,6 +469,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         Bundle bundle = new Bundle();
                         bundle.putString(ScanFragment.LABEL, address);
                         bundle.putLong(ScanFragment.AMOUNT_SATOSHI, amountSatoshi);
+                        bundle.putLong(ScanFragment.AMOUNT_ADDITIONAL_FEES, amountSatoshi2);
                         bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);
                         bundle.putString(ScanFragment.FROM_WALLET_UUID, uuid);
                         bundle.putBoolean(ScanFragment.LOCKED, true);

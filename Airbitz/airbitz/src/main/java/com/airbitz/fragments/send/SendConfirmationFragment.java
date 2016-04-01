@@ -151,6 +151,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private Boolean mSignOnly = false;
     private long mAmountMax;
     private long mAmountToSendSatoshi = -1;
+    private long mAmountAdditionalFees = 0;
     private double mAmountFiat = -1;
     private long mFees;
     private int mInvalidEntryCount = 0;
@@ -892,6 +893,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mCategory = bundle.getString(SendFragment.CATEGORY, "");
             mNotes = bundle.getString(SendFragment.NOTES, "");
             mAmountToSendSatoshi = bundle.getLong(SendFragment.AMOUNT_SATOSHI);
+            mAmountAdditionalFees = bundle.getLong(SendFragment.AMOUNT_ADDITIONAL_FEES);
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
             mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
@@ -1082,7 +1084,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         protected Long doInBackground(Void... params) {
             AirbitzCore.logi("Fee calculation started");
             try {
-                return mSpendTarget.calcSendFees();
+                return mSpendTarget.calcSendFees() + mAmountAdditionalFees;
             } catch (AirbitzException e) {
                 mFailureException = e;
             }

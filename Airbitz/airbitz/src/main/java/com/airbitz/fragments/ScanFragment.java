@@ -106,6 +106,7 @@ public abstract class ScanFragment
     private final String TAG = getClass().getSimpleName();
 
     public static final String AMOUNT_SATOSHI = "com.airbitz.Sendfragment_AMOUNT_SATOSHI";
+    public static final String AMOUNT_ADDITIONAL_FEES = "com.airbitz.Sendfragment_AMOUNT_ADDITIONAL_FEES";
     public static final String AMOUNT_FIAT = "com.airbitz.Sendfragment_AMOUNT_FIAT";
     public static final String LABEL = "com.airbitz.Sendfragment_LABEL";
     public static final String CATEGORY = "com.airbitz.Sendfragment_CATEGORY";
