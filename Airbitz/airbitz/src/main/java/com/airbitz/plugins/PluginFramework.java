@@ -587,7 +587,7 @@ public class PluginFramework {
 
         @JavascriptInterface
         public void writeData(String key, String value) {
-            AirbitzCore.logi("writeData: " + key + ": " + value);
+            AirbitzCore.logi("writeData: " + key);
             account.data(plugin.pluginId).set(key, value);
         }
 
@@ -600,7 +600,7 @@ public class PluginFramework {
         @JavascriptInterface
         public String readData(String key) {
             String s = account.data(plugin.pluginId).get(key);
-            AirbitzCore.logi("readData: " + key + ": " + s);
+            AirbitzCore.logi("readData: " + key);
             return s;
         }
 
