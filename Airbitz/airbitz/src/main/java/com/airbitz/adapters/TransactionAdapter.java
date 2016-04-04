@@ -37,6 +37,7 @@ import android.graphics.Typeface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -222,18 +223,22 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                         img.setBackgroundResource(background);
                     }
                 });
-        viewHolder.nameTextView.setText(name);
-
-        String btcSymbol;
-        String btcSymbolBalance = CoreWrapper.userBtcSymbol(mAccount);
-        Boolean bPositive;
-
-        if (transactionSatoshis < 0) {
-            btcSymbol = "-" + btcSymbolBalance;
-            bPositive = false;
+        if (TextUtils.isEmpty(name)) {
+            if (transactionSatoshis < 0) {
+                name = mContext.getString(R.string.fragment_wallets_received_bitcoin);
+            } else {
+                name = mContext.getString(R.string.fragment_wallets_sent_bitcoin);
+            }
+            viewHolder.nameTextView.setText(name);
+            viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(R.color.semi_black_text));
         } else {
-            btcSymbol = btcSymbolBalance;
-            bPositive = true;
+            viewHolder.nameTextView.setText(name);
+            viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(android.R.color.black));
+        }
+
+        boolean bPositive = true;
+        if (transactionSatoshis < 0) {
+            bPositive = false;
         }
 
         if (mSearch) {
@@ -262,18 +267,19 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             } else {
                 viewHolder.creditAmountTextView.setTextColor(mContext.getResources().getColor(R.color.red));
             }
+            String btcAmount = Utils.formatSatoshi(mAccount, transactionSatoshisAbs, true);
+            viewHolder.creditAmountTextView.setText(btcAmount);
             if (mIsBitcoin) {
-                String walletCurrency = Utils.formatSatoshi(mAccount, transactionSatoshisAbs, false);
-                String totalCurrency = Utils.formatSatoshi(mAccount, mRunningSatoshi[position], false);
-
-                viewHolder.creditAmountTextView.setText(btcSymbol + " " + walletCurrency);
-                viewHolder.runningTotalTextView.setText(btcSymbolBalance + " " + totalCurrency);
+                String totalBtc = Utils.formatSatoshi(mAccount, mRunningSatoshi[position], true);
+                viewHolder.runningTotalTextView.setText(totalBtc);
             } else {
-                String walletCurrency = CoreWrapper.formatCurrency(mAccount, transactionSatoshis, mCurrencyCode, true);
-                String totalCurrency = CoreWrapper.formatCurrency(mAccount, mRunningSatoshi[position], mCurrencyCode, true);
-
-                viewHolder.creditAmountTextView.setText(walletCurrency);
-                viewHolder.runningTotalTextView.setText(totalCurrency);
+                String fiatAmount = CoreWrapper.formatCurrency(mAccount, transactionSatoshis, mCurrencyCode, true);
+                viewHolder.runningTotalTextView.setText(fiatAmount);
+                if (bPositive) {
+                    viewHolder.runningTotalTextView.setTextColor(mContext.getResources().getColor(R.color.green_text_dark));
+                } else {
+                    viewHolder.runningTotalTextView.setTextColor(mContext.getResources().getColor(R.color.red));
+                }
             }
         }
         int bh = mWallet.blockHeight();

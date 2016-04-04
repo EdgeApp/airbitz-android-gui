@@ -54,6 +54,7 @@ public class AirbitzApplication extends Application {
     public static String PREFS = "com.airbitz.prefs";
     public static String LOGIN_NAME = "com.airbitz.login_name";
     private static String BITCOIN_MODE = "com.airbitz.application.bitcoinmode";
+    private static String SHOW_BALANCE_MODE = "com.airbitz.application.showbalancemode";
     private static String LOCATION_MODE = "com.airbitz.application.locationmode";
     private static String ARCHIVE_HEADER_STATE = "archiveClosed";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
@@ -230,6 +231,26 @@ public class AirbitzApplication extends Application {
             public void run() {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
                 editor.putBoolean(BITCOIN_MODE, state);
+                editor.apply();
+            }
+        }).start();
+    }
+
+    static Boolean sShowBalanceMode = null;
+    public static boolean getShowBalanceMode() {
+        if (sShowBalanceMode == null) {
+            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            sShowBalanceMode = prefs.getBoolean(SHOW_BALANCE_MODE, true);
+        }
+        return sShowBalanceMode;
+    }
+
+    public static void setShowBalanceMode(final boolean state) {
+        sShowBalanceMode = state;
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+                editor.putBoolean(SHOW_BALANCE_MODE, state);
                 editor.apply();
             }
         }).start();

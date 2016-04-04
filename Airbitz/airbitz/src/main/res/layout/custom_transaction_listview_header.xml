@@ -3,18 +3,61 @@
     android:id="@+id/fragment_wallet_sendrequest_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/light_gray">
 
-    <include
-        layout="@layout/custom_currency_switch"
+    <RelativeLayout
+        android:id="@+id/balance_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-1dp"
-        android:layout_marginTop="12.6dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:visibility="visible" />
+        android:layout_height="wrap_content" 
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp" >
 
+        <LinearLayout
+            android:id="@+id/balance_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/header_btc_balance"
+                android:gravity="center"
+                android:textColor="@color/dark_blue_text"
+                android:textSize="30sp"
+                />
+
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/header_fiat_balance"
+                android:textColor="@color/dark_blue_text"
+                android:gravity="center"
+                android:textSize="20sp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/show_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_blue_text"
+                android:textSize="35sp"
+                android:gravity="center"
+                android:text="Show Balance" />
+
+        </LinearLayout>
+    </RelativeLayout>
 
     <include
         layout="@layout/custom_req_send_buttons"

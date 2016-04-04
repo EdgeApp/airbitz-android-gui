@@ -33,6 +33,7 @@ package com.airbitz.fragments.wallet;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.os.AsyncTask;
@@ -51,6 +52,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
@@ -89,48 +91,50 @@ public class TransactionListFragment extends WalletBaseFragment
 
     private View mRequestButton;
     private View mSendButton;
-    private ImageView mMoverCoin;
-    private TextView mMoverType;
-    private TextView mBottomType;
-    private TextView mTopType;
-    private Button mBitCoinBalanceButton;
-    private Button mFiatBalanceButton;
-    private Button mButtonMover;
-    private RelativeLayout mBalanceSwitchLayout;
-    private RelativeLayout mSwitchView;
+    private TextView mBitCoinBalance;
+    private TextView mFiatBalance;
+    private RelativeLayout mHeaderLayout;
+    private LinearLayout mBalanceLayout;
+    private LinearLayout mShowBalanceLayout;
     private SwipeRefreshLayout mSwipeLayout;
-    private boolean mBarIsAnimating = false;
+    private boolean mIsAnimating = false;
+    private boolean mShowBalance = true;
 
     AnimatorListenerAdapter mEndListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animator) {
-            updateBalanceBar();
-            mBarIsAnimating = false;
+            mIsAnimating = false;
+            setupBalanceView();
         }
 
         @Override
         public void onAnimationStart(Animator animator) {
-            mMoverCoin.setImageResource(0);
         }
     };
-    Runnable animateSwitchUp = new Runnable() {
+    Runnable animateBalanceHide = new Runnable() {
         @Override
         public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY",
-                    (mActivity.getResources().getDimension(R.dimen.currency_switch_height)), 0);
-            animator.setDuration(100);
-            animator.addListener(mEndListener);
-            animator.start();
+            ObjectAnimator balances = ObjectAnimator.ofFloat(mBalanceLayout, "alpha", 1, 0);
+            ObjectAnimator text = ObjectAnimator.ofFloat(mShowBalanceLayout, "alpha", 0, 1);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(balances, text);
+            set.setDuration(250);
+            set.addListener(mEndListener);
+            set.start();
         }
     };
-    Runnable animateSwitchDown = new Runnable() {
+    Runnable animateBalanceShow = new Runnable() {
         @Override
         public void run() {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mBalanceSwitchLayout, "translationY", 0,
-                    (mActivity.getResources().getDimension(R.dimen.currency_switch_height)));
-            animator.setDuration(100);
-            animator.addListener(mEndListener);
-            animator.start();
+            ObjectAnimator balances = ObjectAnimator.ofFloat(mBalanceLayout, "alpha", 0, 1);
+            ObjectAnimator text = ObjectAnimator.ofFloat(mShowBalanceLayout, "alpha", 1, 0);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(balances, text);
+            set.setDuration(250);
+            set.addListener(mEndListener);
+            set.start();
         }
     };
 
@@ -150,6 +154,7 @@ public class TransactionListFragment extends WalletBaseFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mShowBalance = AirbitzApplication.getShowBalanceMode();
     }
 
     @Override
@@ -184,45 +189,23 @@ public class TransactionListFragment extends WalletBaseFragment
         mSendButton = mListHeaderView.findViewById(R.id.fragment_wallet_send_button);
         mRequestButton = mListHeaderView.findViewById(R.id.fragment_wallet_request_button);
 
-        mBitCoinBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_top);
-        mBitCoinBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mFiatBalanceButton = (Button) mListHeaderView.findViewById(R.id.back_button_bottom);
-        mFiatBalanceButton.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mButtonMover = (Button) mListHeaderView.findViewById(R.id.button_mover);
-        mButtonMover.setTypeface(NavigationActivity.latoRegularTypeFace);
-        mBalanceSwitchLayout = (RelativeLayout) mListHeaderView.findViewById(R.id.switchable);
-        mSwitchView = (RelativeLayout) mListHeaderView.findViewById(R.id.layout_balance);
-        mMoverCoin = (ImageView) mListHeaderView.findViewById(R.id.button_mover_coin);
-        mMoverType = (TextView) mListHeaderView.findViewById(R.id.button_mover_type);
-        mBottomType = (TextView) mListHeaderView.findViewById(R.id.bottom_type);
-        mTopType = (TextView) mListHeaderView.findViewById(R.id.top_type);
+        mBitCoinBalance = (TextView) mListHeaderView.findViewById(R.id.header_btc_balance);
+        mBitCoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mFiatBalance = (TextView) mListHeaderView.findViewById(R.id.header_fiat_balance);
+        mFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
 
-        mBitCoinBalanceButton.setOnClickListener(new View.OnClickListener() {
+        mShowBalanceLayout = (LinearLayout) mListHeaderView.findViewById(R.id.show_balance);
+        mBalanceLayout = (LinearLayout) mListHeaderView.findViewById(R.id.balance_layout);
+        mHeaderLayout = (RelativeLayout) mListHeaderView.findViewById(R.id.balance_header);
+        mHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnBitcoinMode = true;
-                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
+                mShowBalance = !mShowBalance;
+                AirbitzApplication.setShowBalanceMode(mShowBalance);
                 animateBar();
             }
         });
-
-        mFiatBalanceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnBitcoinMode = false;
-                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
-                animateBar();
-            }
-        });
-
-        mButtonMover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mOnBitcoinMode = !mOnBitcoinMode;
-                AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
-                animateBar();
-            }
-        });
+        setupBalanceView();
 
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,9 +276,31 @@ public class TransactionListFragment extends WalletBaseFragment
         }
     }
 
+    private void setupBalanceView() {
+        if (mShowBalance) {
+            mShowBalanceLayout.setVisibility(View.INVISIBLE);
+            mBalanceLayout.setVisibility(View.VISIBLE);
+        } else {
+            mShowBalanceLayout.setVisibility(View.VISIBLE);
+            mBalanceLayout.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private MenuItem mToggle;
+
     @Override
     protected void onAddOptions(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_transaction_list, menu);
+        mToggle = menu.findItem(R.id.action_toggle);
+        if (null != mToggle) {
+            setMenuItemTitle(mToggle);
+        }
+    }
+
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (null != mToggle) {
+            setMenuItemTitle(mToggle);
+        }
     }
 
     @Override
@@ -306,6 +311,13 @@ public class TransactionListFragment extends WalletBaseFragment
         switch (item.getItemId()) {
         case android.R.id.home:
             return onBackPress();
+        case R.id.action_toggle:
+            mOnBitcoinMode = !mOnBitcoinMode;
+            AirbitzApplication.setBitcoinSwitchMode(mOnBitcoinMode);
+            mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
+            mTransactionAdapter.notifyDataSetChanged();
+            setMenuItemTitle(item);
+            return true;
         case R.id.action_search:
             if (!mLoading) {
                 showSearch();
@@ -319,6 +331,18 @@ public class TransactionListFragment extends WalletBaseFragment
             return true;
         default:
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setMenuItemTitle(MenuItem item) {
+        if (!mOnBitcoinMode) {
+            item.setTitle(mActivity.getString(R.string.string_balance));
+        } else {
+            if (mWallet != null) {
+                item.setTitle(mWallet.currency().code);
+            } else {
+                item.setTitle(mActivity.getString(R.string.string_loading));
+            }
         }
     }
 
@@ -424,17 +448,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mSendButton.setAlpha(alpha);
     }
 
-    private void positionBalanceBar() {
-        if (mOnBitcoinMode) {
-            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY());
-        } else {
-            mBalanceSwitchLayout.setY(mBitCoinBalanceButton.getY() + mActivity.getResources().getDimension(R.dimen.currency_switch_height));
-        }
-    }
-
     protected void updateBalanceBar() {
-        // super.updateBalanceBar();
-        positionBalanceBar();
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
         mTransactionAdapter.notifyDataSetChanged();
         updateBalances();
@@ -456,44 +470,27 @@ public class TransactionListFragment extends WalletBaseFragment
             for (Transaction t : mTransactions) {
                 totalSatoshis += t.amount();
             }
-
-            mBottomType.setText(mWallet.currency().code);
-            mTopType.setText(CoreWrapper.defaultBTCDenomination(mAccount));
-            mBitCoinBalanceButton.setText(
-				Utils.formatSatoshi(mAccount, totalSatoshis, true));
-            mFiatBalanceButton.setText(
-				CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currency().code, true));
-
-            if (mOnBitcoinMode) {
-                mButtonMover.setText(mBitCoinBalanceButton.getText());
-                mMoverCoin.setImageResource(R.drawable.ico_coin_btc_white);
-                mMoverType.setText(mTopType.getText());
-            } else {
-                mButtonMover.setText(mFiatBalanceButton.getText());
-                mMoverCoin.setImageResource(0);
-                mMoverType.setText(mBottomType.getText());
-            }
+            mBitCoinBalance.setText(
+                Utils.formatSatoshi(mAccount, totalSatoshis, true));
+            mFiatBalance.setText(
+                mWallet.currency().code + " " +
+                CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currency().code, true));
         } else {
-            mBottomType.setText("");
-            mTopType.setText("");
-            mBitCoinBalanceButton.setText("");
-            mFiatBalanceButton.setText("");
-            mButtonMover.setText("");
-            mMoverType.setText("");
+            mBitCoinBalance.setText("");
+            mFiatBalance.setText("");
         }
     }
 
     private void animateBar() {
-        if (mBarIsAnimating) {
+        if (mIsAnimating) {
             return;
         }
-        mBarIsAnimating = true;
-        if (mOnBitcoinMode) {
-            mHandler.post(animateSwitchUp);
+        mIsAnimating = true;
+        if (mShowBalance) {
+            mHandler.post(animateBalanceShow);
         } else {
-            mHandler.post(animateSwitchDown);
+            mHandler.post(animateBalanceHide);
         }
-        updateBalances();
     }
 
     @Override
@@ -513,6 +510,7 @@ public class TransactionListFragment extends WalletBaseFragment
             updateSendRequestButtons();
             startTransactionTask();
         }
+        mActivity.invalidateOptionsMenu();
     }
 
     @Override
@@ -521,6 +519,7 @@ public class TransactionListFragment extends WalletBaseFragment
         updateBalances();
         updateSendRequestButtons();
         startTransactionTask();
+        mActivity.invalidateOptionsMenu();
     }
 
     @Override

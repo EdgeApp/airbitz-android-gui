@@ -15,6 +15,7 @@
     <color name="dark_text_field_text_hint">#FFdddddd</color>
     <color name="dark_text_field_text">#FFFFFFFF</color>
     <color name="dark_divider">#FF444444</color>
+    <color name="semi_black_text">#55000000</color>
 
     <!--Login page colors used to customize background image-->
 
@@ -41,7 +42,6 @@
     <color name="blue_highlight">#cc7dcaf5</color>
     <color name="listitem_normal">#88ffffff</color>
     <color name="selected_highlight">#aaffffff</color>
-    <color name="semi_black_text">#99000000</color>
     <color name="settings_button_text">#ff0C578C</color>
     <color name="settings_edit_text">#FF000000</color>
     <color name="settings_edit_hint">#FF999999</color>

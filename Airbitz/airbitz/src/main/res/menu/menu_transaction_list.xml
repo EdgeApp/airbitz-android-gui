@@ -8,6 +8,10 @@
         app:showAsAction="always"
         android:title="@string/string_search" />
 
+    <item
+        android:id="@+id/action_toggle"
+        android:title="@string/string_balance" />
+
     <item android:id="@+id/action_export"
           android:title="@string/export_title"
           android:icon="@drawable/btn_export" />
