@@ -953,9 +953,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
         baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
     }
 
-	private long inSum = 0;
-	private SpannableStringBuilder inAddresses;
-	private SpannableStringBuilder outAddresses;
+    private long inSum = 0;
+    private SpannableStringBuilder inAddresses;
+    private SpannableStringBuilder outAddresses;
 
     private void showAdvancedDetails(boolean hasFocus) {
         Transaction tx = mWallet.transaction(mTxId);
@@ -1052,34 +1052,34 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void appendOutput(TxOutput output, String finalBaseUrl) {
-		SpannableString val = new SpannableString(Utils.formatSatoshi(mAccount, output.amount()));
-		SpannableString address = new SpannableString(output.address());
-		int start = 0;
-		int end = address.length();
-		final String txUrl = finalBaseUrl + "address/" + output.address();
-		ClickableSpan span = new ClickableSpan() {
-			@Override
-			public void onClick(View widget) {
-				Intent i = new Intent(Intent.ACTION_VIEW);
-				i.setData(Uri.parse(txUrl));
-				mActivity.startActivity(i);
-			}
-		};
-		address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		SpannableStringBuilder full = new SpannableStringBuilder();
-		full.append(address);
-		full.append("\n");
-		start = full.length();
-		full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		full.append("\n");
+        SpannableString val = new SpannableString(Utils.formatSatoshi(mAccount, output.amount()));
+        SpannableString address = new SpannableString(output.address());
+        int start = 0;
+        int end = address.length();
+        final String txUrl = finalBaseUrl + "address/" + output.address();
+        ClickableSpan span = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(txUrl));
+                mActivity.startActivity(i);
+            }
+        };
+        address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableStringBuilder full = new SpannableStringBuilder();
+        full.append(address);
+        full.append("\n");
+        start = full.length();
+        full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        full.append("\n");
 
-		if (output.isInput()) {
-			inAddresses.append(full);
-			inSum += output.amount();
-		} else {
-			outAddresses.append(full);
-		}
+        if (output.isInput()) {
+            inAddresses.append(full);
+            inSum += output.amount();
+        } else {
+            outAddresses.append(full);
+        }
     }
 
     private void setCategoryText(String textWithCategory) {
@@ -1122,7 +1122,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         String currencyValue = null;
         // If no value set, then calculate it
         if (transaction.meta().fiat() == 0.0) {
-            currencyValue = Utils.formatCurrency(coinValue, mWallet.currency().code, false);
+            currencyValue = CoreWrapper.formatCurrency(mAccount, coinValue, mWallet.currency().code, false);
         } else {
             currencyValue = Utils.formatCurrency(transaction.meta().fiat(),
                     mWallet.currency().code, false);
