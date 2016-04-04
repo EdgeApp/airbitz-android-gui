@@ -244,18 +244,20 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
                     }
-                }
-                else {
-                    data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-
-                    if(data == null || data.isEmpty()) {
+                } else {
+                    if (mExportType == ExportTypes.Quickbooks.ordinal()) {
+                        data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                    } else {
+                        data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                    }
+                    if (data == null || data.isEmpty()) {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(
                                 getString(R.string.export_saving_option_no_transactions_message));
                         return;
                     }
                 }
 
-                if(data != null && !data.isEmpty()) {
+                if (data != null && !data.isEmpty()) {
                     chooseDirectoryAndSave(data);
                 }
             }
@@ -605,7 +607,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
     private void showExportButtons() {
         int type = mBundle.getInt(EXPORT_TYPE);
-        if (type == ExportTypes.CSV.ordinal()) {
+        if (type == ExportTypes.CSV.ordinal() || type == ExportTypes.Quickbooks.ordinal()) {
             setAllButtonViews(View.GONE);
             mSDCardButton.setVisibility(View.VISIBLE);
             mShareButton.setVisibility(View.VISIBLE);
@@ -738,26 +740,31 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
         // for now just hard code
         if (type == ExportTypes.CSV.ordinal()) {
-            String temp = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-            if (temp != null) {
-                if(temp.isEmpty()) {
-                    ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
-                    return null;
-                }
-                else {
-                    filepath = "file://" + Common.createTempFileFromString("export.csv", temp);
-                }
-            }
+            String data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+            return filePathForData("export.csv", data);
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             filepath = Common.createTempFileFromString("export.txt", mWallet.seed());
         } else if (type == ExportTypes.Quicken.ordinal()) {
             return null;
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
-            return null;
+            String data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+            return filePathForData("export.QBO", data);
         } else if (type == ExportTypes.PDF.ordinal()) {
             return null;
         }
         return filepath;
+    }
+
+    private String filePathForData(String filename, String data) {
+        if (data == null) {
+            return null;
+        }
+        if (data.isEmpty()) {
+            ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
+            return null;
+        } else {
+            return "file://" + Common.createTempFileFromString(filename, data);
+        }
     }
 
     private String mimeTypeFor(int type) {
@@ -814,7 +821,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     public void onFileSaveLocation(File file) {
         if (file != null && mDataToSave != null) {
             try {
-                FileOutputStream fos = new FileOutputStream(new File(file.getAbsolutePath() + "/" + saveName()));
+                FileOutputStream fos = new FileOutputStream(new File(file.getAbsolutePath(), saveName()));
                 Writer out = new OutputStreamWriter(fos, "UTF-8");
                 out.write(mDataToSave);
                 out.flush();
@@ -822,17 +829,19 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 ((NavigationActivity) getActivity()).ShowFadingDialog("File saved: " + saveName());
             } catch (Throwable t) {
                 AirbitzCore.logi("createFileFromString failed for " + file.getAbsolutePath());
+                android.util.Log.e(TAG, "", t);
             }
         }
     }
 
     private String saveName() {
         String filename = mFromButton.getText().toString() + "-" + mToButton.getText().toString() + ".csv";
-        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-            filename = mWallet.name()+".txt";
+        if (mExportType == ExportTypes.Quickbooks.ordinal()) {
+            filename = mFromButton.getText().toString() + "-" + mToButton.getText().toString() + ".QBO";
+        } else if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+            filename = mWallet.name() + ".txt";
         }
-
-        return filename.replace("/", "_");
+        return filename.replaceAll("/", "-").replaceAll(" ", "_").replaceAll(":", "");
     }
 
     public static void pushFragment(NavigationActivity mActivity, String uuid, int type) {

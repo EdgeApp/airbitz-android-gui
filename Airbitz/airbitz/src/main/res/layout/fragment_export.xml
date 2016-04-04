@@ -44,7 +44,6 @@
                 <Button
                     android:id="@+id/button_quickbooks"
                     android:text="@string/export_quickbooks_title"
-                    android:visibility="gone"
                     style="@style/SettingsButton" />
 
                 <Button
