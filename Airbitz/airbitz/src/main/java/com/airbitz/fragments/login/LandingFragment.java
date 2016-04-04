@@ -107,6 +107,7 @@ public class LandingFragment extends BaseFragment implements
     private AccountsAdapter mOtherAccountsAdapter;
     private View mPasswordLayout;
     private EditText mPasswordEditText;
+    private boolean mIgnorePinChange = false;
     private EditText mPinEditText;
     private View mPinLayout;
     private View mBlackoutView;
@@ -371,14 +372,22 @@ public class LandingFragment extends BaseFragment implements
 
             @Override
             public void afterTextChanged(Editable editable) {
-                // set views based on length
-                if (mPinEditText.length() >= 4) {
-                    if (mActivity.networkIsAvailable()) {
-                        mActivity.hideSoftKeyboard(mPinEditText);
-                        attemptPinLogin();
-                    } else {
-                        mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
-                        abortPermanently();
+                if (!mIgnorePinChange) {
+                    String text = editable.toString();
+                    mIgnorePinChange = true;
+                    mPinEditText.setText(text);
+                    mPinEditText.setSelection(text.length());
+                    mIgnorePinChange = false;
+
+                    // set views based on length
+                    if (text.length() >= 4) {
+                        if (mActivity.networkIsAvailable()) {
+                            mActivity.hideSoftKeyboard(mPinEditText);
+                            attemptPinLogin();
+                        } else {
+                            mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_pin_message));
+                            abortPermanently();
+                        }
                     }
                 }
             }
