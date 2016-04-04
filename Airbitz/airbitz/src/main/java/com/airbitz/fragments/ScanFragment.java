@@ -372,7 +372,14 @@ public abstract class ScanFragment
         if (mWallets == null) {
             return;
         }
-        mOtherWalletsList.addAll(CoreWrapper.wrap(mWallets));
+        List<WalletWrapper> filtered = new ArrayList<WalletWrapper>();
+        for (WalletWrapper w :  CoreWrapper.wrap(mWallets)) {
+            if (w.wallet() != null
+                    && !w.wallet().id().equals(mWallet.id())) {
+                filtered.add(w);
+            }
+        }
+        mOtherWalletsList.addAll(filtered);
         mOtherWalletsAdapter.notifyDataSetChanged();
     }
 
