@@ -225,9 +225,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 });
         if (TextUtils.isEmpty(name)) {
             if (transactionSatoshis < 0) {
-                name = mContext.getString(R.string.fragment_wallets_received_bitcoin);
-            } else {
                 name = mContext.getString(R.string.fragment_wallets_sent_bitcoin);
+            } else {
+                name = mContext.getString(R.string.fragment_wallets_received_bitcoin);
             }
             viewHolder.nameTextView.setText(name);
             viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(R.color.semi_black_text));
