@@ -722,4 +722,11 @@
     <string name="password_rule_no_lowercase">Must have at least one lower case letter</string>
     <string name="password_rule_no_number">Must have at least one number</string>
     <string name="password_rule_too_short">Must have at least %1$s characters</string>
+
+    <string name="transaction_footer_buy_bitcoin">Buy Bitcoin</string>
+    <string name="transaction_footer_import_gift_card">Import Airbitz Gift Card</string>
+    <string name="transaction_footer_starbucks_discount">Up to 20% off Starbucks</string>
+    <string name="transaction_footer_target_discount">Up to 10% off Target</string>
+    <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
+
 </resources>

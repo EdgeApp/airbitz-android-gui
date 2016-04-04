@@ -29,7 +29,6 @@
                 android:divider="@drawable/wallet_list_divider"
                 android:dividerHeight="0dp"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/action_button_size"
                 />
 
         </android.support.v4.widget.SwipeRefreshLayout>

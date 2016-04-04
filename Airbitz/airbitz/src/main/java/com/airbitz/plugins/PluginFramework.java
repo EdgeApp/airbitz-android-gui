@@ -59,6 +59,7 @@ import co.airbitz.core.Wallet;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.Affiliates;
+import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 
 import java.util.HashMap;
@@ -134,7 +135,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/green-coffee-mug-128px.png");
-            plugin.env.put("BIZID", "11131");
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_STARBUCKS));
             plugin.env.put("CATEGORY", "Expense%3ACoffee Shops");
 
             mPlugins.add(plugin);
@@ -150,7 +151,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/red-bulls-eye-128px.png");
-            plugin.env.put("BIZID", "11132");
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_TARGET));
             plugin.env.put("CATEGORY", "Expense%3AShopping");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -165,7 +166,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Whole Foods");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Whole-Foods-Market-128px.png");
-            plugin.env.put("BIZID", "11139");
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_WHOLEFOODS));
             plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AGroceries");
             mPlugins.add(plugin);
@@ -181,7 +182,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Walmart");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/WalMart-128px.png");
-            plugin.env.put("BIZID", "11140");
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_WALMART));
             plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AShopping");
             mPlugins.add(plugin);
@@ -197,7 +198,7 @@ public class PluginFramework {
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Home Depot");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Home-Depot-square-128px.png");
-            plugin.env.put("BIZID", "11141");
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_HOME_DEPOT));
             plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AHome Improvement");
             mPlugins.add(plugin);

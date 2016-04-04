@@ -36,6 +36,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,9 +52,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
@@ -76,6 +78,7 @@ import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.objects.DynamicListView;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.utils.Common;
+import com.airbitz.utils.RoundedTransformation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -83,6 +86,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
 
 public class TransactionListFragment extends WalletBaseFragment
         implements SwipeRefreshLayout.OnRefreshListener {
@@ -98,7 +104,7 @@ public class TransactionListFragment extends WalletBaseFragment
     private LinearLayout mShowBalanceLayout;
     private SwipeRefreshLayout mSwipeLayout;
     private boolean mIsAnimating = false;
-    private boolean mShowBalance = true;
+    private boolean mShowBalance;
 
     AnimatorListenerAdapter mEndListener = new AnimatorListenerAdapter() {
         @Override
@@ -140,6 +146,7 @@ public class TransactionListFragment extends WalletBaseFragment
 
     private ListView mListTransaction;
     private ViewGroup mListHeaderView;
+    private ViewGroup mListFooterView;
     private TransactionAdapter mTransactionAdapter;
     private List<Transaction> mTransactions = new ArrayList<Transaction>();
     private View mView;
@@ -183,6 +190,43 @@ public class TransactionListFragment extends WalletBaseFragment
         if (mListHeaderView == null) {
             mListHeaderView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_header, null, false);
             mListTransaction.addHeaderView(mListHeaderView, null, false);
+        }
+        if (mListFooterView == null) {
+            mListFooterView = (ViewGroup) inflater.inflate(R.layout.custom_transaction_listview_footer, null, false);
+            mListTransaction.addFooterView(mListFooterView, null, false);
+
+            setupFooter(R.id.buy_bitcoin, R.string.transaction_footer_buy_bitcoin, 0, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.BUYSELL.ordinal(), new Bundle());
+                }
+            });
+            setupFooter(R.id.import_bitcoin, R.string.transaction_footer_import_gift_card, Constants.BIZ_ID_AIRBITZ, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), new Bundle());
+                }
+            });
+            setupFooter(R.id.discount_starbucks, R.string.transaction_footer_starbucks_discount, Constants.BIZ_ID_STARBUCKS, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
+                }
+            });
+            setupFooter(R.id.discount_target, R.string.transaction_footer_target_discount, Constants.BIZ_ID_TARGET, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
+                }
+            });
+            setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_PURSE, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://purse.io"));
+                    mActivity.startActivity(intent);
+                }
+            });
         }
         mListTransaction.setAdapter(mTransactionAdapter);
 
@@ -476,7 +520,7 @@ public class TransactionListFragment extends WalletBaseFragment
                 mWallet.currency().code + " " +
                 CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currency().code, true));
         } else {
-            mBitCoinBalance.setText("");
+            mBitCoinBalance.setText(R.string.string_loading);
             mFiatBalance.setText("");
         }
     }
@@ -565,6 +609,39 @@ public class TransactionListFragment extends WalletBaseFragment
         protected void onCancelled() {
             mTransactionTask = null;
             super.onCancelled();
+        }
+    }
+
+    private void setupFooter(int layoutResd, int textRes, long bizId, View.OnClickListener listener) {
+        View view = mListFooterView.findViewById(layoutResd);
+        view.setOnClickListener(listener);
+        view.setBackground(mActivity.getResources().getDrawable(R.drawable.wallet_list_standard));
+
+        TextView tv = (TextView) view.findViewById(R.id.textview_name);
+        tv.setText(textRes);
+
+        final int placeholder = R.drawable.ic_request;
+        final int background = R.drawable.bg_icon_request;
+        final ImageView img = (ImageView) view.findViewById(R.id.imageview_contact_pic);
+        img.setImageResource(R.drawable.ic_request);
+        img.setBackgroundResource(background);
+        if (bizId > 0) {
+            String uri = "airbitz://business/" + bizId;
+            Picasso picasso = AirbitzApplication.getPicasso();
+            picasso.load(uri)
+                    .placeholder(placeholder)
+                    .transform(new RoundedTransformation(10, 0))
+                    .into(img, new Callback.EmptyCallback() {
+                        @Override
+                        public void onSuccess() {
+                            img.setBackgroundResource(android.R.color.transparent);
+                        }
+                        @Override
+                        public void onError() {
+                            img.setImageResource(placeholder);
+                            img.setBackgroundResource(background);
+                        }
+                    });
         }
     }
 }

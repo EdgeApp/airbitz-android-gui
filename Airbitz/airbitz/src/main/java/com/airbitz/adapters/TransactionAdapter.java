@@ -157,7 +157,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     private View getLoadingView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.item_listview_transaction_loading, parent, false);
+        return inflater.inflate(R.layout.item_listview_transaction_empty, parent, false);
     }
 
     private View getNormalView(int position, View convertView, ViewGroup parent) {

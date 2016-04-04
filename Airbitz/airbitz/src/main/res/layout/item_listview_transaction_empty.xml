@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:background="@drawable/wallet_list_standard">
 
+    <!--
     <com.airbitz.objects.CommonTextView
         android:text="@string/string_no_transactions"
         android:textColor="@color/send_blue"
@@ -14,5 +15,6 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+        -->
 
 </FrameLayout> 
