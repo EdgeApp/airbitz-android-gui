@@ -303,6 +303,10 @@ public abstract class ScanFragment
         mQRCamera.stopCamera();
     }
 
+    public void stopScanning() {
+        mQRCamera.stopScanning();
+    }
+
     @Override
     public void onScanResult(String result) {
         onCameraScanResult(result);

@@ -229,6 +229,7 @@ public class SendFragment extends ScanFragment {
                     }
                     @Override
                     public void onNeutral(MaterialDialog dialog) {
+                        mQRCamera.startScanning();
                         dialog.cancel();
                     }
                 });
