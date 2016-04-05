@@ -223,7 +223,7 @@ public class TransactionListFragment extends WalletBaseFragment
                 @Override
                 public void onClick(View view) {
                     final Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://purse.io"));
+                    intent.setData(Uri.parse("http://bit.ly/AirbitzPurse"));
                     mActivity.startActivity(intent);
                 }
             });
