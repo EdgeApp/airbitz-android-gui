@@ -223,7 +223,7 @@ public class NavigationActivity extends ActionBarActivity
     private Stack<Fragment>[] mNavStacks = null;
     private List<Fragment> mOverlayFragments = new ArrayList<Fragment>();
     // Callback interface when a wallet could be updated
-    private Dialog mIncomingDialog;
+    private MaterialDialog mIncomingDialog = null;
     private LandingFragment mLandingFragment;
     final Runnable dialogKiller = new Runnable() {
         @Override
@@ -1116,7 +1116,7 @@ public class NavigationActivity extends ActionBarActivity
             if (null != tx) {
                 if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
-                    showIncomingBitcoinDialog();
+                    showIncomingBitcoinDialog(wallet, tx);
                 }
             }
         }
@@ -1238,30 +1238,38 @@ public class NavigationActivity extends ActionBarActivity
         mNavStacks[threadId].add(getNewBaseFragement(threadId));
     }
 
-    private void showIncomingBitcoinDialog() {
+    private void showIncomingBitcoinDialog(final Wallet wallet, final Transaction transaction) {
         if (!this.isFinishing()) {
-            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
-            builder.setMessage(getResources().getString(R.string.received_bitcoin_message))
-                    .setTitle(getResources().getString(R.string.received_bitcoin_title))
-                    .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.received_bitcoin_positive),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+            Account account = AirbitzApplication.getAccount();
+            String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
+            String currencyValue =
+                CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+            String message = String.format(getString(R.string.received_bitcoin_message), coinValue, currencyValue);
+
+            MaterialDialog.Builder builder =
+                new MaterialDialog.Builder(NavigationActivity.this)
+                        .content(message)
+                        .title(getResources().getString(R.string.received_bitcoin_title))
+                        .cancelable(false)
+                        .positiveText(getResources().getString(R.string.received_bitcoin_positive))
+                        .negativeText(getResources().getString(R.string.received_bitcoin_negative))
+                        .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
                                     gotoDetailsNow();
                                 }
-                            }
-                    )
-                    .setNegativeButton(getResources().getString(R.string.received_bitcoin_negative),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
                                     resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
                                     dialog.cancel();
                                 }
-                            }
-                    );
-            mIncomingDialog = builder.create();
+                        });
+            mIncomingDialog = builder.build();
             mIncomingDialog.show();
             mHandler.postDelayed(dialogKiller, getResources().getInteger(R.integer.alert_hold_time_payment_received));
+
+            TextView tv = mIncomingDialog.getContentView();
+            tv.setTypeface(NavigationActivity.latoRegularTypeFace);
         }
     }
 
