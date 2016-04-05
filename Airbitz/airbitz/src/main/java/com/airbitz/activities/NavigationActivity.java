@@ -2588,7 +2588,14 @@ public class NavigationActivity extends ActionBarActivity
                 List<String> ids = AirbitzApplication.getAccount().walletIds();
                 List<Wallet> wallets = AirbitzApplication.getAccount().wallets();
                 int total = ids == null ? 0 : ids.size();
-                int complete = wallets == null ? 0 : wallets.size();
+                int complete = 0;
+                if (wallets != null) {
+                    for (Wallet w : wallets) {
+                        if (w.isSynced()) {
+                            complete++;
+                        }
+                    }
+                }
                 if (total > 0) {
                     if (total == complete) {
                         showMessage(context.getString(R.string.loading_transactions));

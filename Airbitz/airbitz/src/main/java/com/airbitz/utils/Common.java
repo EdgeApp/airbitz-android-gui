@@ -56,6 +56,7 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -64,6 +65,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
+
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.objects.CurrentLocationManager;
@@ -81,6 +83,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -168,6 +171,16 @@ public class Common {
 
     public static String evaluateTextFile(Context ctx, int resId) {
         String text = readRawTextFile(ctx, resId);
+        String supportEmail = ctx.getString(R.string.app_support_email);
+        String emailSupportTemplate =
+            String.format("<a href=\"#\" onclick=\"_help.sendSupportEmail()\">%s</a>", supportEmail);
+        String phoneSupportTemplate = "";
+        String phoneSupport = ctx.getString(R.string.app_support_phone);
+        if (!TextUtils.isEmpty(phoneSupport)) {
+            phoneSupportTemplate = String.format("<a href=\"tel:%1$s\">%1$s</a>",
+                ctx.getString(R.string.app_support_phone));
+        }
+
         Map<String, String> tags = new LinkedHashMap<String, String>();
         tags.put("[[abtag APP_TITLE]]", ctx.getString(R.string.app_name));
         tags.put("[[abtag APP_STORE_LINK]]", ctx.getString(R.string.appstore_link));
@@ -181,6 +194,8 @@ public class Common {
         tags.put("[[abtag REQUEST_FOOTER_LINK_TITLE]]", ctx.getString(R.string.request_footer_link_title));
         tags.put("[[abtag REQUEST_FOOTER_LINK]]", ctx.getString(R.string.request_footer_link));
         tags.put("[[abtag REQUEST_FOOTER_CONTACT]]", ctx.getString(R.string.request_footer_contact));
+        tags.put("[[abtag EMAIL_SUPPORT_TEMPLATE]]", emailSupportTemplate);
+        tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             text = text.replace(e.getKey(), e.getValue());
