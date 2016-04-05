@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <ScrollView
+        android:id="@+id/layout_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:text="@string/export_title"
+                style="@style/SettingsTitle" />
+
+            <LinearLayout
+                android:id="@+id/layout_data"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/SettingsGroup" >
+
+                <Button
+                    android:id="@+id/button_csv"
+                    android:text="@string/export_csv_title"
+                    style="@style/SettingsButton" />
+
+                <Button
+                    android:id="@+id/button_quicken"
+                    android:text="@string/export_quicken_title"
+                    android:visibility="gone"
+                    style="@style/SettingsButton" />
+
+                <Button
+                    android:id="@+id/button_quickbooks"
+                    android:text="@string/export_quickbooks_title"
+                    style="@style/SettingsButton" />
+
+                <Button
+                    android:id="@+id/button_pdf"
+                    android:text="@string/export_pdf_title"
+                    android:visibility="gone"
+                    style="@style/SettingsButton" />
+
+                <Button
+                    android:id="@+id/button_wallet"
+                    android:text="@string/export_print_title"
+                    style="@style/SettingsButton" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_toolbar_dropdown" />
+
+</RelativeLayout>

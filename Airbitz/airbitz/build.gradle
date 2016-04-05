@@ -1,0 +1,116 @@
+import java.util.regex.Pattern
+
+apply plugin: 'com.android.application'
+
+task buildAirbitzPlugins(type:Exec) {
+    workingDir '../../'
+    commandLine './mkplugin'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 21
+        versionCode 2100000000
+        versionName "99.99.99"
+    }
+
+    productFlavors {
+        develop {
+            applicationId 'com.airbitz.develop'
+        }
+        nettest {
+            applicationId 'com.airbitz.nettest'
+        }
+        prod {
+            applicationId 'com.airbitz'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                def versionCode = getVersionCode()
+                variant.outputs.each { output ->
+                    variant.productFlavors.each { flavor ->
+                        output.outputFile = new File(output.outputFile.parent, "airbitz-" + flavor.name + "-" + variant.buildType.name +"-" + versionCode + ".apk")
+                    }
+                }
+            }
+        }
+    }
+
+    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build
+}
+
+// Used for appending the application version code in the generated .apk
+def getVersionCode() {
+    def manifestFile = file("src/main/AndroidManifest.xml")
+    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+    def manifestText = manifestFile.getText()
+    println manifestText
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    return matcher.group(1).replace(".", "-")
+}
+
+// specify signing properties on the command line
+if (hasProperty('storeFile')) {
+    println 'Generating a signed package.'
+    android.signingConfigs.release.storeFile = file(storeFile)
+    android.signingConfigs.release.storePassword = storePassword
+    android.signingConfigs.release.keyAlias = keyAlias
+    android.signingConfigs.release.keyPassword = keyPassword
+} else {
+    android.buildTypes.release.signingConfig = null
+}
+
+dependencies {
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
+        transitive = true
+    }
+    compile 'com.github.teneighty:ShowEdittextPassword:22fa5d4'
+    compile 'com.balysv.materialmenu:material-menu-toolbar:1.5.4'
+    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:support-v4:21.0.+'
+    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.retrofit:retrofit:1.4.1'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.google.zxing:core:3.0.1'
+    compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+
+    prodCompile 'co.airbitz:airbitz-core-android:0.9.1@aar'
+    developCompile 'co.airbitz:airbitz-core-android-develop:0.9.1@aar'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.9.1@aar'
+
+    compile project(':libs:bitbeacon')
+    compile project(':libs:airbitz-directory')
+}
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include 
+        android:id="@+id/buy_bitcoin"
+        layout="@layout/item_listview_transaction" />
+
+    <include 
+        android:id="@+id/import_bitcoin"
+        layout="@layout/item_listview_transaction" />
+
+    <include 
+        android:id="@+id/discount_starbucks"
+        layout="@layout/item_listview_transaction" />
+
+    <include 
+        android:id="@+id/discount_target"
+        layout="@layout/item_listview_transaction" />
+
+    <include 
+        android:id="@+id/discount_amazon"
+        layout="@layout/item_listview_transaction" />
+
+</LinearLayout>
