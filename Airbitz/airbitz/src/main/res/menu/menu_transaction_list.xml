@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_light"
+        app:showAsAction="always"
+        android:title="@string/string_search" />
+
+    <item
+        android:id="@+id/action_toggle"
+        android:title="@string/string_balance" />
+
+    <item android:id="@+id/action_export"
+          android:title="@string/export_title"
+          android:icon="@drawable/btn_export" />
+
+    <item android:id="@+id/action_help"
+          android:title="@string/string_help" />
+</menu>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="290dp"
+    android:background="@color/colorPrimary"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:clickable="false">
+
+    <RelativeLayout
+        android:layout_width="290dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_footer">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/drawer_top_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clipToPadding="false">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@color/colorPrimaryDarker"
+                        android:gravity="center"
+                        android:elevation="4dp">
+
+                        <TextView
+                            android:id="@+id/item_drawer_exchange_rate"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawablePadding="10dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="20dp"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textSize="20dp"/>
+
+                        <TextView
+                            android:id="@+id/item_drawer_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:drawableLeft="@drawable/ic_user_account_secure_light"
+                            android:drawablePadding="20dp"
+                            android:text="@string/drawer_signin_or_signup"
+                            style="@style/GreenButton" />
+
+                    </FrameLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary">
+
+                        <TextView
+                            android:id="@+id/item_drawer_account"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/transparent_until_pressed"
+                            android:clickable="true"
+                            android:drawableLeft="@drawable/ic_user_account_secure_light"
+                            android:drawablePadding="20dp"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="20dp"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
+                            android:paddingTop="20dp"
+                            android:singleLine="true"
+                            android:text="Account"
+                            android:textColor="@color/white_frost"
+                            android:textSize="20dp" />
+
+                        <ImageView
+                            android:id="@+id/item_drawer_account_arrow"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="20dp"
+                            android:src="@drawable/ic_arrow_drop_down_white_24dp"/>
+                        </RelativeLayout>
+
+                    <include layout="@layout/divider_horizontal_light_gray" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_drawer_bottom_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/drawer_top_layout" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:orientation="vertical">
+
+                        <Button
+                            android:id="@+id/item_drawer_buy_sell"
+                            android:drawableLeft="@drawable/ic_exchange_dark"
+                            android:text="@string/drawer_buy_sell"
+                            style="@style/DrawerButton" />
+
+                        <Button
+                            android:id="@+id/item_drawer_shop"
+                            android:drawableLeft="@drawable/ic_gift_card_dark"
+                            android:text="@string/drawer_discounted_gift_cards"
+                            style="@style/DrawerButton" />
+
+                        <Button
+                            android:id="@+id/item_drawer_request"
+                            android:text="@string/drawer_request"
+                            android:drawableLeft="@drawable/ic_receive_dark"
+                            style="@style/DrawerButton"/>
+
+                        <Button
+                            android:id="@+id/item_drawer_send"
+                            android:text="@string/drawer_send"
+                            android:drawableLeft="@drawable/ic_send_dark"
+                            style="@style/DrawerButton"/>
+
+                        <Button
+                            android:id="@+id/item_drawer_txs"
+                            android:text="@string/drawer_transactions"
+                            android:drawableLeft="@drawable/ic_transactions_dark"
+                            style="@style/DrawerButton"/>
+
+                        <Button
+                            android:id="@+id/item_drawer_wallets"
+                            android:text="@string/drawer_wallets"
+                            android:drawableLeft="@drawable/ic_wallets_dark"
+                            style="@style/DrawerButton"/>
+
+                        <Button
+                            android:id="@+id/item_drawer_affiliates"
+                            android:drawableLeft="@drawable/ic_import_dark"
+                            android:singleLine="false"
+                            android:text="@string/drawer_affiliates"
+                            style="@style/DrawerButton" />
+
+                        <Button
+                            android:id="@+id/item_drawer_directory"
+                            android:text="@string/drawer_directory"
+                            android:drawableLeft="@drawable/ic_directory_dark"
+                            style="@style/DrawerButton"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <ListView
+                    android:id="@+id/drawer_account_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:layout_below="@id/drawer_top_layout"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <View
+            android:background="@drawable/bottom_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_above="@+id/layout_footer" />
+
+        <LinearLayout
+            android:id="@+id/layout_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_alignParentBottom="true"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <include layout="@layout/divider_horizontal_light_gray" />
+
+            <Button
+                android:id="@+id/item_drawer_logout"
+                android:drawableLeft="@drawable/ic_logout_dark"
+                android:text="@string/drawer_logout"
+                style="@style/DrawerButton" />
+
+            <Button
+                android:id="@+id/item_drawer_settings"
+                android:drawableLeft="@drawable/ic_settings_dark"
+                android:text="@string/drawer_settings"
+                style="@style/DrawerButton" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>
