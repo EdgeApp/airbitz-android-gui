@@ -122,6 +122,10 @@ dependencies {
     developCompile 'co.airbitz:airbitz-core-android-develop:0.9.1@aar'
     nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.9.1@aar'
 
+    coinbtmCompile 'co.airbitz:airbitz-core-android:0.9.1@aar'
+    coinsourceCompile 'co.airbitz:airbitz-core-android:0.9.1@aar'
+    athenaCompile 'co.airbitz:airbitz-core-android:0.9.1@aar'
+
     compile project(':libs:bitbeacon')
     compile project(':libs:airbitz-directory')
 }
