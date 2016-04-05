@@ -689,9 +689,11 @@
     <string name="affiliate_category">Income:Affiliate Revenue</string>
     <string name="affiliate_notes">Revenue share from affiliate link %@</string>
 
+    <string name="app_support_requested">Support Requested</string>
     <string name="app_name">Airbitz</string>
     <string name="app_homepage">https://airbitz.co</string>
     <string name="app_support_email">support@airbitz.co</string>
+    <string name="app_support_phone">+1-844-928-9744</string>
     <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
     <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
     <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
