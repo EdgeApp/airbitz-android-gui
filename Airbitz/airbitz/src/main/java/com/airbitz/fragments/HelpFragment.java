@@ -32,17 +32,23 @@
 package com.airbitz.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
@@ -80,6 +86,33 @@ public class HelpFragment extends BaseFragment {
         mID = resourceID;
     }
 
+    public static class HelpContext {
+        NavigationActivity mActivity;
+        public HelpContext(NavigationActivity context) {
+            mActivity = context;
+        }
+
+        @JavascriptInterface
+        public void sendSupportEmail() {
+            android.util.Log.d("EMAIL", "sendSupportEmail().....");
+            Context ctx = mActivity;
+            String supportEmail    = ctx.getString(R.string.app_support_email);
+            String platform        = String.format("Device: %s<br />", Build.DEVICE);
+            String platformString  = String.format("SDK Version: %d<br />", Build.VERSION.SDK_INT);
+            String osVersionString = String.format("OS Version: %s<br />", Build.VERSION.RELEASE);
+            String airbitzVersion  = String.format("Airbitz Version: %s(%d)<br />", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+
+            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            intent.setType("message/rfc822");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] { supportEmail });
+            intent.putExtra(Intent.EXTRA_SUBJECT, ctx.getString(R.string.app_support_requested));
+
+            String html = platform + platformString + osVersionString + airbitzVersion;
+            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
+            mActivity.startActivity(intent);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,6 +128,9 @@ public class HelpFragment extends BaseFragment {
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setSupportZoom(false);
+            webView.addJavascriptInterface(new HelpContext(mActivity), "_help");
             if (mID != INFO) {
                 webView.loadData(Common.evaluateTextFile(getActivity(), mID), "text/html; charset=UTF-8", null);
             } else {
