@@ -1886,7 +1886,6 @@ public class NavigationActivity extends ActionBarActivity
                 // Dismiss dialog
                 NavigationActivity.this.DismissFadingDialog();
             }
-            AirbitzApplication.getAccount().startBackgroundTasks();
         }
 
         @Override
