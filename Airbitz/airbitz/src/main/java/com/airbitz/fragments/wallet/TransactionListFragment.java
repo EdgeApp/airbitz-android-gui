@@ -219,7 +219,7 @@ public class TransactionListFragment extends WalletBaseFragment
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
                 }
             });
-            setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_PURSE, new View.OnClickListener() {
+            setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_AMAZON, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     final Intent intent = new Intent(Intent.ACTION_VIEW);
