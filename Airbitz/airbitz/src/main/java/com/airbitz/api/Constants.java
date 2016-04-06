@@ -83,10 +83,11 @@ public class Constants {
     public static double MAX_SATOSHI = 9.223372036854775807E18; // = 0x7fffffffffffffff, but Java can't handle that.
 
     public static final long BIZ_ID_AIRBITZ = 3384;
+    public static final long BIZ_ID_AMAZON = 11245;
+    public static final long BIZ_ID_HOME_DEPOT = 11141;
+    public static final long BIZ_ID_PURSE = 5041;
     public static final long BIZ_ID_STARBUCKS = 11131;
     public static final long BIZ_ID_TARGET = 11132;
-    public static final long BIZ_ID_PURSE = 5041;
-    public static final long BIZ_ID_WHOLEFOODS = 11139;
     public static final long BIZ_ID_WALMART = 11140;
-    public static final long BIZ_ID_HOME_DEPOT = 11141;
+    public static final long BIZ_ID_WHOLEFOODS = 11139;
 }

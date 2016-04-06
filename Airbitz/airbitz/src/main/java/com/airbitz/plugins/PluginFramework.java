@@ -600,21 +600,15 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String readData(String key) {
-            String s = account.data(plugin.pluginId).get(key);
             AirbitzCore.logi("readData: " + key);
-            return s;
+            return account.data(plugin.pluginId).get(key);
         }
 
         @JavascriptInterface
         public String getAffiliateInfo() {
             Account account = AirbitzApplication.getAccount();
             Affiliates affiliate = new Affiliates(account);
-            String info = affiliate.getAffiliateInfo();
-            if (info != null) {
-                return jsonResult(new JsonValue<String>(info)).toString();
-            } else {
-                return jsonError().toString();
-            }
+            return affiliate.getAffiliateInfo();
         }
 
         @JavascriptInterface

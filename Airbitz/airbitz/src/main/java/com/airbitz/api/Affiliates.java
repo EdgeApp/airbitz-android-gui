@@ -70,8 +70,8 @@ public class Affiliates {
     private static final String AFFILIATES_TOUCH = SERVER_ROOT + "affiliates/";
 
     private static final String AFFILIATE_DATA_STORE = "affiliate_program";
-    private static final String AFFILIATE_LINK_DATA = "affiliate_link_beta";
-    private static final String AFFILIATE_INFO_DATA = "affiliate_info_beta";
+    private static final String AFFILIATE_LINK_DATA = "affiliate_link";
+    private static final String AFFILIATE_INFO_DATA = "affiliate_info";
 
     private static final String AFFILIATE_LOCAL_CHECKED = "co.airbitz.notifications.affiliate_checked";
     private static final String AFFILIATE_LOCAL_DATA = "co.airbitz.notifications.affiliate_data";
