@@ -443,7 +443,7 @@
     <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
     <string name="request_qr_ble_copied">Request is copied to the clipboard.</string>
     <string name="request_qr_first_usage">Present QR code to Sender and have them scan to send you payment</string>
-    <string name="request_qr_top_message">Scan QR to Send Funds or Login with BitID</string>
+    <string name="request_qr_top_message">Scan QR to Send, Import, or Login with BitID</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
