@@ -102,6 +102,7 @@ public class TransactionListFragment extends WalletBaseFragment
     private RelativeLayout mHeaderLayout;
     private LinearLayout mBalanceLayout;
     private LinearLayout mShowBalanceLayout;
+    private LinearLayout mLoadingLayout;
     private SwipeRefreshLayout mSwipeLayout;
     private boolean mIsAnimating = false;
     private boolean mShowBalance;
@@ -237,6 +238,9 @@ public class TransactionListFragment extends WalletBaseFragment
         mBitCoinBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
         mFiatBalance = (TextView) mListHeaderView.findViewById(R.id.header_fiat_balance);
         mFiatBalance.setTypeface(NavigationActivity.latoRegularTypeFace);
+
+        mLoadingLayout = (LinearLayout) mListHeaderView.findViewById(R.id.loading_layout);
+        mLoadingLayout.setVisibility(View.VISIBLE);
 
         mShowBalanceLayout = (LinearLayout) mListHeaderView.findViewById(R.id.show_balance);
         mBalanceLayout = (LinearLayout) mListHeaderView.findViewById(R.id.balance_layout);
@@ -519,9 +523,11 @@ public class TransactionListFragment extends WalletBaseFragment
             mFiatBalance.setText(
                 mWallet.currency().code + " " +
                 CoreWrapper.formatCurrency(mAccount, totalSatoshis, mWallet.currency().code, true));
+            mLoadingLayout.setVisibility(View.INVISIBLE);
         } else {
-            mBitCoinBalance.setText(R.string.string_loading);
+            mBitCoinBalance.setText("");
             mFiatBalance.setText("");
+            mLoadingLayout.setVisibility(View.VISIBLE);
         }
     }
 
