@@ -106,9 +106,9 @@ dependencies {
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
 
-    prodCompile 'co.airbitz:airbitz-core-android:0.9.1@aar'
-    developCompile 'co.airbitz:airbitz-core-android-develop:0.9.1@aar'
-    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.9.1@aar'
+    prodCompile 'co.airbitz:airbitz-core-android:0.9.2@aar'
+    developCompile 'co.airbitz:airbitz-core-android-develop:0.9.2@aar'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.9.2@aar'
 
     compile project(':libs:bitbeacon')
     compile project(':libs:airbitz-directory')
