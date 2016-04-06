@@ -1401,7 +1401,6 @@ public class NavigationActivity extends ActionBarActivity
             transaction.commitAllowingStateLoss();
         }
         // mHandler.postDelayed(mAttemptLogout, 100);
-        updateDrawer(false);
 
         mLogoutTask = new LogoutTask();
         mLogoutTask.execute();
@@ -1435,6 +1434,7 @@ public class NavigationActivity extends ActionBarActivity
             NavigationActivity.this.DismissFadingDialog();
             DisplayLoginOverlay(true);
             resetApp();
+            updateDrawer(false);
             switchFragmentThread(Tabs.BD.ordinal());
             mLogoutTask = null;
         }
