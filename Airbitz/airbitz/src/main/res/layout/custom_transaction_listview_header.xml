@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:visibility="invisible"
             android:orientation="vertical">
 
             <TextView 
@@ -54,9 +55,28 @@
                 android:textColor="@color/dark_blue_text"
                 android:textSize="35sp"
                 android:gravity="center"
-                android:text="Show Balance" />
+                android:text="@string/string_show_balance" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_blue_text"
+                android:textSize="35sp"
+                android:gravity="center"
+                android:text="@string/string_loading" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <include

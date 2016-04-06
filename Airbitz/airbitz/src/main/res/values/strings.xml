@@ -35,6 +35,7 @@
     <string name="string_payment_received">** Payment Received **</string>
     <string name="string_exit_app_question">"Would you like to exit %1$s?"</string>
     <string name="string_too_short">too short</string>
+    <string name="string_show_balance">Show Balance</string>
     <string name="string_agree">Agree</string>
     <string name="string_balance">Balance</string>
 
