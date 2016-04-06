@@ -1009,6 +1009,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         super.walletChanged(newWallet);
 
         mWallet = newWallet;
+        mSpendTarget = newSpend(mAmountToSendSatoshi);
         updateTextFieldContents(mBtcMode);
     }
 
