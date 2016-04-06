@@ -800,6 +800,41 @@ public class NavigationActivity extends ActionBarActivity
         //No call for super(). Bug on API Level > 11 in Support Package
     }
 
+    private void setupReceivers() {
+        Account account = AirbitzApplication.getAccount();
+        if (account != null && account.isLoggedIn()) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Constants.WALLET_LOADING_START_ACTION);
+            filter.addAction(Constants.WALLET_CHANGED_ACTION);
+            filter.addAction(Constants.WALLETS_ALL_LOADED_ACTION);
+            mWalletsLoadedReceiver = new WalletReceiver();
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+            manager.registerReceiver(mWalletsLoadedReceiver, filter);
+            manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
+            manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Constants.INCOMING_BITCOIN_ACTION));
+            manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
+            manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
+            manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
+            manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
+            manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
+        }
+    }
+
+    private void tearDownReceivers() {
+        Account account = AirbitzApplication.getAccount();
+        if (account != null && account.isLoggedIn()) {
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+            manager.unregisterReceiver(mWalletsLoadedReceiver);
+            manager.unregisterReceiver(mExchangeReceiver);
+            manager.unregisterReceiver(mIncomingBitcoinReceiver);
+            manager.unregisterReceiver(mRemotePasswordChange);
+            manager.unregisterReceiver(mDataSyncReceiver);
+            manager.unregisterReceiver(mOtpErrorReceiver);
+            manager.unregisterReceiver(mOtpSkewReceiver);
+            manager.unregisterReceiver(mOtpResetReceiver);
+        }
+    }
+
     @Override
     public void onResume() {
         //******************* HockeyApp support
@@ -813,20 +848,7 @@ public class NavigationActivity extends ActionBarActivity
         }
         //******************* end HockeyApp support
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.WALLET_LOADING_START_ACTION);
-        filter.addAction(Constants.WALLET_CHANGED_ACTION);
-        filter.addAction(Constants.WALLETS_ALL_LOADED_ACTION);
-        mWalletsLoadedReceiver = new WalletReceiver();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        manager.registerReceiver(mWalletsLoadedReceiver, filter);
-        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Constants.INCOMING_BITCOIN_ACTION));
-        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
-        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
-        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
-        manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
-        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
+        setupReceivers();
         mCoreAPI.foreground();
 
         //Look for Connection change events
@@ -911,15 +933,7 @@ public class NavigationActivity extends ActionBarActivity
         activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
 
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        manager.unregisterReceiver(mWalletsLoadedReceiver);
-        manager.unregisterReceiver(mExchangeReceiver);
-        manager.unregisterReceiver(mIncomingBitcoinReceiver);
-        manager.unregisterReceiver(mRemotePasswordChange);
-        manager.unregisterReceiver(mDataSyncReceiver);
-        manager.unregisterReceiver(mOtpErrorReceiver);
-        manager.unregisterReceiver(mOtpSkewReceiver);
-        manager.unregisterReceiver(mOtpResetReceiver);
+        tearDownReceivers();
         mCoreAPI.background();
 
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
@@ -1298,14 +1312,16 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public void UserJustLoggedIn(boolean passwordLogin, boolean showLoadingMessages) {
-        mWalletsLoadedReceiver.mShowMessages = showLoadingMessages;
-        UserJustLoggedIn(passwordLogin);
+    public void UserJustLoggedIn(boolean passwordLogin) {
+        UserJustLoggedIn(passwordLogin, false);
     }
 
-    public void UserJustLoggedIn(boolean passwordLogin) {
+    public void UserJustLoggedIn(boolean passwordLogin, boolean showLoadingMessages) {
         showNavBar();
         checkDailyLimitPref();
+        setupReceivers();
+        mWalletsLoadedReceiver.mShowMessages = showLoadingMessages;
+
         Account account = AirbitzApplication.getAccount();
         account.startBackgroundTasks();
         if (mDataUri != null) {
@@ -1404,8 +1420,8 @@ public class NavigationActivity extends ActionBarActivity
             transaction.remove(fragment);
             transaction.commitAllowingStateLoss();
         }
-        // mHandler.postDelayed(mAttemptLogout, 100);
-
+        // stop the UI from responding to core events
+        tearDownReceivers();
         mLogoutTask = new LogoutTask();
         mLogoutTask.execute();
     }
@@ -1432,9 +1448,6 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            if (isCancelled()) {
-                return;
-            }
             NavigationActivity.this.DismissFadingDialog();
             DisplayLoginOverlay(true);
             resetApp();
@@ -1443,18 +1456,6 @@ public class NavigationActivity extends ActionBarActivity
             mLogoutTask = null;
         }
     }
-
-    Runnable mAttemptLogout = new Runnable() {
-        @Override
-        public void run() {
-            if(mAsyncTasks.isEmpty()) {
-                startActivity(new Intent(NavigationActivity.this, NavigationActivity.class));
-            }
-            else {
-                mHandler.postDelayed(this, 100);
-            }
-        }
-    };
 
     private void resetApp() {
         Fragment frag = mNavStacks[Tabs.BUYSELL.ordinal()].peek();
@@ -2569,7 +2570,7 @@ public class NavigationActivity extends ActionBarActivity
         confirmDialog.show();
     }
 
-    private WalletReceiver mWalletsLoadedReceiver;
+    private WalletReceiver mWalletsLoadedReceiver = new WalletReceiver();
     class WalletReceiver extends BroadcastReceiver {
         public boolean mDataLoaded = false;
         public boolean mShowMessages = false;
