@@ -370,21 +370,6 @@ public class NavigationActivity extends ActionBarActivity
 
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.WALLET_LOADING_START_ACTION);
-        filter.addAction(Constants.WALLET_CHANGED_ACTION);
-        filter.addAction(Constants.WALLETS_ALL_LOADED_ACTION);
-        mWalletsLoadedReceiver = new WalletReceiver();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        manager.registerReceiver(mWalletsLoadedReceiver, filter);
-        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
-        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Constants.INCOMING_BITCOIN_ACTION));
-        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
-        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
-        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
-        manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
-        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
-
         // Let's see what plugins are enabled
         PluginCheck.checkEnabledPlugins();
         mAffiliateQueryTask = new Affiliates.AffiliateQueryTask(this);
@@ -399,15 +384,6 @@ public class NavigationActivity extends ActionBarActivity
             AirbitzApplication.setFragmentStack(mNavStacks);
             AirbitzApplication.setLastNavTab(mNavThreadId);
         }
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-        manager.unregisterReceiver(mWalletsLoadedReceiver);
-        manager.unregisterReceiver(mExchangeReceiver);
-        manager.unregisterReceiver(mIncomingBitcoinReceiver);
-        manager.unregisterReceiver(mRemotePasswordChange);
-        manager.unregisterReceiver(mDataSyncReceiver);
-        manager.unregisterReceiver(mOtpErrorReceiver);
-        manager.unregisterReceiver(mOtpSkewReceiver);
-        manager.unregisterReceiver(mOtpResetReceiver);
     }
 
     public boolean onTouch(View view, MotionEvent event) {
@@ -837,6 +813,22 @@ public class NavigationActivity extends ActionBarActivity
         }
         //******************* end HockeyApp support
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.WALLET_LOADING_START_ACTION);
+        filter.addAction(Constants.WALLET_CHANGED_ACTION);
+        filter.addAction(Constants.WALLETS_ALL_LOADED_ACTION);
+        mWalletsLoadedReceiver = new WalletReceiver();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.registerReceiver(mWalletsLoadedReceiver, filter);
+        manager.registerReceiver(mExchangeReceiver, new IntentFilter(Constants.EXCHANGE_RATE_UPDATED_ACTION));
+        manager.registerReceiver(mIncomingBitcoinReceiver, new IntentFilter(Constants.INCOMING_BITCOIN_ACTION));
+        manager.registerReceiver(mRemotePasswordChange, new IntentFilter(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
+        manager.registerReceiver(mDataSyncReceiver, new IntentFilter(Constants.DATASYNC_UPDATE_ACTION));
+        manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
+        manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
+        manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
+        mCoreAPI.foreground();
+
         //Look for Connection change events
         registerReceiver(ConnectivityChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -918,7 +910,18 @@ public class NavigationActivity extends ActionBarActivity
 
         activityInForeground = false;
         unregisterReceiver(ConnectivityChangeReceiver);
-        mCoreAPI.connectivity(false);
+
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.unregisterReceiver(mWalletsLoadedReceiver);
+        manager.unregisterReceiver(mExchangeReceiver);
+        manager.unregisterReceiver(mIncomingBitcoinReceiver);
+        manager.unregisterReceiver(mRemotePasswordChange);
+        manager.unregisterReceiver(mDataSyncReceiver);
+        manager.unregisterReceiver(mOtpErrorReceiver);
+        manager.unregisterReceiver(mOtpSkewReceiver);
+        manager.unregisterReceiver(mOtpResetReceiver);
+        mCoreAPI.background();
+
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
         PasswordCheckReceiver.setup(this);
@@ -929,6 +932,7 @@ public class NavigationActivity extends ActionBarActivity
             mPasswordCheck.onPause();
         }
         mOTPResetRequestDialog = null; // To allow the message again if foregrounding
+
     }
 
     /*
@@ -2580,6 +2584,9 @@ public class NavigationActivity extends ActionBarActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!AirbitzApplication.isLoggedIn()) {
+                return;
+            }
             if (Constants.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
                 if (mShowMessages) {
                     showMessage(context.getString(R.string.loading_wallets));

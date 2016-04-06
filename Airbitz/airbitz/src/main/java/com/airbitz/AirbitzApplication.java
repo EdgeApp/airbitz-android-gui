@@ -137,11 +137,12 @@ public class AirbitzApplication extends Application {
     }
 
     public static void logout() {
-        if (null != sAccount) {
-            sAccount.logout();
-        }
+        Account tmp = sAccount;
         setCurrentWallet(null);
         sAccount = null;
+        if (null != tmp) {
+            tmp.logout();
+        }
     }
 
     public static String getUsername() {
