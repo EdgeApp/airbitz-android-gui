@@ -2607,7 +2607,7 @@ public class NavigationActivity extends ActionBarActivity
                     if (total == complete) {
                         showMessage(context.getString(R.string.loading_transactions));
                     } else {
-                        showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+                        showMessage(context.getString(R.string.loading_n_wallets, complete + 1, total));
                     }
                 } else {
                     showMessage(context.getString(R.string.loading_wallets));
