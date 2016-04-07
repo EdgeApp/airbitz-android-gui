@@ -106,6 +106,7 @@ public class AirbitzApplication extends Application {
             editor.putString(LOGIN_NAME, sAccount.username());
             editor.apply();
         }
+        mWalletUuid = null;
         mOtpError = false;
         mOtpResetDate = null;
         mOtpResetToken = null;
@@ -138,7 +139,7 @@ public class AirbitzApplication extends Application {
 
     public static void logout() {
         Account tmp = sAccount;
-        setCurrentWallet(null);
+        mWalletUuid = null;
         sAccount = null;
         if (null != tmp) {
             tmp.logout();
