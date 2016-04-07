@@ -822,17 +822,17 @@ public class NavigationActivity extends ActionBarActivity
 
     private void tearDownReceivers() {
         Account account = AirbitzApplication.getAccount();
-        if (account != null && account.isLoggedIn()) {
-            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        if (mWalletsLoadedReceiver != null) {
             manager.unregisterReceiver(mWalletsLoadedReceiver);
-            manager.unregisterReceiver(mExchangeReceiver);
-            manager.unregisterReceiver(mIncomingBitcoinReceiver);
-            manager.unregisterReceiver(mRemotePasswordChange);
-            manager.unregisterReceiver(mDataSyncReceiver);
-            manager.unregisterReceiver(mOtpErrorReceiver);
-            manager.unregisterReceiver(mOtpSkewReceiver);
-            manager.unregisterReceiver(mOtpResetReceiver);
         }
+        manager.unregisterReceiver(mExchangeReceiver);
+        manager.unregisterReceiver(mIncomingBitcoinReceiver);
+        manager.unregisterReceiver(mRemotePasswordChange);
+        manager.unregisterReceiver(mDataSyncReceiver);
+        manager.unregisterReceiver(mOtpErrorReceiver);
+        manager.unregisterReceiver(mOtpSkewReceiver);
+        manager.unregisterReceiver(mOtpResetReceiver);
     }
 
     @Override
