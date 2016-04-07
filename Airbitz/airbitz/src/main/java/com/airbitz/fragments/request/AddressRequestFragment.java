@@ -188,23 +188,6 @@ public class AddressRequestFragment extends WalletBaseFragment {
     }
 
     private void goCancel() {
-        if (_cancelUrl == null) {
-            _cancelUrl = _errorUrl;
-        }
-        if (_cancelUrl != null) {
-            String cancelMessage = Uri.encode("User cancelled the request.");
-            String query;
-            if (!_cancelUrl.contains("?")) {
-                query = _cancelUrl + "?address=&cancelMessage=" + cancelMessage;
-            } else {
-                query = _cancelUrl + "&address=&cancelMessage=" + cancelMessage;
-            }
-            Uri cancelUri = Uri.parse(query);
-            Intent errorIntent = new Intent(Intent.ACTION_VIEW, cancelUri);
-            if (errorIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                startActivity(errorIntent);
-            }
-        }
         // finish
         if(mOnAddressRequest != null) {
             mOnAddressRequest.onAddressRequest();
