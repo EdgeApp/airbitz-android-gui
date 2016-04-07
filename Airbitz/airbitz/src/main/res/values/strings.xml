@@ -139,6 +139,7 @@
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Exit PIN Login</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
+    <string name="fragment_landing_enter_pin">Enter PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
