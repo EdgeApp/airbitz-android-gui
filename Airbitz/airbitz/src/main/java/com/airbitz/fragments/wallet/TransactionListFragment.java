@@ -248,10 +248,11 @@ public class TransactionListFragment extends WalletBaseFragment
         mHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowBalance();
+                if (mWallet.isSynced()) {
+                    toggleShowBalance();
+                }
             }
         });
-        setupBalanceView();
 
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -516,6 +517,7 @@ public class TransactionListFragment extends WalletBaseFragment
             for (Transaction t : mTransactions) {
                 totalSatoshis += t.amount();
             }
+            setupBalanceView();
             mBitCoinBalance.setText(
                 Utils.formatSatoshi(mAccount, totalSatoshis, true));
             mFiatBalance.setText(
