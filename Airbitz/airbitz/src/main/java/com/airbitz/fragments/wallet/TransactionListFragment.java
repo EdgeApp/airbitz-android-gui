@@ -248,9 +248,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mShowBalance = !mShowBalance;
-                AirbitzApplication.setShowBalanceMode(mShowBalance);
-                animateBar();
+                toggleShowBalance();
             }
         });
         setupBalanceView();
@@ -531,11 +529,13 @@ public class TransactionListFragment extends WalletBaseFragment
         }
     }
 
-    private void animateBar() {
+    private void toggleShowBalance() {
         if (mIsAnimating) {
             return;
         }
         mIsAnimating = true;
+        mShowBalance = !mShowBalance;
+        AirbitzApplication.setShowBalanceMode(mShowBalance);
         if (mShowBalance) {
             mHandler.post(animateBalanceShow);
         } else {

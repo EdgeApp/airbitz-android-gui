@@ -69,6 +69,7 @@ import co.airbitz.core.MetadataSet;
 import co.airbitz.core.ParsedUri;
 import co.airbitz.core.PaymentRequest;
 import co.airbitz.core.Spend;
+import co.airbitz.core.Transaction;
 import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
@@ -826,6 +827,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mSendOrTransferTask = new SendTask(mWallet);
             mSendOrTransferTask.execute();
             hideCalculator();
+            mActivity.hideSoftKeyboard(getView());
         }
         resetSlider();
     }
@@ -1139,7 +1141,10 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     return mUnsent.base16Tx();
                 } else {
                     // Returns txid
-                    return mSpendTarget.signBroadcastSave().id();
+                    Transaction tx = mSpendTarget.signBroadcastSave();
+                    if (tx != null) {
+                        return tx.id();
+                    }
                 }
             } catch (AirbitzException e) {
                 mError = Common.errorMap(mActivity, e);
