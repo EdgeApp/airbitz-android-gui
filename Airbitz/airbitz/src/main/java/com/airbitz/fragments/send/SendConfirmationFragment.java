@@ -827,6 +827,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mSendOrTransferTask = new SendTask(mWallet);
             mSendOrTransferTask.execute();
             hideCalculator();
+            mActivity.hideSoftKeyboard(getView());
         }
         resetSlider();
     }
