@@ -188,10 +188,7 @@ public class AddressRequestFragment extends WalletBaseFragment {
     }
 
     private void goCancel() {
-        // finish
-        if(mOnAddressRequest != null) {
-            mOnAddressRequest.onAddressRequest();
-        }
+        mActivity.popFragment();
     }
 
     private void createRequest() {
