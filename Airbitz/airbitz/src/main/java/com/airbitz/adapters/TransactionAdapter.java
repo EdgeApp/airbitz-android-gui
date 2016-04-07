@@ -224,6 +224,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                     }
                 });
         if (TextUtils.isEmpty(name)) {
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.latoItalicsTypeFace);
             if (transactionSatoshis < 0) {
                 name = mContext.getString(R.string.fragment_wallets_sent_bitcoin);
             } else {
@@ -232,6 +233,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.nameTextView.setText(name);
             viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(R.color.semi_black_text));
         } else {
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
             viewHolder.nameTextView.setText(name);
             viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(android.R.color.black));
         }
