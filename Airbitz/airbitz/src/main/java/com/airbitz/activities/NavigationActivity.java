@@ -1175,7 +1175,7 @@ public class NavigationActivity extends ActionBarActivity
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(INCOMING_COUNT, count);
                 editor.apply();
-                message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
+                message += getString(R.string.received_bitcoin_fading_message_teaching);
             }
         }
 
