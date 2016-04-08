@@ -455,16 +455,20 @@ public abstract class ScanFragment
                     public void onPositive(MaterialDialog dialog) {
                         processText(editText.getText().toString());
                         dialog.dismiss();
+                        mQRCamera.startScanning();
                     }
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
+                        mQRCamera.startScanning();
                     }
                     public void onNeutral(MaterialDialog dialog) {
                         final String pasteData = fromClipboard();
                         editText.setText(pasteData);
                         processText(pasteData);
+                        mQRCamera.startScanning();
                     }
                 });
+        mQRCamera.stopScanning();
         mPasteDialog = builder.show();
 
         updatePasteDialog();
