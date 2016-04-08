@@ -129,6 +129,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private EditText mFiatField;
     private EditText mBitcoinField;
     private long mSavedBitcoin = -1;
+    private String mSavedFiat = "";
 
     private ImageButton mConfirmSwipeButton;
 
@@ -331,7 +332,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             public void afterTextChanged(Editable editable) {
                 if (!mAutoUpdatingTextFields) {
                     mBtcMode = true;
-                    updateTextFieldContents(mBtcMode);
+                    updateTextFieldContents(mBtcMode, true);
                     mBitcoinField.setSelection(mBitcoinField.getText().toString().length());
                 }
             }
@@ -359,7 +360,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             public void afterTextChanged(Editable editable) {
                 if (!mAutoUpdatingTextFields) {
                     mBtcMode = false;
-                    updateTextFieldContents(mBtcMode);
+                    updateTextFieldContents(mBtcMode, true);
                     mFiatField.setSelection(mFiatField.getText().toString().length());
                 }
             }
@@ -549,7 +550,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onCurrencySelected(CoreCurrency currency) {
         mSendConfirmationCurrencyOverride = currency;
         mSendConfirmationOverrideCurrencyMode = true;
-        updateTextFieldContents(mBtcMode);
+        updateTextFieldContents(mBtcMode, false);
     }
 
     public void setExitHandler(OnExitHandler handler) {
@@ -559,7 +560,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     @Override
     protected void onExchangeRatesChange() {
         super.onExchangeRatesChange();
-        updateTextFieldContents(mBtcMode);
+        updateTextFieldContents(mBtcMode, false);
     }
 
     @Override
@@ -596,7 +597,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
     }
 
-    private void updateTextFieldContents(boolean btc) {
+    private void updateTextFieldContents(boolean btc, boolean btcUpdate) {
         mAutoUpdatingTextFields = true;
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
@@ -618,13 +619,15 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                         CoreWrapper.formatCurrency(mAccount, mAmountToSendSatoshi, mCurrency.code, false));
                 }
             } else {
-                long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mFiatField.getText().toString(), mCurrency.code);
-                mAmountToSendSatoshi = satoshi;
-                mSpendTarget = newSpend(mAmountToSendSatoshi);
-                if (TextUtils.isEmpty(mFiatField.getText())) {
-                    mBitcoinField.setText("");
-                } else {
-                    mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
+                if (btcUpdate) {
+                    long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mFiatField.getText().toString(), mCurrency.code);
+                    mAmountToSendSatoshi = satoshi;
+                    mSpendTarget = newSpend(mAmountToSendSatoshi);
+                    if (TextUtils.isEmpty(mFiatField.getText())) {
+                        mBitcoinField.setText("");
+                    } else {
+                        mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
+                    }
                 }
             }
         }
@@ -962,8 +965,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (mAmountToSendSatoshi > 0) {
             mBitcoinField.setText(Utils.formatSatoshi(mAccount, mAmountToSendSatoshi, false));
             if (mWallet != null) {
-                mFiatField.setText(
-                    CoreWrapper.formatCurrency(mAccount, mAmountToSendSatoshi, mCurrency.code, false));
+                String fiat = null;
+                if (!TextUtils.isEmpty(mSavedFiat)) {
+                    fiat = mSavedFiat;
+                } else {
+                    fiat = CoreWrapper.formatCurrency(mAccount, mAmountToSendSatoshi, mCurrency.code, false);
+                }
+                mFiatField.setText(fiat);
             }
             calculateFees();
         } else {
@@ -997,6 +1005,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onPause() {
         super.onPause();
         mSavedBitcoin = mAmountToSendSatoshi;
+        mSavedFiat = mFiatField.getText().toString();
         if (null != mCalculateFeesTask) {
             mCalculateFeesTask.cancel(true);
         }
@@ -1012,7 +1021,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
         mWallet = newWallet;
         mSpendTarget = newSpend(mAmountToSendSatoshi);
-        updateTextFieldContents(mBtcMode);
+        updateTextFieldContents(mBtcMode, false);
     }
 
     private void saveInvalidEntryCount(int entries) {
@@ -1209,6 +1218,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         public void onFocusChange(View view, boolean hasFocus) {
             if (view == mBitcoinField || view == mFiatField) {
                 if (hasFocus) {
+                    if (mBitcoinField == view) {
+                        mBtcMode = true;
+                    } else {
+                        mBtcMode = false;
+                    }
                     EditText edittext = (EditText) view;
                     edittext.selectAll();
                     mCalculator.setEditText(edittext);
