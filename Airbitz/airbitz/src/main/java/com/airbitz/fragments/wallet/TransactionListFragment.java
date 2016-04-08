@@ -248,7 +248,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mWallet.isSynced()) {
+                if (mWallet != null && mWallet.isSynced()) {
                     toggleShowBalance();
                 }
             }
