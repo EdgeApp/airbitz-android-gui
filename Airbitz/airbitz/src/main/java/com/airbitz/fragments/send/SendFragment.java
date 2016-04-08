@@ -419,16 +419,15 @@ public class SendFragment extends ScanFragment {
         public void onReceive(Context context, Intent intent) {
             String txId = intent.getStringExtra(Constants.WALLET_TXID);
             long amount = intent.getLongExtra(Constants.AMOUNT_SWEPT, 0);
-            AirbitzCore.logi("OnWalletSweep called with ID:" + txId + " and satoshis:" + amount);
 
+            AirbitzCore.logi("OnWalletSweep called with ID:" + txId + " and satoshis:" + amount);
             showBusyLayout(null, false);
 
-            Transaction tx = mWallet.transaction(txId);
-            if (tx != null) {
-                mSweptAmount = tx.amount();
-            } else {
-                mSweptAmount = amount;
+            Transaction tx = null;
+            if (!TextUtils.isEmpty(txId)) {
+                tx = mWallet.transaction(txId);
             }
+            mSweptAmount = amount;
             mSweptID = txId;
 
             // if a private address sweep

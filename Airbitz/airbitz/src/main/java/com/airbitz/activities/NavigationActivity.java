@@ -68,6 +68,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -1773,16 +1774,14 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
-        if (amount > 0 && !txid.isEmpty()) {
+        if (amount > 0 && !TextUtils.isEmpty(txid)) {
             onSentFunds(uuid, txid, "");
             ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
                     getString(R.string.import_wallet_swept_funds_message));
-        }
-        else if (amount == 0) {
+        } else if (amount == 0) {
             ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
                     getString(R.string.import_wallet_hidden_bits_error_message));
         }
-
     }
 
     public void showHiddenBitsTransaction(String txid, String uuid, long amount,
