@@ -645,11 +645,20 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             target = mWallet.newSpend();
             if (mPaymentRequest != null) {
                 target.addPaymentRequest(mPaymentRequest);
+                if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
+                    target.meta().name(mPaymentRequest.merchant());
+                } else {
+                    target.meta().name(mPaymentRequest.domain());
+                }
+                target.meta().notes(mPaymentRequest.memo());
             } else if (mDestWallet != null) {
                 MetadataSet meta = new MetadataSet();
                 target.addTransfer(mDestWallet, amountSatoshi, meta);
             } else if (mParsedUri != null) {
                 target.addAddress(mParsedUri.address(), amountSatoshi);
+                target.meta().name(mParsedUri.label())
+                             .category(mParsedUri.category())
+                             .notes(mParsedUri.message());
             }
             return target;
         } catch (AirbitzException e) {
@@ -911,7 +920,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         if (!TextUtils.isEmpty(mLabel)) {
             sendTo = mLabel;
         } else if (mPaymentRequest != null) {
-            sendTo = mPaymentRequest.domain();
+            if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
+                sendTo = mPaymentRequest.merchant();
+            } else {
+                sendTo = mPaymentRequest.domain();
+            }
             mAmountToSendSatoshi = mPaymentRequest.amount();
         } else if (mParsedUri != null) {
             sendTo = mParsedUri.label();
