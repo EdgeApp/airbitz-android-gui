@@ -299,7 +299,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
                 if (transaction.isDoubleSpend()) {
                     viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_transaction_list_double_spend));
-                } if (transaction.isReplaceByFee()) {
+                } else if (transaction.isReplaceByFee()) {
                     viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_transaction_list_rbf));
                 } else {
                     viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
