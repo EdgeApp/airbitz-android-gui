@@ -116,10 +116,12 @@ public class CoreWrapper {
             }
 
             public void incomingBitcoin(Wallet wallet, Transaction tx) {
-                Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
-                intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                intent.putExtra(Constants.WALLET_TXID, tx.id());
-                manager.sendBroadcast(intent);
+                if (null != tx) {
+                    Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
+                    intent.putExtra(Constants.WALLET_UUID, wallet.id());
+                    intent.putExtra(Constants.WALLET_TXID, tx.id());
+                    manager.sendBroadcast(intent);
+                }
             }
 
             public void sweep(Wallet wallet, Transaction tx, long amountSwept) {
