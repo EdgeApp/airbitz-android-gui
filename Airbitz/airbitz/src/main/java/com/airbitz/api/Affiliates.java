@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -130,6 +131,9 @@ public class Affiliates {
     public String affiliateBitidRegister(Context context, String address, String signature, String uri, String paymentAddress) {
         try {
             Wallet currentWallet = mAccount.wallet(AirbitzApplication.getCurrentWallet());
+            if (currentWallet == null) {
+                return null;
+            }
             ReceiveAddress request = currentWallet.newReceiveRequest();
             request.meta().name(context.getString(R.string.app_name))
                           .category(context.getString(R.string.affiliate_category))
@@ -236,34 +240,39 @@ public class Affiliates {
             super.onPostExecute(url);
             activity.showModalProgress(false);
 
-            affiliate.mAffiliateUrl = url;
+            if (url != null) {
+                affiliate.mAffiliateUrl = url;
 
-            final MaterialDialog.Builder builder = new MaterialDialog.Builder(activity);
-            builder.content(String.format(
-                    activity.getString(R.string.affiliate_refer_friends_body),
-                        url,
-                        activity.getString(R.string.app_name)))
-                .title(R.string.affiliate_refer_friends_title)
-                .theme(Theme.LIGHT)
-                .positiveText(activity.getString(R.string.string_share))
-                .neutralText(activity.getString(R.string.string_copy))
-                .negativeText(activity.getString(R.string.string_cancel))
-                .cancelable(false)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        share(activity, url);
-                    }
-                    @Override
-                    public void onNeutral(MaterialDialog dialog) {
-                        copy(activity, url);
-                    }
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.cancel();
-                    }
-                });
-            builder.show();
+                final MaterialDialog.Builder builder = new MaterialDialog.Builder(activity);
+                builder.content(String.format(
+                        activity.getString(R.string.affiliate_refer_friends_body),
+                            url,
+                            activity.getString(R.string.app_name)))
+                    .title(R.string.affiliate_refer_friends_title)
+                    .theme(Theme.LIGHT)
+                    .positiveText(activity.getString(R.string.string_share))
+                    .neutralText(activity.getString(R.string.string_copy))
+                    .negativeText(activity.getString(R.string.string_cancel))
+                    .cancelable(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            share(activity, url);
+                        }
+                        @Override
+                        public void onNeutral(MaterialDialog dialog) {
+                            copy(activity, url);
+                        }
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            dialog.cancel();
+                        }
+                    });
+                builder.show();
+            } else {
+                Toast toast = Toast.makeText(activity, activity.getString(R.string.affiliate_link_error), Toast.LENGTH_LONG);
+                toast.show();
+            }
         }
 
         private void share(NavigationActivity activity, String url) {
