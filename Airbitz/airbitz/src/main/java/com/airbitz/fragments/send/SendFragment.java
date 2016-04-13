@@ -509,27 +509,4 @@ public class SendFragment extends ScanFragment {
             }
         }
     }
-
-    public void processAddress(String address) {
-        mSweepAddress = address;
-    }
-
-    public static String getHiddenBitsToken(String uriIn) {
-        final String HBITS_SCHEME = "hbits";
-        if (uriIn == null) {
-            return null;
-        }
-
-        if (uriIn.contains(HBITS_SCHEME)) {
-            Uri uri = Uri.parse(uriIn);
-            String scheme = uri.getScheme();
-            if (scheme != null) {
-                return uri.toString().substring(scheme.length() + 3);
-            } else {
-                return null;
-            }
-        } else {
-            return uriIn;
-        }
-    }
 }

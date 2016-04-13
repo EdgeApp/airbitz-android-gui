@@ -1043,6 +1043,7 @@ public class NavigationActivity extends ActionBarActivity
             }
         } else if ("bitcoin".equals(scheme)
                 || "airbitz".equals(scheme)
+                || "hbits".equals(scheme)
                 || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
@@ -1050,9 +1051,6 @@ public class NavigationActivity extends ActionBarActivity
                 || "x-callback-url".equals(scheme)
                 || "airbitz-ret".equals(scheme)) {
             handleRequestForPaymentUri(uri);
-        }
-        else if (SendFragment.getHiddenBitsToken(uri.toString()) != null) {
-            gotoImportNow(uri);
         }
     }
 
@@ -1243,13 +1241,6 @@ public class NavigationActivity extends ActionBarActivity
         switchToWallets(bundle);
 
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
-    }
-
-    private void gotoImportNow(Uri uri) {
-        switchFragmentThread(Tabs.SEND.ordinal());
-
-        SendFragment fragment = (SendFragment) mNavStacks[Tabs.SEND.ordinal()].peek();
-        fragment.processAddress(uri.toString());
     }
 
     public void resetFragmentThreadToBaseFragment(int threadId) {
