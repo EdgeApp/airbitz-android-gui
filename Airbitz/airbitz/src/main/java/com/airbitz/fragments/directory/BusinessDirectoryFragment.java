@@ -104,6 +104,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
+    public static Typeface latoItalicsTypeFace;
 
     Handler mHandler = new Handler();
     View view;
@@ -166,6 +167,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
 
         latoBlackTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Bla.ttf");
         latoRegularTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
+        latoItalicsTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-RegIta.ttf");
 
         mVenueListView = (ListView) view.findViewById(R.id.fragment_layout);
         mNearYouLayout = (LinearLayout) view.findViewById(R.id.layout_near_you_sticky);

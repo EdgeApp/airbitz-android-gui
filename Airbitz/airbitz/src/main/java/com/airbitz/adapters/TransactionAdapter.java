@@ -224,6 +224,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                     }
                 });
         if (TextUtils.isEmpty(name)) {
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.latoItalicsTypeFace);
             if (transactionSatoshis < 0) {
                 name = mContext.getString(R.string.fragment_wallets_sent_bitcoin);
             } else {
@@ -232,6 +233,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             viewHolder.nameTextView.setText(name);
             viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(R.color.semi_black_text));
         } else {
+            viewHolder.nameTextView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
             viewHolder.nameTextView.setText(name);
             viewHolder.nameTextView.setTextColor(mContext.getResources().getColor(android.R.color.black));
         }
@@ -294,8 +296,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.synchronizing));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
             } else if (confirmations <= 0) {
-                viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
                 viewHolder.confirmationsTextView.setTextColor(mContext.getResources().getColor(R.color.red));
+                if (transaction.isDoubleSpend()) {
+                    viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_transaction_list_double_spend));
+                } else if (transaction.isReplaceByFee()) {
+                    viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_transaction_list_rbf));
+                } else {
+                    viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
+                }
             } else if (confirmations >= 6) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_confirmed));
             } else {

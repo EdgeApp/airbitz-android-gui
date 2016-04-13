@@ -248,12 +248,11 @@ public class TransactionListFragment extends WalletBaseFragment
         mHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mShowBalance = !mShowBalance;
-                AirbitzApplication.setShowBalanceMode(mShowBalance);
-                animateBar();
+                if (mWallet != null && mWallet.isSynced()) {
+                    toggleShowBalance();
+                }
             }
         });
-        setupBalanceView();
 
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -518,6 +517,7 @@ public class TransactionListFragment extends WalletBaseFragment
             for (Transaction t : mTransactions) {
                 totalSatoshis += t.amount();
             }
+            setupBalanceView();
             mBitCoinBalance.setText(
                 Utils.formatSatoshi(mAccount, totalSatoshis, true));
             mFiatBalance.setText(
@@ -531,11 +531,13 @@ public class TransactionListFragment extends WalletBaseFragment
         }
     }
 
-    private void animateBar() {
+    private void toggleShowBalance() {
         if (mIsAnimating) {
             return;
         }
         mIsAnimating = true;
+        mShowBalance = !mShowBalance;
+        AirbitzApplication.setShowBalanceMode(mShowBalance);
         if (mShowBalance) {
             mHandler.post(animateBalanceShow);
         } else {

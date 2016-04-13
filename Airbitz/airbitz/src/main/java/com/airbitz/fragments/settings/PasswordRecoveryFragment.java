@@ -653,6 +653,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 mSaved = true;
                 mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
                 CoreWrapper.clearRecoveryReminder(mAccount);
+                mActivity.popFragment();
             }
         }
 

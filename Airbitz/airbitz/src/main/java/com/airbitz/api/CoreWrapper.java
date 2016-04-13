@@ -125,8 +125,13 @@ public class CoreWrapper {
             public void sweep(Wallet wallet, Transaction tx, long amountSwept) {
                 Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
                 intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                intent.putExtra(Constants.WALLET_TXID, tx.id());
-                intent.putExtra(Constants.AMOUNT_SWEPT, amountSwept);
+                if (tx != null) {
+                    intent.putExtra(Constants.WALLET_TXID, tx.id());
+                    intent.putExtra(Constants.AMOUNT_SWEPT, tx.amount());
+                } else {
+                    intent.putExtra(Constants.WALLET_TXID, "");
+                    intent.putExtra(Constants.AMOUNT_SWEPT, 0);
+                }
                 manager.sendBroadcast(intent);
             }
         });

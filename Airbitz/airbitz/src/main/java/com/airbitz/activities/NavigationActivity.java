@@ -68,6 +68,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -822,17 +823,17 @@ public class NavigationActivity extends ActionBarActivity
 
     private void tearDownReceivers() {
         Account account = AirbitzApplication.getAccount();
-        if (account != null && account.isLoggedIn()) {
-            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        if (mWalletsLoadedReceiver != null) {
             manager.unregisterReceiver(mWalletsLoadedReceiver);
-            manager.unregisterReceiver(mExchangeReceiver);
-            manager.unregisterReceiver(mIncomingBitcoinReceiver);
-            manager.unregisterReceiver(mRemotePasswordChange);
-            manager.unregisterReceiver(mDataSyncReceiver);
-            manager.unregisterReceiver(mOtpErrorReceiver);
-            manager.unregisterReceiver(mOtpSkewReceiver);
-            manager.unregisterReceiver(mOtpResetReceiver);
         }
+        manager.unregisterReceiver(mExchangeReceiver);
+        manager.unregisterReceiver(mIncomingBitcoinReceiver);
+        manager.unregisterReceiver(mRemotePasswordChange);
+        manager.unregisterReceiver(mDataSyncReceiver);
+        manager.unregisterReceiver(mOtpErrorReceiver);
+        manager.unregisterReceiver(mOtpSkewReceiver);
+        manager.unregisterReceiver(mOtpResetReceiver);
     }
 
     @Override
@@ -1175,7 +1176,7 @@ public class NavigationActivity extends ActionBarActivity
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(INCOMING_COUNT, count);
                 editor.apply();
-                message += " " + getString(R.string.received_bitcoin_fading_message_teaching);
+                message += getString(R.string.received_bitcoin_fading_message_teaching);
             }
         }
 
@@ -1773,16 +1774,14 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void showPrivateKeySweepTransaction(String txid, String uuid, long amount) {
-        if (amount > 0 && !txid.isEmpty()) {
+        if (amount > 0 && !TextUtils.isEmpty(txid)) {
             onSentFunds(uuid, txid, "");
             ShowOkMessageDialog(getString(R.string.import_wallet_swept_funds_title),
                     getString(R.string.import_wallet_swept_funds_message));
-        }
-        else if (amount == 0) {
+        } else if (amount == 0) {
             ShowOkMessageDialog(getString(R.string.import_wallet_hidden_bits_error_title),
                     getString(R.string.import_wallet_hidden_bits_error_message));
         }
-
     }
 
     public void showHiddenBitsTransaction(String txid, String uuid, long amount,
@@ -2607,7 +2606,7 @@ public class NavigationActivity extends ActionBarActivity
                     if (total == complete) {
                         showMessage(context.getString(R.string.loading_transactions));
                     } else {
-                        showMessage(context.getString(R.string.loading_n_wallets, complete, total));
+                        showMessage(context.getString(R.string.loading_n_wallets, complete + 1, total));
                     }
                 } else {
                     showMessage(context.getString(R.string.loading_wallets));

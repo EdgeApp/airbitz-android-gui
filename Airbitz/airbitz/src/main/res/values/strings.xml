@@ -139,6 +139,7 @@
     <string name="fragment_landing_current_user">Current User (%1$s)</string>
     <string name="fragment_landing_switch_user">Exit PIN Login</string>
     <string name="fragment_landing_forgot_pin">Forgot PIN</string>
+    <string name="fragment_landing_enter_pin">Enter PIN</string>
     <string name="fragment_forgot_no_username_title">User Name Required</string>
     <string name="fragment_forgot_no_account_title">No Recovery Questions</string>
     <string name="fragment_forgot_no_recovery_questions_title">No Recovery Questions</string>
@@ -412,6 +413,8 @@
     <string name="fragment_wallets_wallet_name_required">Name required</string>
     <string name="fragment_wallets_received_bitcoin">Received Bitcoin</string>
     <string name="fragment_wallets_sent_bitcoin">Sent Bitcoin</string>
+    <string name="fragment_transaction_list_rbf">Warning: Replace by Fee Detected. Double spend likely</string>
+    <string name="fragment_transaction_list_double_spend">Warning: Double Spend</string>
 
     <!-- Strings for Request fragment -->
     <string name="address_request_title">Address Request</string>
@@ -615,7 +618,7 @@
     <string name="remote_password_change_title">Password Changed Remotely</string>
     <string name="remote_password_change_message">The Password to this account was changed by another device. Please login using the new credentials</string>
     <string name="received_bitcoin_title">Received Bitcoin</string>
-    <string name="received_bitcoin_message">Received %1$s (~%2$s). Tap Details to see transaction</string>
+    <string name="received_bitcoin_message">Received %1$s(~%2$s).\nTap Details to see transaction.</string>
     <string name="received_bitcoin_fading_message">You received Bitcoin!\n%1$s (~%2$s)\n</string>
     <string name="received_bitcoin_fading_message_teaching">Use the Payee, Category, and Notes field to optionally tag your transaction</string>
     <string name="received_partial_bitcoin_title">** Warning **</string>

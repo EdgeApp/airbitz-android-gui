@@ -407,7 +407,7 @@ public class RequestFragment extends WalletBaseFragment implements
     @Override
     protected void walletChanged(Wallet newWallet) {
         super.walletChanged(newWallet);
-        updateAmount();
+        updateAmount(false);
     }
 
     private void updateConversion() {
@@ -431,7 +431,7 @@ public class RequestFragment extends WalletBaseFragment implements
         }
     }
 
-    private void updateAmount() {
+    private void updateAmount(boolean updateBtcValue) {
         Wallet wallet = mWallet;
         if (mAmountIsBitcoin) {
             String bitcoin = mAmountField.getText().toString();
@@ -443,10 +443,12 @@ public class RequestFragment extends WalletBaseFragment implements
         } else {
             String fiat = mAmountField.getText().toString();
             try {
-                if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currency().code)) {
-                    mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currency().code);
-                } else {
-                    AirbitzCore.logi("Too much fiat");
+                if (updateBtcValue) {
+                    if (!CoreWrapper.tooMuchFiat(mAccount, fiat, wallet.currency().code)) {
+                        mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, wallet.currency().code);
+                    } else {
+                        AirbitzCore.logi("Too much fiat");
+                    }
                 }
             } catch (NumberFormatException e) {
                 //not a double, ignore
@@ -530,7 +532,7 @@ public class RequestFragment extends WalletBaseFragment implements
             return;
 
         if (mWallet != null) {
-            updateAmount();
+            updateAmount(false);
         }
     }
 
@@ -1035,12 +1037,14 @@ public class RequestFragment extends WalletBaseFragment implements
             try {
                 if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.currency().code)) {
                     mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, mWallet.currency().code);
+                    /*
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {
                         mAmountField.setText(
                             Utils.formatSatoshi(mAccount, mAmountSatoshi, false));
                     }
+                    */
                 } else {
                     AirbitzCore.logi("Too much fiat");
                 }
@@ -1051,12 +1055,14 @@ public class RequestFragment extends WalletBaseFragment implements
             String bitcoin = mAmountField.getText().toString();
             if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
                 mAmountSatoshi = Utils.btcStringToSatoshi(mAccount, bitcoin);
+                /*
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
                     mAmountField.setText(
                         CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false));
                 }
+                */
             } else {
                 AirbitzCore.logi("Too much bitcoin");
             }

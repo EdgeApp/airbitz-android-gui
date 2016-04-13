@@ -696,6 +696,7 @@ public class LandingFragment extends BaseFragment implements
             String secret = params[2];
             try {
                 mAccount = mCoreAPI.pinLogin(mUsername, mPin, secret);
+                AirbitzApplication.Login(mAccount);
                 return true;
             } catch (AirbitzException e) {
                 mFailureException = e;
