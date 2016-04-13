@@ -81,6 +81,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -130,11 +131,12 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private Bundle mBundle;
 
     private List<Button> mTimeButtons;
-    private Calendar today;
     private Calendar mFromDate;
     private Calendar mToDate;
 
     private int mExportType;
+
+    private DateFormat mDateFormatter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +144,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mBundle = getArguments();
         mExportType = mBundle.getInt(EXPORT_TYPE);
         setHomeEnabled(true);
+
+        mDateFormatter = DateFormat.getDateTimeInstance();
     }
 
     @Override
@@ -156,7 +160,6 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         }
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         mView = i.inflate(R.layout.fragment_export_saving_options, container, false);
-        today = Calendar.getInstance();
 
         mFromButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
         mToButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
@@ -319,236 +322,145 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mThisWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(4);
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
+
                 Calendar beginning = Calendar.getInstance();
                 beginning.set(Calendar.DAY_OF_WEEK, 1);
+                beginning.set(Calendar.HOUR_OF_DAY, 0);
+                beginning.set(Calendar.MINUTE, 0);
+                beginning.set(Calendar.SECOND, 0);
 
                 mFromDate = beginning;
-                mToDate = today;
+                mToDate = Calendar.getInstance();
 
-                mFromButton.setText((beginning.get(Calendar.MONTH) + 1) + "/" + beginning.get(Calendar.DAY_OF_MONTH) + "/" + beginning.get(Calendar.YEAR) + " 12:00 am");
-                mToButton.setText((today.get(Calendar.MONTH) + 1) + "/" + today.get(Calendar.DAY_OF_MONTH) + "/" + today.get(Calendar.YEAR) + " " + today.get(Calendar.HOUR) + ":" + tempMin + " " + AMPM);
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
         mThisMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(5);
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
 
                 Calendar beginning = Calendar.getInstance();
                 beginning.set(Calendar.DAY_OF_MONTH, 1);
+                beginning.set(Calendar.HOUR_OF_DAY, 0);
+                beginning.set(Calendar.MINUTE, 0);
+                beginning.set(Calendar.SECOND, 0);
 
                 mFromDate = beginning;
-                mToDate = today;
+                mToDate = Calendar.getInstance();
 
-                mFromButton.setText((today.get(Calendar.MONTH) + 1) + "/1/" + today.get(Calendar.YEAR) + " 12:00 am");
-                mToButton.setText((today.get(Calendar.MONTH) + 1) + "/" + today.get(Calendar.DAY_OF_MONTH) + "/" + today.get(Calendar.YEAR) + " " + today.get(Calendar.HOUR) + ":" + tempMin + " " + AMPM);
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
         mTodayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(3);
-
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
 
                 Calendar beginning = Calendar.getInstance();
                 beginning.set(Calendar.HOUR_OF_DAY, 0);
                 beginning.set(Calendar.MINUTE, 0);
-                Calendar end = today;
+                beginning.set(Calendar.SECOND, 0);
+
+                Calendar end = Calendar.getInstance();
                 mFromDate = beginning;
                 mToDate = end;
 
-                mFromButton.setText((beginning.get(Calendar.MONTH) + 1) + "/" + beginning.get(Calendar.DAY_OF_MONTH) + "/" + beginning.get(Calendar.YEAR) + " 12:00 am");
-                mToButton.setText((end.get(Calendar.MONTH) + 1) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR) + " " + today.get(Calendar.HOUR) + ":" + tempMin + " " + AMPM);
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
         mYesterdayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(0);
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
 
                 Calendar beginning = Calendar.getInstance();
                 beginning.add(Calendar.DATE, -1);
                 beginning.set(Calendar.HOUR_OF_DAY, 0);
                 beginning.set(Calendar.MINUTE, 0);
+                beginning.set(Calendar.SECOND, 0);
                 Calendar end = Calendar.getInstance();
                 end.add(Calendar.DATE, -1);
                 end.set(Calendar.HOUR_OF_DAY, 23);
                 end.set(Calendar.MINUTE, 59);
+                end.set(Calendar.SECOND, 59);
                 mFromDate = beginning;
                 mToDate = end;
 
-                mFromButton.setText((beginning.get(Calendar.MONTH) + 1) + "/" + beginning.get(Calendar.DAY_OF_MONTH) + "/" + beginning.get(Calendar.YEAR) + " 12:00 am");
-                mToButton.setText((end.get(Calendar.MONTH) + 1) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR) + " 11:59 pm");
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
         mLastMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(2);
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
-                String tempYear = "";
-                String tempMonth = "";
-                if (today.get(Calendar.MONTH) == 0) {
-                    tempYear = "" + (today.get(Calendar.YEAR) - 1);
-                    tempMonth = "12";
-                } else {
-                    tempYear = "" + (today.get(Calendar.YEAR));
-                    tempMonth = "" + (today.get(Calendar.MONTH));
-                }
-                int year = today.get(Calendar.YEAR);
-                String tempDay = "";
-                if (today.get(Calendar.MONTH) == 1) {
-                    if (year % 4 != 0) {
-                        tempDay = "28";
-                    } else if (year % 100 != 0) {
-                        tempDay = "29";
-                    } else if (year % 400 != 0) {
-                        tempDay = "28";
-                    } else {
-                        tempDay = "29";
-                    }
-                } else if (today.get(Calendar.MONTH) == 0 || today.get(Calendar.MONTH) == 2 || today.get(Calendar.MONTH) == 4 || today.get(Calendar.MONTH) == 6 || today.get(Calendar.MONTH) == 7 || today.get(Calendar.MONTH) == 9 || today.get(Calendar.MONTH) == 11) {
-                    tempDay = "31";
-                } else {
-                    tempDay = "30";
-                }
 
                 Calendar beginning = Calendar.getInstance();
                 beginning.add(Calendar.MONTH, -1);
                 beginning.set(Calendar.DAY_OF_MONTH, 1);
                 beginning.set(Calendar.HOUR_OF_DAY, 0);
                 beginning.set(Calendar.MINUTE, 0);
+                beginning.set(Calendar.SECOND, 0);
                 Calendar end = Calendar.getInstance();
                 end.add(Calendar.MONTH, -1);
                 end.set(Calendar.DAY_OF_MONTH, end.getActualMaximum(Calendar.DAY_OF_MONTH));
                 end.set(Calendar.HOUR_OF_DAY, 23);
                 end.set(Calendar.MINUTE, 59);
+                end.set(Calendar.SECOND, 59);
                 mFromDate = beginning;
                 mToDate = end;
 
-                mFromButton.setText(tempMonth + "/1/" + tempYear + " 12:00 am");
-                mToButton.setText(tempMonth + "/" + tempDay + "/" + tempYear + " 11:59 pm");
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
         mLastWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                today = Calendar.getInstance();
                 HighlightTimeButton(1);
-                String AMPM = "";
-                if (today.get(Calendar.AM_PM) == 1) {
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
-                String tempMin = "";
-                if (today.get(Calendar.MINUTE) < 10) {
-                    tempMin = "0" + today.get(Calendar.MINUTE);
-                } else {
-                    tempMin = "" + today.get(Calendar.MINUTE);
-                }
 
                 Calendar beginning = Calendar.getInstance();
                 beginning.add(Calendar.WEEK_OF_YEAR, -1);
                 beginning.set(Calendar.DAY_OF_WEEK, 1);
                 beginning.set(Calendar.HOUR_OF_DAY, 0);
                 beginning.set(Calendar.MINUTE, 0);
+                beginning.set(Calendar.SECOND, 0);
                 Calendar end = Calendar.getInstance();
                 end.add(Calendar.WEEK_OF_YEAR, -1);
                 end.set(Calendar.DAY_OF_WEEK, 7);
                 end.set(Calendar.HOUR_OF_DAY, 23);
                 end.set(Calendar.MINUTE, 59);
+                end.set(Calendar.SECOND, 59);
                 mFromDate = beginning;
                 mToDate = end;
 
-                mFromButton.setText((beginning.get(Calendar.MONTH) + 1) + "/" + beginning.get(Calendar.DAY_OF_MONTH) + "/" + beginning.get(Calendar.YEAR) + " 12:00 am");
-
-                mToButton.setText((end.get(Calendar.MONTH) + 1) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR) + " 11:59 pm");
+                mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
+                mToButton.setText(mDateFormatter.format(mToDate.getTime()));
             }
         });
 
         mToButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] dateTime = mToButton.getText().toString().split(" ");
-                String[] date = dateTime[0].split("/");
-                String[] time = dateTime[1].split(":");
-                showSelectorDialog(mToButton, Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2]), Integer.valueOf(time[0]), Integer.valueOf(time[1]), dateTime[2]);
+                showSelectorDialog(mFromButton,
+                        mToDate.get(Calendar.MONTH) + 1, mToDate.get(Calendar.DAY_OF_MONTH), mToDate.get(Calendar.YEAR),
+                        mToDate.get(Calendar.HOUR), mToDate.get(Calendar.MINUTE),
+                        mToDate.get(Calendar.AM_PM) == Calendar.PM ? "pm" : "am");
             }
         });
 
         mFromButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] dateTime = mFromButton.getText().toString().split(" ");
-                String[] date = dateTime[0].split("/");
-                String[] time = dateTime[1].split(":");
-                showSelectorDialog(mFromButton, Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2]), Integer.valueOf(time[0]), Integer.valueOf(time[1]), dateTime[2]);
+                showSelectorDialog(mFromButton,
+                        mFromDate.get(Calendar.MONTH) + 1, mFromDate.get(Calendar.DAY_OF_MONTH), mFromDate.get(Calendar.YEAR),
+                        mFromDate.get(Calendar.HOUR), mFromDate.get(Calendar.MINUTE),
+                        mFromDate.get(Calendar.AM_PM) == Calendar.PM ? "pm" : "am");
             }
         });
 
@@ -675,40 +587,22 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 HighlightTimeButton(7);
-                                int time = 0;
-                                String tempAMPM = "";
-                                if (timePicker.getCurrentHour() > 12) {
-                                    time = timePicker.getCurrentHour() - 12;
-                                    tempAMPM = "pm";
-                                } else if (timePicker.getCurrentHour() == 0) {
-                                    time = timePicker.getCurrentHour() + 12;
-                                    tempAMPM = "am";
-                                } else {
-                                    time = timePicker.getCurrentHour();
-                                    tempAMPM = "am";
-                                }
-                                if (timePicker.getCurrentHour() == 12) {
-                                    tempAMPM = "pm";
-                                }
-                                String tempMin = "";
-                                if (timePicker.getCurrentMinute() < 10) {
-                                    tempMin = "0" + timePicker.getCurrentMinute();
-                                } else {
-                                    tempMin = "" + timePicker.getCurrentMinute();
-                                }
-                                button.setText((datePicker.getMonth() + 1) + "/" + datePicker.getDayOfMonth() + "/" + datePicker.getYear() + " " + time + ":" + tempMin + " " + tempAMPM);
                                 if (button == mFromButton) {
                                     mFromDate.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
                                     mFromDate.set(Calendar.MONTH, datePicker.getMonth());
                                     mFromDate.set(Calendar.YEAR, datePicker.getYear());
                                     mFromDate.set(Calendar.HOUR, timePicker.getCurrentHour());
                                     mFromDate.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+                                    mFromDate.set(Calendar.SECOND, 0);
+                                    mFromButton.setText(mDateFormatter.format(mFromDate.getTime()));
                                 } else {
                                     mToDate.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
                                     mToDate.set(Calendar.MONTH, datePicker.getMonth());
                                     mToDate.set(Calendar.YEAR, datePicker.getYear());
                                     mToDate.set(Calendar.HOUR, timePicker.getCurrentHour());
                                     mToDate.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+                                    mToDate.set(Calendar.SECOND, 0);
+                                    mToButton.setText(mDateFormatter.format(mToDate.getTime()));
                                 }
                             }
                         }
