@@ -38,6 +38,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -63,7 +64,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Callback;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +83,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private int mRound, mDimen;
 
     private final Picasso mPicasso;
-    private SimpleDateFormat mFormatter;
     private Typeface mBitcoinTypeface;
 
     public TransactionAdapter(Context context, List<Transaction> listTransaction) {
@@ -94,7 +93,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         mAccount = AirbitzApplication.getAccount();
         mPicasso = AirbitzApplication.getPicasso();
 
-        mFormatter = new SimpleDateFormat("MMM dd h:mm aa", Locale.getDefault());
         mRound = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, mContext.getResources().getDisplayMetrics());
         mDimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, mContext.getResources().getDisplayMetrics());
 
@@ -187,8 +185,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         convertView.setBackground(mContext.getResources().getDrawable(R.drawable.wallet_list_standard));
 
         Transaction transaction = mListTransaction.get(position);
-
-        String dateString = mFormatter.format(transaction.date());
+        String dateString =
+            DateFormat.getDateFormat(mContext).format(transaction.date()) + " " +
+            DateFormat.getTimeFormat(mContext).format(transaction.date());
         viewHolder.dateTextView.setText(dateString);
 
         long transactionSatoshis = transaction.amount();

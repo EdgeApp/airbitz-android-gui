@@ -56,6 +56,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -123,7 +124,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1095,8 +1095,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void UpdateView(Transaction transaction) {
         doEdit = true;
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.date());
-        mDateTextView.setText(dateString);
+        mDateTextView.setText(
+            DateFormat.getDateFormat(mActivity).format(transaction.date()) + " " +
+            DateFormat.getTimeFormat(mActivity).format(transaction.date()));
 
         String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
                 mActivity.getResources().getString(R.string.transaction_details_to);
