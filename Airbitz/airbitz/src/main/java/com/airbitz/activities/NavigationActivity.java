@@ -237,7 +237,6 @@ public class NavigationActivity extends ActionBarActivity
 
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
-    private Affiliates mAffiliate;
     private Affiliates.AffiliateTask mAffiliateTask;
     private Affiliates.AffiliateQueryTask mAffiliateQueryTask;
 
@@ -2316,12 +2315,12 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerAffiliates.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAffiliate = new Affiliates(AirbitzApplication.getAccount());
                     if (AirbitzApplication.isLoggedIn()) {
-                        mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), mAffiliate);
+                        Affiliates affiliate = new Affiliates(AirbitzApplication.getAccount());
+                        mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), affiliate);
                         mAffiliateTask.execute();
                     } else {
-                        /* TODO: take to sign in */
+                        DisplayLoginOverlay(true, true);
                     }
                 }
             });
