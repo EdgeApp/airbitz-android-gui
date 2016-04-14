@@ -307,7 +307,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             } else if (confirmations >= 6) {
                 viewHolder.confirmationsTextView.setText(mContext.getString(R.string.fragment_wallet_confirmed));
             } else {
-                viewHolder.confirmationsTextView.setText(confirmations + mContext.getString(R.string.fragment_wallet_confirmations));
+                if (confirmations == 1) {
+                    viewHolder.confirmationsTextView.setText(confirmations + mContext.getString(R.string.fragment_wallet_confirmation));
+                } else {
+                    viewHolder.confirmationsTextView.setText(confirmations + mContext.getString(R.string.fragment_wallet_confirmations));
+                }
             }
         }
         return convertView;
