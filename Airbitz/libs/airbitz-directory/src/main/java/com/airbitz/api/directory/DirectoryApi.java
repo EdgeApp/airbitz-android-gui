@@ -64,6 +64,7 @@ public class DirectoryApi {
     private static final String API_PATH = SERVER_ROOT + "api/v1/";
     private static final String API_SEARCH = API_PATH + "search/";
     private static final String API_BUSINESS = API_PATH + "business/";
+    private static final String API_PLUGIN_DATA = API_PATH + "plugins/";
     private static final String API_MESSAGES = API_PATH + "notifications/";
     private static final String API_HIDDENBITZ = API_PATH + "hiddenbits/";
     private static final String API_LOCATION_SUGGEST = API_PATH + "location-suggest/";
@@ -560,6 +561,10 @@ public class DirectoryApi {
             Log.e(TAG, "" + e.getMessage());
         }
         return null;
+    }
+
+    public String checkPluginDetails(){
+        return getRequest(API_PLUGIN_DATA);
     }
 
     public String getBusinessById(String businessId){

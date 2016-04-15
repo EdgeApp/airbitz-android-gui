@@ -29,62 +29,50 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.plugins;
+package com.airbitz.api.directory;
 
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.airbitz.AirbitzApplication;
-import com.airbitz.R;
-import com.airbitz.api.DirectoryWrapper;
-import com.airbitz.api.directory.PluginDetailsResult;
-import com.airbitz.api.directory.DirectoryApi;
-import com.airbitz.plugins.PluginFramework;
-
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedList;
 
-public class PluginCheck  {
-    public static String TAG = PluginCheck.class.getSimpleName();
+public class PluginDetailsResult {
 
-    public static void checkEnabledPlugins() {
-        DetailTask task = new DetailTask();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    private static final String TAG = BusinessSearchResult.class.getSimpleName();
+    private String mBizId;
+    private boolean mEnabled;
+
+    public PluginDetailsResult(String bizId, boolean enabled) {
+        mBizId = bizId;
+        mEnabled = enabled;
     }
 
-    static class DetailTask extends AsyncTask<String, Void, String> {
-        DirectoryApi mApi = DirectoryWrapper.getApi();
-
-        @Override
-        protected void onPreExecute() { }
-
-        @Override
-        protected String doInBackground(String... params) {
+    public static List<PluginDetailsResult> fromJsonArray(JSONArray array) {
+        List<PluginDetailsResult> results = new ArrayList<PluginDetailsResult>();
+        for (int counter = 0; counter < array.length(); counter++) {
             try {
-                return mApi.checkPluginDetails();
+                JSONObject object = array.getJSONObject(counter);
+                PluginDetailsResult result = new PluginDetailsResult(
+                        object.getString("business"), object.getBoolean("enabled"));
+                results.add(result);
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
             } catch (Exception e) {
-                return null;
+                Log.d(TAG, "" + e.getMessage());
             }
         }
+        return results;
+    }
 
-        @Override
-        protected void onPostExecute(String results) {
-            if (results != null) {
-                try {
-                    JSONObject j = new JSONObject(results);
-                    List<PluginDetailsResult> details =
-                        PluginDetailsResult.fromJsonArray(j.getJSONArray("results"));
-                    for (PluginDetailsResult detail : details) {
-                        PluginFramework.getPluginObjects().setPluginStatus(detail.getId(), detail.isEnabled());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "", e);
-                }
-            }
-            PluginFramework.getPluginsGrouped();
-        }
+    public String getId() {
+        return mBizId;
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
     }
 }
