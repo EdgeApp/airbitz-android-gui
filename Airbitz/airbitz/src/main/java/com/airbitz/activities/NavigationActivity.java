@@ -275,6 +275,9 @@ public class NavigationActivity extends ActionBarActivity
     private int mMenuPadding;
     private int mMenuWidth;
 
+    private boolean mInSignupMode = false;
+    private boolean mRecoveryMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -768,6 +771,12 @@ public class NavigationActivity extends ActionBarActivity
 
         // If fragments want the back key, they can have it
         Fragment fragment = mNavStacks[mNavThreadId].peek();
+        if (fragment instanceof SetupUsernameFragment) {
+            mInSignupMode = false;
+        }
+        if (fragment instanceof PasswordRecoveryFragment) {
+            mRecoveryMode = false;
+        }
         if (fragment instanceof OnBackPress) {
             boolean handled = ((OnBackPress) fragment).onBackPress();
             if (handled)
@@ -857,8 +866,10 @@ public class NavigationActivity extends ActionBarActivity
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if (loginExpired() || !AirbitzApplication.isLoggedIn()) {
-            DisplayLoginOverlay(true);
-            mNavThreadId = Tabs.BD.ordinal();
+            if (!mInSignupMode && !mRecoveryMode) {
+                DisplayLoginOverlay(true);
+                mNavThreadId = Tabs.BD.ordinal();
+            }
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.connectivity(true);
@@ -1371,6 +1382,7 @@ public class NavigationActivity extends ActionBarActivity
     public void startRecoveryQuestions(String[] questions, String username) {
         hideNavBar();
         Bundle bundle = new Bundle();
+        mRecoveryMode = true;
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
         bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
@@ -1383,6 +1395,7 @@ public class NavigationActivity extends ActionBarActivity
     public void startSignUp(String userName) {
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
+        mInSignupMode = true;
         Bundle bundle = new Bundle();
         bundle.putString(SetupWriteItDownFragment.USERNAME, userName);
         Fragment frag = new SetupUsernameFragment();
