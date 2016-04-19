@@ -42,9 +42,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import co.airbitz.bitbeacon.BleDevice;
+
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
-import com.airbitz.bitbeacon.BleDevice;
 import com.airbitz.models.Contact;
 
 import java.util.List;
