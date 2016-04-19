@@ -84,6 +84,8 @@ public class Constants {
 
     public static final long BIZ_ID_AIRBITZ = 3384;
     public static final long BIZ_ID_AMAZON = 11245;
+    public static final long BIZ_ID_CLEVERCOIN = 10106;
+    public static final long BIZ_ID_GLIDERA = 11063;
     public static final long BIZ_ID_HOME_DEPOT = 11141;
     public static final long BIZ_ID_PURSE = 5041;
     public static final long BIZ_ID_STARBUCKS = 11131;

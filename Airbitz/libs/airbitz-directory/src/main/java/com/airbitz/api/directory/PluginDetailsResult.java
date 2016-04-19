@@ -29,40 +29,50 @@
  * either expressed or implied, of the Airbitz Project.
  */
 
-package com.airbitz.bitbeacon;
+package com.airbitz.api.directory;
 
-import android.bluetooth.BluetoothDevice;
+import android.util.Log;
 
-public class BleDevice {
-    BluetoothDevice device;
-    int rssi;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    public BleDevice(BluetoothDevice device, int rssi) {
-        this.device = device;
-        this.rssi = rssi;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PluginDetailsResult {
+
+    private static final String TAG = BusinessSearchResult.class.getSimpleName();
+    private String mBizId;
+    private boolean mEnabled;
+
+    public PluginDetailsResult(String bizId, boolean enabled) {
+        mBizId = bizId;
+        mEnabled = enabled;
     }
 
-    public BluetoothDevice getDevice() {
-        return device;
+    public static List<PluginDetailsResult> fromJsonArray(JSONArray array) {
+        List<PluginDetailsResult> results = new ArrayList<PluginDetailsResult>();
+        for (int counter = 0; counter < array.length(); counter++) {
+            try {
+                JSONObject object = array.getJSONObject(counter);
+                PluginDetailsResult result = new PluginDetailsResult(
+                        object.getString("business"), object.getBoolean("enabled"));
+                results.add(result);
+            } catch (JSONException e) {
+                Log.d(TAG, "" + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "" + e.getMessage());
+            }
+        }
+        return results;
     }
 
-    public int getRSSI() {
-        return rssi;
+    public String getId() {
+        return mBizId;
     }
 
-    static final int DIV_LENGTH = 10;
-    public String getPartialAddress() {
-        String s = device.getName();
-        return s.length() < DIV_LENGTH ? null : s.substring(0, DIV_LENGTH);
-    }
-
-    public String getName() {
-        String s = device.getName();
-        return s.length() < DIV_LENGTH ? s : s.substring(DIV_LENGTH);
-    }
-
-    public boolean hasErrors() {
-        return device.getName().length() < DIV_LENGTH;
+    public boolean isEnabled() {
+        return mEnabled;
     }
 }
-

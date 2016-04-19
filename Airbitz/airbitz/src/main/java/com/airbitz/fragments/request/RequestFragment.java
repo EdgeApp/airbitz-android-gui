@@ -84,6 +84,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import co.airbitz.bitbeacon.BeaconRequest;
+import co.airbitz.bitbeacon.BleUtil;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.ReceiveAddress;
 import co.airbitz.core.Settings;
@@ -96,8 +98,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreWrapper;
-import com.airbitz.bitbeacon.BeaconRequest;
-import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.WalletBaseFragment;
 import com.airbitz.fragments.settings.SettingFragment;

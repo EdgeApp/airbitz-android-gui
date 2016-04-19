@@ -237,7 +237,6 @@ public class NavigationActivity extends ActionBarActivity
 
     public Stack<AsyncTask> mAsyncTasks = new Stack<AsyncTask>();
 
-    private Affiliates mAffiliate;
     private Affiliates.AffiliateTask mAffiliateTask;
     private Affiliates.AffiliateQueryTask mAffiliateQueryTask;
 
@@ -275,6 +274,9 @@ public class NavigationActivity extends ActionBarActivity
 
     private int mMenuPadding;
     private int mMenuWidth;
+
+    private boolean mInSignupMode = false;
+    private boolean mRecoveryMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -769,6 +771,12 @@ public class NavigationActivity extends ActionBarActivity
 
         // If fragments want the back key, they can have it
         Fragment fragment = mNavStacks[mNavThreadId].peek();
+        if (fragment instanceof SetupUsernameFragment) {
+            mInSignupMode = false;
+        }
+        if (fragment instanceof PasswordRecoveryFragment) {
+            mRecoveryMode = false;
+        }
         if (fragment instanceof OnBackPress) {
             boolean handled = ((OnBackPress) fragment).onBackPress();
             if (handled)
@@ -858,8 +866,10 @@ public class NavigationActivity extends ActionBarActivity
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
         if (loginExpired() || !AirbitzApplication.isLoggedIn()) {
-            DisplayLoginOverlay(true);
-            mNavThreadId = Tabs.BD.ordinal();
+            if (!mInSignupMode && !mRecoveryMode) {
+                DisplayLoginOverlay(true);
+                mNavThreadId = Tabs.BD.ordinal();
+            }
         } else {
             DisplayLoginOverlay(false);
             mCoreAPI.connectivity(true);
@@ -1043,6 +1053,7 @@ public class NavigationActivity extends ActionBarActivity
             }
         } else if ("bitcoin".equals(scheme)
                 || "airbitz".equals(scheme)
+                || "hbits".equals(scheme)
                 || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
@@ -1050,9 +1061,6 @@ public class NavigationActivity extends ActionBarActivity
                 || "x-callback-url".equals(scheme)
                 || "airbitz-ret".equals(scheme)) {
             handleRequestForPaymentUri(uri);
-        }
-        else if (SendFragment.getHiddenBitsToken(uri.toString()) != null) {
-            gotoImportNow(uri);
         }
     }
 
@@ -1245,13 +1253,6 @@ public class NavigationActivity extends ActionBarActivity
         resetFragmentThreadToBaseFragment(Tabs.REQUEST.ordinal());
     }
 
-    private void gotoImportNow(Uri uri) {
-        switchFragmentThread(Tabs.SEND.ordinal());
-
-        SendFragment fragment = (SendFragment) mNavStacks[Tabs.SEND.ordinal()].peek();
-        fragment.processAddress(uri.toString());
-    }
-
     public void resetFragmentThreadToBaseFragment(int threadId) {
         mNavStacks[threadId].clear();
         mNavStacks[threadId].add(getNewBaseFragement(threadId));
@@ -1381,6 +1382,7 @@ public class NavigationActivity extends ActionBarActivity
     public void startRecoveryQuestions(String[] questions, String username) {
         hideNavBar();
         Bundle bundle = new Bundle();
+        mRecoveryMode = true;
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
         bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
@@ -1393,6 +1395,7 @@ public class NavigationActivity extends ActionBarActivity
     public void startSignUp(String userName) {
         hideSoftKeyboard(mFragmentLayout);
         hideNavBar();
+        mInSignupMode = true;
         Bundle bundle = new Bundle();
         bundle.putString(SetupWriteItDownFragment.USERNAME, userName);
         Fragment frag = new SetupUsernameFragment();
@@ -2325,12 +2328,12 @@ public class NavigationActivity extends ActionBarActivity
             mDrawerAffiliates.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAffiliate = new Affiliates(AirbitzApplication.getAccount());
                     if (AirbitzApplication.isLoggedIn()) {
-                        mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), mAffiliate);
+                        Affiliates affiliate = new Affiliates(AirbitzApplication.getAccount());
+                        mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), affiliate);
                         mAffiliateTask.execute();
                     } else {
-                        /* TODO: take to sign in */
+                        DisplayLoginOverlay(true, true);
                     }
                 }
             });

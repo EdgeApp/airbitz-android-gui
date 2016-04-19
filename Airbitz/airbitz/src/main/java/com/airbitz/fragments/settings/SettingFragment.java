@@ -71,6 +71,7 @@ import android.widget.TextView;
 
 import static android.provider.Settings.ACTION_BLUETOOTH_SETTINGS;
 
+import co.airbitz.bitbeacon.BleUtil;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
@@ -84,7 +85,6 @@ import com.airbitz.activities.NavigationActivity;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
 import com.airbitz.api.directory.DirectoryApi;
-import com.airbitz.bitbeacon.BleUtil;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.login.SignUpFragment;
