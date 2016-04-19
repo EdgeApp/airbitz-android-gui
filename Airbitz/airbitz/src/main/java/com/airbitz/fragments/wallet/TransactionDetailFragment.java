@@ -56,6 +56,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -123,7 +124,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1095,8 +1095,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void UpdateView(Transaction transaction) {
         doEdit = true;
-        String dateString = new SimpleDateFormat("MMM dd yyyy, kk:mm aa").format(transaction.date());
-        mDateTextView.setText(dateString);
+        mDateTextView.setText(
+            DateFormat.getDateFormat(mActivity).format(transaction.date()) + " " +
+            DateFormat.getTimeFormat(mActivity).format(transaction.date()));
 
         String pretext = mFromSend ? mActivity.getResources().getString(R.string.transaction_details_from) :
                 mActivity.getResources().getString(R.string.transaction_details_to);
@@ -1296,15 +1297,34 @@ public class TransactionDetailFragment extends WalletBaseFragment
         hideCalculator();
     }
 
+    private boolean equals(String s1, String s2) {
+        if (s1 == null && s2 == null) {
+            return true;
+        }
+        return s1 != null && s1.equals(s2);
+    }
+
     private void saveTransaction() {
         if (mTransaction == null) {
             return;
         }
+        String payee = mPayeeEditText.getText().toString();
         String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
-        mSaveTask = new SaveTransactionAsyncTask(mTransaction, mBizId,
-                mPayeeEditText.getText().toString(), category,
-                mNoteEdittext.getText().toString(), mFiatValueEdittext.getText().toString());
-        mSaveTask.execute();
+        String notes = mNoteEdittext.getText().toString();
+        double fiat = 0.0;
+        try {
+            fiat = Double.valueOf(mFiatValueEdittext.getText().toString());
+        } catch (Exception e) {
+            fiat = 0.0;
+        }
+        if (!equals(mTransaction.meta().name(), payee)
+                || !equals(mTransaction.meta().category(), category)
+                || !equals(mTransaction.meta().notes(), notes)
+                || Math.abs(mTransaction.meta().fiat() - fiat) > 0.000001) {
+            mSaveTask = new SaveTransactionAsyncTask(
+                    mTransaction, mBizId, payee, category, notes, fiat);
+            mSaveTask.execute();
+        }
     }
 
     private void startOnlineBusinessSearch(String term) {
@@ -1318,10 +1338,11 @@ public class TransactionDetailFragment extends WalletBaseFragment
     class SaveTransactionAsyncTask extends BaseAsyncTask<Void, Void, AirbitzException> {
         Transaction transaction;
         long Bizid;
-        String Payee, Category, Note, Fiat;
+        String Payee, Category, Note;
+        double Fiat;
 
         public SaveTransactionAsyncTask(Transaction tx, long bizId, String payee,
-             String category, String note, String fiat) {
+             String category, String note, double fiat) {
             transaction = tx;
             Bizid = bizId;
             Payee = payee;
@@ -1335,13 +1356,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             transaction.meta().name(Payee);
             transaction.meta().category(Category);
             transaction.meta().notes(Note);
-            double amountFiat;
-            try {
-                amountFiat = Double.valueOf(Fiat);
-            } catch (Exception e) {
-                amountFiat = 0.0;
-            }
-            transaction.meta().fiat(amountFiat);
+            transaction.meta().fiat(Fiat);
             transaction.meta().bizid(Bizid);
             try {
                 mTransaction.save();

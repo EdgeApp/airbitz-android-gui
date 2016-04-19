@@ -47,6 +47,12 @@
         <item name="md_positive_color">@color/colorPrimary</item>
         <item name="md_neutral_color">@color/colorPrimary</item>
         <item name="md_negative_color">@color/colorPrimary</item>
+
+        <!-- Override alert style in order to correct marshmallow textColor -->
+        <item name="alertDialogTheme">@style/DialogOverride</item>
+        <item name="android:alertDialogTheme">@style/DialogOverride</item>
+        <item name="android:timePickerDialogTheme">@style/DialogOverride</item>
+        <item name="android:datePickerDialogTheme">@style/DialogOverride</item>
     </style>
 
     <style name="ToolBarCommon">

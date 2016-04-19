@@ -38,7 +38,7 @@ import android.util.Log;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.api.DirectoryWrapper;
-import com.airbitz.api.directory.BusinessDetail;
+import com.airbitz.api.directory.PluginDetailsResult;
 import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.plugins.PluginFramework;
 
@@ -51,42 +51,34 @@ public class PluginCheck  {
     public static String TAG = PluginCheck.class.getSimpleName();
 
     public static void checkEnabledPlugins() {
-        DetailTask task = new DetailTask(PluginFramework.getPluginObjects().checkPluginIds);
+        DetailTask task = new DetailTask();
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    static class DetailTask extends AsyncTask<String, Void, List<String>> {
+    static class DetailTask extends AsyncTask<String, Void, String> {
         DirectoryApi mApi = DirectoryWrapper.getApi();
-        String[] mBizIds;
-
-        public DetailTask(String[] bizIds) {
-            mBizIds = bizIds;
-        }
 
         @Override
         protected void onPreExecute() { }
 
         @Override
-        protected List<String> doInBackground(String... params) {
-            List<String> results = new LinkedList<String>();
-            for (String bizId : mBizIds) {
-                Log.d(TAG, bizId);
-                results.add(mApi.getBusinessById(bizId));
+        protected String doInBackground(String... params) {
+            try {
+                return mApi.checkPluginDetails();
+            } catch (Exception e) {
+                return null;
             }
-            return results;
         }
 
         @Override
-        protected void onPostExecute(List<String> results) {
-            for (String result : results) {
+        protected void onPostExecute(String results) {
+            if (results != null) {
                 try {
-                    Log.d(TAG, result);
-                    BusinessDetail detail = new BusinessDetail(new JSONObject(result));
-                    if (!TextUtils.isEmpty(detail.getDescription())
-                            && detail.getDescription().contains("enabled")) {
-                        PluginFramework.getPluginObjects().setPluginStatus(detail.getId(), true);
-                    } else {
-                        PluginFramework.getPluginObjects().setPluginStatus(detail.getId(), false);
+                    JSONObject j = new JSONObject(results);
+                    List<PluginDetailsResult> details =
+                        PluginDetailsResult.fromJsonArray(j.getJSONArray("results"));
+                    for (PluginDetailsResult detail : details) {
+                        PluginFramework.getPluginObjects().setPluginStatus(detail.getId(), detail.isEnabled());
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "", e);

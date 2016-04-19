@@ -113,8 +113,6 @@ public class PluginFramework {
         List<Plugin> mPlugins;
         Map<String, List<Plugin>> mPluginsGrouped;
 
-        public String[] checkPluginIds = {"11139", "11140", "11141"};
-
         PluginList() {
             AirbitzCore api = AirbitzCore.getApi();
             mPlugins = new LinkedList<Plugin>();
@@ -215,6 +213,7 @@ public class PluginFramework {
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_GLIDERA));
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
 
@@ -225,12 +224,14 @@ public class PluginFramework {
             plugin.provider = "clevercoin";
             plugin.country = "EUR";
             plugin.imageResId = R.drawable.ic_plugin_euro;
+            plugin.enabled = false;
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
             plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
             plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
             plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_CLEVERCOIN));
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
         }

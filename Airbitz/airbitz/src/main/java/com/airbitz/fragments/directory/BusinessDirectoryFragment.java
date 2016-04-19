@@ -197,7 +197,11 @@ public class BusinessDirectoryFragment extends BaseFragment implements
         mVenueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int newIdx = i - 1;
+                int newIdx = i;
+                // If mIncludeCategories, header is included in indices
+                if (mIncludeCategories) {
+                    newIdx = i - 1;
+                }
                 if (newIdx >= 0 && newIdx < mVenues.size()) {
                     showDirectoryDetailFragment(mVenues.get(newIdx).getId(),
                             mVenues.get(newIdx).getName(),
