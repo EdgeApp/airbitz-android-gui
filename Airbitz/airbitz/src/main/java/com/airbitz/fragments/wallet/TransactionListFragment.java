@@ -199,7 +199,17 @@ public class TransactionListFragment extends WalletBaseFragment
             setupFooter(R.id.buy_bitcoin, R.string.transaction_footer_buy_bitcoin, 0, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mActivity.switchFragmentThread(NavigationActivity.Tabs.BUYSELL.ordinal(), new Bundle());
+                    String code = mAccount.settings().currency().code;
+                    if (mActivity.getResources().getBoolean(R.bool.include_buysell)
+                            && ("USD".equals(code)
+                                || "CAD".equals(code)
+                                || "EUR".equals(code))) {
+                        mActivity.switchFragmentThread(NavigationActivity.Tabs.BUYSELL.ordinal(), new Bundle());
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.DIRECTORY_CATEGORY_QUERY, "ATM");
+                        mActivity.switchFragmentThread(NavigationActivity.Tabs.BD.ordinal(), bundle);
+                    }
                 }
             });
             setupFooter(R.id.import_bitcoin, R.string.transaction_footer_import_gift_card, Constants.BIZ_ID_AIRBITZ, new View.OnClickListener() {

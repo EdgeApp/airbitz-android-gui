@@ -80,6 +80,9 @@ public class Constants {
     public static final String WALLET_FROM = "com.airbitz.WalletsFragment.FROM_SOURCE";
     public static final String WALLET_CREATE = "com.airbitz.WalletsFragment.CREATE";
 
+    public static final String DIRECTORY_NAME_QUERY = "com.airbitz.DirectoryFragment.NAME_QUERY";
+    public static final String DIRECTORY_CATEGORY_QUERY = "com.airbitz.DirectoryFragment.CATEGORY_QUERY";
+
     public static double MAX_SATOSHI = 9.223372036854775807E18; // = 0x7fffffffffffffff, but Java can't handle that.
 
     public static final long BIZ_ID_AIRBITZ = 3384;

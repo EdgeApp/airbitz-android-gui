@@ -65,6 +65,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.airbitz.api.Constants;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -369,6 +370,20 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             queryWithoutLocation();
         } else {
             mHandler.postDelayed(mLocationTimeout, LOCATION_TIMEOUT);
+        }
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String nameSearch = bundle.getString(Constants.DIRECTORY_NAME_QUERY, "");
+            String catSearch = bundle.getString(Constants.DIRECTORY_CATEGORY_QUERY, "");
+            if (!TextUtils.isEmpty(nameSearch) || !TextUtils.isEmpty(catSearch)) {
+                String query = !TextUtils.isEmpty(nameSearch) ? nameSearch : catSearch;
+                String type = !TextUtils.isEmpty(nameSearch) ? "" : "category";
+                MapBusinessDirectoryFragment.pushFragment(mActivity,
+                    query, mActivity.getString(R.string.current_location), type);
+
+                bundle.putString(Constants.DIRECTORY_NAME_QUERY, "");
+                bundle.putString(Constants.DIRECTORY_CATEGORY_QUERY, "");
+            }
         }
     }
 
