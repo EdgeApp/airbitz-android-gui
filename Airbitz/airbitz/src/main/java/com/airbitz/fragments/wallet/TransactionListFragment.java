@@ -218,26 +218,32 @@ public class TransactionListFragment extends WalletBaseFragment
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), new Bundle());
                 }
             });
-            setupFooter(R.id.discount_starbucks, R.string.transaction_footer_starbucks_discount, Constants.BIZ_ID_STARBUCKS, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
-                }
-            });
-            setupFooter(R.id.discount_target, R.string.transaction_footer_target_discount, Constants.BIZ_ID_TARGET, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
-                }
-            });
-            setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_AMAZON, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("http://bit.ly/AirbitzPurse"));
-                    mActivity.startActivity(intent);
-                }
-            });
+            if (mActivity.getResources().getBoolean(R.bool.include_shop)) {
+                setupFooter(R.id.discount_starbucks, R.string.transaction_footer_starbucks_discount, Constants.BIZ_ID_STARBUCKS, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
+                    }
+                });
+                setupFooter(R.id.discount_target, R.string.transaction_footer_target_discount, Constants.BIZ_ID_TARGET, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
+                    }
+                });
+                setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_AMAZON, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("http://bit.ly/AirbitzPurse"));
+                        mActivity.startActivity(intent);
+                    }
+                });
+            } else {
+                mListFooterView.findViewById(R.id.discount_starbucks).setVisibility(View.GONE);
+                mListFooterView.findViewById(R.id.discount_target).setVisibility(View.GONE);
+                mListFooterView.findViewById(R.id.discount_amazon).setVisibility(View.GONE);
+            }
         }
         mListTransaction.setAdapter(mTransactionAdapter);
 
