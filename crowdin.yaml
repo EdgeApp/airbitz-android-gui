@@ -1,0 +1,68 @@
+project_identifier: airbitz
+api_key: d13f98dec6d253c5e272edeee77f6ed1                          #can be found in your project settings page
+base_path: ./
+files:
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/emailTemplate.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/info.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoDisclaimer.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoExportWallet.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoExportWalletOptions.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoFooter.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoInsufficientFunds.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoRecipient.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoRequest.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoSend.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoSendConfirmation.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoSettings.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoSpendingLimits.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoTransactionDetails.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoTransactions.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/infoWallets.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/html/Base.lproj/transactionDetails.html'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: '/Airbitz/Resources/Text/Base.lproj/SMSTemplate.txt'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/raw-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: './AirBitz/airbitz/src/main/res/values/strings.xml'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/values-%two_letters_code%/%original_file_name%' #where translations live
+  -
+    source: './AirBitz/airbitz/src/main/res/values/array.xml'                                    #source files filter
+    translation: '/AirBitz/airbitz/src/main/res/values-%two_letters_code%/%original_file_name%' #where translations live
+
+
+
+
