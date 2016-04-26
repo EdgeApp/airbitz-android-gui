@@ -341,10 +341,10 @@ public class CoreWrapper {
 
     public static long getTotalSentToday(Wallet wallet) {
         Calendar beginning = Calendar.getInstance();
-        long end = beginning.getTimeInMillis() / 1000;
+        long end = beginning.getTimeInMillis();
         beginning.set(Calendar.HOUR_OF_DAY, 0);
         beginning.set(Calendar.MINUTE, 0);
-        long start = beginning.getTimeInMillis() / 1000;
+        long start = beginning.getTimeInMillis();
 
         long sum = 0;
         List<Transaction> list = wallet.transactions();
@@ -352,7 +352,7 @@ public class CoreWrapper {
             if (tx.amount() < 0
                     && tx.date().getTime() >= start
                     && tx.date().getTime() <= end) {
-                sum -= tx.amount();
+                sum += Math.abs(tx.amount());
             }
         }
         return sum;
