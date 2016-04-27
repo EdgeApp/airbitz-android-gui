@@ -96,6 +96,7 @@ import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -452,11 +453,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public static AirbitzCore initiateCore(Context context) {
-        AirbitzCore api = AirbitzCore.getApi();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        api.init(context, airbitzApiKey, hiddenbitzKey);
-        return api;
+        return AndroidUtils.init(context, airbitzApiKey, hiddenbitzKey);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {

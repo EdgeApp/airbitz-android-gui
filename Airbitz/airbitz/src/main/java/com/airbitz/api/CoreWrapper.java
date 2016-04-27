@@ -35,6 +35,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 
 import co.airbitz.core.Account;
@@ -60,81 +62,139 @@ public class CoreWrapper {
     public static double SATOSHI_PER_mBTC = 1E5;
     public static double SATOSHI_PER_uBTC = 1E2;
 
+    private static Handler handler = new Handler(Looper.getMainLooper());
+
     public static void setupAccount(Context context, Account account) {
         final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
         account.callbacks(new Account.Callbacks() {
             public void remotePasswordChange() {
-                manager.sendBroadcast(new Intent(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.REMOTE_PASSWORD_CHANGE_ACTION));
+                    }
+                });
             }
 
             public void loggedOut() {
             }
 
             public void accountChanged() {
-                manager.sendBroadcast(new Intent(Constants.DATASYNC_UPDATE_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.DATASYNC_UPDATE_ACTION));
+                    }
+                });
             }
 
             public void walletsLoading() {
-                manager.sendBroadcast(new Intent(Constants.WALLET_LOADING_START_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.WALLET_LOADING_START_ACTION));
+                    }
+                });
             }
 
             public void walletChanged(Wallet wallet) {
-                manager.sendBroadcast(new Intent(Constants.WALLET_CHANGED_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.WALLET_CHANGED_ACTION));
+                    }
+                });
             }
 
             public void walletsLoaded() {
-                manager.sendBroadcast(
-                    new Intent(Constants.WALLETS_ALL_LOADED_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(
+                            new Intent(Constants.WALLETS_ALL_LOADED_ACTION));
+                    }
+                });
             }
 
             public void walletsChanged() {
-                manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
+                    }
+                });
             }
 
             public void otpSkew() {
-                manager.sendBroadcast(new Intent(Constants.OTP_SKEW_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.OTP_SKEW_ACTION));
+                    }
+                });
             }
 
             public void otpRequired() {
-                manager.sendBroadcast(new Intent(Constants.OTP_ERROR_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.OTP_ERROR_ACTION));
+                    }
+                });
             }
 
             public void otpResetPending() {
-                manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
+                    }
+                });
             }
 
             public void exchangeRateChanged() {
-                manager.sendBroadcast(new Intent(Constants.EXCHANGE_RATE_UPDATED_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.EXCHANGE_RATE_UPDATED_ACTION));
+                    }
+                });
             }
 
             public void blockHeightChanged() {
-                manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.BLOCKHEIGHT_CHANGE_ACTION));
+                    }
+                });
             }
 
-            public void balanceUpdate(Wallet wallet, Transaction tx) {
-                manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
+            public void balanceUpdate(final Wallet wallet, final Transaction tx) {
+                handler.post(new Runnable() {
+                    public void run() {
+                        manager.sendBroadcast(new Intent(Constants.WALLETS_RELOADED_ACTION));
+                    }
+                });
             }
 
-            public void incomingBitcoin(Wallet wallet, Transaction tx) {
-                if (null != tx) {
-                    Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
-                    intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                    intent.putExtra(Constants.WALLET_TXID, tx.id());
-                    manager.sendBroadcast(intent);
-                }
+            public void incomingBitcoin(final Wallet wallet, final Transaction tx) {
+                handler.post(new Runnable() {
+                    public void run() {
+                        if (null != tx) {
+                            Intent intent = new Intent(Constants.INCOMING_BITCOIN_ACTION);
+                            intent.putExtra(Constants.WALLET_UUID, wallet.id());
+                            intent.putExtra(Constants.WALLET_TXID, tx.id());
+                            manager.sendBroadcast(intent);
+                        }
+                    }
+                });
             }
 
-            public void sweep(Wallet wallet, Transaction tx, long amountSwept) {
-                Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
-                intent.putExtra(Constants.WALLET_UUID, wallet.id());
-                if (tx != null) {
-                    intent.putExtra(Constants.WALLET_TXID, tx.id());
-                    intent.putExtra(Constants.AMOUNT_SWEPT, tx.amount());
-                } else {
-                    intent.putExtra(Constants.WALLET_TXID, "");
-                    intent.putExtra(Constants.AMOUNT_SWEPT, 0);
-                }
-                manager.sendBroadcast(intent);
+            public void sweep(final Wallet wallet, final Transaction tx, final long amountSwept) {
+                handler.post(new Runnable() {
+                    public void run() {
+                        Intent intent = new Intent(Constants.WALLET_SWEEP_ACTION);
+                        intent.putExtra(Constants.WALLET_UUID, wallet.id());
+                        if (tx != null) {
+                            intent.putExtra(Constants.WALLET_TXID, tx.id());
+                            intent.putExtra(Constants.AMOUNT_SWEPT, tx.amount());
+                        } else {
+                            intent.putExtra(Constants.WALLET_TXID, "");
+                            intent.putExtra(Constants.AMOUNT_SWEPT, 0);
+                        }
+                        manager.sendBroadcast(intent);
+                    }
+                });
             }
         });
     }

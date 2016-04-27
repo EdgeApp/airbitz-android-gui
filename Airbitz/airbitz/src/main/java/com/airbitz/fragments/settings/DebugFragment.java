@@ -44,6 +44,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.BuildConfig;
@@ -102,7 +103,7 @@ public class DebugFragment extends BaseFragment {
 
         ((TextView) mView.findViewById(R.id.debug_network_version_text)).setText(AirbitzCore.getApi().isTestNet() ? "Testnet" : "Mainnet");
 
-        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(AirbitzCore.getApi().version());
+        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(AndroidUtils.version());
 
         return mView;
     }

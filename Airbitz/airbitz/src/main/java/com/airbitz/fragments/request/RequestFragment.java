@@ -93,6 +93,7 @@ import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -898,7 +899,7 @@ public class RequestFragment extends WalletBaseFragment implements
                 .uriLabel(mAccount.settings().displayName());
             address = receiver.address();
             try {
-                qrBitmap = mCoreAPI.qrEncode(receiver.qrcode());
+                qrBitmap = AndroidUtils.qrEncode(receiver.qrcode());
                 qrBitmap = Common.AddWhiteBorder(qrBitmap);
                 uri = receiver.uri();
                 return true;
