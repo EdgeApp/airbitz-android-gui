@@ -550,6 +550,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onCurrencySelected(CoreCurrency currency) {
         mSendConfirmationCurrencyOverride = currency;
         mSendConfirmationOverrideCurrencyMode = true;
+        AirbitzCore.getApi().exchangeCache().update(mAccount, currency.code);
         updateTextFieldContents(mBtcMode, false);
     }
 
