@@ -384,8 +384,9 @@ public class CoreWrapper {
             settings.save();
             if (pinLoginCount == 3
                     || pinLoginCount == 10
-                    || pinLoginCount == 40
-                    || pinLoginCount == 100) {
+                    || pinLoginCount == 20) {
+                return true;
+            } else if (pinLoginCount % 20 == 0) {
                 return true;
             }
         } catch (AirbitzException e) {
