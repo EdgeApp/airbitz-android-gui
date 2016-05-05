@@ -413,15 +413,15 @@ public class RequestFragment extends WalletBaseFragment implements
     private void updateConversion() {
         if (null != mWallet){
             if (mAmountIsBitcoin) {
-                String currency = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false);
+                String formatted = CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false);
                 mDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
                 mOtherDenominationTextView.setText(mWallet.currency().code);
-                mOtherAmountTextView.setText(currency);
+                mOtherAmountTextView.setText(formatted);
             } else {
-                long satoshi = CoreWrapper.currencyToSatoshi(mAccount, mAmountField.getText().toString(), mWallet.currency().code);
+                String formatted = Utils.formatSatoshi(mAccount, mAmountSatoshi, false);
                 mDenominationTextView.setText(mWallet.currency().code);
                 mOtherDenominationTextView.setText(CoreWrapper.defaultBTCDenomination(mAccount));
-                mOtherAmountTextView.setText(Utils.formatSatoshi(mAccount, satoshi, false));
+                mOtherAmountTextView.setText(formatted);
             }
             if (TextUtils.isEmpty(mAmountField.getText())) {
                 mOtherAmountTextView.setText("");
@@ -1037,14 +1037,12 @@ public class RequestFragment extends WalletBaseFragment implements
             try {
                 if (!CoreWrapper.tooMuchFiat(mAccount, fiat, mWallet.currency().code)) {
                     mAmountSatoshi = CoreWrapper.currencyToSatoshi(mAccount, fiat, mWallet.currency().code);
-                    /*
                     if (mAmountSatoshi == 0) {
                         mAmountField.setText("");
                     } else {
                         mAmountField.setText(
                             Utils.formatSatoshi(mAccount, mAmountSatoshi, false));
                     }
-                    */
                 } else {
                     AirbitzCore.logi("Too much fiat");
                 }
@@ -1055,14 +1053,12 @@ public class RequestFragment extends WalletBaseFragment implements
             String bitcoin = mAmountField.getText().toString();
             if (!CoreWrapper.tooMuchBitcoin(mAccount, bitcoin)) {
                 mAmountSatoshi = Utils.btcStringToSatoshi(mAccount, bitcoin);
-                /*
                 if (mAmountSatoshi == 0) {
                     mAmountField.setText("");
                 } else {
                     mAmountField.setText(
                         CoreWrapper.formatCurrency(mAccount, mAmountSatoshi, mWallet.currency().code, false));
                 }
-                */
             } else {
                 AirbitzCore.logi("Too much bitcoin");
             }
@@ -1071,7 +1067,7 @@ public class RequestFragment extends WalletBaseFragment implements
     }
 
     private void swapStart() {
-        final boolean animateAmount = !TextUtils.isEmpty(mAmountField.getText());
+        final boolean animateAmount = false;// !TextUtils.isEmpty(mAmountField.getText());
         mDenominationTextView.setPivotY(mDenominationTextView.getHeight());
         mAmountField.setPivotY(mAmountField.getHeight());
         mOtherDenominationTextView.setPivotY(0f);
@@ -1089,13 +1085,13 @@ public class RequestFragment extends WalletBaseFragment implements
         list.add(bot);
 
         if (animateAmount) {
-            Animator amt = anim.clone();
-            amt.setTarget(mAmountField);
-            list.add(amt);
+            Animator amt1 = anim.clone();
+            amt1.setTarget(mAmountField);
+            list.add(amt1);
 
-            amt = anim.clone();
-            amt.setTarget(mOtherAmountTextView);
-            list.add(amt);
+            Animator amt2 = anim.clone();
+            amt2.setTarget(mOtherAmountTextView);
+            list.add(amt2);
         }
 
         AnimatorSet set = new AnimatorSet();
@@ -1126,13 +1122,13 @@ public class RequestFragment extends WalletBaseFragment implements
         list.add(bot);
 
         if (animateAmount) {
-            Animator amt = anim.clone();
-            amt.setTarget(mAmountField);
-            list.add(amt);
+            Animator amt1 = anim.clone();
+            amt1.setTarget(mAmountField);
+            list.add(amt1);
 
-            amt = anim.clone();
-            amt.setTarget(mOtherAmountTextView);
-            list.add(amt);
+            Animator amt2 = anim.clone();
+            amt2.setTarget(mOtherAmountTextView);
+            list.add(amt2);
         }
 
         AnimatorSet set = new AnimatorSet();
