@@ -776,14 +776,14 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         }
 
         String enteredPIN = mAuthorizationEdittext.getText().toString();
-        if(mPinRequired && enteredPIN.isEmpty()) {
+        if (mPinRequired && enteredPIN.isEmpty()) {
             mActivity.ShowFadingDialog(getString(R.string.fragment_send_confirmation_please_enter_pin), getResources().getInteger(R.integer.alert_hold_time_default));
             mAuthorizationEdittext.requestFocus();
             resetSlider();
             return;
         }
 
-         if (mPinRequired && enteredPIN != null && mAccount.checkPin(enteredPIN)) {
+         if (mPinRequired && enteredPIN != null && !mAccount.checkPin(enteredPIN)) {
              mInvalidEntryCount += 1;
              saveInvalidEntryCount(mInvalidEntryCount);
              if(mInvalidEntryCount >= INVALID_ENTRY_COUNT_MAX) {
