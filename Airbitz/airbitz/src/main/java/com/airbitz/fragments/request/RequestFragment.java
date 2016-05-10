@@ -385,6 +385,9 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        mSMSButton.setEnabled(false);
+        mEmailButton.setEnabled(false);
+        mCopyButton.setEnabled(false);
         return mView;
     }
 
@@ -930,6 +933,9 @@ public class RequestFragment extends WalletBaseFragment implements
                     alignQrCode();
                 }
             }
+            mSMSButton.setEnabled(true);
+            mEmailButton.setEnabled(true);
+            mCopyButton.setEnabled(true);
         }
 
         @Override
