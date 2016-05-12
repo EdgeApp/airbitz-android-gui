@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="AppTheme.Base">
         <!-- Override alert style in order to correct marshmallow textColor -->
         <item name="alertDialogTheme">@style/DialogOverride</item>
         <item name="android:alertDialogTheme">@style/DialogOverride</item>
