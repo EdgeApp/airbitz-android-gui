@@ -638,7 +638,7 @@
     <string name="password_check_incorrect_password_message">Incorrect Password. Try again?</string>
     <string name="password_check_skip">Please create a new account and transfer your funds if you forgot your password.</string>
     <string name="password_check_remember_title">Remember your password?</string>
-    <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or if your PIN is incorrectly entered 3 times.\nEnter it below to make sure:</string>
+    <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or stolen, or if you uninstall the app.\nEnter it below to make sure:</string>
     <string name="password_check_check_my_password">Check MY Password</string>
     <string name="password_check_check_later">Later</string>
     <string name="password_check_great_job">Great job remembering your password.</string>
