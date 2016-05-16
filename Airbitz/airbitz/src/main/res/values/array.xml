@@ -3,7 +3,7 @@
 
     <!--Settings-->
 
-    <array name="category_defaults">
+    <string-array name="category_defaults">
         <item>Expense:Air Travel</item>
         <item>Expense:Alcohol &amp; Bars</item>
         <item>Expense:Allowance</item>
@@ -132,7 +132,7 @@
         <item>Transfer:Wallet:Multibit</item>
         <item>Transfer:Wallet:Mycelium</item>
         <item>Transfer:Wallet:Dark Wallet</item>
-    </array>
+    </string-array>
 
     <string-array name="transaction_categories_list">
         <item>Expense:</item>
