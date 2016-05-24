@@ -957,18 +957,16 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
+        if (mSavedBitcoin > 0) {
+            mAmountToSendSatoshi = mSavedBitcoin;
+        }
         mSpendTarget = newSpend(mAmountToSendSatoshi);
-
         checkFields();
         checkAuthorization();
     }
 
     private void checkFields() {
         mAutoUpdatingTextFields = true;
-
-        if (mSavedBitcoin > 0) {
-            mAmountToSendSatoshi = mSavedBitcoin;
-        }
 
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
