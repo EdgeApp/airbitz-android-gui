@@ -1,0 +1,19 @@
+Solicitação de Pagamento de Bitcoin
+De: [[abtag FROM]]
+
+Por favor, escaneie o código QR ou clique nos links para pagar.
+
+Clique para Pagar
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+Endereço: [[abtag ADDRESS]]
+Quantia: [[abtag AMOUNT_BTC]] BTC
+Quantia: [[abtag AMOUNT_BITS]] bits
+
+Enviado do Aparelho [[abtag APP_TITLE]] Carteira Bitcoin + Diretório de Negócios
+
+Baixe o [[abtag APP_TITLE]] para iOS ou Android
+[[abtag APP_DOWNLOAD_LINK]]
+

@@ -590,7 +590,8 @@
   <string name="password_check_incorrect_password_message">Contraseña incorrecta. ¿Vuelve a intentarlo?</string>
   <string name="password_check_skip">Por favor, crear una nueva cuenta y transferir tus fondos si olvidó su contraseña.</string>
   <string name="password_check_remember_title">¿Recuerde su contraseña?</string>
-  <string name="password_check_remember_message">¿Todavía recuerdas tu contraseña? Necesitará su contraseña si el dispositivo se pierde o si su PIN es ingresado incorrectamente 3 veces. \nEntra lo siguiente para asegurarse de que:</string>
+  <string name="password_check_remember_message">¿Todavía recuerda su contraseña? Necesitará su contraseña si su dispositivo se pierde o roba, o si desinstala la aplicación.
+Introdúzcala en la parte inferior para asegurarse:</string>
   <string name="password_check_check_my_password">Verificar mi contraseña</string>
   <string name="password_check_check_later">Más tarde</string>
   <string name="password_check_great_job">Gran trabajo de recordar tu contraseña.</string>

@@ -1,0 +1,25 @@
+Carteira de Bitcoin poderosa e fácil de usar, que permite aos usuários controlar suas próprias chaves privadas de bitcoin, com a familiaridade e tranquilidade de um serviço bancário de celular.
+
+Assuma o controle das suas reservas! Com Airbitz, só você tem acesso as suas reservas ou dados de transação. Nem o Airbitz nem terceiros podem acessar seu dinheiro ou dados. Você recebe a privacidade e autonomia do bitcoin com a facilidade que até sua avó saberia usar.
+
+Com um foco em entregar uma experiência incrível ao usuário, a carteira Airbitz fornece as seguintes funcionalidades:
+
+• Zero conhecimento & zero acesso a reservas, chaves, ou dados de transação pela Airbitz ou terceiros
+• Compra integrada de cartões de presente com desconto (20% de desconto no Starbucks!)
+• Compra e venda de bitcoin integrada a uma conta bancária vinculada
+• Simples criação de conta usando apenas login e senha (sem impressão de PDFs, escrever frases de passe, ou adicionar configurações de criptografia)
+• Carteiras determinísticas hierárquicas com mudança de endereço para cada transação
+• Procure transações por emitente, categoria, ou notas
+• Limites de gastos (exigir senha ou PIN para gastar acima de limites definidos por você)
+• Arquitetura de servidor descentralizada. As carteiras funcionam mesmo se os servidores Airbitz estiverem fora do ar.
+• Código aberto. Disponível em http://github.com/Airbitz
+
+********* Política de Privacidade *********
+O aplicativo Airbitz solicita acessar a lista de contatos do dispositivo, localização e informações pessoais. Esta informação é utilizada no dispositivo para fornecer uma melhor experiência ao usuário das seguintes formas:
+
+1. Completar automaticamente contatos do livro de endereços do usuário depois de uma transação
+2. Completar automaticamente contatos do livro de endereços do usuário para enviar pedidos de pagamentos por e-mail ou SMS
+3. Completar automaticamente nomes de listagens de negócios depois de uma transação
+4. Localizar geograficamente o dispositivo do usuário para encontrar negócios próximos
+
+Nenhuma informação pessoal ou da lista de contatos sai do dispositivo sem antes ser criptografada pelas credenciais do usuário (nome de usuário/senha). A Airbitz e qualquer terceiro não têm conhecimento da informação acessada pelo aplicativo.

@@ -1,0 +1,19 @@
+比特币支付请求
+来自: [[abtag FROM]]
+
+请扫描二维码或点击链接进行支付
+
+点击进行支付
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+地址: [[abtag ADDRESS]]
+数额: [[abtag AMOUNT_BTC]] BTC
+数额: [[abtag AMOUNT_BITS]] bits
+
+来自 [[abtag APP_TITLE]] 所发送的比特币钱包 + 商业目录
+
+下载 [[abtag APP_TITLE]] iOS和Android版本
+[[abtag APP_DOWNLOAD_LINK]]
+

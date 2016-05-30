@@ -1,0 +1,19 @@
+बिटकॉइन भुगतान का अनुरोध
+से:[[abtag FROM]]
+
+क्यूआर कोड को स्कैन करने या भुगतान करने के लिए लिंक पर क्लिक करें
+
+भुगतान करने के लिए क्लिक करें
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+पता: [[abtag ADDRESS]]
+राशि: [[abtag AMOUNT_BTC]] बीटीसी
+राशि: [[abtag AMOUNT_BITS]] बिट्स
+
+[[Abtag APP_TITLE]] से भेजा गया मोबाइल Bitcoin बटुआ + व्यापार निर्देशिका
+
+[[abtag APP_TITLE]] को IOS या Android के लिए डाउनलोड करें
+[[abtag APP_DOWNLOAD_LINK]]
+
