@@ -154,4 +154,10 @@
         <item>Miles</item>
     </string-array>
 
+    <string-array name="mining_fees">
+        <item>Low Fee</item>
+        <item>Standard Fee</item>
+        <item>High Fee</item>
+    </string-array>
+
 </resources>

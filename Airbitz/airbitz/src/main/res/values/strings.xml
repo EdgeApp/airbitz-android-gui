@@ -737,4 +737,7 @@
     <string name="transaction_footer_target_discount">Up to 10% off Target</string>
     <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
 
+    <string name="change_mining_fee_title">Change Mining Fee</string>
+    <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+
 </resources>

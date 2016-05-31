@@ -87,6 +87,9 @@ import com.airbitz.objects.Calculator;
 import com.airbitz.objects.PasswordCheckRunnable;
 import com.airbitz.utils.Common;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+
 import java.lang.reflect.Method;
 
 /**
@@ -185,6 +188,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     static final int KEYBOARD_ANIM = 250;
 
     private Spend mSpendTarget = null;
+    private Spend.FeeLevel mFeeLevel = Spend.FeeLevel.STANDARD;
     private ParsedUri mParsedUri = null;
     private PaymentRequest mPaymentRequest = null;
     private Spend mOverrideSpend = null;
@@ -483,6 +487,14 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
+        mBTCDenominationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customizeFees();
+            }
+        });
+
+
         mConversionTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -644,6 +656,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         Spend target = null;
         try {
             target = mWallet.newSpend();
+            target.feeLevel(mFeeLevel);
             if (mPaymentRequest != null) {
                 target.addPaymentRequest(mPaymentRequest);
                 if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
@@ -1245,5 +1258,46 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
     };
+
+    private int feeToIndex(Spend.FeeLevel level) {
+        if (level == Spend.FeeLevel.LOW) {
+            return 0;
+        } else if (level == Spend.FeeLevel.HIGH) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    private Spend.FeeLevel indexToFee(int index) {
+        switch (index) {
+        case 0:
+            return Spend.FeeLevel.LOW;
+        case 2:
+            return Spend.FeeLevel.HIGH;
+        default:
+            return Spend.FeeLevel.STANDARD;
+        }
+    }
+
+    private void customizeFees() {
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.change_mining_fee_title)
+                .content(R.string.change_mining_fee_body)
+                .items(R.array.mining_fees)
+                .itemsCallbackSingleChoice(feeToIndex(mFeeLevel), new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        mFeeLevel = indexToFee(which);
+                        mSpendTarget.feeLevel(mFeeLevel);
+                        if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+                            mMaxButton.performClick();
+                        } else {
+                            updateTextFieldContents(mBtcMode, false);
+                        }
+                        return true;
+                    }
+                }).show();
+    }
 
 }
