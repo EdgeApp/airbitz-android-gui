@@ -103,7 +103,7 @@ public class DebugFragment extends BaseFragment {
 
         ((TextView) mView.findViewById(R.id.debug_network_version_text)).setText(AirbitzCore.getApi().isTestNet() ? "Testnet" : "Mainnet");
 
-        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(AndroidUtils.version());
+        ((TextView) mView.findViewById(R.id.debug_core_version_text)).setText(AirbitzCore.getApi().version());
 
         return mView;
     }
