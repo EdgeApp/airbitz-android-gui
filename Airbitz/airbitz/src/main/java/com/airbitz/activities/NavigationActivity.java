@@ -616,7 +616,7 @@ public class NavigationActivity extends ActionBarActivity
                 if (fragment instanceof HelpFragment) {
                     transaction.setCustomAnimations(R.animator.fade_in, 0);
                 } else {
-                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.fade_out_exit);
                 }
             }
             transaction.replace(R.id.activityLayout, fragment);
@@ -656,7 +656,7 @@ public class NavigationActivity extends ActionBarActivity
             if (fragment instanceof HelpFragment) {
                 transaction.setCustomAnimations(0, R.animator.fade_out);
             } else {
-                transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+                transaction.setCustomAnimations(R.animator.fade_in_enter, R.animator.slide_out_right);
             }
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
