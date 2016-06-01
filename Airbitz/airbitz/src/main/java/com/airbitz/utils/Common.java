@@ -170,6 +170,7 @@ public class Common {
     }
 
     public static String evaluateTextFile(Context ctx, int resId) {
+        String footer = readRawTextFile(ctx, R.raw.info_footer);
         String text = readRawTextFile(ctx, resId);
         String supportEmail = ctx.getString(R.string.app_support_email);
         String emailSupportTemplate =
@@ -196,6 +197,11 @@ public class Common {
         tags.put("[[abtag REQUEST_FOOTER_CONTACT]]", ctx.getString(R.string.request_footer_contact));
         tags.put("[[abtag EMAIL_SUPPORT_TEMPLATE]]", emailSupportTemplate);
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
+
+        for (Map.Entry<String, String> e : tags.entrySet()) {
+            footer = footer.replace(e.getKey(), e.getValue());
+        }
+        tags.put("[[abtag INFO_FOOTER]]", footer);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             text = text.replace(e.getKey(), e.getValue());
