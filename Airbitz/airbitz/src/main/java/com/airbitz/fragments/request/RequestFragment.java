@@ -685,7 +685,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         }
 
-        String html = fillTemplate(R.raw.email_template, name);
+        String html = fillTemplate(R.raw.email_template_simple, name);
         intent.putExtra(Intent.EXTRA_STREAM, uris);
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
         startActivity(Intent.createChooser(intent, "email"));
