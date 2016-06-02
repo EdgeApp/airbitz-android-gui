@@ -127,7 +127,6 @@ public class BusinessSearchFragment extends BaseFragment implements
             searchForm.setLayoutParams(param);
         }
         mLocationField = (EditText) view.findViewById(R.id.location);
-        mLocationField.setText(R.string.current_location);
         mSearchListView = (ListView) view.findViewById(R.id.category_list);
         mLoading = view.findViewById(R.id.empty);
 

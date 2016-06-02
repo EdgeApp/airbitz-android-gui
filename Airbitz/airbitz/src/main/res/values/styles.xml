@@ -500,7 +500,7 @@
 
     <style name="DirectorySearchText">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorHint">@color/dark_text_field_text_hint</item>
+        <item name="android:textColorHint">@color/bright_text_hint</item>
         <item name="android:textSize">20dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:padding">10dp</item>
