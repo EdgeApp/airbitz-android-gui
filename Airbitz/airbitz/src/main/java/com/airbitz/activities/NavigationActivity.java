@@ -1302,7 +1302,6 @@ public class NavigationActivity extends ActionBarActivity
                     .setNegativeButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Logout();
                                     dialog.cancel();
                                     mRemoteChange = null;
                                 }
