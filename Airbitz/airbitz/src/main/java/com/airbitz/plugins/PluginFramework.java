@@ -165,7 +165,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Whole Foods");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Whole-Foods-Market-128px.png");
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_WHOLEFOODS));
-            plugin.enabled = false;
+//            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AGroceries");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -181,7 +181,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Walmart");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/WalMart-128px.png");
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_WALMART));
-            plugin.enabled = false;
+//            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AShopping");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
@@ -197,7 +197,7 @@ public class PluginFramework {
             plugin.env.put("BRAND", "Home Depot");
             plugin.env.put("LOGO_URL", "https://airbitz.co/go/wp-content/uploads/2015/12/Home-Depot-square-128px.png");
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_HOME_DEPOT));
-            plugin.enabled = false;
+//            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense%3AHome Improvement");
             mPlugins.add(plugin);
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
