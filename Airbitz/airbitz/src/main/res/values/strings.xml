@@ -38,6 +38,7 @@
     <string name="string_show_balance">Show Balance</string>
     <string name="string_agree">Agree</string>
     <string name="string_balance">Balance</string>
+    <string name="string_wallet">Wallet</string>
 
     <string name="loading_wallets">Loading Wallets...\nThis may take a few minutes as it is the first time logging into this device.</string>
     <string name="loading_n_wallets">Loading %1$d of %2$d wallets.\nThis may take a few minutes as it is the first time logging into this device.</string>
@@ -287,10 +288,6 @@
     <string name="settings_button_logout">Logout</string>
     <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
-    <string name="settings_categories_expense">Expense:</string>
-    <string name="settings_categories_income">Income:</string>
-    <string name="settings_categories_transfer">Transfer:</string>
-    <string name="settings_categories_exchange">Exchange:</string>
     <string name="settings_days">Day(s)</string>
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>

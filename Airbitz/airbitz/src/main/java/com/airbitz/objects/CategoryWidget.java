@@ -89,7 +89,7 @@ public class CategoryWidget extends FrameLayout {
         mSpinner = (Spinner) findViewById(R.id.prefix_spinner);
         mText = (EditText) findViewById(R.id.postfix_text);
 
-        mAdapter = new CategoryAdapter(mContext, Arrays.asList(mContext.getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mAdapter = new CategoryAdapter(mContext, Arrays.asList(mContext.getResources().getStringArray(R.array.transaction_categories_list)));
         mSpinner.setAdapter(mAdapter);
         mSpinner.setSelection(0);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

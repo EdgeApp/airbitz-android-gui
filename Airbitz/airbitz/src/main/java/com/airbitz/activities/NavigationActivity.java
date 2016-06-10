@@ -152,6 +152,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1897,16 +1898,41 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void createDefaultCategories() {
-        String[] defaults =
-            getResources().getStringArray(R.array.category_defaults);
+        String[] expense_category_defaults =
+                getResources().getStringArray(R.array.expense_category_defaults);
+        String[] income_category_defaults =
+                getResources().getStringArray(R.array.income_category_defaults);
+        String[] exchange_category_defaults =
+                getResources().getStringArray(R.array.exchange_category_defaults);
+        String[] transfer_category_defaults =
+                getResources().getStringArray(R.array.transfer_category_defaults);
+        String[] transfer_wallet_category_defaults =
+                getResources().getStringArray(R.array.transfer_wallet_category_defaults);
 
         Categories categories = AirbitzApplication.getAccount().categories();
-        for (String cat : defaults) {
-            categories.insert(cat);
+        for (String cat : expense_category_defaults) {
+            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[0] + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : income_category_defaults) {
+            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[1] + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : exchange_category_defaults) {
+            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[3] + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : transfer_category_defaults) {
+            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[2] + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : transfer_wallet_category_defaults) {
+            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[2] + ":" + getResources().getString(R.string.string_wallet) + ":" + cat;
+            categories.insert(fullCategory);
         }
 
         List<String> cats = categories.list();
-        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+        if (cats.size() == 0) {
             AirbitzCore.logi("Category creation failed");
         }
     }

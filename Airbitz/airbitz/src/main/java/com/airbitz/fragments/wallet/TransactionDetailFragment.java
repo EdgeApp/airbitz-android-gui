@@ -301,7 +301,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list)));
         mCategorySpinner.setAdapter(spinnerAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -766,6 +766,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mCategorySpinner.setBackgroundResource(newBackground);
         }
         currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
+        currentType = currentType + ":";
         createNewCategoryChoices(mCategoryEdittext.getText().toString());
     }
 
@@ -1166,7 +1167,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         // Order the categories list, currentType first
         orderedCategories.add(currentType);
         for(String type : getResources().getStringArray(R.array.transaction_categories_list)) {
-            if(!type.contains(currentType)) {
+            if(!type.contains(currentType + ":")) {
                 orderedCategories.add(type);
             }
         }
