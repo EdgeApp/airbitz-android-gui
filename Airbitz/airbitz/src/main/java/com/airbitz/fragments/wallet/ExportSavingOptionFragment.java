@@ -212,6 +212,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
                     }
+                } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                    data = mWallet.xpub();
                 } else {
                     data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
                     if(data == null || data.isEmpty()) {
@@ -247,6 +249,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
                     }
+                } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                    data = mWallet.xpub();
                 } else {
                     if (mExportType == ExportTypes.Quickbooks.ordinal()) {
                         data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
@@ -278,6 +282,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         dataOrFile = null;
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
+                } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                    dataOrFile = mWallet.xpub();
                 } else {
                     dataOrFile = getExportFilePath(wallet, mExportType);
                 }
@@ -315,6 +321,9 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }
+                } else if (mBundle.getInt(EXPORT_TYPE) == ExportTypes.XPub.ordinal()) {
+                    ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.name() + " " + getString(R.string.export_saving_option_xpub),
+                        mWallet.xpub());
                 }
             }
         });
@@ -519,19 +528,24 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
     private void showExportButtons() {
         int type = mBundle.getInt(EXPORT_TYPE);
-        if (type == ExportTypes.CSV.ordinal() || type == ExportTypes.Quickbooks.ordinal()) {
+        if (type == ExportTypes.CSV.ordinal()
+                || type == ExportTypes.Quickbooks.ordinal()) {
             setAllButtonViews(View.GONE);
             mSDCardButton.setVisibility(View.VISIBLE);
             mShareButton.setVisibility(View.VISIBLE);
             mPrintButton.setVisibility(View.VISIBLE);
             mEmailButton.setVisibility(View.VISIBLE);
-        }
-        else if (type == ExportTypes.PrivateSeed.ordinal()) {
+        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             setAllButtonViews(View.GONE);
             mPrintButton.setVisibility(View.VISIBLE);
             mSDCardButton.setVisibility(View.VISIBLE);
             mViewButton.setVisibility(View.VISIBLE);
             mPasswordEditText.setVisibility(View.VISIBLE);
+        } else if (type == ExportTypes.XPub.ordinal()) {
+            setAllButtonViews(View.GONE);
+            mPrintButton.setVisibility(View.VISIBLE);
+            mSDCardButton.setVisibility(View.VISIBLE);
+            mViewButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -622,7 +636,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         if (!mAccount.passwordExists()) {
             mPasswordEditText.setVisibility(View.GONE);
         }
-        if (type == ExportTypes.PrivateSeed.ordinal()) {
+        if (type == ExportTypes.PrivateSeed.ordinal()
+                || type == ExportTypes.XPub.ordinal()) {
             mDatesLayout.setVisibility(View.GONE);
             mLastPeriodLayout.setVisibility(View.GONE);
             mThisPeriodLayout.setVisibility(View.GONE);
@@ -638,6 +653,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             return filePathForData("export.csv", data);
         } else if (type == ExportTypes.PrivateSeed.ordinal()) {
             filepath = Common.createTempFileFromString("export.txt", mWallet.seed());
+        } else if (type == ExportTypes.XPub.ordinal()) {
+            filepath = Common.createTempFileFromString("xpub.txt", mWallet.xpub());
         } else if (type == ExportTypes.Quicken.ordinal()) {
             return null;
         } else if (type == ExportTypes.Quickbooks.ordinal()) {
@@ -671,7 +688,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             strMimeType = "application/qbooks";
         } else if (type == ExportTypes.PDF.ordinal()) {
             strMimeType = "application/pdf";
-        } else if (type == ExportTypes.PrivateSeed.ordinal()) {
+        } else if (type == ExportTypes.PrivateSeed.ordinal()
+                    || type == ExportTypes.XPub.ordinal()) {
             strMimeType = "text/plain";
         } else {
             strMimeType = "???";
@@ -734,6 +752,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             filename = mFromButton.getText().toString() + "-" + mToButton.getText().toString() + ".QBO";
         } else if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
             filename = mWallet.name() + ".txt";
+        } else if (mExportType == ExportTypes.XPub.ordinal()) {
+            filename = mWallet.name() + "_xpub.txt";
         }
         return filename.replaceAll("/", "-").replaceAll(" ", "_").replaceAll(":", "");
     }
@@ -752,5 +772,5 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mActivity.popFragment();
     }
 
-    public enum ExportTypes {PrivateSeed, CSV, Quicken, Quickbooks, PDF}
+    public enum ExportTypes {PrivateSeed, XPub, CSV, Quicken, Quickbooks, PDF}
 }

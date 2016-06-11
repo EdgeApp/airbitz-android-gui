@@ -56,6 +56,11 @@
                     android:id="@+id/button_wallet"
                     android:text="@string/export_print_title"
                     style="@style/SettingsButton" />
+
+                <Button
+                    android:id="@+id/button_xpub"
+                    android:text="@string/export_xpub"
+                    style="@style/SettingsButton" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
