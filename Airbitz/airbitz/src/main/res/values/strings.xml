@@ -311,10 +311,6 @@
     <!-- Strings for Category Fragment -->
     <string name="fragment_category_cancel_title">Cancel Changes</string>
     <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you made?</string>
-    <string name="fragment_category_income">Income:</string>
-    <string name="fragment_category_expense">Expense:</string>
-    <string name="fragment_category_transfer">Transfer:</string>
-    <string name="fragment_category_exchange">Exchange:</string>
     <string name="fragment_category_deleted">%1$s Deleted</string>
     <string name="fragment_category_add">Add Category</string>
 

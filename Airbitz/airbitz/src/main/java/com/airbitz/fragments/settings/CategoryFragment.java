@@ -56,6 +56,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.SettingsCategoryAdapter;
+import com.airbitz.api.Constants;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.CategoryWidget;
 
@@ -313,10 +314,11 @@ public class CategoryFragment extends BaseFragment {
         Set<String> cats = new HashSet<String>();
         for (int i = allcategories.size()-1; i > -1; i--) {
             String category = allcategories.get(i);
-            if (category.equals(getString(R.string.fragment_category_expense)) ||
-                    category.equals(getString(R.string.fragment_category_income)) ||
-                    category.equals(getString(R.string.fragment_category_transfer)) ||
-                    category.equals(getString(R.string.fragment_category_exchange))) {
+            String tmp = category.replace(":", "");
+            if (tmp.equals(Constants.EXPENSE) ||
+                    tmp.equals(Constants.INCOME) ||
+                    tmp.equals(Constants.TRANSFER) ||
+                    tmp.equals(Constants.EXCHANGE)) {
                 allcategories.remove(category);
             } else if (cats.contains(category)) {
                 allcategories.remove(category);
