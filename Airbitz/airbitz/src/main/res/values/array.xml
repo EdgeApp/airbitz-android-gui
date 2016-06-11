@@ -151,14 +151,6 @@
         <item>Exchange</item>
     </string-array>
 
-    <!--Do not translate transaction_categories_list_en-->
-    <array name="transaction_categories_list_en">
-        <item>Expense</item>
-        <item>Income</item>
-        <item>Transfer</item>
-        <item>Exchange</item>
-    </array>
-
     <string-array name="distance_list">
         <item>Automatic</item>
         <item>Kilometers</item>

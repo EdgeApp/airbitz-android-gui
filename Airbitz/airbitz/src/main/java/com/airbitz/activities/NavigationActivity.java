@@ -1911,23 +1911,23 @@ public class NavigationActivity extends ActionBarActivity
 
         Categories categories = AirbitzApplication.getAccount().categories();
         for (String cat : expense_category_defaults) {
-            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[0] + ":" + cat;
+            String fullCategory = Constants.EXPENSE + ":" + cat;
             categories.insert(fullCategory);
         }
         for (String cat : income_category_defaults) {
-            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[1] + ":" + cat;
+            String fullCategory = Constants.INCOME + ":" + cat;
             categories.insert(fullCategory);
         }
         for (String cat : exchange_category_defaults) {
-            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[3] + ":" + cat;
+            String fullCategory = Constants.EXCHANGE + ":" + cat;
             categories.insert(fullCategory);
         }
         for (String cat : transfer_category_defaults) {
-            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[2] + ":" + cat;
+            String fullCategory = Constants.TRANSFER + ":" + cat;
             categories.insert(fullCategory);
         }
         for (String cat : transfer_wallet_category_defaults) {
-            String fullCategory = getResources().getStringArray(R.array.transaction_categories_list_en)[2] + ":" + getResources().getString(R.string.string_wallet) + ":" + cat;
+            String fullCategory = Constants.TRANSFER + ":" + getResources().getString(R.string.string_wallet) + ":" + cat;
             categories.insert(fullCategory);
         }
 
