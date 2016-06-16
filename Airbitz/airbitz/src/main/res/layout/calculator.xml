@@ -112,9 +112,10 @@
             android:tag="/"
             style="@style/GreyCalc" />
 
-        <Button
+        <ImageButton
             android:id="@+id/imageButtonBack"
             android:tag="back" 
+            android:src="@drawable/ic_prev"
             android:text="@string/calculator_back"
             style="@style/OrangeCalc" />
 
@@ -151,9 +152,10 @@
             android:tag="="
             style="@style/GreyCalc" />
 
-        <Button
+        <ImageButton
             android:id="@+id/imageButtonDone"
             android:text="@string/calculator_done"
+            android:src="@drawable/ic_done"
             android:tag="done"
             style="@style/GreenCalc" />
 

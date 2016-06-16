@@ -21,14 +21,15 @@
         android:layout_height="35dp"
         android:background="@color/gray_frost">
 
-        <TextView
-            android:id="@+id/fragment_send_scan_qr_text"
+        <com.airbitz.objects.AutoResizeTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/white_frost"
+            android:ellipsize="none"
+            android:maxLines="1"
             android:gravity="center"
             android:text="@string/request_qr_top_message"
-            android:textColor="@color/white_frost"
-            android:textSize="16dp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -37,28 +38,28 @@
         android:background="@color/gray_frost"
         style="@style/SegmentedGroup">
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_send_button_transfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_send_transfer"
             style="@style/SegmentedButton" />
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_send_button_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_send_address"
             style="@style/SegmentedButton" />
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_send_button_photos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_send_photos"
             style="@style/SegmentedButton" />
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_send_button_flash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
