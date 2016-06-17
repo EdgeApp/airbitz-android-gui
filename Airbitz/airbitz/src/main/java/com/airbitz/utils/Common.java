@@ -589,7 +589,7 @@ public class Common {
             prefix = translateBaseCategory(context, ""); // use the default
             suffix = cat;
         }
-        return prefix + ":" + suffix;
+        return (prefix + ":" + suffix).replace("::", ":");
     }
 
 }
