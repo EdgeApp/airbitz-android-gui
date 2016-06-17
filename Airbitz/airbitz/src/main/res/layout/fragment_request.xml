@@ -103,23 +103,26 @@
         android:layout_alignParentBottom="true"
         style="@style/SegmentedGroupWhite">
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_triple_selector_left"
             android:layout_height="wrap_content"
             android:text="@string/fragment_request_copy_title"
+            android:singleLine="true"
             style="@style/SegmentedButtonWhite"
             />
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_triple_selector_center"
             android:layout_height="wrap_content"
             android:text="@string/fragment_request_email_title"
+            android:singleLine="true"
             style="@style/SegmentedButtonWhite"
             />
 
-        <Button
+        <com.airbitz.objects.AutoResizeButton
             android:id="@+id/fragment_triple_selector_right"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="@string/fragment_request_sms_title"
             style="@style/SegmentedButtonWhite"
             />
