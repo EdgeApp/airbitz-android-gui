@@ -18,7 +18,7 @@
         android:id="@+id/fragment_send_top_text"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:background="@color/gray_frost">
 
         <com.airbitz.objects.AutoResizeTextView
