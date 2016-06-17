@@ -288,6 +288,10 @@ public class PluginFramework {
 
     private static PluginList mInstance;
 
+    // Holds signed pending spends
+    Spend mTarget = null;
+    UnsentTransaction mUnsent = null;
+
     public static PluginList getPluginObjects() {
         if (mInstance == null) {
             mInstance = new PluginList();
@@ -444,9 +448,6 @@ public class PluginFramework {
         Plugin plugin;
         PluginFramework framework;
 
-        // Holds signed pending spends
-        Spend mTarget = null;
-        UnsentTransaction mUnsent = null;
 
         PluginContext(PluginFramework framework, Plugin plugin, UiHandler handler) {
             this.account = AirbitzApplication.getAccount();
@@ -551,7 +552,7 @@ public class PluginFramework {
         @JavascriptInterface
         public void requestSign(String cbid, String uuid, String address, long amountSatoshi,
                                 double amountFiat, String label, String category, String notes, long bizId) {
-            mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, null, 0, amountFiat, label, category, notes, bizId, true);
+            framework.mTarget = handler.launchSend(cbid, uuid, address, amountSatoshi, null, 0, amountFiat, label, category, notes, bizId, true);
         }
 
         @JavascriptInterface
@@ -560,8 +561,8 @@ public class PluginFramework {
                 @Override
                 public String doInBackground(Void... v) {
                     try {
-                        if (mUnsent != null) {
-                            mUnsent.broadcast();
+                        if (framework.mUnsent != null) {
+                            framework.mUnsent.broadcast();
                             return jsonSuccess().toString();
                         }
                     } catch (AirbitzException e) {
@@ -575,11 +576,11 @@ public class PluginFramework {
 
         @JavascriptInterface
         public String saveTx(String uuid, String rawTx) {
-            if (mUnsent != null) {
-                mUnsent.save();
-                String id = mUnsent.txId();
-                mTarget = null;
-                mUnsent = null;
+            if (framework.mUnsent != null) {
+                framework.mUnsent.save();
+                String id = framework.mUnsent.txId();
+                framework.mTarget = null;
+                framework.mUnsent = null;
                 return id;
             } else {
                 return null;
@@ -768,6 +769,7 @@ public class PluginFramework {
     }
 
     public void signSuccess(String cbid, String walletUUID, UnsentTransaction unsent) {
+        mUnsent = unsent;
         AirbitzCore.logi(unsent.base16Tx());
         loadUrl(String.format(JS_CALLBACK, cbid, jsonResult(new JsonValue(unsent.base16Tx())).toString()));
     }
