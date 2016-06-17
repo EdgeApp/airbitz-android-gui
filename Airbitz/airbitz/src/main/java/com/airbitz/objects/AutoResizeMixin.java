@@ -78,12 +78,15 @@ public class AutoResizeMixin {
     private int mMaxLines;
 
     private boolean mEnableSizeCache = true;
-    private boolean mInitiallized;
+    private boolean mInitialized;
 
     private Context mContext;
     private TextView mTextView;
 
     public void init(Context context, TextView textview) {
+        if (mInitialized) {
+            return;
+        }
         mContext = context;
         mTextView = textview;
         mPaint = new TextPaint(mTextView.getPaint());
@@ -93,7 +96,7 @@ public class AutoResizeMixin {
         if (mMaxLines == 0) {
             mMaxLines = NO_LINE_LIMIT;
         }
-        mInitiallized = true;
+        mInitialized = true;
     }
 
     public void setText(final CharSequence text, TextView.BufferType type) {
@@ -128,28 +131,23 @@ public class AutoResizeMixin {
         reAdjust();
     }
 
-    private boolean mFinishedTextSize1 = true; // prevent infinite recursion
+    private boolean mAdjusting = false;
     public boolean setTextSize(float size) {
-        if (!mFinishedTextSize1) {
+        if (mAdjusting) {
             return false;
         }
-        mFinishedTextSize1 = false;
         mMaxTextSize = size;
         clearTextCache();
         adjustTextSize(mTextView.getText().toString());
-        mFinishedTextSize1 = true;
         return true;
     }
 
-    private boolean mFinishedTextSize2 = true;
     public boolean setTextSize(int unit, float size) {
-        if (!mFinishedTextSize2) {
+        if (mAdjusting) {
             return false;
         }
         Context c = mContext;
         Resources r;
-
-        mFinishedTextSize2 = false;
         if (c == null) {
             r = Resources.getSystem();
         } else {
@@ -159,7 +157,6 @@ public class AutoResizeMixin {
                 r.getDisplayMetrics());
         clearTextCache();
         adjustTextSize(mTextView.getText().toString());
-        mFinishedTextSize2 = true;
         return true;
     }
 
@@ -182,10 +179,12 @@ public class AutoResizeMixin {
         adjustTextSize(mTextView.getText().toString());
     }
 
-    public void adjustTextSize(String string) {
-        if (!mInitiallized) {
-            return;
+    public boolean adjustTextSize(String string) {
+        if (!mInitialized || mAdjusting) {
+            return false;
         }
+        mAdjusting = true;
+
         int startSize = (int) mMinTextSize;
         int heightLimit = mTextView.getMeasuredHeight() - mTextView.getCompoundPaddingBottom()
             - mTextView.getCompoundPaddingTop();
@@ -193,10 +192,12 @@ public class AutoResizeMixin {
             - mTextView.getCompoundPaddingRight();
         mAvailableSpaceRect.right = mWidthLimit;
         mAvailableSpaceRect.bottom = heightLimit;
-        mTextView.setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                efficientTextSizeSearch(startSize, (int) mMaxTextSize,
-                        mSizeTester, mAvailableSpaceRect));
+        int result = efficientTextSizeSearch(startSize, (int) mMaxTextSize,
+                        mSizeTester, mAvailableSpaceRect);
+        mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, result);
+
+        mAdjusting = false;
+        return true;
     }
 
     private final SizeTester mSizeTester = new SizeTester() {
