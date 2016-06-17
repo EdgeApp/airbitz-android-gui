@@ -131,14 +131,24 @@ public class AutoResizeMixin {
         reAdjust();
     }
 
+    private String getText() {
+        String text = mTextView.getText().toString();
+        if (TextUtils.isEmpty(text)) {
+            return mTextView.getHint().toString();
+        } else {
+            return text;
+        }
+    }
+
     private boolean mAdjusting = false;
     public boolean setTextSize(float size) {
+
         if (mAdjusting) {
             return false;
         }
         mMaxTextSize = size;
         clearTextCache();
-        adjustTextSize(mTextView.getText().toString());
+        adjustTextSize(getText());
         return true;
     }
 
@@ -156,7 +166,7 @@ public class AutoResizeMixin {
         mMaxTextSize = TypedValue.applyDimension(unit, size,
                 r.getDisplayMetrics());
         clearTextCache();
-        adjustTextSize(mTextView.getText().toString());
+        adjustTextSize(getText());
         return true;
     }
 
@@ -176,7 +186,7 @@ public class AutoResizeMixin {
     }
 
     public void reAdjust() {
-        adjustTextSize(mTextView.getText().toString());
+        adjustTextSize(getText());
     }
 
     public boolean adjustTextSize(String string) {
@@ -205,7 +215,7 @@ public class AutoResizeMixin {
         @Override
         public int onTestSize(int suggestedSize, RectF availableSPace) {
             mPaint.setTextSize(suggestedSize);
-            String text = mTextView.getText().toString();
+            String text = getText();
             boolean singleline = getMaxLines() == 1;
             if (singleline) {
                 mTextRect.bottom = mPaint.getFontSpacing();
@@ -243,7 +253,7 @@ public class AutoResizeMixin {
     public void enableSizeCache(boolean enable) {
         mEnableSizeCache = enable;
         clearTextCache();
-        adjustTextSize(mTextView.getText().toString());
+        adjustTextSize(getText());
     }
 
     private int efficientTextSizeSearch(int start, int end,
@@ -251,7 +261,7 @@ public class AutoResizeMixin {
         if (!mEnableSizeCache) {
             return binarySearch(start, end, sizeTester, availableSpace);
         }
-        String text = mTextView.getText().toString();
+        String text = getText();
         int key = text == null ? 0 : text.length();
         int size = mTextCachedSizes.get(key);
         if (size != 0) {
