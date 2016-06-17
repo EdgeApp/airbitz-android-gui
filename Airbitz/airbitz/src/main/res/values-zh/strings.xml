@@ -652,11 +652,6 @@
   <string name="request_footer_link_title">通过IOS 或 Android 下载 Airbitz</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+比特币+电邮+征求</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_title">星巴克 （高达 20%的折扣)</string>
-  <string name="plugin_target_title">Target （高达10%的折扣)</string>
-  <string name="plugin_wholefoods_title">Whole Foods （高达 10%的折扣)</string>
-  <string name="plugin_walmart_title">Walmart （高达 10%的折扣)</string>
-  <string name="plugin_homedepot_title">Home Depot （高达 15%的折扣)</string>
   <string name="plugin_glidera_title">美国和加拿大</string>
   <string name="plugin_clevercoin_title">欧洲 (EUR)</string>
   <string name="intent_choose_an_email">选择电子邮件客户端 ︰</string>

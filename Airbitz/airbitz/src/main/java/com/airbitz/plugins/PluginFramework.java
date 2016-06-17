@@ -86,6 +86,7 @@ public class PluginFramework {
         String pluginId;
         String sourceFile;
         String name;
+        String subtitle;
         String provider;
         String country;
         int imageResId;
@@ -127,6 +128,7 @@ public class PluginFramework {
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
+            plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_discount);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_coffee;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -143,6 +145,7 @@ public class PluginFramework {
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_target_title);
+            plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_target_discount);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_target;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -158,6 +161,7 @@ public class PluginFramework {
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_wholefoods_title);
+            plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_wholefoods_discount);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_wholefoods;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -174,6 +178,7 @@ public class PluginFramework {
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_walmart_title);
+            plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_walmart_discount);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_walmart;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -190,6 +195,7 @@ public class PluginFramework {
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_homedepot_title);
+            plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_homedepot_discount);
             plugin.provider = "foldapp";
             plugin.imageResId = R.drawable.ic_plugin_homedepot;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
@@ -206,6 +212,7 @@ public class PluginFramework {
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_glidera_title);
+            plugin.subtitle = "";
             plugin.provider = "glidera";
             plugin.country = "US";
             plugin.imageResId = R.drawable.ic_plugin_usd;
@@ -221,6 +228,7 @@ public class PluginFramework {
             plugin.pluginId = "com.clevercoin";
             plugin.sourceFile = "file:///android_asset/clevercoin.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_clevercoin_title);
+            plugin.subtitle = "";
             plugin.provider = "clevercoin";
             plugin.country = "EUR";
             plugin.imageResId = R.drawable.ic_plugin_euro;
@@ -269,7 +277,6 @@ public class PluginFramework {
             }
             for (String t : getTags()) {
                 for (Plugin plugin : mPluginsGrouped.get(t)) {
-                    Log.d(TAG, plugin.name + " " + plugin.enabled);
                     if (plugin.enabled) {
                         filtered.get(t).add(plugin);
                     }

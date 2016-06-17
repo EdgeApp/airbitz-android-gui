@@ -707,11 +707,16 @@
     <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
 
     <!-- Plugin text -->
-    <string name="plugin_starbucks_title">Starbucks (Up to 20% Off)</string>
-    <string name="plugin_target_title">Target (Up to 10% Off)</string>
-    <string name="plugin_wholefoods_title">Whole Foods (Up to 10% Off)</string>
-    <string name="plugin_walmart_title">Walmart (Up to 10% Off)</string>
-    <string name="plugin_homedepot_title">Home Depot (Up to 15% Off)</string>
+    <string name="plugin_starbucks_title" translatable="false">Starbucks</string>
+    <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+    <string name="plugin_target_title" translatable="false">Target</string>
+    <string name="plugin_target_discount">(Up to 10% Off)</string>
+    <string name="plugin_wholefoods_title" translatable="false">Whole Foods)</string>
+    <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+    <string name="plugin_walmart_title" translatable="false">Walmart</string>
+    <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+    <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
+    <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
     <string name="plugin_glidera_title">USA and Canada</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
 

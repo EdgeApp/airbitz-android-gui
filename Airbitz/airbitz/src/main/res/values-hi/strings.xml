@@ -652,12 +652,6 @@
   <string name="request_footer_link_title">एयरबिट्ज़ iOS या एंड्राइड के लिए डाउनलोड करें</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=एयरबिट्ज़+बिटकॉइन+ईमेल+अनुरोध</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_title">स्टारबक्स (20% तक की छूट)</string>
-  <string name="plugin_target_title">लक्ष्य (10% तक की छूट)</string>
-  <string name="plugin_wholefoods_title">होल फूड्स(10% तक की छूट)</string>
-  <string name="plugin_walmart_title">वालमार्ट(10% तक की छूट)</string>
-  <string name="plugin_homedepot_title">होम डिपो (15% तक की छूट)</string>
-  <string name="plugin_glidera_title">संयुक्त राज्य अमेरिका और कनाडा</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
   <string name="intent_choose_an_email">एक ई-मेल क्लाइंट का चयन करें:</string>
   <string name="plugin_filechooser_title">फ़ाइल अपलोड करें</string>

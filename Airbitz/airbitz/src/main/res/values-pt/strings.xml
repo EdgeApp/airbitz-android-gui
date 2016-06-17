@@ -652,11 +652,6 @@
   <string name="request_footer_link_title">Baixar Airbitz para iOS ou Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_title">Starbucks (Até 20% de Desconto)</string>
-  <string name="plugin_target_title">Target (Até 10% de Desconto)</string>
-  <string name="plugin_wholefoods_title">Whole Foods (Até 10% de Desconto)</string>
-  <string name="plugin_walmart_title">Walmart (Até 10% de Desconto)</string>
-  <string name="plugin_homedepot_title">Home Depot (Até 15% de Desconto)</string>
   <string name="plugin_glidera_title">EUA e Canadá</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="intent_choose_an_email">Escolha um E-mail de cliente:</string>
