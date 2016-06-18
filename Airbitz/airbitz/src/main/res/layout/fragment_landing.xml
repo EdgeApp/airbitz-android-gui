@@ -169,7 +169,7 @@
                     android:layout_below="@id/fragment_landing_current_user"
                     android:orientation="vertical">
 
-                    <EditText
+                    <com.airbitz.objects.AutoResizeEditText
                         android:id="@+id/fragment_landing_pin_edittext"
                         android:layout_width="120dp"
                         android:layout_height="37.8dp"
