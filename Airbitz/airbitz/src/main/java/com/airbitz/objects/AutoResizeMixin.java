@@ -198,8 +198,8 @@ public class AutoResizeMixin {
         int startSize = (int) mMinTextSize;
         int heightLimit = mTextView.getMeasuredHeight() - mTextView.getCompoundPaddingBottom()
             - mTextView.getCompoundPaddingTop();
-        mWidthLimit = mTextView.getMeasuredWidth() - mTextView.getCompoundPaddingLeft()
-            - mTextView.getCompoundPaddingRight();
+        mWidthLimit = Math.max(0, mTextView.getMeasuredWidth() - mTextView.getCompoundPaddingLeft()
+            - mTextView.getCompoundPaddingRight());
         mAvailableSpaceRect.right = mWidthLimit;
         mAvailableSpaceRect.bottom = heightLimit;
         int result = efficientTextSizeSearch(startSize, (int) mMaxTextSize,
