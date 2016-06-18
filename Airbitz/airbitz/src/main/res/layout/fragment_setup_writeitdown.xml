@@ -51,7 +51,7 @@
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="120dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:id="@+id/fragment_setup_writeitdown_show_container"
@@ -116,13 +116,14 @@
                             android:orientation="horizontal"
                             android:visibility="visible">
 
-                            <TextView
+                            <com.airbitz.objects.AutoResizeTextView
                                 android:id="@+id/fragment_setup_writeitdown_username_title"
                                 android:layout_width="match_parent"
-                                android:layout_height="30dp"
+                                android:layout_height="wrap_content"
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
-                                android:layout_weight="2"
+                                android:layout_weight="1"
+                                android:singleLine="true"
                                 android:text="@string/fragment_setup_writeitdown_username_title"
                                 android:gravity="center|right"
                                 android:textColor="@android:color/white"
@@ -140,9 +141,9 @@
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
                                 android:text="username test"
-                                android:singleLine="true"
                                 android:ellipsize="end"
                                 android:layout_weight="1"
+                                android:singleLine="true"
                                 android:textColor="@android:color/white"
                                 android:textSize="16dp" />
 
@@ -160,13 +161,14 @@
                             android:orientation="horizontal"
                             android:visibility="visible">
 
-                            <TextView
+                            <com.airbitz.objects.AutoResizeTextView
                                 android:id="@+id/fragment_setup_writeitdown_password_title"
                                 android:layout_width="match_parent"
-                                android:layout_height="30dp"
+                                android:layout_height="wrap_content"
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
-                                android:layout_weight="2"
+                                android:layout_weight="1"
+                                android:singleLine="true"
                                 android:text="@string/fragment_setup_writeitdown_password_title"
                                 android:gravity="center|right"
                                 android:textColor="@android:color/white"
@@ -184,9 +186,9 @@
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
                                 android:text="password test"
-                                android:singleLine="true"
                                 android:ellipsize="end"
                                 android:layout_weight="1"
+                                android:singleLine="true"
                                 android:textColor="@android:color/white"
                                 android:textSize="16dp" />
 
@@ -204,13 +206,14 @@
                             android:orientation="horizontal"
                             android:visibility="visible">
 
-                            <TextView
+                            <com.airbitz.objects.AutoResizeTextView
                                 android:id="@+id/fragment_setup_writeitdown_pin_title"
                                 android:layout_width="match_parent"
-                                android:layout_height="30dp"
+                                android:layout_height="wrap_content"
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
-                                android:layout_weight="2"
+                                android:layout_weight="1"
+                                android:singleLine="true"
                                 android:text="@string/fragment_setup_writeitdown_pin_title"
                                 android:gravity="center|right"
                                 android:textColor="@android:color/white"
@@ -228,9 +231,9 @@
                                 android:paddingLeft="6.3dp"
                                 android:paddingRight="6.3dp"
                                 android:text="pin test"
-                                android:singleLine="true"
                                 android:ellipsize="end"
                                 android:layout_weight="1"
+                                android:singleLine="true"
                                 android:textColor="@android:color/white"
                                 android:textSize="16dp" />
 
