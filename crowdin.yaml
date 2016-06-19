@@ -3,6 +3,9 @@ api_key_env: CROWDIN_API_KEY
 base_path: ./
 files:
   -
+    source: '/Localization/relnotes_android.txt'                                    #source files filter
+    translation: '/Localization/relnotes_android_%two_letters_code%.txt' #where translations live
+  -
     source: '/Localization/store_description_android.txt'                                    #source files filter
     translation: '/Localization/store_description_android_%two_letters_code%.txt' #where translations live
   -
