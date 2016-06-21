@@ -404,6 +404,7 @@
         <item name="android:paddingBottom">2dp</item>
         <item name="android:paddingTop">2dp</item>
         <item name="android:minHeight">32dip</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="SegmentedButton" parent="ClearButton">
