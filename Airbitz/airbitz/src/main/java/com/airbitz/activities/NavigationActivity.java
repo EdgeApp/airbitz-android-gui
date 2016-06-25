@@ -92,6 +92,7 @@ import android.widget.TextView;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Categories;
+import co.airbitz.core.CoreCurrency;
 import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
@@ -102,6 +103,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.Affiliates;
+import com.airbitz.api.BuySellOverrides;
 import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
@@ -170,6 +172,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
     private Map<Integer, AirbitzNotification> mNotificationMap;
+    private Map<String, String> mOverrideUrls;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -376,9 +379,11 @@ public class NavigationActivity extends ActionBarActivity
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
         // Let's see what plugins are enabled
-        PluginCheck.checkEnabledPlugins();
         mAffiliateQueryTask = new Affiliates.AffiliateQueryTask(this);
-        mAffiliateQueryTask.execute();
+        mAffiliateQueryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        PluginCheck.checkEnabledPlugins();
+        BuySellOverrides.sync();
     }
 
     @Override
@@ -1426,7 +1431,7 @@ public class NavigationActivity extends ActionBarActivity
         // stop the UI from responding to core events
         tearDownReceivers();
         mLogoutTask = new LogoutTask();
-        mLogoutTask.execute();
+        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
     }
 
     private LogoutTask mLogoutTask;
@@ -2320,8 +2325,16 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNavBarSelected(Tabs.BUYSELL.ordinal());
-                mDrawer.closeDrawer(mDrawerView);
+                CoreCurrency currency = CoreCurrency.defaultCurrency();
+                String overrideUrl = BuySellOverrides.getCurrencyUrlOverrides(currency.code);
+                if (!TextUtils.isEmpty(overrideUrl)) {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(overrideUrl));
+                    startActivity(intent);
+                } else {
+                    onNavBarSelected(Tabs.BUYSELL.ordinal());
+                    mDrawer.closeDrawer(mDrawerView);
+                }
             }
         });
         if (!getResources().getBoolean(R.bool.include_buysell)) {
@@ -2355,7 +2368,7 @@ public class NavigationActivity extends ActionBarActivity
                     if (AirbitzApplication.isLoggedIn()) {
                         Affiliates affiliate = new Affiliates(AirbitzApplication.getAccount());
                         mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), affiliate);
-                        mAffiliateTask.execute();
+                        mAffiliateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
                         DisplayLoginOverlay(true, true);
                     }

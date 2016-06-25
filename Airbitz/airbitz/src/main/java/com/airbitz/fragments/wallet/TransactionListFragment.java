@@ -67,6 +67,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.TransactionAdapter;
 import com.airbitz.adapters.WalletAdapter;
+import com.airbitz.api.BuySellOverrides;
 import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
@@ -200,7 +201,12 @@ public class TransactionListFragment extends WalletBaseFragment
                 @Override
                 public void onClick(View view) {
                     String code = mAccount.settings().currency().code;
-                    if (mActivity.getResources().getBoolean(R.bool.include_buysell)
+                    String overrideUrl = BuySellOverrides.getCurrencyUrlOverrides(code);
+                    if (!TextUtils.isEmpty(overrideUrl)) {
+                        final Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(overrideUrl));
+                        startActivity(intent);
+                    } else if (mActivity.getResources().getBoolean(R.bool.include_buysell)
                             && ("USD".equals(code)
                                 || "CAD".equals(code)
                                 || "EUR".equals(code))) {
