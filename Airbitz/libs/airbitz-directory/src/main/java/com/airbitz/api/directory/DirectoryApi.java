@@ -650,14 +650,11 @@ public class DirectoryApi {
         String response =  getRequest(API_BUYSELL_OVERRIDE);
         try {
             Map<String, String> map = new HashMap<String, String>();
-            JSONArray array = new JSONArray(response);
-            for (int i = 0; i < array.length(); ++i) {
-                JSONObject object = (JSONObject) array.get(i);
-                Iterator<String> keys = object.keys();
-                while (keys.hasNext()){
-                    String k = keys.next();
-                    map.put(k, object.getString(k));
-                }
+            JSONObject object = new JSONObject(response);
+            Iterator<String> keys = object.keys();
+            while (keys.hasNext()){
+                String k = keys.next();
+                map.put(k, object.getString(k));
             }
             return map;
         } catch (Exception e) {
