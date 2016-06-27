@@ -89,7 +89,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         super(context, R.layout.item_listview_transaction, listTransaction);
         mContext = context;
         mListTransaction = listTransaction;
-        createRunningSatoshi();
+//        createRunningSatoshi();
         mAccount = AirbitzApplication.getAccount();
         mPicasso = AirbitzApplication.getPicasso();
 
@@ -111,10 +111,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     public void createRunningSatoshi() {
         mRunningSatoshi = new long[mListTransaction.size()];
 
-        long total = 0;
-        for (int i = mListTransaction.size() - 1; i > -1; i--) {
-            total += mListTransaction.get(i).amount();
+        long total = mWallet.balance();
+        for (int i = 0; i < mListTransaction.size(); i++) {
             mRunningSatoshi[i] = total;
+            total -= mListTransaction.get(i).amount();
         }
     }
 

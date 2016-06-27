@@ -535,10 +535,7 @@ public class TransactionListFragment extends WalletBaseFragment
     // Sum all transactions and show in total
     private void updateBalances() {
         if (mTransactions != null && mWallet != null && mWallet.isSynced()) {
-            long totalSatoshis = 0;
-            for (Transaction t : mTransactions) {
-                totalSatoshis += t.amount();
-            }
+            long totalSatoshis = mWallet.balance();
             setupBalanceView();
             mBitCoinBalance.setText(
                 Utils.formatSatoshi(mAccount, totalSatoshis, true));
