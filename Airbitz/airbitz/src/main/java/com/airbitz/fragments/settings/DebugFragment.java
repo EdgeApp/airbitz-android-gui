@@ -44,6 +44,7 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.BuildConfig;

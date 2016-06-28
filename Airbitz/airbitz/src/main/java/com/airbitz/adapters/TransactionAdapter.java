@@ -111,10 +111,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     public void createRunningSatoshi() {
         mRunningSatoshi = new long[mListTransaction.size()];
 
-        long total = 0;
-        for (int i = mListTransaction.size() - 1; i > -1; i--) {
-            total += mListTransaction.get(i).amount();
-            mRunningSatoshi[i] = total;
+        if (mWallet != null) {
+            long total = mWallet.balance();
+            for (int i = 0; i < mListTransaction.size(); i++) {
+                mRunningSatoshi[i] = total;
+                total -= mListTransaction.get(i).amount();
+            }
         }
     }
 

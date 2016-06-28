@@ -301,7 +301,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list)));
         mCategorySpinner.setAdapter(spinnerAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -399,9 +399,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 showCategoryPopup(hasFocus);
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
-                        highlightEditableText(mCategoryEdittext);
+                        mCategoryEdittext.setSelection(0, mCategoryEdittext.length());
                     }
-                    updateBlanks(mCategoryEdittext.getText().toString());
                     createNewCategoryChoices(mCategoryEdittext.getText().toString());
                 }
             }
@@ -449,7 +448,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
             public void afterTextChanged(Editable editable) {
                 if (!doEdit && isResumed()) {
                     AirbitzCore.logi("editable=" + editable.toString());
-                    updateBlanks(editable.toString());
                     createNewCategoryChoices(editable.toString());
                 }
             }
@@ -602,23 +600,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
         List<String> catStrings = mAccount.categories().list();
-        for(String cat : catStrings) {
+        for (String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
                 originalStrings.add(cat);
             }
         }
         Collections.sort(originalStrings);
-        for(String cat : originalStrings) {
+        for (String cat : originalStrings) {
             mOriginalCategories.add(new Category(cat, ""));
         }
-
-        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
-        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
-        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
-        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
-
         mCategories.addAll(mOriginalCategories);
-
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
     }
@@ -677,11 +668,11 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_SEND)) {
                 AirbitzCore.logi("SEND");
                 mFromSend = true;
-                setCurrentType(getString(R.string.fragment_category_expense));
+                setCurrentType(Constants.EXPENSE);
             } else if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 AirbitzCore.logi("REQUEST");
-                setCurrentType(getString(R.string.fragment_category_income));
+                setCurrentType(Constants.INCOME);
             }
 
             mWalletUUID = bundle.getString(Constants.WALLET_UUID);
@@ -694,7 +685,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
                 if (mTransaction != null) {
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.meta().category())) {
-                        mTransaction.meta().category(currentType);
+                        mTransaction.meta().category(
+                            Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()]);
                     } else {
                         setCurrentType(mTransaction.meta().category());
                     }
@@ -755,7 +747,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void done() {
-        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        String category = Common.formatCategory(
+                            Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()],
+                            mCategoryEdittext.getText().toString());
         mAccount.categories().insert(category);
         mActivity.onBackPressed();
     }
@@ -765,7 +759,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mCategorySpinner != null) {
             mCategorySpinner.setBackgroundResource(newBackground);
         }
-        currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
+        currentType = Constants.CATEGORIES[position];
         createNewCategoryChoices(mCategoryEdittext.getText().toString());
     }
 
@@ -799,20 +793,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void setCurrentType(String input) {
-        int selected = 1;
-        if (input.isEmpty() || input.startsWith(getString(R.string.fragment_category_income))) {
-            currentType = getString(R.string.fragment_category_income);
-            selected = 1;
-        } else if (input.startsWith(getString(R.string.fragment_category_expense))) {
-            currentType = getString(R.string.fragment_category_expense);
-            selected = 0;
-        } else if (input.startsWith(getString(R.string.fragment_category_transfer))) {
-            currentType = getString(R.string.fragment_category_transfer);
-            selected = 2;
-        } else if (input.startsWith(getString(R.string.fragment_category_exchange))) {
-            currentType = getString(R.string.fragment_category_exchange);
-            selected = 3;
-        }
+        int selected = Common.stringToPrefixCategoryIndex(input);
+        currentType = Common.stringToPrefixCategory(input);
         mCategorySpinner.setSelection(selected);
     }
 
@@ -931,26 +913,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mBizId = mBizIds.get(mPayeeEditText.getText().toString());
         }
         AirbitzCore.logi("Biz ID: " + String.valueOf(mBizId));
-    }
-
-
-    private void highlightEditableText(EditText editText) {
-        if (editText.getText().toString().startsWith(getString(R.string.fragment_category_income))) {
-            editText.setSelection(7, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_expense))) {
-            editText.setSelection(8, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_transfer))) {
-            editText.setSelection(9, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_exchange))) {
-            editText.setSelection(9, editText.length());
-        }
-    }
-
-    private void updateBlanks(String term) {
-        baseIncomeCat.setCategoryName(getString(R.string.fragment_category_income) + term);
-        baseExpenseCat.setCategoryName(getString(R.string.fragment_category_expense) + term);
-        baseTransferCat.setCategoryName(getString(R.string.fragment_category_transfer) + term);
-        baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
     }
 
     private long inSum = 0;
@@ -1084,10 +1046,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private void setCategoryText(String textWithCategory) {
         setCurrentType(textWithCategory);
-        String strippedTerm = "";
-        if(textWithCategory.length() >= currentType.length()) {
-            strippedTerm = textWithCategory.substring(currentType.length());
-        }
+        String strippedTerm = Common.extractSuffixCategory(textWithCategory);
         doEdit = true;
         mCategoryEdittext.setText(strippedTerm);
         doEdit = false;
@@ -1139,17 +1098,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
         doEdit = false;
     }
 
-    private void addMatchesForPrefix(String strPrefix, String strMatch)
-    {
+    private void addMatchesForPrefix(String strPrefix, String strMatch) {
         List<String> cumulativeStrings = new ArrayList<String>();
-
         for (Category category : mOriginalCategories) {
             String s = category.getCategoryName();
-
-            if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
-                    s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
+            if (s.toLowerCase().startsWith(strPrefix.toLowerCase())
+                    && s.toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-//                    AirbitzCore.logi("Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1157,24 +1112,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
     }
 
-    private void createNewCategoryChoices(String match)
-    {
+    private void createNewCategoryChoices(String match) {
         mCategories.clear();
-
-        List<String> orderedCategories = new ArrayList<>();
-
-        // Order the categories list, currentType first
-        orderedCategories.add(currentType);
-        for(String type : getResources().getStringArray(R.array.transaction_categories_list)) {
-            if(!type.contains(currentType)) {
-                orderedCategories.add(type);
-            }
-        }
-
-        for (String type : orderedCategories) {
-//            AirbitzCore.logi("Searching for "+type);
-            addMatchesForPrefix(type, match);
-        }
+        addMatchesForPrefix(currentType, match);
         if (null != mCategoryAdapter) {
             mCategoryAdapter.notifyDataSetChanged();
         }
@@ -1309,7 +1249,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             return;
         }
         String payee = mPayeeEditText.getText().toString();
-        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        String category = Common.formatCategory(
+                                Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()],
+                                mCategoryEdittext.getText().toString());
         String notes = mNoteEdittext.getText().toString();
         double fiat = 0.0;
         try {

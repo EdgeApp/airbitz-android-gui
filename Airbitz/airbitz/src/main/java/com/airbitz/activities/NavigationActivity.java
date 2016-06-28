@@ -92,15 +92,18 @@ import android.widget.TextView;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Categories;
+import co.airbitz.core.CoreCurrency;
 import co.airbitz.core.Settings;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
 import com.airbitz.api.Affiliates;
+import com.airbitz.api.BuySellOverrides;
 import com.airbitz.api.Constants;
 import com.airbitz.api.CoreWrapper;
 import com.airbitz.api.DirectoryWrapper;
@@ -151,6 +154,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -168,6 +172,7 @@ public class NavigationActivity extends ActionBarActivity
 
     public static final String LAST_MESSAGE_ID = "com.airbitz.navigation.LastMessageID";
     private Map<Integer, AirbitzNotification> mNotificationMap;
+    private Map<String, String> mOverrideUrls;
 
     public static final String URI_DATA = "com.airbitz.navigation.uri";
     public static final String URI_SOURCE = "URI";
@@ -374,9 +379,11 @@ public class NavigationActivity extends ActionBarActivity
         mRoot = (ViewGroup)findViewById(R.id.activity_navigation_root);
 
         // Let's see what plugins are enabled
-        PluginCheck.checkEnabledPlugins();
         mAffiliateQueryTask = new Affiliates.AffiliateQueryTask(this);
-        mAffiliateQueryTask.execute();
+        mAffiliateQueryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        PluginCheck.checkEnabledPlugins();
+        BuySellOverrides.sync();
     }
 
     @Override
@@ -452,11 +459,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public static AirbitzCore initiateCore(Context context) {
-        AirbitzCore api = AirbitzCore.getApi();
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        api.init(context, airbitzApiKey, hiddenbitzKey);
-        return api;
+        return AndroidUtils.init(context, airbitzApiKey, hiddenbitzKey);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -617,7 +622,7 @@ public class NavigationActivity extends ActionBarActivity
                 if (fragment instanceof HelpFragment) {
                     transaction.setCustomAnimations(R.animator.fade_in, 0);
                 } else {
-                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.slide_out_left);
+                    transaction.setCustomAnimations(R.animator.slide_in_from_right, R.animator.fade_out_exit);
                 }
             }
             transaction.replace(R.id.activityLayout, fragment);
@@ -657,7 +662,7 @@ public class NavigationActivity extends ActionBarActivity
             if (fragment instanceof HelpFragment) {
                 transaction.setCustomAnimations(0, R.animator.fade_out);
             } else {
-                transaction.setCustomAnimations(R.animator.slide_in_from_left, R.animator.slide_out_right);
+                transaction.setCustomAnimations(R.animator.fade_in_enter, R.animator.slide_out_right);
             }
         }
         transaction.replace(R.id.activityLayout, mNavStacks[mNavThreadId].peek());
@@ -1303,7 +1308,6 @@ public class NavigationActivity extends ActionBarActivity
                     .setNegativeButton(getResources().getString(R.string.string_ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Logout();
                                     dialog.cancel();
                                     mRemoteChange = null;
                                 }
@@ -1427,7 +1431,7 @@ public class NavigationActivity extends ActionBarActivity
         // stop the UI from responding to core events
         tearDownReceivers();
         mLogoutTask = new LogoutTask();
-        mLogoutTask.execute();
+        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
     }
 
     private LogoutTask mLogoutTask;
@@ -1899,16 +1903,41 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void createDefaultCategories() {
-        String[] defaults =
-            getResources().getStringArray(R.array.category_defaults);
+        String[] expense_category_defaults =
+                getResources().getStringArray(R.array.expense_category_defaults);
+        String[] income_category_defaults =
+                getResources().getStringArray(R.array.income_category_defaults);
+        String[] exchange_category_defaults =
+                getResources().getStringArray(R.array.exchange_category_defaults);
+        String[] transfer_category_defaults =
+                getResources().getStringArray(R.array.transfer_category_defaults);
+        String[] transfer_wallet_category_defaults =
+                getResources().getStringArray(R.array.transfer_wallet_category_defaults);
 
         Categories categories = AirbitzApplication.getAccount().categories();
-        for (String cat : defaults) {
-            categories.insert(cat);
+        for (String cat : expense_category_defaults) {
+            String fullCategory = Constants.EXPENSE + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : income_category_defaults) {
+            String fullCategory = Constants.INCOME + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : exchange_category_defaults) {
+            String fullCategory = Constants.EXCHANGE + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : transfer_category_defaults) {
+            String fullCategory = Constants.TRANSFER + ":" + cat;
+            categories.insert(fullCategory);
+        }
+        for (String cat : transfer_wallet_category_defaults) {
+            String fullCategory = Constants.TRANSFER + ":" + getResources().getString(R.string.string_wallet) + ":" + cat;
+            categories.insert(fullCategory);
         }
 
         List<String> cats = categories.list();
-        if (cats.size() == 0 || cats.get(0).equals(defaults)) {
+        if (cats.size() == 0) {
             AirbitzCore.logi("Category creation failed");
         }
     }
@@ -2296,8 +2325,16 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNavBarSelected(Tabs.BUYSELL.ordinal());
-                mDrawer.closeDrawer(mDrawerView);
+                CoreCurrency currency = CoreCurrency.defaultCurrency();
+                String overrideUrl = BuySellOverrides.getCurrencyUrlOverrides(currency.code);
+                if (!TextUtils.isEmpty(overrideUrl)) {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(overrideUrl));
+                    startActivity(intent);
+                } else {
+                    onNavBarSelected(Tabs.BUYSELL.ordinal());
+                    mDrawer.closeDrawer(mDrawerView);
+                }
             }
         });
         if (!getResources().getBoolean(R.bool.include_buysell)) {
@@ -2331,7 +2368,7 @@ public class NavigationActivity extends ActionBarActivity
                     if (AirbitzApplication.isLoggedIn()) {
                         Affiliates affiliate = new Affiliates(AirbitzApplication.getAccount());
                         mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), affiliate);
-                        mAffiliateTask.execute();
+                        mAffiliateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
                         DisplayLoginOverlay(true, true);
                     }

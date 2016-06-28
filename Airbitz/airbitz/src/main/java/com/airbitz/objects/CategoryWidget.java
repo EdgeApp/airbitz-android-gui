@@ -44,6 +44,8 @@ import android.widget.Spinner;
 
 import com.airbitz.R;
 import com.airbitz.adapters.CategoryAdapter;
+import com.airbitz.api.Constants;
+import com.airbitz.utils.Common;
 
 import java.util.Arrays;
 
@@ -89,7 +91,7 @@ public class CategoryWidget extends FrameLayout {
         mSpinner = (Spinner) findViewById(R.id.prefix_spinner);
         mText = (EditText) findViewById(R.id.postfix_text);
 
-        mAdapter = new CategoryAdapter(mContext, Arrays.asList(mContext.getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        mAdapter = new CategoryAdapter(mContext, Arrays.asList(mContext.getResources().getStringArray(R.array.transaction_categories_list)));
         mSpinner.setAdapter(mAdapter);
         mSpinner.setSelection(0);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -133,33 +135,17 @@ public class CategoryWidget extends FrameLayout {
     }
 
     public String getValue() {
-        return mSpinner.getSelectedItem().toString() + ":" + mText.getText().toString();
+        return Common.formatCategory(
+                Constants.CATEGORIES[mSpinner.getSelectedItemPosition()],
+                mText.getText().toString());
     }
 
     private void updateDisplay(String input) {
-        int selected = 1;
-        String currentType = "";
-        if (input.isEmpty() || input.startsWith(mContext.getString(R.string.fragment_category_income))) {
-            currentType = mContext.getString(R.string.fragment_category_income);
-            selected = 1;
-        } else if (input.startsWith(mContext.getString(R.string.fragment_category_expense))) {
-            currentType = mContext.getString(R.string.fragment_category_expense);
-            selected = 0;
-        } else if (input.startsWith(mContext.getString(R.string.fragment_category_transfer))) {
-            currentType = mContext.getString(R.string.fragment_category_transfer);
-            selected = 2;
-        } else if (input.startsWith(mContext.getString(R.string.fragment_category_exchange))) {
-            currentType = mContext.getString(R.string.fragment_category_exchange);
-            selected = 3;
-        }
+        int selected = Common.stringToPrefixCategoryIndex(input);
+        String suffix = Common.extractSuffixCategory(input);
         mSpinner.setSelection(selected);
         updateCategoryBackground(selected);
-
-        String strippedTerm = "";
-        if (input.length() >= currentType.length()) {
-            strippedTerm = input.substring(currentType.length());
-        }
-        mText.setText(strippedTerm);
+        mText.setText(suffix);
     }
 
     private void updateCategoryBackground(int position) {

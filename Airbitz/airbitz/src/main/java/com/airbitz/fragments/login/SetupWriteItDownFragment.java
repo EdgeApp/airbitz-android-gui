@@ -87,6 +87,7 @@ public class SetupWriteItDownFragment extends BaseFragment implements Navigation
         setHasOptionsMenu(true);
         setDrawerEnabled(false);
         setBackEnabled(false);
+        mPositionNavBar = false;
     }
 
     @Override

@@ -68,6 +68,8 @@ import co.airbitz.core.AirbitzException;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
+import com.airbitz.api.Constants;
+import com.airbitz.api.directory.Category;
 import com.airbitz.objects.CurrentLocationManager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -170,6 +172,7 @@ public class Common {
     }
 
     public static String evaluateTextFile(Context ctx, int resId) {
+        String footer = readRawTextFile(ctx, R.raw.info_footer);
         String text = readRawTextFile(ctx, resId);
         String supportEmail = ctx.getString(R.string.app_support_email);
         String emailSupportTemplate =
@@ -196,6 +199,11 @@ public class Common {
         tags.put("[[abtag REQUEST_FOOTER_CONTACT]]", ctx.getString(R.string.request_footer_contact));
         tags.put("[[abtag EMAIL_SUPPORT_TEMPLATE]]", emailSupportTemplate);
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
+
+        for (Map.Entry<String, String> e : tags.entrySet()) {
+            footer = footer.replace(e.getKey(), e.getValue());
+        }
+        tags.put("[[abtag INFO_FOOTER]]", footer);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             text = text.replace(e.getKey(), e.getValue());
@@ -518,4 +526,70 @@ public class Common {
             return context.getString(R.string.server_error_other);
         }
     }
+
+    public static int stringToPrefixCategoryIndex(String input) {
+        if (input.startsWith(Constants.EXPENSE)) {
+            return Constants.EXPENSE_IDX;
+        } else if (input.startsWith(Constants.TRANSFER)) {
+            return Constants.TRANSFER_IDX;
+        } else if (input.startsWith(Constants.EXCHANGE)) {
+            return Constants.EXCHANGE_IDX;
+        } else {
+            return Constants.INCOME_IDX;
+        }
+    }
+
+    public static String formatCategory(String prefix, String suffix) {
+        return prefix + ":" + suffix;
+    }
+
+    public static String stringToPrefixCategory(String input) {
+        if (input.startsWith(Constants.EXPENSE)) {
+            return Constants.EXPENSE;
+        } else if (input.startsWith(Constants.TRANSFER)) {
+            return Constants.TRANSFER;
+        } else if (input.startsWith(Constants.EXCHANGE)) {
+            return Constants.EXCHANGE;
+        } else {
+            return Constants.INCOME;
+        }
+    }
+
+    public static String extractSuffixCategory(String input) {
+        String strippedTerm = "";
+        int idx = input.indexOf(":") + 1;
+        if (idx > 0) {
+            strippedTerm = input.substring(idx);
+        }
+        return strippedTerm;
+    }
+
+    public static String translateBaseCategory(Context context, String category) {
+        String[] cats = context.getResources().getStringArray(R.array.transaction_categories_list);
+        if (category.startsWith(Constants.EXPENSE)) {
+            return cats[Constants.EXPENSE_IDX];
+        } else if (category.startsWith(Constants.TRANSFER)) {
+            return cats[Constants.TRANSFER_IDX];
+        } else if (category.startsWith(Constants.EXCHANGE)) {
+            return cats[Constants.EXCHANGE_IDX];
+        } else {
+            return cats[Constants.INCOME_IDX];
+        }
+    }
+
+    public static String translateCategoryName(Context context, Category category) {
+        String prefix = null;
+        String suffix = null;
+        String cat = category.getCategoryName();
+        int idx = cat.indexOf(":");
+        if (idx > -1) {
+            prefix = translateBaseCategory(context, cat);
+            suffix = cat.substring(idx + 1);
+        } else {
+            prefix = translateBaseCategory(context, ""); // use the default
+            suffix = cat;
+        }
+        return (prefix + ":" + suffix).replace("::", ":");
+    }
+
 }

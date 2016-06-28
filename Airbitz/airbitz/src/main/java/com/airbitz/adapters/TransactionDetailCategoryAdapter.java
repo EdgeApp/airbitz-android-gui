@@ -40,8 +40,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.airbitz.R;
-import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.api.Constants;
 import com.airbitz.api.directory.Category;
+import com.airbitz.fragments.directory.BusinessDirectoryFragment;
+import com.airbitz.utils.Common;
 
 import java.util.List;
 
@@ -83,7 +85,8 @@ public class TransactionDetailCategoryAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.item_listview_transaction_detail, parent, false);
         TextView textView = (TextView) convertView.findViewById(R.id.transaction_detail_item_name);
         textView.setTypeface(BusinessDirectoryFragment.latoRegularTypeFace);
-        textView.setText(category.getCategoryName());
+        textView.setText(Common.translateCategoryName(mContext, category));
+
         if(category.getCategoryLevel().equals("base")) {
             ImageButton button = (ImageButton) convertView.findViewById(R.id.transaction_detail_item_new);
             button.setVisibility(View.VISIBLE);

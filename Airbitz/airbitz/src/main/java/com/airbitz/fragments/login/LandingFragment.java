@@ -855,10 +855,10 @@ public class LandingFragment extends BaseFragment implements
         mFirstLogin = isFirstLogin();
         if (mPinLoginMode) {
             mPINLoginTask = new PINLoginTask();
-            mPINLoginTask.execute(mUsername, mPin, secret);
+            mPINLoginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUsername, mPin, secret);
         } else {
             mPasswordLoginTask = new PasswordLoginTask();
-            mPasswordLoginTask.execute(mUsername, mPassword, secret);
+            mPasswordLoginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUsername, mPassword, secret);
         }
     }
 
@@ -925,7 +925,7 @@ public class LandingFragment extends BaseFragment implements
         } else {
             mFirstLogin = isFirstLogin();
             mPasswordLoginTask = new PasswordLoginTask();
-            mPasswordLoginTask.execute(username, password, null);
+            mPasswordLoginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, username, password, null);
         }
     }
 

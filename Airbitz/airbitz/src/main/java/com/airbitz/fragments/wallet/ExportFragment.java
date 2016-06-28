@@ -66,6 +66,7 @@ public class ExportFragment extends WalletBaseFragment {
     private Button mQuickBooksButton;
     private Button mPdfbutton;
     private Button mWalletPrivateSeed;
+    private Button mWalletXPub;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class ExportFragment extends WalletBaseFragment {
         mQuickBooksButton = (Button) mView.findViewById(R.id.button_quickbooks);
         mPdfbutton = (Button) mView.findViewById(R.id.button_pdf);
         mWalletPrivateSeed = (Button) mView.findViewById(R.id.button_wallet);
+        mWalletXPub = (Button) mView.findViewById(R.id.button_xpub);
 
         mCSVButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +126,13 @@ public class ExportFragment extends WalletBaseFragment {
             @Override
             public void onClick(View view) {
                 gotoExportSavings(ExportSavingOptionFragment.ExportTypes.PrivateSeed.ordinal());
+            }
+        });
+
+        mWalletXPub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoExportSavings(ExportSavingOptionFragment.ExportTypes.XPub.ordinal());
             }
         });
         return mView;
