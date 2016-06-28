@@ -1,0 +1,25 @@
+Leistungsfähige und einfach zu bedienende Bitcoin-Wallet, so dass Anwender ihre eigenen Bitcoin-Privatschlüssel mit der Vertrautheit und Leichtigkeit vom Online-Banking einfach steuern können.
+
+Übernehmen Sie die Kontrolle über Ihr Geld! Mit Airbitz haben nur SIE Zugriff auf Ihre Fonds oder Transaktionsinfo. Weder Airbitz noch Dritte könne auf Ihr Geld oder Ihre Daten zugreifen. Sie erhalten die finanzielle Privatsphäre und Autonomie-Bitcoin wurde so entwickelt, dass auch die Oma alles handhaben kann.
+
+Mit einem Schwerpunkt auf eine erstaunliche Nutzererfahrung bietet die Airbitz-Wallet die folgende Funktionalität:
+
+• Null-Wissen & Null-Zugriff auf Benutzer-Fond, Schlüssel oder Transaktionsdaten von Airbitz oder 3. Parteien
+• Integrierter Kauf von ermäßigten Karten (20 % Rabatt auf Starbucks!)
+• Integrierter Bitcoin-Kauf / -Verkauf von einem verknüpften Bankkonto
+• Einfache Account-Erstellung mit nur einem Login & Passwort (kein PDF-Ausdruck, keine Passphrasen aufschreiben oder Verschlüsselungseinstellungen hinzufügen)
+• Hierarchische deterministische Wallets mit wechselnden Adressen pro Transaktion
+• Suche Transaktionen über Zahlungsempfänger, Kategorie oder Notizen
+• Ausgabegrenzen (erfordert Passwort oder eine PIN um über Grenzen auszugeben, die Sie festlegen)
+• Dezentrale Serverarchitektur. Wallets arbeiten, auch wenn Airbitz Server ausfallen.
+• Open-Source-Code. Erhältlich auf https://github.com/Airbitz
+
+********* Anmerkung zum Datenschutz *********
+Die Airbitz-Anwendung erfordert Zugriff auf die Gerätekontaktliste, Lage und persönliche Informationen. Diese Information wird auf dem Gerät verwendet, um eine verbesserte Benutzerfreundlichkeit durch folgende Wege zu bieten:
+
+1. Vervollständigen Sie Kontakte automatisch aus dem Adressbuch des Benutzers nach einer Transaktion
+2. Vervollständigen Sie Kontakte automatisch aus dem Adressbuch des Benutzers um E-Mail- oder SMS-Zahlungsaufforderungen zu senden
+3. Vervollständigen Firmennamen-Auflistungen automatisch nach einer Transaktion
+4. Orten Sie Benutzergeräte, um in der Nähe Unternehmen zu finden
+
+Keine persönlichen Daten oder die Kontaktliste-Info verlassen jemals das Gerät ohne vorher durch die Anmeldeinformationen des Benutzers (Benutzername/Passwort) verschlüsselt zu werden. Weder Airbitz noch Dritte haben Kenntnis von der durch die Anwendung abgerufenen Informationen.

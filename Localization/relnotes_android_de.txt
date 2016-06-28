@@ -1,0 +1,9 @@
+v 2.1.0
+
+• Fügen Sie Libbitcoin/Electrum Serverabonnement Adresse für deutlich verbesserte Leistung und erhöhte Batterielebensdauer hinzu.
+• Aktiviere dynamische Mining-Gebührenermittlung
+• Fügen Sie steuerbare geschätzte Mining-Nutzungsgebühren hinzu (niedrig, Standard, hohe Einstellungen)
+• Korrigieren Sie falsche Transaktionszeiten wann Transaktion empfangen wird, während Wallet offline war
+• Fügen Sie Sprachunterstützung für Chinesisch, Hindi, Spanisch und Portugiesisch hinzu
+• Fügen Sie Unterstützung für die korrekte Lokalisierung von Zahlen, Zeiten und Terminen hinzu
+• Verbesserung der Genauigkeit der Erkennung der Transaktion bei schlechten Netzwerkbedingungen

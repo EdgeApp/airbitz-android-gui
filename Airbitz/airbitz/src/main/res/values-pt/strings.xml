@@ -13,14 +13,14 @@
   <string name="string_cancel">CANCELAR</string>
   <string name="string_paste">Colar</string>
   <string name="string_paste_address">Colar %1$s</string>
-  <string name="string_search">Procurar</string>
+  <string name="string_search">Buscar</string>
   <string name="string_done">CONCLUÍDO</string>
   <string name="string_rename">Renomear</string>
   <string name="string_delete">Deletar</string>
   <string name="string_save">Salvar</string>
-  <string name="string_back">ANTERIOR</string>
+  <string name="string_back">VOLTAR</string>
   <string name="string_next">PRÓXIMO</string>
-  <string name="string_skip">PULAR</string>
+  <string name="string_skip">IGNORAR</string>
   <string name="string_total">TOTAL:</string>
   <string name="string_finish">TERMINAR</string>
   <string name="string_help">Ajuda</string>
@@ -28,7 +28,7 @@
   <string name="string_refresh">Atualizar</string>
   <string name="string_loading">Carregando...</string>
   <string name="string_no_transactions">Nenhuma transação</string>
-  <string name="string_back_button">O botão Voltar retorna para à tela anterior</string>
+  <string name="string_back_button">O botão Voltar retorna para a tela anterior</string>
   <string name="string_help_button">O botão Ajuda mostra ajuda para esta tela</string>
   <string name="string_add_button">O botão Adicionar adiciona uma nova carteira</string>
   <string name="string_payment_received">** Pagamento Recebido **</string>
@@ -37,6 +37,7 @@
   <string name="string_show_balance">Mostrar o Saldo</string>
   <string name="string_agree">Concordar</string>
   <string name="string_balance">Saldo</string>
+  <string name="string_wallet">Carteira</string>
   <string name="loading_wallets">Carregando Carteiras... \nIsso pode demorar alguns minutos, pois é a primeira vez que está logando neste dispositivo.</string>
   <string name="loading_n_wallets">Carregando %1$d de %2$d carteiras.\n Isso pode levar alguns minutos já que esse é o primeiro acesso nesse dispositivo.</string>
   <string name="loading_transactions">Carregando Transações...</string>
@@ -75,7 +76,7 @@
   <string name="location">Localização...</string>
   <string name="near_you">Perto de Você</string>
   <string name="no_results_found">Nenhum Resultado Encontrado</string>
-  <string name="no_location_found">Incapaz de obter um local atual. Por favor, ative Serviços de Localização.</string>
+  <string name="no_location_found">Não foi possível obter uma localização atual. Por favor, ative os Serviços de Localização.</string>
   <string name="location_enable">Habilitar</string>
   <string name="fragment_business_no_results">Nenhum Resultado Encontrado</string>
   <string name="fragment_business_cannot_retrieve_data">Não é possível recuperar os dados</string>
@@ -98,7 +99,7 @@
   <string name="fragment_directory_detail_foursquare">"Foursquare"</string>
   <!-- Strings for errors from server -->
   <string name="server_error_account_already_exists">Esta conta já existe.</string>
-  <string name="server_error_account_does_not_exists">Não fomos capazes de encontrar sua conta. Confirme se seu nome de usuário está correto.</string>
+  <string name="server_error_account_does_not_exists">Não conseguímos encontrar a sua conta. Confirme se seu nome de usuário está correto.</string>
   <string name="server_error_bad_password">Senha incorreta.</string>
   <string name="server_error_wallet_exists">A carteira já existe.</string>
   <string name="server_error_invalid_wallet">A carteira não existe.</string>
@@ -109,8 +110,8 @@
   <string name="server_error_synchronizing">Sincronizando com a rede.</string>
   <string name="server_error_non_numeric_pin">PIN deve ser um valor numérico.</string>
   <string name="server_error_bad_pin">PIN inválido</string>
-  <string name="server_error_bad_pin_login">PIN inválido. Por favor, efetue o login.</string>
-  <string name="server_error_pin_expired">O PIN expirou. Por favor, efetue o login.</string>
+  <string name="server_error_bad_pin_login">PIN inválido. Por favor, faça o login.</string>
+  <string name="server_error_pin_expired">O PIN expirou. Por favor, faça o login.</string>
   <string name="server_error_invalid_pin_wait">Muitas tentativas de acesso sem sucesso. Por favor, tente de novo em %1$s segundos.</string>
   <string name="server_error_other">Ocorreu um erro.</string>
   <string name="insufficient_amount">Quantia muito pequena</string>
@@ -131,11 +132,11 @@
   <string name="fragment_landing_forgot_pin">Esqueci o PIN</string>
   <string name="fragment_landing_enter_pin">Digite o PIN</string>
   <string name="fragment_forgot_no_username_title">Nome de Usuário Obrigatório</string>
-  <string name="fragment_forgot_no_account_title">Sem Perguntas de Recuperação</string>
-  <string name="fragment_forgot_no_recovery_questions_title">Sem Perguntas de Recuperação</string>
+  <string name="fragment_forgot_no_account_title">Sem Perguntas de Segurança</string>
+  <string name="fragment_forgot_no_recovery_questions_title">Sem Perguntas de Segurança</string>
   <string name="fragment_forgot_no_recovery_questions_text">Esse usuário não tem nenhuma pergunta de segurança definida!</string>
   <string name="fragment_landing_account_delete_title">Deletar Conta</string>
-  <string name="fragment_landing_account_delete_message">Deletar %1$s apenas nesse dispositivo? Isso irá remover o acesso 2FA e a senha desse dispositivo. Se o 2FA estiver ativo nessa conta, você será incapaz de acessá-la por 7 dias a partir de novos dispositivos</string>
+  <string name="fragment_landing_account_delete_message">Deletar %1$s apenas nesse dispositivo? Isso irá remover o acesso 2FA e o PIN desse dispositivo. Se o 2FA estiver ativo nessa conta, você não conseguirá acessá-la por 7 dias a partir dos novos dispositivos</string>
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Registrar-se</string>
   <string name="activity_navigation_signin_failed">A entrada falhou</string>
@@ -180,8 +181,8 @@
   <string name="activity_signup_insufficient_username_title">Registrar-se</string>
   <string name="activity_signup_insufficient_username_message">Falha no registro: \nO nome de usuário deve ser pelo menos 3 caracteres.</string>
   <string name="activity_signup_insufficient_pin">O PIN deve ter 4 dígitos</string>
-  <string name="activity_signup_create_wallet_fail">Criar carteira padrão falhou</string>
-  <string name="activity_signup_time_to_crack">Tempo para crack:&#160;</string>
+  <string name="activity_signup_create_wallet_fail">Falha na criação da carteira padrão</string>
+  <string name="activity_signup_time_to_crack">Tempo para partir:</string>
   <string name="activity_signup_seconds">segundos</string>
   <string name="activity_signup_minutes">minutos</string>
   <string name="activity_signup_hours">horas</string>
@@ -195,8 +196,8 @@
   <string name="fragment_setup_password_title">Defina uma Senha e PIN</string>
   <string name="fragment_setup_password_text">A senha é usada para autenticar a sua conta e alterar as configurações mais importantes.</string>
   <string name="fragment_setup_password_nopassword_title">A conta não tem senha</string>
-  <string name="fragment_setup_password_nopassword_message">Aviso. Sem uma senha, você não será capaz de acessar em um novo dispositivo se esse dispositivo for perdido ou roubado, ou se esse aplicativo for desinstalado.</string>
-  <string name="fragment_setup_password_nopassword_">Aviso. Sem uma senha, você não será capaz de acessar em um novo dispositivo se esse dispositivo for perdido ou roubado, ou se esse aplicativo for desinstalado.</string>
+  <string name="fragment_setup_password_nopassword_message">Aviso. Sem uma senha, você não conseguirá acessar em um novo dispositivo se esse dispositivo for perdido ou roubado, ou se esse aplicativo for desinstalado.</string>
+  <string name="fragment_setup_password_nopassword_">Aviso. Sem uma senha, você não conseguirá acessar em um novo dispositivo se esse dispositivo for perdido ou roubado, ou se esse aplicativo for desinstalado.</string>
   <string name="fragment_setup_pin_title">Defina um PIN de 4 dígitos</string>
   <string name="fragment_setup_pin_text">Seu PIN é um código de 4 dígitos usado para acessar rapidamente sua conta.</string>
   <string name="fragment_setup_writeitdown_title">Anote!</string>
@@ -210,11 +211,11 @@
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Configuração de Recuperação de Senha</string>
   <string name="activity_recovery_title">Recuperação de Senha</string>
-  <string name="activity_recovery_skip_button_text">Pular Esta Etapa</string>
+  <string name="activity_recovery_skip_button_text">Ignorar Esta Etapa</string>
   <string name="activity_recovery_complete_button">Registro Completo</string>
   <string name="activity_recovery_complete_button_change_questions">Concluído</string>
-  <string name="activity_recovery_prompt_title">Pular esta etapa</string>
-  <string name="activity_recovery_prompt_skip">**ATENÇÃO** Você nunca será capaz de recuperar sua senha se esquecê-la!!</string>
+  <string name="activity_recovery_prompt_title">Ignorar esta etapa</string>
+  <string name="activity_recovery_prompt_skip">**ATENÇÃO** Você nunca conseguirá recuperar sua senha se esquecê-la!!</string>
   <string name="activity_recovery_first_wallet_name">Minha Carteira</string>
   <string name="activity_recovery_answer_questions_alert">Você deve responder todas as seis perguntas. Certifique-se de que suas respostas são longas o suficiente.</string>
   <string name="activity_recovery_pick_questions_alert">Você deve escolher todas as seis perguntas antes de prosseguir.</string>
@@ -272,10 +273,6 @@
   <string name="settings_button_logout">Logout</string>
   <string name="settings_button_debug">Depurar</string>
   <string name="settings_categories_add_new">Adicionar Novo</string>
-  <string name="settings_categories_expense">Despesa:</string>
-  <string name="settings_categories_income">Renda:</string>
-  <string name="settings_categories_transfer">Transferência:</string>
-  <string name="settings_categories_exchange">Troca:</string>
   <string name="settings_days">Dia(s)</string>
   <string name="settings_hours">Hora(s)</string>
   <string name="settings_minutes">Minuto(s)</string>
@@ -297,10 +294,6 @@
   <!-- Strings for Category Fragment -->
   <string name="fragment_category_cancel_title">Cancelar Alterações</string>
   <string name="fragment_category_cancel_message">Tem certeza que deseja cancelar quaisquer alterações feitas por você?</string>
-  <string name="fragment_category_income">Renda:</string>
-  <string name="fragment_category_expense">Despesa:</string>
-  <string name="fragment_category_transfer">Transferência:</string>
-  <string name="fragment_category_exchange">Troca:</string>
   <string name="fragment_category_deleted">%1$s Deletado</string>
   <string name="fragment_category_add">Adicionar Categoria</string>
   <!-- Strings for AutoLogoff Dialog -->
@@ -468,6 +461,7 @@
   <string name="export_quickbooks_title">QuickBooks</string>
   <string name="export_pdf_title">PDF</string>
   <string name="export_print_title">Chave Mestra Privada da Carteira (avançado)</string>
+  <string name="export_xpub">Fundo de Carteira Pública (XPub)</string>
   <!-- Strings for Export Saving fragment -->
   <string name="export_saving_title">Exportar</string>
   <string name="export_saving_wallet_label">Carteira:</string>
@@ -485,6 +479,7 @@
   <string name="export_saving_option_email_subject">Transações de carteira Airbitz Bitcoin</string>
   <string name="export_saving_option_no_email_apps">Não há nenhum aplicativo de e-mail instalado</string>
   <string name="export_saving_option_private_seed">Chave Mestra Privada</string>
+  <string name="export_saving_option_xpub">XPub</string>
   <string name="export_saving_option_pick_date">Escolha uma data</string>
   <!-- Strings for Offline Wallet fragment -->
   <string name="offline_wallet_title">Carteira Offline</string>
@@ -543,7 +538,7 @@
   <string name="fragment_twofactor_show_keep_twofa">MANTER 2FA</string>
   <string name="fragment_twofactor_show_now_enabled">Dois Fatores Habilitados</string>
   <string name="fragment_twofactor_show_now_disabled">Dois Fatores Desativados</string>
-  <string name="fragment_twofactor_menu_button_scan_token">Escanear Token</string>
+  <string name="fragment_twofactor_menu_button_scan_token">Digitalizar Token</string>
   <string name="fragment_twofactor_menu_button_request_reset">Solicitação de Reset</string>
   <string name="fragment_twofactor_menu_scan_message">Esta conta tem autenticação de 2 fatores (2FA) habilitada. Escaneie o token 2FA do dispositivo que habilitou o 2FA para dar acesso a este dispositivo.</string>
   <string name="fragment_twofactor_menu_request_message">Solicite que a autenticação de Dois Fatores seja ligada. A solicitação será automaticamente resetada em 7 dias se não forem tomadas medidas pelo usuário da conta nos dispositivos autenticados.</string>
@@ -652,6 +647,11 @@
   <string name="request_footer_link_title">Baixar Airbitz para iOS ou Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
+  <string name="plugin_starbucks_discount">(Até 20% de desconto)</string>
+  <string name="plugin_target_discount">(Até 10% de desconto)</string>
+  <string name="plugin_wholefoods_discount">(Até 10% de desconto)</string>
+  <string name="plugin_walmart_discount">(Até 10% de desconto)</string>
+  <string name="plugin_homedepot_discount">(Até 15% de desconto)</string>
   <string name="plugin_glidera_title">EUA e Canadá</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="intent_choose_an_email">Escolha um E-mail de cliente:</string>
@@ -667,4 +667,6 @@
   <string name="transaction_footer_starbucks_discount">Até 20% de desconto no Starbucks</string>
   <string name="transaction_footer_target_discount">Até 10% de desconto no Target</string>
   <string name="transaction_footer_amazon_discount">15-20% de desconto na Amazon</string>
+  <string name="change_mining_fee_title">Alterar Taxa de Extração</string>
+  <string name="change_mining_fee_body">Aviso: Taxas Baixas podem causar longos atrasos na confirmação da transação</string>
 </resources>

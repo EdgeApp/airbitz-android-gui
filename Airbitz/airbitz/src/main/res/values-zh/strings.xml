@@ -37,6 +37,7 @@
   <string name="string_show_balance">显示余额</string>
   <string name="string_agree">同意</string>
   <string name="string_balance">余额</string>
+  <string name="string_wallet">钱包</string>
   <string name="loading_wallets">正在加载钱包... 由于这是此装备第一次登入，所以可能需要几分钟的时间。</string>
   <string name="loading_n_wallets">正在加载 %1$d 之 %2$d 的钱包。\n由于这个设备是第一次登入，所以可能需要数分钟的加载时间。</string>
   <string name="loading_transactions">正在加载交易记录...</string>
@@ -160,7 +161,7 @@
   <string name="activity_signup_pin_hint">创建 PIN</string>
   <string name="activity_signup_new_pin">新PIN</string>
   <string name="activity_signup_password_requirements">密码要求</string>
-  <string name="activity_signup_password_help">密码必须有上和小写字母、 数字和最少10 个字符</string>
+  <string name="activity_signup_password_help">密码必须有上层和小写字母、 数字和最低的 10 个字符</string>
   <string name="activity_signup_popup_uppercase">必须有至少一个大写字母</string>
   <string name="activity_signup_popup_lowercase">必须有至少一个小写字母</string>
   <string name="activity_signup_popup_number">必须有至少一个数字</string>
@@ -195,8 +196,8 @@
   <string name="fragment_setup_password_title">设置密码和 PIN</string>
   <string name="fragment_setup_password_text">这个密码是用来验证您的帐户和修改敏感设置而用的。</string>
   <string name="fragment_setup_password_nopassword_title">帐户有没有密码</string>
-  <string name="fragment_setup_password_nopassword_message">警告。如果没有密码，如果此设备丢失或被盗，或者程序被卸载，那么您将不能在新设备上登入。</string>
-  <string name="fragment_setup_password_nopassword_">警告。如果没有密码，如果此设备丢失或被盗，或者程序被卸载，那么您将不能在新设备上登入。</string>
+  <string name="fragment_setup_password_nopassword_message">警告。如果没有密码，当此设备丢失或被盗，或者程序被卸载时，那么您将不能在新设备上登入。</string>
+  <string name="fragment_setup_password_nopassword_">警告。如果没有密码，当此设备丢失或被盗，或者程序被卸载时，您将无法在新设备中登入。</string>
   <string name="fragment_setup_pin_title">设置 4 位数字的 PIN</string>
   <string name="fragment_setup_pin_text">您4位数字的 PIN是用来进行快速重新登录到您的帐户所用。</string>
   <string name="fragment_setup_writeitdown_title">把它写下来 ！</string>
@@ -272,10 +273,6 @@
   <string name="settings_button_logout">登出</string>
   <string name="settings_button_debug">调试</string>
   <string name="settings_categories_add_new">添加</string>
-  <string name="settings_categories_expense">费用 ︰</string>
-  <string name="settings_categories_income">收入 ︰</string>
-  <string name="settings_categories_transfer">转换 ︰</string>
-  <string name="settings_categories_exchange">兑换</string>
   <string name="settings_days">天</string>
   <string name="settings_hours">小时</string>
   <string name="settings_minutes">分钟</string>
@@ -297,10 +294,6 @@
   <!-- Strings for Category Fragment -->
   <string name="fragment_category_cancel_title">取消更改</string>
   <string name="fragment_category_cancel_message">您确实要取消您所做的任何更改吗？</string>
-  <string name="fragment_category_income">收入 ︰</string>
-  <string name="fragment_category_expense">费用 ︰</string>
-  <string name="fragment_category_transfer">转换 ︰</string>
-  <string name="fragment_category_exchange">兑换</string>
   <string name="fragment_category_deleted">%1$s 已删除</string>
   <string name="fragment_category_add">添加类别</string>
   <!-- Strings for AutoLogoff Dialog -->
@@ -468,6 +461,7 @@
   <string name="export_quickbooks_title">Quickbooks</string>
   <string name="export_pdf_title">PDF</string>
   <string name="export_print_title">钱包的Private Seed (高级)</string>
+  <string name="export_xpub">钱包公共种子 (XPub)</string>
   <!-- Strings for Export Saving fragment -->
   <string name="export_saving_title">导出</string>
   <string name="export_saving_wallet_label">钱包 ︰</string>
@@ -485,6 +479,7 @@
   <string name="export_saving_option_email_subject">Airbitz 比特币钱包交易</string>
   <string name="export_saving_option_no_email_apps">没有安装电子邮件应用程序</string>
   <string name="export_saving_option_private_seed">Private Seed</string>
+  <string name="export_saving_option_xpub">XPub</string>
   <string name="export_saving_option_pick_date">请选择一个日期</string>
   <!-- Strings for Offline Wallet fragment -->
   <string name="offline_wallet_title">线下钱包</string>
@@ -652,6 +647,11 @@
   <string name="request_footer_link_title">通过IOS 或 Android 下载 Airbitz</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+比特币+电邮+征求</string>
   <!-- Plugin text -->
+  <string name="plugin_starbucks_discount">（高达 20%的折扣)</string>
+  <string name="plugin_target_discount">（高达 10%的折扣)</string>
+  <string name="plugin_wholefoods_discount">（高达 10%的折扣)</string>
+  <string name="plugin_walmart_discount">（高达 10%的折扣)</string>
+  <string name="plugin_homedepot_discount">（高达 15%的折扣)</string>
   <string name="plugin_glidera_title">美国和加拿大</string>
   <string name="plugin_clevercoin_title">欧洲 (EUR)</string>
   <string name="intent_choose_an_email">选择电子邮件客户端 ︰</string>
@@ -667,4 +667,6 @@
   <string name="transaction_footer_starbucks_discount">星巴克高达 20%的折扣</string>
   <string name="transaction_footer_target_discount">目标高达 10%的折扣</string>
   <string name="transaction_footer_amazon_discount">亚马逊高达15%-20%的折扣</string>
+  <string name="change_mining_fee_title">更改挖掘费</string>
+  <string name="change_mining_fee_body">警告 ︰ 低费用可能会导致在交易确认的时间延迟</string>
 </resources>

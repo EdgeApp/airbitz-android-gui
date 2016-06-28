@@ -19,3 +19,5 @@ cp ../airbitz-ios-gui/Airbitz/Resources/Text/es.lproj/* Airbitz/airbitz/src/main
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/hi.lproj/* Airbitz/airbitz/src/main/res/raw-hi/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/pt.lproj/* Airbitz/airbitz/src/main/res/raw-pt/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/zh.lproj/* Airbitz/airbitz/src/main/res/raw-zh/
+cp ../airbitz-ios-gui/Airbitz/Resources/Text/de.lproj/* Airbitz/airbitz/src/main/res/raw-de/
+cp ../airbitz-ios-gui/Airbitz/Resources/Text/fr.lproj/* Airbitz/airbitz/src/main/res/raw-fr/

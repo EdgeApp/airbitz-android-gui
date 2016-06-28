@@ -1,0 +1,9 @@
+v 2.1.0
+
+• Adicione Libbitcoin/Electrum ao endereço de assinatura do servidor para desempenho muito melhor e vida útil da bateria maior.
+• Permite o cálculo de taxa dinâmica de extração
+• Adicione controle do usuário das taxas estimadas de extração (Configurações Baixa, Padrão, Alta)
+• Conserte transação incorreta para as vezes quando a transação é recebida enquanto carteira estava offline
+• Adicione suporte de idioma Chinês, Hindi, Espanhol e Português
+• Adicione suporte para localização correta de números, datas e horários
+• Melhore a precisão na detecção de transação em más condições de rede
