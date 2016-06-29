@@ -915,132 +915,79 @@ public class TransactionDetailFragment extends WalletBaseFragment
         AirbitzCore.logi("Biz ID: " + String.valueOf(mBizId));
     }
 
-    private long inSum = 0;
-    private SpannableStringBuilder inAddresses;
-    private SpannableStringBuilder outAddresses;
 
     private void showAdvancedDetails(boolean hasFocus) {
         Transaction tx = mWallet.transaction(mTxId);
         if (hasFocus && tx != null) {
-            inAddresses = new SpannableStringBuilder();
-            outAddresses = new SpannableStringBuilder();
+            String inAddresses = "";
+            String outAddresses = "";
+
             String finalBaseUrl;
             if (AirbitzCore.getApi().isTestNet()) {
-                finalBaseUrl = "https://testnet.blockexplorer.com/";
+                finalBaseUrl = "https://testnet.blockexplorer.com";
             } else { // LIVE
-                finalBaseUrl = "https://blockexplorer.com/";
+                finalBaseUrl = "https://blockexplorer.com";
             }
+
+            long inSum = 0;
+
+            String txid = String.format("<div class=\"wrapped\"><a href=\"%s/tx/%s\">%s</a></div>", finalBaseUrl, tx.id(), tx.id());
 
             if (null != tx.outputs()) {
                 for (TxOutput input : tx.inputs()) {
-                    appendOutput(input, finalBaseUrl);
+                    inAddresses += String.format("<div class=\"wrapped\"><a href=\"%s/address/%s\">%s</a></div><div>%s</div>",
+                            finalBaseUrl, input.address(), input.address(), Utils.formatSatoshi(mAccount, input.amount()));
+                    inSum += input.amount();
                 }
                 for (TxOutput output : tx.outputs()) {
-                    appendOutput(output, finalBaseUrl);
+                    outAddresses += String.format("<div class=\"wrapped\"><a href=\"%s/address/%s\">%s</a></div><div>%s</div>",
+                            finalBaseUrl, output.address(), output.address(), Utils.formatSatoshi(mAccount, output.amount()));
                 }
             } else {
-                inAddresses.append(getString(R.string.transaction_details_outputs_unavailable));
-                inAddresses.append("\n");
+                inAddresses += getString(R.string.transaction_details_outputs_unavailable);
+                inAddresses += ("<br>\n");
             }
 
             long feesSatoshi = tx.providerFees() + tx.minerFees();
             long netSum = inSum - feesSatoshi;
+            long confirmations;
 
-            SpannableStringBuilder s = new SpannableStringBuilder();
-            int start = 0;
-            s.append(getString(R.string.transaction_details_advanced_txid)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
+            if (tx.height() <= 0) {
+                confirmations = 0;
+            } else if (mWallet.blockHeight() == 0) {
+                confirmations = 0;
+            } else {
+                confirmations = mWallet.blockHeight() - tx.height() + 1;
+            }
 
-            start = s.length();
-            s.append(tx.id());
-            int end = s.length();
-            final String txIdLink = finalBaseUrl + "tx/" + tx.id();
-            ClickableSpan url = new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(txIdLink));
-                    mActivity.startActivity(i);
-                }
-            };
-            s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n\n");
+            String conf = "" + confirmations;
 
-            //Total Sent - formatSatoshi
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_total_sent)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
+            String content = Common.evaluateTextFile(getActivity(), R.raw.transaction_details);
 
-            s.append(Utils.formatSatoshi(mAccount, netSum))
-                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n\n");
+            List<String> searchList = new ArrayList<String>();
+            searchList.add("[[abtag TXID]]");
+            searchList.add("[[abtag BTCTOTAL]]");
+            searchList.add("[[abtag INPUT_ADDRESSES]]");
+            searchList.add("[[abtag OUTPUT_ADDRESSES]]");
+            searchList.add("[[abtag FEES]]");
+            searchList.add("[[abtag CONFIRMATIONS]]");
 
+            List<String> replaceList = new ArrayList<String>();
+            replaceList.add(txid);
+            replaceList.add(Utils.formatSatoshi(mAccount, netSum));
+            replaceList.add(inAddresses);
+            replaceList.add(outAddresses);
+            replaceList.add(Utils.formatSatoshi(mAccount, feesSatoshi, true));
+            replaceList.add(conf);
 
-            //Source - inAddresses
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_source)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-            s.append(inAddresses);
-            s.append("\n\n");
+            for (int i = 0; i < searchList.size(); i++) {
+                content = content.replace(searchList.get(i), replaceList.get(i));
+            }
 
-            //Destination - outAddresses
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_destination)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-            s.append(outAddresses);
-            s.append("\n\n");
+            mActivity.pushFragment(new HelpFragment(content), NavigationActivity.Tabs.WALLET.ordinal());
 
-
-            //Miner Fee - formatSatoshi
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_miner_fee)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-
-            start = s.length();
-            s.append(Utils.formatSatoshi(mAccount, feesSatoshi, true))
-                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            mActivity.pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mActivity.hideSoftKeyboard(mView);
-        }
-    }
-
-    private void appendOutput(TxOutput output, String finalBaseUrl) {
-        SpannableString val = new SpannableString(Utils.formatSatoshi(mAccount, output.amount()));
-        SpannableString address = new SpannableString(output.address());
-        int start = 0;
-        int end = address.length();
-        final String txUrl = finalBaseUrl + "address/" + output.address();
-        ClickableSpan span = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(txUrl));
-                mActivity.startActivity(i);
-            }
-        };
-        address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        SpannableStringBuilder full = new SpannableStringBuilder();
-        full.append(address);
-        full.append("\n");
-        start = full.length();
-        full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        full.append("\n");
-
-        if (output.isInput()) {
-            inAddresses.append(full);
-            inSum += output.amount();
-        } else {
-            outAddresses.append(full);
         }
     }
 
