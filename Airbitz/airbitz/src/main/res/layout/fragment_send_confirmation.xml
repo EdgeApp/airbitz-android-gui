@@ -91,7 +91,7 @@
                         android:layout_alignParentRight="true"
                         android:gravity="center_vertical|right"
                         android:paddingRight="8dp"
-                        android:textColor="@color/dark_text"
+                        android:textColor="@color/dark_text_link"
                         android:textSize="13dp"/>
 
                     <EditText
