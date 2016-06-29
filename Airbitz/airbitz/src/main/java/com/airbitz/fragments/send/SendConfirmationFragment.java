@@ -90,6 +90,8 @@ import com.airbitz.utils.Common;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Method;
 
 /**
@@ -931,25 +933,25 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
 
-        if (!TextUtils.isEmpty(mLabel)) {
-            sendTo = mLabel;
-        } else if (mPaymentRequest != null) {
+        if (TextUtils.isEmpty(mLabel)) {
+            mLabel = mParsedUri.label();
+        }
+
+        if (mPaymentRequest != null) {
             if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
                 sendTo = mPaymentRequest.merchant();
             } else {
                 sendTo = mPaymentRequest.domain();
             }
             mAmountToSendSatoshi = mPaymentRequest.amount();
-        } else if (mParsedUri != null) {
-            sendTo = mParsedUri.label();
-            if (TextUtils.isEmpty(sendTo)) {
-                sendTo = mParsedUri.address();
+        } else if (mParsedUri != null && mParsedUri.address().length() > 5 ) {
+            if (!TextUtils.isEmpty(mLabel)) {
+                sendTo = mLabel + " (" + mParsedUri.address().substring(0, 5) + "...)";
+            } else {
+                sendTo = mParsedUri.address().substring(0, 5)
+                        + "..." + mParsedUri.address().substring(mParsedUri.address().length() - 5, mParsedUri.address().length());
             }
             mAmountToSendSatoshi = mParsedUri.amount();
-            if (sendTo != null && sendTo.length() > 20) {
-                sendTo = sendTo.substring(0, 5)
-                    + "..." + sendTo.substring(sendTo.length() - 5, sendTo.length());
-            }
         } else if (mDestWallet != null) {
             sendTo = mDestWallet.name();
         }
