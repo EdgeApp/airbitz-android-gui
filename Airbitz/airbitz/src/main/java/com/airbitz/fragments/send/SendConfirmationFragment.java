@@ -736,7 +736,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
             }
             if ((fees + mAmountToSendSatoshi) <= mWallet.balance()) {
-                mConversionTextView.setTextColor(color);
+                mConversionTextView.setTextColor(getResources().getColor(R.color.dark_text));
                 mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 mConversionTextView.setBackgroundResource(android.R.color.transparent);
                 mBitcoinField.setTextColor(color);
