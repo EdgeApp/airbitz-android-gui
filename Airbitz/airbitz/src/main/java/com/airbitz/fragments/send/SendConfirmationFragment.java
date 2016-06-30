@@ -933,7 +933,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
 
-        if (TextUtils.isEmpty(mLabel)) {
+        if (TextUtils.isEmpty(mLabel) && mParsedUri != null) {
             mLabel = mParsedUri.label();
         }
 
