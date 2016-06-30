@@ -643,7 +643,8 @@ public class DirectoryApi {
     }
 
     private String getLanguageCode() {
-        return ("en".equals(mLang) || "es".equals(mLang)) ? mLang : null;
+        // return ("en".equals(mLang) || "es".equals(mLang)) ? mLang : null;
+        return "en";
     }
 
     public Map<String, String> getCurrencyUrlOverrides() {
