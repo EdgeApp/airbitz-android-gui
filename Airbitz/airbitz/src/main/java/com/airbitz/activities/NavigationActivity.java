@@ -1675,8 +1675,9 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     private void updateFadingDialogFinished() {
-        if (mOnFadingDialogFinished != null)
+        if (mOnFadingDialogFinished != null) {
             mOnFadingDialogFinished.onFadingDialogFinished();
+        }
     }
 
     public void DismissFadingDialog() {
@@ -1735,6 +1736,17 @@ public class NavigationActivity extends ActionBarActivity
                     mFadingDialog = builder.build();
                     mFadingDialog.setCancelable(cancelable);
                     mFadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    mFadingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        public void onCancel(DialogInterface dialog) {
+                            updateFadingDialogFinished();
+                        }
+                    });
+                    mFadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        public void onDismiss(DialogInterface dialog) {
+                            updateFadingDialogFinished();
+                        }
+                    });
+
 
                     TextView tv = mFadingDialog.getContentView();
                     tv.setTypeface(NavigationActivity.latoRegularTypeFace);
@@ -1761,7 +1773,6 @@ public class NavigationActivity extends ActionBarActivity
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             mFadingDialog.dismiss();
-                            updateFadingDialogFinished();
                         }
 
                         @Override
