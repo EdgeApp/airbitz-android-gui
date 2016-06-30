@@ -259,8 +259,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mActivity.getString(R.string.restaurant_and_food_trucks),
-                    mActivity.getString(R.string.current_location),
+                    mActivity.getString(R.string.restaurant_and_food_trucks_en),
+                    mActivity.getString(R.string.current_location_en),
                     "category");
             }
         });
@@ -269,8 +269,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mGiftButton.getText().toString(),
-                    mActivity.getString(R.string.on_the_web),
+                    mActivity.getString(R.string.gift_cards_en),
+                    mActivity.getString(R.string.on_the_web_en),
                     "category");
             }
         });
@@ -279,8 +279,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mCoffeeButton.getText().toString(),
-                    mActivity.getString(R.string.current_location),
+                    mActivity.getString(R.string.coffee_and_tea_en),
+                    mActivity.getString(R.string.current_location_en),
                     "category");
             }
         });
@@ -289,8 +289,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mElecButton.getText().toString(),
-                    mActivity.getString(R.string.on_the_web),
+                    mActivity.getString(R.string.electronics_en),
+                    mActivity.getString(R.string.on_the_web_en),
                     "category");
             }
         });
@@ -299,8 +299,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mAtmButton.getText().toString(),
-                    mActivity.getString(R.string.current_location),
+                    mActivity.getString(R.string.atms_en),
+                    mActivity.getString(R.string.current_location_en),
                     "category");
             }
         });
@@ -309,8 +309,8 @@ public class BusinessDirectoryFragment extends BaseFragment implements
             @Override
             public void onClick(View view) {
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    mShoppingButton.getText().toString(),
-                    mActivity.getString(R.string.current_location),
+                    mActivity.getString(R.string.shopping_en),
+                    mActivity.getString(R.string.current_location_en),
                     "category");
             }
         });
@@ -379,7 +379,7 @@ public class BusinessDirectoryFragment extends BaseFragment implements
                 String query = !TextUtils.isEmpty(nameSearch) ? nameSearch : catSearch;
                 String type = !TextUtils.isEmpty(nameSearch) ? "" : "category";
                 MapBusinessDirectoryFragment.pushFragment(mActivity,
-                    query, mActivity.getString(R.string.current_location), type);
+                    query, mActivity.getString(R.string.current_location_en), type);
 
                 bundle.putString(Constants.DIRECTORY_NAME_QUERY, "");
                 bundle.putString(Constants.DIRECTORY_CATEGORY_QUERY, "");

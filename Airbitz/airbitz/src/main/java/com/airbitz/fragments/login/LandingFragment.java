@@ -744,7 +744,7 @@ public class LandingFragment extends BaseFragment implements
     public void onFadingDialogFinished() {
         mActivity.setFadingDialogListener(null);
         refreshView(true, true);
-        mHandler.postDelayed(delayedShowPinKeyboard, 500);
+        mActivity.showSoftKeyboard(mPinEditText);
     }
 
     final Runnable delayedShowPinKeyboard = new Runnable() {

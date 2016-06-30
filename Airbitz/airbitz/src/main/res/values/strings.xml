@@ -66,15 +66,25 @@
     <!-- Strings for Business Directory fragment -->
     <string name="directory_title">Directory</string>
     <string name="restaurants">Restaurants</string>
+    <string name="restaurants_en" translatable="false">Restaurants</string>
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
+    <string name="restaurant_and_food_trucks_en" translatable="false">Restaurants &amp; Food Trucks</string>
     <string name="gift_cards">Gift Cards</string>
+    <string name="gift_cards_en" translatable="false">Gift Cards</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
+    <string name="coffee_and_tea_en" translatable="false">Coffee &amp; Tea</string>
     <string name="electronics">Electronics</string>
+    <string name="electronics_en" translatable="false">Electronics</string>
     <string name="atms">ATMs</string>
+    <string name="atms_en" translatable="false">ATMs</string>
     <string name="shopping">Shopping</string>
+    <string name="shopping_en" translatable="false">Shopping</string>
+
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
+    <string name="current_location_en" translatable="false">Current Location</string>
     <string name="on_the_web">On the Web</string>
+    <string name="on_the_web_en" translatable="false">On the Web</string>
     <string name="category_or_business_name_initial">Search</string>
     <string name="category_or_business_name">Business Name or Category</string>
     <string name="city_state_county">City, State/Province, or Country</string>
