@@ -257,6 +257,7 @@
     <string name="activity_recovery_warning_dirty_forgot_message">Warning: You are about to exit password recovery and all progress will be lost. Exit anyway?</string>
     <string name="fragment_recovery_mismatch_title">Password Mismatch</string>
     <string name="fragment_recovery_mismatch_message">Please enter your correct password.</string>
+    <string name="fragment_recovery_answer_case_sensitive">Answers are case sensitive</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
