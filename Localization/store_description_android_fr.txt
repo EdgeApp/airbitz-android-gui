@@ -1,25 +1,25 @@
-Powerful and easy to use bitcoin wallet allowing users to easily control their own bitcoin private keys with the familiarity and ease of mobile banking.
+Porte-monnaie Bitcoin puissant et facile à utiliser, permettant aux utilisateurs de contrôler facilement leurs propres clés privées bitcoin avec la familiarité et la facilité des services bancaires mobiles.
 
-Prenez le contrôle de vos fonds ! With Airbitz, only YOU have access to your funds or transaction info. Airbitz ainsi que tout autre partie tierce ont aucune possibilité d'accéder à votre argent ou données. You get the financial privacy and autonomy bitcoin was designed for with the ease of use even grandma could handle.
+Prenez le contrôle de vos fonds ! Avec Airbitz, vous êtes SEUL à avoir accès à vos fonds ou données de transaction. Airbitz ainsi que tout autre partie tierce n'ont aucune possibilité d'accéder à votre argent ou données. Vous obtenez la confidentialité et autonomie financière pour laquelle Bitcoin a été conçu avec la facilité d’utilisation que même grand-mère pourrait gérer.
 
 En mettant l’accent sur la prestation d’une excellent expérience utilisateur, le porte-monnaie d'Airbitz fournit les fonctionnalités suivantes :
 
 • Zéro connaissance & zéro accès aux fonds, clés ou données de transaction de l’utilisateur par Airbitz ou des parties tierces
-• Integrated purchase of discounted gift cards (20% off Starbucks!)
-• Integrated bitcoin buy / sell from a linked bank account
-• Simple account creation using just a login & password (no printing of PDFs, writing down pass phrases, or adding encryption settings)
-• Hierarchical Deterministic wallets with changing addresses per transaction
-• Search transactions by payee, category, or notes
-• Spending limits (require password or PIN to spend above limits you set)
-• Decentralized server architecture. Wallets work even if Airbitz servers are down.
-• Open-source code. Available at https://github.com/Airbitz
+• L’achat intégré de cartes cadeaux à prix réduit (20 % Réduction sur Starbucks !)
+• Achat / vente bitcoin intégré depuis un compte bancaire lié
+• Création d’un compte simple en utilisant juste un nom d'utilisateur & mot de passe (pas d’impression de PDFs, d'écrire des phrases de passe ou d'ajout de paramètres de cryptage)
+• Porte-monnaies déterministes hiérarchique qui changent d'adresses par transaction
+• Les opérations de recherche par bénéficiaire, catégorie ou notes
+• Les limites de dépenses (nécessite un mot de passe ou code PIN afin de dépenser au delà des limites que vous définissez)
+• Architecture de serveur décentralisé. Les porte-monnaies fonctionnent même si les serveurs Airbitz sont indisponible.
+• Code source ouvert. Disponible sur http://github.com/Airbitz
 
-********* Privacy Notice *********
-The Airbitz application requests access to the device contact list, location, and personal information. This information is used on the device to provide an improved user experience in the following ways:
+********* Avis de confidentialité *********
+L’application Airbitz demande l’accès à la liste de contacts de l'appareil, la localisation et au infos personnelles. Cette information est utilisée sur l’appareil pour fournir une expérience utilisateur améliorée dans les manières suivantes :
 
-1. Autocomplete contacts from the user's address book after a transaction
-2. Autocomplete contacts from the user's address book to send Email or SMS payment requests
-3. Autocomplete business listings names after a transaction
-4. Geolocate user's device to find nearby businesses
+1. Compléter automatiquement les contacts à partir du carnet d’adresses de l’utilisateur après une transaction
+2. Compléter automatiquement les contacts à partir du carnet d’adresses de l’utilisateur pour envoyer des demandes de paiement par courriel ou SMS
+3. Compléter automatiquement les noms d'inscriptions d'entreprise après une transaction
+4. Géolocaliser l’appareil de l'utilisateur afin de trouver des entreprises à proximité
 
-No personal info or contact list info ever leaves the device without first being encrypted by the user's credentials (username/password). Neither Airbitz nor any 3rd party has knowledge of the information accessed by the application.
+Aucune info personnelle ou info de liste de contacts ne quitte jamais l’appareil sans être préalablement cryptées par les infos d’identification de l’utilisateur (nom d’utilisateur/mot de passe). Ni Airbitz, ni aucune partie tierce dispose de connaissance des infos accédés par l’application.

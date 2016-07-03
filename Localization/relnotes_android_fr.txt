@@ -1,9 +1,9 @@
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+• Ajouter un abonnement au serveur d'adresse Libbitcoin/Electrum pour une performance beaucoup améliorer et une augmentation de vie de la batterie.
+• Activer le calcul des droits miniers dynamique
+• Ajouter les redevances minières estimées contrôlables (basse, Standard, vif)
+• Corriger le temps de transaction erronée pour quand la transaction est reçue pendant que le porte-monnaie était hors ligne
+• Ajouter la prise en charge linguistique Chinois, Hindi, Espagnol et Portugais
+• Ajouter prise en charge pour une localisation appropriée des numéros, heures et dates
+• Améliorer la précision de la détection de transaction dans des mauvaises conditions de réseau
