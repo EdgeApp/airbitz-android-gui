@@ -280,8 +280,8 @@
   <string name="settings_nfc_turn_on_title">NFC aktivieren</string>
   <string name="settings_nfc_turn_on_message">NFC wird verwendet, um die Tap-to-Pay mit unterstützten Händlern zu ermöglichen. Möchten Sie es jetzt aktivieren?</string>
   <string name="settings_ble_turn_on_title">Aktivieren Sie Bluetooth</string>
-  <string name="settings_ble_turn_on_message">Bluetooth wird verwendet, um Zahlungen drahtlos zu ermöglichen, ohne dass Sie einen QR-Code scannen. Möchten Sie es jetzt aktivieren?</string>
-  <string name="settings_currency_change_note_popup">Hinweis: Standardwährungseinstellung ist nur für neue Wallets und zeigen das Gesamtsaldo des Kontos an. Erstellen Sie eine neue digitale Wallet, um die Fiat-Währung zu ändern, die bei jeder Transaktion gezeigt wird.</string>
+  <string name="settings_ble_turn_on_message">Bluetooth wird verwendet, um Zahlungen drahtlos zu ermöglichen, ohne dabei einen QR-Code scannen zu müssen. Möchten Sie es jetzt aktivieren?</string>
+  <string name="settings_currency_change_note_popup">Hinweis: Die Standardwährungseinstellung wird nur für neue Wallets verwendet und zeigt das Gesamtsaldo des Kontos an. Erstellen Sie eine neue digitale Wallet um die Fiat-Währung zu ändern, die bei jeder Transaktion angezeigt wird.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Ausgabelimits</string>
   <string name="fragment_spending_limits_save">Speichern</string>
@@ -358,7 +358,7 @@
   <string name="fragment_wallets_delete_wallet_confirm_title">Wallet löschen?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">Sind Sie sicher, dass Sie %1$s löschen möchten?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Wallet löschen: %1$s?</string>
-  <string name="fragment_wallets_delete_wallet_second_confirm_message">Sind Sie sich sicher? Sie werden nicht in der Lage sein, Zugriff auf alle Gelder in diesem Wallet und künftigen Beträge, die sie erhalten können.</string>
+  <string name="fragment_wallets_delete_wallet_second_confirm_message">Sind Sie sich sicher? Sie werden nicht in der Lage sein, Zugriff auf alle Gelder in dieser Wallet und künftige Beträge zu haben, die sie erhalten können.</string>
   <string name="fragment_wallets_wallet_delete">Wallet gelöscht</string>
   <string name="fragment_wallets_rename_wallet">Benennen Sie die Wallet um</string>
   <string name="fragment_wallets_list_wallets_title">WALLETS</string>
@@ -370,7 +370,7 @@
   <string name="fragment_wallets_addwallet_offline_textview">OFFLINE</string>
   <string name="fragment_wallets_created_wallet">%1$s erstellt</string>
   <string name="fragment_wallets_created_wallet_failed">Fehler beim Erstellen der Wallet</string>
-  <string name="fragment_wallets_archive_help">Um eine Wallet zu archivieren, tippen Sie auf die 3 Punkte auf der rechten Seite einer Wallet und ziehen Sie es unter die [ARCHIVE] Überschrift</string>
+  <string name="fragment_wallets_archive_help">Um eine Wallet zu archivieren, tippen Sie auf die 3 Punkte auf der rechten Seite einer Wallet und ziehen Sie es unter den [ARCHIVE]-Header</string>
   <!-- Strings for Wallet fragment -->
   <string name="fragment_wallet_title">Transaktionen</string>
   <string name="fragment_wallet_export_button_description">Button zum exportieren einer Wallet</string>
@@ -387,7 +387,7 @@
   <string name="fragment_transaction_list_double_spend">Warnung: Doppelte Ausgabe</string>
   <!-- Strings for Request fragment -->
   <string name="address_request_title">Adressanfrage</string>
-  <string name="address_request_message">%1$s beantragt eine Bitcoin-Adresse um Geld zu senden. Bitte wählen Sie eine Wallet, um Fonds zu erhalten.</string>
+  <string name="address_request_message">%1$s beantragt eine Bitcoin-Adresse um Geld zu senden. Bitte wählen Sie eine Wallet, um Gelder zu erhalten.</string>
   <string name="fragment_request_subtitle">Anfrage</string>
   <string name="fragment_request_copy_title">Kopie</string>
   <string name="fragment_request_email_title">E-Mail</string>
@@ -410,9 +410,9 @@
   <string name="request_qr_ble_advertise_start_failed">Bluetooth Werbung konnte nicht gestartet werden.</string>
   <string name="request_qr_ble_invalid_value">Bluetooth-Absender hat einen ungültigen Namen gesendet. Wiederholen.</string>
   <string name="request_qr_ble_invalid_service">%1$s konnte den Bluetooth-Dienst nicht werben. Bitte überprüfen Sie Bluetooth auf Ihrem Gerät.</string>
-  <string name="request_qr_ble_invalid_uri">Sie erhielten eine ungültige Bitcoin-Anforderung. Sie können es erneut versuchen.</string>
+  <string name="request_qr_ble_invalid_uri">Sie haben eine ungültige Bitcoin-Anforderung erhalten. Sie können es erneut versuchen.</string>
   <string name="request_qr_ble_copied">Anfrage wird in die Zwischenablage kopiert.</string>
-  <string name="request_qr_first_usage">Präsentieren Sie QR-Code an den Absender lassen sie ihn scannen, um Zahlung zu senden</string>
+  <string name="request_qr_first_usage">Präsentieren Sie den QR-Code an den Absender und lassen Sie ihn diesen scannen, um Zahlung zu senden</string>
   <string name="request_qr_top_message">QR scannen um zu senden, mportieren oder mit BitID anmelden</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">Wallet importieren</string>
@@ -423,7 +423,7 @@
   <string name="import_wallet_swept_funds_title">Privater Schlüssel</string>
   <string name="import_wallet_swept_funds_message">Private Fonds wurden gestrichen.</string>
   <string name="import_wallet_hidden_bits_error_title">Fehler</string>
-  <string name="import_wallet_hidden_bits_error_message">Fehler beim Importieren da es 0 Bitcoin unter der Adresse gibt</string>
+  <string name="import_wallet_hidden_bits_error_message">Fehler beim Importieren, da es 0 Bitcoin unter der Adresse gibt</string>
   <string name="import_wallet_private_key_invalid">Ungültiger privater Schlüssel</string>
   <string name="import_wallet_busy_text">Importieren von Fonds aus %1$s in Wallet...</string>
   <string name="import_wallet_private_key_title">Privater Schlüssel:</string>
@@ -439,7 +439,7 @@
   <string name="transaction_details_from">"Von: "</string>
   <string name="transaction_details_payee_hint">Geben Sie Empfänger ein</string>
   <string name="transaction_details_recovery_reminder_title">Passwort-Erinnerung wiederherstellen</string>
-  <string name="transaction_details_recovery_reminder_message">"Du hast Bitcoin erhalten! Wir empfehlen dringend die Einrichtung von Passwort-Wiederherstellungsfragen und Antworten. Sonst werden Sie nicht in der Lage sein, auf Ihr Konto zuzugreifen, wenn das Passwort vergessen wird."</string>
+  <string name="transaction_details_recovery_reminder_message">"Sie haben Bitcoin erhalten! Wir empfehlen dringend die Einrichtung von Passwort-Wiederherstellungsfragen und Antworten. Sonst werden Sie nicht in der Lage sein, auf Ihr Konto zuzugreifen, sollte das Passwort vergessen werden."</string>
   <string name="transaction_details_advanced_txid">"Transaktions-ID"</string>
   <string name="transaction_details_advanced_total_sent">"Insgesamt gesendet"</string>
   <string name="transaction_details_advanced_source">"Quelle"</string>
@@ -475,7 +475,7 @@
   <string name="export_saving_view_label">Ansehen</string>
   <!-- Strings for Export Saving Option fragment -->
   <string name="export_saving_option_no_transactions_title">Keine Transaktionen</string>
-  <string name="export_saving_option_no_transactions_message">Es gibt keine Transaktionen zum exportieren in dem Datum-Bereich</string>
+  <string name="export_saving_option_no_transactions_message">Es gibt keine zu exportierenden Transaktionen in dem Datumsbereich</string>
   <string name="export_saving_option_email_subject">Airbitz Bitcoin-Wallet-Transaktionen</string>
   <string name="export_saving_option_no_email_apps">Es gibt keine installierten E-Mail-Anwendungen</string>
   <string name="export_saving_option_private_seed">Privater Seed</string>
@@ -540,19 +540,19 @@
   <string name="fragment_twofactor_show_now_disabled">Zwei-Faktor deaktiviert</string>
   <string name="fragment_twofactor_menu_button_scan_token">Scan-Token</string>
   <string name="fragment_twofactor_menu_button_request_reset">Anfrage-Reset</string>
-  <string name="fragment_twofactor_menu_scan_message">Dieses Konto verfügt über 2-Faktor-Authentifizierung (2FA) aktiviert. Scannen Sie das 2FA Token aus dem Gerät, die 2FA, Zugang zu diesem Gerät aktiviert.</string>
-  <string name="fragment_twofactor_menu_request_message">Verlangen Sie, dass die Zwei-Faktor-Authentifizierung deaktiviert wird. Die Anforderung wird in 7 Tagen automatisch zurückgesetzt, wenn Sie keine Aktion durch den Benutzer des Kontos auf authentifizierte Geräte ausführen.</string>
+  <string name="fragment_twofactor_menu_scan_message">Auf diesem Konto ist die 2-Faktor-Authentifizierung (2FA) aktiviert. Scannen Sie das 2FA Token von dem Gerät, auf dem 2FA aktiviert ist und erlauben Sie diesem Gerät Zugriff.</string>
+  <string name="fragment_twofactor_menu_request_message">Fordern Sie, dass die Zwei-Faktor-Authentifizierung deaktiviert wird. Die Anforderung wird in 7 Tagen automatisch zurückgesetzt, sollte der Kontoinhaber keine Änderungen auf authentifizierten Geräten vornehmen.</string>
   <string name="fragment_twofactor_menu_reset_requested">Reset angefordert</string>
   <string name="fragment_twofactor_show_unable_status">Nicht in der Lage, Zwei-Faktor-Status zu bestimmen</string>
-  <string name="fragment_twofactor_show_instruction">2-Faktor-Authentifizierung um Sicherheit zu erhöhen, indem Sie nur Anmeldungen von Geräten vorher angemeldet zu ermöglichen. Fügen Sie weitere Geräte durch Scannen des QR-Codes unten nach 2FA aktiviert ist hinzu.</string>
+  <string name="fragment_twofactor_show_instruction">Aktivieren Sie die 2-Faktor-Authentifizierung, um die Sicherheit zu erhöhen, indem Sie nur Anmeldungen auf Geräten ermöglichen, über die man sich vorher bereits angemeldet hat. Fügen Sie weitere Geräte, nachdem 2FA aktiviert wurde, durch das Scannen des QR-Codes unten hinzu</string>
   <string name="fragment_twofactor_show_reset_requested">2FA zurücksetzen von einem anderen Gerät angefordert.</string>
   <string name="fragment_two_factor_menu_requested">Zwei-Faktor-Reset wurde angefordert.</string>
   <string name="twofactor_required_title">Zwei-Faktor-Authentifizierung aktiviert</string>
-  <string name="twofactor_required_message">Zwei-Faktor-Authentifizierung (Erweiterte Sicherheit) wurde von einem anderen Gerät für dieses Konto aktiviert. Aktivieren Sie 2-Faktor-Authentifizierung für den Vollzugriff auf dieses Gerät.</string>
+  <string name="twofactor_required_message">Die Zwei-Faktor-Authentifizierung (Erweiterte Sicherheit) wurde auf einem anderen Gerät für dieses Konto aktiviert. Aktivieren Sie die 2-Faktor-Authentifizierung für den Vollzugriff auf diesem Gerät.</string>
   <string name="twofactor_remind_later">Später erinnern</string>
   <string name="twofactor_enable">Aktivieren</string>
   <string name="twofactor_invalid_title">Zwei-Faktor ungültig</string>
-  <string name="twofactor_invalid_message">Das Zwei-Faktor-Authentifizierung-Token auf diesem Gerät ist ungültig. Das Token wurde durch ein anderes Gerät geändert oder Ihre Uhr ist verzerrt. Bitte überprüfen Sie Ihre Systemzeit um sicherzustellen, dass es korrekt ist.</string>
+  <string name="twofactor_invalid_message">Das Zwei-Faktor-Authentifizierung-Token auf diesem Gerät ist ungültig. Das Token wurde durch ein anderes Gerät geändert oder Ihre Uhr ist verzerrt. Bitte überprüfen Sie Ihre Systemzeit um sicherzustellen, dass es richtig ist.</string>
   <string name="twofactor_unable_import_token">Sorry aber wir sind nicht in der Lage, das Token zu diesem Zeitpunkt zu importieren.</string>
   <string name="fragment_two_factor_scan_unable_import_title">Token kann nicht importiert werden</string>
   <string name="fragment_two_factor_scan_unable_import_message">Der Zwei-Faktor-Authentifizierungstoken-Import ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie das richtige Token haben!</string>
@@ -560,12 +560,12 @@
   <string name="fragment_two_factor_scan_no_thanks">Nein, danke</string>
   <string name="fragment_two_factor_warn_title">** Warnung **</string>
   <string name="fragment_two_factor_warn_message">Wenn Sie Ihr Gerät verlieren oder die %1$s App deinstallieren, dauert es 7 Tage, um 2FA zu deaktivieren und auf Ihr Konto zuzugreifen.</string>
-  <string name="twofactor_reset_message">Ein zwei-Faktor-Reset wurde angefordert. Bitte melden Sie sich als %1$s an und genehmigen oder streichen Sie die Anforderung.</string>
+  <string name="twofactor_reset_message">Ein Zwei-Faktor-Reset wurde angefordert. Bitte melden Sie sich als %1$s an und genehmigen oder streichen Sie die Anforderung.</string>
   <string name="twofactor_reset_title">Zwei-Faktor Reset-Anfrage</string>
   <string name="receiver_alert_title">%1$s Benachrichtigung</string>
   <!-- Other -->
   <string name="remote_password_change_title">Passwort ferngesteuert geändert</string>
-  <string name="remote_password_change_message">Das Kennwort für dieses Konto wurde von einem anderen Gerät geändert. Melden Sie sich mit den neuen Anmeldeinformationen an</string>
+  <string name="remote_password_change_message">Das Kennwort für dieses Konto wurde von einem anderen Gerät aus geändert. Melden Sie sich mit den neuen Anmeldeinformationen an</string>
   <string name="received_bitcoin_title">Erhaltene Bitcoins</string>
   <string name="received_bitcoin_message">%1$s(~%2$s) empfangen.\nDetails antippen, um Transaktion anzusehen.</string>
   <string name="received_bitcoin_fading_message">Sie erhielten Bitcoins!\n%1$s (~%2$s)\n</string>
@@ -585,7 +585,7 @@
   <string name="password_check_incorrect_password_message">Falsches Passwort. Wiederholen?</string>
   <string name="password_check_skip">Bitte erstellen Sie ein neues Konto und überweisen Sie Ihr Geld zu, wenn Sie Ihr Passwort vergessen haben.</string>
   <string name="password_check_remember_title">Passwort erinnert?</string>
-  <string name="password_check_remember_message">Erinnern Sie sich noch an Ihr Passwort? Sie benötigen Ihr Passwort, wenn das Gerät verloren geht oder gestohlen wird oder wenn Sie die App deinstallieren.\nGeben Sie es unten zur Überprüfung ein:</string>
+  <string name="password_check_remember_message">Erinnern Sie sich noch an Ihr Passwort? Sie benötigen Ihr Passwort, wenn das Gerät verloren gehen sollte oder gestohlen wird oder aber wenn Sie die App deinstallieren.\nGeben Sie es unten zur Überprüfung ein:</string>
   <string name="password_check_check_my_password">Überprüfen Sie mein Kennwort</string>
   <string name="password_check_check_later">Später</string>
   <string name="password_check_great_job">Gute Arbeit, Sie kennen Ihr Passwort noch.</string>
@@ -601,12 +601,12 @@
   <string name="upload_log_alert_failed">Upload ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkverbindung.</string>
   <!-- Password Set -->
   <string name="password_set_title">Kein Passwort gesetzt</string>
-  <string name="password_set_message">Bitte erstellen Sie ein Kennwort für dieses Konto oder Sie werden nicht in der Lage, Ihr Konto wiederherzustellen, wenn das Gerät verloren geht oder gestohlen wird</string>
+  <string name="password_set_message">Bitte erstellen Sie ein Kennwort für dieses Konto oder Sie werden nicht in der Lage sein, Ihr Konto wiederherzustellen, wenn das Gerät verloren geht oder gestohlen wird</string>
   <string name="password_set_skip">Überspringen</string>
   <!-- Settings -->
   <string name="settings_category_title">Kategorien</string>
   <!-- Logout -->
-  <string name="logout_message">Bitte warten Sie, während %1$s Ihr Konto ordnungsgemäß beendet wird. Dies kann eine Weile dauern, in langsamen Netzwerken</string>
+  <string name="logout_message">Bitte warten Sie, während %1$s aus Ihrem Konto austritt. Dies kann bei langsamen Netzwerken eine Weile dauern</string>
   <string name="bitid_login_message">%1$s</string>
   <string name="bitid_login_title">BitID Login</string>
   <string name="bitid_login_success">Erfolgreich angemeldet</string>
@@ -628,7 +628,7 @@
   <string name="affiliate_link">Affiliate-Link</string>
   <string name="affiliate_link_copied">Affiliate-Link kopiert in Zwischenablage</string>
   <string name="affiliate_refer_friends_title">Laden Sie Ihren Freund ein</string>
-  <string name="affiliate_refer_friends_body">%1$s\n\nTeilen Sie diesen Link um Einnahmen von Benutzern zu erhalten, installatieren und verwenden Sie %2$s. 0.25%% aller Geschenkkarten-Einkäufe innerhalb dieser App erhalten Sie hier.</string>
+  <string name="affiliate_refer_friends_body">%1$@\n\nTeilen Sie diesen Link, um Einnahmen von Benutzern zu erhalten, die %2$@ installieren und verwenden. 0.25%% aller Geschenkkartenkäufe innerhalb dieser App werden Sie hier erhalten.</string>
   <string name="affiliate_category">Einkommen:Affiliate-Einnahmen</string>
   <string name="affiliate_notes">Anteil an den Erlösen aus Affiliate-Link %@</string>
   <string name="affiliate_link_error">Nicht in der Lage, Affiliate-Link zu diesem Zeitpunkt zu generieren.</string>
@@ -668,5 +668,5 @@
   <string name="transaction_footer_target_discount">Bis zu 10 % Rabatt auf Target</string>
   <string name="transaction_footer_amazon_discount">15% - 20 % Rabatt auf Amazon</string>
   <string name="change_mining_fee_title">Mining-Gebühr ändern</string>
-  <string name="change_mining_fee_body">Warnung: Niedrige Gebühren verursachen Verspätungen in Transaktionsbestätigung</string>
+  <string name="change_mining_fee_body">Warnung: Niedrige Gebühren verursachen Verspätungen bei der Transaktionsbestätigung</string>
 </resources>

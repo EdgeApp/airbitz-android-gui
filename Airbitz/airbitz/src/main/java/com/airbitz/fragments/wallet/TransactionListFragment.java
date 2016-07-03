@@ -619,6 +619,7 @@ public class TransactionListFragment extends WalletBaseFragment
             if (TextUtils.isEmpty(query)) {
                 return wallet.transactions();
             } else {
+                mTransactionAdapter.setSearch(true);
                 return wallet.transactionsSearch(query);
             }
         }

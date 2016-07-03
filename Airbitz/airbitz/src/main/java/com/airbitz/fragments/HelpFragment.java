@@ -72,13 +72,13 @@ public class HelpFragment extends BaseFragment {
     public static final int TRANSACTIONS = R.raw.info_wallet;
     public static final int WALLETS = R.raw.info_wallets;
     private final String TAG = getClass().getSimpleName();
-    Spanned mHtml = null;
+    String mHtml = null;
     int mID = 0;
 
     public HelpFragment() {
     }
 
-    public HelpFragment(Spanned html) {
+    public HelpFragment(String html) {
         mHtml = html;
     }
 
@@ -119,12 +119,12 @@ public class HelpFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_help, container, false);
 
         if (mHtml != null) {
-            TextView tv = (TextView) v.findViewById(R.id.dialog_help_textview);
-            tv.setMovementMethod(LinkMovementMethod.getInstance());
-            tv.setVisibility(View.VISIBLE);
-            tv.setText(mHtml);
-            Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"font/Lato-Regular.ttf");
-            tv.setTypeface(type);
+            WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setSupportZoom(false);
+            webView.addJavascriptInterface(new HelpContext(mActivity), "_help");
+            webView.loadData(mHtml, "text/html; charset=UTF-8", null);
         } else {
             WebView webView = (WebView) v.findViewById(R.id.dialog_help_webview);
             webView.setVisibility(View.VISIBLE);
