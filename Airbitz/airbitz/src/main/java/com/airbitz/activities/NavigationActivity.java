@@ -2638,9 +2638,7 @@ public class NavigationActivity extends ActionBarActivity
                 return;
             }
             if (Constants.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
-                if (mShowMessages) {
-                    showMessage(context.getString(R.string.loading_wallets));
-                }
+                showMessage(context.getString(R.string.loading_wallets));
             } else if (Constants.WALLET_CHANGED_ACTION.equals(intent.getAction())) {
                 List<String> ids = AirbitzApplication.getAccount().walletIds();
                 List<Wallet> wallets = AirbitzApplication.getAccount().wallets();
@@ -2664,7 +2662,9 @@ public class NavigationActivity extends ActionBarActivity
                 }
             } else if (Constants.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
-                NavigationActivity.this.DismissFadingDialog();
+                if (mShowMessages) {
+                    NavigationActivity.this.DismissFadingDialog();
+                }
             }
         }
     };
