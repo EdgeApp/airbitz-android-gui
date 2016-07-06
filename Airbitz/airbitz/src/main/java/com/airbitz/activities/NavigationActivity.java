@@ -2608,7 +2608,7 @@ public class NavigationActivity extends ActionBarActivity
         public boolean mShowMessages = false;
 
         private void showMessage(String message) {
-            if (mShowMessages) {
+            if (mShowMessages && !mDataLoaded) {
                 NavigationActivity.this.ShowOrUpdateDialog(message,
                     NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
             }
