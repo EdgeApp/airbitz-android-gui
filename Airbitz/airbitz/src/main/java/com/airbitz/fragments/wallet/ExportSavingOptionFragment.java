@@ -95,8 +95,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private final String TAG = getClass().getSimpleName();
 
     View mView;
-    private HighlightOnPressButton mFromButton;
-    private HighlightOnPressButton mToButton;
+    private Button mFromButton;
+    private Button mToButton;
 
     private RelativeLayout mDatesLayout;
     private LinearLayout mLastPeriodLayout;
@@ -161,8 +161,8 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
         mView = i.inflate(R.layout.fragment_export_saving_options, container, false);
 
-        mFromButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
-        mToButton = (HighlightOnPressButton) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
+        mFromButton = (Button) mView.findViewById(R.id.fragment_exportsaving_from_spinner);
+        mToButton = (Button) mView.findViewById(R.id.fragment_exportsaving_to_spinner);
 
         mDatesLayout = (RelativeLayout) mView.findViewById(R.id.layout_export_data);
         mLastPeriodLayout = (LinearLayout) mView.findViewById(R.id.layout_export_last_period);

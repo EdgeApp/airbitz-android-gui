@@ -54,15 +54,15 @@
                             android:textColor="@android:color/white"
                             android:textSize="15dp" />
 
-                        <com.airbitz.objects.HighlightOnPressButton
+                        <com.airbitz.objects.AutoResizeButton
                             android:id="@+id/fragment_exportsaving_from_spinner"
+                            android:singleLine="true"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginRight="18.9dp"
                             android:layout_toRightOf="@+id/textview_from"
                             android:background="@drawable/bg_btn_blue_stretch"
                             android:drawableLeft="@drawable/ico_calendar"
-                            android:drawablePadding="-25.2dp"
                             android:gravity="center"
                             android:paddingLeft="12.6dp"
                             android:textColor="@android:color/white"
@@ -92,15 +92,15 @@
                             android:textSize="15dp" />
 
 
-                        <com.airbitz.objects.HighlightOnPressButton
+                        <com.airbitz.objects.AutoResizeButton
                             android:id="@+id/fragment_exportsaving_to_spinner"
+                            android:singleLine="true"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginRight="18.9dp"
                             android:layout_toRightOf="@+id/textview_to"
                             android:background="@drawable/bg_btn_blue_stretch"
                             android:drawableLeft="@drawable/ico_calendar"
-                            android:drawablePadding="-25.2dp"
                             android:gravity="center"
                             android:paddingLeft="12.6dp"
                             android:textColor="@android:color/white"
