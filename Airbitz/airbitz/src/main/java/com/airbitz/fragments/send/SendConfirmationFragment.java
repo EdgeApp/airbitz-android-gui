@@ -87,6 +87,11 @@ import com.airbitz.objects.Calculator;
 import com.airbitz.objects.PasswordCheckRunnable;
 import com.airbitz.utils.Common;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Method;
 
 /**
@@ -185,6 +190,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     static final int KEYBOARD_ANIM = 250;
 
     private Spend mSpendTarget = null;
+    private Spend.FeeLevel mFeeLevel = Spend.FeeLevel.STANDARD;
     private ParsedUri mParsedUri = null;
     private PaymentRequest mPaymentRequest = null;
     private Spend mOverrideSpend = null;
@@ -483,6 +489,14 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         });
 
+        mBTCDenominationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customizeFees();
+            }
+        });
+
+
         mConversionTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -644,6 +658,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         Spend target = null;
         try {
             target = mWallet.newSpend();
+            target.feeLevel(mFeeLevel);
             if (mPaymentRequest != null) {
                 target.addPaymentRequest(mPaymentRequest);
                 if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
@@ -721,7 +736,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 mMaxButton.setBackgroundResource(R.drawable.bg_button_green);
             }
             if ((fees + mAmountToSendSatoshi) <= mWallet.balance()) {
-                mConversionTextView.setTextColor(color);
+                mConversionTextView.setTextColor(getResources().getColor(R.color.dark_text));
                 mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 mConversionTextView.setBackgroundResource(android.R.color.transparent);
                 mBitcoinField.setTextColor(color);
@@ -918,25 +933,25 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
 
-        if (!TextUtils.isEmpty(mLabel)) {
-            sendTo = mLabel;
-        } else if (mPaymentRequest != null) {
+        if (TextUtils.isEmpty(mLabel) && mParsedUri != null) {
+            mLabel = mParsedUri.label();
+        }
+
+        if (mPaymentRequest != null) {
             if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
                 sendTo = mPaymentRequest.merchant();
             } else {
                 sendTo = mPaymentRequest.domain();
             }
             mAmountToSendSatoshi = mPaymentRequest.amount();
-        } else if (mParsedUri != null) {
-            sendTo = mParsedUri.label();
-            if (TextUtils.isEmpty(sendTo)) {
-                sendTo = mParsedUri.address();
+        } else if (mParsedUri != null && mParsedUri.address().length() > 5 ) {
+            if (!TextUtils.isEmpty(mLabel)) {
+                sendTo = mLabel + " (" + mParsedUri.address().substring(0, 5) + "...)";
+            } else {
+                sendTo = mParsedUri.address().substring(0, 5)
+                        + "..." + mParsedUri.address().substring(mParsedUri.address().length() - 5, mParsedUri.address().length());
             }
             mAmountToSendSatoshi = mParsedUri.amount();
-            if (sendTo != null && sendTo.length() > 20) {
-                sendTo = sendTo.substring(0, 5)
-                    + "..." + sendTo.substring(sendTo.length() - 5, sendTo.length());
-            }
         } else if (mDestWallet != null) {
             sendTo = mDestWallet.name();
         }
@@ -957,18 +972,16 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mFiatField = (EditText) mView.findViewById(R.id.button_dollar_balance);
         mAuthorizationEdittext = (EditText) mView.findViewById(R.id.edittext_pin);
 
+        if (mSavedBitcoin > 0) {
+            mAmountToSendSatoshi = mSavedBitcoin;
+        }
         mSpendTarget = newSpend(mAmountToSendSatoshi);
-
         checkFields();
         checkAuthorization();
     }
 
     private void checkFields() {
         mAutoUpdatingTextFields = true;
-
-        if (mSavedBitcoin > 0) {
-            mAmountToSendSatoshi = mSavedBitcoin;
-        }
 
         if (mSendConfirmationOverrideCurrencyMode) {
             mCurrency = mSendConfirmationCurrencyOverride;
@@ -1247,5 +1260,46 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             }
         }
     };
+
+    private int feeToIndex(Spend.FeeLevel level) {
+        if (level == Spend.FeeLevel.LOW) {
+            return 0;
+        } else if (level == Spend.FeeLevel.HIGH) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    private Spend.FeeLevel indexToFee(int index) {
+        switch (index) {
+        case 0:
+            return Spend.FeeLevel.LOW;
+        case 2:
+            return Spend.FeeLevel.HIGH;
+        default:
+            return Spend.FeeLevel.STANDARD;
+        }
+    }
+
+    private void customizeFees() {
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.change_mining_fee_title)
+                .content(R.string.change_mining_fee_body)
+                .items(R.array.mining_fees)
+                .itemsCallbackSingleChoice(feeToIndex(mFeeLevel), new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        mFeeLevel = indexToFee(which);
+                        mSpendTarget.feeLevel(mFeeLevel);
+                        if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+                            mMaxButton.performClick();
+                        } else {
+                            updateTextFieldContents(mBtcMode, false);
+                        }
+                        return true;
+                    }
+                }).show();
+    }
 
 }

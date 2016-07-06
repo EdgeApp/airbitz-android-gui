@@ -1,0 +1,9 @@
+v 2.1.0
+
+• Ajouter un abonnement au serveur d'adresse Libbitcoin/Electrum pour une performance beaucoup améliorer et une augmentation de vie de la batterie.
+• Activer le calcul des droits miniers dynamique
+• Ajouter les redevances minières estimées contrôlables (basse, Standard, vif)
+• Corriger le temps de transaction erronée pour quand la transaction est reçue pendant que le porte-monnaie était hors ligne
+• Ajouter la prise en charge linguistique Chinois, Hindi, Espagnol et Portugais
+• Ajouter prise en charge pour une localisation appropriée des numéros, heures et dates
+• Améliorer la précision de la détection de transaction dans des mauvaises conditions de réseau

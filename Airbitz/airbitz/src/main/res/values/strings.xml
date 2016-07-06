@@ -38,6 +38,7 @@
     <string name="string_show_balance">Show Balance</string>
     <string name="string_agree">Agree</string>
     <string name="string_balance">Balance</string>
+    <string name="string_wallet">Wallet</string>
 
     <string name="loading_wallets">Loading Wallets...\nThis may take a few minutes as it is the first time logging into this device.</string>
     <string name="loading_n_wallets">Loading %1$d of %2$d wallets.\nThis may take a few minutes as it is the first time logging into this device.</string>
@@ -65,15 +66,25 @@
     <!-- Strings for Business Directory fragment -->
     <string name="directory_title">Directory</string>
     <string name="restaurants">Restaurants</string>
+    <string name="restaurants_en" translatable="false">Restaurants</string>
     <string name="restaurant_and_food_trucks">Restaurants &amp; Food Trucks</string>
+    <string name="restaurant_and_food_trucks_en" translatable="false">Restaurants &amp; Food Trucks</string>
     <string name="gift_cards">Gift Cards</string>
+    <string name="gift_cards_en" translatable="false">Gift Cards</string>
     <string name="coffee_and_tea">Coffee &amp; Tea</string>
+    <string name="coffee_and_tea_en" translatable="false">Coffee &amp; Tea</string>
     <string name="electronics">Electronics</string>
+    <string name="electronics_en" translatable="false">Electronics</string>
     <string name="atms">ATMs</string>
+    <string name="atms_en" translatable="false">ATMs</string>
     <string name="shopping">Shopping</string>
+    <string name="shopping_en" translatable="false">Shopping</string>
+
     <string name="more_categories">More Categories</string>
     <string name="current_location">Current Location</string>
+    <string name="current_location_en" translatable="false">Current Location</string>
     <string name="on_the_web">On the Web</string>
+    <string name="on_the_web_en" translatable="false">On the Web</string>
     <string name="category_or_business_name_initial">Search</string>
     <string name="category_or_business_name">Business Name or Category</string>
     <string name="city_state_county">City, State/Province, or Country</string>
@@ -246,6 +257,7 @@
     <string name="activity_recovery_warning_dirty_forgot_message">Warning: You are about to exit password recovery and all progress will be lost. Exit anyway?</string>
     <string name="fragment_recovery_mismatch_title">Password Mismatch</string>
     <string name="fragment_recovery_mismatch_message">Please enter your correct password.</string>
+    <string name="fragment_recovery_answer_case_sensitive">Answers are case sensitive</string>
 
     <!-- Strings for ForgotPassword -->
     <string name="activity_forgot_title">Forgot Password</string>
@@ -287,10 +299,6 @@
     <string name="settings_button_logout">Logout</string>
     <string name="settings_button_debug">Debug</string>
     <string name="settings_categories_add_new">Add New</string>
-    <string name="settings_categories_expense">Expense:</string>
-    <string name="settings_categories_income">Income:</string>
-    <string name="settings_categories_transfer">Transfer:</string>
-    <string name="settings_categories_exchange">Exchange:</string>
     <string name="settings_days">Day(s)</string>
     <string name="settings_hours">Hour(s)</string>
     <string name="settings_minutes">Minute(s)</string>
@@ -314,10 +322,6 @@
     <!-- Strings for Category Fragment -->
     <string name="fragment_category_cancel_title">Cancel Changes</string>
     <string name="fragment_category_cancel_message">Are you sure you want to cancel any changes you made?</string>
-    <string name="fragment_category_income">Income:</string>
-    <string name="fragment_category_expense">Expense:</string>
-    <string name="fragment_category_transfer">Transfer:</string>
-    <string name="fragment_category_exchange">Exchange:</string>
     <string name="fragment_category_deleted">%1$s Deleted</string>
     <string name="fragment_category_add">Add Category</string>
 
@@ -498,6 +502,7 @@
     <string name="export_quickbooks_title">Quickbooks</string>
     <string name="export_pdf_title">PDF</string>
     <string name="export_print_title">Wallet Private Seed (advanced)</string>
+    <string name="export_xpub">Wallet Public Seed (XPub)</string>
 
     <!-- Strings for Export Saving fragment -->
     <string name="export_saving_title">Export</string>
@@ -517,6 +522,7 @@
     <string name="export_saving_option_email_subject">Airbitz Bitcoin Wallet Transactions</string>
     <string name="export_saving_option_no_email_apps">There are no email applications installed</string>
     <string name="export_saving_option_private_seed">Private Seed</string>
+    <string name="export_saving_option_xpub">XPub</string>
     <string name="export_saving_option_pick_date">Pick a Date</string>
 
     <!-- Strings for Offline Wallet fragment -->
@@ -638,7 +644,7 @@
     <string name="password_check_incorrect_password_message">Incorrect Password. Try again?</string>
     <string name="password_check_skip">Please create a new account and transfer your funds if you forgot your password.</string>
     <string name="password_check_remember_title">Remember your password?</string>
-    <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or if your PIN is incorrectly entered 3 times.\nEnter it below to make sure:</string>
+    <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or stolen, or if you uninstall the app.\nEnter it below to make sure:</string>
     <string name="password_check_check_my_password">Check MY Password</string>
     <string name="password_check_check_later">Later</string>
     <string name="password_check_great_job">Great job remembering your password.</string>
@@ -712,11 +718,16 @@
     <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
 
     <!-- Plugin text -->
-    <string name="plugin_starbucks_title">Starbucks (Up to 20% Off)</string>
-    <string name="plugin_target_title">Target (Up to 10% Off)</string>
-    <string name="plugin_wholefoods_title">Whole Foods (Up to 10% Off)</string>
-    <string name="plugin_walmart_title">Walmart (Up to 10% Off)</string>
-    <string name="plugin_homedepot_title">Home Depot (Up to 15% Off)</string>
+    <string name="plugin_starbucks_title" translatable="false">Starbucks</string>
+    <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+    <string name="plugin_target_title" translatable="false">Target</string>
+    <string name="plugin_target_discount">(Up to 10% Off)</string>
+    <string name="plugin_wholefoods_title" translatable="false">Whole Foods)</string>
+    <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+    <string name="plugin_walmart_title" translatable="false">Walmart</string>
+    <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+    <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
+    <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
     <string name="plugin_glidera_title">USA and Canada</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
 
@@ -736,5 +747,8 @@
     <string name="transaction_footer_starbucks_discount">Up to 20% off Starbucks</string>
     <string name="transaction_footer_target_discount">Up to 10% off Target</string>
     <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
+
+    <string name="change_mining_fee_title">Change Mining Fee</string>
+    <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
 
 </resources>

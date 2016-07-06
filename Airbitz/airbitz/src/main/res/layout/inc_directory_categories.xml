@@ -16,14 +16,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_restaurant"
                 android:drawableLeft="@drawable/ic_category_restaurants"
                 android:text="@string/restaurants"
                 style="@style/CategoryButton"
                 />
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_gift_cards"
                 android:drawableLeft="@drawable/ic_category_gift_cards"
                 android:text="@string/gift_cards"
@@ -37,14 +37,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_coffee_tea"
                 android:drawableLeft="@drawable/ic_category_coffee_tea"
                 android:text="@string/coffee_and_tea"
                 style="@style/CategoryButton"
                 />
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_electronics"
                 android:drawableLeft="@drawable/ic_category_electronics"
                 android:text="@string/electronics"
@@ -58,14 +58,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_atms"
                 android:drawableLeft="@drawable/ic_category_atms"
                 android:text="@string/atms"
                 style="@style/CategoryButton"
                 />
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_shopping"
                 android:drawableLeft="@drawable/ic_category_shopping"
                 android:text="@string/shopping"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.airbitz.objects.CommonTextView
+            <com.airbitz.objects.AutoResizeTextView
                 android:id="@+id/button_more"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

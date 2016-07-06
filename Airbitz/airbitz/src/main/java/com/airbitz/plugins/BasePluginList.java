@@ -34,6 +34,7 @@ package com.airbitz.plugins;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -163,7 +164,11 @@ public abstract class BasePluginList extends BaseFragment {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.name.setText(plugin.name);
+            String name = plugin.name;
+            if (!TextUtils.isEmpty(plugin.subtitle)) {
+                name += " " + plugin.subtitle;
+            }
+            holder.name.setText(name);
             holder.image.setImageResource(plugin.imageResId);
             return convertView;
         }

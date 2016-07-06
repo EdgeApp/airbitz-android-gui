@@ -65,7 +65,7 @@
             android:textCursorDrawable="@null"
             android:layout_toLeftOf="@id/search_button"
             android:drawableLeft="@drawable/ic_search_light"
-            android:hint="@string/category_or_business_name_initial"
+            android:hint="@string/category_or_business_name"
             style="@style/DirectorySearchText"
             />
 
@@ -77,7 +77,7 @@
             android:selectAllOnFocus="true"
             android:textCursorDrawable="@null"
             android:drawableLeft="@drawable/ic_search_location_light"
-            android:hint="@string/location"
+            android:hint="@string/city_state_county"
             style="@style/DirectorySearchText"
             />
 

@@ -301,7 +301,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setTypeface(NavigationActivity.latoBlackTypeFace, Typeface.NORMAL);
 
         mCategorySpinner = (Spinner) mView.findViewById(R.id.transaction_detail_button_category);
-        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list_no_colon)));
+        CategoryAdapter spinnerAdapter = new CategoryAdapter(mActivity, Arrays.asList(getResources().getStringArray(R.array.transaction_categories_list)));
         mCategorySpinner.setAdapter(spinnerAdapter);
         mCategorySpinner.setSelection(0);
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -399,9 +399,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 showCategoryPopup(hasFocus);
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
-                        highlightEditableText(mCategoryEdittext);
+                        mCategoryEdittext.setSelection(0, mCategoryEdittext.length());
                     }
-                    updateBlanks(mCategoryEdittext.getText().toString());
                     createNewCategoryChoices(mCategoryEdittext.getText().toString());
                 }
             }
@@ -449,7 +448,6 @@ public class TransactionDetailFragment extends WalletBaseFragment
             public void afterTextChanged(Editable editable) {
                 if (!doEdit && isResumed()) {
                     AirbitzCore.logi("editable=" + editable.toString());
-                    updateBlanks(editable.toString());
                     createNewCategoryChoices(editable.toString());
                 }
             }
@@ -602,23 +600,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mOriginalCategories.clear();
         List<String> originalStrings = new ArrayList<>();
         List<String> catStrings = mAccount.categories().list();
-        for(String cat : catStrings) {
+        for (String cat : catStrings) {
             if(!originalStrings.contains(cat)) {
                 originalStrings.add(cat);
             }
         }
         Collections.sort(originalStrings);
-        for(String cat : originalStrings) {
+        for (String cat : originalStrings) {
             mOriginalCategories.add(new Category(cat, ""));
         }
-
-        mOriginalCategories.add(baseIncomeCat = new Category(getString(R.string.fragment_category_income), "base"));
-        mOriginalCategories.add(baseExpenseCat = new Category(getString(R.string.fragment_category_expense), "base"));
-        mOriginalCategories.add(baseTransferCat = new Category(getString(R.string.fragment_category_transfer), "base"));
-        mOriginalCategories.add(baseExchangeCat = new Category(getString(R.string.fragment_category_exchange), "base"));
-
         mCategories.addAll(mOriginalCategories);
-
         mCategoryAdapter = new TransactionDetailCategoryAdapter(getActivity(), mCategories);
         mCategoryListView.setAdapter(mCategoryAdapter);
     }
@@ -677,11 +668,11 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_SEND)) {
                 AirbitzCore.logi("SEND");
                 mFromSend = true;
-                setCurrentType(getString(R.string.fragment_category_expense));
+                setCurrentType(Constants.EXPENSE);
             } else if (bundle.getString(Constants.WALLET_FROM) != null && bundle.getString(Constants.WALLET_FROM).equals(SuccessFragment.TYPE_REQUEST)) {
                 mFromRequest = true;
                 AirbitzCore.logi("REQUEST");
-                setCurrentType(getString(R.string.fragment_category_income));
+                setCurrentType(Constants.INCOME);
             }
 
             mWalletUUID = bundle.getString(Constants.WALLET_UUID);
@@ -694,7 +685,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
                 if (mTransaction != null) {
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.meta().category())) {
-                        mTransaction.meta().category(currentType);
+                        mTransaction.meta().category(
+                            Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()]);
                     } else {
                         setCurrentType(mTransaction.meta().category());
                     }
@@ -755,7 +747,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void done() {
-        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        String category = Common.formatCategory(
+                            Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()],
+                            mCategoryEdittext.getText().toString());
         mAccount.categories().insert(category);
         mActivity.onBackPressed();
     }
@@ -765,7 +759,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mCategorySpinner != null) {
             mCategorySpinner.setBackgroundResource(newBackground);
         }
-        currentType = getResources().getStringArray(R.array.transaction_categories_list)[position];
+        currentType = Constants.CATEGORIES[position];
         createNewCategoryChoices(mCategoryEdittext.getText().toString());
     }
 
@@ -799,20 +793,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
     private void setCurrentType(String input) {
-        int selected = 1;
-        if (input.isEmpty() || input.startsWith(getString(R.string.fragment_category_income))) {
-            currentType = getString(R.string.fragment_category_income);
-            selected = 1;
-        } else if (input.startsWith(getString(R.string.fragment_category_expense))) {
-            currentType = getString(R.string.fragment_category_expense);
-            selected = 0;
-        } else if (input.startsWith(getString(R.string.fragment_category_transfer))) {
-            currentType = getString(R.string.fragment_category_transfer);
-            selected = 2;
-        } else if (input.startsWith(getString(R.string.fragment_category_exchange))) {
-            currentType = getString(R.string.fragment_category_exchange);
-            selected = 3;
-        }
+        int selected = Common.stringToPrefixCategoryIndex(input);
+        currentType = Common.stringToPrefixCategory(input);
         mCategorySpinner.setSelection(selected);
     }
 
@@ -934,160 +916,84 @@ public class TransactionDetailFragment extends WalletBaseFragment
     }
 
 
-    private void highlightEditableText(EditText editText) {
-        if (editText.getText().toString().startsWith(getString(R.string.fragment_category_income))) {
-            editText.setSelection(7, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_expense))) {
-            editText.setSelection(8, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_transfer))) {
-            editText.setSelection(9, editText.length());
-        } else if (editText.getText().toString().startsWith(getString(R.string.fragment_category_exchange))) {
-            editText.setSelection(9, editText.length());
-        }
-    }
-
-    private void updateBlanks(String term) {
-        baseIncomeCat.setCategoryName(getString(R.string.fragment_category_income) + term);
-        baseExpenseCat.setCategoryName(getString(R.string.fragment_category_expense) + term);
-        baseTransferCat.setCategoryName(getString(R.string.fragment_category_transfer) + term);
-        baseExchangeCat.setCategoryName(getString(R.string.fragment_category_exchange) + term);
-    }
-
-    private long inSum = 0;
-    private SpannableStringBuilder inAddresses;
-    private SpannableStringBuilder outAddresses;
-
     private void showAdvancedDetails(boolean hasFocus) {
         Transaction tx = mWallet.transaction(mTxId);
         if (hasFocus && tx != null) {
-            inAddresses = new SpannableStringBuilder();
-            outAddresses = new SpannableStringBuilder();
+            String inAddresses = "";
+            String outAddresses = "";
+
             String finalBaseUrl;
             if (AirbitzCore.getApi().isTestNet()) {
-                finalBaseUrl = "https://testnet.blockexplorer.com/";
+                finalBaseUrl = "https://testnet.blockexplorer.com";
             } else { // LIVE
-                finalBaseUrl = "https://blockexplorer.com/";
+                finalBaseUrl = "https://blockexplorer.com";
             }
+
+            long inSum = 0;
+
+            String txid = String.format("<div class=\"wrapped\"><a href=\"%s/tx/%s\">%s</a></div>", finalBaseUrl, tx.id(), tx.id());
 
             if (null != tx.outputs()) {
                 for (TxOutput input : tx.inputs()) {
-                    appendOutput(input, finalBaseUrl);
+                    inAddresses += String.format("<div class=\"wrapped\"><a href=\"%s/address/%s\">%s</a></div><div>%s</div>",
+                            finalBaseUrl, input.address(), input.address(), Utils.formatSatoshi(mAccount, input.amount()));
+                    inSum += input.amount();
                 }
                 for (TxOutput output : tx.outputs()) {
-                    appendOutput(output, finalBaseUrl);
+                    outAddresses += String.format("<div class=\"wrapped\"><a href=\"%s/address/%s\">%s</a></div><div>%s</div>",
+                            finalBaseUrl, output.address(), output.address(), Utils.formatSatoshi(mAccount, output.amount()));
                 }
             } else {
-                inAddresses.append(getString(R.string.transaction_details_outputs_unavailable));
-                inAddresses.append("\n");
+                inAddresses += getString(R.string.transaction_details_outputs_unavailable);
+                inAddresses += ("<br>\n");
             }
 
             long feesSatoshi = tx.providerFees() + tx.minerFees();
             long netSum = inSum - feesSatoshi;
+            long confirmations;
 
-            SpannableStringBuilder s = new SpannableStringBuilder();
-            int start = 0;
-            s.append(getString(R.string.transaction_details_advanced_txid)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
+            if (tx.height() <= 0) {
+                confirmations = 0;
+            } else if (mWallet.blockHeight() == 0) {
+                confirmations = 0;
+            } else {
+                confirmations = mWallet.blockHeight() - tx.height() + 1;
+            }
 
-            start = s.length();
-            s.append(tx.id());
-            int end = s.length();
-            final String txIdLink = finalBaseUrl + "tx/" + tx.id();
-            ClickableSpan url = new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(txIdLink));
-                    mActivity.startActivity(i);
-                }
-            };
-            s.setSpan(url, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n\n");
+            String conf = "" + confirmations;
 
-            //Total Sent - formatSatoshi
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_total_sent)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
+            String content = Common.evaluateTextFile(getActivity(), R.raw.transaction_details);
 
-            s.append(Utils.formatSatoshi(mAccount, netSum))
-                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n\n");
+            List<String> searchList = new ArrayList<String>();
+            searchList.add("[[abtag TXID]]");
+            searchList.add("[[abtag BTCTOTAL]]");
+            searchList.add("[[abtag INPUT_ADDRESSES]]");
+            searchList.add("[[abtag OUTPUT_ADDRESSES]]");
+            searchList.add("[[abtag FEES]]");
+            searchList.add("[[abtag CONFIRMATIONS]]");
 
+            List<String> replaceList = new ArrayList<String>();
+            replaceList.add(txid);
+            replaceList.add(Utils.formatSatoshi(mAccount, netSum));
+            replaceList.add(inAddresses);
+            replaceList.add(outAddresses);
+            replaceList.add(Utils.formatSatoshi(mAccount, feesSatoshi, true));
+            replaceList.add(conf);
 
-            //Source - inAddresses
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_source)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-            s.append(inAddresses);
-            s.append("\n\n");
+            for (int i = 0; i < searchList.size(); i++) {
+                content = content.replace(searchList.get(i), replaceList.get(i));
+            }
 
-            //Destination - outAddresses
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_destination)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-            s.append(outAddresses);
-            s.append("\n\n");
+            mActivity.pushFragment(new HelpFragment(content), NavigationActivity.Tabs.WALLET.ordinal());
 
-
-            //Miner Fee - formatSatoshi
-            start = s.length();
-            s.append(getString(R.string.transaction_details_advanced_miner_fee)).setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n");
-
-            start = s.length();
-            s.append(Utils.formatSatoshi(mAccount, feesSatoshi, true))
-                    .setSpan(new ForegroundColorSpan(Color.BLACK), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), start, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            mActivity.pushFragment(new HelpFragment(s), NavigationActivity.Tabs.WALLET.ordinal());
         } else {
             mActivity.hideSoftKeyboard(mView);
         }
     }
 
-    private void appendOutput(TxOutput output, String finalBaseUrl) {
-        SpannableString val = new SpannableString(Utils.formatSatoshi(mAccount, output.amount()));
-        SpannableString address = new SpannableString(output.address());
-        int start = 0;
-        int end = address.length();
-        final String txUrl = finalBaseUrl + "address/" + output.address();
-        ClickableSpan span = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(txUrl));
-                mActivity.startActivity(i);
-            }
-        };
-        address.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        address.setSpan(new RelativeSizeSpan(0.95f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        SpannableStringBuilder full = new SpannableStringBuilder();
-        full.append(address);
-        full.append("\n");
-        start = full.length();
-        full.append(val).setSpan(new ForegroundColorSpan(Color.BLACK), start, start + val.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        full.append("\n");
-
-        if (output.isInput()) {
-            inAddresses.append(full);
-            inSum += output.amount();
-        } else {
-            outAddresses.append(full);
-        }
-    }
-
     private void setCategoryText(String textWithCategory) {
         setCurrentType(textWithCategory);
-        String strippedTerm = "";
-        if(textWithCategory.length() >= currentType.length()) {
-            strippedTerm = textWithCategory.substring(currentType.length());
-        }
+        String strippedTerm = Common.extractSuffixCategory(textWithCategory);
         doEdit = true;
         mCategoryEdittext.setText(strippedTerm);
         doEdit = false;
@@ -1139,17 +1045,13 @@ public class TransactionDetailFragment extends WalletBaseFragment
         doEdit = false;
     }
 
-    private void addMatchesForPrefix(String strPrefix, String strMatch)
-    {
+    private void addMatchesForPrefix(String strPrefix, String strMatch) {
         List<String> cumulativeStrings = new ArrayList<String>();
-
         for (Category category : mOriginalCategories) {
             String s = category.getCategoryName();
-
-            if (s.toLowerCase().contains(strPrefix.toLowerCase()) &&
-                    s.substring(strPrefix.length()).toLowerCase().contains(strMatch.toLowerCase())) {
+            if (s.toLowerCase().startsWith(strPrefix.toLowerCase())
+                    && s.toLowerCase().contains(strMatch.toLowerCase())) {
                 if (!cumulativeStrings.contains(s)) {
-//                    AirbitzCore.logi("Adding "+s+" for prefix, match = "+strPrefix+","+strMatch);
                     cumulativeStrings.add(s);
                     mCategories.add(category);
                 }
@@ -1157,24 +1059,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
     }
 
-    private void createNewCategoryChoices(String match)
-    {
+    private void createNewCategoryChoices(String match) {
         mCategories.clear();
-
-        List<String> orderedCategories = new ArrayList<>();
-
-        // Order the categories list, currentType first
-        orderedCategories.add(currentType);
-        for(String type : getResources().getStringArray(R.array.transaction_categories_list)) {
-            if(!type.contains(currentType)) {
-                orderedCategories.add(type);
-            }
-        }
-
-        for (String type : orderedCategories) {
-//            AirbitzCore.logi("Searching for "+type);
-            addMatchesForPrefix(type, match);
-        }
+        addMatchesForPrefix(currentType, match);
         if (null != mCategoryAdapter) {
             mCategoryAdapter.notifyDataSetChanged();
         }
@@ -1309,7 +1196,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
             return;
         }
         String payee = mPayeeEditText.getText().toString();
-        String category = mCategorySpinner.getSelectedItem().toString() + ":" + mCategoryEdittext.getText().toString();
+        String category = Common.formatCategory(
+                                Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()],
+                                mCategoryEdittext.getText().toString());
         String notes = mNoteEdittext.getText().toString();
         double fiat = 0.0;
         try {

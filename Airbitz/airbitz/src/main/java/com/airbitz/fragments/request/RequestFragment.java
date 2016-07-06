@@ -93,6 +93,7 @@ import co.airbitz.core.Transaction;
 import co.airbitz.core.TxOutput;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -384,6 +385,9 @@ public class RequestFragment extends WalletBaseFragment implements
         }
 
         mQrPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
+        mSMSButton.setEnabled(false);
+        mEmailButton.setEnabled(false);
+        mCopyButton.setEnabled(false);
         return mView;
     }
 
@@ -681,7 +685,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
         }
 
-        String html = fillTemplate(R.raw.email_template, name);
+        String html = fillTemplate(R.raw.email_template_simple, name);
         intent.putExtra(Intent.EXTRA_STREAM, uris);
         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(html));
         startActivity(Intent.createChooser(intent, "email"));
@@ -900,7 +904,7 @@ public class RequestFragment extends WalletBaseFragment implements
             }
             address = receiver.address();
             try {
-                qrBitmap = mCoreAPI.qrEncode(receiver.qrcode());
+                qrBitmap = AndroidUtils.qrEncode(receiver.qrcode());
                 qrBitmap = Common.AddWhiteBorder(qrBitmap);
                 uri = receiver.uri();
                 return true;
@@ -931,6 +935,9 @@ public class RequestFragment extends WalletBaseFragment implements
                     alignQrCode();
                 }
             }
+            mSMSButton.setEnabled(true);
+            mEmailButton.setEnabled(true);
+            mCopyButton.setEnabled(true);
         }
 
         @Override

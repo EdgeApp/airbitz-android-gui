@@ -175,23 +175,25 @@ public class SendFragment extends ScanFragment {
         hideProcessing();
         try {
             ParsedUri parsed = AirbitzCore.getApi().parseUri(text);
-            switch (parsed.type()) {
-            case BITID:
-                askBitidLogin(parsed.bitid(), text);
-                return;
-            case PAYMENT_PROTO:
-                showProcessing();
-                mPaymentTask = new PaymentProtoFetch(parsed);
-                mPaymentTask.execute();
-                return;
-            case ADDRESS:
-                launchSendConfirmation(parsed, null, null);
-                return;
-            case PRIVATE_KEY:
-                askImportOrSend(parsed);
-                return;
-            default:
-                break;
+            if (parsed.type() != null) {
+                switch (parsed.type()) {
+                case BITID:
+                    askBitidLogin(parsed.bitid(), text);
+                    return;
+                case PAYMENT_PROTO:
+                    showProcessing();
+                    mPaymentTask = new PaymentProtoFetch(parsed);
+                    mPaymentTask.execute();
+                    return;
+                case ADDRESS:
+                    launchSendConfirmation(parsed, null, null);
+                    return;
+                case PRIVATE_KEY:
+                    askImportOrSend(parsed);
+                    return;
+                default:
+                    break;
+                }
             }
         } catch (AirbitzException e) {
             AirbitzCore.loge(e.getMessage());

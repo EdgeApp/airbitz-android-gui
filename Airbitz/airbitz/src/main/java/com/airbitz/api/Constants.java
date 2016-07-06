@@ -95,4 +95,16 @@ public class Constants {
     public static final long BIZ_ID_TARGET = 11132;
     public static final long BIZ_ID_WALMART = 11140;
     public static final long BIZ_ID_WHOLEFOODS = 11139;
+
+    public final static int EXPENSE_IDX = 0;
+    public final static int INCOME_IDX = 1;
+    public final static int TRANSFER_IDX = 2;
+    public final static int EXCHANGE_IDX = 3;
+    public final static String INCOME = "Income";
+    public final static String EXPENSE = "Expense";
+    public final static String TRANSFER = "Transfer";
+    public final static String EXCHANGE = "Exchange";
+    public final static String[] CATEGORIES = new String[] {
+        EXPENSE, INCOME, TRANSFER, EXCHANGE
+    };
 }

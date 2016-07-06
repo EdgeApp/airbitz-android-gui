@@ -56,8 +56,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import co.airbitz.core.Account;
-import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
+import co.airbitz.core.android.AndroidUtils;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -302,7 +303,7 @@ public class TwoFactorShowFragment extends BaseFragment
     void showQrCode(boolean show) {
         if (show) {
             AirbitzCore api = AirbitzCore.getApi();
-            Bitmap bitmap = api.qrEncode(
+            Bitmap bitmap = AndroidUtils.qrEncode(
                 api.qrEncode(mAccount.otpSecret()));
             if(bitmap != null) {
                 bitmap = Common.AddWhiteBorder(bitmap);

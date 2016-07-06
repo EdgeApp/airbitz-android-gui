@@ -46,6 +46,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.airbitz.R;
@@ -80,7 +81,7 @@ public class Calculator extends LinearLayout  {
     private double mCalculatorMemory;
     private EditText mEditText;
     private Boolean userIsInTheMiddleOfTypingANumber = false;
-    private Button mDone;
+    private ImageButton mDone;
     private String mDecimalCharacter;
 
     /**
@@ -119,7 +120,7 @@ public class Calculator extends LinearLayout  {
         DIGITS += mDecimalCharacter;
 
         mView = inflate(getContext(), R.layout.calculator, this);
-        mDone = (Button) mView.findViewById(R.id.imageButtonDone);
+        mDone = (ImageButton) mView.findViewById(R.id.imageButtonDone);
         mView.findViewById(R.id.imageButton0).setOnClickListener(mOnKeyListener);
         mView.findViewById(R.id.imageButton1).setOnClickListener(mOnKeyListener);
         mView.findViewById(R.id.imageButton2).setOnClickListener(mOnKeyListener);
@@ -164,11 +165,11 @@ public class Calculator extends LinearLayout  {
     }
 
     public void hideDoneButton() {
-        mDone.setText(getResources().getString(R.string.request_next));
+        mDone.setImageResource(R.drawable.ic_next);
     }
 
     public void showDoneButton() {
-        mDone.setText(getResources().getString(R.string.calculator_done));
+        mDone.setImageResource(R.drawable.ic_done);
     }
 
     public void setOperand(double operand) {

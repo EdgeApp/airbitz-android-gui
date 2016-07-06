@@ -49,8 +49,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -71,6 +74,7 @@ public class DirectoryApi {
     private static final String API_CATEGORIES = API_PATH + "categories/";
     private static final String API_AUTO_COMPLETE_LOCATION = API_PATH + "autocomplete-location/";
     private static final String API_AUTO_COMPLETE_BUSINESS = API_PATH + "autocomplete-business/";
+    private static final String API_BUYSELL_OVERRIDE = API_PATH + "buyselloverride/";
 
     private LruCache mApiCache;
     private String mToken;
@@ -639,6 +643,24 @@ public class DirectoryApi {
     }
 
     private String getLanguageCode() {
-        return ("en".equals(mLang) || "es".equals(mLang)) ? mLang : null;
+        // return ("en".equals(mLang) || "es".equals(mLang)) ? mLang : null;
+        return "en";
+    }
+
+    public Map<String, String> getCurrencyUrlOverrides() {
+        String response =  getRequest(API_BUYSELL_OVERRIDE);
+        try {
+            Map<String, String> map = new HashMap<String, String>();
+            JSONObject object = new JSONObject(response);
+            Iterator<String> keys = object.keys();
+            while (keys.hasNext()){
+                String k = keys.next();
+                map.put(k, object.getString(k));
+            }
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
