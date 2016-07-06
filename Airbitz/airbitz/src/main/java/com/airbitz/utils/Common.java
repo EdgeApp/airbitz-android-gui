@@ -193,6 +193,7 @@ public class Common {
         tags.put("[[abtag APP_DESIGNED_BY]]", ctx.getString(R.string.designed_by));
         tags.put("[[abtag APP_COMPANY_LOCATION]]", ctx.getString(R.string.company_location));
         tags.put("[[abtag APP_VERSION]]", getVersion(ctx));
+        tags.put("[[abtag APP_DOWNLOAD_LINK]]", ctx.getString(R.string.request_footer_link));
         tags.put("[[abtag REQUEST_FOOTER]]", ctx.getString(R.string.request_footer));
         tags.put("[[abtag REQUEST_FOOTER_LINK_TITLE]]", ctx.getString(R.string.request_footer_link_title));
         tags.put("[[abtag REQUEST_FOOTER_LINK]]", ctx.getString(R.string.request_footer_link));
