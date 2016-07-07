@@ -414,6 +414,7 @@ public class PluginFramework {
             object.put("id", wallet.id());
             object.put("name", wallet.name());
             object.put("currency", wallet.currency().code);
+            object.put("currencyNum", wallet.currency().currencyNum);
             object.put("balance", wallet.balance());
             return object;
         }
