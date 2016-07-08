@@ -728,7 +728,7 @@
     <string name="plugin_walmart_discount">(Up to 10% Off)</string>
     <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
     <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
-    <string name="plugin_glidera_title">USA and Canada</string>
+    <string name="plugin_glidera_title">USA</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
 
     <string name="intent_choose_an_email">Choose an Email client:</string>
