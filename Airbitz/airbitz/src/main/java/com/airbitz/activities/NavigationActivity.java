@@ -870,7 +870,7 @@ public class NavigationActivity extends ActionBarActivity
 
         mNavThreadId = AirbitzApplication.getLastNavTab();
 
-        if (loginExpired() || !AirbitzApplication.isLoggedIn()) {
+        if (!AirbitzApplication.isLoggedIn()) {
             if (!mInSignupMode && !mRecoveryMode) {
                 DisplayLoginOverlay(true);
                 mNavThreadId = Tabs.BD.ordinal();
@@ -1514,24 +1514,6 @@ public class NavigationActivity extends ActionBarActivity
                     AirbitzCore.logi("Connection is MOBILE");
                     return true;
                 }
-            }
-        }
-        return false;
-    }
-
-    private boolean loginExpired() {
-        if (AirbitzApplication.getmBackgroundedTime() == 0 || !AirbitzApplication.isLoggedIn())
-            return true;
-
-        long milliDelta = (System.currentTimeMillis() - AirbitzApplication.getmBackgroundedTime());
-
-        AirbitzCore.logi("delta logout time = " + milliDelta);
-        Account account = AirbitzApplication.getAccount();
-        Settings settings = account.settings();
-        if (settings != null) {
-            if (milliDelta > settings.secondsAutoLogout() * 1000) {
-                Logout();
-                return true;
             }
         }
         return false;
@@ -2626,7 +2608,7 @@ public class NavigationActivity extends ActionBarActivity
         public boolean mShowMessages = false;
 
         private void showMessage(String message) {
-            if (mShowMessages) {
+            if (mShowMessages && !mDataLoaded) {
                 NavigationActivity.this.ShowOrUpdateDialog(message,
                     NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
             }
