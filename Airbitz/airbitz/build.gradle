@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 2100000000
-        versionName "99.99.99"
+        versionCode 2016071101
+        versionName "2.1.1"
     }
 
     productFlavors {
@@ -29,8 +29,8 @@ android {
             applicationId 'com.airbitz'
         }
 
-        coinbtm {
-            applicationId 'com.coinbtm.rackwallet'
+        rackwallet {
+            applicationId 'com.rackwallet.wallet'
         }
 
         coinsource {
@@ -125,8 +125,8 @@ dependencies {
     nettestCompile 'co.airbitz:airbitz-core-java-develop:0.9.+'
     nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.9.+@aar'
 
-    coinbtmCompile 'co.airbitz:airbitz-core-java:0.9.+'
-	coinbtmCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
+    rackwalletCompile 'co.airbitz:airbitz-core-java:0.9.+'
+	rackwalletCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
     coinsourceCompile 'co.airbitz:airbitz-core-java:0.9.+'
 	coinsourceCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
     athenaCompile 'co.airbitz:airbitz-core-java:0.9.+'
