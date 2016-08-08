@@ -6,9 +6,7 @@ set -e
 CURRENT_DIR=$( /bin/pwd )
 
 cd ../airbitz-plugins
-gulp glidera-android
-gulp foldapp-android
-gulp clevercoin-android
-cp build/android/glidera/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/glidera.html
-cp build/android/foldapp/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/foldapp.html
-cp build/android/clevercoin/index.html ${CURRENT_DIR}/Airbitz/airbitz/src/main/assets/clevercoin.html
+find plugins -maxdepth 1 -mindepth 1 | sed -e 's/plugins\///' | xargs -I {} bash -c 'gulp {}-android;'
+cd ${CURRENT_DIR}
+find ../airbitz-plugins/plugins -maxdepth 1 -mindepth 1 | sed -e 's/\.\.\/airbitz-plugins\/plugins\///' | xargs -I {} bash -c 'cp ../airbitz-plugins/build/android/{}/index.html Airbitz/airbitz/src/main/assets/{}.html;'
+
