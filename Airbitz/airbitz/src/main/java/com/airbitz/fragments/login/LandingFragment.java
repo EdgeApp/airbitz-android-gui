@@ -35,7 +35,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -490,7 +492,7 @@ public class LandingFragment extends BaseFragment implements
     @Override
     public void onButtonTouched(final String account) {
         String message = String.format(getString(R.string.fragment_landing_account_delete_message), account);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(getString(R.string.fragment_landing_account_delete_title))
                 .setCancelable(false)
@@ -515,7 +517,7 @@ public class LandingFragment extends BaseFragment implements
                                 dialog.dismiss();
                             }
                         });
-        AlertDialog confirmDialog = builder.create();
+        Dialog confirmDialog = builder.create();
         confirmDialog.show();
     }
 

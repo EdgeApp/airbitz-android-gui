@@ -31,7 +31,8 @@
 
 package com.airbitz.objects;
 
-import android.app.AlertDialog;
+;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
@@ -42,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.R;
 
 import java.io.File;
@@ -54,7 +56,7 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
     FileSaveLocation mCallback;
     DirectoryListingAdapter mAdapter;
     Context mContext;
-    AlertDialog mAlertDialog;
+    Dialog mAlertDialog;
 
     public interface FileSaveLocation {
         void onFileSaveLocation(File file);
@@ -69,7 +71,7 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
         mFileList = getDirectoryListing(directory);
         mAdapter = new DirectoryListingAdapter(context, android.R.layout.simple_list_item_1, mFileList);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) );
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) );
         builder.setTitle( directory.getAbsolutePath() );
         builder.setAdapter( mAdapter, null );
 
@@ -87,8 +89,8 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
             }
         });
 
-        mAlertDialog = builder.create();
-        mAlertDialog.getListView().setOnItemClickListener(this);
+        mAlertDialog = builder.show();
+//        mAlertDialog.getListView().setOnItemClickListener(this);
         mAlertDialog.show();
     }
 

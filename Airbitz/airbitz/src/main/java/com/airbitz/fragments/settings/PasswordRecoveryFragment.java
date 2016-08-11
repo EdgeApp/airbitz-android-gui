@@ -32,7 +32,8 @@
 package com.airbitz.fragments.settings;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
+;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -65,6 +66,8 @@ import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.QuestionChoice;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -255,7 +258,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 return true;
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(true)
@@ -281,8 +284,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                                 }
                             }
                     );
-            AlertDialog alert = builder.create();
-            alert.show();
+            builder.show();
         } else {
             mActivity.hideSoftKeyboard(getView());
             if (mMode == CHANGE_QUESTIONS) {
@@ -441,7 +443,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     public void ShowSkipQuestionsAlert() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder alertDialogBuilder = new AlertDialogWrapper.Builder(getActivity() /*new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom)*/);
         alertDialogBuilder.setTitle(getResources().getString(R.string.activity_recovery_prompt_title))
                 .setMessage(getResources().getString(R.string.activity_recovery_prompt_skip))
                 .setCancelable(false)
@@ -458,7 +460,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                     }
                 });
 
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        Dialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
 

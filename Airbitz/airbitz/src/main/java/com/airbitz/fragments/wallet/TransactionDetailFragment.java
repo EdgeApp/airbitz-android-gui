@@ -31,7 +31,8 @@
 
 package com.airbitz.fragments.wallet;
 
-import android.app.AlertDialog;
+;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -92,6 +93,7 @@ import co.airbitz.core.TxOutput;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.CategoryAdapter;
@@ -206,7 +208,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
     private View mView;
     private NavigationActivity mActivity;
-    private AlertDialog mMessageDialog;
+    private Dialog mMessageDialog;
     private String mWalletUUID;
     private String mTxId;
 
@@ -767,7 +769,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mMessageDialog != null) {
             mMessageDialog.dismiss();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(message)
                 .setTitle(title)
                 .setCancelable(false)
@@ -788,8 +790,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
                     }
                 }
         );
-        mMessageDialog = builder.create();
-        mMessageDialog.show();
+        mMessageDialog = builder.show();
     }
 
     private void setCurrentType(String input) {
