@@ -76,6 +76,7 @@ import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import com.airbitz.fragments.BaseFragment;
+import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.UploadLogAlert;
@@ -961,7 +962,9 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
                         getString(R.string.fragment_forgot_no_recovery_questions_text));
             } else { // Some message or questions
-                mActivity.startRecoveryQuestions(questions, mUserNameEditText.getText().toString());
+                // XXX -paulvp Change to select type 1 or 2 based on how we got here. For now
+                // hardcoded to type 1
+                mActivity.startRecoveryQuestions(questions, mUserNameEditText.getText().toString(), PasswordRecoveryFragment.RECOVERY_TYPE_1);
             }
         }
 

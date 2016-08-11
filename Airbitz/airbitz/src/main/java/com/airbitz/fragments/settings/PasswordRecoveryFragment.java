@@ -40,7 +40,9 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -67,6 +69,7 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.QuestionChoice;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -82,6 +85,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created on 2/10/14.
@@ -89,7 +94,8 @@ import java.util.Map;
 public class PasswordRecoveryFragment extends BaseFragment implements
         NavigationActivity.OnBackPress,
         TwoFactorMenuFragment.OnTwoFactorMenuResult {
-    public static final String MODE = "com.airbitz.passwordrecovery.type";
+    public static final String MODE = "com.airbitz.passwordrecovery.mode";
+    public static final String TYPE = "com.airbitz.passwordrecovery.type";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
@@ -97,11 +103,14 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public static int SIGN_UP = 0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
+    public static int RECOVERY_TYPE_1 = 0;
+    public static int RECOVERY_TYPE_2 = 1;
     private final String TAG = getClass().getSimpleName();
     String mAnswers = "";
     String mQuestions = "";
     boolean ignoreSelected = false;
     private int mMode;
+    private int mType;
     private boolean mReturnFromTwoFactorScan = false;
     private boolean mTwoFactorSuccess = false;
     private String mTwoFactorSecret;
@@ -146,6 +155,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
+            mType = getArguments().getInt(TYPE);
             if (mMode == CHANGE_QUESTIONS) {
                 mPasswordEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
@@ -611,7 +621,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
+                if (mType == RECOVERY_TYPE_1) {
+                    mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
+                } else if (mType == RECOVERY_TYPE_2) {
+                    String recoveryToken = mAccount.setupRecoveryQuestions2(mQuestions.split("\n"), mAnswers.split("\n"));
+                }
                 return true;
             } catch (AirbitzException e) {
                 AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
@@ -626,10 +640,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (!success) {
                 mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                mSaved = true;
-                mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                CoreWrapper.clearRecoveryReminder(mAccount);
-                mActivity.popFragment();
+                if (mType == RECOVERY_TYPE_1) {
+                    mSaved = true;
+                    mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                    CoreWrapper.clearRecoveryReminder(mAccount);
+                    mActivity.popFragment();
+                } else if (mType == RECOVERY_TYPE_2) {
+                    // Launch popup to ask user to email themselves the token
+                    launchSaveTokenAlert(getResources().getString(R.string.save_recovery_token_popup));
+                }
             }
         }
 
@@ -638,6 +657,65 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mSaveQuestionsTask = null;
             mActivity.showModalProgress(false);
         }
+    }
+
+    public void launchSaveTokenAlert(String title) {
+
+        String email = mAccount.data("ABPersonalInfo").get("email");
+
+        new MaterialDialog.Builder(mActivity)
+                .title(title)
+                .content(R.string.save_recovery_token_popup_message)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .positiveText(R.string.string_next)
+                .negativeText(R.string.string_cancel)
+                .input("", email, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // Do something
+                        if (isEmailValid(input.toString())) {
+                            // Save email in dataStore for use later
+                            mAccount.data("ABPersonalInfo").set("email",input.toString());
+                            dialog.dismiss();
+                        } else {
+                            launchSaveTokenAlert(getResources().getString(R.string.invalid_email));
+                        }
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+
+                .show();
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    private static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,16}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
     }
 
     private class QuestionView extends LinearLayout {

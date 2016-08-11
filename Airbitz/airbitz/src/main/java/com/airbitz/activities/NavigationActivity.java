@@ -1383,11 +1383,12 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public void startRecoveryQuestions(String[] questions, String username) {
+    public void startRecoveryQuestions(String[] questions, String username, int type) {
         hideNavBar();
         Bundle bundle = new Bundle();
         mRecoveryMode = true;
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
+        bundle.putInt(PasswordRecoveryFragment.TYPE, type);
         bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
         Fragment frag = new PasswordRecoveryFragment();
