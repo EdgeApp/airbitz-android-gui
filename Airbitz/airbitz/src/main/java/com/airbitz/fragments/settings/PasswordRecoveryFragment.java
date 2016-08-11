@@ -117,10 +117,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mStringQuestions;
-    private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
-    private List<String> mNumericQuestions;
-    private Map<String, Integer> mMustCategory = new HashMap<String, Integer>();
-    private List<String> mMustQuestions;
     private boolean mSaved = false;
 
     private AirbitzCore mCoreAPI;
@@ -162,8 +158,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         }
 
         mStringQuestions = new ArrayList<String>();
-        mNumericQuestions = new ArrayList<String>();
-        mMustQuestions = new ArrayList<String>();
 
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,12 +362,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", position++));
 
         setListWithQuestionViews(mQuestionViews);
     }
@@ -394,7 +384,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             List<String> qs = new ArrayList<String>();
             qs.add(question);
             qs.add(getString(R.string.activity_recovery_question_default));
-            QuestionView qv = new QuestionView(getActivity(), qs, answers[position], QuestionType.STRING, position++);
+            QuestionView qv = new QuestionView(getActivity(), qs, answers[position], position++);
             mQuestionViews.add(qv);
         }
 
@@ -418,13 +408,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         for (QuestionView qv : mQuestionViews) {
             if (qv != notThis) {
                 List<String> unchosen;
-                if (qv.mType == QuestionType.STRING) {
-                    unchosen = getUnchosenQuestions(mStringQuestions);
-                } else if (qv.mType == QuestionType.NUMERIC) {
-                    unchosen = getUnchosenQuestions(mNumericQuestions);
-                } else {
-                    unchosen = getUnchosenQuestions(mMustQuestions);
-                }
+                unchosen = getUnchosenQuestions(mStringQuestions);
                 qv.setAvailableQuestions(unchosen);
 
                 if (!qv.chosenQuestion.equals(getString(R.string.activity_recovery_question_default))) {
@@ -477,8 +461,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mAttemptAnswerVerificationTask.cancel(true);
         }
     }
-
-    private enum QuestionType {STRING, NUMERIC, MUST}
 
     /**
      * Attempt to verify answers
@@ -574,20 +556,12 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
                 for (QuestionChoice choice : mChoices) {
                     String category = choice.category();
-                    if (category.equals("string")) {
+                    if (category.equals("recovery2")) {
                         mStringCategory.put(choice.question(), (int) choice.minLength());
                         mStringQuestions.add(choice.question());
-                    } else if (category.equals("numeric")) {
-                        mNumericCategory.put(choice.question(), (int) choice.minLength());
-                        mNumericQuestions.add(choice.question());
-                    } else if (category.equals("must")) {
-                        mMustCategory.put(choice.question(), (int) choice.minLength());
-                        mMustQuestions.add(choice.question());
                     }
                 }
                 mStringQuestions.add(getString(R.string.activity_recovery_question_default));
-                mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
-                mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
                 AirbitzCore.logi("No Questions");
@@ -667,7 +641,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     }
 
     private class QuestionView extends LinearLayout {
-        public QuestionType mType;
         public String chosenQuestion = "";
         Context mContext;
         int mPosition;
@@ -678,10 +651,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         private List<String> currentQuestionList;
         private QuestionView me = this;
 
-        public QuestionView(Context context, List<String> questions, String answer, QuestionType type, int position) {
+        public QuestionView(Context context, List<String> questions, String answer, int position) {
             super(context);
             mContext = context;
-            mType = type;
             mPosition = position;
             currentQuestionList = questions;
             LayoutInflater inflater = (LayoutInflater) context
@@ -708,16 +680,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
                     chosenQuestion = currentQuestionList.get(i);
                     AirbitzCore.logi("spinner selection not ignored=" + chosenQuestion);
-                    if (mType == QuestionType.STRING) {
-                        if (mStringCategory.containsKey(chosenQuestion))
-                            mCharLimit = mStringCategory.get(chosenQuestion);
-                    } else if (mType == QuestionType.NUMERIC) {
-                        if (mNumericCategory.containsKey(chosenQuestion))
-                            mCharLimit = mNumericCategory.get(chosenQuestion);
-                    } else if (mType == QuestionType.MUST) {
-                        if (mMustCategory.containsKey(chosenQuestion))
-                            mCharLimit = mMustCategory.get(chosenQuestion);
-                    }
+                    if (mStringCategory.containsKey(chosenQuestion))
+                        mCharLimit = mStringCategory.get(chosenQuestion);
                     mText.setMinLength(mCharLimit);
 
                     if (mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {
