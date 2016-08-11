@@ -31,17 +31,21 @@
 
 package com.airbitz.fragments.settings;
 
+import android.accounts.AccountManager;
 import android.app.ActionBar;
 ;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -67,6 +71,7 @@ import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.QuestionChoice;
+import co.airbitz.core.Settings;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
@@ -79,7 +84,10 @@ import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
+import com.airbitz.models.Contact;
 import com.airbitz.objects.MinEditText;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,11 +113,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public static int FORGOT_PASSWORD = 2;
     public static int RECOVERY_TYPE_1 = 0;
     public static int RECOVERY_TYPE_2 = 1;
+    private static final int EMAIL_INTENT_REQUEST_CODE = 0xe3a11;
+    private static final int REQUEST_CODE_EMAIL = 0x47562fed;
+
     private final String TAG = getClass().getSimpleName();
     String mAnswers = "";
     String mQuestions = "";
     boolean ignoreSelected = false;
     private int mMode;
+    private String mRecoveryToken = "";
     private int mType;
     private boolean mReturnFromTwoFactorScan = false;
     private boolean mTwoFactorSuccess = false;
@@ -624,7 +636,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 if (mType == RECOVERY_TYPE_1) {
                     mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
                 } else if (mType == RECOVERY_TYPE_2) {
-                    String recoveryToken = mAccount.setupRecoveryQuestions2(mQuestions.split("\n"), mAnswers.split("\n"));
+                    mRecoveryToken = mAccount.setupRecoveryQuestions2(mQuestions.split("\n"), mAnswers.split("\n"));
                 }
                 return true;
             } catch (AirbitzException e) {
@@ -663,6 +675,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         String email = mAccount.data("ABPersonalInfo").get("email");
 
+        if (email == null || email.length() == 0)
+            email = getEmail();
+
         new MaterialDialog.Builder(mActivity)
                 .title(title)
                 .content(R.string.save_recovery_token_popup_message)
@@ -676,6 +691,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                         if (isEmailValid(input.toString())) {
                             // Save email in dataStore for use later
                             mAccount.data("ABPersonalInfo").set("email",input.toString());
+                            sendEmail(input.toString());
                             dialog.dismiss();
                         } else {
                             launchSaveTokenAlert(getResources().getString(R.string.invalid_email));
@@ -696,6 +712,80 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 })
 
                 .show();
+    }
+
+    private String getEmail() {
+        AccountManager aManager = AccountManager.get(getActivity().getApplicationContext());
+        android.accounts.Account[] accounts = aManager.getAccountsByType("com.google");
+
+        String accountId = "";
+        for (android.accounts.Account account : accounts) {
+            accountId = account.name;
+            break;
+        }
+        return accountId;
+    }
+
+    private void sendEmail(String emailAddress) {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{emailAddress});
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+                String.format(getString(R.string.recovery_token_email_subject),
+                        getString(R.string.app_name)));
+
+        String recoveryUrl = String.format("<a href=\"%1$s://recovery?token=%2$s\">%3$s://recovery?token=%4$s</a>",
+                "airbitz", mRecoveryToken, "airbitz", mRecoveryToken);
+
+        String obfuscatedUsername = obfuscateString(mAccount.username());
+
+        String body = String.format(getString(R.string.recovery_token_email_body),
+                getString(R.string.app_name), obfuscatedUsername, recoveryUrl);
+
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+
+        startActivityForResult(Intent.createChooser(intent, "email"), EMAIL_INTENT_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EMAIL_INTENT_REQUEST_CODE) {
+            mSaved = true;
+            mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+            CoreWrapper.clearRecoveryReminder(mAccount);
+            mActivity.popFragment();
+        }
+    }
+
+    private String obfuscateString(String str) {
+
+        String obfuscatedStr = str;
+
+        int strLen = str.length();
+        if (strLen <= 3)
+        {
+            obfuscatedStr = str.substring(0, strLen - 1) + "*";
+        }
+        else if(strLen <= 6)
+        {
+            obfuscatedStr = str.substring(0, strLen - 2) + "**";
+        }
+        else if(strLen <= 9)
+        {
+            obfuscatedStr = str.substring(0, strLen - 3) + "***";
+        }
+        else if(strLen <= 12)
+        {
+            obfuscatedStr = str.substring(0, strLen - 4) + "****";
+        }
+        else
+        {
+            obfuscatedStr = str.substring(0, strLen - 5) + "*****";
+        }
+        return obfuscatedStr;
     }
 
     /**
