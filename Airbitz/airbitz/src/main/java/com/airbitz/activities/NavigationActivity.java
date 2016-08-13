@@ -2344,7 +2344,7 @@ public class NavigationActivity extends ActionBarActivity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
-        if (!getResources().getBoolean(R.bool.include_shop)) {
+        if (!getResources().getBoolean(R.bool.include_plugins)) {
             mDrawerShop.setVisibility(View.GONE);
         } else {
             mDrawerShop.setVisibility(View.VISIBLE);
