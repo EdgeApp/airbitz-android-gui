@@ -44,7 +44,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -68,6 +70,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -411,11 +415,7 @@ public class LandingFragment extends BaseFragment implements
         mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mUserNameEditText.getText().toString().isEmpty()) {
-                    mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_forgot_no_username_title));
-                } else {
-                    attemptForgotPassword();
-                }
+                launchRecoveryPopup("");
             }
         });
 
@@ -660,9 +660,34 @@ public class LandingFragment extends BaseFragment implements
         }
     }
 
-    private void attemptForgotPassword() {
-        mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
-        mRecoveryQuestionsTask.execute(mUserNameEditText.getText().toString());
+    public void launchRecoveryPopup(final String recoveryToken) {
+
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.activity_recovery_title)
+                .content(R.string.enter_username_to_recover)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .positiveText(R.string.string_next)
+                .negativeText(R.string.string_cancel)
+                .input("", mUserNameEditText.getText().toString(), new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        mRecoveryQuestionsTask = new GetRecoveryQuestionsTask();
+                        mRecoveryQuestionsTask.execute(input.toString(), recoveryToken);
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     /**
@@ -934,6 +959,9 @@ public class LandingFragment extends BaseFragment implements
 
     public class GetRecoveryQuestionsTask extends AsyncTask<String, Void, String[]> {
         AirbitzException mFailureException;
+        int mRecoveryType;
+        String mRecoveryToken = "";
+        String mUsername = "";
 
         @Override
         public void onPreExecute() {
@@ -943,7 +971,20 @@ public class LandingFragment extends BaseFragment implements
         @Override
         protected String[] doInBackground(String... params) {
             try {
-                return mCoreAPI.recoveryQuestions(params[0]);
+                String username = params[0];
+                String recoveryToken = params[1];
+                if (recoveryToken.length() > 0) {
+                    // Recovery 2.0
+                    mRecoveryType = PasswordRecoveryFragment.RECOVERY_TYPE_2;
+                    mRecoveryToken = recoveryToken;
+                    mUsername = username;
+                    return mCoreAPI.getRecoveryQuestionsWithRecoveryToken(username, recoveryToken);
+
+                } else {
+                    // Recovery 1.0
+                    mRecoveryType = PasswordRecoveryFragment.RECOVERY_TYPE_1;
+                    return mCoreAPI.recoveryQuestions(username);
+                }
             } catch (AirbitzException e) {
                 AirbitzCore.logi("GetRecoveryQuestionsTask error:");
                 mFailureException = e;
@@ -962,9 +1003,7 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
                         getString(R.string.fragment_forgot_no_recovery_questions_text));
             } else { // Some message or questions
-                // XXX -paulvp Change to select type 1 or 2 based on how we got here. For now
-                // hardcoded to type 1
-                mActivity.startRecoveryQuestions(questions, mUserNameEditText.getText().toString(), PasswordRecoveryFragment.RECOVERY_TYPE_1);
+                mActivity.startRecoveryQuestions(questions, mUsername, mRecoveryType, mRecoveryToken);
             }
         }
 

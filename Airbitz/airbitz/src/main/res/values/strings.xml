@@ -703,6 +703,7 @@
 
     <string name="app_support_requested">Support Requested</string>
     <string name="app_name">Airbitz</string>
+    <string name="app_url_prefix">airbitz</string>
     <string name="app_homepage">https://airbitz.co</string>
     <string name="app_support_email">support@airbitz.co</string>
     <string name="app_support_phone">+1-844-928-9744</string>

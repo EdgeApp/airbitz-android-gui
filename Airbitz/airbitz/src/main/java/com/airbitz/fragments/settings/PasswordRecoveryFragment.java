@@ -104,6 +104,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         TwoFactorMenuFragment.OnTwoFactorMenuResult {
     public static final String MODE = "com.airbitz.passwordrecovery.mode";
     public static final String TYPE = "com.airbitz.passwordrecovery.type";
+    public static final String TOKEN = "com.airbitz.passwordrecovery.token";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
@@ -168,6 +169,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
             mType = getArguments().getInt(TYPE);
+            mRecoveryToken = getArguments().getString(TOKEN);
             if (mMode == CHANGE_QUESTIONS) {
                 mPasswordEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
@@ -355,7 +357,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 }
                 if (mMode == FORGOT_PASSWORD) {
                     mAttemptAnswerVerificationTask = new AttemptAnswerVerificationTask();
-                    mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME));
+                    mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME), mRecoveryToken);
                 } else {
                     attemptCommitQuestions();
                 }
@@ -490,6 +492,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public class AttemptAnswerVerificationTask extends AsyncTask<String, Void, Boolean> {
         private String username;
         private String answers;
+        private String recoveryToken;
         private AirbitzException mFailureException;
 
         @Override
@@ -501,9 +504,17 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         protected Boolean doInBackground(String... params) {
             answers = params[0];
             username = params[1];
+            recoveryToken = params[2];
             boolean result = false;
             try {
-                Account account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
+                Account account;
+                if (mType == RECOVERY_TYPE_2) {
+                    account = mCoreAPI.loginWithRecoveryToken(username, answers.split("\n"), recoveryToken, mTwoFactorSecret);
+                } else {
+                    account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
+                }
+                if (account == null)
+                    return false;
                 AirbitzApplication.Login(account);
                 result = true;
             } catch (AirbitzException e) {
@@ -518,6 +529,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
 
             if (success) {
+                mActivity.ShowFadingDialog(getString(R.string.recovery_successful));
+
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_VIA_QUESTIONS);
                 bundle.putString(PasswordRecoveryFragment.QUESTIONS, answers);
@@ -526,7 +539,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                if (mFailureException.isOtpError()) {
+                if (mFailureException != null && mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
                     mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
@@ -736,8 +749,10 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 String.format(getString(R.string.recovery_token_email_subject),
                         getString(R.string.app_name)));
 
-        String recoveryUrl = String.format("<a href=\"%1$s://recovery?token=%2$s\">%3$s://recovery?token=%4$s</a>",
+        String recoveryUrl = String.format("iOS<br>\n<a href=\"%1$s://recovery?token=%2$s\">%3$s://recovery?token=%4$s</a><br><br>\n",
                 "airbitz", mRecoveryToken, "airbitz", mRecoveryToken);
+
+        recoveryUrl = recoveryUrl + String.format("Android<br>\n<a href=\"https://recovery.airbitz.co/recovery?token=%1$s\">https://recovery.airbitz.co/recovery?token=%2$s</a>", mRecoveryToken, mRecoveryToken);
 
         String obfuscatedUsername = obfuscateString(mAccount.username());
 
