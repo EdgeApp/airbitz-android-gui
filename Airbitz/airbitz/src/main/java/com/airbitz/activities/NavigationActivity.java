@@ -64,6 +64,7 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
@@ -88,6 +89,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
@@ -2602,6 +2604,30 @@ public class NavigationActivity extends ActionBarActivity
         confirmDialog.show();
     }
 
+    private Toast mToastToShow;
+    CountDownTimer mToastCountDown;
+    public void showToast(String message, int duration) {
+        // Set the toast and duration
+        if (mToastCountDown != null) mToastCountDown.cancel();
+        if (mToastToShow != null) mToastToShow.cancel();
+        mToastToShow = Toast.makeText(this, message, Toast.LENGTH_LONG);
+
+        // Set the countdown to display the toast
+        mToastCountDown = new CountDownTimer(duration, 1000 /*Tick duration*/) {
+            public void onTick(long millisUntilFinished) {
+                mToastToShow.show();
+            }
+            public void onFinish() {
+                mToastToShow.cancel();
+                mToastToShow = null;
+            }
+        };
+
+        // Show the toast and starts the countdown
+        mToastToShow.show();
+        mToastCountDown.start();
+    }
+
     private WalletReceiver mWalletsLoadedReceiver = new WalletReceiver();
     class WalletReceiver extends BroadcastReceiver {
         public boolean mDataLoaded = false;
@@ -2609,8 +2635,7 @@ public class NavigationActivity extends ActionBarActivity
 
         private void showMessage(String message) {
             if (mShowMessages && !mDataLoaded) {
-                NavigationActivity.this.ShowOrUpdateDialog(message,
-                    NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
+                showToast(message, 9999999);
             }
         }
 
@@ -2620,6 +2645,7 @@ public class NavigationActivity extends ActionBarActivity
                 return;
             }
             if (Constants.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
+
                 showMessage(context.getString(R.string.loading_wallets));
             } else if (Constants.WALLET_CHANGED_ACTION.equals(intent.getAction())) {
                 List<String> ids = AirbitzApplication.getAccount().walletIds();
@@ -2645,7 +2671,8 @@ public class NavigationActivity extends ActionBarActivity
             } else if (Constants.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
                 if (mShowMessages) {
-                    NavigationActivity.this.DismissFadingDialog();
+                    mToastToShow.cancel();
+                    mToastCountDown.cancel();
                 }
             }
         }
