@@ -686,6 +686,16 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 mTransaction = mWallet.transaction(mTxId);
 
                 if (mTransaction != null) {
+
+                    if (mWallet.isArchived()) {
+                        // Disable editing
+                        mPayeeEditText.setEnabled(false);
+                        mFiatValueEdittext.setEnabled(false);
+                        mCategoryEdittext.setEnabled(false);
+                        mNoteEdittext.setEnabled(false);
+                        mCategorySpinner.setEnabled(false);
+                    }
+
                     if ((mFromSend || mFromRequest) && TextUtils.isEmpty(mTransaction.meta().category())) {
                         mTransaction.meta().category(
                             Constants.CATEGORIES[mCategorySpinner.getSelectedItemPosition()]);
