@@ -1196,12 +1196,44 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 AirbitzCore.logi("Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
-                    if (null == exitHandler) {
-                        mDelayedMessage = mError;
-                        mHandler.postDelayed(mDelayedErrorMessage, 500);
+
+                    // If this was a payment protocol send, ask user if they'd like to try
+                    // paying to a public address
+                    if (mPaymentRequest != null && mParsedUri.address() != null) {
+                        String message = String.format(mActivity.getString(R.string.fragment_send_confirmation_error_payment_processor), mParsedUri.address());
+
+                        new MaterialDialog.Builder(mActivity).title(R.string.fragment_send_confirmation_send_error_title)
+                        .content(message)
+                        .cancelable(false)
+                        .positiveText(R.string.nav_bar_send_text)
+                        .negativeText(R.string.string_cancel)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                                                       @Override
+                                                       public void onPositive(MaterialDialog dialog) {
+                                                           mPaymentRequest = null;
+                                                           mSpendTarget = newSpend(mAmountToSendSatoshi);
+                                                           continueChecks();
+                                                       }
+
+                                                       @Override
+                                                       public void onNegative(MaterialDialog dialog) {
+                                                           dialog.cancel();
+                                                           if (null == exitHandler) {
+                                                               mDelayedMessage = mError;
+                                                               mHandler.postDelayed(mDelayedErrorMessage, 500);
+                                                           } else {
+                                                               exitHandler.error();
+                                                           }
+                                                       }
+                                                   }).build().show();
                     } else {
-                        mActivity.popFragment(); // stop the sending screen
-                        exitHandler.error();
+                        if (null == exitHandler) {
+                            mDelayedMessage = mError;
+                            mHandler.postDelayed(mDelayedErrorMessage, 500);
+                        } else {
+                            mActivity.popFragment(); // stop the sending screen
+                            exitHandler.error();
+                        }
                     }
                 }
             } else {
