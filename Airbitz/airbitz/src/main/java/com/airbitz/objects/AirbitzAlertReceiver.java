@@ -32,6 +32,7 @@
 package com.airbitz.objects;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -206,6 +207,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ico_sending_3)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setLargeIcon(bitmap)
+                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
