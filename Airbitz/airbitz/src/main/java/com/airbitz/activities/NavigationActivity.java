@@ -41,6 +41,8 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -69,6 +71,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -946,13 +949,13 @@ public class NavigationActivity extends ActionBarActivity
     public void onPause() {
         super.onPause();
 
-        setCoreListeners(null);
-
-        activityInForeground = false;
-        unregisterReceiver(ConnectivityChangeReceiver);
-
-        tearDownReceivers();
-        mCoreAPI.background();
+//        setCoreListeners(null);
+//
+//        activityInForeground = false;
+//        unregisterReceiver(ConnectivityChangeReceiver);
+//
+//        tearDownReceivers();
+//        mCoreAPI.background();
 
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
@@ -1127,6 +1130,7 @@ public class NavigationActivity extends ActionBarActivity
         if(fragment != null) {
             AudioPlayer.play(this, R.raw.bitcoin_received);
             fragment.showDonation(mUUID, mTxId);
+            showLocalNotification(mUUID, mTxId);
             return;
         }
 
@@ -1144,6 +1148,7 @@ public class NavigationActivity extends ActionBarActivity
                 // Request the remainder of the funds
                 f.updateWithAmount(diff);
                 AudioPlayer.play(this, R.raw.bitcoin_received_partial);
+                showLocalNotification(mUUID, mTxId);
             }
         } else {
             Transaction tx = wallet.transaction(txId);
@@ -1151,6 +1156,7 @@ public class NavigationActivity extends ActionBarActivity
                 if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
                     showIncomingBitcoinDialog(wallet, tx);
+                    showLocalNotification(mUUID, mTxId);
                 }
             }
         }
@@ -1181,12 +1187,12 @@ public class NavigationActivity extends ActionBarActivity
         Transaction transaction = wallet.transaction(txId);
         String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
         String currencyValue =
-            CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+                CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
-        if(withTeaching) {
+        if (withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
             int count = prefs.getInt(INCOMING_COUNT, 1);
-            if(count <= 2 && !SettingFragment.getMerchantModePref()) {
+            if (count <= 2 && !SettingFragment.getMerchantModePref()) {
                 count++;
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(INCOMING_COUNT, count);
@@ -1194,8 +1200,20 @@ public class NavigationActivity extends ActionBarActivity
                 message += getString(R.string.received_bitcoin_fading_message_teaching);
             }
         }
-
+        showLocalNotification(uuid, txId);
         ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_payment_received));
+    }
+
+    private void showLocalNotification(String uuid, String txid)
+    {
+        Account account = AirbitzApplication.getAccount();
+        Wallet wallet = account.wallet(uuid);
+        Transaction transaction = wallet.transaction(txid);
+        String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
+        String currencyValue =
+                CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+        String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
+        AirbitzAlertReceiver.issueOSNotification(NavigationActivity.this, message, 1);
     }
 
     private RequestFragment requestMatchesQR(String uuid, String txid) {
