@@ -2652,8 +2652,8 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void cancelToast() {
-        mToastCountDown.cancel();
-        mToastToShow.cancel();
+        if (mToastCountDown != null) mToastCountDown.cancel();
+        if (mToastToShow != null) mToastToShow.cancel();
     }
 
     private WalletReceiver mWalletsLoadedReceiver = new WalletReceiver();
