@@ -205,7 +205,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                     context.getString(R.string.app_name)))
                 .setSmallIcon(R.drawable.ico_sending_3)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setLargeIcon(bitmap);
+                .setLargeIcon(bitmap)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
         builder.setContentText(message);
