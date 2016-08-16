@@ -951,11 +951,13 @@ public class NavigationActivity extends ActionBarActivity
 
 //        setCoreListeners(null);
 //
-//        activityInForeground = false;
+        activityInForeground = false;
 //        unregisterReceiver(ConnectivityChangeReceiver);
 //
 //        tearDownReceivers();
 //        mCoreAPI.background();
+
+        cancelToast();
 
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
@@ -1451,7 +1453,9 @@ public class NavigationActivity extends ActionBarActivity
         // stop the UI from responding to core events
         tearDownReceivers();
         mLogoutTask = new LogoutTask();
-        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        cancelToast();
     }
 
     private LogoutTask mLogoutTask;
@@ -2633,7 +2637,8 @@ public class NavigationActivity extends ActionBarActivity
         // Set the countdown to display the toast
         mToastCountDown = new CountDownTimer(duration, 1000 /*Tick duration*/) {
             public void onTick(long millisUntilFinished) {
-                mToastToShow.show();
+                if (activityInForeground)
+                    mToastToShow.show();
             }
             public void onFinish() {
                 mToastToShow.cancel();
@@ -2644,6 +2649,11 @@ public class NavigationActivity extends ActionBarActivity
         // Show the toast and starts the countdown
         mToastToShow.show();
         mToastCountDown.start();
+    }
+
+    public void cancelToast() {
+        mToastCountDown.cancel();
+        mToastToShow.cancel();
     }
 
     private WalletReceiver mWalletsLoadedReceiver = new WalletReceiver();
@@ -2689,8 +2699,7 @@ public class NavigationActivity extends ActionBarActivity
             } else if (Constants.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
                 if (mShowMessages) {
-                    mToastToShow.cancel();
-                    mToastCountDown.cancel();
+                    cancelToast();
                 }
             }
         }
