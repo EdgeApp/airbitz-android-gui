@@ -16,7 +16,7 @@
     <color name="dark_text_field_text_hint">#FFcccccc</color>
     <color name="dark_text_field_text">#FFFFFFFF</color>
     <color name="dark_divider">#FF444444</color>
-    <color name="semi_black_text">#FF808080</color>
+    <color name="semi_black_text">#FF505050</color>
     <color name="transaction_list_name">#ff1770A6</color>
     <color name="transaction_list_name_light">#bb1770A6</color>
 
