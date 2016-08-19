@@ -209,6 +209,18 @@ public class PluginFramework {
             mPluginsGrouped.get(GIFT_CARDS).add(plugin);
 
             plugin = new Plugin();
+            plugin.pluginId = "com.bitrefill.widget";
+            plugin.sourceFile = "file:///android_asset/bitrefill.html";
+            plugin.name = "Topup Prepaid SIM";
+            plugin.subtitle = "";
+            plugin.provider = "bitrefill";
+            plugin.imageResId = R.drawable.ic_plugin_usd;
+            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
+            plugin.env.put("API_KEY", AirbitzApplication.getContext().getString(R.string.bitrefill_api_key));
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(BUYSELL).add(plugin);
+
+            plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_glidera_title);
