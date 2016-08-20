@@ -20,6 +20,7 @@
     <string name="string_delete">Delete</string>
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
+    <string name="string_disable">DISABLE</string>
     <string name="string_next">NEXT</string>
     <string name="string_skip">SKIP</string>
     <string name="string_total">TOTAL:</string>
@@ -768,5 +769,11 @@
     <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
     <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
     <string name="invalid_email">Invalid Email</string>
+    <string name="disable_recovery_popup_title">Disable Recovery?</string>
+    <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+    <string name="error_disabling_recovery">Error disabling recovery</string>
+    <string name="recovery_disabled">Recovery Disabled</string>
+    <string name="in"></string>
+
 
 </resources>

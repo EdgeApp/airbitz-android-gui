@@ -970,13 +970,17 @@ public class LandingFragment extends BaseFragment implements
 
         @Override
         protected String[] doInBackground(String... params) {
-            try {
                 String username = params[0];
                 String recoveryToken = params[1];
 
+            try {
                 if (recoveryToken == null || recoveryToken.length() == 0)
                     recoveryToken = mCoreAPI.getRecovery2Token(username);
+            } catch (AirbitzException e) {
 
+            }
+
+            try {
                 if (recoveryToken != null && recoveryToken.length() > 0) {
                     // Recovery 2.0
                     mRecoveryType = PasswordRecoveryFragment.RECOVERY_TYPE_2;
@@ -1001,11 +1005,36 @@ public class LandingFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
             mRecoveryQuestionsTask = null;
 
-            if (mFailureException != null) {
-                mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
-            } else if (questions == null || questions.length == 0) {
-                mActivity.ShowOkMessageDialog(getString(R.string.fragment_forgot_no_recovery_questions_title),
-                        getString(R.string.fragment_forgot_no_recovery_questions_text));
+            if (mFailureException != null || questions == null || questions.length == 0) {
+                new MaterialDialog.Builder(mActivity)
+                        .title(R.string.activity_recovery_title)
+                        .content(R.string.recovery_not_setup)
+                        .positiveText(R.string.string_next)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                new MaterialDialog.Builder(mActivity)
+                                        .title(R.string.activity_recovery_title)
+                                        .content(R.string.recovery_not_setup2)
+                                        .positiveText(R.string.string_next)
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                new MaterialDialog.Builder(mActivity)
+                                                        .title(R.string.activity_recovery_title)
+                                                        .content(R.string.recovery_not_setup3)
+                                                        .positiveText(R.string.string_done)
+                                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                            @Override
+                                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                            }
+                                                        }).show();
+                                            }
+                                        }).show();
+                            }
+                        }).show();
+
+
             } else { // Some message or questions
                 mActivity.startRecoveryQuestions(questions, mUsername, mRecoveryType, mRecoveryToken);
             }

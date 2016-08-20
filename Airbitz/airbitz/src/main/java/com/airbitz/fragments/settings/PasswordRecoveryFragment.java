@@ -173,6 +173,41 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (mMode == CHANGE_QUESTIONS) {
                 mPasswordEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
+                String recoveryToken = null;
+
+                try {
+                    recoveryToken = mCoreAPI.getRecovery2Token(mAccount.username());
+                } catch (AirbitzException e) {
+
+                }
+
+                if (recoveryToken != null) {
+                    new MaterialDialog.Builder(mActivity)
+                            .title(R.string.disable_recovery_popup_title)
+                            .content(R.string.disable_recovery_popup_message)
+                            .positiveText(R.string.string_disable)
+                            .negativeText(R.string.string_cancel)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    try {
+                                        mAccount.disableRecovery2();
+                                        mActivity.ShowFadingDialog(getResources().getString(R.string.recovery_disabled));
+                                    } catch (AirbitzException e) {
+                                        mActivity.ShowFadingDialog(getResources().getString(R.string.error_disabling_recovery));
+                                    }
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            })
+
+                            .show();
+
+                }
             } else if (mMode == FORGOT_PASSWORD) {
                 mPasswordEditText.setVisibility(View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.string_done));
