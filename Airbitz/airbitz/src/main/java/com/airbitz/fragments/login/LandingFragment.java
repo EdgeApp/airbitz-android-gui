@@ -973,12 +973,16 @@ public class LandingFragment extends BaseFragment implements
             try {
                 String username = params[0];
                 String recoveryToken = params[1];
-                if (recoveryToken.length() > 0) {
+
+                if (recoveryToken == null || recoveryToken.length() == 0)
+                    recoveryToken = mCoreAPI.getRecovery2Token(username);
+
+                if (recoveryToken != null && recoveryToken.length() > 0) {
                     // Recovery 2.0
                     mRecoveryType = PasswordRecoveryFragment.RECOVERY_TYPE_2;
                     mRecoveryToken = recoveryToken;
                     mUsername = username;
-                    return mCoreAPI.getRecoveryQuestionsWithRecoveryToken(username, recoveryToken);
+                    return mCoreAPI.getRecovery2Questions(username, recoveryToken);
 
                 } else {
                     // Recovery 1.0

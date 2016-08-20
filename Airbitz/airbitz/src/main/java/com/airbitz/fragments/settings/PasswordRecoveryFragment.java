@@ -509,7 +509,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             try {
                 Account account;
                 if (mType == RECOVERY_TYPE_2) {
-                    account = mCoreAPI.loginWithRecoveryToken(username, answers.split("\n"), recoveryToken, mTwoFactorSecret);
+                    account = mCoreAPI.loginWithRecovery2(username, answers.split("\n"), recoveryToken, mTwoFactorSecret);
                 } else {
                     account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
                 }
@@ -649,7 +649,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 if (mType == RECOVERY_TYPE_1) {
                     mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
                 } else if (mType == RECOVERY_TYPE_2) {
-                    mRecoveryToken = mAccount.setupRecoveryQuestions2(mQuestions.split("\n"), mAnswers.split("\n"));
+                    mRecoveryToken = mAccount.setupRecovery2Questions(mQuestions.split("\n"), mAnswers.split("\n"));
                 }
                 return true;
             } catch (AirbitzException e) {
