@@ -68,10 +68,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.NotificationCompat;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -104,6 +106,7 @@ import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -1051,27 +1054,43 @@ public class NavigationActivity extends ActionBarActivity
             return;
         }
 
+        String vendorUrl = getString(R.string.app_url_prefix);
+        String vendorRetUrl = vendorUrl + "-ret";
+
+        if ("recovery.airbitz.co".equals(uri.getHost()) && uri.getScheme().equals("https")) {
+
+            if (AirbitzApplication.isLoggedIn()) {
+                this.ShowFadingDialog(getString(R.string.logout_before_recovery));
+                return;
+            } else {
+                String recoveryToken = uri.getQueryParameter("token");
+                // Launch recovery from the Landing fragment
+                mLandingFragment.launchRecoveryPopup(recoveryToken);
+            }
+
+        }
+
         if (!AirbitzApplication.isLoggedIn()) {
             mDataUri = uri;
             return;
         }
 
         String scheme = uri.getScheme();
-        if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
+        if (vendorUrl.equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
             if (2 <= path.size()) {
                 AirbitzCore.logi(uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme)
-                || "airbitz".equals(scheme)
+                || vendorUrl.equals(scheme)
                 || "hbits".equals(scheme)
                 || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme)
                 || "x-callback-url".equals(scheme)
-                || "airbitz-ret".equals(scheme)) {
+                || vendorRetUrl.equals(scheme)) {
             handleRequestForPaymentUri(uri);
         }
     }
@@ -1405,11 +1424,13 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public void startRecoveryQuestions(String[] questions, String username) {
+    public void startRecoveryQuestions(String[] questions, String username, int type, String recoveryToken) {
         hideNavBar();
         Bundle bundle = new Bundle();
         mRecoveryMode = true;
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
+        bundle.putInt(PasswordRecoveryFragment.TYPE, type);
+        bundle.putString(PasswordRecoveryFragment.TOKEN, recoveryToken);
         bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
         Fragment frag = new PasswordRecoveryFragment();

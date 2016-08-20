@@ -31,16 +31,22 @@
 
 package com.airbitz.fragments.settings;
 
+import android.accounts.AccountManager;
 import android.app.ActionBar;
 ;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.Html;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -65,8 +71,10 @@ import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.QuestionChoice;
+import co.airbitz.core.Settings;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -76,12 +84,17 @@ import com.airbitz.api.CoreWrapper;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
+import com.airbitz.models.Contact;
 import com.airbitz.objects.MinEditText;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created on 2/10/14.
@@ -89,7 +102,9 @@ import java.util.Map;
 public class PasswordRecoveryFragment extends BaseFragment implements
         NavigationActivity.OnBackPress,
         TwoFactorMenuFragment.OnTwoFactorMenuResult {
-    public static final String MODE = "com.airbitz.passwordrecovery.type";
+    public static final String MODE = "com.airbitz.passwordrecovery.mode";
+    public static final String TYPE = "com.airbitz.passwordrecovery.type";
+    public static final String TOKEN = "com.airbitz.passwordrecovery.token";
     public static final String QUESTIONS = "com.airbitz.passwordrecovery.questions";
     public static final String USERNAME = "com.airbitz.passwordrecovery.username";
     public static final String PASSWORD = "com.airbitz.passwordrecovery.password";
@@ -97,11 +112,18 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     public static int SIGN_UP = 0;
     public static int CHANGE_QUESTIONS = 1;
     public static int FORGOT_PASSWORD = 2;
+    public static int RECOVERY_TYPE_1 = 0;
+    public static int RECOVERY_TYPE_2 = 1;
+    private static final int EMAIL_INTENT_REQUEST_CODE = 0xe3a11;
+    private static final int REQUEST_CODE_EMAIL = 0x47562fed;
+
     private final String TAG = getClass().getSimpleName();
     String mAnswers = "";
     String mQuestions = "";
     boolean ignoreSelected = false;
     private int mMode;
+    private String mRecoveryToken = "";
+    private int mType;
     private boolean mReturnFromTwoFactorScan = false;
     private boolean mTwoFactorSuccess = false;
     private String mTwoFactorSecret;
@@ -117,10 +139,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
     private Map<String, Integer> mStringCategory = new HashMap<String, Integer>(); // Question, MinLength
     private List<String> mStringQuestions;
-    private Map<String, Integer> mNumericCategory = new HashMap<String, Integer>(); // Question, MinLength
-    private List<String> mNumericQuestions;
-    private Map<String, Integer> mMustCategory = new HashMap<String, Integer>();
-    private List<String> mMustQuestions;
     private boolean mSaved = false;
 
     private AirbitzCore mCoreAPI;
@@ -150,6 +168,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
         if (getArguments() != null) {
             mMode = getArguments().getInt(MODE);
+            mType = getArguments().getInt(TYPE);
+            mRecoveryToken = getArguments().getString(TOKEN);
             if (mMode == CHANGE_QUESTIONS) {
                 mPasswordEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
                 mDoneSignUpButton.setText(getResources().getString(R.string.activity_recovery_complete_button_change_questions));
@@ -162,8 +182,6 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         }
 
         mStringQuestions = new ArrayList<String>();
-        mNumericQuestions = new ArrayList<String>();
-        mMustQuestions = new ArrayList<String>();
 
         mDoneSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,7 +357,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 }
                 if (mMode == FORGOT_PASSWORD) {
                     mAttemptAnswerVerificationTask = new AttemptAnswerVerificationTask();
-                    mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME));
+                    mAttemptAnswerVerificationTask.execute(mAnswers, getArguments().getString(USERNAME), mRecoveryToken);
                 } else {
                     attemptCommitQuestions();
                 }
@@ -368,12 +386,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private void InitializeQuestionViews() {
         mQuestionViews = new ArrayList<QuestionView>();
         int position = 0;
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", QuestionType.STRING, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mNumericQuestions, "", QuestionType.NUMERIC, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
-        mQuestionViews.add(new QuestionView(getActivity(), mMustQuestions, "", QuestionType.MUST, position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", position++));
+        mQuestionViews.add(new QuestionView(getActivity(), mStringQuestions, "", position++));
 
         setListWithQuestionViews(mQuestionViews);
     }
@@ -394,7 +408,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             List<String> qs = new ArrayList<String>();
             qs.add(question);
             qs.add(getString(R.string.activity_recovery_question_default));
-            QuestionView qv = new QuestionView(getActivity(), qs, answers[position], QuestionType.STRING, position++);
+            QuestionView qv = new QuestionView(getActivity(), qs, answers[position], position++);
             mQuestionViews.add(qv);
         }
 
@@ -418,13 +432,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         for (QuestionView qv : mQuestionViews) {
             if (qv != notThis) {
                 List<String> unchosen;
-                if (qv.mType == QuestionType.STRING) {
-                    unchosen = getUnchosenQuestions(mStringQuestions);
-                } else if (qv.mType == QuestionType.NUMERIC) {
-                    unchosen = getUnchosenQuestions(mNumericQuestions);
-                } else {
-                    unchosen = getUnchosenQuestions(mMustQuestions);
-                }
+                unchosen = getUnchosenQuestions(mStringQuestions);
                 qv.setAvailableQuestions(unchosen);
 
                 if (!qv.chosenQuestion.equals(getString(R.string.activity_recovery_question_default))) {
@@ -478,14 +486,13 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         }
     }
 
-    private enum QuestionType {STRING, NUMERIC, MUST}
-
     /**
      * Attempt to verify answers
      */
     public class AttemptAnswerVerificationTask extends AsyncTask<String, Void, Boolean> {
         private String username;
         private String answers;
+        private String recoveryToken;
         private AirbitzException mFailureException;
 
         @Override
@@ -497,9 +504,17 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         protected Boolean doInBackground(String... params) {
             answers = params[0];
             username = params[1];
+            recoveryToken = params[2];
             boolean result = false;
             try {
-                Account account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
+                Account account;
+                if (mType == RECOVERY_TYPE_2) {
+                    account = mCoreAPI.loginWithRecovery2(username, answers.split("\n"), recoveryToken, mTwoFactorSecret);
+                } else {
+                    account = mCoreAPI.recoveryLogin(username, answers.split("\n"), mTwoFactorSecret);
+                }
+                if (account == null)
+                    return false;
                 AirbitzApplication.Login(account);
                 result = true;
             } catch (AirbitzException e) {
@@ -514,6 +529,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
 
             if (success) {
+                mActivity.ShowFadingDialog(getString(R.string.recovery_successful));
+
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD_VIA_QUESTIONS);
                 bundle.putString(PasswordRecoveryFragment.QUESTIONS, answers);
@@ -522,7 +539,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 frag.setArguments(bundle);
                 mActivity.pushFragmentNoAnimation(frag, NavigationActivity.Tabs.BD.ordinal());
             } else {
-                if (mFailureException.isOtpError()) {
+                if (mFailureException != null && mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
                     mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
@@ -574,20 +591,12 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
                 for (QuestionChoice choice : mChoices) {
                     String category = choice.category();
-                    if (category.equals("string")) {
+                    if (category.equals("recovery2")) {
                         mStringCategory.put(choice.question(), (int) choice.minLength());
                         mStringQuestions.add(choice.question());
-                    } else if (category.equals("numeric")) {
-                        mNumericCategory.put(choice.question(), (int) choice.minLength());
-                        mNumericQuestions.add(choice.question());
-                    } else if (category.equals("must")) {
-                        mMustCategory.put(choice.question(), (int) choice.minLength());
-                        mMustQuestions.add(choice.question());
                     }
                 }
                 mStringQuestions.add(getString(R.string.activity_recovery_question_default));
-                mNumericQuestions.add(getString(R.string.activity_recovery_question_default));
-                mMustQuestions.add(getString(R.string.activity_recovery_question_default));
                 return true;
             } else {
                 AirbitzCore.logi("No Questions");
@@ -637,7 +646,11 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
+                if (mType == RECOVERY_TYPE_1) {
+                    mAccount.recoverySetup(mQuestions.split("\n"), mAnswers.split("\n"));
+                } else if (mType == RECOVERY_TYPE_2) {
+                    mRecoveryToken = mAccount.setupRecovery2Questions(mQuestions.split("\n"), mAnswers.split("\n"));
+                }
                 return true;
             } catch (AirbitzException e) {
                 AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
@@ -652,10 +665,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
             if (!success) {
                 mActivity.ShowFadingDialog(getResources().getString(R.string.activity_recovery_error_save_failed));
             } else {
-                mSaved = true;
-                mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                CoreWrapper.clearRecoveryReminder(mAccount);
-                mActivity.popFragment();
+                if (mType == RECOVERY_TYPE_1) {
+                    mSaved = true;
+                    mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+                    CoreWrapper.clearRecoveryReminder(mAccount);
+                    mActivity.popFragment();
+                } else if (mType == RECOVERY_TYPE_2) {
+                    // Launch popup to ask user to email themselves the token
+                    launchSaveTokenAlert(getResources().getString(R.string.save_recovery_token_popup));
+                }
             }
         }
 
@@ -666,8 +684,146 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         }
     }
 
+    public void launchSaveTokenAlert(String title) {
+
+        String email = mAccount.data("ABPersonalInfo").get("email");
+
+        if (email == null || email.length() == 0)
+            email = getEmail();
+
+        new MaterialDialog.Builder(mActivity)
+                .title(title)
+                .content(R.string.save_recovery_token_popup_message)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .positiveText(R.string.string_next)
+                .negativeText(R.string.string_cancel)
+                .input("", email, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // Do something
+                        if (isEmailValid(input.toString())) {
+                            // Save email in dataStore for use later
+                            mAccount.data("ABPersonalInfo").set("email",input.toString());
+                            sendEmail(input.toString());
+                            dialog.dismiss();
+                        } else {
+                            launchSaveTokenAlert(getResources().getString(R.string.invalid_email));
+                        }
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+
+                .show();
+    }
+
+    private String getEmail() {
+        AccountManager aManager = AccountManager.get(getActivity().getApplicationContext());
+        android.accounts.Account[] accounts = aManager.getAccountsByType("com.google");
+
+        String accountId = "";
+        for (android.accounts.Account account : accounts) {
+            accountId = account.name;
+            break;
+        }
+        return accountId;
+    }
+
+    private void sendEmail(String emailAddress) {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{emailAddress});
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+                String.format(getString(R.string.recovery_token_email_subject),
+                        getString(R.string.app_name)));
+
+        String recoveryUrl = String.format("iOS<br>\n<a href=\"%1$s://recovery?token=%2$s\">%3$s://recovery?token=%4$s</a><br><br>\n",
+                "airbitz", mRecoveryToken, "airbitz", mRecoveryToken);
+
+        recoveryUrl = recoveryUrl + String.format("Android<br>\n<a href=\"https://recovery.airbitz.co/recovery?token=%1$s\">https://recovery.airbitz.co/recovery?token=%2$s</a>", mRecoveryToken, mRecoveryToken);
+
+        String obfuscatedUsername = obfuscateString(mAccount.username());
+
+        String body = String.format(getString(R.string.recovery_token_email_body),
+                getString(R.string.app_name), obfuscatedUsername, recoveryUrl);
+
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+
+        startActivityForResult(Intent.createChooser(intent, "email"), EMAIL_INTENT_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EMAIL_INTENT_REQUEST_CODE) {
+            mSaved = true;
+            mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
+            CoreWrapper.clearRecoveryReminder(mAccount);
+            mActivity.popFragment();
+        }
+    }
+
+    private String obfuscateString(String str) {
+
+        String obfuscatedStr = str;
+
+        int strLen = str.length();
+        if (strLen <= 3)
+        {
+            obfuscatedStr = str.substring(0, strLen - 1) + "*";
+        }
+        else if(strLen <= 6)
+        {
+            obfuscatedStr = str.substring(0, strLen - 2) + "**";
+        }
+        else if(strLen <= 9)
+        {
+            obfuscatedStr = str.substring(0, strLen - 3) + "***";
+        }
+        else if(strLen <= 12)
+        {
+            obfuscatedStr = str.substring(0, strLen - 4) + "****";
+        }
+        else
+        {
+            obfuscatedStr = str.substring(0, strLen - 5) + "*****";
+        }
+        return obfuscatedStr;
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    private static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,16}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
     private class QuestionView extends LinearLayout {
-        public QuestionType mType;
         public String chosenQuestion = "";
         Context mContext;
         int mPosition;
@@ -678,10 +834,9 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         private List<String> currentQuestionList;
         private QuestionView me = this;
 
-        public QuestionView(Context context, List<String> questions, String answer, QuestionType type, int position) {
+        public QuestionView(Context context, List<String> questions, String answer, int position) {
             super(context);
             mContext = context;
-            mType = type;
             mPosition = position;
             currentQuestionList = questions;
             LayoutInflater inflater = (LayoutInflater) context
@@ -708,16 +863,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
 
                     chosenQuestion = currentQuestionList.get(i);
                     AirbitzCore.logi("spinner selection not ignored=" + chosenQuestion);
-                    if (mType == QuestionType.STRING) {
-                        if (mStringCategory.containsKey(chosenQuestion))
-                            mCharLimit = mStringCategory.get(chosenQuestion);
-                    } else if (mType == QuestionType.NUMERIC) {
-                        if (mNumericCategory.containsKey(chosenQuestion))
-                            mCharLimit = mNumericCategory.get(chosenQuestion);
-                    } else if (mType == QuestionType.MUST) {
-                        if (mMustCategory.containsKey(chosenQuestion))
-                            mCharLimit = mMustCategory.get(chosenQuestion);
-                    }
+                    if (mStringCategory.containsKey(chosenQuestion))
+                        mCharLimit = mStringCategory.get(chosenQuestion);
                     mText.setMinLength(mCharLimit);
 
                     if (mSpinner.getSelectedItemPosition() != mAdapter.getCount()) {

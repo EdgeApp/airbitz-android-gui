@@ -245,7 +245,7 @@
     <string name="activity_recovery_question_default">Question</string>
     <string name="item_recovery_spinner_arrow_description">Drop down arrow</string>
     <string name="activity_recovery_done_title">Recovery Questions Set</string>
-    <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.  When recovering your password, your answers must match exactly. **DO NOT FORGET YOUR PASSWORD AND RECOVERY ANSWERS** YOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
+    <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
     <string name="activity_recovery_error_title">Password Recovery failure</string>
     <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
     <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
@@ -705,6 +705,7 @@
 
     <string name="app_support_requested">Support Requested</string>
     <string name="app_name">Airbitz</string>
+    <string name="app_url_prefix">airbitz</string>
     <string name="app_homepage">https://airbitz.co</string>
     <string name="app_support_email">support@airbitz.co</string>
     <string name="app_support_phone">+1-844-928-9744</string>
@@ -753,5 +754,19 @@
 
     <string name="change_mining_fee_title">Change Mining Fee</string>
     <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+
+    <!--Password Recovery Text-->
+    <string name="save_recovery_token_popup">Save Recovery Token</string>
+    <string name="save_recovery_token_popup_message">"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+    <string name="recovery_token_email_subject">%s Recovery Token"</string>
+    <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+    <string name="enter_username_to_recover">Please enter the username of the account to recover</string>
+    <string name="recovery_not_setup">Recovery was not setup or was done on another device</string>
+    <string name="recovery_not_setup2">If recovery was setup, you should have emailed yourself a recovery token with a link</string>
+    <string name="recovery_not_setup3">Please find the email and click on the link from this device to initiate recovery</string>
+    <string name="recovery_token_invalid">Incorrect username for this recovery token. Please try a different username or use a different recovery token link.</string>
+    <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
+    <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+    <string name="invalid_email">Invalid Email</string>
 
 </resources>

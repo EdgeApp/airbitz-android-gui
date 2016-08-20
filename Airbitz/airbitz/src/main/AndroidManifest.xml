@@ -128,6 +128,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+                <category android:name="android.intent.category.BROWSABLE"></category>
+                <data android:host="recovery.airbitz.co" android:path="/recovery" android:scheme="https"></data>
+            </intent-filter>
         </activity>
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />

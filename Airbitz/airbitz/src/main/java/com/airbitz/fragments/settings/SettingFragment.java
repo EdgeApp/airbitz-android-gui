@@ -256,6 +256,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                 Fragment fragment = new PasswordRecoveryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.CHANGE_QUESTIONS);
+                bundle.putInt(PasswordRecoveryFragment.TYPE, PasswordRecoveryFragment.RECOVERY_TYPE_2);
                 fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
