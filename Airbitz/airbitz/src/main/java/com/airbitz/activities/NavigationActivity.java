@@ -186,6 +186,9 @@ public class NavigationActivity extends ActionBarActivity
     public static final String URI_SOURCE = "URI";
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
+    private enum NetworkStatus {UNINITIALIZED, ON, OFF};
+
+    private NetworkStatus mNetworkStatus = NetworkStatus.UNINITIALIZED;
 
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -195,16 +198,22 @@ public class NavigationActivity extends ActionBarActivity
 
             if (extras != null) {
                 if (networkIsAvailable()) {
-                    AirbitzCore.logi("Connection available");
-                    mCoreAPI.connectivity(true);
-                    mConnectivityNotified = false;
-                } else { // has connection
+                    if (mNetworkStatus == NetworkStatus.UNINITIALIZED ||
+                            mNetworkStatus == NetworkStatus.OFF) {
+                        AirbitzCore.logi("Connection available");
+                        mCoreAPI.connectivity(true);
+                        mConnectivityNotified = false;
+                        mNetworkStatus = NetworkStatus.ON;
+                    }
+                } else if (mNetworkStatus == NetworkStatus.UNINITIALIZED ||
+                        mNetworkStatus == NetworkStatus.ON) {
                     AirbitzCore.logi("Connection NOT available");
                     mCoreAPI.connectivity(false);
                     if (!mConnectivityNotified) {
                         ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
                     }
                     mConnectivityNotified = true;
+                    mNetworkStatus = NetworkStatus.OFF;
                 }
             }
         }
@@ -870,7 +879,6 @@ public class NavigationActivity extends ActionBarActivity
         }
         //******************* end HockeyApp support
 
-        setupReceivers();
         mCoreAPI.foreground();
 
         //Look for Connection change events
@@ -951,14 +959,12 @@ public class NavigationActivity extends ActionBarActivity
     @Override
     public void onPause() {
         super.onPause();
+        activityInForeground = false;
 
 //        setCoreListeners(null);
-//
-        activityInForeground = false;
 //        unregisterReceiver(ConnectivityChangeReceiver);
-//
 //        tearDownReceivers();
-//        mCoreAPI.background();
+        mCoreAPI.background();
 
         cancelToast();
 
