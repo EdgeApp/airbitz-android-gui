@@ -1628,7 +1628,7 @@ _bridge = function() {
    * @param {function} callback - a function that will be called when the user
    * changes their currently selected wallet.
    */
-  Airbitz.core.setWalletChangeListener = function(callback) {
+  Airbitz.core.setupWalletChangeListener = function(callback) {
     Airbitz._walletListener = callback;
   };
 
@@ -11410,7 +11410,7 @@ run(['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
     Airbitz.currentWallet = newWallet;
     $rootScope.currentWallet = newWallet;
   });
-  Airbitz.core.setWalletChangeListener(function(newWallet) {
+  Airbitz.core.setupWalletChangeListener(function(newWallet) {
     $rootScope.$apply(function() {
       Airbitz.currentWallet = newWallet;
       $rootScope.currentWallet = newWallet;

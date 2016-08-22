@@ -32,14 +32,10 @@
 package com.airbitz.plugins;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -101,13 +97,13 @@ public class PluginFramework {
         }
     }
 
-    public static final String GIFT_CARDS = "Discounted Gift Cards";
+    public static final String GENERAL_PLUGINS = "General Plugins";
     public static final String BUYSELL = "Buy/Sell Bitcoin";
 
     static String[] getTags() {
         return new String[] {
-            BUYSELL,
-            GIFT_CARDS,
+                BUYSELL,
+                GENERAL_PLUGINS,
         };
     }
 
@@ -126,6 +122,19 @@ public class PluginFramework {
             Plugin plugin;
 
             plugin = new Plugin();
+            plugin.pluginId = "com.bitrefill.widget";
+            plugin.sourceFile = "file:///android_asset/bitrefill.html";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bitrefill_title);
+            plugin.subtitle = "";
+            plugin.provider = "Bitrefill";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/Bitrefill-logo-300x300.png";
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.bitrefill_api_key));
+
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
+
+
+            plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
@@ -140,7 +149,7 @@ public class PluginFramework {
             plugin.env.put("CATEGORY", "Expense:Coffee Shops");
 
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
@@ -156,7 +165,7 @@ public class PluginFramework {
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_TARGET));
             plugin.env.put("CATEGORY", "Expense:Shopping");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
@@ -174,7 +183,7 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Groceries");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
@@ -192,7 +201,7 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Shopping");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
@@ -210,7 +219,7 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Home Improvement");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";

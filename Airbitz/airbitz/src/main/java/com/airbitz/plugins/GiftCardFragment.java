@@ -37,7 +37,6 @@ import android.os.Handler;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
-import com.airbitz.activities.NavigationActivity;
 
 public class GiftCardFragment extends BasePluginList {
 
@@ -63,7 +62,7 @@ public class GiftCardFragment extends BasePluginList {
         }).start();
 
         mPlugins.clear();
-        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.GIFT_CARDS));
+        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.GENERAL_PLUGINS));
     }
 
     private void notifyFirstUsage(final String message) {

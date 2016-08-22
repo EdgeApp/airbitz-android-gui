@@ -735,6 +735,7 @@
     <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
     <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
+    <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
 
     <string name="intent_choose_an_email">Choose an Email client:</string>
 

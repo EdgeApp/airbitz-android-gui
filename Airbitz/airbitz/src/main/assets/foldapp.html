@@ -10274,7 +10274,7 @@ _bridge = function() {
    * @param {function} callback - a function that will be called when the user
    * changes their currently selected wallet.
    */
-  Airbitz.core.setWalletChangeListener = function(callback) {
+  Airbitz.core.setupWalletChangeListener = function(callback) {
     Airbitz._walletListener = callback;
   };
 
@@ -17341,7 +17341,7 @@ Card.prototype.mockBal = function(bal) {
 // Main
 var user = Object.create(Account);
 
-Airbitz.core.setWalletChangeListener(updateWallet);
+Airbitz.core.setupWalletChangeListener(updateWallet);
 Account.username = Airbitz.core.readData("fold-username");
 Account.pass = Airbitz.core.readData("fold-pass");
 Airbitz.ui.showAlert('', 'Loading account...', {
