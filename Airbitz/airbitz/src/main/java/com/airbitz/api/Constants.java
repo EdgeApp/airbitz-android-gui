@@ -95,6 +95,7 @@ public class Constants {
     public static final long BIZ_ID_TARGET = 11132;
     public static final long BIZ_ID_WALMART = 11140;
     public static final long BIZ_ID_WHOLEFOODS = 11139;
+    public static final long BIZ_ID_BITREFILL = 8498;
 
     public final static int EXPENSE_IDX = 0;
     public final static int INCOME_IDX = 1;
