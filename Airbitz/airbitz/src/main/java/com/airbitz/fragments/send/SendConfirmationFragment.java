@@ -153,6 +153,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private String mUUIDorURI;
     private String mLabel;
     private String mCategory;
+    private String mOverrideAddress;
     private String mNotes;
     private Boolean mLocked = false;
     private Boolean mSignOnly = false;
@@ -927,6 +928,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
             mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
+            mOverrideAddress = bundle.getString(SendFragment.ADDRESS, "");
             boolean mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             if (mIsUUID) {
                 mDestWallet = mAccount.wallet(mUUIDorURI);
@@ -952,6 +954,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                         + "..." + mParsedUri.address().substring(mParsedUri.address().length() - 5, mParsedUri.address().length());
             }
             mAmountToSendSatoshi = mParsedUri.amount();
+        } else if (mOverrideSpend != null && mOverrideAddress != null && mOverrideAddress.length() > 15) {
+            if (mLabel != null && mLabel.length() > 0) {
+                sendTo = mLabel + " (" + mOverrideAddress.substring(0, 5) + "...)";
+            } else {
+                sendTo = mOverrideAddress.substring(0, 5)
+                        + "..." + mOverrideAddress.substring(mOverrideAddress.length() - 5, mOverrideAddress.length());
+            }
         } else if (mDestWallet != null) {
             sendTo = mDestWallet.name();
         }
