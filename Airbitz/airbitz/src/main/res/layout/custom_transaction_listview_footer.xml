@@ -12,7 +12,11 @@
         android:id="@+id/import_bitcoin"
         layout="@layout/item_listview_transaction" />
 
-    <include 
+    <include
+        android:id="@+id/bitrefill"
+        layout="@layout/item_listview_transaction" />
+
+    <include
         android:id="@+id/discount_starbucks"
         layout="@layout/item_listview_transaction" />
 
