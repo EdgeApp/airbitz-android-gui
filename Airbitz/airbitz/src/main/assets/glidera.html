@@ -1251,13 +1251,13 @@ _bridge = function() {
       _native.finalizeRequest(wallet.id, requestId);
     },
 
-    createSpendRequest: function(wallet, toAddress, amountSatoshi, options) {
+    createSpendRequest: function(wallet, toAddress, amountSatoshi, amountFiat, options) {
       var cbid = newId(), opts = options;
       Airbitz._callbacks[cbid] = function(data) {
         _handleResponse(data, opts);
         delete Airbitz._callbacks[cbid];
       };
-      _native.createSpendRequest(cbid, wallet.id, toAddress, amountSatoshi, amountFiat,
+      _native.requestSpend(cbid, wallet.id, toAddress, amountSatoshi, amountFiat,
         options.label || '', options.category || '', options.notes || '', options.bizId);
     },
 
@@ -1267,7 +1267,7 @@ _bridge = function() {
         _handleResponse(data, opts);
         delete Airbitz._callbacks[cbid];
       };
-      _native.createSpendRequest2(cbid, wallet.id, toAddress, amountSatoshi, toAddress2, amountSatoshi2, amountFiat,
+      _native.requestSpend2(cbid, wallet.id, toAddress, amountSatoshi, toAddress2, amountSatoshi2, amountFiat,
           options.label || '', options.category || '', options.notes || '', options.bizId);
     },
 
