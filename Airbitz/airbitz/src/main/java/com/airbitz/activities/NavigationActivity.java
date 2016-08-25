@@ -478,7 +478,7 @@ public class NavigationActivity extends ActionBarActivity
     public static AirbitzCore initiateCore(Context context) {
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        return AndroidUtils.init(context, airbitzApiKey, hiddenbitzKey);
+        return AndroidUtils.init(context, airbitzApiKey, "account:repo:co.airbitz.wallet", hiddenbitzKey);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
