@@ -32,14 +32,10 @@
 package com.airbitz.plugins;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -89,6 +85,7 @@ public class PluginFramework {
         String subtitle;
         String provider;
         String country;
+        String imageUrl;
         int imageResId;
         boolean enabled;
 
@@ -100,13 +97,13 @@ public class PluginFramework {
         }
     }
 
-    public static final String GIFT_CARDS = "Discounted Gift Cards";
+    public static final String GENERAL_PLUGINS = "General Plugins";
     public static final String BUYSELL = "Buy/Sell Bitcoin";
 
     static String[] getTags() {
         return new String[] {
-            BUYSELL,
-            GIFT_CARDS,
+                BUYSELL,
+                GENERAL_PLUGINS,
         };
     }
 
@@ -125,12 +122,25 @@ public class PluginFramework {
             Plugin plugin;
 
             plugin = new Plugin();
+            plugin.pluginId = "com.bitrefill.widget";
+            plugin.sourceFile = "file:///android_asset/bitrefill.html";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bitrefill_title);
+            plugin.subtitle = "";
+            plugin.provider = "Bitrefill";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/Bitrefill-logo-300x300.png";
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.bitrefill_api_key));
+
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
+
+
+            plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
             plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_discount);
-            plugin.provider = "foldapp";
-            plugin.imageResId = R.drawable.ic_plugin_coffee;
+            plugin.provider = "Card For Coin Inc.";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/starbucks_logo2.png";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Starbucks");
@@ -139,15 +149,15 @@ public class PluginFramework {
             plugin.env.put("CATEGORY", "Expense:Coffee Shops");
 
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_target_title);
             plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_target_discount);
-            plugin.provider = "foldapp";
-            plugin.imageResId = R.drawable.ic_plugin_target;
+            plugin.provider = "Card For Coin Inc.";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/target_logo.png";
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BRAND", "Target");
@@ -155,14 +165,15 @@ public class PluginFramework {
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_TARGET));
             plugin.env.put("CATEGORY", "Expense:Shopping");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_wholefoods_title);
             plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_wholefoods_discount);
-            plugin.provider = "foldapp";
+            plugin.provider = "Card For Coin Inc.";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2015/12/Whole-Foods-Market-128px.png";
             plugin.imageResId = R.drawable.ic_plugin_wholefoods;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
@@ -172,14 +183,15 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Groceries");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_walmart_title);
             plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_walmart_discount);
-            plugin.provider = "foldapp";
+            plugin.provider = "Card For Coin Inc.";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/walmart-logo0.jpg";
             plugin.imageResId = R.drawable.ic_plugin_walmart;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
@@ -189,14 +201,15 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Shopping");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_homedepot_title);
             plugin.subtitle = AirbitzApplication.getContext().getString(R.string.plugin_homedepot_discount);
-            plugin.provider = "foldapp";
+            plugin.provider = "Card For Coin Inc.";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2015/12/Home-Depot-square-128px.png";
             plugin.imageResId = R.drawable.ic_plugin_homedepot;
             plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.fold_api_key));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
@@ -206,15 +219,16 @@ public class PluginFramework {
 //            plugin.enabled = false;
             plugin.env.put("CATEGORY", "Expense:Home Improvement");
             mPlugins.add(plugin);
-            mPluginsGrouped.get(GIFT_CARDS).add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.glidera.us";
             plugin.sourceFile = "file:///android_asset/glidera.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_glidera_title);
             plugin.subtitle = "";
-            plugin.provider = "glidera";
+            plugin.provider = "Glidera Inc";
             plugin.country = "US";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-18-at-1.36.56-AM.png";
             plugin.imageResId = R.drawable.ic_plugin_usd;
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
             plugin.env.put("GLIDERA_CLIENT_ID", AirbitzApplication.getContext().getString(R.string.glidera_client_id));
@@ -231,6 +245,7 @@ public class PluginFramework {
             plugin.subtitle = "";
             plugin.provider = "clevercoin";
             plugin.country = "EUR";
+            plugin.imageUrl = "";
             plugin.imageResId = R.drawable.ic_plugin_euro;
             plugin.enabled = false;
             plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));

@@ -33,7 +33,7 @@ package com.airbitz.fragments.login;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -67,6 +67,8 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Settings;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -506,10 +508,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         return true;
     }
 
-    private AlertDialog mAlertSuccess = null;
+    private Dialog mAlertSuccess = null;
     public void ShowMessageDialogChangeSuccess(String title, String reason) {
         if(mAlertSuccess == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
             builder.setMessage(reason)
                     .setTitle(title)
                     .setCancelable(false)
@@ -522,8 +524,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                                 }
                             }
                     );
-            mAlertSuccess = builder.create();
-            mAlertSuccess.show();
+            mAlertSuccess = builder.show();
         }
     }
 

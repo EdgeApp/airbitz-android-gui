@@ -32,7 +32,10 @@
 package com.airbitz.plugins;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,6 +56,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.utils.Common;
 import com.airbitz.plugins.PluginFramework.Plugin;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -154,12 +158,17 @@ public abstract class BasePluginList extends BaseFragment {
             ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(mContext);
-                convertView = inflater.inflate(R.layout.item_buysell_plugin, null, false);
+                convertView = inflater.inflate(R.layout.item_listview_plugins, null, false);
 
                 holder = new ViewHolder();
-                holder.name = (TextView) convertView.findViewById(R.id.item_name);
+                holder.name = (TextView) convertView.findViewById(R.id.textview_top_line);
+                holder.provider = (TextView) convertView.findViewById(R.id.textview_bottom_line);
+                holder.provider.setTypeface(NavigationActivity.latoRegularTypeFace);
+                holder.name.setTextColor(mContext.getResources().getColor(R.color.semi_black_text));
                 holder.image = (ImageView) convertView.findViewById(R.id.image);
                 holder.name.setTypeface(NavigationActivity.latoRegularTypeFace);
+
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -169,13 +178,42 @@ public abstract class BasePluginList extends BaseFragment {
                 name += " " + plugin.subtitle;
             }
             holder.name.setText(name);
-            holder.image.setImageResource(plugin.imageResId);
+            String provider = plugin.provider;
+            holder.provider.setText(provider);
+            new DownloadImageTask(holder.image)
+                    .execute(plugin.imageUrl);
             return convertView;
         }
     }
 
     static class ViewHolder {
         TextView name;
+        TextView provider;
         ImageView image;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }

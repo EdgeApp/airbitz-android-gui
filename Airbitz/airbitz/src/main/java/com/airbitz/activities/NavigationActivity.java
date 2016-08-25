@@ -41,6 +41,8 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,10 +66,14 @@ import android.nfc.NfcManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.NotificationCompat;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -88,6 +94,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
@@ -99,6 +106,7 @@ import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -178,6 +186,9 @@ public class NavigationActivity extends ActionBarActivity
     public static final String URI_SOURCE = "URI";
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
+    private enum NetworkStatus {UNINITIALIZED, ON, OFF};
+
+    private NetworkStatus mNetworkStatus = NetworkStatus.UNINITIALIZED;
 
     private final String TAG = getClass().getSimpleName();
     BroadcastReceiver ConnectivityChangeReceiver = new BroadcastReceiver() {
@@ -187,16 +198,22 @@ public class NavigationActivity extends ActionBarActivity
 
             if (extras != null) {
                 if (networkIsAvailable()) {
-                    AirbitzCore.logi("Connection available");
-                    mCoreAPI.connectivity(true);
-                    mConnectivityNotified = false;
-                } else { // has connection
+                    if (mNetworkStatus == NetworkStatus.UNINITIALIZED ||
+                            mNetworkStatus == NetworkStatus.OFF) {
+                        AirbitzCore.logi("Connection available");
+                        mCoreAPI.connectivity(true);
+                        mConnectivityNotified = false;
+                        mNetworkStatus = NetworkStatus.ON;
+                    }
+                } else if (mNetworkStatus == NetworkStatus.UNINITIALIZED ||
+                        mNetworkStatus == NetworkStatus.ON) {
                     AirbitzCore.logi("Connection NOT available");
                     mCoreAPI.connectivity(false);
                     if (!mConnectivityNotified) {
                         ShowOkMessageDialog(getString(R.string.string_no_connection_title), getString(R.string.string_no_connection_message));
                     }
                     mConnectivityNotified = true;
+                    mNetworkStatus = NetworkStatus.OFF;
                 }
             }
         }
@@ -461,7 +478,7 @@ public class NavigationActivity extends ActionBarActivity
     public static AirbitzCore initiateCore(Context context) {
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
         String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
-        return AndroidUtils.init(context, airbitzApiKey, hiddenbitzKey);
+        return AndroidUtils.init(context, airbitzApiKey, "account:repo:co.airbitz.wallet", hiddenbitzKey);
     }
 
     public void DisplayLoginOverlay(boolean overlay) {
@@ -862,7 +879,6 @@ public class NavigationActivity extends ActionBarActivity
         }
         //******************* end HockeyApp support
 
-        setupReceivers();
         mCoreAPI.foreground();
 
         //Look for Connection change events
@@ -943,14 +959,14 @@ public class NavigationActivity extends ActionBarActivity
     @Override
     public void onPause() {
         super.onPause();
-
-        setCoreListeners(null);
-
         activityInForeground = false;
-        unregisterReceiver(ConnectivityChangeReceiver);
 
-        tearDownReceivers();
+//        setCoreListeners(null);
+//        unregisterReceiver(ConnectivityChangeReceiver);
+//        tearDownReceivers();
         mCoreAPI.background();
+
+        cancelToast();
 
         AirbitzApplication.setBackgroundedTime(System.currentTimeMillis());
         AirbitzAlertReceiver.SetAllRepeatingAlerts(this);
@@ -1044,27 +1060,43 @@ public class NavigationActivity extends ActionBarActivity
             return;
         }
 
+        String vendorUrl = getString(R.string.app_url_prefix);
+        String vendorRetUrl = vendorUrl + "-ret";
+
+        if ("recovery.airbitz.co".equals(uri.getHost()) && uri.getScheme().equals("https")) {
+
+            if (AirbitzApplication.isLoggedIn()) {
+                this.ShowFadingDialog(getString(R.string.logout_before_recovery));
+                return;
+            } else {
+                String recoveryToken = uri.getQueryParameter("token");
+                // Launch recovery from the Landing fragment
+                mLandingFragment.launchRecoveryPopup(recoveryToken);
+            }
+
+        }
+
         if (!AirbitzApplication.isLoggedIn()) {
             mDataUri = uri;
             return;
         }
 
         String scheme = uri.getScheme();
-        if ("airbitz".equals(scheme) && "plugin".equals(uri.getHost())) {
+        if (vendorUrl.equals(scheme) && "plugin".equals(uri.getHost())) {
             List<String> path = uri.getPathSegments();
             if (2 <= path.size()) {
                 AirbitzCore.logi(uri.toString());
                 launchBuySell(path.get(1), path.get(0), uri);
             }
         } else if ("bitcoin".equals(scheme)
-                || "airbitz".equals(scheme)
+                || vendorUrl.equals(scheme)
                 || "hbits".equals(scheme)
                 || "bitid".equals(scheme)) {
             handleBitcoinUri(uri);
         }
         else if("bitcoin-ret".equals(scheme)
                 || "x-callback-url".equals(scheme)
-                || "airbitz-ret".equals(scheme)) {
+                || vendorRetUrl.equals(scheme)) {
             handleRequestForPaymentUri(uri);
         }
     }
@@ -1125,6 +1157,7 @@ public class NavigationActivity extends ActionBarActivity
         if(fragment != null) {
             AudioPlayer.play(this, R.raw.bitcoin_received);
             fragment.showDonation(mUUID, mTxId);
+            showLocalNotification(mUUID, mTxId);
             return;
         }
 
@@ -1142,6 +1175,7 @@ public class NavigationActivity extends ActionBarActivity
                 // Request the remainder of the funds
                 f.updateWithAmount(diff);
                 AudioPlayer.play(this, R.raw.bitcoin_received_partial);
+                showLocalNotification(mUUID, mTxId);
             }
         } else {
             Transaction tx = wallet.transaction(txId);
@@ -1149,6 +1183,7 @@ public class NavigationActivity extends ActionBarActivity
                 if (tx.amount() > 0) {
                     AudioPlayer.play(this, R.raw.bitcoin_received);
                     showIncomingBitcoinDialog(wallet, tx);
+                    showLocalNotification(mUUID, mTxId);
                 }
             }
         }
@@ -1179,12 +1214,12 @@ public class NavigationActivity extends ActionBarActivity
         Transaction transaction = wallet.transaction(txId);
         String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
         String currencyValue =
-            CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+                CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
         String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
-        if(withTeaching) {
+        if (withTeaching) {
             SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
             int count = prefs.getInt(INCOMING_COUNT, 1);
-            if(count <= 2 && !SettingFragment.getMerchantModePref()) {
+            if (count <= 2 && !SettingFragment.getMerchantModePref()) {
                 count++;
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(INCOMING_COUNT, count);
@@ -1192,8 +1227,20 @@ public class NavigationActivity extends ActionBarActivity
                 message += getString(R.string.received_bitcoin_fading_message_teaching);
             }
         }
-
+        showLocalNotification(uuid, txId);
         ShowFadingDialog(message, getResources().getInteger(R.integer.alert_hold_time_payment_received));
+    }
+
+    private void showLocalNotification(String uuid, String txid)
+    {
+        Account account = AirbitzApplication.getAccount();
+        Wallet wallet = account.wallet(uuid);
+        Transaction transaction = wallet.transaction(txid);
+        String coinValue = Utils.formatSatoshi(account, transaction.amount(), true);
+        String currencyValue =
+                CoreWrapper.formatCurrency(account, transaction.amount(), wallet.currency().code, true);
+        String message = String.format(getString(R.string.received_bitcoin_fading_message), coinValue, currencyValue);
+        AirbitzAlertReceiver.issueOSNotification(NavigationActivity.this, message, 1);
     }
 
     private RequestFragment requestMatchesQR(String uuid, String txid) {
@@ -1383,11 +1430,13 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
-    public void startRecoveryQuestions(String[] questions, String username) {
+    public void startRecoveryQuestions(String[] questions, String username, int type, String recoveryToken) {
         hideNavBar();
         Bundle bundle = new Bundle();
         mRecoveryMode = true;
         bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.FORGOT_PASSWORD);
+        bundle.putInt(PasswordRecoveryFragment.TYPE, type);
+        bundle.putString(PasswordRecoveryFragment.TOKEN, recoveryToken);
         bundle.putStringArray(PasswordRecoveryFragment.QUESTIONS, questions);
         bundle.putString(PasswordRecoveryFragment.USERNAME, username);
         Fragment frag = new PasswordRecoveryFragment();
@@ -1431,7 +1480,9 @@ public class NavigationActivity extends ActionBarActivity
         // stop the UI from responding to core events
         tearDownReceivers();
         mLogoutTask = new LogoutTask();
-        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+        mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        cancelToast();
     }
 
     private LogoutTask mLogoutTask;
@@ -2344,7 +2395,7 @@ public class NavigationActivity extends ActionBarActivity
                 mDrawer.closeDrawer(mDrawerView);
             }
         });
-        if (!getResources().getBoolean(R.bool.include_shop)) {
+        if (!getResources().getBoolean(R.bool.include_plugins)) {
             mDrawerShop.setVisibility(View.GONE);
         } else {
             mDrawerShop.setVisibility(View.VISIBLE);
@@ -2602,6 +2653,36 @@ public class NavigationActivity extends ActionBarActivity
         confirmDialog.show();
     }
 
+    private Toast mToastToShow;
+    CountDownTimer mToastCountDown;
+    public void showToast(String message, int duration) {
+        // Set the toast and duration
+        if (mToastCountDown != null) mToastCountDown.cancel();
+        if (mToastToShow != null) mToastToShow.cancel();
+        mToastToShow = Toast.makeText(this, message, Toast.LENGTH_LONG);
+
+        // Set the countdown to display the toast
+        mToastCountDown = new CountDownTimer(duration, 1000 /*Tick duration*/) {
+            public void onTick(long millisUntilFinished) {
+                if (activityInForeground)
+                    mToastToShow.show();
+            }
+            public void onFinish() {
+                mToastToShow.cancel();
+                mToastToShow = null;
+            }
+        };
+
+        // Show the toast and starts the countdown
+        mToastToShow.show();
+        mToastCountDown.start();
+    }
+
+    public void cancelToast() {
+        if (mToastCountDown != null) mToastCountDown.cancel();
+        if (mToastToShow != null) mToastToShow.cancel();
+    }
+
     private WalletReceiver mWalletsLoadedReceiver = new WalletReceiver();
     class WalletReceiver extends BroadcastReceiver {
         public boolean mDataLoaded = false;
@@ -2609,8 +2690,7 @@ public class NavigationActivity extends ActionBarActivity
 
         private void showMessage(String message) {
             if (mShowMessages && !mDataLoaded) {
-                NavigationActivity.this.ShowOrUpdateDialog(message,
-                    NavigationActivity.this.getResources().getInteger(R.integer.alert_hold_time_forever), false);
+                showToast(message, 9999999);
             }
         }
 
@@ -2620,6 +2700,7 @@ public class NavigationActivity extends ActionBarActivity
                 return;
             }
             if (Constants.WALLET_LOADING_START_ACTION.equals(intent.getAction())) {
+
                 showMessage(context.getString(R.string.loading_wallets));
             } else if (Constants.WALLET_CHANGED_ACTION.equals(intent.getAction())) {
                 List<String> ids = AirbitzApplication.getAccount().walletIds();
@@ -2645,7 +2726,7 @@ public class NavigationActivity extends ActionBarActivity
             } else if (Constants.WALLETS_ALL_LOADED_ACTION.equals(intent.getAction())) {
                 mDataLoaded = true;
                 if (mShowMessages) {
-                    NavigationActivity.this.DismissFadingDialog();
+                    cancelToast();
                 }
             }
         }

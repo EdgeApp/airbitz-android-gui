@@ -316,9 +316,14 @@ public class SendFragment extends ScanFragment {
             if (result) {
                 launchSendConfirmation(mParsedUri, mRequest, null);
             } else {
-                showMessageAndStartCameraDialog(
-                    R.string.fragment_send_failure_title,
-                    R.string.fragment_send_confirmation_invalid_bitcoin_address);
+                if (mParsedUri.address() != null &&
+                        mParsedUri.address().length() > 5) {
+                    launchSendConfirmation(mParsedUri, null, null);
+                } else {
+                    showMessageAndStartCameraDialog(
+                            R.string.fragment_send_failure_title,
+                            R.string.fragment_send_confirmation_invalid_bitcoin_address);
+                }
             }
             hideProcessing();
         }

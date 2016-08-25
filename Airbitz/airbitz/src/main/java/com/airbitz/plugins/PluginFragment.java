@@ -467,7 +467,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                         mSendConfirmation.setDestWallet(null);
 
                         Bundle bundle = new Bundle();
-                        bundle.putString(ScanFragment.LABEL, address);
+                        bundle.putString(ScanFragment.LABEL, label);
+                        bundle.putString(ScanFragment.ADDRESS, address);
                         bundle.putLong(ScanFragment.AMOUNT_SATOSHI, amountSatoshi);
                         bundle.putLong(ScanFragment.AMOUNT_ADDITIONAL_FEES, amountSatoshi2);
                         bundle.putDouble(ScanFragment.AMOUNT_FIAT, amountFiat);

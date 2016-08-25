@@ -186,9 +186,10 @@ public class UserReview {
 
 
     public static void ShowUserLikesAirbitzDialog(final NavigationActivity activity) {
+        String title = String.format(activity.getString(R.string.user_review_title), activity.getString(R.string.app_name));
         AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
         builder.setMessage(activity.getString(R.string.user_review_play_store))
-                .setTitle(activity.getString(R.string.user_review_title))
+                .setTitle(title)
                 .setCancelable(false)
                 .setPositiveButton(activity.getResources().getString(R.string.string_ok),
                         new DialogInterface.OnClickListener() {

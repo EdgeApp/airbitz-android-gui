@@ -6,9 +6,15 @@ airbitz-android-gui
 The Airbitz android application comes in 3 flavors. Production, Testnet and
 Develop. To build it issue one of the following commands:
 
+Develop version (Seperate App ID which does not conflict with production version. Also uses the develop branch of airbitz-core-java)
+
     ./gradlew installDevelopDebug
 
+Testnet version
+
     ./gradlew installNettestDebug
+
+Production version
 
     ./gradlew installProdDebug
 

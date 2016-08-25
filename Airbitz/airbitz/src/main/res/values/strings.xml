@@ -20,6 +20,7 @@
     <string name="string_delete">Delete</string>
     <string name="string_save">Save</string>
     <string name="string_back">BACK</string>
+    <string name="string_disable">DISABLE</string>
     <string name="string_next">NEXT</string>
     <string name="string_skip">SKIP</string>
     <string name="string_total">TOTAL:</string>
@@ -245,7 +246,7 @@
     <string name="activity_recovery_question_default">Question</string>
     <string name="item_recovery_spinner_arrow_description">Drop down arrow</string>
     <string name="activity_recovery_done_title">Recovery Questions Set</string>
-    <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.  When recovering your password, your answers must match exactly. **DO NOT FORGET YOUR PASSWORD AND RECOVERY ANSWERS** YOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
+    <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
     <string name="activity_recovery_error_title">Password Recovery failure</string>
     <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
     <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
@@ -382,6 +383,7 @@
     <string name="fragment_send_confirmation_password_remaining">Incorrect Password. Please wait %1$.0f seconds and try again…</string>
     <string name="fragment_send_confirmation_dust_alert">Amount is too small.</string>
     <string name="fragment_send_confirmation_dust_alert_more">Please send at least %1$s (~%2$s)</string>
+    <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
 
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
@@ -599,6 +601,7 @@
     <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
     <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
+    <string name="fragment_twofactor_show_qr_image_text">Show QR Code</string>
     <string name="fragment_two_factor_menu_requested">Two factor reset has been requested.</string>
     <string name="twofactor_required_title">Two Factor Authentication On</string>
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
@@ -680,7 +683,7 @@
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_buy_sell">Buy / Sell Bitcoin</string>
-    <string name="drawer_discounted_gift_cards">Discounted Gift Cards</string>
+    <string name="drawer_spend_bitcoin">Spend Bitcoin (Plugins)</string>
     <string name="drawer_send">Scan QR Code</string>
     <string name="drawer_request">Request</string>
     <string name="drawer_transactions">Transactions</string>
@@ -703,6 +706,7 @@
 
     <string name="app_support_requested">Support Requested</string>
     <string name="app_name">Airbitz</string>
+    <string name="app_url_prefix">airbitz</string>
     <string name="app_homepage">https://airbitz.co</string>
     <string name="app_support_email">support@airbitz.co</string>
     <string name="app_support_phone">+1-844-928-9744</string>
@@ -728,8 +732,10 @@
     <string name="plugin_walmart_discount">(Up to 10% Off)</string>
     <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
     <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
-    <string name="plugin_glidera_title">USA and Canada</string>
+    <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
+    <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
+    <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
 
     <string name="intent_choose_an_email">Choose an Email client:</string>
 
@@ -747,8 +753,29 @@
     <string name="transaction_footer_starbucks_discount">Up to 20% off Starbucks</string>
     <string name="transaction_footer_target_discount">Up to 10% off Target</string>
     <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
+    <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
 
     <string name="change_mining_fee_title">Change Mining Fee</string>
     <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+
+    <!--Password Recovery Text-->
+    <string name="save_recovery_token_popup">Save Recovery Token</string>
+    <string name="save_recovery_token_popup_message">"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+    <string name="recovery_token_email_subject">%s Recovery Token"</string>
+    <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+    <string name="enter_username_to_recover">Please enter the username of the account to recover</string>
+    <string name="recovery_not_setup">Recovery was not setup or was done on another device</string>
+    <string name="recovery_not_setup2">If recovery was setup, you should have emailed yourself a recovery token with a link</string>
+    <string name="recovery_not_setup3">Please find the email and click on the link from this device to initiate recovery</string>
+    <string name="recovery_token_invalid">Incorrect username for this recovery token. Please try a different username or use a different recovery token link.</string>
+    <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
+    <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="disable_recovery_popup_title">Disable Recovery?</string>
+    <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+    <string name="error_disabling_recovery">Error disabling recovery</string>
+    <string name="recovery_disabled">Recovery Disabled</string>
+    <string name="in"></string>
+
 
 </resources>

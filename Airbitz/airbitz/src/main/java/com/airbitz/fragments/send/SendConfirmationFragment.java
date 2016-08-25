@@ -153,6 +153,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private String mUUIDorURI;
     private String mLabel;
     private String mCategory;
+    private String mOverrideAddress;
     private String mNotes;
     private Boolean mLocked = false;
     private Boolean mSignOnly = false;
@@ -927,6 +928,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mAmountFiat = bundle.getDouble(SendFragment.AMOUNT_FIAT);
             mLocked = bundle.getBoolean(SendFragment.LOCKED);
             mSignOnly = bundle.getBoolean(SendFragment.SIGN_ONLY);
+            mOverrideAddress = bundle.getString(SendFragment.ADDRESS, "");
             boolean mIsUUID = bundle.getBoolean(SendFragment.IS_UUID);
             if (mIsUUID) {
                 mDestWallet = mAccount.wallet(mUUIDorURI);
@@ -952,6 +954,13 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                         + "..." + mParsedUri.address().substring(mParsedUri.address().length() - 5, mParsedUri.address().length());
             }
             mAmountToSendSatoshi = mParsedUri.amount();
+        } else if (mOverrideSpend != null && mOverrideAddress != null && mOverrideAddress.length() > 15) {
+            if (mLabel != null && mLabel.length() > 0) {
+                sendTo = mLabel + " (" + mOverrideAddress.substring(0, 5) + "...)";
+            } else {
+                sendTo = mOverrideAddress.substring(0, 5)
+                        + "..." + mOverrideAddress.substring(mOverrideAddress.length() - 5, mOverrideAddress.length());
+            }
         } else if (mDestWallet != null) {
             sendTo = mDestWallet.name();
         }
@@ -1196,12 +1205,44 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 AirbitzCore.logi("Error during send ");
                 if (mActivity != null) {
                     mActivity.popFragment(); // stop the sending screen
-                    if (null == exitHandler) {
-                        mDelayedMessage = mError;
-                        mHandler.postDelayed(mDelayedErrorMessage, 500);
+
+                    // If this was a payment protocol send, ask user if they'd like to try
+                    // paying to a public address
+                    if (mPaymentRequest != null && mParsedUri.address() != null) {
+                        String message = String.format(mActivity.getString(R.string.fragment_send_confirmation_error_payment_processor), mParsedUri.address());
+
+                        new MaterialDialog.Builder(mActivity).title(R.string.fragment_send_confirmation_send_error_title)
+                        .content(message)
+                        .cancelable(false)
+                        .positiveText(R.string.nav_bar_send_text)
+                        .negativeText(R.string.string_cancel)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                                                       @Override
+                                                       public void onPositive(MaterialDialog dialog) {
+                                                           mPaymentRequest = null;
+                                                           mSpendTarget = newSpend(mAmountToSendSatoshi);
+                                                           continueChecks();
+                                                       }
+
+                                                       @Override
+                                                       public void onNegative(MaterialDialog dialog) {
+                                                           dialog.cancel();
+                                                           if (null == exitHandler) {
+                                                               mDelayedMessage = mError;
+                                                               mHandler.postDelayed(mDelayedErrorMessage, 500);
+                                                           } else {
+                                                               exitHandler.error();
+                                                           }
+                                                       }
+                                                   }).build().show();
                     } else {
-                        mActivity.popFragment(); // stop the sending screen
-                        exitHandler.error();
+                        if (null == exitHandler) {
+                            mDelayedMessage = mError;
+                            mHandler.postDelayed(mDelayedErrorMessage, 500);
+                        } else {
+                            mActivity.popFragment(); // stop the sending screen
+                            exitHandler.error();
+                        }
                     }
                 }
             } else {
