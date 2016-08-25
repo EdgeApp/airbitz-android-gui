@@ -508,7 +508,7 @@
   <string name="bluetoothlistview_discovery_failed">La découverte du service Bluetooth a échoué. Réessayez.</string>
   <string name="bluetoothlistview_scan_failed">Scan du Bluetooth a échoué. Réessayez.</string>
   <string name="bluetoothlistview_address_mismatch_title">Décalage d’adresse Bitcoin</string>
-  <string name="bluetoothlistview_address_mismatch_message">L’adresse bitcoin du périphérique que vous avez utilisé pour vous connectez :%1$@ ne correspond pas à l’adresse qui a été annoncé au départ :%2$@</string>
+  <string name="bluetoothlistview_address_mismatch_message">L’adresse bitcoin du périphérique que vous avez utilisé pour vous connectez :%1$s ne correspond pas à l’adresse qui a été annoncé au départ :%2$s</string>
   <string name="ble_invalid_request">Requête non valide de Bluetooth</string>
   <string name="ble_invalid_contact_support">S’il vous plaît veuillez avoir le contact du support technique</string>
   <!-- Errors -->

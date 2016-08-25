@@ -326,7 +326,10 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void showQrCode(boolean show) {
-        if (show) {
+        String secret = mAccount.otpSecret();
+        if (show &&
+                secret != null &&
+                secret.length() > 0) {
             AirbitzCore api = AirbitzCore.getApi();
             Bitmap bitmap = AndroidUtils.qrEncode(
                 api.qrEncode(mAccount.otpSecret()));
