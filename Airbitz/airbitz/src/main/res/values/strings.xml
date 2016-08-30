@@ -703,6 +703,7 @@
     <string name="affiliate_category">Income:Affiliate Revenue</string>
     <string name="affiliate_notes">Revenue share from affiliate link %@</string>
     <string name="affiliate_link_error">Unable to generate affiliate link at this time.</string>
+    <string name="affiliate_link_share_text">Download the Airbitz wallet and save money using bitcoin</string>
 
     <string name="app_support_requested">Support Requested</string>
     <string name="app_name">Airbitz</string>
