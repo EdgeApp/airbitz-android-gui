@@ -1074,30 +1074,30 @@ public class NavigationActivity extends ActionBarActivity
                 mLandingFragment.launchRecoveryPopup(recoveryToken);
             }
 
-        }
-
-        if (!AirbitzApplication.isLoggedIn()) {
-            mDataUri = uri;
-            return;
-        }
-
-        String scheme = uri.getScheme();
-        if (vendorUrl.equals(scheme) && "plugin".equals(uri.getHost())) {
-            List<String> path = uri.getPathSegments();
-            if (2 <= path.size()) {
-                AirbitzCore.logi(uri.toString());
-                launchBuySell(path.get(1), path.get(0), uri);
+        } else {
+            if (!AirbitzApplication.isLoggedIn()) {
+                mDataUri = uri;
+                return;
             }
-        } else if ("bitcoin".equals(scheme)
-                || vendorUrl.equals(scheme)
-                || "hbits".equals(scheme)
-                || "bitid".equals(scheme)) {
-            handleBitcoinUri(uri);
-        }
-        else if("bitcoin-ret".equals(scheme)
-                || "x-callback-url".equals(scheme)
-                || vendorRetUrl.equals(scheme)) {
-            handleRequestForPaymentUri(uri);
+
+            String scheme = uri.getScheme();
+            if (vendorUrl.equals(scheme) && "plugin".equals(uri.getHost())) {
+                List<String> path = uri.getPathSegments();
+                if (2 <= path.size()) {
+                    AirbitzCore.logi(uri.toString());
+                    launchBuySell(path.get(1), path.get(0), uri);
+                }
+            } else if ("bitcoin".equals(scheme)
+                    || vendorUrl.equals(scheme)
+                    || "hbits".equals(scheme)
+                    || "bitid".equals(scheme)) {
+                handleBitcoinUri(uri);
+            }
+            else if("bitcoin-ret".equals(scheme)
+                    || "x-callback-url".equals(scheme)
+                    || vendorRetUrl.equals(scheme)) {
+                handleRequestForPaymentUri(uri);
+            }
         }
     }
 
