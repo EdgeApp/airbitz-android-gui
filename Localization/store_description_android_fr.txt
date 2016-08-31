@@ -1,17 +1,17 @@
-Porte-monnaie Bitcoin puissant et facile à utiliser, permettant aux utilisateurs de contrôler facilement leurs propres clés privées bitcoin avec la familiarité et la facilité des services bancaires mobiles.
+Portefeuille Bitcoin puissant et facile à utiliser, permettant aux utilisateurs de contrôler facilement leurs propres clés privées bitcoin avec la familiarité et la facilité des services bancaires mobiles.
 
 Prenez le contrôle de vos fonds ! Avec Airbitz, vous êtes SEUL à avoir accès à vos fonds ou données de transaction. Airbitz ainsi que tout autre partie tierce n'ont aucune possibilité d'accéder à votre argent ou données. Vous obtenez la confidentialité et autonomie financière pour laquelle Bitcoin a été conçu avec la facilité d’utilisation que même grand-mère pourrait gérer.
 
-En mettant l’accent sur la prestation d’une excellent expérience utilisateur, le porte-monnaie d'Airbitz fournit les fonctionnalités suivantes :
+En mettant l’accent sur la prestation d’une excellente expérience utilisateur, le portefeuille d'Airbitz fournit les fonctionnalités suivantes :
 
 • Zéro connaissance & zéro accès aux fonds, clés ou données de transaction de l’utilisateur par Airbitz ou des parties tierces
 • L’achat intégré de cartes cadeaux à prix réduit (20 % Réduction sur Starbucks !)
 • Achat / vente bitcoin intégré depuis un compte bancaire lié
-• Création d’un compte simple en utilisant juste un nom d'utilisateur & mot de passe (pas d’impression de PDFs, d'écrire des phrases de passe ou d'ajout de paramètres de cryptage)
-• Porte-monnaies déterministes hiérarchique qui changent d'adresses par transaction
+• Création d’un compte simple en utilisant juste un nom d'utilisateur & mot de passe (pas d’impression de PDFs, d'écrire des phrases de passe ou d'ajout de paramètres de chiffrement)
+• Portefeuilles déterministes hiérarchique qui changent d'adresses par transaction
 • Les opérations de recherche par bénéficiaire, catégorie ou notes
 • Les limites de dépenses (nécessite un mot de passe ou code PIN afin de dépenser au delà des limites que vous définissez)
-• Architecture de serveur décentralisé. Les porte-monnaies fonctionnent même si les serveurs Airbitz sont indisponible.
+• Architecture de serveur décentralisé. Les portefeuilles fonctionnent même si les serveurs Airbitz sont indisponibles.
 • Code source ouvert. Disponible sur http://github.com/Airbitz
 
 ********* Avis de confidentialité *********

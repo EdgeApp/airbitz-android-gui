@@ -3,113 +3,113 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Air Travel</item>
-    <item>Alcohol &amp; Bars</item>
-    <item>Allowance</item>
-    <item>Amusement</item>
-    <item>Arts</item>
-    <item>ATM Fee</item>
-    <item>Auto &amp; Transport</item>
-    <item>Auto Insurance</item>
-    <item>Auto Payment</item>
-    <item>Baby Supplies</item>
-    <item>Babysitter &amp; Daycare</item>
-    <item>Bank Fee</item>
-    <item>Bills &amp; Utilities</item>
-    <item>Books</item>
-    <item>Books &amp; Supplies</item>
-    <item>Car Wash</item>
-    <item>Cash &amp; ATM</item>
-    <item>Charity</item>
-    <item>Clothing</item>
-    <item>Coffee Shops</item>
-    <item>Credit Card Payment</item>
-    <item>Dentist</item>
-    <item>Deposit to Savings</item>
-    <item>Doctor</item>
-    <item>Education</item>
-    <item>Electronics &amp; Software</item>
-    <item>Entertainment</item>
-    <item>Eyecare</item>
-    <item>Fast Food</item>
-    <item>Fees &amp; Charges</item>
-    <item>Financial</item>
-    <item>Financial Advisor</item>
-    <item>Food &amp; Dining</item>
-    <item>Furnishings</item>
-    <item>Gas &amp; Fuel</item>
-    <item>Gift</item>
-    <item>Gifts &amp; Donations</item>
-    <item>Groceries</item>
-    <item>Gym</item>
-    <item>Hair</item>
-    <item>Health &amp; Fitness</item>
-    <item>HOA Dues</item>
-    <item>Hobbies</item>
-    <item>Home</item>
-    <item>Home Improvement</item>
-    <item>Home Insurance</item>
-    <item>Home Phone</item>
-    <item>Home Services</item>
-    <item>Home Supplies</item>
-    <item>Hotel</item>
-    <item>Interest Exp</item>
-    <item>Internet</item>
-    <item>IRA Contribution</item>
-    <item>Kids</item>
-    <item>Kids Activities</item>
-    <item>Late Fee</item>
-    <item>Laundry</item>
-    <item>Lawn &amp; Garden</item>
-    <item>Life Insurance</item>
-    <item>Misc.</item>
-    <item>Mobile Phone</item>
-    <item>Mortgage &amp; Rent</item>
-    <item>Mortgage Interest</item>
-    <item>Movies &amp; DVDs</item>
-    <item>Music</item>
-    <item>Newspaper &amp; Magazines</item>
-    <item>Not Sure</item>
-    <item>Parking</item>
-    <item>Personal Care</item>
-    <item>Pet Food &amp; Supplies</item>
-    <item>Pet Grooming</item>
-    <item>Pets</item>
-    <item>Pharmacy</item>
-    <item>Property</item>
-    <item>Public Transportation</item>
-    <item>Registration</item>
-    <item>Rental Car &amp; Taxi</item>
-    <item>Restaurants</item>
-    <item>Service &amp; Parts</item>
-    <item>Service Fee</item>
-    <item>Shopping</item>
-    <item>Spa &amp; Massage</item>
-    <item>Sporting Goods</item>
-    <item>Sports</item>
-    <item>Student Loan</item>
-    <item>Tax</item>
-    <item>Television</item>
-    <item>Tolls</item>
-    <item>Toys</item>
-    <item>Trade Commissions</item>
-    <item>Travel</item>
-    <item>Tuition</item>
-    <item>Utilities</item>
-    <item>Vacation</item>
-    <item>Vet</item>
+    <item>Путешествие самолетом</item>
+    <item>Алкоголь &amp; Бары</item>
+    <item>Карманные расходы</item>
+    <item>Развлечения</item>
+    <item>Искусство</item>
+    <item>Комиссия банкомата</item>
+    <item>Авто &amp; транспорт</item>
+    <item>Автострахование</item>
+    <item>Платеж за машину</item>
+    <item>Детские товары</item>
+    <item>Няня &amp; детский сад</item>
+    <item>Банковская комиссия</item>
+    <item>Счета &amp; коммунальные услуги</item>
+    <item>Книги</item>
+    <item>Книги &amp; сопутствующие товары</item>
+    <item>Мойка машины</item>
+    <item>Наличные &amp; банкоматы</item>
+    <item>Благотворительность</item>
+    <item>Одежда</item>
+    <item>Кафе</item>
+    <item>Платежи по кредитным картам</item>
+    <item>Дантист</item>
+    <item>Откладывание сбережений</item>
+    <item>Медицина</item>
+    <item>Образование</item>
+    <item>Электроника &amp; программное обеспечение</item>
+    <item>Развлечения</item>
+    <item>Офтальмолог</item>
+    <item>Фаст-фуд</item>
+    <item>Платежи &amp; расходы</item>
+    <item>Финансист</item>
+    <item>Финансовый консультант</item>
+    <item>Еда &amp; обеды</item>
+    <item>Меблировка</item>
+    <item>Бензин &amp; топливо</item>
+    <item>Подарки</item>
+    <item>Подарки &amp; пожертвования</item>
+    <item>Бакалея</item>
+    <item>Спортзал</item>
+    <item>Парикмахер</item>
+    <item>Здоровье &amp; фитнес</item>
+    <item>Взносы в ЖЭК</item>
+    <item>Хобби</item>
+    <item>Дом</item>
+    <item>Дизайн интерьера</item>
+    <item>Домашнее страхование</item>
+    <item>Домашний телефон</item>
+    <item>Обслуживание дома</item>
+    <item>Дом и сад</item>
+    <item>Отели</item>
+    <item>Расходы на выплату процентов</item>
+    <item>Интернет</item>
+    <item>Отчисления в пенсионный фонд</item>
+    <item>Дети</item>
+    <item>Мероприятия для детей</item>
+    <item>Комиссия за просрочку платежа</item>
+    <item>Прачечная</item>
+    <item>Сад &amp; огород</item>
+    <item>Страхование жизни</item>
+    <item>Прочее</item>
+    <item>Мобильный телефон</item>
+    <item>Ипотека &amp; аренда</item>
+    <item>Проценты по ипотечному кредиту</item>
+    <item>Кино &amp; DVD</item>
+    <item>Музыка</item>
+    <item>Газеты &amp; журналы</item>
+    <item>Не уверен</item>
+    <item>Парковка</item>
+    <item>Личная гигиена</item>
+    <item>Корм &amp; товары для домашних животных</item>
+    <item>Уход за домашними животными</item>
+    <item>Домашние животные</item>
+    <item>Лекарства</item>
+    <item>Собственность</item>
+    <item>Общественный транспорт</item>
+    <item>Регистрация</item>
+    <item>Аренда машин &amp; такси</item>
+    <item>Рестораны</item>
+    <item>Сервис &amp; запчасти</item>
+    <item>Оплата услуг</item>
+    <item>Шоппинг</item>
+    <item>Спа &amp; массаж</item>
+    <item>Спортивные товары</item>
+    <item>Спорт</item>
+    <item>Студенческий кредит</item>
+    <item>Налоги</item>
+    <item>Телевидение</item>
+    <item>Таможенные сборы</item>
+    <item>Игрушки</item>
+    <item>Торговые комиссии</item>
+    <item>Путешествия</item>
+    <item>Обучение</item>
+    <item>Аксессуары</item>
+    <item>Отпуск</item>
+    <item>Ветеринария</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulting Income</item>
-    <item>Div Income</item>
-    <item>Net Salary</item>
-    <item>Other Income</item>
-    <item>Rent</item>
-    <item>Sales</item>
+    <item>Консалтинговый доход</item>
+    <item>Доход от дивидендов</item>
+    <item>Чистый заработок</item>
+    <item>Прочие доходы</item>
+    <item>Аренда</item>
+    <item>Продажи</item>
   </string-array>
   <string-array name="exchange_category_defaults">
-    <item>Buy Bitcoin</item>
-    <item>Sell Bitcoin</item>
+    <item>Купить биткойны</item>
+    <item>Продать биткойны</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
@@ -129,7 +129,7 @@
   </string-array>
   <string-array name="transfer_wallet_category_defaults">
     <item>Airbitz</item>
-    <item>Armory</item>
+    <item>Арсенал</item>
     <item>Bitcoin Core</item>
     <item>Blockchain</item>
     <item>Electrum</item>
@@ -138,19 +138,19 @@
     <item>Dark Wallet</item>
   </string-array>
   <string-array name="transaction_categories_list">
-    <item>Expense</item>
-    <item>Income</item>
-    <item>Transfer</item>
-    <item>Exchange</item>
+    <item>Расходы</item>
+    <item>Доходы</item>
+    <item>Переводы</item>
+    <item>Обмен</item>
   </string-array>
   <string-array name="distance_list">
-    <item>Automatic</item>
-    <item>Kilometers</item>
-    <item>Miles</item>
+    <item>Автоматически</item>
+    <item>Километры</item>
+    <item>Мили</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>Low Fee</item>
-    <item>Standard Fee</item>
-    <item>High Fee</item>
+    <item>Низкая комиссия</item>
+    <item>Средняя комиссия</item>
+    <item>Высокая комиссия</item>
   </string-array>
 </resources>

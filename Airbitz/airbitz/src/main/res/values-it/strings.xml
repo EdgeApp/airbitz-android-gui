@@ -234,6 +234,7 @@
   <string name="activity_recovery_warning_dirty_forgot_message">Warning: You are about to exit password recovery and all progress will be lost. Exit anyway?</string>
   <string name="fragment_recovery_mismatch_title">Password Mismatch</string>
   <string name="fragment_recovery_mismatch_message">Please enter your correct password.</string>
+  <string name="fragment_recovery_answer_case_sensitive">Answers are case sensitive</string>
   <!-- Strings for ForgotPassword -->
   <string name="activity_forgot_title">Forgot Password</string>
   <!-- Strings for Settings fragment -->
@@ -614,7 +615,7 @@
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
   <string name="drawer_buy_sell">Buy / Sell Bitcoin</string>
-  <string name="drawer_discounted_gift_cards">Discounted Gift Cards</string>
+  <string name="drawer_spend_bitcoin">Spend Bitcoin (Plugins)</string>
   <string name="drawer_send">Scan QR Code</string>
   <string name="drawer_request">Request</string>
   <string name="drawer_transactions">Transactions</string>
@@ -647,13 +648,9 @@
   <string name="request_footer_link_title">Download Airbitz for iOS or Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
-  <string name="plugin_target_discount">(Up to 10% Off)</string>
-  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
-  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
-  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
-  <string name="plugin_glidera_title">USA and Canada</string>
+  <string name="plugin_glidera_title">USA</string>
   <string name="plugin_clevercoin_title">Europe (EUR)</string>
+  <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
   <string name="intent_choose_an_email">Choose an Email client:</string>
   <string name="plugin_filechooser_title">Upload File</string>
   <string name="plugin_filechooser_use_camera">Use Camera</string>
