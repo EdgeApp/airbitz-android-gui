@@ -179,6 +179,8 @@ public class Common {
             String.format("<a href=\"#\" onclick=\"_help.sendSupportEmail()\">%s</a>", supportEmail);
         String phoneSupportTemplate = "";
         String phoneSupport = ctx.getString(R.string.app_support_phone);
+        String telegramSupport = "<a href=\"https://telegram.airbitz.co\">Telegram</a>";
+        String slackSupport = "<a href=\"https://slack.airbitz.co\">Slack</a>";
         if (!TextUtils.isEmpty(phoneSupport)) {
             phoneSupportTemplate = String.format("<a href=\"tel:%1$s\">%1$s</a>",
                 ctx.getString(R.string.app_support_phone));
@@ -200,6 +202,8 @@ public class Common {
         tags.put("[[abtag REQUEST_FOOTER_CONTACT]]", ctx.getString(R.string.request_footer_contact));
         tags.put("[[abtag EMAIL_SUPPORT_TEMPLATE]]", emailSupportTemplate);
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
+        tags.put("[[abtag TELEGRAM_SUPPORT_TEMPLATE]]", telegramSupport);
+        tags.put("[[abtag SLACK_SUPPORT_TEMPLATE]]", slackSupport);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             footer = footer.replace(e.getKey(), e.getValue());
