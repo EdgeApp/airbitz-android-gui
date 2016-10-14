@@ -6,8 +6,8 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.View;
 
-import com.airbitz.R;
 import co.airbitz.core.AirbitzCore;
+import com.airbitz.R;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -16,7 +16,9 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.oned.Code128Reader;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.google.zxing.MultiFormatReader;
 
 import java.util.List;
 
@@ -67,19 +69,11 @@ public class QRCamera extends PictureCamera {
 
     public String attemptDecodeBytes(byte[] bytes, Camera camera) {
         Result rawResult = null;
-        Reader reader = new QRCodeReader();
         int w = camera.getParameters().getPreviewSize().width;
         int h = camera.getParameters().getPreviewSize().height;
         PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, w, h, 0, 0, w, h, false);
         if (source.getMatrix() != null) {
-            BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
-            try {
-                rawResult = reader.decode(bitmap);
-            } catch (ReaderException re) {
-                // nothing to do here
-            } finally {
-                reader.reset();
-            }
+            rawResult = tryScan(new BinaryBitmap(new GlobalHistogramBinarizer(source)));
         }
         if (rawResult != null) {
             AirbitzCore.logi("QR code found " + rawResult.getText());
@@ -95,7 +89,6 @@ public class QRCamera extends PictureCamera {
         } else {
             AirbitzCore.logi("Picture selected");
             Result rawResult = null;
-            Reader reader = new QRCodeReader();
             int w = thumbnail.getWidth();
             int h = thumbnail.getHeight();
             int maxOneDimension = 500;
@@ -115,20 +108,36 @@ public class QRCamera extends PictureCamera {
             thumbnail.getPixels(pixels, 0, w, 0, 0, w, h);
             RGBLuminanceSource source = new RGBLuminanceSource(w, h, pixels);
             if (source.getMatrix() != null) {
-                BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-                try {
-                    rawResult = reader.decode(bitmap);
-                } catch (ReaderException re) {
-                    re.printStackTrace();
-                } finally {
-                    reader.reset();
-                }
+                rawResult = tryScan(new BinaryBitmap(new HybridBinarizer(source)));
             }
             if (rawResult != null) {
                 AirbitzCore.logi("QR code found " + rawResult.getText());
                 return rawResult.getText();
             } else {
                 AirbitzCore.logi("Picture No QR code found");
+            }
+        }
+        return null;
+    }
+
+    private Result tryScan(BinaryBitmap bitmap) {
+        MultiFormatReader reader = new MultiFormatReader();
+        try {
+            return reader.decode(bitmap);
+        } catch (ReaderException re) {
+            re.printStackTrace();
+        } finally {
+            reader.reset();
+        }
+        if (bitmap.isRotateSupported()) {
+            BinaryBitmap rotated = bitmap.rotateCounterClockwise();
+            reader = new MultiFormatReader();
+            try {
+                return reader.decode(bitmap);
+            } catch (ReaderException re) {
+                re.printStackTrace();
+            } finally {
+                reader.reset();
             }
         }
         return null;
