@@ -63,11 +63,15 @@ public class CurrentLocationManager {
         } else {
             mAndroid = new AndroidLocationManager(mContext);
         }
+        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (perm == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermission = true;
+        }
         attemptConnection();
     }
 
     public static boolean locationEnabled(Context context) {
-        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission_group.LOCATION);
+        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
         if (perm != PackageManager.PERMISSION_GRANTED) return false;
 
         String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
@@ -81,10 +85,6 @@ public class CurrentLocationManager {
     public static CurrentLocationManager getLocationManager(Context context) {
         if (null == mInstance) {
             mInstance = new CurrentLocationManager(context);
-        }
-        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission_group.LOCATION);
-        if (perm == PackageManager.PERMISSION_GRANTED) {
-            mInstance.mLocationPermission = true;
         }
         return mInstance;
     }
