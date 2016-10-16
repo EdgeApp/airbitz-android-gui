@@ -372,6 +372,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mUserNameEditText.setTypeface(Typeface.DEFAULT);
             mUserNameEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
+            if (!mAccount.hasPin()) {
+                mUserNameEditText.setVisibility(View.GONE);
+            }
             mPasswordForPINEditText = mUserNameEditText;
             mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -448,6 +451,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         // if we are signing up for a new account
         if (mMode == CHANGE_PASSWORD_NO_VERIFY || !(mAccount.passwordExists() && (mMode == CHANGE_PASSWORD ||
             mMode == CHANGE_PIN))) {
+            bUserNameFieldIsValid = true;
+        }
+        else if (mMode == CHANGE_PIN && !mAccount.hasPin())
+        {
             bUserNameFieldIsValid = true;
         }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case

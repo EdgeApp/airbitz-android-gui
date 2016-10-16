@@ -105,6 +105,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private static final String BLE_PREF = "BLEPref";
     public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
     public static final String START_CHANGE_PASSWORD = "com.airbitz.fragments.settingfragment.StartChangePassword";
+    public static final String START_CHANGE_PIN = "com.airbitz.fragments.settingfragment.StartChangePin";
     private final String TAG = getClass().getSimpleName();
     Dialog mDefaultExchangeDialog;
     Dialog mDistanceDialog;
@@ -628,6 +629,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         if (bundle != null && bundle.getBoolean(START_CHANGE_PASSWORD)) {
             mChangePasswordButton.performClick();
             bundle.putBoolean(START_CHANGE_PASSWORD, false);
+        }
+
+        if (bundle != null && bundle.getBoolean(START_CHANGE_PIN)) {
+            mChangePINButton.performClick();
+            bundle.putBoolean(START_CHANGE_PIN, false);
         }
 
         mPinReloginSwitch.setEnabled(mAccount.passwordExists());

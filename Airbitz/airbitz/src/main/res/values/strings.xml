@@ -668,6 +668,10 @@
     <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
     <string name="password_set_skip">Skip</string>
 
+    <!-- PIN Set -->
+    <string name="pin_set_title">No PIN set</string>
+    <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
+
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 

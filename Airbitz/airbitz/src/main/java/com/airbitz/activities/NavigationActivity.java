@@ -1396,6 +1396,7 @@ public class NavigationActivity extends ActionBarActivity
         DisplayLoginOverlay(false, true);
 
         boolean checkPassword = false;
+        boolean hasPin = account.hasPin();
         // if the user has a password, increment PIN login count
         if (account.passwordExists()) {
             checkPassword = CoreWrapper.incrementPinCount(account);
@@ -1406,6 +1407,8 @@ public class NavigationActivity extends ActionBarActivity
         } else if (!passwordLogin && checkPassword) {
             mPasswordCheck = new RememberPasswordCheck(this);
             mPasswordCheck.showPasswordCheckAlert();
+        } else if (!hasPin) {
+            showPinSetAlert();
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -2149,11 +2152,49 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    private Dialog mPinSetDialog;
+    private void showPinSetAlert() {
+        if (!NavigationActivity.this.isFinishing() && mPinSetDialog == null) {
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
+            builder.setMessage(getString(R.string.pin_set_message))
+                    .setTitle(getString(R.string.pin_set_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.password_set_skip),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    mPinSetDialog = null;
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    mPinSetDialog = null;
+                                    launchChangePin();
+                                }
+                            });
+            mPinSetDialog = builder.create();
+            mPinSetDialog.show();
+        }
+    }
+
     private void launchChangePassword() {
         Bundle bundle = new Bundle();
 
         Fragment frag = new SettingFragment();
         bundle.putBoolean(SettingFragment.START_CHANGE_PASSWORD, true);
+        frag.setArguments(bundle);
+        mNavStacks[Tabs.MORE.ordinal()].clear();
+        mNavStacks[Tabs.MORE.ordinal()].add(frag);
+        switchFragmentThread(Tabs.MORE.ordinal());
+    }
+
+    private void launchChangePin() {
+        Bundle bundle = new Bundle();
+
+        Fragment frag = new SettingFragment();
+        bundle.putBoolean(SettingFragment.START_CHANGE_PIN, true);
         frag.setArguments(bundle);
         mNavStacks[Tabs.MORE.ordinal()].clear();
         mNavStacks[Tabs.MORE.ordinal()].add(frag);
