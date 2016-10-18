@@ -343,7 +343,7 @@
     <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
     <string name="fragment_send_no_satoshi_title">Enter an amount</string>
     <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-    <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
+    <string name="fragment_send_send_to_hint">Bitcoin Address or Private Key</string>
     <string name="fragment_send_failure_title">Send failure</string>
     <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
     <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
@@ -355,7 +355,7 @@
     <string name="fragment_send_address">Address</string>
     <string name="fragment_send_photos">Photos</string>
     <string name="fragment_send_flash">Flash</string>
-    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+    <string name="fragment_send_address_dialog_title">Send to Bitcoin Address or Import Private Key</string>
     <string name="fragment_import_address_dialog_title">Sweep Funds From Private Key</string>
     <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds to:</string>
     <string name="fragment_send_create_wallet_to_transfer">Create a new wallet to transfer funds to</string>
@@ -453,7 +453,7 @@
     <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
     <string name="request_qr_ble_copied">Request is copied to the clipboard.</string>
     <string name="request_qr_first_usage">Present QR code to Sender and have them scan to send you payment</string>
-    <string name="request_qr_top_message">Scan QR to Send, Import, or Login with BitID</string>
+    <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
 
     <!-- Strings for Import Wallet fragment -->
     <string name="import_title">Import Wallet</string>
@@ -668,17 +668,15 @@
     <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
     <string name="password_set_skip">Skip</string>
 
+    <!-- PIN Set -->
+    <string name="pin_set_title">No PIN set</string>
+    <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
+
     <!-- Settings -->
     <string name="settings_category_title">Categories</string>
 
     <!-- Logout -->
     <string name="logout_message">Please wait while %1$s gracefully exits your account. This may take a while on slow networks</string>
-
-    <string name="bitid_login_message">%1$s</string>
-    <string name="bitid_login_title">BitID Login</string>
-
-    <string name="bitid_login_success">Successfully Logged In</string>
-    <string name="bitid_login_failure">Error Logging In</string>
 
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
@@ -711,6 +709,8 @@
     <string name="app_homepage">https://airbitz.co</string>
     <string name="app_support_email">support@airbitz.co</string>
     <string name="app_support_phone">+1-844-928-9744</string>
+    <string name="app_support_telegram">https://telegram.airbitz.co</string>
+    <string name="app_support_slack">https://slack.airbitz.co</string>
     <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
     <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
     <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -779,4 +779,33 @@
     <string name="in"></string>
 
 
+    <!-- SSO -->
+    <string name="edge_login">Edge Login</string>
+    <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+    <string name="bitid_identity">BitID Identity</string>
+    <string name="provide_an_identity_token">Provide an Identity Token</string>
+    <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+    <string name="approving_login_text">Approving Login...</string>
+    <string name="error_logging_in">Error Logging In</string>
+    <string name="successfully_logged_in">Successfully Logged In</string>
+    <string name="approve_button_text">Approve</string>
+    <string name="accept_button_text">Accept</string>
+    <string name="login_button_text">LOGIN</string>
+    <string name="back_button_text">Back</string>
+    <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+    <string name="would_like_to">This site would like to:</string>
+    <string name="request_payment_address">Request a Payment Address</string>
+    <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+    <string name="successfully_verified_identity">Successfully Verified Identity</string>
+    <string name="create_new_text">Create new</string>
+    <string name="or_choose">\"$1$s\" or choose</string>
+
+    <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+    <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+
+    <string name="bitid_login_message">%1$s</string>
+    <string name="bitid_login_title">BitID Login</string>
+
+    <string name="bitid_login_success">Successfully Logged In</string>
+    <string name="bitid_login_failure">Error Logging In</string>
 </resources>

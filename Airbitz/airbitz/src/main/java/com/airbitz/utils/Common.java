@@ -179,6 +179,16 @@ public class Common {
             String.format("<a href=\"#\" onclick=\"_help.sendSupportEmail()\">%s</a>", supportEmail);
         String phoneSupportTemplate = "";
         String phoneSupport = ctx.getString(R.string.app_support_phone);
+        String telegramSupport = ctx.getString(R.string.app_support_telegram);
+        String telegramSupportTemplate = "";
+        if (telegramSupport.length() > 2) {
+            telegramSupportTemplate = "<a href=\"" + telegramSupport + "\">Telegram</a>";
+        }
+        String slackSupport = ctx.getString(R.string.app_support_slack);
+        String slackSupportTemplate = "";
+        if (slackSupport.length() > 2) {
+            slackSupportTemplate = "<a href=\"" + slackSupport + "\">Slack</a>";
+        }
         if (!TextUtils.isEmpty(phoneSupport)) {
             phoneSupportTemplate = String.format("<a href=\"tel:%1$s\">%1$s</a>",
                 ctx.getString(R.string.app_support_phone));
@@ -200,6 +210,8 @@ public class Common {
         tags.put("[[abtag REQUEST_FOOTER_CONTACT]]", ctx.getString(R.string.request_footer_contact));
         tags.put("[[abtag EMAIL_SUPPORT_TEMPLATE]]", emailSupportTemplate);
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
+        tags.put("[[abtag TELEGRAM_SUPPORT_TEMPLATE]]", telegramSupportTemplate);
+        tags.put("[[abtag SLACK_SUPPORT_TEMPLATE]]", slackSupportTemplate);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             footer = footer.replace(e.getKey(), e.getValue());
