@@ -678,12 +678,6 @@
     <!-- Logout -->
     <string name="logout_message">Please wait while %1$s gracefully exits your account. This may take a while on slow networks</string>
 
-    <string name="bitid_login_message">%1$s</string>
-    <string name="bitid_login_title">BitID Login</string>
-
-    <string name="bitid_login_success">Successfully Logged In</string>
-    <string name="bitid_login_failure">Error Logging In</string>
-
     <!-- Navigation Drawer -->
     <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
     <string name="drawer_buy_sell">Buy / Sell Bitcoin</string>
@@ -784,4 +778,33 @@
     <string name="in"></string>
 
 
+    <!-- SSO -->
+    <string name="edge_login">Edge Login</string>
+    <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+    <string name="bitid_identity">BitID Identity</string>
+    <string name="provide_an_identity_token">Provide an Identity Token</string>
+    <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+    <string name="approving_login_text">Approving Login...</string>
+    <string name="error_logging_in">Error Logging In</string>
+    <string name="successfully_logged_in">Successfully Logged In</string>
+    <string name="approve_button_text">Approve</string>
+    <string name="accept_button_text">Accept</string>
+    <string name="login_button_text">LOGIN</string>
+    <string name="back_button_text">Back</string>
+    <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+    <string name="would_like_to">This site would like to:</string>
+    <string name="request_payment_address">Request a Payment Address</string>
+    <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+    <string name="successfully_verified_identity">Successfully Verified Identity</string>
+    <string name="create_new_text">Create new</string>
+    <string name="or_choose">\"$1$s\" or choose</string>
+
+    <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+    <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+
+    <string name="bitid_login_message">%1$s</string>
+    <string name="bitid_login_title">BitID Login</string>
+
+    <string name="bitid_login_success">Successfully Logged In</string>
+    <string name="bitid_login_failure">Error Logging In</string>
 </resources>
