@@ -686,6 +686,15 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 } else if (mType == RECOVERY_TYPE_2) {
                     mRecoveryToken = mAccount.setupRecovery2Questions(mQuestions.split("\n"), mAnswers.split("\n"));
                 }
+
+                if (mRecoveryToken == null) {
+                    AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
+                    return false;
+                }
+                if (mRecoveryToken.length() < 20) {
+                    AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
+                    return false;
+                }
                 return true;
             } catch (AirbitzException e) {
                 AirbitzCore.logi("PasswordRecoveryFragment SaveRecoveryAnswers error");
