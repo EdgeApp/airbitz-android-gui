@@ -601,9 +601,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mActivity.showModalProgress(false);
             mAccount.startBackgroundTasks();
             mChangeTask = null;
-            if (success) {
-                mActivity.popFragment();
-            }
             super.onPostExecute(success);
         }
 
