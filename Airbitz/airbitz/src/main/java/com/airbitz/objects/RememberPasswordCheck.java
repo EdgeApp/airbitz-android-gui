@@ -31,7 +31,6 @@
 
 package com.airbitz.objects;
 
-;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
