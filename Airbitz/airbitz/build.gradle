@@ -13,9 +13,13 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 21
+        targetSdkVersion 24
         versionCode 2100000000
         versionName "99.99.99"
+
+        jackOptions {
+            enabled true
+        }
     }
 
     productFlavors {
@@ -65,6 +69,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build
 }
 
@@ -105,6 +114,7 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+    compile 'com.squareup.whorlwind:whorlwind:1.0.1'
 
     prodCompile 'co.airbitz:airbitz-core-java:0.11.+'
     prodCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
