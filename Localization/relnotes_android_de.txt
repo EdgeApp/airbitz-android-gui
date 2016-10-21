@@ -1,3 +1,18 @@
+v 2.2.0
+
+We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+
+In addition:
+
+• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
+• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
+• Background notifications of incoming funds if app is recently backgrounded
+• Fallback public address for failed BIP70 payment protocol transactions 
+• Improved language translations
+• Fix broken popup dialogs in Android N
+• Fix crash if user revokes location permissions
+
+
 v 2.1.0
 
 • Fügen Sie Libbitcoin/Electrum Serverabonnement Adresse für deutlich verbesserte Leistung und erhöhte Batterielebensdauer hinzu.
@@ -5,4 +20,5 @@ v 2.1.0
 • Fügen Sie steuerbare geschätzte Mining-Nutzungsgebühren hinzu (niedrig, Standard, hohe Einstellungen)
 • Korrigieren Sie falsche Transaktionszeiten wann Transaktion empfangen wird, während Wallet offline war
 • Fügen Sie Sprachunterstützung für Chinesisch, Hindi, Spanisch und Portugiesisch hinzu
+• Fügen Sie Unterstützung für die korrekte Lokalisierung von Zahlen, Zeiten und Terminen hinzu
 • Verbesserung der Genauigkeit der Erkennung der Transaktion bei schlechten Netzwerkbedingungen

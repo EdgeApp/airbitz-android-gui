@@ -581,12 +581,14 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
+                    mActivity.onBackPressed();
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
+                    mActivity.onBackPressed();
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
@@ -599,9 +601,6 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mActivity.showModalProgress(false);
             mAccount.startBackgroundTasks();
             mChangeTask = null;
-            if (success) {
-                mActivity.popFragment();
-            }
             super.onPostExecute(success);
         }
 

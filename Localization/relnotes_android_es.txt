@@ -1,3 +1,18 @@
+v 2.2.0
+
+Nosotros solo hemos abierto un nuevo camino implementando la primera recuperación de contraseña sin fricción del mundo en la cual usuarios recuperan contraseñas olvidadas con solo 2 preguntas y un email. Nunca se preocupe por olvidar su contraseña otra vez
+
+Además:
+
+Integración de Bitrefill plugin lo cual permite a usuarios comprar las mejores mobile desde mas de 600 portadores en 143 países
+Cuentas archivadas ahora toman menos recursos por no consultar la red o sincronización de datos de transacción
+notificación de antecedentes de fondos entrante si la app esta recientemente en segundo plano
+recurrir direcciones publicas por falla BIP70 protocolo de pago de transacciones 
+Mejoras en traducción de idiomas
+Fijar los cuadros de diálogos emergente rotos en Android N
+Arreglar quiebre si el usuario anula los permisos de localización
+
+
 v 2.1.0
 
 • Añadir suscripción de dirección de servidor Libbitcoin/Electrum para mucho mejor rendimiento y mayor duración de la batería.

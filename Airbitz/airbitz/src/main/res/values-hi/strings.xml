@@ -234,6 +234,7 @@
   <string name="activity_recovery_warning_dirty_forgot_message">चेतवानी: आप पासवर्ड रिकवरी से बाहर निकल रहे हैं इससे प्रक्रिया समाप्त हो जाएगी|ऐसे ही बाहर निकलें?</string>
   <string name="fragment_recovery_mismatch_title">पासवर्ड बेमेल है</string>
   <string name="fragment_recovery_mismatch_message">सही पासवर्ड दर्ज करें</string>
+  <string name="fragment_recovery_answer_case_sensitive">उत्तर उच्च व निम्न शब्दों के लिए संवेदनशील है</string>
   <!-- Strings for ForgotPassword -->
   <string name="activity_forgot_title">पासवर्ड भूल गए</string>
   <!-- Strings for Settings fragment -->
@@ -614,7 +615,7 @@
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">साइन इन करें या साइन अप करें</string>
   <string name="drawer_buy_sell">बिटकॉइन खरीद/बेच</string>
-  <string name="drawer_discounted_gift_cards">छूट वाले गिफ्ट कार्ड</string>
+  <string name="drawer_spend_bitcoin">Spend Bitcoin (Plugins)</string>
   <string name="drawer_send">क्यूआर कोड को स्कैन करें</string>
   <string name="drawer_request">अनुरोध</string>
   <string name="drawer_transactions">ट्रांजेक्शन</string>
@@ -647,13 +648,9 @@
   <string name="request_footer_link_title">एयरबिट्ज़ iOS या एंड्राइड के लिए डाउनलोड करें</string>
   <string name="request_footer_contact">मेल करें:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(20% तक छूट)</string>
-  <string name="plugin_target_discount">(10% तक छूट)</string>
-  <string name="plugin_wholefoods_discount">(10% तक छूट)</string>
-  <string name="plugin_walmart_discount">(10% तक छूट)</string>
-  <string name="plugin_homedepot_discount">(15% तक छूट)</string>
-  <string name="plugin_glidera_title">संयुक्त राज्य अमेरिका और कनाडा</string>
+  <string name="plugin_glidera_title">USA</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
+  <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
   <string name="intent_choose_an_email">एक ई-मेल क्लाइंट का चयन करें:</string>
   <string name="plugin_filechooser_title">फ़ाइल अपलोड करें</string>
   <string name="plugin_filechooser_use_camera">कैमरा इस्तेमाल कीजिये</string>
