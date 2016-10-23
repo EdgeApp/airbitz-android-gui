@@ -69,6 +69,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -105,6 +106,15 @@ import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
+
+import okio.ByteString;
+import rx.Observable;
+import rx.schedulers.Schedulers;
+import rx.android.schedulers.AndroidSchedulers;
+
+import com.squareup.whorlwind.ReadResult;
+import com.squareup.whorlwind.Whorlwind;
+import com.squareup.whorlwind.SharedPreferencesStorage;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
@@ -187,6 +197,7 @@ public class NavigationActivity extends ActionBarActivity
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
     private enum NetworkStatus {UNINITIALIZED, ON, OFF};
+    private MaterialDialog mFingerprintDialog;
 
     private NetworkStatus mNetworkStatus = NetworkStatus.UNINITIALIZED;
 
@@ -401,6 +412,7 @@ public class NavigationActivity extends ActionBarActivity
 
         PluginCheck.checkEnabledPlugins();
         BuySellOverrides.sync();
+
     }
 
     @Override
@@ -936,6 +948,64 @@ public class NavigationActivity extends ActionBarActivity
         super.onResume();
 
         checkDisclaimer();
+
+        int sdk = android.os.Build.VERSION.SDK_INT;
+
+        if (sdk >= 24) {
+            SharedPreferencesStorage storage = new SharedPreferencesStorage(AirbitzApplication.getContext(), "airbitz-key-storage");
+
+            Whorlwind whorlwind;
+
+            whorlwind = Whorlwind.create(this, storage, "sample");
+
+            if (whorlwind.canStoreSecurely()) {
+                Observable.just("value")
+                        .observeOn(Schedulers.io())
+                        .subscribe(value -> whorlwind.write("key", ByteString.encodeUtf8(value)));
+            }
+
+            if (whorlwind.canStoreSecurely()) {
+                whorlwind.read("key")
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            switch (result.readState) {
+                                case NEEDS_AUTH:
+                                    // An encrypted value was found, prompt for fingerprint to decrypt.
+                                    // The fingerprint reader is active.
+//                                    promptForFingerprint();
+                                    showFingerPrintDialog("pvp");
+                                    break;
+                                case UNRECOVERABLE_ERROR:
+                                case AUTHORIZATION_ERROR:
+                                case RECOVERABLE_ERROR:
+                                    // Show an error message. One may be provided in result.message.
+                                    // Unless the state is UNRECOVERABLE_ERROR, the fingerprint reader is still
+                                    // active and this stream will continue to emit result updates.
+                                    fingerprintDialogError("error");
+                                    break;
+                                case READY:
+                                    if (result.value != null) {
+                                        // Value was found and has been decrypted.
+                                        fingerprintDialogAuthenticated();
+                                        showToast(result.value.utf8(), 10);
+                                    } else {
+                                        // No value was found. Fall back to password or fail silently, depending on
+                                        // your use case.
+//                                        fingerprintFallback();
+                                        fingerprintDialogError("no login found");
+                                        mFingerprintDialog.dismiss();
+                                        mFingerprintDialog = null;
+                                    }
+                                    break;
+                                default:
+                                    throw new IllegalArgumentException("Unknown state: " + result.readState);
+                            }
+                        });
+            }
+
+        }
+
     }
 
     private void checkDisclaimer() {
@@ -1344,6 +1414,73 @@ public class NavigationActivity extends ActionBarActivity
             tv.setTypeface(NavigationActivity.latoRegularTypeFace);
         }
     }
+
+    private ImageView mFingerprintIcon;
+    private TextView mFingerprintStatus;
+
+    static final long ERROR_TIMEOUT_MILLIS = 1600;
+    static final long SUCCESS_DELAY_MILLIS = 1300;
+
+    Runnable mResetErrorTextRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (NavigationActivity.this == null) return;
+            mFingerprintStatus.setTextColor(Common.resolveColor(NavigationActivity.this, android.R.attr.textColorSecondary));
+            mFingerprintStatus.setText(getResources().getString(R.string.fingerprint_hint));
+            mFingerprintIcon.setImageResource(R.drawable.ic_fp_40px);
+        }
+    };
+
+    public void showFingerPrintDialog(String username) {
+        String signIn = String.format(getString(R.string.fingerprint_signin), username);
+
+        mFingerprintDialog = new MaterialDialog.Builder(NavigationActivity.this)
+                .title(signIn)
+                .customView(R.layout.fingerprint_dialog_container, false)
+                .negativeText(android.R.string.cancel)
+                .autoDismiss(false)
+                .cancelable(true)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        materialDialog.cancel();
+                    }
+                }).build();
+
+        mFingerprintDialog.show();
+        final View v = mFingerprintDialog.getCustomView();
+        assert v != null;
+
+        mFingerprintIcon = (ImageView) v.findViewById(R.id.fingerprint_icon);
+        mFingerprintStatus = (TextView) v.findViewById(R.id.fingerprint_status);
+        mFingerprintStatus.setText(R.string.fingerprint_hint);
+        mFingerprintStatus.setTextColor(getResources().getColor(R.color.dark_text_hint));
+
+    }
+
+    public void fingerprintDialogAuthenticated() {
+        mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
+        mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_success);
+        mFingerprintStatus.setTextColor(getResources().getColor(R.color.dark_text_hint));
+        mFingerprintStatus.setText(getResources().getString(R.string.fingerprint_success));
+        mFingerprintIcon.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                mCallback.onFingerprintDialogAuthenticated();
+                mFingerprintDialog.dismiss();
+            }
+        }, SUCCESS_DELAY_MILLIS);
+    }
+
+    private void fingerprintDialogError(CharSequence error) {
+        if (NavigationActivity.this == null) return;
+        mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_error);
+        mFingerprintStatus.setText(error);
+        mFingerprintStatus.setTextColor(ContextCompat.getColor(NavigationActivity.this, R.color.warning_color));
+        mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
+        mFingerprintStatus.postDelayed(mResetErrorTextRunnable, ERROR_TIMEOUT_MILLIS);
+    }
+
 
     Dialog mRemoteChange = null;
     private void showRemotePasswordChangeDialog() {

@@ -663,6 +663,14 @@
     <string name="upload_log_alert_succeeded">Upload complete</string>
     <string name="upload_log_alert_failed">Upload failed. Please check network connection.</string>
 
+    <!--Fingerprint Login-->
+    <string name="fingerprint_signin">Sign In User: %1s</string>
+    <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
+    <string name="fingerprint_hint">Touch sensor</string>
+    <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+    <string name="fingerprint_success">Fingerprint recognized</string>
+    <string name="initializing_dotdot_text">Initializing…</string>
+
     <!-- Password Set -->
     <string name="password_set_title">No password set</string>
     <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
