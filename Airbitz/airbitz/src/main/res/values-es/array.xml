@@ -3,8 +3,8 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Viaje aereo</item>
-    <item>Alcohol &amp; Bares</item>
+    <item>Vuelos</item>
+    <item>Bares y Pubs</item>
     <item>Tolerancia</item>
     <item>Entretenimiento</item>
     <item>Artes</item>
@@ -22,7 +22,7 @@
     <item>Efectivo y Cajero automático</item>
     <item>Caridad</item>
     <item>Ropa</item>
-    <item>Caféterias</item>
+    <item>Cafeterías</item>
     <item>Pago con tarjeta de crédito</item>
     <item>Dentista</item>
     <item>Depósito de ahorro</item>
@@ -55,36 +55,36 @@
     <item>Hotel</item>
     <item>Gastos por intereses</item>
     <item>Internet</item>
-    <item>Contribución de IRA</item>
+    <item>Planes de pensiones</item>
     <item>Niños</item>
     <item>Actividades para niños</item>
-    <item>Pago Moroso</item>
+    <item>Recargo</item>
     <item>Servicio de lavandería</item>
-    <item>Césped &amp; jardín</item>
-    <item>Seguro de vida</item>
+    <item>Césped y jardín</item>
+    <item>Seguros de vida</item>
     <item>Varios</item>
-    <item>Teléfono móvil</item>
-    <item>Hipoteca &amp; Renta</item>
+    <item>Telefonía</item>
+    <item>Hipoteca y alquiler</item>
     <item>Interés hipotecario</item>
-    <item>Películas &amp; DVD</item>
+    <item>Películas y DVDs</item>
     <item>Música</item>
-    <item>Periódico &amp; Revistas</item>
-    <item>No es seguro</item>
+    <item>Periódicos y revistas</item>
+    <item>No estoy seguro</item>
     <item>Estacionamiento</item>
-    <item>Personal de Cuidado</item>
-    <item>Alimento &amp; Artículos para Mascotas</item>
+    <item>Cuidado personal</item>
+    <item>Comida y suministros para mascotas</item>
     <item>Aseo de Mascotas</item>
     <item>Mascotas</item>
     <item>Farmacia</item>
-    <item>Propiedad</item>
+    <item>Bienes Inmuebles</item>
     <item>Transporte público</item>
-    <item>La inscripción</item>
-    <item>Alquiler de Autos &amp; Taxi</item>
+    <item>Registro</item>
+    <item>Taxis y coches de alquiler</item>
     <item>Restaurantes</item>
-    <item>Service &amp; Parts</item>
+    <item>Reparaciones y recambios</item>
     <item>Tarifas de servicio</item>
     <item>Compras</item>
-    <item>Spa &amp; Masajes</item>
+    <item>Spa y masajes</item>
     <item>Artículos deportivos</item>
     <item>Deportes</item>
     <item>Préstamo Estudiantil</item>
@@ -100,7 +100,7 @@
     <item>Veterinario</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulta de ingresos</item>
+    <item>Asesoria financiera</item>
     <item>Ingresos divididos</item>
     <item>Sueldo neto</item>
     <item>Otros ingresos</item>

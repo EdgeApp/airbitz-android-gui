@@ -1,16 +1,16 @@
-v 2.2.0
+2.2.0版本
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+我们刚创新地实施了世界上首个流畅的密码复原程序，让忘记密码的用户只需两道问题和一封电邮便能取得密码。 无需再为了忘记密码而操心
 
-In addition:
+另外：
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• 结合Bitrefill插件让用户为手机充值，涵括143个国家的600服务供应商
+• 已封存的帐户先占用较少资源，停止访问网络或将交易资料进行同步
+• 软件程序仍为来临资金发出通知讯号，即使已处于后台
+• 为不成功的BIP70付款协议交易提供备用的公共地址 
+• 已改善的语言翻译
+• 修复Android N损坏的弹出对话视窗
+• 已修复用户拒绝透露位置时的系统崩溃问题
 
 
 v 2.1.0
