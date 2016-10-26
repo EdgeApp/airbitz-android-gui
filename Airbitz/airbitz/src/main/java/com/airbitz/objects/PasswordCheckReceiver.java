@@ -111,8 +111,7 @@ public class PasswordCheckReceiver extends BroadcastReceiver {
     }
 
 	private void buildNotification(Context context, String account) {
-		String title = String.format(
-			context.getString(R.string.account_needs_password_title), account);
+		String title = String.format(context.getString(R.string.account_needs_password_title));
 		String message = String.format(
 			context.getString(R.string.account_needs_password_message), account);
 

@@ -117,7 +117,7 @@
   <string name="server_error_other">Ocorreu um erro.</string>
   <string name="insufficient_amount">Quantia muito pequena</string>
   <string name="account_needs_password_title">AVISO: senha ausente</string>
-  <string name="account_needs_password_message">A conta \'%1$s\' precisa de uma senha. A conta não pode ser acessada em um novo dispositivo sem uma senha.</string>
+  <string name="account_needs_password_message">A conta [%1$s] precisa de uma senha. A conta não pode ser acessada em um novo dispositivo sem uma senha.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Uma imagem do logotipo</string>
   <string name="fragment_landing_detail_text">Carteira Bitcoin</string>

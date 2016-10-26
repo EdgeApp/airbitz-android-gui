@@ -136,7 +136,7 @@
     <string name="server_error_other">An error has occurred.</string>
     <string name="insufficient_amount">Amount too small</string>
     <string name="account_needs_password_title">WARNING: missing password</string>
-    <string name="account_needs_password_message">Account \'%1$s\' needs a password. Account is not accessible on a new device without a password.</string>
+    <string name="account_needs_password_message">Account [%1$s] needs a password. Account is not accessible on a new device without a password.</string>
 
     <!-- Strings related to Landing -->
     <string name="fragment_landing_logo_description">An image of the logo</string>

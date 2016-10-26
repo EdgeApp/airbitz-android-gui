@@ -117,7 +117,7 @@
   <string name="server_error_other">发生错误。</string>
   <string name="insufficient_amount">数额太小</string>
   <string name="account_needs_password_title">警告 ︰ 遗漏密码</string>
-  <string name="account_needs_password_message">帐户 \'%1$s\' 需要密码。缺乏密码将无法在新装置上登入帐户。</string>
+  <string name="account_needs_password_message">帐户 [%1$s] 需要密码。缺乏密码将无法在新装置上登入帐户。</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">标志的图像</string>
   <string name="fragment_landing_detail_text">比特币钱包</string>
