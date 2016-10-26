@@ -634,7 +634,7 @@
   <string name="affiliate_refer_friends_title">Refere Zanmi Ou</string>
   <string name="affiliate_refer_friends_body">%1$s\n\nShare this link to receive revenue from users that install and use %2$s. You will receive 0.25%% of all gift card purchases made inside of this app.</string>
   <string name="affiliate_category">Income:Affiliate Revenue</string>
-  <string name="affiliate_notes">Revenue share from affiliate link %@</string>
+  <string name="affiliate_notes">Revenue share from affiliate link %s</string>
   <string name="affiliate_link_error">Kapab jenere lyen afilye nan moman sa a.</string>
   <string name="affiliate_link_share_text">Download the Airbitz wallet and save money using bitcoin</string>
   <string name="app_support_requested">Sipò Mande</string>

@@ -633,7 +633,7 @@
   <string name="affiliate_refer_friends_title">Пригласите Ваших друзей</string>
   <string name="affiliate_refer_friends_body">%1$s\n\nПоделитесь этой ссылкой, чтобы получить доход от пользователей, установивших и использующих %2$s. Вы получите 0,25%% от всех приобретений подарочных карт через это приложение.</string>
   <string name="affiliate_category">Доход по партнерской программе</string>
-  <string name="affiliate_notes">Доход с партнерской ссылки %@</string>
+  <string name="affiliate_notes">Доход с партнерской ссылки %s</string>
   <string name="affiliate_link_error">Не удалось сгенерировать ссылку для партнерской программы.</string>
   <string name="affiliate_link_share_text">Скачайте кошелек Airbitz и экономьте деньги, используя биткойны</string>
   <string name="app_support_requested">Запросить поддержку</string>

@@ -633,7 +633,7 @@
   <string name="affiliate_refer_friends_title">介绍给朋友</string>
   <string name="affiliate_refer_friends_body">%1$s\n\n分享此链接，任何用户安装和使用%2$s时，您就能够获利。凡是在此应用程序里购买的礼品卡，您将得到其中的0.25%%。</string>
   <string name="affiliate_category">收入 ︰ 合作伙伴收入</string>
-  <string name="affiliate_notes">从分享合作伙伴链接 %@ 所获取的收入</string>
+  <string name="affiliate_notes">从分享合作伙伴链接 %s 所获取的收入</string>
   <string name="affiliate_link_error">目前无法生成合作伙伴的链接。</string>
   <string name="affiliate_link_share_text">下载 Airbitz 钱包并使用比特币以便省钱</string>
   <string name="app_support_requested">已发出支援请求</string>
