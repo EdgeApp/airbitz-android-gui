@@ -117,7 +117,7 @@
   <string name="server_error_other">Произошла ошибка.</string>
   <string name="insufficient_amount">Сумма слишком мала</string>
   <string name="account_needs_password_title">ВНИМАНИЕ: пароль отсутствует</string>
-  <string name="account_needs_password_message">Учетная запись \'%1$s\' требует пароль. Вы не сможете войти в свою учетную запись на другом устройстве без пароля.</string>
+  <string name="account_needs_password_message">Учетная запись [%1$s] требует пароль. Вы не сможете войти в свою учетную запись на другом устройстве без пароля.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Изображение для логотипа</string>
   <string name="fragment_landing_detail_text">Биткойн-кошелек</string>

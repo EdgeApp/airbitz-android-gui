@@ -118,7 +118,7 @@
   <string name="server_error_other">Yon erè ki te fèt.</string>
   <string name="insufficient_amount">Kantite lajan se twò piti</string>
   <string name="account_needs_password_title">AVÈTISMAN: manke modpas</string>
-  <string name="account_needs_password_message">Kont %1$s bezwen modpas. ou paka antre sou kont lan ak yon nouvo aparèy san modpas.</string>
+  <string name="account_needs_password_message">Kont [%1$s] bezwen modpas. ou paka antre sou kont lan ak yon nouvo aparèy san modpas.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Yon imaj de logo</string>
   <string name="fragment_landing_detail_text">Bitcoin Bous</string>

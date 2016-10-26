@@ -117,7 +117,7 @@
   <string name="server_error_other">Une erreur est survenue.</string>
   <string name="insufficient_amount">Montant trop faible</string>
   <string name="account_needs_password_title">ATTENTION : mot de passe absent</string>
-  <string name="account_needs_password_message">Le compte \'%1$s\' nécessite un mot de passe. Le compte est inaccessible sur un nouvel appareil sans un mot de passe.</string>
+  <string name="account_needs_password_message">Le compte [%1$s] nécessite un mot de passe. Le compte est inaccessible sur un nouvel appareil sans un mot de passe.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Une image du logo</string>
   <string name="fragment_landing_detail_text">Portefeuille Bitcoin</string>

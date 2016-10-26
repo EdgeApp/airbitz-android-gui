@@ -117,7 +117,7 @@
   <string name="server_error_other">Ha ocurrido un error.</string>
   <string name="insufficient_amount">Cantidad es demasiado pequeña</string>
   <string name="account_needs_password_title">ADVERTENCIA: falta contraseña</string>
-  <string name="account_needs_password_message">Cuenta \'%@\' necesita una contraseña. Cuenta no es accesible en un nuevo dispositivo sin una contraseña.</string>
+  <string name="account_needs_password_message">Cuenta [%1$s] necesita una contraseña. Cuenta no es accesible en un nuevo dispositivo sin una contraseña.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Una imagen del logotipo</string>
   <string name="fragment_landing_detail_text">Billetera Bitcoin</string>

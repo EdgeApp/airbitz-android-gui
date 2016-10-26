@@ -117,7 +117,7 @@
   <string name="server_error_other">कोई त्रुटि उत्पन्न हो गई है।</string>
   <string name="insufficient_amount">राशि बहुत कम है</string>
   <string name="account_needs_password_title">चेतावनी: पासवर्ड नहीं है</string>
-  <string name="account_needs_password_message">\'%1$s\' खाते को पासवर्ड की जरूरत है| बिना पासवर्ड आप ये अकाउंट किसी अन्य उपकरण पर नहीं चला पाएंगे|</string>
+  <string name="account_needs_password_message">[%1$s] खाते को पासवर्ड की जरूरत है| बिना पासवर्ड आप ये अकाउंट किसी अन्य उपकरण पर नहीं चला पाएंगे|</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">लोगो की तस्वीर</string>
   <string name="fragment_landing_detail_text">बिट कॉइन वॉलेट</string>
