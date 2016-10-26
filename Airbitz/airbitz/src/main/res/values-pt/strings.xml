@@ -633,7 +633,7 @@
   <string name="affiliate_refer_friends_title">Indique Para Seu Amigo</string>
   <string name="affiliate_refer_friends_body">%1$s\n\nCompartilhe este link para receber receita dos usuários que instalam e usam %2$s. Você irá receber 0,25%% de todas as compras feitas com cartão de presentes dentro deste aplicativo.</string>
   <string name="affiliate_category">Renda: Receita de Afiliados</string>
-  <string name="affiliate_notes">Compartilhamento de receita do link afiliado %@</string>
+  <string name="affiliate_notes">Compartilhamento de receita do link afiliado %s</string>
   <string name="affiliate_link_error">Não é possível gerar o link de afiliado neste momento.</string>
   <string name="affiliate_link_share_text">Baixe a carteira Airbitz e economize dinheiro usando bitcoin</string>
   <string name="app_support_requested">Suporte Solicitado</string>

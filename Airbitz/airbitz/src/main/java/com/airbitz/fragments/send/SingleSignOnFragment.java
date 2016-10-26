@@ -256,10 +256,10 @@ public class SingleSignOnFragment extends BaseFragment {
                 "airbitz.co"
             };
             if (mKycTokenKeys.length > 0) {
-                descriptionText = String.format("• %@", mActivity.getString(R.string.request_your_identity_token));
+                descriptionText = String.format("• %s", mActivity.getString(R.string.request_your_identity_token));
                 mLoginButton.setText(R.string.approve_button_text);
             } else {
-                descriptionText = String.format("• %@", mActivity.getString(R.string.request_your_identity_token_but_none));
+                descriptionText = String.format("• %s", mActivity.getString(R.string.request_your_identity_token_but_none));
                 mKycTokenKeys = null;
                 mLoginButton.setVisibility(View.GONE);
                 mCancelButton.setText(R.string.back_button_text);

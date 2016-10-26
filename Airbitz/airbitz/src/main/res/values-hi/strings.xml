@@ -633,7 +633,7 @@
   <string name="affiliate_refer_friends_title">दोस्तों को बताएं</string>
   <string name="affiliate_refer_friends_body">उन यूजर्स से आय पाने के लिए इस लिंक %1$s\n\n को शेयर करें जिन्होंने %2$s को इनस्टॉल और यूज़ किए है| इस एप्प से की गयी कुल गिफ्ट कार्ड खरीददारी का 0.25%% आपको मिलेगा|</string>
   <string name="affiliate_category">आय:प्रसारण आय</string>
-  <string name="affiliate_notes">%@ प्रसारण लिंक से कमायें</string>
+  <string name="affiliate_notes">%s प्रसारण लिंक से कमायें</string>
   <string name="affiliate_link_error">इस समय प्रसारण लिंक उत्पन्न नहीं हो पा रहा है|</string>
   <string name="affiliate_link_share_text">Airbitz वॉलेट डाउनलोड करें और बिटकॉइन के प्रयोग से पैसे बचाएं</string>
   <string name="app_support_requested">समर्थन का अनुरोध</string>
