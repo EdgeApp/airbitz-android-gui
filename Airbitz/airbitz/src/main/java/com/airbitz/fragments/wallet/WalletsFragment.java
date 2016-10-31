@@ -444,7 +444,7 @@ public class WalletsFragment extends WalletBaseFragment implements
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(String.format(getResources().getString(R.string.fragment_wallets_delete_wallet_second_confirm_title), wallet.name()))
                .titleColorRes(R.color.colorPrimaryDark)
-               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message), wallet.name()))
+               .content(String.format(getString(R.string.fragment_wallets_delete_wallet_second_confirm_message)))
                .cancelable(false)
                .positiveText(getResources().getString(R.string.string_delete))
                .positiveColor(getResources().getColor(R.color.colorPrimaryDark))
