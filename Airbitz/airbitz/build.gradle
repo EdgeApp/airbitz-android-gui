@@ -125,12 +125,12 @@ dependencies {
     nettestCompile 'co.airbitz:airbitz-core-java-develop:0.10.+'
     nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.10.+@aar'
 
-    rackwalletCompile 'co.airbitz:airbitz-core-java:0.9.+'
-	rackwalletCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
-    coinsourceCompile 'co.airbitz:airbitz-core-java:0.9.+'
-	coinsourceCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
-    athenaCompile 'co.airbitz:airbitz-core-java:0.9.+'
-	athenaCompile 'co.airbitz:airbitz-core-android:0.9.+@aar'
+    rackwalletCompile 'co.airbitz:airbitz-core-java:0.10.+'
+	rackwalletCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'
+    coinsourceCompile 'co.airbitz:airbitz-core-java:0.10.+'
+	coinsourceCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'
+    athenaCompile 'co.airbitz:airbitz-core-java:0.10.+'
+	athenaCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'
 
     compile 'co.airbitz:airbitz-bitbeacon-android:0.0.1@aar'
     compile project(':libs:airbitz-directory')
