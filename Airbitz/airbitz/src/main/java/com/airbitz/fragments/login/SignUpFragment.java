@@ -33,7 +33,7 @@ package com.airbitz.fragments.login;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -67,6 +67,8 @@ import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Settings;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -370,6 +372,9 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mUserNameEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             mUserNameEditText.setTypeface(Typeface.DEFAULT);
             mUserNameEditText.setVisibility(mAccount.passwordExists() ? View.VISIBLE : View.GONE);
+            if (!mAccount.hasPin()) {
+                mUserNameEditText.setVisibility(View.GONE);
+            }
             mPasswordForPINEditText = mUserNameEditText;
             mPasswordForPINEditText.setHint(getResources().getString(R.string.activity_signup_password));
             mPasswordForPINEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -448,6 +453,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             mMode == CHANGE_PIN))) {
             bUserNameFieldIsValid = true;
         }
+        else if (mMode == CHANGE_PIN && !mAccount.hasPin())
+        {
+            bUserNameFieldIsValid = true;
+        }
         else if (mMode != CHANGE_PASSWORD_VIA_QUESTIONS) // the user name field is used for the old mPassword in this case
         {
             // if the mPassword is wrong
@@ -506,10 +515,10 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
         return true;
     }
 
-    private AlertDialog mAlertSuccess = null;
+    private Dialog mAlertSuccess = null;
     public void ShowMessageDialogChangeSuccess(String title, String reason) {
         if(mAlertSuccess == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
             builder.setMessage(reason)
                     .setTitle(title)
                     .setCancelable(false)
@@ -522,8 +531,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                                 }
                             }
                     );
-            mAlertSuccess = builder.create();
-            mAlertSuccess.show();
+            mAlertSuccess = builder.show();
         }
     }
 
@@ -573,12 +581,14 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
             if (success) {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY) {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_password_change_title), getResources().getString(R.string.activity_signup_password_change_good));
+                    mActivity.onBackPressed();
                 } else if (mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {
                     mActivity.UserJustLoggedIn(false);
                     mActivity.clearBD();
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.WALLET.ordinal());
                 } else {
                     ShowMessageDialogChangeSuccess(getResources().getString(R.string.activity_signup_pin_change_title), getResources().getString(R.string.activity_signup_pin_change_good));
+                    mActivity.onBackPressed();
                 }
             } else {
                 if (mMode == CHANGE_PASSWORD || mMode == CHANGE_PASSWORD_NO_VERIFY || mMode == CHANGE_PASSWORD_VIA_QUESTIONS) {

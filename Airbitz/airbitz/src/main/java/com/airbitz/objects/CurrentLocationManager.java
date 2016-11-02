@@ -31,11 +31,16 @@
 
 package com.airbitz.objects;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -49,6 +54,7 @@ public class CurrentLocationManager {
 
     private PlayLocationManager mPlay;
     private AndroidLocationManager mAndroid;
+    private boolean mLocationPermission = false;
 
     public CurrentLocationManager(Context context) {
         mContext = context;
@@ -57,10 +63,17 @@ public class CurrentLocationManager {
         } else {
             mAndroid = new AndroidLocationManager(mContext);
         }
+        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (perm == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermission = true;
+        }
         attemptConnection();
     }
 
     public static boolean locationEnabled(Context context) {
+        int perm  = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (perm != PackageManager.PERMISSION_GRANTED) return false;
+
         String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         return !(locationProviders == null || locationProviders.equals(""));
     }
@@ -77,6 +90,7 @@ public class CurrentLocationManager {
     }
 
     public void addLocationChangeListener(OnCurrentLocationChange listener) {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.addLocationChangeListener(listener);
         } else {
@@ -85,6 +99,7 @@ public class CurrentLocationManager {
     }
 
     public void removeLocationChangeListener(OnCurrentLocationChange listener) {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.removeLocationChangeListener(listener);
         } else {
@@ -93,6 +108,7 @@ public class CurrentLocationManager {
     }
 
     public Location getLocation() {
+        if (!mLocationPermission) return new Location("");
         if (mPlay != null) {
             return mPlay.getLocation();
         } else {
@@ -101,6 +117,7 @@ public class CurrentLocationManager {
     }
 
     public void attemptConnection() {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.attemptConnection();
         } else {
@@ -109,6 +126,7 @@ public class CurrentLocationManager {
     }
 
     public void onConnected(Bundle bundle) {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.onConnected(bundle);
         } else {
@@ -117,6 +135,7 @@ public class CurrentLocationManager {
     }
 
     public void onDisconnected() {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.onConnectionSuspended(0);
         } else {
@@ -125,6 +144,7 @@ public class CurrentLocationManager {
     }
 
     public void onLocationChanged(Location location) {
+        if (!mLocationPermission) return;
         if (mPlay != null) {
             mPlay.onLocationChanged(location);
         } else {

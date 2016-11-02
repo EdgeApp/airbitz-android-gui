@@ -3,16 +3,16 @@ De: [[abtag de]]
 
 Por favor escanear código QR o haga clic en los enlaces para pagar
 
-Haga clic en pagar
+Haga clic para pagar
 [[abtag REDIRECT_URL]]
 
 [[abtag BITCOIN_URI]]
 
-Address: [[abtag ADDRESS]]
+Direccion: [[abtag ADDRESS]]
 Cantidad: [[abtag AMOUNT_BTC]] BTC
 Cantidad: [[abtag AMOUNT_BITS]] bits
 
-En el [[abtag APP_TITLE]] Mobile Bitcoin Wallet + directorio empresarial
+Enviado desde [[abtag APP_TITLE]] cartera móvil de Bitcoin + directorio empresarial
 
 Descargar [[abtag APP_TITLE]] para iOS o Android
 [[abtag APP_DOWNLOAD_LINK]]

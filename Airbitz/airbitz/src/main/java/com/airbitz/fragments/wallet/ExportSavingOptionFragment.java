@@ -31,7 +31,8 @@
 
 package com.airbitz.fragments.wallet;
 
-import android.app.AlertDialog;
+;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -63,6 +64,7 @@ import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.Wallet;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -594,7 +596,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         linearLayout.addView(timePicker);
 
 
-        AlertDialog frag = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+        Dialog frag = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                 .setTitle(getString(R.string.export_saving_option_pick_date))
                 .setView(linearLayout)
                 .setPositiveButton(R.string.string_ok,

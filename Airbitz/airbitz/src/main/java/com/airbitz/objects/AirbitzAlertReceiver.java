@@ -32,6 +32,7 @@
 package com.airbitz.objects;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -193,9 +194,9 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         alarmManager.cancel(sender);
     }
 
-    private void issueOSNotification(Context context, String message, int code) {
+    static public void issueOSNotification(Context context, String message, int code) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
         Resources res = context.getResources();
         int height = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
         int width = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
@@ -205,7 +206,9 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
                     context.getString(R.string.app_name)))
                 .setSmallIcon(R.drawable.ico_sending_3)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setLargeIcon(bitmap);
+                .setLargeIcon(bitmap)
+                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
         builder.setContentText(message);

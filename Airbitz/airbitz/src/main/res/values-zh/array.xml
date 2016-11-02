@@ -4,36 +4,36 @@
   <!--Settings-->
   <string-array name="expense_category_defaults">
     <item>航空旅游</item>
-    <item>酒精 &amp; 酒吧</item>
+    <item>酒精饮料 &amp; 酒吧</item>
     <item>津贴</item>
     <item>娱乐</item>
     <item>艺术</item>
     <item>自动提款机手续费</item>
     <item>汽车 &amp; 交通</item>
     <item>汽车保险</item>
-    <item>自动转载</item>
+    <item>自动付款</item>
     <item>婴儿用品</item>
     <item>保姆 &amp; 托儿所</item>
     <item>银行费用</item>
-    <item>账单 &amp; 杂费</item>
+    <item>账单 &amp; 基础设施费</item>
     <item>书籍</item>
-    <item>书本 &amp; 文具</item>
+    <item>书籍 &amp; 用品</item>
     <item>洗车</item>
     <item>现金 &amp; 自动提款机</item>
-    <item>慈善机构</item>
+    <item>慈善</item>
     <item>服装</item>
     <item>咖啡厅</item>
     <item>信用卡付款</item>
     <item>牙医</item>
-    <item>银行存款</item>
+    <item>存款至储蓄户口</item>
     <item>医生</item>
     <item>教育</item>
     <item>电子产品 &amp; 软件</item>
     <item>娱乐</item>
-    <item>眼睛护理</item>
+    <item>眼部护理</item>
     <item>快餐食品</item>
     <item>费用 &amp; 收费</item>
-    <item>金融</item>
+    <item>财务</item>
     <item>财务顾问</item>
     <item>食物 &amp; 餐饮</item>
     <item>家具</item>
@@ -43,80 +43,80 @@
     <item>杂货</item>
     <item>健身房</item>
     <item>头发</item>
-    <item>健康 &amp; 健身</item>
-    <item>HOA 会费</item>
+    <item>保健 &amp; 健身</item>
+    <item>物业管理费</item>
     <item>爱好</item>
-    <item>首页</item>
-    <item>家庭装修</item>
+    <item>家居</item>
+    <item>家居装修</item>
     <item>家庭保险</item>
-    <item>家用电话</item>
-    <item>居家服务</item>
-    <item>家庭用品</item>
+    <item>住家电话</item>
+    <item>家居服务</item>
+    <item>家居用品</item>
     <item>酒店</item>
     <item>Exp利息</item>
     <item>互联网</item>
-    <item>IRA的贡献</item>
-    <item>孩子们</item>
-    <item>孩子的活动</item>
+    <item>个人退休帐户的资金投入</item>
+    <item>小孩</item>
+    <item>儿童活动</item>
     <item>滞纳金</item>
     <item>洗衣</item>
     <item>草坪 &amp; 花园</item>
     <item>人寿保险</item>
     <item>杂项</item>
-    <item>移动电话</item>
+    <item>手机</item>
     <item>房贷 &amp; 租金</item>
     <item>房贷利息</item>
     <item>电影 &amp; DVD光碟</item>
     <item>音乐</item>
     <item>报纸 &amp; 杂志</item>
     <item>不确定</item>
-    <item>停车</item>
+    <item>泊车费</item>
     <item>个人护理</item>
     <item>宠物食品 &amp; 宠物用品</item>
     <item>宠物美容</item>
     <item>宠物</item>
     <item>药房</item>
-    <item>地产</item>
+    <item>房地产</item>
     <item>公共交通</item>
     <item>注册</item>
     <item>租车&amp; 出租车</item>
     <item>餐馆</item>
-    <item>服务 &amp; 配件</item>
-    <item>服务费用</item>
+    <item>维修服务 &amp; 零件</item>
+    <item>维修服务费</item>
     <item>购物</item>
     <item>水疗 &amp; 按摩</item>
     <item>体育用品</item>
     <item>体育</item>
     <item>助学贷款</item>
-    <item>税收</item>
-    <item>电视</item>
+    <item>缴税</item>
+    <item>电视机</item>
     <item>通行费</item>
     <item>玩具</item>
     <item>交易佣金</item>
     <item>旅行</item>
     <item>学费</item>
-    <item>杂费</item>
+    <item>基础设施费</item>
     <item>度假</item>
     <item>兽医</item>
   </string-array>
   <string-array name="income_category_defaults">
     <item>咨询收入</item>
     <item>股息收入</item>
-    <item>薪金净额</item>
+    <item>薪资净额</item>
     <item>其他收入</item>
     <item>租金</item>
     <item>销售</item>
   </string-array>
   <string-array name="exchange_category_defaults">
     <item>购买比特币</item>
-    <item>销售比特币</item>
+    <item>售卖比特币</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
     <item>Bitfinex</item>
     <item>Bitstamp</item>
-    <item>电子BTC</item>
-    <item>中国BTC</item>
+    <item>BTC-e</item>
+    <item>比特币中国</item>
     <item>Bter</item>
     <item>CAVirtex</item>
     <item>Coinbase</item>
@@ -125,23 +125,23 @@
     <item>Kraken</item>
     <item>MintPal</item>
     <item>OKCoin</item>
-    <item>聪的天穹</item>
+    <item>Vault of Satoshi</item>
   </string-array>
   <string-array name="transfer_wallet_category_defaults">
     <item>Airbitz</item>
     <item>Armory</item>
-    <item>核心比特币</item>
+    <item>比特币核心</item>
     <item>Blockchain</item>
     <item>Electrum</item>
     <item>Multibit</item>
     <item>Mycelium</item>
-    <item>隐藏的钱包</item>
+    <item>Dark Wallet</item>
   </string-array>
   <string-array name="transaction_categories_list">
-    <item>费用 ︰</item>
+    <item>费用</item>
     <item>收入 ︰</item>
-    <item>转换 ︰</item>
-    <item>转换 ︰</item>
+    <item>转账</item>
+    <item>外汇</item>
   </string-array>
   <string-array name="distance_list">
     <item>自动</item>
@@ -149,8 +149,8 @@
     <item>英里</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>低费用</item>
+    <item>低收费</item>
     <item>标准费用</item>
-    <item>高费用</item>
+    <item>高收费</item>
   </string-array>
 </resources>

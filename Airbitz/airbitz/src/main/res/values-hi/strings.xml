@@ -19,6 +19,7 @@
   <string name="string_delete">हटाएं</string>
   <string name="string_save">सहेजें</string>
   <string name="string_back">पीछे</string>
+  <string name="string_disable">DISABLE</string>
   <string name="string_next">आगे</string>
   <string name="string_skip">छोड़ें</string>
   <string name="string_total">कुल</string>
@@ -116,7 +117,7 @@
   <string name="server_error_other">कोई त्रुटि उत्पन्न हो गई है।</string>
   <string name="insufficient_amount">राशि बहुत कम है</string>
   <string name="account_needs_password_title">चेतावनी: पासवर्ड नहीं है</string>
-  <string name="account_needs_password_message">\'%1$s\' खाते को पासवर्ड की जरूरत है| बिना पासवर्ड आप ये अकाउंट किसी अन्य उपकरण पर नहीं चला पाएंगे|</string>
+  <string name="account_needs_password_message">[%1$s] खाते को पासवर्ड की जरूरत है| बिना पासवर्ड आप ये अकाउंट किसी अन्य उपकरण पर नहीं चला पाएंगे|</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">लोगो की तस्वीर</string>
   <string name="fragment_landing_detail_text">बिट कॉइन वॉलेट</string>
@@ -217,12 +218,12 @@
   <string name="activity_recovery_prompt_title">इस चरण को छोड़ें</string>
   <string name="activity_recovery_prompt_skip">**चेतावनी** अगर आप पासवर्ड भूल गए तो इसे दोबारा प्राप्त नहीं कर पाएंगे!!</string>
   <string name="activity_recovery_first_wallet_name">मेरा वॉलेट</string>
-  <string name="activity_recovery_answer_questions_alert">सभी 6 सवाल चुनने जरुरी है|ध्यान रखिये वो पर्याप्त लम्बे हों|</string>
-  <string name="activity_recovery_pick_questions_alert">आगे बढ़ने से पहले सभी 6 सवाल चुनने जरुरी है|</string>
+  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
+  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
   <string name="activity_recovery_question_default">प्रश्न</string>
   <string name="item_recovery_spinner_arrow_description">ड्रॉपडाउन निशान</string>
   <string name="activity_recovery_done_title">रिकवरी प्रश्नावली</string>
-  <string name="activity_recovery_done_details">आपके पासवर्ड रिकवरी पश्नावली स्थापित हो गयी है| पासवर्ड पुनः प्राप्त करते समय आपके जवाब हुबहू होने चाहिए|**अपने पासवर्ड और रिकवरी उत्तरों को न भूलें**उनके बिना आपका खाता में प्रवेश नहीं कर पाएंगे!!</string>
+  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
   <string name="activity_recovery_error_title">पासवर्ड पुनर्प्राप्ति विफल हो गया है</string>
   <string name="activity_recovery_error_incorrect_password">कृपया अपना सही पासवर्ड दर्ज करें ताकि आपके जवाब बदल सकें</string>
   <string name="activity_recovery_error_save_failed">रिकवरी जवाब संचित करने में विफल</string>
@@ -234,6 +235,7 @@
   <string name="activity_recovery_warning_dirty_forgot_message">चेतवानी: आप पासवर्ड रिकवरी से बाहर निकल रहे हैं इससे प्रक्रिया समाप्त हो जाएगी|ऐसे ही बाहर निकलें?</string>
   <string name="fragment_recovery_mismatch_title">पासवर्ड बेमेल है</string>
   <string name="fragment_recovery_mismatch_message">सही पासवर्ड दर्ज करें</string>
+  <string name="fragment_recovery_answer_case_sensitive">उत्तर उच्च व निम्न शब्दों के लिए संवेदनशील है</string>
   <!-- Strings for ForgotPassword -->
   <string name="activity_forgot_title">पासवर्ड भूल गए</string>
   <!-- Strings for Settings fragment -->
@@ -312,7 +314,7 @@
   <string name="fragment_send_incorrect_password_title">गलत पासवर्ड</string>
   <string name="fragment_send_no_satoshi_title">राशि लिखें</string>
   <string name="fragment_send_no_satoshi_message">भेजने के लिए राशि लिखें</string>
-  <string name="fragment_send_send_to_hint">बिटकॉइन पता या URI</string>
+  <string name="fragment_send_send_to_hint">बिट कॉइन पता या गुप्त चाबी</string>
   <string name="fragment_send_failure_title">भेजना असफल हुआ</string>
   <string name="fragment_send_send_bitcoin_invalid">बिट कॉइन पता अवैध है</string>
   <string name="fragment_send_send_bitcoin_unscannable">क्यू आर कोड स्कैन करने में सक्षम नहीं हैं</string>
@@ -323,7 +325,7 @@
   <string name="fragment_send_address">पता:</string>
   <string name="fragment_send_photos">तस्वीरें</string>
   <string name="fragment_send_flash">उजाला</string>
-  <string name="fragment_send_address_dialog_title">बिटकॉइन पते पर भेजें</string>
+  <string name="fragment_send_address_dialog_title">बिटकॉइन पते पर भेजें या निजी कुंजी आयात करें</string>
   <string name="fragment_import_address_dialog_title">गुप्त चाबी से पैसे निकालें</string>
   <string name="fragment_send_other_wallet_header_title">धनराशि ट्रान्सफर करने के लिए एक वॉलेट चुनें:</string>
   <string name="fragment_send_create_wallet_to_transfer">धनराशि ट्रान्सफर करने के लिए एक नया वॉलेट बनाएँ</string>
@@ -349,6 +351,7 @@
   <string name="fragment_send_confirmation_password_remaining">ग़लत पासवर्ड। कृपया %1$.0f सेकंड की प्रतीक्षा करें और पुन: प्रयास करें...</string>
   <string name="fragment_send_confirmation_dust_alert">मूल्य काफी कम है</string>
   <string name="fragment_send_confirmation_dust_alert_more">कृपया कम से कम %1$s(~%2$s) भेजें</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">वालेट्स</string>
   <string name="fragment_wallets_add_wallet">वॉलेट जोड़ें</string>
@@ -413,7 +416,7 @@
   <string name="request_qr_ble_invalid_uri">आपको एक अमान्य बिटकॉइन अनुरोध मिला है|आप दोबारा कोशिश कर सकते हैं|</string>
   <string name="request_qr_ble_copied">अनुरोध क्लिपबोर्ड पर कॉपी हो गया है</string>
   <string name="request_qr_first_usage">भेजने वाले को क्यू आर कोड दिखाएँ और भुगतान करने के लिए उन्हें स्कैन करें</string>
-  <string name="request_qr_top_message">भेजने, पाने या बिटआईडी के लिए क्यू आर स्कैन करें</string>
+  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">वॉलेट आयात</string>
   <string name="import_wallet_timeout_message">आयात असफल|दोबारा कोशिश करें|</string>
@@ -546,6 +549,7 @@
   <string name="fragment_twofactor_show_unable_status">2 फैक्टर स्थिति बताने में सक्षम नहीं हैं</string>
   <string name="fragment_twofactor_show_instruction">2-फैक्टर पुष्टिकरण को सक्रिय कर केवल पिछले लोग्डइन से ही लॉग इन करने की अनुमति देकर उपकरण की सुरक्षा बढाएं|2FA सक्रिय करने के बाद नीचे दिए क्यूआर कोड को स्कैन कर और उपकरण जोड़ें|</string>
   <string name="fragment_twofactor_show_reset_requested">अन्य उपकरण से 2FA पुनर्स्थापन का अनुरोध किया गया है|</string>
+  <string name="fragment_twofactor_show_qr_image_text">Show QR Code</string>
   <string name="fragment_two_factor_menu_requested">दो फैक्टर पुनर्स्थापन का अनुरोध किया गया है|</string>
   <string name="twofactor_required_title">2 फैक्टर प्रमाणिकता चालू</string>
   <string name="twofactor_required_message">इस खाते से दूसरे उपकरण पर 2 फैक्टर प्रमाणिकता(उन्नत सुरक्षा) सक्रिय कर दी गयी है|कृपया 2 फैक्टर प्रमाणिकता को सक्रिय करें ताकि इस उपकरण से भी पूरी तरह काम ले पायें|</string>
@@ -603,18 +607,17 @@
   <string name="password_set_title">कोई पासवर्ड नहीं है</string>
   <string name="password_set_message">इस खाते के लिए पासवर्ड बना लें अन्यथा ये उपकरण खो जाने या चोरी हो जाने पर पासवर्ड रिकवर नहीं कर पाएंगे|</string>
   <string name="password_set_skip">छोड़ें</string>
+  <!-- PIN Set -->
+  <string name="pin_set_title">No PIN set</string>
+  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
   <!-- Settings -->
   <string name="settings_category_title">वर्ग</string>
   <!-- Logout -->
   <string name="logout_message">खाते से बहर निकलने के लिए कृपया %1$s का इंतजार करें|धीमे नेटवर्क पर थोड़ा ज्यादा समय लग सकता है</string>
-  <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">बिट आईडी लॉग इन</string>
-  <string name="bitid_login_success">लॉग इन सफल</string>
-  <string name="bitid_login_failure">लॉगिंग इन में परेशानी हो रही है</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">साइन इन करें या साइन अप करें</string>
   <string name="drawer_buy_sell">बिटकॉइन खरीद/बेच</string>
-  <string name="drawer_discounted_gift_cards">छूट वाले गिफ्ट कार्ड</string>
+  <string name="drawer_spend_bitcoin">Spend Bitcoin (Plugins)</string>
   <string name="drawer_send">क्यूआर कोड को स्कैन करें</string>
   <string name="drawer_request">अनुरोध</string>
   <string name="drawer_transactions">ट्रांजेक्शन</string>
@@ -630,13 +633,17 @@
   <string name="affiliate_refer_friends_title">दोस्तों को बताएं</string>
   <string name="affiliate_refer_friends_body">उन यूजर्स से आय पाने के लिए इस लिंक %1$s\n\n को शेयर करें जिन्होंने %2$s को इनस्टॉल और यूज़ किए है| इस एप्प से की गयी कुल गिफ्ट कार्ड खरीददारी का 0.25%% आपको मिलेगा|</string>
   <string name="affiliate_category">आय:प्रसारण आय</string>
-  <string name="affiliate_notes">%@ प्रसारण लिंक से कमायें</string>
+  <string name="affiliate_notes">%s प्रसारण लिंक से कमायें</string>
   <string name="affiliate_link_error">इस समय प्रसारण लिंक उत्पन्न नहीं हो पा रहा है|</string>
+  <string name="affiliate_link_share_text">Airbitz वॉलेट डाउनलोड करें और बिटकॉइन के प्रयोग से पैसे बचाएं</string>
   <string name="app_support_requested">समर्थन का अनुरोध</string>
   <string name="app_name">एयरबिट्ज़</string>
+  <string name="app_url_prefix">airbitz</string>
   <string name="app_homepage">https://airbitz.co</string>
   <string name="app_support_email">support@airbitz.co</string>
   <string name="app_support_phone">+ 1-844-928-9744</string>
+  <string name="app_support_telegram">https://telegram.airbitz.co</string>
+  <string name="app_support_slack">https://slack.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -647,13 +654,15 @@
   <string name="request_footer_link_title">एयरबिट्ज़ iOS या एंड्राइड के लिए डाउनलोड करें</string>
   <string name="request_footer_contact">मेल करें:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(20% तक छूट)</string>
-  <string name="plugin_target_discount">(10% तक छूट)</string>
-  <string name="plugin_wholefoods_discount">(10% तक छूट)</string>
-  <string name="plugin_walmart_discount">(10% तक छूट)</string>
-  <string name="plugin_homedepot_discount">(15% तक छूट)</string>
-  <string name="plugin_glidera_title">संयुक्त राज्य अमेरिका और कनाडा</string>
+  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+  <string name="plugin_target_discount">(Up to 10% Off)</string>
+  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
+  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
+  <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
+  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
   <string name="intent_choose_an_email">एक ई-मेल क्लाइंट का चयन करें:</string>
   <string name="plugin_filechooser_title">फ़ाइल अपलोड करें</string>
   <string name="plugin_filechooser_use_camera">कैमरा इस्तेमाल कीजिये</string>
@@ -667,6 +676,50 @@
   <string name="transaction_footer_starbucks_discount">20% तक की स्टारबक्स छूट</string>
   <string name="transaction_footer_target_discount">10% तक की टारगेट छूट</string>
   <string name="transaction_footer_amazon_discount">15-20% अमेज़न छूट</string>
+  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
   <string name="change_mining_fee_title">खनन शुल्क बदलें</string>
   <string name="change_mining_fee_body">चेतावनी: कम शुल्क की वजह से लेनदेन की पुष्टि में बहुत देर हो सकती है</string>
+  <!--Password Recovery Text-->
+  <string name="save_recovery_token_popup">Save Recovery Token</string>
+  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
+  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">Please enter the username of the account to recover</string>
+  <string name="recovery_not_setup">Recovery was not setup or was done on another device</string>
+  <string name="recovery_not_setup2">If recovery was setup, you should have emailed yourself a recovery token with a link</string>
+  <string name="recovery_not_setup3">Please find the email and click on the link from this device to initiate recovery</string>
+  <string name="recovery_token_invalid">Incorrect username for this recovery token. Please try a different username or use a different recovery token link.</string>
+  <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
+  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+  <string name="invalid_email">Invalid Email</string>
+  <string name="disable_recovery_popup_title">Disable Recovery?</string>
+  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+  <string name="error_disabling_recovery">Error disabling recovery</string>
+  <string name="recovery_disabled">Recovery Disabled</string>
+  <!-- SSO -->
+  <string name="edge_login">Edge Login</string>
+  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+  <string name="bitid_identity">BitID Identity</string>
+  <string name="provide_an_identity_token">Provide an Identity Token</string>
+  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+  <string name="approving_login_text">Approving Login...</string>
+  <string name="error_logging_in">लॉगिंग इन में परेशानी हो रही है</string>
+  <string name="successfully_logged_in">लॉग इन सफल</string>
+  <string name="approve_button_text">Approve</string>
+  <string name="accept_button_text">Accept</string>
+  <string name="login_button_text">LOGIN</string>
+  <string name="back_button_text">पीछे</string>
+  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+  <string name="would_like_to">This site would like to:</string>
+  <string name="request_payment_address">Request a Payment Address</string>
+  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+  <string name="successfully_verified_identity">Successfully Verified Identity</string>
+  <string name="create_new_text">Create new</string>
+  <string name="or_choose">\"$1$s\" or choose</string>
+  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="bitid_login_message">%1$s</string>
+  <string name="bitid_login_title">बिट आईडी लॉग इन</string>
+  <string name="bitid_login_success">लॉग इन सफल</string>
+  <string name="bitid_login_failure">लॉगिंग इन में परेशानी हो रही है</string>
 </resources>

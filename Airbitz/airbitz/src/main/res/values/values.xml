@@ -9,7 +9,9 @@
 
     <bool name="include_affiliate_link">true</bool>
     <bool name="include_buysell">true</bool>
-    <bool name="include_shop">true</bool>
+    <bool name="include_plugins">true</bool>
+    <bool name="include_shop_transactions">false</bool>
+    <bool name="include_bitrefill">true</bool>
     <bool name="include_directory_categories">true</bool>
     <string name="lock_directory_category"></string>
 

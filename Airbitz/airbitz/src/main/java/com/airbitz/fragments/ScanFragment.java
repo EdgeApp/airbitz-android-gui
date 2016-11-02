@@ -119,6 +119,7 @@ public abstract class ScanFragment
     public static final String UUID = "com.airbitz.Sendfragment_UUID";
     public static final String IS_UUID = "com.airbitz.Sendfragment_IS_UUID";
     public static final String FROM_WALLET_UUID = "com.airbitz.Sendfragment_FROM_WALLET_UUID";
+    public static final String ADDRESS = "com.airbitz.Sendfragment_ADDRESS";
 
     protected enum RunMode { SEND, IMPORT };
     protected RunMode mMode;

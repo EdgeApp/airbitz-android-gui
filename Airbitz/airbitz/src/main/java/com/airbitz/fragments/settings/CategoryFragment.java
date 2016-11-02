@@ -31,7 +31,8 @@
 
 package com.airbitz.fragments.settings;
 
-import android.app.AlertDialog;
+;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -52,6 +53,8 @@ import android.widget.TextView;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.Categories;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -206,7 +209,7 @@ public class CategoryFragment extends BaseFragment {
 
         final CategoryWidget category = (CategoryWidget) view.findViewById(R.id.category_widget);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
         builder.setTitle("Add Category")
             .setCancelable(true)
             .setPositiveButton(R.string.settings_categories_add_new, new DialogInterface.OnClickListener() {
@@ -217,7 +220,7 @@ public class CategoryFragment extends BaseFragment {
             }
         });
         builder.setView(view);
-        final AlertDialog alert = builder.create();
+        final Dialog alert = builder.create();
 
         category.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -235,7 +238,7 @@ public class CategoryFragment extends BaseFragment {
     }
 
     private void areYouSure() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getString(R.string.fragment_category_cancel_message))
                 .setTitle(getString(R.string.fragment_category_cancel_title))
                 .setCancelable(true)
@@ -254,7 +257,7 @@ public class CategoryFragment extends BaseFragment {
                             }
                         }
                 );
-        AlertDialog alert = builder.create();
+        Dialog alert = builder.create();
         alert.show();
     }
 

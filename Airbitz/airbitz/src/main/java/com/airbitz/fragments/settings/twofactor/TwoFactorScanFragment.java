@@ -32,7 +32,7 @@
 package com.airbitz.fragments.settings.twofactor;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,6 +50,8 @@ import android.widget.TextView;
 
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.AirbitzCore;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
@@ -197,7 +199,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     public void ShowTryAgainDialog(String title, String message) {
         if (!mActivity.isFinishing()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom));
             builder.setMessage(message)
                     .setTitle(title)
                     .setCancelable(false)

@@ -51,6 +51,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.Account.EdgeLoginInfo;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
 import co.airbitz.core.ParsedUri;
@@ -67,6 +68,9 @@ import com.airbitz.api.directory.DirectoryApi;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.ScanFragment;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,6 +83,7 @@ public class SendFragment extends ScanFragment {
 
     private BitidLoginTask mBitidTask;
     private PaymentProtoFetch mPaymentTask;
+    private EdgeLoginTask mEdgeLoginTask;
     Handler mHandler = new Handler();
 
     public SendFragment() {
@@ -110,6 +115,10 @@ public class SendFragment extends ScanFragment {
         if (mPaymentTask != null) {
             mPaymentTask.cancel(true);
             mPaymentTask = null;
+        }
+        if (mEdgeLoginTask != null) {
+            mEdgeLoginTask.cancel(true);
+            mEdgeLoginTask = null;
         }
         mHandler.removeCallbacks(sweepNotFoundRunner);
     }
@@ -174,11 +183,17 @@ public class SendFragment extends ScanFragment {
     protected void processText(String text) {
         hideProcessing();
         try {
+            if (null != text && text.length() == 8 && isBase32(text)) {
+                showProcessing();
+                mEdgeLoginTask = new EdgeLoginTask();
+                mEdgeLoginTask.execute(text);
+                return;
+            }
             ParsedUri parsed = AirbitzCore.getApi().parseUri(text);
             if (parsed.type() != null) {
                 switch (parsed.type()) {
                 case BITID:
-                    askBitidLogin(parsed.bitid(), text);
+                    launchSingleSignonFragment(parsed, null);
                     return;
                 case PAYMENT_PROTO:
                     showProcessing();
@@ -231,31 +246,6 @@ public class SendFragment extends ScanFragment {
                     }
                     @Override
                     public void onNeutral(MaterialDialog dialog) {
-                        mQRCamera.startScanning();
-                        dialog.cancel();
-                    }
-                });
-        builder.show();
-    }
-
-    private void askBitidLogin(final String uri, final String text) {
-        hideProcessing();
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
-        builder.content(getString(R.string.bitid_login_message, uri))
-               .title(R.string.bitid_login_title)
-               .theme(Theme.LIGHT)
-               .positiveText(getResources().getString(R.string.string_continue))
-               .negativeText(getResources().getString(R.string.string_cancel))
-               .cancelable(false)
-               .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        showProcessing();
-                        mBitidTask = new BitidLoginTask();
-                        mBitidTask.execute(text);
-                    }
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
                         mQRCamera.startScanning();
                         dialog.cancel();
                     }
@@ -316,9 +306,51 @@ public class SendFragment extends ScanFragment {
             if (result) {
                 launchSendConfirmation(mParsedUri, mRequest, null);
             } else {
+                if (mParsedUri.address() != null &&
+                        mParsedUri.address().length() > 5) {
+                    launchSendConfirmation(mParsedUri, null, null);
+                } else {
+                    showMessageAndStartCameraDialog(
+                            R.string.fragment_send_failure_title,
+                            R.string.fragment_send_confirmation_invalid_bitcoin_address);
+                }
+            }
+            hideProcessing();
+        }
+
+        @Override
+        protected void onCancelled() {
+            hideProcessing();
+        }
+    }
+
+    public class EdgeLoginTask extends AsyncTask<String, Void, Boolean> {
+        EdgeLoginInfo mEdgeInfo;
+
+        @Override
+        public void onPreExecute() {
+            showProcessing();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... text) {
+            try {
+                mEdgeInfo = mAccount.getEdgeLoginRequest(text[0]);
+                return true;
+            } catch (AirbitzException e) {
+                AirbitzCore.loge(e.toString());
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean result) {
+            if (result) {
+                launchSingleSignonFragment(null, mEdgeInfo);
+            } else {
                 showMessageAndStartCameraDialog(
-                    R.string.fragment_send_failure_title,
-                    R.string.fragment_send_confirmation_invalid_bitcoin_address);
+                        R.string.fragment_send_failure_title,
+                        R.string.invalid_edge_login_request);
             }
             hideProcessing();
         }
@@ -346,6 +378,17 @@ public class SendFragment extends ScanFragment {
         Bundle bundle = new Bundle();
         bundle.putString(FROM_WALLET_UUID, mWallet.id());
         fragment.setArguments(bundle);
+        if (mActivity != null) {
+            mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
+        }
+    }
+
+    public void launchSingleSignonFragment(ParsedUri parsedUri, EdgeLoginInfo loginInfo) {
+        hideProcessing();
+        SingleSignOnFragment fragment = new SingleSignOnFragment();
+        fragment.setEdgeLoginInfo(loginInfo);
+        fragment.setParsedUri(parsedUri);
+        fragment.setArguments(new Bundle());
         if (mActivity != null) {
             mActivity.pushFragment(fragment, NavigationActivity.Tabs.SEND.ordinal());
         }
@@ -510,5 +553,11 @@ public class SendFragment extends ScanFragment {
                 mDialog.dismiss();
             }
         }
+    }
+
+    private static boolean isBase32(String string) {
+        Pattern p = Pattern.compile("^[A-Z2-7]+$");
+        Matcher m = p.matcher(string);
+        return m.matches();
     }
 }

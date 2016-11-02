@@ -37,7 +37,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
+;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -95,6 +95,7 @@ import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -695,7 +696,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
     private void showNoQRAttached(final Contact contact) {
         getString(R.string.request_qr_image_store_error);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getString(R.string.request_qr_image_store_error))
                 .setTitle("")
                 .setCancelable(false)

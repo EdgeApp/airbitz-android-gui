@@ -31,19 +31,54 @@
 
 package com.airbitz.plugins;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Handler;
+
+import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 
 public class GiftCardFragment extends BasePluginList {
 
+    private final String FIRST_USAGE_COUNT = "com.airbitz.fragments.plugins.firstusagecount";
+    Handler mHandler = new Handler();
+
     @Override
     public void onResume() {
         super.onResume();
+
+        new Thread(new Runnable() {
+            public void run() {
+                SharedPreferences prefs = mActivity.getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+                int count = prefs.getInt(FIRST_USAGE_COUNT, 1);
+                if (count <= 2) {
+                    count++;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt(FIRST_USAGE_COUNT, count);
+                    editor.apply();
+                    notifyFirstUsage(getString(R.string.fragment_send_first_usage));
+                }
+            }
+        }).start();
+
         mPlugins.clear();
-        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.GIFT_CARDS));
+        mPlugins.addAll(PluginFramework.getPluginsGrouped().get(PluginFramework.GENERAL_PLUGINS));
+    }
+
+    private void notifyFirstUsage(final String message) {
+        mHandler.post(new Runnable() {
+
+            public void run() {
+                String popupText = String.format(getString(R.string.plugin_popup_notice),
+                        getString(R.string.app_name));
+                mActivity.ShowFadingDialog(popupText,
+                        getResources().getInteger(R.integer.alert_hold_time_help_popups));
+            }
+        });
     }
 
     @Override
     protected String getTitle() {
-        return mActivity.getString(R.string.drawer_discounted_gift_cards);
+        return mActivity.getString(R.string.drawer_spend_bitcoin);
     }
 }

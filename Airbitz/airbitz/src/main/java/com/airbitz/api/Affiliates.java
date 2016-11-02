@@ -278,7 +278,10 @@ public class Affiliates {
         private void share(NavigationActivity activity, String url) {
             Intent share = new Intent(android.content.Intent.ACTION_SEND);
             share.setType("text/plain");
-            share.putExtra(Intent.EXTRA_TEXT, url);
+
+            String shareText = activity.getString(R.string.affiliate_link_share_text) + "\n\n" + url;
+
+            share.putExtra(Intent.EXTRA_TEXT, shareText);
             activity.startActivity(Intent.createChooser(share,
                 activity.getString(R.string.string_share)));
         }

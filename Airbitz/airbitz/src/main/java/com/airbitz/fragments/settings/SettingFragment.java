@@ -33,7 +33,7 @@ package com.airbitz.fragments.settings;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -79,6 +79,7 @@ import co.airbitz.core.BitcoinDenomination;
 import co.airbitz.core.CoreCurrency;
 import co.airbitz.core.Settings;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -104,9 +105,10 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private static final String BLE_PREF = "BLEPref";
     public static final String START_RECOVERY_PASSWORD = "StartRecoveryPassword";
     public static final String START_CHANGE_PASSWORD = "com.airbitz.fragments.settingfragment.StartChangePassword";
+    public static final String START_CHANGE_PIN = "com.airbitz.fragments.settingfragment.StartChangePin";
     private final String TAG = getClass().getSimpleName();
-    AlertDialog mDefaultExchangeDialog;
-    AlertDialog mDistanceDialog;
+    Dialog mDefaultExchangeDialog;
+    Dialog mDistanceDialog;
     private Button mCategoryContainer;
     private Button mSpendingLimitContainer;
     private Button mTwoFactorContainer;
@@ -255,6 +257,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
                 Fragment fragment = new PasswordRecoveryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.CHANGE_QUESTIONS);
+                bundle.putInt(PasswordRecoveryFragment.TYPE, PasswordRecoveryFragment.RECOVERY_TYPE_2);
                 fragment.setArguments(bundle);
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
@@ -523,7 +526,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         }
     }
 
-    private AlertDialog.Builder defaultDialogLayout(final List<String> items, int index) {
+    private AlertDialogWrapper.Builder defaultDialogLayout(final List<String> items, int index) {
         LinearLayout linearLayout = new LinearLayout(getActivity());
         LinearLayout.LayoutParams lLP =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -542,7 +545,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mTextPicker.setDisplayedValues(items.toArray(new String[items.size()]));
         linearLayout.addView(mTextPicker);
 
-        return new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
+        return new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom))
                 .setTitle(R.string.dialog_select_an_item)
                 .setView(linearLayout)
                 .setNegativeButton(R.string.string_cancel,
@@ -628,6 +631,11 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             bundle.putBoolean(START_CHANGE_PASSWORD, false);
         }
 
+        if (bundle != null && bundle.getBoolean(START_CHANGE_PIN)) {
+            mChangePINButton.performClick();
+            bundle.putBoolean(START_CHANGE_PIN, false);
+        }
+
         mPinReloginSwitch.setEnabled(mAccount.passwordExists());
 
         mCoreSettings = mAccount.settings();
@@ -658,7 +666,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         private int mNumberSelection;
         private int mTextSelection;
-        private AlertDialog mDialog;
+        private Dialog mDialog;
         private Button mButton;
         private Activity mActivity;
         private int mSeconds;
@@ -755,7 +763,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             linearLayout.addView(blankView);
             linearLayout.addView(mTextPicker);
 
-            mDialog = new AlertDialog.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom))
+            mDialog = new AlertDialogWrapper.Builder(new ContextThemeWrapper(mActivity, R.style.AlertDialogCustom))
                     .setTitle(mActivity.getResources().getString(R.string.dialog_title))
                     .setView(linearLayout)
                     .setPositiveButton(R.string.string_ok,
@@ -817,7 +825,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     public void ShowNFCMessageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getString(R.string.settings_nfc_turn_on_message))
                 .setTitle(getString(R.string.settings_nfc_turn_on_title))
                 .setCancelable(false)
@@ -857,7 +865,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     }
 
     public void ShowBLEMessageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
         builder.setMessage(getString(R.string.settings_ble_turn_on_message))
                 .setTitle(getString(R.string.settings_ble_turn_on_title))
                 .setCancelable(false)

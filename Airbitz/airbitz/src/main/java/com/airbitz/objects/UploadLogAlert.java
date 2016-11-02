@@ -31,7 +31,7 @@
 
 package com.airbitz.objects;
 
-import android.app.AlertDialog;
+;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -67,7 +67,7 @@ public class UploadLogAlert {
 
         final EditText input = (EditText) view.findViewById(R.id.user_message);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
         builder.setTitle(mActivity.getString(R.string.upload_log_alert_title))
                 .setView(view)
                 .setCancelable(false)
@@ -131,7 +131,7 @@ public class UploadLogAlert {
             String versionName = com.airbitz.BuildConfig.VERSION_NAME;
             String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
 
-            AirbitzCore.logi("App Version:" + appVersion);
+            AirbitzCore.loge("App Version:" + appVersion);
             return mCoreAPI.uploadLogs();
         }
 

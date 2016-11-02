@@ -135,7 +135,7 @@
     <item>Electrum</item>
     <item>Multibit</item>
     <item>Mycelium</item>
-    <item>Portefeuille noir</item>
+    <item>Dark Wallet</item>
   </string-array>
   <string-array name="transaction_categories_list">
     <item>Dépense</item>

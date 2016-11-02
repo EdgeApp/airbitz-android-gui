@@ -224,7 +224,17 @@ public class TransactionListFragment extends WalletBaseFragment
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), new Bundle());
                 }
             });
-            if (mActivity.getResources().getBoolean(R.bool.include_shop)) {
+            if (mActivity.getResources().getBoolean(R.bool.include_bitrefill)) {
+                setupFooter(R.id.bitrefill, R.string.transaction_footer_bitrefill, Constants.BIZ_ID_BITREFILL, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
+                    }
+                });
+            } else {
+                mListFooterView.findViewById(R.id.bitrefill).setVisibility(View.GONE);
+            }
+            if (mActivity.getResources().getBoolean(R.bool.include_shop_transactions)) {
                 setupFooter(R.id.discount_starbucks, R.string.transaction_footer_starbucks_discount, Constants.BIZ_ID_STARBUCKS, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

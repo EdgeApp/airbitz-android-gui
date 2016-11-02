@@ -19,8 +19,9 @@
   <string name="string_delete">Supprimer</string>
   <string name="string_save">Enregistrer</string>
   <string name="string_back">Précédent</string>
+  <string name="string_disable">DÉSACTIVER</string>
   <string name="string_next">Suivant</string>
-  <string name="string_skip">SAUTER</string>
+  <string name="string_skip">PASSER</string>
   <string name="string_total">TOTAL :</string>
   <string name="string_finish">TERMINER</string>
   <string name="string_help">Aide</string>
@@ -32,19 +33,19 @@
   <string name="string_help_button">Bouton aide affiche aide sur cet écran</string>
   <string name="string_add_button">Bouton ajouter, ajoute un nouveau portefeuille</string>
   <string name="string_payment_received">** Paiement reçu **</string>
-  <string name="string_exit_app_question">"Souhaiterez-vous quitter%1$s?"</string>
+  <string name="string_exit_app_question">"Souhaiterez-vous quitter %1$s ?"</string>
   <string name="string_too_short">trop court</string>
-  <string name="string_show_balance">Voir Solde</string>
+  <string name="string_show_balance">Voir le solde</string>
   <string name="string_agree">J\'accepte</string>
   <string name="string_balance">Solde</string>
-  <string name="string_wallet">Porte-feuille</string>
+  <string name="string_wallet">Portefeuille</string>
   <string name="loading_wallets">Chargement de porte feuilles...\n cela pourrait prendre quelques minutes car c\'est la premiere fois que-vous vous connectez a cet appareil.</string>
   <string name="loading_n_wallets">Chargement %1$d de %2$d porte feuilles.\n Cela pourrait prendre quelques minutes car c\'est la premiere fois que-vous vous connetez a cet appareil.</string>
   <string name="loading_transactions">Opérations de chargement...</string>
   <!-- Nav Bar strings -->
   <string name="nav_bar_directory_text">ANNUAIRE</string>
   <string name="nav_bar_request_text">RECEVOIR</string>
-  <string name="nav_bar_send_text">Envoyer</string>
+  <string name="nav_bar_send_text">ENVOYER</string>
   <string name="nav_bar_wallets_text">PORTEFEUILLES</string>
   <string name="nav_bar_more_text">PLUS</string>
   <!-- Calculator strings -->
@@ -100,8 +101,8 @@
   <!-- Strings for errors from server -->
   <string name="server_error_account_already_exists">Ce compte existe déjà.</string>
   <string name="server_error_account_does_not_exists">Nous n’avons pas pu trouver votre compte. Il faut être certain que votre nom d’utilisateur est correct.</string>
-  <string name="server_error_bad_password">Mot de pase incorrect.</string>
-  <string name="server_error_wallet_exists">Le porte-monnaie existe déjà.</string>
+  <string name="server_error_bad_password">Mot de passe incorrect.</string>
+  <string name="server_error_wallet_exists">Le portefeuille existe déjà.</string>
   <string name="server_error_invalid_wallet">Le portefeuille n’existe pas.</string>
   <string name="server_error_no_connection">Impossible de se connecter au serveur. Veuillez réessayer ultérieurement.</string>
   <string name="server_error_no_recovery_questions">Aucune question de récupération n’est disponibles pour cet utilisateur</string>
@@ -111,15 +112,15 @@
   <string name="server_error_non_numeric_pin">Le code PIN doit être une valeur numérique.</string>
   <string name="server_error_bad_pin">Code NIP invalide</string>
   <string name="server_error_bad_pin_login">Code NIP invalide. Veuillez vous connecter.</string>
-  <string name="server_error_pin_expired">NIP est expiré. Veuillez vous connecter.</string>
+  <string name="server_error_pin_expired">Le NIP est expiré. Veuillez vous connecter.</string>
   <string name="server_error_invalid_pin_wait">Trop de tentatives de connexion qui ont échoué. Veuillez essayer à nouveau dans %1$s secondes.</string>
   <string name="server_error_other">Une erreur est survenue.</string>
-  <string name="insufficient_amount">Quantité trop petite</string>
+  <string name="insufficient_amount">Montant trop faible</string>
   <string name="account_needs_password_title">ATTENTION : mot de passe absent</string>
-  <string name="account_needs_password_message">Le compte \'%1$s\' nécessite un mot de passe. Le compte est inaccessible sur un nouvel appareil sans un mot de passe.</string>
+  <string name="account_needs_password_message">Le compte [%1$s] nécessite un mot de passe. Le compte est inaccessible sur un nouvel appareil sans un mot de passe.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Une image du logo</string>
-  <string name="fragment_landing_detail_text">Portes feuilles Bitcoin</string>
+  <string name="fragment_landing_detail_text">Portefeuille Bitcoin</string>
   <string name="fragment_landing_swipe_text">Glisser pour Voir Répertoire d’Entreprise</string>
   <string name="fragment_landing_arrow_description">Flèche rebondissante</string>
   <string name="fragment_landing_username_hint">Nom d’utilisateur</string>
@@ -128,7 +129,7 @@
   <string name="fragment_landing_signup_button">S\'inscrire</string>
   <string name="fragment_landing_forgot_password">Mot de passe oublié</string>
   <string name="fragment_landing_current_user">Utilisateur actuel (%1$s)</string>
-  <string name="fragment_landing_switch_user">Quitter connexion PIN</string>
+  <string name="fragment_landing_switch_user">Quitter la connexion PIN</string>
   <string name="fragment_landing_forgot_pin">J’ai oublié le code NIP</string>
   <string name="fragment_landing_enter_pin">Entrez le code NIP</string>
   <string name="fragment_forgot_no_username_title">Nom d’utilisateur requis</string>
@@ -142,12 +143,12 @@
   <string name="activity_navigation_signin_failed">Connexion a échoué</string>
   <string name="activity_navigation_signin_failed_unexpected">Connexion a échoué de manière inattendue</string>
   <string name="activity_signup_failed">S\'inscrire a échoué</string>
-  <string name="activity_change_password_failed">Changer mot de passe a échoué</string>
+  <string name="activity_change_password_failed">Le changement de mot de passe a échoué</string>
   <string name="activity_change_pin_failed">Impossible de changer votre code</string>
   <string name="fragment_signup_creating_account">Création et sécurisation du compte&#8230;</string>
   <string name="fragment_signup_creating_wallet">Création et sécurisation de portefeuille&#8230;</string>
-  <string name="activity_signup_title_change_password">Changer mot de passe</string>
-  <string name="activity_signup_title_change_password_via_questions">Changer mot de passe</string>
+  <string name="activity_signup_title_change_password">Changer votre mot de passe</string>
+  <string name="activity_signup_title_change_password_via_questions">Changer votre mot de passe</string>
   <string name="activity_signup_title_change_pin">Changer votre code NIP</string>
   <string name="activity_signup_username_hint">Nom d’utilisateur</string>
   <string name="activity_signup_password_hint">Choisissez un mot de passe</string>
@@ -169,7 +170,7 @@
   <string name="activity_signup_pin_change_good">PIN modifié avec succès.</string>
   <string name="activity_signup_pin_change_bad">PIN ne pouvait pas être changé.</string>
   <string name="activity_signup_pin_change_title">Changer votre code PIN</string>
-  <string name="activity_signup_password_change_title">Changer mot de passe</string>
+  <string name="activity_signup_password_change_title">Changer votre mot de passe</string>
   <string name="activity_signup_password_change_good">Le mot de passe a été modifié avec succès.</string>
   <string name="activity_signup_password_change_bad">Le mot de passe ne pouvait pas être changé.</string>
   <string name="activity_signup_enter_username">Vous devez saisir un nom d\'utilisateur</string>
@@ -181,7 +182,7 @@
   <string name="activity_signup_insufficient_username_title">Inscrivez-vous</string>
   <string name="activity_signup_insufficient_username_message">L\'inscription a échoué : \n le nom d\'utilisateur doit être au moins 3 caractères.</string>
   <string name="activity_signup_insufficient_pin">Code PIN doit être 4 chiffres</string>
-  <string name="activity_signup_create_wallet_fail">Création de porte-monnaie par défaut a échoué</string>
+  <string name="activity_signup_create_wallet_fail">La création du portefeuille par défaut a échoué</string>
   <string name="activity_signup_time_to_crack">Temps à craquer</string>
   <string name="activity_signup_seconds">secondes</string>
   <string name="activity_signup_minutes">minutes</string>
@@ -192,7 +193,7 @@
   <string name="activity_signup_years">années</string>
   <string name="fragment_setup_titles">Inscrivez-vous</string>
   <string name="fragment_setup_username_label">Choisissez un nom d’utilisateur</string>
-  <string name="fragment_setup_username_text">Ce n’est pas votre email ou nom real.\n\n C\'est le nom d’utilisateur pour vous connecter à votre compte là-dessus et autres appareils.\n\nVotre nom d’utilisateur et mot de passe sont connus uniquement par vous et ne jamais stockées non chiffrée.</string>
+  <string name="fragment_setup_username_text">Ce n’est pas votre email ou nom réel.\n\n C\'est le nom d’utilisateur pour vous connecter à votre compte là-dessus et autres appareils.\n\nVotre nom d’utilisateur et mot de passe sont connus uniquement par vous et ne sont jamais stockés en clair.</string>
   <string name="fragment_setup_password_title">Définir un mot de passe et code PIN</string>
   <string name="fragment_setup_password_text">Le mot de passe est utilisé pour authentifier votre compte et modifier les paramètres sensibles.</string>
   <string name="fragment_setup_password_nopassword_title">Le compte n’a aucun mot de passe</string>
@@ -211,29 +212,30 @@
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Installation de récupération de mot de passe</string>
   <string name="activity_recovery_title">Récupération du mot de passe</string>
-  <string name="activity_recovery_skip_button_text">Ignorez cette étape</string>
+  <string name="activity_recovery_skip_button_text">Ignorer cette étape</string>
   <string name="activity_recovery_complete_button">Terminer l\'inscription</string>
   <string name="activity_recovery_complete_button_change_questions">Effectué</string>
   <string name="activity_recovery_prompt_title">Ignorez cette étape</string>
   <string name="activity_recovery_prompt_skip">**AVERTISSEMENT ** vous ne serez JAMAIS en mesure de récupérer votre mot de passe si vous l\'oubliez!!</string>
   <string name="activity_recovery_first_wallet_name">Mon portefeuille</string>
-  <string name="activity_recovery_answer_questions_alert">Vous devez répondre à toutes les six questions.  Assurez-vous que vos réponses sont assez longs.</string>
-  <string name="activity_recovery_pick_questions_alert">Vous devez choisir toutes les six questions avant de continuer.</string>
+  <string name="activity_recovery_answer_questions_alert">Vous devez répondre à toutes les questions.  Assurez-vous que vos réponses sont assez longues.</string>
+  <string name="activity_recovery_pick_questions_alert">Vous devez choisir les six questions avant de continuer.</string>
   <string name="activity_recovery_question_default">Question</string>
   <string name="item_recovery_spinner_arrow_description">Flèche déroulante</string>
   <string name="activity_recovery_done_title">Ensemble des Questions de récupération</string>
-  <string name="activity_recovery_done_details">Vos questions de récupération de mot de passe et les réponses sont maintenant mis en place.  Lorsque vous récupérez votre mot de passe, vos réponses doivent correspondre exactement. ** N’OUBLIEZ PAS VOTRE MOT DE PASSE ET LES RÉPONSES DE RÉCUPÉRATION ** VOTRE COMPTE NE PEUT ÊTRE RÉCUPÉRÉ SANS EUX!!</string>
+  <string name="activity_recovery_done_details">Votre mot de passe des questions de récupération et les réponses sont maintenant mis en place. \n\n Pour récupérer votre mot de passe, cliquez sur le lien que vous venez vous-même envoyé par courriel et répondre à vos questions de récupération. Vos réponses doivent correspondre exactement. \n\n ** NE PAS OUBLIER VOTRE USERNAME ET DE REDRESSEMENT RÉPONSES ** \n\n VOTRE COMPTE NE PEUT ETRE RETROUVÉ SANS EUX !!</string>
   <string name="activity_recovery_error_title">Échec de récupération du mot de passe</string>
   <string name="activity_recovery_error_incorrect_password">Veuillez entrer votre corecte mot de passe comme ca vos réponses peuvent être changés</string>
   <string name="activity_recovery_error_save_failed">Enregistrer les réponses de récupération a échoué</string>
   <string name="activity_recovery_error_wrong_answers_title">Mauvaises réponses</string>
-  <string name="activity_recovery_error_wrong_answers_message">Les réponses donnés sont incorrectes. Veuillez essayer de nouveau</string>
+  <string name="activity_recovery_error_wrong_answers_message">Les réponses données sont incorrectes. Veuillez essayer de nouveau</string>
   <string name="activity_recovery_warning_dirty_change_title">Mauvaises réponses</string>
   <string name="activity_recovery_warning_dirty_change_message">Avertissement : Vous êtes sur le point de quitter des questions et récupération de mot de passe &amp; les réponses n’ont pas encore été fixés. Quitter de toute façon ?</string>
   <string name="activity_recovery_warning_dirty_forgot_title">Récupération du mot de passe</string>
   <string name="activity_recovery_warning_dirty_forgot_message">Avertissement : Vous êtes sur le point de sortie de récupération du mot de passe et tous les progrès seront perdus. Quitter de toute façon ?</string>
   <string name="fragment_recovery_mismatch_title">Mot de passe erroné</string>
   <string name="fragment_recovery_mismatch_message">Veuillez entrer votre correct mot de passe.</string>
+  <string name="fragment_recovery_answer_case_sensitive">Les réponses sont sensibles à la casse</string>
   <!-- Strings for ForgotPassword -->
   <string name="activity_forgot_title">Mot de passe oublié</string>
   <!-- Strings for Settings fragment -->
@@ -243,15 +245,15 @@
   <string name="settings_denomination_buttons_mbitcoin">mBitcoin = (0,001 Bitcoin)</string>
   <string name="settings_denomination_buttons_ubitcoin">bits = (0,000001 Bitcoin)</string>
   <string name="settings_account_title">COMPTE</string>
-  <string name="settings_options_title">Options</string>
+  <string name="settings_options_title">OPTIONS</string>
   <string name="settings_button_change_categories">Changement de catégorie</string>
   <string name="settings_button_change_spending_limits">Limites de dépenses</string>
   <string name="settings_button_two_factor_authentication">2 Facteur (Sécurité Renforcée)</string>
-  <string name="settings_button_change_password">Changer mot de passe</string>
+  <string name="settings_button_change_password">Changer votre mot de passe</string>
   <string name="settings_button_pin">Changer votre code NIP</string>
-  <string name="settings_button_recovery">Changer questions de récupération</string>
+  <string name="settings_button_recovery">Changer vos questions de récupération</string>
   <string name="settings_user_title">NOM</string>
-  <string name="settings_button_send_user_info">Envoyer nom sur demande de paiement</string>
+  <string name="settings_button_send_user_info">Envoyer votre nom sur demande de paiement</string>
   <string name="settings_edit_first_name">Prénom (facultatif)</string>
   <string name="settings_edit_last_name">Noms (facultatif)</string>
   <string name="settings_edit_nick_name">Pseudo (facultatif)</string>
@@ -270,7 +272,7 @@
   <string name="settings_title_euro">Euro</string>
   <string name="settings_title_peso">Peso Mexicain</string>
   <string name="settings_title_yuan">Yuan</string>
-  <string name="settings_button_logout">Se Déconnecter</string>
+  <string name="settings_button_logout">Se déconnecter</string>
   <string name="settings_button_debug">Débogage</string>
   <string name="settings_categories_add_new">Ajouter nouveau</string>
   <string name="settings_days">Jour(s)</string>
@@ -280,7 +282,7 @@
   <string name="settings_nfc_turn_on_title">Activer le NFC</string>
   <string name="settings_nfc_turn_on_message">NFC est utilisée pour activer le robinet à payer avec les commerçants pris en charge. Souhaitez vous le mettre en marche maintenant ?</string>
   <string name="settings_ble_turn_on_title">Activer Bluetooth</string>
-  <string name="settings_ble_turn_on_message">Bluetooth est utilisé pour permettre des paiements sans fil sans avoir besoin de scanner un code QR. Souhaitez vous le mettre en marche maintenant ?</string>
+  <string name="settings_ble_turn_on_message">Bluetooth est utilisé pour permettre des paiements sans fil sans avoir besoin de scanner un code QR. Souhaitez-vous le mettre en marche maintenant ?</string>
   <string name="settings_currency_change_note_popup">Remarque : Paramètre de devise par défaut est utilisé uniquement pour les nouveaux portefeuilles et de montrer le solde du compte. Créer un nouveau portefeuille pour changer la monnaie fiat montrée lors de chaque transaction.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Limites de dépenses</string>
@@ -301,8 +303,8 @@
   <string name="dialog_select_an_item">Sélectionnez un élément</string>
   <!-- Strings for Send fragment -->
   <string name="send_title">Bitcoin envoyé</string>
-  <string name="send_from_title">De:</string>
-  <string name="send_to_title">à:</string>
+  <string name="send_from_title">De :</string>
+  <string name="send_to_title">à :</string>
   <string name="send_scan_text">Scanner le Code QR ou utiliser photo</string>
   <string name="send_scan_text_nfc">Scannez le Code QR ou touchez dispositif NFC</string>
   <string name="fragment_send_connecting_to_device">Connexion à %1$s en cours</string>
@@ -310,20 +312,20 @@
   <string name="fragment_send_incorrect_pin_title">Code NIP invalide</string>
   <string name="fragment_send_incorrect_password_message">Vous devez entrer le correcte mot de passe afin de procéder</string>
   <string name="fragment_send_incorrect_password_title">Mot de pase incorrect</string>
-  <string name="fragment_send_no_satoshi_title">Saisissez le montant</string>
+  <string name="fragment_send_no_satoshi_title">Saisissez un montant</string>
   <string name="fragment_send_no_satoshi_message">Veuillez entrer un montant à envoyer</string>
-  <string name="fragment_send_send_to_hint">Adresse Bitcoin ou URI</string>
+  <string name="fragment_send_send_to_hint">Adresse Bitcoin ou Clé Privée</string>
   <string name="fragment_send_failure_title">Echec d\'envoi</string>
   <string name="fragment_send_send_bitcoin_invalid">Adresse Bitcoin non valide</string>
   <string name="fragment_send_send_bitcoin_unscannable">Impossible de scanner le code QR</string>
   <string name="fragment_send_first_usage">Scanner le code QR du bénéficiaire pour envoyer le paiement</string>
-  <string name="fragment_send_first_usage_ble">Les demandes de paiement Bluetooth sont répertoriés ici. Tapez sur un utilisateur pour envoyer un paiement</string>
+  <string name="fragment_send_first_usage_ble">Les demandes de paiement Bluetooth sont répertoriées ici. Tapez sur un utilisateur pour envoyer un paiement</string>
   <string name="fragment_send_subtitle">Envoyer</string>
   <string name="fragment_send_transfer">Transfert</string>
   <string name="fragment_send_address">Adresse</string>
   <string name="fragment_send_photos">Photos</string>
   <string name="fragment_send_flash">Flash</string>
-  <string name="fragment_send_address_dialog_title">Envoyer à l’adresse Bitcoin</string>
+  <string name="fragment_send_address_dialog_title">Envoyer à l’adresse Bitcoin ou importer la clé privé</string>
   <string name="fragment_import_address_dialog_title">Balayage des fonds de la clé privée</string>
   <string name="fragment_send_other_wallet_header_title">Choisir un portefeuille pour transférer des fonds à :</string>
   <string name="fragment_send_create_wallet_to_transfer">Créer un nouveau portefeuille pour transférer des fonds à</string>
@@ -331,8 +333,8 @@
   <string name="fragment_send_import_or_send_import_funds">Importer des fonds</string>
   <string name="fragment_send_import_or_send_send_funds">Envoyer des fonds</string>
   <!-- Strings for Send Confirmation fragment -->
-  <string name="send_confirmation_title">Envoyer la Confirmation</string>
-  <string name="send_confirmation_from_title">De:</string>
+  <string name="send_confirmation_title">Envoyer la confirmation</string>
+  <string name="send_confirmation_from_title">De :</string>
   <string name="send_confirmation_to_title">À:</string>
   <string name="send_confirmation_max_button_title">Max</string>
   <string name="send_confirmation_enter_send_pin">Entrez le code NIP à 4 chiffres</string>
@@ -345,18 +347,19 @@
   <string name="fragment_send_confirmation_invalid_bitcoin_address">Adresse Bitcoin non valide</string>
   <string name="fragment_send_confirmation_no_pin">Pas de code NIP</string>
   <string name="fragment_send_confirmation_please_enter_pin">Veuillez entrer votre code NIP à 4 chiffres</string>
-  <string name="fragment_send_confirmation_pin_remaining">NIP invalide. Veuillez attendre %1$.de secondes et recommencez&#8230;</string>
-  <string name="fragment_send_confirmation_password_remaining">Mot de passe incorrect. Veuillez attendre %1$.de secondes et recommencez&#8230;</string>
-  <string name="fragment_send_confirmation_dust_alert">Montant est trop petit.</string>
+  <string name="fragment_send_confirmation_pin_remaining">NIP invalide. Veuillez attendre %1$.0f secondes et recommencez&#8230;</string>
+  <string name="fragment_send_confirmation_password_remaining">Mot de passe incorrect. Veuillez attendre %1$.0f secondes et recommencez&#8230;</string>
+  <string name="fragment_send_confirmation_dust_alert">Le montant est trop faible.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Veuillez envoyer au moins %1$s (~%2$s)</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Erreur de connexion au processeur de paiement. Envoyer directement à Bitcoin adresse \n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Portefeuilles</string>
   <string name="fragment_wallets_add_wallet">Ajouter Potefeuilles</string>
   <string name="fragment_wallets_deleting_wallet">Suppression du portefeuille...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">Impossible de supprimer le portefeuille</string>
-  <string name="fragment_wallets_delete_has_funds">Impossible de supprimer le portefeuille car il contient des fonds. Virez tout d’abord les fonds.</string>
+  <string name="fragment_wallets_delete_has_funds">Impossible de supprimer le portefeuille car il contient des fonds. Transférez d’abord les fonds.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">Supprimer le portefeuille ?</string>
-  <string name="fragment_wallets_delete_wallet_confirm_message">Êtes-vous sûr de que vouloir supprimer %1$s ?</string>
+  <string name="fragment_wallets_delete_wallet_confirm_message">Êtes-vous sûr de vouloir supprimer %1$s ?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Supprimer le portefeuille : %1$s ?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_message">Es-vous sûr? Vous ne pourrez plus accéder à des fonds dans ce portefeuille et tous les futurs fonds qu’il pourrait recevoir.</string>
   <string name="fragment_wallets_wallet_delete">Portefeuilles supprimé</string>
@@ -365,7 +368,7 @@
   <string name="fragment_wallets_list_archive_title">ARCHIVES</string>
   <string name="fragment_wallets_balance_text">Solde total</string>
   <string name="fragment_wallets_addwallet_name_hint">Nommez votre nouveau portefeuille</string>
-  <string name="fragment_wallets_addwallet_currency_textview">Devise:</string>
+  <string name="fragment_wallets_addwallet_currency_textview">Devise :</string>
   <string name="fragment_wallets_addwallet_online_textview">EN LIGNE</string>
   <string name="fragment_wallets_addwallet_offline_textview">HORS LIGNE</string>
   <string name="fragment_wallets_created_wallet">%1$s créés</string>
@@ -378,8 +381,8 @@
   <string name="fragment_wallet_confirmed">Confirmé</string>
   <string name="fragment_wallet_confirmations">" confirmations"</string>
   <string name="fragment_wallet_confirmation">" confirmation"</string>
-  <string name="fragment_wallet_request_button">DEMANDE</string>
-  <string name="fragment_wallet_send_button">Envoyer</string>
+  <string name="fragment_wallet_request_button">DEMANDER</string>
+  <string name="fragment_wallet_send_button">ENVOYER</string>
   <string name="fragment_wallets_wallet_name_required">Nom requis</string>
   <string name="fragment_wallets_received_bitcoin">Bitcoin reçu</string>
   <string name="fragment_wallets_sent_bitcoin">Bitcoin envoyé</string>
@@ -388,13 +391,13 @@
   <!-- Strings for Request fragment -->
   <string name="address_request_title">Demande d’adresse</string>
   <string name="address_request_message">%1$s a demandé une adresse bitcoin pour envoyer de l’argent. S’il vous plaît sélectionnez un portefeuille pour recevoir des fonds.</string>
-  <string name="fragment_request_subtitle">Demande</string>
+  <string name="fragment_request_subtitle">Demander</string>
   <string name="fragment_request_copy_title">Copier</string>
   <string name="fragment_request_email_title">E-mail</string>
   <string name="fragment_request_sms_title">SMS</string>
   <!-- Strings for Request fragment -->
-  <string name="request_title">Demander Bitcoin</string>
-  <string name="request_wallet_title">Porte-feuille:</string>
+  <string name="request_title">Demander des bitcoins</string>
+  <string name="request_wallet_title">Portefeuille :</string>
   <string name="request_button_import">IMPORTER</string>
   <string name="request_amount_hint">Montant (en option)</string>
   <string name="request_next">Suivant</string>
@@ -406,22 +409,22 @@
   <string name="request_qr_unknown">Utilisateur non reconnu</string>
   <string name="request_qr_waiting_for_payment">En attente de paiement&#8230;</string>
   <string name="request_qr_loading_address">Chargement de l\'adresse bitcoin&#8230;</string>
-  <string name="request_qr_title">Demander Bitcoin</string>
+  <string name="request_qr_title">Demander des bitcoins</string>
   <string name="request_qr_ble_advertise_start_failed">La publicité du Bluetooth n’a pas pu démarrer.</string>
   <string name="request_qr_ble_invalid_value">L\'émetteur du Bluetooth à envoyé un nom non valide. Réessayez.</string>
   <string name="request_qr_ble_invalid_service">%1$s ne pouvait pas faire la publicité du service Bluetooth. S’il vous plaît vérifier Bluetooth sur votre appareil.</string>
   <string name="request_qr_ble_invalid_uri">Vous avez reçu une demande de bitcoin non valide. Vous pouvez essayer à nouveau.</string>
-  <string name="request_qr_ble_copied">La demande est copié dans la presse-papier.</string>
+  <string name="request_qr_ble_copied">La demande est copiée dans le presse-papier.</string>
   <string name="request_qr_first_usage">Présenter le code QR à l’expéditeur et les analyser pour vous envoyer le paiement</string>
-  <string name="request_qr_top_message">Scannez le QR pour envoyer, Importé, ou de vous connecter avec BitID</string>
+  <string name="request_qr_top_message">Scan to Envoyer, Import, ou Edge Connexion</string>
   <!-- Strings for Import Wallet fragment -->
-  <string name="import_title">Importer Portefeuille</string>
+  <string name="import_title">Importer un portefeuille</string>
   <string name="import_wallet_timeout_message">Échec de l’importation. Réessayez.</string>
   <string name="import_wallet_hidden_bits_submit">Remettre</string>
   <string name="import_wallet_hidden_bits_claimed">Désolé</string>
-  <string name="import_wallet_hidden_bits_not_claimed">Félicitations!</string>
+  <string name="import_wallet_hidden_bits_not_claimed">Félicitations !</string>
   <string name="import_wallet_swept_funds_title">Clé privée</string>
-  <string name="import_wallet_swept_funds_message">Fonds privés ont été balayés.</string>
+  <string name="import_wallet_swept_funds_message">Les fonds privés ont été balayés.</string>
   <string name="import_wallet_hidden_bits_error_title">Erreur</string>
   <string name="import_wallet_hidden_bits_error_message">Importation impossible parce qu’il y a 0 bitcoin restant à cette adresse</string>
   <string name="import_wallet_private_key_invalid">Clé privée non valide</string>
@@ -431,12 +434,12 @@
   <!-- Strings for Transaction Details fragment -->
   <string name="transaction_details_title">Détails de la transaction</string>
   <string name="transaction_details_advanced_title">Avancé</string>
-  <string name="transaction_details_outputs_unavailable">Les resultats de cette transaction ne sont pas disponibles en ce moment.</string>
+  <string name="transaction_details_outputs_unavailable">Les résultats de cette transaction ne sont pas disponibles en ce moment.</string>
   <string name="transaction_details_done_title">Effectué</string>
   <string name="transaction_details_category_title">Catégorie</string>
   <string name="transaction_details_notes_title">Notes</string>
-  <string name="transaction_details_to">"À: "</string>
-  <string name="transaction_details_from">"De: "</string>
+  <string name="transaction_details_to">"À : "</string>
+  <string name="transaction_details_from">"De : "</string>
   <string name="transaction_details_payee_hint">Saisir le bénéficiaire</string>
   <string name="transaction_details_recovery_reminder_title">Rappel du mot de passe de récupération</string>
   <string name="transaction_details_recovery_reminder_message">"Vous avez reçu Bitcoin ! Nous vous recommandons vivement la mise en place des questions / réponses pour la recuperation du mot de passe. Sinon, vous ne serez pas en mesure d’accéder à votre compte si votre mot de passe est oublié."</string>
@@ -444,7 +447,7 @@
   <string name="transaction_details_advanced_total_sent">"Total Envoyé"</string>
   <string name="transaction_details_advanced_source">"Source"</string>
   <string name="transaction_details_advanced_destination">"Destination"</string>
-  <string name="transaction_details_advanced_miner_fee">"Frais du mineur"</string>
+  <string name="transaction_details_advanced_miner_fee">"Frais de mineur"</string>
   <string name="transaction_details_advanced_fee">" frais"</string>
   <string name="transaction_details_transaction_save_failed">Impossible d’enregistrer toutes les données de transaction</string>
   <!-- Strings for Export fragment -->
@@ -457,7 +460,7 @@
   <string name="export_account_yesterday">Hier</string>
   <string name="export_account_today">Aujourd\'hui</string>
   <string name="export_csv_title">CSV</string>
-  <string name="export_quicken_title">Accelerer</string>
+  <string name="export_quicken_title">Accélérer</string>
   <string name="export_quickbooks_title">QuickBooks</string>
   <string name="export_pdf_title">PDF</string>
   <string name="export_print_title">Portefeuille privé (avancé)</string>
@@ -477,7 +480,7 @@
   <string name="export_saving_option_no_transactions_title">Aucune transaction</string>
   <string name="export_saving_option_no_transactions_message">Il n’y a aucune transaction à exporter dans votre plage de donnees</string>
   <string name="export_saving_option_email_subject">Opérations de portefeuille Airbitz Bitcoin</string>
-  <string name="export_saving_option_no_email_apps">Il n’y a aucune applications d\'email installé</string>
+  <string name="export_saving_option_no_email_apps">Il n’y a aucune application d\'email installée</string>
   <string name="export_saving_option_private_seed">Privé</string>
   <string name="export_saving_option_xpub">XPub</string>
   <string name="export_saving_option_pick_date">Choisir une date</string>
@@ -485,7 +488,7 @@
   <string name="offline_wallet_title">Portefeuille hors ligne</string>
   <string name="offline_wallet_public_address_title">ADRESSE PUBLIQUE</string>
   <string name="offline_wallet_private_key_title">CLÉ PRIVÉE</string>
-  <string name="offline_wallet_copy_button_title">Copier l’adresse Public</string>
+  <string name="offline_wallet_copy_button_title">Copier l’adresse publique</string>
   <string name="offline_wallet_print_button_title">Stockage externe / Imprimer</string>
   <!-- Strings for Received Success fragment -->
   <string name="received_success_sending_title">Bitcoin envoyé</string>
@@ -496,9 +499,9 @@
   <string name="fragment_contact_picker_title_sms">Recherche SMS</string>
   <!-- Strings for Debug fragment -->
   <string name="fragment_debug_title">Vue de débogage</string>
-  <string name="fragment_debug_version_title">Version:</string>
-  <string name="fragment_debug_core_version_title">Version de base:</string>
-  <string name="fragment_debug_network_title">Réseau:</string>
+  <string name="fragment_debug_version_title">Version :</string>
+  <string name="fragment_debug_core_version_title">Version de base :</string>
+  <string name="fragment_debug_network_title">Réseau :</string>
   <string name="fragment_debug_clear_watcher_button">Vider la Cache Watcher</string>
   <string name="fragment_debug_upload_log_files_button">Télécharger des fichiers de Log</string>
   <!-- Strings for MapBusinessDirectory fragment -->
@@ -525,7 +528,7 @@
   <string name="user_review_great">"C’est génial"</string>
   <string name="user_review_no_thanks">"Non merci"</string>
   <string name="user_review_ok_message">"Souhaitez vous nous envoyer des commentaires?"</string>
-  <string name="user_review_play_store">"Souhaitez vous écrire un commentaire dans Google Play Store?"</string>
+  <string name="user_review_play_store">"Souhaitez-vous écrire un commentaire dans Google Play Store ?"</string>
   <string name="user_review_support_subject">%1$s rétroaction</string>
   <string name="user_review_support_title">Choisissez E-mail</string>
   <!-- Two Factor screens -->
@@ -546,6 +549,7 @@
   <string name="fragment_twofactor_show_unable_status">Impossible de déterminer le statut de deux facteur</string>
   <string name="fragment_twofactor_show_instruction">Activer l’authentification à 2 Facteur à fin de renforcer la sécurité en autorisant uniquement les connexions des dispositifs précédemment connectés. Ajouter plus d’appareils en scannant le code QR ci-dessous après que 2FA est activé</string>
   <string name="fragment_twofactor_show_reset_requested">Réinitialisation 2FA demandée par un autre appareil.</string>
+  <string name="fragment_twofactor_show_qr_image_text">Voir QR Code</string>
   <string name="fragment_two_factor_menu_requested">Reinitialization de Deux facteur a été requis.</string>
   <string name="twofactor_required_title">Authentification à deux facteurs allumer</string>
   <string name="twofactor_required_message">Authentification à deux facteurs (sécurité accrue) a été activé à partir d’un périphérique différent pour ce compte. S’il vous plaît permetter l’authentification à 2 facteurs pour l’accès complet de ce dispositif.</string>
@@ -557,7 +561,7 @@
   <string name="fragment_two_factor_scan_unable_import_title">Impossible d’importer le jeton</string>
   <string name="fragment_two_factor_scan_unable_import_message">Les deux facteurs importation de jeton d’authentification a échoué. Veuillez vous assurer que vous avez le jeton correct !</string>
   <string name="fragment_two_factor_scan_try_again">Réessayez</string>
-  <string name="fragment_two_factor_scan_no_thanks">Non Merci</string>
+  <string name="fragment_two_factor_scan_no_thanks">Non merci</string>
   <string name="fragment_two_factor_warn_title">** Avertissement **</string>
   <string name="fragment_two_factor_warn_message">Si vous perdez votre appareil ou désinstallez l’application %1$s, il faudra 7 jours pour désactiver 2FA et accéder à votre compte.</string>
   <string name="twofactor_reset_message">Une réinitialisation de deux facteurs a été demandée. S’il vous plaît connectez-vous en tant que %1$s et approuver ou annuler la demande.</string>
@@ -568,7 +572,7 @@
   <string name="remote_password_change_message">Le mot de passe pour ce compte a été modifié par un autre appareil. Connecter vous en utilisant les nouvelles informations d’identification</string>
   <string name="received_bitcoin_title">Bitcoin reçu</string>
   <string name="received_bitcoin_message">Reçu %1$s(~%2$s).\nTap détails pour voir la transaction.</string>
-  <string name="received_bitcoin_fading_message">Vous avez reçu Bitcoin! \n%1$s (~%2$s)\n</string>
+  <string name="received_bitcoin_fading_message">Vous avez reçu des bitcoins ! \n%1$s (~%2$s)\n</string>
   <string name="received_bitcoin_fading_message_teaching">Utilisez le champ Payee, catégorie et Notes pour marquer éventuellement votre transaction</string>
   <string name="received_partial_bitcoin_title">** Avertissement **</string>
   <string name="received_partial_bitcoin_message">A reçu un paiement partiel</string>
@@ -576,12 +580,12 @@
   <string name="bitcoin_received">%1$s reçu</string>
   <string name="received_bitcoin_positive">Détails</string>
   <string name="received_bitcoin_negative">Ignoré</string>
-  <string name="title_cloud_print_dialog_activity">ImprimerDialogueActivité</string>
+  <string name="title_cloud_print_dialog_activity">PrintDialogActivity</string>
   <string name="hello_world">Bonjour tout le monde!</string>
   <string name="action_settings">Paramètres</string>
   <string name="wait_until_wallets_loaded">Attendez que vos portefeuilles sont chargés.</string>
   <!-- Remember Password Checks -->
-  <string name="password_check_incorrect_password_title">Mot de pase incorrect.</string>
+  <string name="password_check_incorrect_password_title">Mot de passe incorrect.</string>
   <string name="password_check_incorrect_password_message">Mot de passe incorrect ! Veuillez réessayer?</string>
   <string name="password_check_skip">Veuillez créer un nouveau compte et transférer vos fonds si vous avez oublié votre mot de passe.</string>
   <string name="password_check_remember_title">Se souvenir de son mot de passe?</string>
@@ -590,7 +594,7 @@
   <string name="password_check_check_later">Plus tard</string>
   <string name="password_check_great_job">Super boulot, pour se souvenir de votre mot de passe.</string>
   <string name="password_check_checking">Vérification de mot de passe&#8230;</string>
-  <string name="password_check_current_password">Mot de passe actuel </string>
+  <string name="password_check_current_password">Mot de passe actuel</string>
   <!--Upload Logs-->
   <string name="upload_log_alert_title">Télécharger le journal de débogage</string>
   <string name="upload_log_alert_message">Entrez des notes que vous souhaitez envoyer à notre personnel de soutien</string>
@@ -603,25 +607,24 @@
   <string name="password_set_title">Aucun mot de passe fixé</string>
   <string name="password_set_message">Veuillez créer un mot de passe pour ce compte, ou vous ne serez pas en mesure de récupérer votre compte si votre appareil est perdu ou volé</string>
   <string name="password_set_skip">Passer</string>
+  <!-- PIN Set -->
+  <string name="pin_set_title">PIN pas fixé</string>
+  <string name="pin_set_message">S\'il vous plaît créer un code PIN pour ce compte pour permettre la réutilisation des re-connexions rapides</string>
   <!-- Settings -->
   <string name="settings_category_title">Catégories</string>
   <!-- Logout -->
   <string name="logout_message">Veuillez patienter pendant le %1$s quitte gracieusement votre compte. Cela peut prendre un certain temps sur les réseaux lents</string>
-  <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">Connexion BitID</string>
-  <string name="bitid_login_success">Connexion réussie</string>
-  <string name="bitid_login_failure">Erreur de connexion</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">Connectez-vous ou inscrivez-vous</string>
   <string name="drawer_buy_sell">Acheter / vendre Bitcoin</string>
-  <string name="drawer_discounted_gift_cards">Prix réduit pour Cartes-cadeaux</string>
+  <string name="drawer_spend_bitcoin">Passez Bitcoin (Plugins)</string>
   <string name="drawer_send">Scanner le code QR</string>
-  <string name="drawer_request">Demande</string>
+  <string name="drawer_request">Demander</string>
   <string name="drawer_transactions">Transactions</string>
   <string name="drawer_wallets">Portefeuilles</string>
-  <string name="drawer_logout">Se Déconnecter</string>
+  <string name="drawer_logout">Se déconnecter</string>
   <string name="drawer_settings">Paramètres</string>
-  <string name="drawer_affiliates">Parrainez vos amis (gagnez Bitcoin)</string>
+  <string name="drawer_affiliates">Parrainez vos amis\n(gagnez des bitcoins)</string>
   <string name="drawer_directory">Annuaire</string>
   <string name="string_share">Partager</string>
   <string name="string_copy">Copier</string>
@@ -630,13 +633,17 @@
   <string name="affiliate_refer_friends_title">Parainez vos amis</string>
   <string name="affiliate_refer_friends_body">%1$s\n\npartager ce lien pour recevoir des recettes des utilisateurs qui installent et utilisent %2$s.. Vous recevrez 0.25%% de tous achats par carte cadeau effectué à partir de cet application.</string>
   <string name="affiliate_category">Recettes :recettes affiliation</string>
-  <string name="affiliate_notes">Part des revenus du lien d’affiliation %@</string>
+  <string name="affiliate_notes">Part des revenus du lien d’affiliation %s</string>
   <string name="affiliate_link_error">Impossible de générer le lien d’affiliation en ce moment.</string>
+  <string name="affiliate_link_share_text">Téléchargez le portefeuille Airbitz et économisez de l’argent à l’aide de bitcoin</string>
   <string name="app_support_requested">Soutien demandé</string>
   <string name="app_name">Airbitz</string>
+  <string name="app_url_prefix">airbitz</string>
   <string name="app_homepage">https://airbitz.co</string>
   <string name="app_support_email">support@airbitz.co</string>
   <string name="app_support_phone">+1-844-928-9744</string>
+  <string name="app_support_telegram">https://telegram.airbitz.co</string>
+  <string name="app_support_slack">https://slack.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.wirex&amp;hl=fr</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -652,9 +659,10 @@
   <string name="plugin_wholefoods_discount">(Jusqu\'à 10 % de réduction)</string>
   <string name="plugin_walmart_discount">(Jusqu\'à 10 % de réduction)</string>
   <string name="plugin_homedepot_discount">(Jusqu\'à 15 % de réduction)</string>
-  <string name="plugin_glidera_title">Etats-Unis et Canada
-	</string>
+  <string name="plugin_glidera_title">Achat / Vente avec Bank Account (USA)</string>
   <string name="plugin_clevercoin_title">Europe (EUR)</string>
+  <string name="plugin_popup_notice">Les services suivants ne sont pas fournis par %1$s. \n\n Pour les questions et les commentaires, S\'il vous plaît contacter les fournisseurs de services respectifs.</string>
+  <string name="plugin_bitrefill_title">Topup prépayées Mobile SIM</string>
   <string name="intent_choose_an_email">Choisissez un client de messagerie:</string>
   <string name="plugin_filechooser_title">Téléchargement de fichier</string>
   <string name="plugin_filechooser_use_camera">Utiliser la caméra</string>
@@ -668,6 +676,50 @@
   <string name="transaction_footer_starbucks_discount">Jusqu\'à 20 % Starbucks</string>
   <string name="transaction_footer_target_discount">Jusqu\'à 10 % sur Target</string>
   <string name="transaction_footer_amazon_discount">15-20 % de remise sur Amazon</string>
-  <string name="change_mining_fee_title">Changer frais de mines</string>
+  <string name="transaction_footer_bitrefill">Acheter Topups pour Téléphone Mobile</string>
+  <string name="change_mining_fee_title">Changer frais de mineur</string>
   <string name="change_mining_fee_body">Avertissement : Frais peu élevés peuvent entraîner de longs retards dans la confirmation de la transaction</string>
+  <!--Password Recovery Text-->
+  <string name="save_recovery_token_popup">Enregistrer Token de Récupération</string>
+  <string name="save_recovery_token_popup_message">\"Pour terminer la configuration de récupération de compte, vous DEVEZ enregistrer un token de récupération de compte. Ce sera nécessaire pour récupérer votre compte en plus de votre nom d\'utilisateur et de récupération des réponses. S\'il vous plaît entrer votre e-mail ci-dessous pour vous envoyer le token de récupération.</string>
+  <string name="recovery_token_email_subject">%s Token de Récupération\"</string>
+  <string name="recovery_token_email_body">S\'il vous plaît cliquer sur le lien ci-dessous à partir d\'un appareil mobile avec %1$s installé pour lancer la récupération de compte pour nom d\'utilisateur [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">S\'il vous plaît entrez le nom d\'utilisateur du compte pour récupérer</string>
+  <string name="recovery_not_setup">Recovery n\'a pas été créé ou a été fait sur un autre appareil</string>
+  <string name="recovery_not_setup2">Si la récupération a été installé, vous devez avoir vous-même envoyé un token de récupération avec un lien</string>
+  <string name="recovery_not_setup3">S\'il vous plaît trouver l\'email et cliquez sur le lien de cet appareil pour lancer la récupération</string>
+  <string name="recovery_token_invalid">Incorrect nom d\'utilisateur pour ce token de récupération. S\'il vous plaît essayer un autre nom d\'utilisateur ou d\'utiliser un autre lien de token de récupération.</string>
+  <string name="logout_before_recovery">S\'il vous plaît déconnecter du compte courant avant de tenter la récupération de mot de passe</string>
+  <string name="recovery_successful">Récupération réussie \n\n Veuillez changer votre mot de passe et code PIN</string>
+  <string name="invalid_email">E-mail invalide</string>
+  <string name="disable_recovery_popup_title">Désactiver Récupération?</string>
+  <string name="disable_recovery_popup_message">Ce compte a déjà configuré de récupération de mot de passe. Voulez-vous le désactiver?</string>
+  <string name="error_disabling_recovery">Erreur de récupération désactivant</string>
+  <string name="recovery_disabled">Récupération Désactivé</string>
+  <!-- SSO -->
+  <string name="edge_login">Edge Connexion</string>
+  <string name="edge_description">Cette application souhaite accéder aux référentiels suivants liés à votre compte Airbitz. Il ne sera pas avoir accès à tous les autres comptes ou porte-monnaie.</string>
+  <string name="bitid_identity">Identité BitID</string>
+  <string name="provide_an_identity_token">Fournir un token d\'identité</string>
+  <string name="invalid_edge_login_request">Edge demande de connexion non valide</string>
+  <string name="approving_login_text">Approuver Login ...</string>
+  <string name="error_logging_in">Erreur de connexion</string>
+  <string name="successfully_logged_in">Connexion réussie</string>
+  <string name="approve_button_text">Approuver</string>
+  <string name="accept_button_text">Accepter</string>
+  <string name="login_button_text">CONNEXION</string>
+  <string name="back_button_text">Précédent</string>
+  <string name="verify_domain_and_approve">S\'il vous plaît vérifier le domaine ci-dessus et cliquez sur LOGIN pour authentifier avec ce site</string>
+  <string name="would_like_to">Ce site souhaite:</string>
+  <string name="request_payment_address">Demander une adresse de paiement</string>
+  <string name="identity_token_created_and_saved">Token d\'identité [%1$s] créé et enregistré</string>
+  <string name="successfully_verified_identity">Identité vérifiée avec succès</string>
+  <string name="create_new_text">Créer un nouveau</string>
+  <string name="or_choose">\"$1$s\" ou choisir</string>
+  <string name="request_your_identity_token">Demandez votre token d\'identité. S\'il vous plaît sélectionner celui ci-dessous</string>
+  <string name="request_your_identity_token_but_none">Demandez votre token d\'identité, mais vous n\'avez pas</string>
+  <string name="bitid_login_message">%1$s</string>
+  <string name="bitid_login_title">Connexion BitID</string>
+  <string name="bitid_login_success">Connexion réussie</string>
+  <string name="bitid_login_failure">Erreur de connexion</string>
 </resources>

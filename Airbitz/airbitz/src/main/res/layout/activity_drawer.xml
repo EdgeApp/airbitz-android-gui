@@ -120,7 +120,7 @@
                         <Button
                             android:id="@+id/item_drawer_shop"
                             android:drawableLeft="@drawable/ic_gift_card_dark"
-                            android:text="@string/drawer_discounted_gift_cards"
+                            android:text="@string/drawer_spend_bitcoin"
                             style="@style/DrawerButton" />
 
                         <Button

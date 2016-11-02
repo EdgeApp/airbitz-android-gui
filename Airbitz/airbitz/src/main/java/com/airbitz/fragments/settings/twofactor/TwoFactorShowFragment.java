@@ -69,6 +69,8 @@ import com.airbitz.utils.Common;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import org.w3c.dom.Text;
+
 public class TwoFactorShowFragment extends BaseFragment
 {
     private final String TAG = getClass().getSimpleName();
@@ -82,6 +84,8 @@ public class TwoFactorShowFragment extends BaseFragment
     private LinearLayout mRequestView;
     private AirbitzCore mCoreAPI;
     private Account mAccount;
+    private TextView mShowQRTextView;
+    private Button mShowQRButton;
     private boolean isOtpEnabled = false;;
 
     CompoundButton.OnCheckedChangeListener mStateListener = new CompoundButton.OnCheckedChangeListener() {
@@ -144,6 +148,27 @@ public class TwoFactorShowFragment extends BaseFragment
 
         mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
         mEnabledSwitch.setOnCheckedChangeListener(mStateListener);
+
+        mShowQRTextView = (TextView) mView.findViewById(R.id.fragment_twofactor_show_qr_image_textview);
+
+        mShowQRButton = (Button) mView.findViewById(R.id.fragment_twofactor_show_qr_image_button);
+        mShowQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mShowQRTextView.getVisibility() == View.VISIBLE) {
+                    mShowQRTextView.setVisibility(View.INVISIBLE);
+                    mQRView.setVisibility(View.VISIBLE);
+                } else {
+                    mShowQRTextView.setVisibility(View.VISIBLE);
+                    mQRView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        mShowQRTextView.setVisibility(View.VISIBLE);
+        mQRView.setVisibility(View.INVISIBLE);
+
+
         return mView;
     }
 
@@ -301,7 +326,10 @@ public class TwoFactorShowFragment extends BaseFragment
     }
 
     void showQrCode(boolean show) {
-        if (show) {
+        String secret = mAccount.otpSecret();
+        if (show &&
+                secret != null &&
+                secret.length() > 0) {
             AirbitzCore api = AirbitzCore.getApi();
             Bitmap bitmap = AndroidUtils.qrEncode(
                 api.qrEncode(mAccount.otpSecret()));

@@ -3,8 +3,8 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Viajes en avión</item>
-    <item>Alcohol y bares</item>
+    <item>Vuelos</item>
+    <item>Bares y Pubs</item>
     <item>Tolerancia</item>
     <item>Entretenimiento</item>
     <item>Artes</item>
@@ -22,7 +22,7 @@
     <item>Efectivo y Cajero automático</item>
     <item>Caridad</item>
     <item>Ropa</item>
-    <item>Café</item>
+    <item>Cafeterías</item>
     <item>Pago con tarjeta de crédito</item>
     <item>Dentista</item>
     <item>Depósito de ahorro</item>
@@ -53,41 +53,41 @@
     <item>Servicios en el hogar</item>
     <item>Artículos para el hogar</item>
     <item>Hotel</item>
-    <item>Interés exponencial</item>
+    <item>Gastos por intereses</item>
     <item>Internet</item>
-    <item>Contribución de IRA</item>
+    <item>Planes de pensiones</item>
     <item>Niños</item>
     <item>Actividades para niños</item>
-    <item>Cargo por pago atrasado</item>
+    <item>Recargo</item>
     <item>Servicio de lavandería</item>
     <item>Césped y jardín</item>
-    <item>Seguro de vida</item>
+    <item>Seguros de vida</item>
     <item>Varios</item>
-    <item>Teléfono móvil</item>
+    <item>Telefonía</item>
     <item>Hipoteca y alquiler</item>
     <item>Interés hipotecario</item>
     <item>Películas y DVDs</item>
     <item>Música</item>
-    <item>Periódico y revistas</item>
+    <item>Periódicos y revistas</item>
     <item>No estoy seguro</item>
     <item>Estacionamiento</item>
     <item>Cuidado personal</item>
     <item>Comida y suministros para mascotas</item>
-    <item>Cuidado de mascotas</item>
+    <item>Aseo de Mascotas</item>
     <item>Mascotas</item>
     <item>Farmacia</item>
-    <item>Propiedad</item>
+    <item>Bienes Inmuebles</item>
     <item>Transporte público</item>
     <item>Registro</item>
-    <item>Taxi y coche de alquiler</item>
+    <item>Taxis y coches de alquiler</item>
     <item>Restaurantes</item>
-    <item>Reparación y partes</item>
-    <item>Cargo por servicio</item>
-    <item>Comprar</item>
-    <item>Spa y masaje</item>
+    <item>Reparaciones y recambios</item>
+    <item>Tarifas de servicio</item>
+    <item>Compras</item>
+    <item>Spa y masajes</item>
     <item>Artículos deportivos</item>
     <item>Deportes</item>
-    <item>Préstamo de estudiante</item>
+    <item>Préstamo Estudiantil</item>
     <item>Impuesto</item>
     <item>Televisión</item>
     <item>Peajes</item>
@@ -100,7 +100,7 @@
     <item>Veterinario</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulta de ingresos</item>
+    <item>Asesoria financiera</item>
     <item>Ingresos divididos</item>
     <item>Sueldo neto</item>
     <item>Otros ingresos</item>

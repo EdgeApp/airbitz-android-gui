@@ -31,7 +31,7 @@
 
 package com.airbitz.fragments.login;
 
-import android.app.AlertDialog;
+;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;

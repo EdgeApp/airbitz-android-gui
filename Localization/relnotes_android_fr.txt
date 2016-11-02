@@ -1,9 +1,63 @@
+v 2.2.0
+
+
+Nous avons juste innové en mettant en œuvre la première récupération de mot de non-friction du monde qui permet aux utilisateurs de récupérer les mots de passe avec seulement 2 questions et un e-mail.
+Ne vous inquiétez jamais oublier votre mot de passe
+
+
+En outre:
+
+
+• Bitrefill l'intégration de plug-in qui permet aux utilisateurs d'acheter mobiles Topups de plus de 600 transporteurs dans 143 pays
+
+• Les comptes archivées prennent maintenant moins de ressources en n'interrogeant le réseau ou synchroniser données de transaction
+
+• notifications d'arrière-plan des fonds entrants si l'application est récemment backgrounded
+
+• adresse publique Fallback pour BIP70 transactions du protocole de paiement échoué
+
+• Traductions linguistiques améliorées
+
+• Fix brisé popups dialogues dans Android N
+
+• Correction du crash si l'utilisateur révoque les autorisations de localisation
+
 v 2.1.0
 
-• Ajouter un abonnement au serveur d'adresse Libbitcoin/Electrum pour une performance beaucoup améliorer et une augmentation de vie de la batterie.
-• Activer le calcul des droits miniers dynamique
-• Ajouter les redevances minières estimées contrôlables (basse, Standard, vif)
-• Corriger le temps de transaction erronée pour quand la transaction est reçue pendant que le porte-monnaie était hors ligne
-• Ajouter la prise en charge linguistique Chinois, Hindi, Espagnol et Portugais
-• Ajouter prise en charge pour une localisation appropriée des numéros, heures et dates
-• Améliorer la précision de la détection de transaction dans des mauvaises conditions de réseau
+
+• Ajout d'un abonnement au serveur d'adresse Libbitcoin/Electrum pour des performances améliorées et une augmentation de vie de la batterie.
+
+• Activation d'un calcul dynamique des frais miniers
+
+• Ajout d'un contrôle utilisateur des frais miniers estimés (paramètres bas, normal, haut)
+
+• Correction du temps erroné de transaction lorsque qu'une transaction est reçue alors que le portefeuille est déconnecté
+
+• Prise en charge linguistique du Chinois, Hindi, Espagnol et Portugais
+
+• Prise en charge d'un localisation linguistique appropriée pour les numéros, heures et dates
+
+• Amélioration de la précision de détection des transactions dans de mauvaises conditions de réseau
+
+Nous avons juste innové en mettant en œuvre la première récupération de mot de non-friction du monde qui permet aux utilisateurs de récupérer les mots de passe avec seulement 2 questions et un e-mail. Ne vous inquiétez jamais oublier votre mot de passe
+
+En outre:
+
+• Bitrefill l'intégration de plug-in qui permet aux utilisateurs d'acheter mobiles Topups de plus de 600 transporteurs dans 143 pays
+• Les comptes archivées prennent maintenant moins de ressources en n'interrogeant le réseau ou synchroniser données de transaction
+• Notifications d'arrière-plan des fonds entrants si l'application est récemment backgrounded
+• Adresse publique Fallback pour BIP70 transactions du protocole de paiement échoué 
+• Traductions linguistiques améliorées
+• Fix brisé popups dialogues dans Android N
+• Correction du crash si l'utilisateur révoque les autorisations de localisation
+
+
+v 2.1.0
+
+• Ajout d'un abonnement au serveur d'adresse Libbitcoin/Electrum pour des performances améliorées et une augmentation de vie de la batterie.
+• Activation d'un calcul dynamique des frais miniers
+• Ajout d'un contrôle utilisateur des frais miniers estimés (paramètres bas, normal, haut)
+• Correction du temps erroné de transaction lorsque qu'une transaction est reçue alors que le portefeuille est déconnecté
+• Prise en charge linguistique du Chinois, Hindi, Espagnol et Portugais
+• Prise en charge d'un localisation linguistique appropriée pour les numéros, heures et dates
+• Amélioration de la précision de détection des transactions dans de mauvaises conditions de réseau
