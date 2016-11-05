@@ -130,7 +130,7 @@ public class UploadLogAlert {
             String versionName = com.airbitz.BuildConfig.VERSION_NAME;
             String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
 
-            AirbitzCore.logi("App Version:" + appVersion);
+            AirbitzCore.loge("App Version:" + appVersion);
             return mCoreAPI.uploadLogs();
         }
 

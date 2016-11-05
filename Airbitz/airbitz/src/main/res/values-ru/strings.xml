@@ -19,6 +19,7 @@
   <string name="string_delete">Удалить</string>
   <string name="string_save">Сохранить</string>
   <string name="string_back">Назад</string>
+  <string name="string_disable">DISABLE</string>
   <string name="string_next">Вперед</string>
   <string name="string_skip">Пропустить</string>
   <string name="string_total">Итого:</string>
@@ -116,7 +117,7 @@
   <string name="server_error_other">Произошла ошибка.</string>
   <string name="insufficient_amount">Сумма слишком мала</string>
   <string name="account_needs_password_title">ВНИМАНИЕ: пароль отсутствует</string>
-  <string name="account_needs_password_message">Учетная запись \'%1$s\' требует пароль. Вы не сможете войти в свою учетную запись на другом устройстве без пароля.</string>
+  <string name="account_needs_password_message">Учетная запись [%1$s] требует пароль. Вы не сможете войти в свою учетную запись на другом устройстве без пароля.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">Изображение для логотипа</string>
   <string name="fragment_landing_detail_text">Биткойн-кошелек</string>
@@ -217,12 +218,12 @@
   <string name="activity_recovery_prompt_title">Пропустить этот шаг</string>
   <string name="activity_recovery_prompt_skip">**ВНИМАНИЕ** Вы НИКОГДА не сможете восстановить пароль, если забудете его!!</string>
   <string name="activity_recovery_first_wallet_name">Мой кошелек</string>
-  <string name="activity_recovery_answer_questions_alert">Вы должны ответить на все шесть вопросов. Проверьте, чтобы все ответы имели достаточную длину.</string>
-  <string name="activity_recovery_pick_questions_alert">Вы должны выбрать все шесть вопросов перед тем, как продолжить.</string>
+  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
+  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
   <string name="activity_recovery_question_default">Вопрос</string>
   <string name="item_recovery_spinner_arrow_description">Стрелка раскрывающегося списка</string>
   <string name="activity_recovery_done_title">Вопросы для восстановления заданы</string>
-  <string name="activity_recovery_done_details">Заданы вопросы и ответы для восстановления Вашего пароля. При восстановлении пароля ответы должны совпадать абсолютно точно. **НЕ ЗАБУДЬТЕ ВАШ ПАРОЛЬ И ОТВЕТЫ ДЛЯ ЕГО ВОССТАНОВЛЕНИЯ** ВЫ НЕ СМОЖЕТЕ ПОЛУЧИТЬ ДОСТУП К СВОЕЙ УЧЕТНОЙ ЗАПИСИ БЕЗ НИХ!!</string>
+  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
   <string name="activity_recovery_error_title">Ошибка восстановления пароля</string>
   <string name="activity_recovery_error_incorrect_password">Пожалуйста введите пароль правильно для изменения вопросов</string>
   <string name="activity_recovery_error_save_failed">Ошибка сохранения вопросов для восстановления</string>
@@ -313,7 +314,7 @@
   <string name="fragment_send_incorrect_password_title">Неверный пароль</string>
   <string name="fragment_send_no_satoshi_title">Введите сумму</string>
   <string name="fragment_send_no_satoshi_message">Пожалуйста, введите сумму для отправки</string>
-  <string name="fragment_send_send_to_hint">Биткойн-адрес или URI</string>
+  <string name="fragment_send_send_to_hint">Биткойн-адрес или приватный ключ</string>
   <string name="fragment_send_failure_title">Ошибка отправления</string>
   <string name="fragment_send_send_bitcoin_invalid">Неверный биткойн-адрес</string>
   <string name="fragment_send_send_bitcoin_unscannable">Не удалось отсканировать QR-код</string>
@@ -324,7 +325,7 @@
   <string name="fragment_send_address">Адрес</string>
   <string name="fragment_send_photos">Фото</string>
   <string name="fragment_send_flash">Флеш</string>
-  <string name="fragment_send_address_dialog_title">Отправить на биткойн-адрес</string>
+  <string name="fragment_send_address_dialog_title">Отправить на биткойн-адрес или импортировать приватный ключ</string>
   <string name="fragment_import_address_dialog_title">Перевести средства с приватного ключа</string>
   <string name="fragment_send_other_wallet_header_title">Выберите кошелек для перевода средств:</string>
   <string name="fragment_send_create_wallet_to_transfer">Создать новый кошелек для перевода средств</string>
@@ -350,6 +351,7 @@
   <string name="fragment_send_confirmation_password_remaining">Неверный пароль. Пожалуйста, подождите %1$.0f и попробуйте снова&#8230;</string>
   <string name="fragment_send_confirmation_dust_alert">Сумма слишком мала.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Пожалуйста, отправьте не менее %1$s (≈%2$s)</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Кошельки</string>
   <string name="fragment_wallets_add_wallet">Добавить кошелёк</string>
@@ -414,7 +416,7 @@
   <string name="request_qr_ble_invalid_uri">Вы получили некорректный запрос биткойнов. Попробуйте снова.</string>
   <string name="request_qr_ble_copied">Запрос скопирован в буфер обмена.</string>
   <string name="request_qr_first_usage">Передайте QR-код отправителю для сканирования и совершения Вам платежа</string>
-  <string name="request_qr_top_message">Отсканируйте QR-код для отправки средств, импорта или входа с использованием BitID</string>
+  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">Импорт кошелька</string>
   <string name="import_wallet_timeout_message">Импорт не удался. Попробуйте снова.</string>
@@ -547,6 +549,7 @@
   <string name="fragment_twofactor_show_unable_status">Невозможно определить статус двухфакторной аутентификации</string>
   <string name="fragment_twofactor_show_instruction">Включите двухфакторную аутентификацию для повышения уровня защиты - в этом случае в Вашу учетную запись можно будет зайти только с предварительно авторизованных устройств. После активизации двухфакторной аутентификации Вы можете добавить новые устройства, отсканировав QR-код ниже</string>
   <string name="fragment_twofactor_show_reset_requested">Запрошен сброс двухфакторной аутентификации с другого устройства.</string>
+  <string name="fragment_twofactor_show_qr_image_text">Показать QR-код</string>
   <string name="fragment_two_factor_menu_requested">Запрошен сброс двухфакторной аутентификации.</string>
   <string name="twofactor_required_title">Двухфакторная аутентификация включена</string>
   <string name="twofactor_required_message">Двухфакторная аутентификация (продвинутая защита) для данной учетной записи была активирована с другого устройства. Пожалуйста, включите двухфакторную аутентификацию на этом устройстве для полного доступа ко всем возможностям.</string>
@@ -604,14 +607,13 @@
   <string name="password_set_title">Пароль не установлен</string>
   <string name="password_set_message">Пожалуйста, создайте пароль для этой учетной записи, иначе Вы не сможете получить доступ к ней, если потеряете свое устройство или оно будет украдено</string>
   <string name="password_set_skip">Пропустить</string>
+  <!-- PIN Set -->
+  <string name="pin_set_title">No PIN set</string>
+  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
   <!-- Settings -->
   <string name="settings_category_title">Категории</string>
   <!-- Logout -->
   <string name="logout_message">Пожалуйста, подождите, пока %1$s полностью выйдет из Вашей учетной записи. Это может занять некоторое время при медленном соединении</string>
-  <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">Логин BitID</string>
-  <string name="bitid_login_success">Вход прошел успешно</string>
-  <string name="bitid_login_failure">Ошибка входа</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">Войти или зарегистрироваться</string>
   <string name="drawer_buy_sell">Купить / продать биткойны</string>
@@ -631,13 +633,17 @@
   <string name="affiliate_refer_friends_title">Пригласите Ваших друзей</string>
   <string name="affiliate_refer_friends_body">%1$s\n\nПоделитесь этой ссылкой, чтобы получить доход от пользователей, установивших и использующих %2$s. Вы получите 0,25%% от всех приобретений подарочных карт через это приложение.</string>
   <string name="affiliate_category">Доход по партнерской программе</string>
-  <string name="affiliate_notes">Доход с партнерской ссылки %@</string>
+  <string name="affiliate_notes">Доход с партнерской ссылки %s</string>
   <string name="affiliate_link_error">Не удалось сгенерировать ссылку для партнерской программы.</string>
+  <string name="affiliate_link_share_text">Скачайте кошелек Airbitz и экономьте деньги, используя биткойны</string>
   <string name="app_support_requested">Запросить поддержку</string>
   <string name="app_name">Airbitz</string>
+  <string name="app_url_prefix">airbitz</string>
   <string name="app_homepage">https://airbitz.co</string>
   <string name="app_support_email">support@airbitz.co</string>
   <string name="app_support_phone">+1-844-928-9744</string>
+  <string name="app_support_telegram">https://telegram.airbitz.co</string>
+  <string name="app_support_slack">https://slack.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz&amp;hl=ru</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -648,9 +654,15 @@
   <string name="request_footer_link_title">Загрузите Airbitz для iOS или Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_glidera_title">США</string>
+  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+  <string name="plugin_target_discount">(Up to 10% Off)</string>
+  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
+  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
   <string name="plugin_clevercoin_title">Европа (EUR)</string>
   <string name="plugin_popup_notice">Данная услуга не поддерживается %1$s.\n\nПожалуйста, свяжитесь с уполномоченными представителями предоставляющего услугу сервиса, если у Вас есть вопросы.</string>
+  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
   <string name="intent_choose_an_email">Выберите почтовый клиент:</string>
   <string name="plugin_filechooser_title">Загрузить файл</string>
   <string name="plugin_filechooser_use_camera">Использовать камеру</string>
@@ -664,6 +676,50 @@
   <string name="transaction_footer_starbucks_discount">Скидка в Starbucks до 20%</string>
   <string name="transaction_footer_target_discount">Скидка в Target до 10%</string>
   <string name="transaction_footer_amazon_discount">Скидка на Amazon 15-20%</string>
+  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
   <string name="change_mining_fee_title">Изменить комиссию</string>
   <string name="change_mining_fee_body">Внимание: низкая комиссия может привести к длительным задержкам в подтверждениях переводов</string>
+  <!--Password Recovery Text-->
+  <string name="save_recovery_token_popup">Сохранить токен восстановления</string>
+  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
+  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">Пожалуйста, введите имя пользователя, контроль над аккаунтом которого Вы хотите восстановить</string>
+  <string name="recovery_not_setup">Восстановление не было настроено или было проведено на другом устройстве</string>
+  <string name="recovery_not_setup2">Если настройка восстановления была правильно настроена, то Вы должны были получить по электронной почте сообщение с токеном восстановления и ссылкой</string>
+  <string name="recovery_not_setup3">Пожалуйста, зайдите с этого устройства на электронную почту и перейдите по ссылке из письма для начала процесса восстановления</string>
+  <string name="recovery_token_invalid">Неверное имя пользователя для этого токена восстановления. Пожалуйста, попробуйте другое имя пользователя или другую ссылку токена восстановления.</string>
+  <string name="logout_before_recovery">Пожалуйста, выйдите из текущей учетной записи перед началом восстановления пароля</string>
+  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+  <string name="invalid_email">Некорректный Email</string>
+  <string name="disable_recovery_popup_title">Disable Recovery?</string>
+  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+  <string name="error_disabling_recovery">Error disabling recovery</string>
+  <string name="recovery_disabled">Recovery Disabled</string>
+  <!-- SSO -->
+  <string name="edge_login">Edge Login</string>
+  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+  <string name="bitid_identity">BitID Identity</string>
+  <string name="provide_an_identity_token">Provide an Identity Token</string>
+  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+  <string name="approving_login_text">Approving Login...</string>
+  <string name="error_logging_in">Ошибка входа</string>
+  <string name="successfully_logged_in">Вход прошел успешно</string>
+  <string name="approve_button_text">Approve</string>
+  <string name="accept_button_text">Accept</string>
+  <string name="login_button_text">LOGIN</string>
+  <string name="back_button_text">Назад</string>
+  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+  <string name="would_like_to">This site would like to:</string>
+  <string name="request_payment_address">Request a Payment Address</string>
+  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+  <string name="successfully_verified_identity">Идентификация успешно подтверждена</string>
+  <string name="create_new_text">Create new</string>
+  <string name="or_choose">\"$1$s\" or choose</string>
+  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="bitid_login_message">%1$s</string>
+  <string name="bitid_login_title">Логин BitID</string>
+  <string name="bitid_login_success">Вход прошел успешно</string>
+  <string name="bitid_login_failure">Ошибка входа</string>
 </resources>

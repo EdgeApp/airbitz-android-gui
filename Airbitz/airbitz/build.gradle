@@ -118,8 +118,8 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
 
-    prodCompile 'co.airbitz:airbitz-core-java:0.11.+'
-    prodCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
+    prodCompile 'co.airbitz:airbitz-core-java:0.10.+'
+    prodCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'
     developCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'
     developCompile 'co.airbitz:airbitz-core-android-develop:0.11.+@aar'
     nettestCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'

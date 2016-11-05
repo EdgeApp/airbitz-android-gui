@@ -19,6 +19,7 @@
   <string name="string_delete">Delete</string>
   <string name="string_save">Save</string>
   <string name="string_back">BACK</string>
+  <string name="string_disable">DISABLE</string>
   <string name="string_next">NEXT</string>
   <string name="string_skip">SKIP</string>
   <string name="string_total">TOTAL:</string>
@@ -116,7 +117,7 @@
   <string name="server_error_other">An error has occurred.</string>
   <string name="insufficient_amount">Amount too small</string>
   <string name="account_needs_password_title">WARNING: missing password</string>
-  <string name="account_needs_password_message">Account \'%1$s\' needs a password. Account is not accessible on a new device without a password.</string>
+  <string name="account_needs_password_message">Account [%1$s] needs a password. Account is not accessible on a new device without a password.</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">An image of the logo</string>
   <string name="fragment_landing_detail_text">Bitcoin Wallet</string>
@@ -217,12 +218,12 @@
   <string name="activity_recovery_prompt_title">Skip this step</string>
   <string name="activity_recovery_prompt_skip">**WARNING** You will NEVER be able to recover your password if it is forgotten!!</string>
   <string name="activity_recovery_first_wallet_name">My Wallet</string>
-  <string name="activity_recovery_answer_questions_alert">You must answer all six questions.  Make sure your answers are long enough.</string>
-  <string name="activity_recovery_pick_questions_alert">You must choose all six questions before proceeding.</string>
+  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
+  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
   <string name="activity_recovery_question_default">Question</string>
   <string name="item_recovery_spinner_arrow_description">Drop down arrow</string>
   <string name="activity_recovery_done_title">Recovery Questions Set</string>
-  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.  When recovering your password, your answers must match exactly. **DO NOT FORGET YOUR PASSWORD AND RECOVERY ANSWERS** YOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
+  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
   <string name="activity_recovery_error_title">Password Recovery failure</string>
   <string name="activity_recovery_error_incorrect_password">Please enter your correct password so your answers can be changed</string>
   <string name="activity_recovery_error_save_failed">Save recovery answers failed</string>
@@ -313,7 +314,7 @@
   <string name="fragment_send_incorrect_password_title">Incorrect Password</string>
   <string name="fragment_send_no_satoshi_title">Enter an amount</string>
   <string name="fragment_send_no_satoshi_message">Please enter an amount to send</string>
-  <string name="fragment_send_send_to_hint">Bitcoin address or URI</string>
+  <string name="fragment_send_send_to_hint">Bitcoin Address or Private Key</string>
   <string name="fragment_send_failure_title">Send failure</string>
   <string name="fragment_send_send_bitcoin_invalid">Invalid bitcoin address</string>
   <string name="fragment_send_send_bitcoin_unscannable">Unable to scan QR code</string>
@@ -324,7 +325,7 @@
   <string name="fragment_send_address">Address</string>
   <string name="fragment_send_photos">Photos</string>
   <string name="fragment_send_flash">Flash</string>
-  <string name="fragment_send_address_dialog_title">Send to Bitcoin Address</string>
+  <string name="fragment_send_address_dialog_title">Send to Bitcoin Address or Import Private Key</string>
   <string name="fragment_import_address_dialog_title">Sweep Funds From Private Key</string>
   <string name="fragment_send_other_wallet_header_title">Choose a wallet to transfer funds to:</string>
   <string name="fragment_send_create_wallet_to_transfer">Create a new wallet to transfer funds to</string>
@@ -350,6 +351,7 @@
   <string name="fragment_send_confirmation_password_remaining">Incorrect Password. Please wait %1$.0f seconds and try again&#8230;</string>
   <string name="fragment_send_confirmation_dust_alert">Amount is too small.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Please send at least %1$s (~%2$s)</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Wallets</string>
   <string name="fragment_wallets_add_wallet">Add Wallet</string>
@@ -414,7 +416,7 @@
   <string name="request_qr_ble_invalid_uri">You received an invalid bitcoin request. You can try again.</string>
   <string name="request_qr_ble_copied">Request is copied to the clipboard.</string>
   <string name="request_qr_first_usage">Present QR code to Sender and have them scan to send you payment</string>
-  <string name="request_qr_top_message">Scan QR to Send, Import, or Login with BitID</string>
+  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">Import Wallet</string>
   <string name="import_wallet_timeout_message">Import failed. Try Again.</string>
@@ -547,6 +549,7 @@
   <string name="fragment_twofactor_show_unable_status">Unable to determine two factor status</string>
   <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
   <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
+  <string name="fragment_twofactor_show_qr_image_text">Show QR Code</string>
   <string name="fragment_two_factor_menu_requested">Two factor reset has been requested.</string>
   <string name="twofactor_required_title">Two Factor Authentication On</string>
   <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
@@ -604,14 +607,13 @@
   <string name="password_set_title">No password set</string>
   <string name="password_set_message">Please create a password for this account or you will not be able to recover your account if your device is lost or stolen</string>
   <string name="password_set_skip">Skip</string>
+  <!-- PIN Set -->
+  <string name="pin_set_title">No PIN set</string>
+  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
   <!-- Settings -->
   <string name="settings_category_title">Categories</string>
   <!-- Logout -->
   <string name="logout_message">Please wait while %1$s gracefully exits your account. This may take a while on slow networks</string>
-  <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">BitID Login</string>
-  <string name="bitid_login_success">Successfully Logged In</string>
-  <string name="bitid_login_failure">Error Logging In</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">Sign In or Sign Up</string>
   <string name="drawer_buy_sell">Buy / Sell Bitcoin</string>
@@ -631,13 +633,17 @@
   <string name="affiliate_refer_friends_title">Refer Your Friend</string>
   <string name="affiliate_refer_friends_body">%1$s\n\nShare this link to receive revenue from users that install and use %2$s. You will receive 0.25%% of all gift card purchases made inside of this app.</string>
   <string name="affiliate_category">Income:Affiliate Revenue</string>
-  <string name="affiliate_notes">Revenue share from affiliate link %@</string>
+  <string name="affiliate_notes">Revenue share from affiliate link %s</string>
   <string name="affiliate_link_error">Unable to generate affiliate link at this time.</string>
+  <string name="affiliate_link_share_text">Download the Airbitz wallet and save money using bitcoin</string>
   <string name="app_support_requested">Support Requested</string>
   <string name="app_name">Airbitz</string>
+  <string name="app_url_prefix">airbitz</string>
   <string name="app_homepage">https://airbitz.co</string>
   <string name="app_support_email">support@airbitz.co</string>
   <string name="app_support_phone">+1-844-928-9744</string>
+  <string name="app_support_telegram">https://telegram.airbitz.co</string>
+  <string name="app_support_slack">https://slack.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -648,9 +654,15 @@
   <string name="request_footer_link_title">Download Airbitz for iOS or Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_glidera_title">USA</string>
+  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+  <string name="plugin_target_discount">(Up to 10% Off)</string>
+  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
+  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
   <string name="plugin_clevercoin_title">Europe (EUR)</string>
   <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
+  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
   <string name="intent_choose_an_email">Choose an Email client:</string>
   <string name="plugin_filechooser_title">Upload File</string>
   <string name="plugin_filechooser_use_camera">Use Camera</string>
@@ -664,6 +676,50 @@
   <string name="transaction_footer_starbucks_discount">Up to 20% off Starbucks</string>
   <string name="transaction_footer_target_discount">Up to 10% off Target</string>
   <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
+  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
   <string name="change_mining_fee_title">Change Mining Fee</string>
   <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+  <!--Password Recovery Text-->
+  <string name="save_recovery_token_popup">Save Recovery Token</string>
+  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
+  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">Please enter the username of the account to recover</string>
+  <string name="recovery_not_setup">Recovery was not setup or was done on another device</string>
+  <string name="recovery_not_setup2">If recovery was setup, you should have emailed yourself a recovery token with a link</string>
+  <string name="recovery_not_setup3">Please find the email and click on the link from this device to initiate recovery</string>
+  <string name="recovery_token_invalid">Incorrect username for this recovery token. Please try a different username or use a different recovery token link.</string>
+  <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
+  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+  <string name="invalid_email">Invalid Email</string>
+  <string name="disable_recovery_popup_title">Disable Recovery?</string>
+  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+  <string name="error_disabling_recovery">Error disabling recovery</string>
+  <string name="recovery_disabled">Recovery Disabled</string>
+  <!-- SSO -->
+  <string name="edge_login">Edge Login</string>
+  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+  <string name="bitid_identity">BitID Identity</string>
+  <string name="provide_an_identity_token">Provide an Identity Token</string>
+  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+  <string name="approving_login_text">Approving Login...</string>
+  <string name="error_logging_in">Error Logging In</string>
+  <string name="successfully_logged_in">Successfully Logged In</string>
+  <string name="approve_button_text">Approve</string>
+  <string name="accept_button_text">Accept</string>
+  <string name="login_button_text">LOGIN</string>
+  <string name="back_button_text">Back</string>
+  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+  <string name="would_like_to">This site would like to:</string>
+  <string name="request_payment_address">Request a Payment Address</string>
+  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+  <string name="successfully_verified_identity">Successfully Verified Identity</string>
+  <string name="create_new_text">Create new</string>
+  <string name="or_choose">\"$1$s\" or choose</string>
+  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="bitid_login_message">%1$s</string>
+  <string name="bitid_login_title">BitID Login</string>
+  <string name="bitid_login_success">Successfully Logged In</string>
+  <string name="bitid_login_failure">Error Logging In</string>
 </resources>

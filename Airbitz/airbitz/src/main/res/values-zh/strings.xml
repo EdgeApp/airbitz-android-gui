@@ -19,6 +19,7 @@
   <string name="string_delete">删除</string>
   <string name="string_save">保存</string>
   <string name="string_back">返回</string>
+  <string name="string_disable">DISABLE</string>
   <string name="string_next">下一个</string>
   <string name="string_skip">跳过</string>
   <string name="string_total">总数 ︰</string>
@@ -116,7 +117,7 @@
   <string name="server_error_other">发生错误。</string>
   <string name="insufficient_amount">数额太小</string>
   <string name="account_needs_password_title">警告 ︰ 遗漏密码</string>
-  <string name="account_needs_password_message">帐户 \'%1$s\' 需要密码。缺乏密码将无法在新装置上登入帐户。</string>
+  <string name="account_needs_password_message">帐户 [%1$s] 需要密码。缺乏密码将无法在新装置上登入帐户。</string>
   <!-- Strings related to Landing -->
   <string name="fragment_landing_logo_description">标志的图像</string>
   <string name="fragment_landing_detail_text">比特币钱包</string>
@@ -217,12 +218,12 @@
   <string name="activity_recovery_prompt_title">跳过此步骤</string>
   <string name="activity_recovery_prompt_skip">* * 警告 * * 如果忘记密码，您将无法将它复原!!</string>
   <string name="activity_recovery_first_wallet_name">我的钱包</string>
-  <string name="activity_recovery_answer_questions_alert">您必须将六道问题全回答。请确保您的答案符合字数长度。</string>
-  <string name="activity_recovery_pick_questions_alert">在进行下一步骤前，您必须选择所有的六个问题。</string>
+  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
+  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
   <string name="activity_recovery_question_default">问题</string>
   <string name="item_recovery_spinner_arrow_description">下拉箭头</string>
   <string name="activity_recovery_done_title">帐户复原问题集</string>
-  <string name="activity_recovery_done_details">您的帐户复原问题和答案现已被设置完成。 当您下次复原密码时，你所提供的答案必须完全匹配。* * 千万不要忘记您的密码和帐户复原答案 * * 缺少了它们将无法复原您的帐户 ！</string>
+  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
   <string name="activity_recovery_error_title">密码复原失败</string>
   <string name="activity_recovery_error_incorrect_password">请输入您正确的密码，方可修改您的答案</string>
   <string name="activity_recovery_error_save_failed">帐户复原答案保存失败</string>
@@ -313,7 +314,7 @@
   <string name="fragment_send_incorrect_password_title">密码不正确。</string>
   <string name="fragment_send_no_satoshi_title">输入金额</string>
   <string name="fragment_send_no_satoshi_message">请输入要发送的金额</string>
-  <string name="fragment_send_send_to_hint">比特币地址或 URI</string>
+  <string name="fragment_send_send_to_hint">比特币地址或私钥</string>
   <string name="fragment_send_failure_title">发送失败</string>
   <string name="fragment_send_send_bitcoin_invalid">无效的比特币地址</string>
   <string name="fragment_send_send_bitcoin_unscannable">无法扫描二维码</string>
@@ -324,7 +325,7 @@
   <string name="fragment_send_address">地址</string>
   <string name="fragment_send_photos">照片</string>
   <string name="fragment_send_flash">闪存</string>
-  <string name="fragment_send_address_dialog_title">发送到比特币地址</string>
+  <string name="fragment_send_address_dialog_title">发送至比特币地址或导入私钥</string>
   <string name="fragment_import_address_dialog_title">从私钥导入资金</string>
   <string name="fragment_send_other_wallet_header_title">选择一个钱包以便转入资金︰</string>
   <string name="fragment_send_create_wallet_to_transfer">创建新的钱包以便转入资金</string>
@@ -350,6 +351,7 @@
   <string name="fragment_send_confirmation_password_remaining">密码不正确。请稍等 %1$.0f 秒后再尝试...</string>
   <string name="fragment_send_confirmation_dust_alert">数额太小。</string>
   <string name="fragment_send_confirmation_dust_alert_more">请发送至少 %1$s (~%2$s)</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">钱包</string>
   <string name="fragment_wallets_add_wallet">添加钱包</string>
@@ -414,7 +416,7 @@
   <string name="request_qr_ble_invalid_uri">您收到了一个无效的比特币请求。您可再尝试。</string>
   <string name="request_qr_ble_copied">请求已被拷贝到剪贴板中。</string>
   <string name="request_qr_first_usage">把二维码展示给发款人并让他进行扫描以便对您传送付款。</string>
-  <string name="request_qr_top_message">扫描二维码以进行传送，导入或是使用BitID登入。</string>
+  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">导入钱包</string>
   <string name="import_wallet_timeout_message">导入失败。再试一次。</string>
@@ -547,6 +549,7 @@
   <string name="fragment_twofactor_show_unable_status">无法确认二元认证的状态</string>
   <string name="fragment_twofactor_show_instruction">启用二元认证以提升安全度，并只允许曾获准登入的装置再次登入。当2FA启用后，可扫描以下的二维码以便添加更多的装置。</string>
   <string name="fragment_twofactor_show_reset_requested">来自另一个装置的2FA 重置请求。</string>
+  <string name="fragment_twofactor_show_qr_image_text">显示二维码</string>
   <string name="fragment_two_factor_menu_requested">已接收到二元重置的请求。</string>
   <string name="twofactor_required_title">二元认证启用</string>
   <string name="twofactor_required_message">此帐户的二元认证(增强保安)已被另一个装置所启用。请启用二元认证以让此装置获得完整权限。</string>
@@ -604,14 +607,13 @@
   <string name="password_set_title">没有设置密码</string>
   <string name="password_set_message">请为此帐户创建密码，否则您装置若丢失或被盗，您将无法复原您的帐户。</string>
   <string name="password_set_skip">跳过</string>
+  <!-- PIN Set -->
+  <string name="pin_set_title">No PIN set</string>
+  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
   <!-- Settings -->
   <string name="settings_category_title">类别</string>
   <!-- Logout -->
   <string name="logout_message">请稍等， %1$s 正在退出您的帐户。此程序在慢速网络需要多等一段时间。</string>
-  <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">BitID 登入</string>
-  <string name="bitid_login_success">已成功登入</string>
-  <string name="bitid_login_failure">登入时出现错误</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">登入或注册</string>
   <string name="drawer_buy_sell">买/卖比特币</string>
@@ -631,13 +633,17 @@
   <string name="affiliate_refer_friends_title">介绍给朋友</string>
   <string name="affiliate_refer_friends_body">%1$s\n\n分享此链接，任何用户安装和使用%2$s时，您就能够获利。凡是在此应用程序里购买的礼品卡，您将得到其中的0.25%%。</string>
   <string name="affiliate_category">收入 ︰ 合作伙伴收入</string>
-  <string name="affiliate_notes">从分享合作伙伴链接 %@ 所获取的收入</string>
+  <string name="affiliate_notes">从分享合作伙伴链接 %s 所获取的收入</string>
   <string name="affiliate_link_error">目前无法生成合作伙伴的链接。</string>
+  <string name="affiliate_link_share_text">下载 Airbitz 钱包并使用比特币以便省钱</string>
   <string name="app_support_requested">已发出支援请求</string>
   <string name="app_name">Airbitz</string>
+  <string name="app_url_prefix">airbitz</string>
   <string name="app_homepage">https://airbitz.co</string>
   <string name="app_support_email">support@airbitz.co</string>
   <string name="app_support_phone">1-844-928-9744 +</string>
+  <string name="app_support_telegram">https://telegram.airbitz.co</string>
+  <string name="app_support_slack">https://slack.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
@@ -648,9 +654,15 @@
   <string name="request_footer_link_title">通过IOS 或 Android 下载 Airbitz</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_glidera_title">美国</string>
+  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
+  <string name="plugin_target_discount">(Up to 10% Off)</string>
+  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
+  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
+  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
+  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
   <string name="plugin_clevercoin_title">欧洲 (EUR)</string>
   <string name="plugin_popup_notice">以下的服务并非由%1$s所提供。\n\n若有任何状况及反馈，请联系相关的服务供应商。</string>
+  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
   <string name="intent_choose_an_email">选择电子邮件客户端 ︰</string>
   <string name="plugin_filechooser_title">上传文件</string>
   <string name="plugin_filechooser_use_camera">使用相机</string>
@@ -664,6 +676,50 @@
   <string name="transaction_footer_starbucks_discount">星巴克高达 20%的折扣</string>
   <string name="transaction_footer_target_discount">塔吉特Target高达 10%的折扣</string>
   <string name="transaction_footer_amazon_discount">亚马逊高达15%-20%的折扣</string>
+  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
   <string name="change_mining_fee_title">更改挖掘费</string>
   <string name="change_mining_fee_body">警告 ︰ 低挖掘费可能会导致交易的确认时间遭到延迟</string>
+  <!--Password Recovery Text-->
+  <string name="save_recovery_token_popup">储存复原代币</string>
+  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
+  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
+  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">请输入账户的用户名称以进行复原</string>
+  <string name="recovery_not_setup">未曾设置复原程序或已在其他装置上完成</string>
+  <string name="recovery_not_setup2">若已设置好复原程序，您须发送一封附有复原代币链接的电邮给自己。</string>
+  <string name="recovery_not_setup3">请搜寻有关邮件，然后点击来自此装置的链接以便启动复原程序</string>
+  <string name="recovery_token_invalid">此复原代币的用户名不正确。请用不同的用户名再尝试或使用不同的复原代币链接。</string>
+  <string name="logout_before_recovery">请在尝试复原密码之前登出当前的帐户</string>
+  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+  <string name="invalid_email">无效的电子邮件</string>
+  <string name="disable_recovery_popup_title">Disable Recovery?</string>
+  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
+  <string name="error_disabling_recovery">Error disabling recovery</string>
+  <string name="recovery_disabled">Recovery Disabled</string>
+  <!-- SSO -->
+  <string name="edge_login">Edge Login</string>
+  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
+  <string name="bitid_identity">BitID Identity</string>
+  <string name="provide_an_identity_token">Provide an Identity Token</string>
+  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
+  <string name="approving_login_text">Approving Login...</string>
+  <string name="error_logging_in">登入时出现错误</string>
+  <string name="successfully_logged_in">已成功登入</string>
+  <string name="approve_button_text">Approve</string>
+  <string name="accept_button_text">Accept</string>
+  <string name="login_button_text">LOGIN</string>
+  <string name="back_button_text">返回</string>
+  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
+  <string name="would_like_to">This site would like to:</string>
+  <string name="request_payment_address">Request a Payment Address</string>
+  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+  <string name="successfully_verified_identity">成功鉴定身份</string>
+  <string name="create_new_text">Create new</string>
+  <string name="or_choose">\"$1$s\" or choose</string>
+  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
+  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="bitid_login_message">%1$s</string>
+  <string name="bitid_login_title">BitID 登入</string>
+  <string name="bitid_login_success">已成功登入</string>
+  <string name="bitid_login_failure">登入时出现错误</string>
 </resources>

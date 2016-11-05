@@ -14,6 +14,6 @@
 
 发送自 [[abtag APP_TITLE]] 移动式比特币钱包 + 企业名录
 
-下载 [[abtag APP_TITLE]] iOS和Android版本
+下载iOS或Android版本的[[abtag APP_TITLE]]
 [[abtag APP_DOWNLOAD_LINK]]
 
