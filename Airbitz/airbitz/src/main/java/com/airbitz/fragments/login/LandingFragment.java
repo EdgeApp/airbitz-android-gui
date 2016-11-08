@@ -47,20 +47,14 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -82,6 +76,7 @@ import co.airbitz.core.AirbitzCore;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
+import com.airbitz.objects.ABCKeychain;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.UploadLogAlert;
 import com.airbitz.utils.Common;
@@ -118,6 +113,8 @@ public class LandingFragment extends BaseFragment implements
     private EditText mPinEditText;
     private View mPinLayout;
     private View mBlackoutView;
+    private ABCKeychain mAbcKeychain;
+
 
     private HighlightOnPressImageButton mBackButton;
     private Button mSignInButton;
@@ -159,6 +156,7 @@ public class LandingFragment extends BaseFragment implements
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
+        mAbcKeychain = new ABCKeychain(mActivity);
     }
 
     View mView;
@@ -452,6 +450,8 @@ public class LandingFragment extends BaseFragment implements
 
         AccountDump.cleanUp(getActivity());
 
+        mAbcKeychain.autoReloginOrTouchIDIfPossible("");
+
         return mView;
     }
 
@@ -658,6 +658,7 @@ public class LandingFragment extends BaseFragment implements
                 mLandingSubtextView.setVisibility(View.VISIBLE);
             }
         }
+
     }
 
     public void launchRecoveryPopup(final String recoveryToken) {
