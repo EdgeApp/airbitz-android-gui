@@ -59,7 +59,6 @@ public class AirbitzApplication extends Application {
     private static String SHOW_BALANCE_MODE = "com.airbitz.application.showbalancemode";
     private static String LOCATION_MODE = "com.airbitz.application.locationmode";
     private static String ARCHIVE_HEADER_STATE = "archiveClosed";
-    private static String TOUCH_ID_USERS = "abcTouchIdUsers";
     public static final String WALLET_CHECK_PREF = "com.airbitz.walletcheck";
 
     private static Account sAccount;
@@ -279,33 +278,6 @@ public class AirbitzApplication extends Application {
             }
         });
     }
-
-    static JSONObject jsonTouchIDUsers = null;
-    public static JSONObject getTouchIDUsers() {
-        if (jsonTouchIDUsers == null) {
-            SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-            String jsonString = null;
-            jsonString = prefs.getString(TOUCH_ID_USERS, null);
-            if (jsonString != null) {
-                try {
-                    jsonTouchIDUsers = new JSONObject(jsonString);
-                } catch (Exception e) {
-                    jsonTouchIDUsers = new JSONObject();
-                }
-            } else {
-                jsonTouchIDUsers = new JSONObject();
-            }
-        }
-        return jsonTouchIDUsers;
-    }
-
-    public static void setTouchIDUsers(JSONObject jsonObject) {
-        String jsonString = jsonObject.toString();
-
-        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        prefs.edit().putString(TOUCH_ID_USERS, jsonString).apply();
-    }
-
 
     public static boolean getLocationWarn() {
         SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);

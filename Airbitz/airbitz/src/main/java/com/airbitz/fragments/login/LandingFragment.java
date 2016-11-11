@@ -450,8 +450,6 @@ public class LandingFragment extends BaseFragment implements
 
         AccountDump.cleanUp(getActivity());
 
-        mAbcKeychain.autoReloginOrTouchIDIfPossible("");
-
         return mView;
     }
 
@@ -558,6 +556,31 @@ public class LandingFragment extends BaseFragment implements
 
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+
+        mAbcKeychain.autoReloginOrTouchID(mUsername, new ABCKeychain.AutoReloginOrTouchIDCallbacks() {
+            @Override
+            public void doBeforeLogin() {
+                mActivity.showModalProgress(true);
+            }
+
+            @Override
+            public void completionWithLogin(Account account, boolean usedTouchId) {
+                mActivity.showModalProgress(false);
+                AirbitzApplication.Login(account);
+                signInComplete(account, null);
+            }
+
+            @Override
+            public void completionNoLogin() {
+                mActivity.showModalProgress(false);
+            }
+
+            @Override
+            public void error() {
+                mActivity.showModalProgress(false);
+            }
+        });
+
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPinLogin(mUsername)) {
                 mPinEditText.setText("");
@@ -571,6 +594,7 @@ public class LandingFragment extends BaseFragment implements
 
         AirbitzCore.logi("showing password login for " + mUsername);
         refreshView(false, false, true);
+
     }
 
     @Override
@@ -846,6 +870,14 @@ public class LandingFragment extends BaseFragment implements
             mPassword = mPasswordEditText.getText().toString();
             mPasswordEditText.setText("");
             mActivity.LoginNow(account, mFirstLogin);
+
+            // If account does not explicitly disable touch ID, then try to enable it.
+            if (!mAbcKeychain.touchIDEnabled(mUsername)) {
+                if (!mAbcKeychain.touchIDDisabled(mUsername)) {
+                    mAbcKeychain.enableTouchID(mUsername, account.getLoginKey());
+                }
+            }
+
         } else if (error.isOtpError()) {
             AirbitzApplication.setOtpError(true);
             AirbitzApplication.setOtpResetDate(error.otpResetDate());

@@ -1,5 +1,7 @@
 package com.airbitz.objects;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +23,8 @@ import com.squareup.whorlwind.Whorlwind;
 
 import org.json.JSONObject;
 
+import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
 import okio.ByteString;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -42,16 +46,25 @@ public class ABCKeychain {
     private MaterialDialog mFingerprintDialog;
     private NavigationActivity mActivity;
     private JSONObject mTouchIDUsers;
+    private AirbitzCore mCoreApi;
 
     private SharedPreferencesStorage mStorage;
 
     private Whorlwind mWhorlwind;
     private boolean mHasSecureElement;
 
-    static final long ERROR_TIMEOUT_MILLIS = 1600;
-    static final long SUCCESS_DELAY_MILLIS = 1300;
-    static final String TOUCHID_USERS_KEY    = "key_touchid_users";
-    static final String LOGINKEY_KEY       = "key_loginkey";
+    static final long ERROR_TIMEOUT_MILLIS  = 1600;
+    static final long SUCCESS_DELAY_MILLIS  = 1300;
+    static final String LOGINKEY_KEY        = "key_loginkey";
+    static final String TOUCH_ID_USERS      = "abcTouchIdUsers";
+    static final String ABC_PREFS           = "com.airbitz.prefs.abc";
+
+    public interface AutoReloginOrTouchIDCallbacks {
+        void doBeforeLogin();
+        void completionWithLogin(Account account, boolean usedTouchId);
+        void completionNoLogin();
+        void error();
+    }
 
     private interface GetKeychainString {
         void onSuccess(String value);
@@ -62,6 +75,7 @@ public class ABCKeychain {
     public ABCKeychain(NavigationActivity activity) {
         mActivity = activity;
         mStorage = mActivity.sharedPreferencesStorage;
+        mCoreApi = AirbitzCore.getApi();
 
         int sdk = android.os.Build.VERSION.SDK_INT;
 
@@ -72,7 +86,7 @@ public class ABCKeychain {
             if (mWhorlwind != null && mWhorlwind.canStoreSecurely()) {
                 mHasSecureElement = true;
 
-                mTouchIDUsers = AirbitzApplication.getTouchIDUsers();
+                mTouchIDUsers = getTouchIDUsers();
             }
         }
     }
@@ -151,40 +165,6 @@ public class ABCKeychain {
 
         return foundKey;
 
-//        mWhorlwind.read(key)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(result -> {
-//                    switch (result.readState) {
-//                        case NEEDS_AUTH:
-//                            break;
-//                        case UNRECOVERABLE_ERROR:
-//                        case AUTHORIZATION_ERROR:
-//                        case RECOVERABLE_ERROR:
-//                            // Show an error message. One may be provided in result.message.
-//                            // Unless the state is UNRECOVERABLE_ERROR, the fingerprint reader is still
-//                            // active and this stream will continue to emit result updates.
-//                            fingerprintDialogError("error");
-//                            break;
-//                        case READY:
-//                            if (result.value != null) {
-//                                // Value was found and has been decrypted.
-//                                fingerprintDialogAuthenticated();
-//                                mActivity.showToast(result.value.utf8(), 10);
-//                            } else {
-//                                // No value was found. Fall back to password or fail silently, depending on
-//                                // your use case.
-////                                        fingerprintFallback();
-//                                fingerprintDialogError("no login found");
-//                                mFingerprintDialog.dismiss();
-//                                mFingerprintDialog = null;
-//                            }
-//                            break;
-//                        default:
-//                            throw new IllegalArgumentException("Unknown state: " + result.readState);
-//                    }
-//                });
-//
     }
 
     public void getKeychainString (String key, String promptString, GetKeychainString callbacks) {
@@ -196,7 +176,6 @@ public class ABCKeychain {
                         case NEEDS_AUTH:
                             // An encrypted value was found, prompt for fingerprint to decrypt.
                             // The fingerprint reader is active.
-//                                    promptForFingerprint();
                             showFingerPrintDialog(promptString, callbacks);
                             break;
                         case UNRECOVERABLE_ERROR:
@@ -205,18 +184,16 @@ public class ABCKeychain {
                             // Show an error message. One may be provided in result.message.
                             // Unless the state is UNRECOVERABLE_ERROR, the fingerprint reader is still
                             // active and this stream will continue to emit result updates.
-                            fingerprintDialogError("error");
+                            fingerprintDialogError("Error reading finger");
                             break;
                         case READY:
                             if (result.value != null) {
                                 // Value was found and has been decrypted.
                                 fingerprintDialogAuthenticated(result.value.utf8(), callbacks);
-//                                mActivity.showToast(result.value.utf8(), 10);
                             } else {
                                 // No value was found. Fall back to password or fail silently, depending on
                                 // your use case.
-//                                        fingerprintFallback();
-                                fingerprintDialogError("no login found");
+                                fingerprintDialogError("No fingerprint login key");
                                 mFingerprintDialog.dismiss();
                                 mFingerprintDialog = null;
                                 callbacks.onError();
@@ -239,7 +216,7 @@ public class ABCKeychain {
             setKeychainString(usernameLoginKeyKey, loginKey);
             try {
                 mTouchIDUsers.put(username, true);
-                AirbitzApplication.setTouchIDUsers(mTouchIDUsers);
+                setTouchIDUsers(mTouchIDUsers);
             } catch (Exception e) {
                 setKeychainString(usernameLoginKeyKey, "");
             }
@@ -252,7 +229,7 @@ public class ABCKeychain {
             setKeychainString(usernameLoginKeyKey, "");
             try {
                 mTouchIDUsers.remove(username);
-                AirbitzApplication.setTouchIDUsers(mTouchIDUsers);
+                setTouchIDUsers(mTouchIDUsers);
             } catch (Exception e) {
             }
         }
@@ -271,6 +248,19 @@ public class ABCKeychain {
         return enabled;
     }
 
+    public boolean touchIDDisabled (String username) {
+        boolean disabled = false;
+
+        if (mTouchIDUsers != null) {
+            try {
+                disabled = !mTouchIDUsers.getBoolean(username);
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return disabled;
+    }
+
     private void getTouchIDLoginKey (String username, String promptString, GetKeychainString callbacks) {
 
         if (mHasSecureElement) {
@@ -279,14 +269,51 @@ public class ABCKeychain {
         }
     }
 
-    public void autoReloginOrTouchIDIfPossible (String username) {
+    public void autoReloginOrTouchID (String username, AutoReloginOrTouchIDCallbacks callbacks) {
+        String signInString = String.format(mActivity.getString(R.string.fingerprint_signin), username);
 
+        getTouchIDLoginKey(username, signInString, new GetKeychainString() {
+            @Override
+            public void onSuccess(String value) {
+                // Got the loginKey. Tell the GUI that we're going to process a login. This lets the GUI popup a spinner
+                callbacks.doBeforeLogin();
+
+                // Now attempt a login
+                Account account = null;
+                try {
+                    account = mCoreApi.loginWithKey(username, value);
+                } catch (Exception e) {
+
+                }
+                if (account == null) {
+                    callbacks.error();
+                } else {
+                    callbacks.completionWithLogin(account, true);
+                }
+            }
+
+            @Override
+            public void onClose() {
+                Log.e(TAG, "getTouchIDLoginKey check tessed FAILED");
+                callbacks.completionNoLogin();
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "getTouchIDLoginKey check tessed FAILED");
+                callbacks.error();
+            }
+        });
+
+    }
+
+    private void runTests () {
         final String testLoginKey = "125934757";
         final String testEnabledLoginKey = "g93957g125934757";
 
         if (mHasSecureElement) {
 
-            username = "test1";
+            String username = "test1";
             final String usernameEnabled = "test_enabled";
 
             // Run through tests
@@ -351,23 +378,33 @@ public class ABCKeychain {
                     disableTouchID(finalUsername);
                 }
             });
-
-
-//            if (touchIDEnabled) {
-//                hasKeychainString(usernameLoginKeyKey);
-//
-//                getKeychainString(username, signInString, new GetKeychainString() {
-//                    @Override
-//                    public void onSuccess(String value) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                    }
-//                });
-//            }
         }
+    }
+
+    static JSONObject jsonTouchIDUsers = null;
+    public JSONObject getTouchIDUsers() {
+        if (jsonTouchIDUsers == null) {
+            SharedPreferences prefs = mActivity.getSharedPreferences(ABC_PREFS, Context.MODE_PRIVATE);
+            String jsonString = null;
+            jsonString = prefs.getString(TOUCH_ID_USERS, null);
+            if (jsonString != null) {
+                try {
+                    jsonTouchIDUsers = new JSONObject(jsonString);
+                } catch (Exception e) {
+                    jsonTouchIDUsers = new JSONObject();
+                }
+            } else {
+                jsonTouchIDUsers = new JSONObject();
+            }
+        }
+        return jsonTouchIDUsers;
+    }
+
+    public void setTouchIDUsers(JSONObject jsonObject) {
+        String jsonString = jsonObject.toString();
+
+        SharedPreferences prefs = AirbitzApplication.getContext().getSharedPreferences(ABC_PREFS, Context.MODE_PRIVATE);
+        prefs.edit().putString(TOUCH_ID_USERS, jsonString).apply();
     }
 
 }
