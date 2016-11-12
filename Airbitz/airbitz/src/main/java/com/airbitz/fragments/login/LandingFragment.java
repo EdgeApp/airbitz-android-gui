@@ -561,6 +561,8 @@ public class LandingFragment extends BaseFragment implements
 
 
     private void autoReloginOrTouchIdWrapper () {
+        if (AirbitzApplication.isLoggedIn())
+            return;
         mAbcKeychain.autoReloginOrTouchID(mUsername, new ABCKeychain.AutoReloginOrTouchIDCallbacks() {
             @Override
             public void doBeforeLogin() {
