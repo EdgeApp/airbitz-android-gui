@@ -278,7 +278,11 @@ public class LandingFragment extends BaseFragment implements
         });
 
         mTouchIdButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_landing_button_touchid);
-        mTouchIdButton.setVisibility(View.VISIBLE);
+        if (mActivity.abcKeychain.canDoTouchId()) {
+            mTouchIdButton.setVisibility(View.VISIBLE);
+        } else {
+            mTouchIdButton.setVisibility(View.INVISIBLE);
+        }
         mTouchIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

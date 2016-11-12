@@ -83,11 +83,12 @@ public class ABCKeychain {
         mCoreApi = AirbitzCore.getApi();
         mSubscription = null;
 
-        int sdk = android.os.Build.VERSION.SDK_INT;
+//        int sdk = android.os.Build.VERSION.SDK_INT;
 
         mHasSecureElement = false;
         mTouchIDUsers = null;
-        if (sdk >= 24) {
+//        if (sdk >= 24)
+        {
             mWhorlwind = Whorlwind.create(mActivity, mStorage, "AirbitzKeyStore");
             if (mWhorlwind != null && mWhorlwind.canStoreSecurely()) {
                 mHasSecureElement = true;
