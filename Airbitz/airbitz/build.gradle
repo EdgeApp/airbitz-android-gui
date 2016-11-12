@@ -115,6 +115,8 @@ dependencies {
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
     compile 'com.squareup.whorlwind:whorlwind:1.0.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
 
     prodCompile 'co.airbitz:airbitz-core-java:0.10.+'
     prodCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'

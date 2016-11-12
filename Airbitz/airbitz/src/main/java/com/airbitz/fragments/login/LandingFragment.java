@@ -47,20 +47,14 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -82,6 +76,7 @@ import co.airbitz.core.AirbitzCore;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
+import com.airbitz.objects.ABCKeychain;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.UploadLogAlert;
 import com.airbitz.utils.Common;
@@ -118,8 +113,11 @@ public class LandingFragment extends BaseFragment implements
     private EditText mPinEditText;
     private View mPinLayout;
     private View mBlackoutView;
+    private ABCKeychain mAbcKeychain;
+
 
     private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mTouchIdButton;
     private Button mSignInButton;
     private Button mCreateAccountButton;
     private Button mExitPinLoginButton;
@@ -159,6 +157,7 @@ public class LandingFragment extends BaseFragment implements
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
+        mAbcKeychain = mActivity.abcKeychain;
     }
 
     View mView;
@@ -275,6 +274,15 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.hideSoftKeyboard(mPinEditText);
                 mActivity.hideSoftKeyboard(mPasswordEditText);
                 getActivity().onBackPressed();
+            }
+        });
+
+        mTouchIdButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_landing_button_touchid);
+        mTouchIdButton.setVisibility(View.VISIBLE);
+        mTouchIdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoReloginOrTouchIdWrapper();
             }
         });
 
@@ -552,12 +560,43 @@ public class LandingFragment extends BaseFragment implements
     }
 
 
+    private void autoReloginOrTouchIdWrapper () {
+        mAbcKeychain.autoReloginOrTouchID(mUsername, new ABCKeychain.AutoReloginOrTouchIDCallbacks() {
+            @Override
+            public void doBeforeLogin() {
+                mActivity.showModalProgress(true);
+            }
+
+            @Override
+            public void completionWithLogin(Account account, boolean usedTouchId) {
+                mActivity.showModalProgress(false);
+                AirbitzApplication.Login(account);
+                signInComplete(account, null);
+            }
+
+            @Override
+            public void completionNoLogin() {
+                mActivity.showModalProgress(false);
+            }
+
+            @Override
+            public void error() {
+                mActivity.showModalProgress(false);
+            }
+        });
+
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+
+        autoReloginOrTouchIdWrapper();
+
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPinLogin(mUsername)) {
                 mPinEditText.setText("");
@@ -571,6 +610,7 @@ public class LandingFragment extends BaseFragment implements
 
         AirbitzCore.logi("showing password login for " + mUsername);
         refreshView(false, false, true);
+
     }
 
     @Override
@@ -658,6 +698,7 @@ public class LandingFragment extends BaseFragment implements
                 mLandingSubtextView.setVisibility(View.VISIBLE);
             }
         }
+
     }
 
     public void launchRecoveryPopup(final String recoveryToken) {
@@ -845,6 +886,14 @@ public class LandingFragment extends BaseFragment implements
             mPassword = mPasswordEditText.getText().toString();
             mPasswordEditText.setText("");
             mActivity.LoginNow(account, mFirstLogin);
+
+            // If account does not explicitly disable touch ID, then try to enable it.
+            if (!mAbcKeychain.touchIDEnabled(mUsername)) {
+                if (!mAbcKeychain.touchIDDisabled(mUsername)) {
+                    mAbcKeychain.enableTouchID(mUsername, account.getLoginKey());
+                }
+            }
+
         } else if (error.isOtpError()) {
             AirbitzApplication.setOtpError(true);
             AirbitzApplication.setOtpResetDate(error.otpResetDate());

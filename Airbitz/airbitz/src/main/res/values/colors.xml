@@ -20,6 +20,10 @@
     <color name="transaction_list_name">#ff1770A6</color>
     <color name="transaction_list_name_light">#bb1770A6</color>
 
+    <color name="warning_color">#f4511e</color>
+    <color name="success_color">#009688</color>
+    <color name="material_red_500">#F44336</color>
+
     <!--Login page colors used to customize background image-->
 
     <color name="color_login_title_text">#FFeeeeee</color>

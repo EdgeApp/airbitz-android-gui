@@ -285,6 +285,7 @@
     <string name="settings_title_auto_logoff">Auto log off after</string>
     <string name="settings_title_merchant_mode">Merchant Mode</string>
     <string name="settings_title_pin_login">PIN Re-login</string>
+    <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
     <string name="settings_title_nfc">NFC</string>
     <string name="settings_title_ble">Bluetooth</string>
     <string name="settings_title_ble_send_only">Bluetooth (Send only)</string>
@@ -662,6 +663,14 @@
     <string name="upload_log_alert_uploading">Uploading Logs...</string>
     <string name="upload_log_alert_succeeded">Upload complete</string>
     <string name="upload_log_alert_failed">Upload failed. Please check network connection.</string>
+
+    <!--Fingerprint Login-->
+    <string name="fingerprint_signin">Sign In User: %1s</string>
+    <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
+    <string name="fingerprint_hint">Touch sensor</string>
+    <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+    <string name="fingerprint_success">Fingerprint recognized</string>
+    <string name="initializing_dotdot_text">Initializing…</string>
 
     <!-- Password Set -->
     <string name="password_set_title">No password set</string>
