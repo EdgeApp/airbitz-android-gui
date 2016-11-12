@@ -447,7 +447,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         }
         else
-            mFingerprintSwitch.setVisibility(View.VISIBLE);
+            mFingerprintSwitch.setVisibility(View.INVISIBLE);
 
         mMerchantModeSwitch.setChecked(getMerchantModePref());
 
