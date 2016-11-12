@@ -157,7 +157,7 @@ public class LandingFragment extends BaseFragment implements
         SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
-        mAbcKeychain = new ABCKeychain(mActivity);
+        mAbcKeychain = mActivity.abcKeychain;
     }
 
     View mView;

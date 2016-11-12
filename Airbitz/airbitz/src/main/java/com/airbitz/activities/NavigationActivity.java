@@ -123,6 +123,7 @@ import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
+import com.airbitz.objects.ABCKeychain;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Disclaimer;
@@ -288,6 +289,8 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mInSignupMode = false;
     private boolean mRecoveryMode = false;
 
+    public ABCKeychain abcKeychain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -392,6 +395,7 @@ public class NavigationActivity extends ActionBarActivity
         PluginCheck.checkEnabledPlugins();
         BuySellOverrides.sync();
 
+        abcKeychain = new ABCKeychain(this);
     }
 
     @Override

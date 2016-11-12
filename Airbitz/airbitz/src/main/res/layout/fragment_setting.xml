@@ -195,6 +195,11 @@
                     android:text="@string/settings_title_pin_login"
                     style="@style/SettingsSwitch" />
 
+                <Switch
+                    android:id="@+id/settings_toggle_fingerprint"
+                    android:text="@string/settings_title_fingerprint_login"
+                    style="@style/SettingsSwitch" />
+
             </LinearLayout>
 
             <TextView

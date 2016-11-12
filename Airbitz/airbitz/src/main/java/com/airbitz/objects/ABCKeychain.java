@@ -59,7 +59,7 @@ public class ABCKeychain {
     private boolean mHasSecureElement;
 
     static final long ERROR_TIMEOUT_MILLIS  = 1600;
-    static final long SUCCESS_DELAY_MILLIS  = 1300;
+    static final long SUCCESS_DELAY_MILLIS  = 750;
     static final String LOGINKEY_KEY        = "key_loginkey";
     static final String TOUCH_ID_USERS      = "abcTouchIdUsers";
     static final String ABC_PREFS           = "com.airbitz.prefs.abc";
@@ -136,6 +136,10 @@ public class ABCKeychain {
         mFingerprintStatus.setText(R.string.fingerprint_hint);
         mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.dark_text_hint));
 
+    }
+
+    public boolean canDoTouchId() {
+        return mHasSecureElement;
     }
 
     public void fingerprintDialogAuthenticated(String value, GetKeychainString callbacks) {
@@ -246,7 +250,7 @@ public class ABCKeychain {
             String usernameLoginKeyKey = createKeyWithUsername(username, LOGINKEY_KEY);
             setKeychainString(usernameLoginKeyKey, "");
             try {
-                mTouchIDUsers.remove(username);
+                mTouchIDUsers.put(username, false);
                 setTouchIDUsers(mTouchIDUsers);
             } catch (Exception e) {
             }
@@ -292,6 +296,10 @@ public class ABCKeychain {
             callbacks.completionNoLogin();
             return;
         }
+        boolean touchIDEnabled = touchIDEnabled(username);
+
+        if (!touchIDEnabled)
+            return;
 
         String signInString = String.format(mActivity.getString(R.string.fingerprint_signin), username);
 
