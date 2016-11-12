@@ -257,6 +257,18 @@
         android:src="@drawable/ico_nav_directory_dark"
         android:visibility="visible" />
 
+    <com.airbitz.objects.HighlightOnPressImageButton
+        android:id="@+id/fragment_landing_button_touchid"
+        android:layout_width="44.1dp"
+        android:layout_height="44.1dp"
+        android:layout_alignParentRight="true"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:padding="12.6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fingerprint_wht"
+        android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/fragment_landing_black"
         android:layout_width="match_parent"

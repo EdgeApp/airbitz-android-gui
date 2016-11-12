@@ -2,7 +2,9 @@ package com.airbitz.objects;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
+import com.google.android.gms.fitness.data.Subscription;
 import com.squareup.whorlwind.ReadResult;
 import com.squareup.whorlwind.SharedPreferencesStorage;
 import com.squareup.whorlwind.Whorlwind;
@@ -47,6 +50,8 @@ public class ABCKeychain {
     private NavigationActivity mActivity;
     private JSONObject mTouchIDUsers;
     private AirbitzCore mCoreApi;
+    private rx.Subscription mSubscription;
+
 
     private SharedPreferencesStorage mStorage;
 
@@ -76,6 +81,7 @@ public class ABCKeychain {
         mActivity = activity;
         mStorage = mActivity.sharedPreferencesStorage;
         mCoreApi = AirbitzCore.getApi();
+        mSubscription = null;
 
         int sdk = android.os.Build.VERSION.SDK_INT;
 
@@ -108,11 +114,15 @@ public class ABCKeychain {
                 .customView(R.layout.fingerprint_dialog_container, false)
                 .negativeText(android.R.string.cancel)
                 .autoDismiss(false)
-                .cancelable(true)
+                .cancelable(false)
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
                         materialDialog.cancel();
+                        if (mSubscription != null) {
+                            mSubscription.unsubscribe();
+                            mSubscription = null;
+                        }
                         callbacks.onClose();
                     }
                 }).build();
@@ -168,7 +178,8 @@ public class ABCKeychain {
     }
 
     public void getKeychainString (String key, String promptString, GetKeychainString callbacks) {
-        mWhorlwind.read(key)
+
+        mSubscription = mWhorlwind.read(key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -198,12 +209,19 @@ public class ABCKeychain {
                                 mFingerprintDialog = null;
                                 callbacks.onError();
                             }
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mSubscription = null;
+                                }
+                            }, 100);
+
                             break;
                         default:
                             throw new IllegalArgumentException("Unknown state: " + result.readState);
                     }
                 });
-
     }
 
     public String createKeyWithUsername(String username, String key) {
@@ -270,6 +288,11 @@ public class ABCKeychain {
     }
 
     public void autoReloginOrTouchID (String username, AutoReloginOrTouchIDCallbacks callbacks) {
+        if (mSubscription != null) {
+            callbacks.completionNoLogin();
+            return;
+        }
+
         String signInString = String.format(mActivity.getString(R.string.fingerprint_signin), username);
 
         getTouchIDLoginKey(username, signInString, new GetKeychainString() {

@@ -117,6 +117,7 @@ public class LandingFragment extends BaseFragment implements
 
 
     private HighlightOnPressImageButton mBackButton;
+    private HighlightOnPressImageButton mTouchIdButton;
     private Button mSignInButton;
     private Button mCreateAccountButton;
     private Button mExitPinLoginButton;
@@ -273,6 +274,15 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.hideSoftKeyboard(mPinEditText);
                 mActivity.hideSoftKeyboard(mPasswordEditText);
                 getActivity().onBackPressed();
+            }
+        });
+
+        mTouchIdButton = (HighlightOnPressImageButton) mView.findViewById(R.id.fragment_landing_button_touchid);
+        mTouchIdButton.setVisibility(View.VISIBLE);
+        mTouchIdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoReloginOrTouchIdWrapper();
             }
         });
 
@@ -550,13 +560,7 @@ public class LandingFragment extends BaseFragment implements
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
-        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
-
+    private void autoReloginOrTouchIdWrapper () {
         mAbcKeychain.autoReloginOrTouchID(mUsername, new ABCKeychain.AutoReloginOrTouchIDCallbacks() {
             @Override
             public void doBeforeLogin() {
@@ -580,6 +584,18 @@ public class LandingFragment extends BaseFragment implements
                 mActivity.showModalProgress(false);
             }
         });
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
+
+        autoReloginOrTouchIdWrapper();
 
         if(mActivity.networkIsAvailable()) {
             if(!AirbitzApplication.isLoggedIn() && mCoreAPI.accountHasPinLogin(mUsername)) {
