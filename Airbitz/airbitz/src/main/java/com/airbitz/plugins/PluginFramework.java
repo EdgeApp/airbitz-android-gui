@@ -825,7 +825,8 @@ public class PluginFramework {
         mWebView.post(new Runnable() {
             @Override
             public void run() {
-                mWebView.loadUrl(url);
+                if (mWebView != null)
+                    mWebView.loadUrl(url);
             }
         });
     }
