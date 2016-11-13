@@ -781,11 +781,14 @@ public class LandingFragment extends BaseFragment implements
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            AirbitzCore.loge("PINLoginTask onPostExecute");
+
             mActivity.showModalProgress(false);
             mPINLoginTask = null;
             mPinEditText.setText("");
 
             if (success) {
+                AirbitzCore.loge("PINLoginTask onPostExecute success");
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mAccount, mFirstLogin);
                 enableTouchIdIfNeeded(mAccount, mUsername);
@@ -887,8 +890,10 @@ public class LandingFragment extends BaseFragment implements
     }
 
     private void signInComplete(Account account, AirbitzException error) {
+        AirbitzCore.loge("signInComplete");
         saveUsername(mUsername);
         if (error == null) {
+            AirbitzCore.loge("signInComplete no error");
             mActivity.hideSoftKeyboard(mPasswordEditText);
             mPassword = mPasswordEditText.getText().toString();
             mPasswordEditText.setText("");
@@ -897,19 +902,24 @@ public class LandingFragment extends BaseFragment implements
             enableTouchIdIfNeeded(account, mUsername);
 
         } else if (error.isOtpError()) {
+            AirbitzCore.loge("signInComplete otp error");
             AirbitzApplication.setOtpError(true);
             AirbitzApplication.setOtpResetDate(error.otpResetDate());
             AirbitzApplication.setOtpResetToken(error.otpResetToken());
             launchTwoFactorMenu();
         } else {
+            AirbitzCore.loge("signInComplete error");
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
         }
     }
 
     private void enableTouchIdIfNeeded (Account account, String username) {
+        AirbitzCore.loge("enableTouchIdIfNeeded");
         // If account does not explicitly disable touch ID, then try to enable it.
         if (!mAbcKeychain.touchIDEnabled(username)) {
+            AirbitzCore.loge("enableTouchIdIfNeeded not already enabled");
             if (!mAbcKeychain.touchIDDisabled(username)) {
+                AirbitzCore.loge("enableTouchIdIfNeeded not already disabled");
                 mAbcKeychain.enableTouchID(username, account.getLoginKey());
             }
         }

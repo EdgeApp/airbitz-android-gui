@@ -250,26 +250,32 @@ public class ABCKeychain {
     }
 
     public void enableTouchID (String username, String loginKey) {
+        AirbitzCore.loge("enableTouchId");
         if (mHasSecureElement) {
             String usernameLoginKeyKey = createKeyWithUsername(username, LOGINKEY_KEY);
             setKeychainString(usernameLoginKeyKey, loginKey);
             try {
                 mTouchIDUsers.put(username, true);
                 setTouchIDUsers(mTouchIDUsers);
+                AirbitzCore.loge("enableTouchId enabled");
             } catch (Exception e) {
                 setKeychainString(usernameLoginKeyKey, "");
+                AirbitzCore.loge("enableTouchId error");
             }
         }
     }
 
     public void disableTouchID (String username) {
+        AirbitzCore.loge("disableTouchId");
         if (mHasSecureElement) {
             String usernameLoginKeyKey = createKeyWithUsername(username, LOGINKEY_KEY);
             setKeychainString(usernameLoginKeyKey, "");
             try {
                 mTouchIDUsers.put(username, false);
                 setTouchIDUsers(mTouchIDUsers);
+                AirbitzCore.loge("disableTouchId disabled");
             } catch (Exception e) {
+                AirbitzCore.loge("disableTouchId error");
             }
         }
     }
