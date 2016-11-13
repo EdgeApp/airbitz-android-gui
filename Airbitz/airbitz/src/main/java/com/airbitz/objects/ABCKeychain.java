@@ -102,9 +102,13 @@ public class ABCKeychain {
         @Override
         public void run() {
             if (mActivity == null) return;
-            mFingerprintStatus.setTextColor(Common.resolveColor(mActivity, android.R.attr.textColorSecondary));
-            mFingerprintStatus.setText(R.string.fingerprint_hint);
-            mFingerprintIcon.setImageResource(R.drawable.ic_fp_40px);
+            if (mFingerprintStatus != null) {
+                mFingerprintStatus.setTextColor(Common.resolveColor(mActivity, android.R.attr.textColorSecondary));
+                mFingerprintStatus.setText(R.string.fingerprint_hint);
+            }
+            if (mFingerprintIcon != null) {
+                mFingerprintIcon.setImageResource(R.drawable.ic_fp_40px);
+            }
         }
     };
 
@@ -144,27 +148,37 @@ public class ABCKeychain {
     }
 
     public void fingerprintDialogAuthenticated(String value, GetKeychainString callbacks) {
-        mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
-        mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_success);
-        mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.dark_text_hint));
-        mFingerprintStatus.setText(mActivity.getString(R.string.fingerprint_success));
-        mFingerprintIcon.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if (mFingerprintStatus != null) {
+            mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
+            mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.dark_text_hint));
+            mFingerprintStatus.setText(mActivity.getString(R.string.fingerprint_success));
+        }
+
+        if (mFingerprintIcon != null) {
+            mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_success);
+            mFingerprintIcon.postDelayed(new Runnable() {
+                @Override
+                public void run() {
 //                mCallback.onFingerprintDialogAuthenticated();
-                mFingerprintDialog.dismiss();
-                callbacks.onSuccess(value);
-            }
-        }, SUCCESS_DELAY_MILLIS);
+                    mFingerprintDialog.dismiss();
+                    callbacks.onSuccess(value);
+                }
+            }, SUCCESS_DELAY_MILLIS);
+        }
     }
 
     private void fingerprintDialogError(CharSequence error) {
         if (mActivity == null) return;
-        mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_error);
-        mFingerprintStatus.setText(error);
-        mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.warning_color));
-        mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
-        mFingerprintStatus.postDelayed(mResetErrorTextRunnable, ERROR_TIMEOUT_MILLIS);
+        if (mFingerprintIcon != null) {
+            mFingerprintIcon.setImageResource(R.drawable.ic_fingerprint_error);
+        }
+
+        if (mFingerprintStatus != null) {
+            mFingerprintStatus.setText(error);
+            mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.warning_color));
+            mFingerprintStatus.removeCallbacks(mResetErrorTextRunnable);
+            mFingerprintStatus.postDelayed(mResetErrorTextRunnable, ERROR_TIMEOUT_MILLIS);
+        }
     }
 
     public void setKeychainString (String key, String value) {
