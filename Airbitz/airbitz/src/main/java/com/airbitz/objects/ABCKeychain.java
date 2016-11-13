@@ -224,8 +224,10 @@ public class ABCKeychain {
                                 // No value was found. Fall back to password or fail silently, depending on
                                 // your use case.
                                 fingerprintDialogError("No fingerprint login key");
-                                mFingerprintDialog.dismiss();
-                                mFingerprintDialog = null;
+                                if (mFingerprintDialog != null) {
+                                    mFingerprintDialog.dismiss();
+                                    mFingerprintDialog = null;
+                                }
                                 callbacks.onError();
                             }
                             Handler handler = new Handler();
