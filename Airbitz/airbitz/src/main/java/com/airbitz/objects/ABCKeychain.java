@@ -103,7 +103,7 @@ public class ABCKeychain {
         public void run() {
             if (mActivity == null) return;
             if (mFingerprintStatus != null) {
-                mFingerprintStatus.setTextColor(Common.resolveColor(mActivity, android.R.attr.textColorSecondary));
+                mFingerprintStatus.setTextColor(ContextCompat.getColor(mActivity, R.color.dark_text_hint));
                 mFingerprintStatus.setText(R.string.fingerprint_hint);
             }
             if (mFingerprintIcon != null) {
