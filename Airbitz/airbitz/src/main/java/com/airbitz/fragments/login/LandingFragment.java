@@ -632,6 +632,7 @@ public class LandingFragment extends BaseFragment implements
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPinLoginMode = mCoreAPI.accountHasPinLogin(mUsername);
         refreshView();
+        autoReloginOrTouchIdWrapper();
     }
 
     public void refreshView() {
