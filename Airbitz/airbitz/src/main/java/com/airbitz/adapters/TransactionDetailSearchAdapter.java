@@ -144,7 +144,9 @@ public class TransactionDetailSearchAdapter extends ArrayAdapter {
     }
 
     private String formatAbbrev(String name) {
-        return name.substring(0, 1).toUpperCase();
+        if (name.length() > 0)
+            return name.substring(0, 1).toUpperCase();
+        return name;
     }
 
     private int nextColor(int position) {
