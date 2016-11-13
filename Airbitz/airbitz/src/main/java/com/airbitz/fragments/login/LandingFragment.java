@@ -788,6 +788,7 @@ public class LandingFragment extends BaseFragment implements
             if (success) {
                 mPinEditText.clearFocus();
                 mActivity.LoginNow(mAccount, mFirstLogin);
+                enableTouchIdIfNeeded(mAccount, mUsername);
             } else if (mFailureException.isBadPassword()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
@@ -893,12 +894,7 @@ public class LandingFragment extends BaseFragment implements
             mPasswordEditText.setText("");
             mActivity.LoginNow(account, mFirstLogin);
 
-            // If account does not explicitly disable touch ID, then try to enable it.
-            if (!mAbcKeychain.touchIDEnabled(mUsername)) {
-                if (!mAbcKeychain.touchIDDisabled(mUsername)) {
-                    mAbcKeychain.enableTouchID(mUsername, account.getLoginKey());
-                }
-            }
+            enableTouchIdIfNeeded(account, mUsername);
 
         } else if (error.isOtpError()) {
             AirbitzApplication.setOtpError(true);
@@ -907,6 +903,15 @@ public class LandingFragment extends BaseFragment implements
             launchTwoFactorMenu();
         } else {
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
+        }
+    }
+
+    private void enableTouchIdIfNeeded (Account account, String username) {
+        // If account does not explicitly disable touch ID, then try to enable it.
+        if (!mAbcKeychain.touchIDEnabled(username)) {
+            if (!mAbcKeychain.touchIDDisabled(username)) {
+                mAbcKeychain.enableTouchID(username, account.getLoginKey());
+            }
         }
     }
 
