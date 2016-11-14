@@ -4,6 +4,9 @@
     <string name="app_homepage">http://rackwallet.com</string>
     <string name="app_support_email">support@rackwallet.com</string>
     <string name="app_support_phone"></string>
+    <string name="app_support_telegram"></string>
+    <string name="app_support_slack"></string>
+    <string name="app_support_whatsapp"></string>
     <string name="appstore_link">https://itunes.apple.com/us/app/rack-wallet/id1067132601</string>
     <string name="playstore_link">https://play.google.com/store/apps/details?id=com.rackwallet.rackwallet</string>
     <string name="logo_white_link">https://airbitz.co/go/wp-content/uploads/2015/12/rack-logo-wht-100w.png</string>

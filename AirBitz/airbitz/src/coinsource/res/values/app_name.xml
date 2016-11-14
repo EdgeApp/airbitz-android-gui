@@ -4,6 +4,9 @@
     <string name="app_homepage">http://coinsource.net</string>
     <string name="app_support_email">support@coinsource.net</string>
     <string name="app_support_phone"></string>
+    <string name="app_support_telegram"></string>
+    <string name="app_support_slack"></string>
+    <string name="app_support_whatsapp"></string>
     <string name="appstore_link">https://itunes.apple.com/us/app/coinsource-bitcoin-wallet/id1089856071</string>
     <string name="playstore_link">https://play.google.com/store/apps/details?id=com.coinsource.wallet</string>
     <string name="logo_white_link">https://airbitz.co/go/wp-content/uploads/2016/03/Coinsource-logo-100w.png</string>
