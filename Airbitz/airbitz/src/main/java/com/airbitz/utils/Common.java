@@ -191,6 +191,11 @@ public class Common {
         if (slackSupport.length() > 2) {
             slackSupportTemplate = "<a href=\"" + slackSupport + "\">Slack</a>";
         }
+        String whatsappSupport = ctx.getString(R.string.app_support_whatsapp);
+        String whatsappSupportTemplate = "";
+        if (whatsappSupport.length() > 2) {
+            whatsappSupportTemplate = "<a href=\"" + slackSupport + "\">WhatsApp</a>";
+        }
         if (!TextUtils.isEmpty(phoneSupport)) {
             phoneSupportTemplate = String.format("<a href=\"tel:%1$s\">%1$s</a>",
                 ctx.getString(R.string.app_support_phone));
@@ -214,6 +219,7 @@ public class Common {
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
         tags.put("[[abtag TELEGRAM_SUPPORT_TEMPLATE]]", telegramSupportTemplate);
         tags.put("[[abtag SLACK_SUPPORT_TEMPLATE]]", slackSupportTemplate);
+        tags.put("[[abtag WHATSAPP_SUPPORT_TEMPLATE]]", whatsappSupportTemplate);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             footer = footer.replace(e.getKey(), e.getValue());
