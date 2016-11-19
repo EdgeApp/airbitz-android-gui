@@ -31,7 +31,6 @@
 
 package com.airbitz.fragments.wallet;
 
-;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentResolver;

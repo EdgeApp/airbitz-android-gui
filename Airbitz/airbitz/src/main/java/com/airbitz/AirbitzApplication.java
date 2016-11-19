@@ -46,6 +46,8 @@ import com.airbitz.objects.AirbitzRequestHandler;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.Stack;
 import java.util.UUID;
 

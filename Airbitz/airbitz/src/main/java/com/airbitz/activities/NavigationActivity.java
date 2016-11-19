@@ -32,7 +32,6 @@
 package com.airbitz.activities;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -41,8 +40,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -53,9 +50,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -64,16 +59,12 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.NotificationCompat;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -91,7 +82,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,7 +96,6 @@ import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -126,7 +115,6 @@ import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
 import com.airbitz.fragments.request.OnAddressRequestListener;
 import com.airbitz.fragments.request.RequestFragment;
-import com.airbitz.fragments.send.SendConfirmationFragment;
 import com.airbitz.fragments.send.SendFragment;
 import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
@@ -135,9 +123,9 @@ import com.airbitz.fragments.settings.twofactor.TwoFactorScanFragment;
 import com.airbitz.fragments.wallet.TransactionListFragment;
 import com.airbitz.fragments.wallet.WalletsFragment;
 import com.airbitz.models.AirbitzNotification;
+import com.airbitz.objects.ABCKeychain;
 import com.airbitz.objects.AirbitzAlertReceiver;
 import com.airbitz.objects.AudioPlayer;
-import com.airbitz.objects.DessertView;
 import com.airbitz.objects.Disclaimer;
 import com.airbitz.objects.PasswordCheckReceiver;
 import com.airbitz.objects.RememberPasswordCheck;
@@ -157,12 +145,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.squareup.whorlwind.SharedPreferencesStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -186,6 +174,7 @@ public class NavigationActivity extends ActionBarActivity
     public static final String URI_SOURCE = "URI";
     public static Typeface latoBlackTypeFace;
     public static Typeface latoRegularTypeFace;
+    public SharedPreferencesStorage sharedPreferencesStorage;
     private enum NetworkStatus {UNINITIALIZED, ON, OFF};
 
     private NetworkStatus mNetworkStatus = NetworkStatus.UNINITIALIZED;
@@ -300,6 +289,8 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mInSignupMode = false;
     private boolean mRecoveryMode = false;
 
+    public ABCKeychain abcKeychain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -307,6 +298,8 @@ public class NavigationActivity extends ActionBarActivity
         if(getResources().getBoolean(R.bool.portrait_only)){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        sharedPreferencesStorage = new SharedPreferencesStorage(AirbitzApplication.getContext(), "co.airbitz.airbitz.storage");
 
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
@@ -401,6 +394,8 @@ public class NavigationActivity extends ActionBarActivity
 
         PluginCheck.checkEnabledPlugins();
         BuySellOverrides.sync();
+
+        abcKeychain = new ABCKeychain(this);
     }
 
     @Override
@@ -1344,6 +1339,7 @@ public class NavigationActivity extends ActionBarActivity
             tv.setTypeface(NavigationActivity.latoRegularTypeFace);
         }
     }
+
 
     Dialog mRemoteChange = null;
     private void showRemotePasswordChangeDialog() {

@@ -33,7 +33,6 @@ package com.airbitz.fragments.settings;
 
 import android.accounts.AccountManager;
 import android.app.ActionBar;
-;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;

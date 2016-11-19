@@ -38,6 +38,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
@@ -55,6 +56,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.support.annotation.AttrRes;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -189,6 +191,11 @@ public class Common {
         if (slackSupport.length() > 2) {
             slackSupportTemplate = "<a href=\"" + slackSupport + "\">Slack</a>";
         }
+        String whatsappSupport = ctx.getString(R.string.app_support_whatsapp);
+        String whatsappSupportTemplate = "";
+        if (whatsappSupport.length() > 2) {
+            whatsappSupportTemplate = "<a href=\"" + slackSupport + "\">WhatsApp</a>";
+        }
         if (!TextUtils.isEmpty(phoneSupport)) {
             phoneSupportTemplate = String.format("<a href=\"tel:%1$s\">%1$s</a>",
                 ctx.getString(R.string.app_support_phone));
@@ -212,6 +219,7 @@ public class Common {
         tags.put("[[abtag PHONE_SUPPORT_TEMPLATE]]", phoneSupportTemplate);
         tags.put("[[abtag TELEGRAM_SUPPORT_TEMPLATE]]", telegramSupportTemplate);
         tags.put("[[abtag SLACK_SUPPORT_TEMPLATE]]", slackSupportTemplate);
+        tags.put("[[abtag WHATSAPP_SUPPORT_TEMPLATE]]", whatsappSupportTemplate);
 
         for (Map.Entry<String, String> e : tags.entrySet()) {
             footer = footer.replace(e.getKey(), e.getValue());
@@ -605,4 +613,16 @@ public class Common {
         return (prefix + ":" + suffix).replace("::", ":");
     }
 
+    public static int resolveColor(Context context, @AttrRes int attr) {
+        return resolveColor(context, attr, 0);
+    }
+
+    public static int resolveColor(Context context, @AttrRes int attr, int fallback) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+        try {
+            return a.getColor(0, fallback);
+        } finally {
+            a.recycle();
+        }
+    }
 }
