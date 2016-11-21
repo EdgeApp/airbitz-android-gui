@@ -1091,7 +1091,12 @@ public class NavigationActivity extends ActionBarActivity
             else if("bitcoin-ret".equals(scheme)
                     || "x-callback-url".equals(scheme)
                     || vendorRetUrl.equals(scheme)) {
-                handleRequestForPaymentUri(uri);
+
+                if (uri.getPath().contains("edgelogin")) {
+                    handleBitcoinUri(uri);
+                } else {
+                    handleRequestForPaymentUri(uri);
+                }
             }
         }
     }
