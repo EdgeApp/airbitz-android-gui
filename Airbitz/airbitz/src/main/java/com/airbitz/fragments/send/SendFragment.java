@@ -218,7 +218,16 @@ public class SendFragment extends ScanFragment {
         if (uri != null && ("airbitz-ret".equals(uri.getScheme())
                     || "bitcoin-ret".equals(uri.getScheme())
                     || "x-callback-url".equals(uri.getHost()))) {
-            mActivity.handleRequestForPaymentUri(uri);
+            if (uri.getPath().contains("edgelogin")) {
+                String token = uri.getLastPathSegment();
+                showProcessing();
+                mEdgeLoginTask = new EdgeLoginTask();
+                mEdgeLoginTask.execute(token);
+                return;
+
+            } else {
+                mActivity.handleRequestForPaymentUri(uri);
+            }
         } else {
             showMessageAndStartCameraDialog(
                 R.string.fragment_send_failure_title,
