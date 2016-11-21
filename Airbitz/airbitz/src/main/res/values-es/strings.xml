@@ -260,6 +260,7 @@
   <string name="settings_title_auto_logoff">Cierre de sesión automático después de</string>
   <string name="settings_title_merchant_mode">Modo comercio</string>
   <string name="settings_title_pin_login">Re-inicio de sesión de PIN</string>
+  <string name="settings_title_fingerprint_login">Usar huella para firmar</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (sólo enviar)</string>
@@ -603,6 +604,13 @@
   <string name="upload_log_alert_uploading">Cargando troncos...</string>
   <string name="upload_log_alert_succeeded">Carga completa</string>
   <string name="upload_log_alert_failed">No se pudo cargar. Por favor comprueba la conexión de red.</string>
+  <!--Fingerprint Login-->
+  <string name="fingerprint_signin">Registrando usuario: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Confirmar huella dactilar para continuar</string>
+  <string name="fingerprint_hint">Sensor táctil</string>
+  <string name="fingerprint_not_recognized">Huella dactilar no reconocida. Inténtelo de nuevo.</string>
+  <string name="fingerprint_success">Huella dactilar reconocida</string>
+  <string name="initializing_dotdot_text">Inicializando&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">No se estableció contraseña</string>
   <string name="password_set_message">Por favor crea una contraseña para esta cuenta o no podrás recuperar tu cuenta en caso de pérdida o robo de su dispositivo</string>
@@ -633,7 +641,7 @@
   <string name="affiliate_refer_friends_title">Recomendar a su amigo</string>
   <string name="affiliate_refer_friends_body">%1$s\n Compartir este enlace para recibir ingresos de los usuarios que instalan y utilizan %2$s. Usted recibirá 0.25%% de todas las compras de tarjeta de regalo realizadas dentro de esta aplicación.</string>
   <string name="affiliate_category">Ingresos: Ingresos de afiliado</string>
-  <string name="affiliate_notes">Aportación de ingresos desde link de afilacion %s</string>
+  <string name="affiliate_notes">Aportación de ingresos desde link de afilación %s</string>
   <string name="affiliate_link_error">No se puede generar el enlace de afiliado en este momento.</string>
   <string name="affiliate_link_share_text">Descargar la cartera Airbitz y ahorre dinero con bitcoin</string>
   <string name="app_support_requested">Apoyo solicitado</string>
@@ -644,6 +652,7 @@
   <string name="app_support_phone">+ 1-844-928-9744</string>
   <string name="app_support_telegram">https://telegram.airbitz.co</string>
   <string name="app_support_slack">https://slack.airbitz.co</string>
+  <string name="app_support_whatsapp">https://whatsapp.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>

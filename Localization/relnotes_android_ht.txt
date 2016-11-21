@@ -1,24 +1,41 @@
+v 2.3.3
+
+** Fingerprint Login on supported device such as Nexus 5x and 6p **
+
+• Fix rare issue with PIN login not working
+• Support Edge Login from URI button on mobile
+• Add WhatsApp forum to support links
+
+v 2.3.1
+
+• Fix error when purchasing Fold gift cards
+
+v 2.3.0
+
+• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
+• Improve Scrypt parameter calculations for stronger security on faster devices
+
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+Nou apen inove epi mete an plas premye rekiperasyon mo non friksyon mond lan ki pèmèt itilizatè yo rekipere modpas yo avèk sèlman 2 kesyon ak yon email. Pa enkyetew jamè siw bliye modpas ou
 
-In addition:
+An plis:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• Bitrefill integre pulgin ki pèmèt itilizatè yo achte kat rechaj nan plis pase 600 konpayi telefon nan 143 peyi
+• Kont achive yo pran mwes espas e pa mande rezo a ou senkronize done transaksyon
+• Notifikasyon deyè lajan kap antre si aplikasyon an apen background
+• Adrès piblik Fallback pou BIP70 transaksyon protokol pèman echwe 
+• Tradiksyon lang ameliore
+• Ranje Bwat dialog nan Adroind N
+• Korije crash si itilizatè a retire otorizasyon pou lokalizel
 
 
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+• gen yon sèvis abonman pou adrès sèvè libbitcoin/electrum a kap ajoute pou ogmante pèfomans lan ak lavi batri a.
+• Aktivasyom kalkil dinamik pou frè mining yo
+• Ajoute yon kontrol itilizatè pou kontrole frè mining yo (bas, nomal, paramèt wo)
+• Ranje tan transaksyon ki pa bon lè transaksyon an resevwa etan potfèy la pa konekte
+• Ajoute chinwa, endi, panyol ak potigè kom lang sipo
+• Ajoute sipo pou lokalizasyon lang ki koresponn ak nimero, lè ak dat
+• Amelyorasyon tan pou jwen transaksyon nan vye kondisyon

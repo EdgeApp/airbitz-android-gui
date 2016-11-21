@@ -5,6 +5,7 @@ Prenez le contrôle de vos fonds ! Avec Airbitz, vous êtes SEUL à avoir accès
 En mettant l’accent sur la prestation d’une excellente expérience utilisateur, le portefeuille d'Airbitz fournit les fonctionnalités suivantes :
 
 • Zéro connaissance & zéro accès aux fonds, clés ou données de transaction de l’utilisateur par Airbitz ou des parties tierces
+• Login with fingerprint scanner
 • L’achat intégré de cartes cadeaux à prix réduit (20 % Réduction sur Starbucks !)
 • Achat / vente bitcoin intégré depuis un compte bancaire lié
 • Création d’un compte simple en utilisant juste un nom d'utilisateur & mot de passe (pas d’impression de PDFs, d'écrire des phrases de passe ou d'ajout de paramètres de chiffrement)
