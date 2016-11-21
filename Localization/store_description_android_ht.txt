@@ -1,25 +1,26 @@
-Powerful and easy to use bitcoin wallet allowing users to easily control their own bitcoin private keys with the familiarity and ease of mobile banking.
+Potfèy Bitcoin an fasil pou itilize e li pèmèt itilizatè a kontrole fasilman kle Bitcoin li yo avèk fasilite sèvis bank mobil.
 
-Take control of your funds! With Airbitz, only YOU have access to your funds or transaction info. Neither Airbitz or any 3rd party can access your money or data. You get the financial privacy and autonomy bitcoin was designed for with the ease of use even grandma could handle.
+Pan kontrol lajan ou yo! Avèk Airbitz, sèl ou menm ki ka we lajan ou ak enfomasyon transaksyon ou yo. Airbit pa gen oken lot pati ki gen posibilite pou wè lajan w ni transaksyon ou yo. Wap jwenn konfyans ak otonomi sou finas ou se pou sa Bitcoin te kreye, fasil pou itilize menm granmè ka jere.
 
-With a focus on delivering an amazing user experience, the Airbitz wallet provides the following great functionality:
+Pandan nou fokis pou bay yon bon eksperyans itilizatè, potfèy Aitbitz la bay bagay sa yo:
 
-• Zero-knowledge & zero-access to user funds, keys, or transaction data by Airbitz or 3rd parties
-• Integrated purchase of discounted gift cards (20% off Starbucks!)
-• Integrated bitcoin buy / sell from a linked bank account
-• Simple account creation using just a login & password (no printing of PDFs, writing down pass phrases, or adding encryption settings)
-• Hierarchical Deterministic wallets with changing addresses per transaction
-• Search transactions by payee, category, or notes
-• Spending limits (require password or PIN to spend above limits you set)
-• Decentralized server architecture. Wallets work even if Airbitz servers are down.
-• Open-source code. Available at https://github.com/Airbitz
+Oken konesans & oken aksè a lajan, kle, ou done transaksyon pa Airbitz oubien on twazyèm pati
+• Login with fingerprint scanner
+achat entegre kat kado a pri redwi (20 % dediksyon sou Starbuks!)
+• Acha / ant Bitcoin entegre depi yon kont labank ki konekte ak kont ou an
+• Kreyasyon yon senp kont jis itilize yon non itilizatè & modpas (pa gen enpresyon pdf, ekri anba pas fraz, oubyen ajoute paramèt chifreman)
+Potfèy youn apre lot ki chanje adress pa transaksyon
+Chache on transaksyon pa benifisyè, kategori oubien not
+• Depasman Limit (bezwen modpas oubyen PIN pou w depanse plis ke sa w defini a)
+• Achitekti sèvè desantralize. Potfèy yo fonktyone menm si sèvè Airbitz yo pa disponib.
+• Kod sous ouvè. Disponib sou http://github.com/Airbitz
 
-********* Privacy Notice *********
-The Airbitz application requests access to the device contact list, location, and personal information. This information is used on the device to provide an improved user experience in the following ways:
+********* Avi konfyans *********
+Aplikasyon Airbitz la mande aksè a lis kontak aparèy la, lokalizasyon ak enfomasyon pèsonel. Enfomasyon sa yo itilize sou aparèy la pou bay yon sèvis ameliore nan fason sa yo:
 
-1. Autocomplete contacts from the user's address book after a transaction
-2. Autocomplete contacts from the user's address book to send Email or SMS payment requests
-3. Autocomplete business listings names after a transaction
-4. Geolocate user's device to find nearby businesses
+1. Konplete otomatikman kontak a pati kane adrès itilizatè a après yon transaksyon
+2. Konplete otomatikman kontak a pati kanè adrès itilizatè a pou voye demand pèman pa emèl oubyen SMS
+3. Konplete otomatikman non enskripsyon entrepriz yo aprè chak transaksyon
+4. Lokalize aparèy itilizatè a pouw jwenn antrepriz ki tou pre yo
 
-No personal info or contact list info ever leaves the device without first being encrypted by the user's credentials (username/password). Neither Airbitz nor any 3rd party has knowledge of the information accessed by the application.
+Oken enfomasyon pèsonel oubyen ki sou lis kontak la ppap kite aparèy la sans li pa chifre avèk enfo identifikasyon itilizatè (non itilizatè modpas). Ni Airbitz ni oken lot pati gen konesans enfomasyon ke aplikasyon gen aksè.

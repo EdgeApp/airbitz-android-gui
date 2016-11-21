@@ -1,3 +1,20 @@
+v 2.3.3
+
+** Fingerprint Login on supported device such as Nexus 5x and 6p **
+
+• Fix rare issue with PIN login not working
+• Support Edge Login from URI button on mobile
+• Add WhatsApp forum to support links
+
+v 2.3.1
+
+• Fix error when purchasing Fold gift cards
+
+v 2.3.0
+
+• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
+• Improve Scrypt parameter calculations for stronger security on faster devices
+
 2.2.0版本
 
 我们刚创新地实施了世界上首个流畅的密码复原程序，让忘记密码的用户只需两道问题和一封电邮便能取得密码。 无需再为了忘记密码而操心

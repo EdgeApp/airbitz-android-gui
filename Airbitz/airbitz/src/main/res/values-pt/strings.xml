@@ -260,6 +260,7 @@
   <string name="settings_title_auto_logoff">Logoff automático após</string>
   <string name="settings_title_merchant_mode">Modo Comerciante</string>
   <string name="settings_title_pin_login">PIN Re-login</string>
+  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (Somente envio)</string>
@@ -603,6 +604,13 @@
   <string name="upload_log_alert_uploading">Carregando Logs...</string>
   <string name="upload_log_alert_succeeded">Carregamento completo</string>
   <string name="upload_log_alert_failed">O carregamento falhou. Por favor, verifique a conexão de Internet.</string>
+  <!--Fingerprint Login-->
+  <string name="fingerprint_signin">Sign In User: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
+  <string name="fingerprint_hint">Touch sensor</string>
+  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+  <string name="fingerprint_success">Fingerprint recognized</string>
+  <string name="initializing_dotdot_text">Initializing&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">Nenhuma senha definida</string>
   <string name="password_set_message">Por favor, crie uma senha para essa conta, ou você não será capaz de recuperá-la se seu dispositivo for perdido ou roubado</string>
@@ -644,6 +652,7 @@
   <string name="app_support_phone">+1-844-928-9744</string>
   <string name="app_support_telegram">https://telegram.airbitz.co</string>
   <string name="app_support_slack">https://slack.airbitz.co</string>
+  <string name="app_support_whatsapp">https://whatsapp.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
