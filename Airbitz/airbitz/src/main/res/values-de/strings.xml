@@ -260,7 +260,7 @@
   <string name="settings_title_auto_logoff">Automatische Abmeldung nach</string>
   <string name="settings_title_merchant_mode">Händler-Modus</string>
   <string name="settings_title_pin_login">PIN Re-Login</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">Anmeldung per Fingerabdruck</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (nur senden)</string>
@@ -605,12 +605,12 @@
   <string name="upload_log_alert_succeeded">Upload abgeschlossen</string>
   <string name="upload_log_alert_failed">Upload ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkverbindung.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">Melden Sie sich an: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Bestätigen Sie den Fingerabdruck um fortzufahren</string>
+  <string name="fingerprint_hint">Touchsenor</string>
+  <string name="fingerprint_not_recognized">Fingerabdruck nicht erkannt. Bitte versuchen Sie es erneut.</string>
+  <string name="fingerprint_success">Fingerabdruck erkannt</string>
+  <string name="initializing_dotdot_text">Initialisierung wird gestarted&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">Kein Passwort gesetzt</string>
   <string name="password_set_message">Bitte erstellen Sie ein Kennwort für dieses Konto oder Sie werden nicht in der Lage sein, Ihr Konto wiederherzustellen, wenn das Gerät verloren geht oder gestohlen wird</string>
