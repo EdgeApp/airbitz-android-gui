@@ -1,0 +1,19 @@
+Bitcoin支払い要求
+から [[abtag FROM]]
+
+QRコードをスキャンするか、有料のリンクをクリックしてください
+
+クリックでプレイ
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+住所: [[abtag ADDRESS]]
+量：[[abtag AMOUNT_BTC]] BTC
+量： [[abtag AMOUNT_BITS]] bits
+
+から送信された  [[abtag APP_TITLE]]モバイルBitcoin Wallet +ビジネスディレクトリ
+
+ダウンロード[[abtag APP_TITLE]]iOSまたはAndroid用
+[[abtag APP_DOWNLOAD_LINK]]
+

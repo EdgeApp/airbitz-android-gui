@@ -260,6 +260,7 @@
   <string name="settings_title_auto_logoff">के बाद स्वतः लोग ऑफ</string>
   <string name="settings_title_merchant_mode">व्यापारी मोड</string>
   <string name="settings_title_pin_login">पिन से पुन: लॉग इन</string>
+  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">ब्लू टूथ</string>
   <string name="settings_title_ble_send_only">ब्लूटूथ (केवल भेजने के लिए)</string>
@@ -603,6 +604,13 @@
   <string name="upload_log_alert_uploading">लॉग्स अपलोड हो रहे हैं...</string>
   <string name="upload_log_alert_succeeded">अपलोड पूरा हुआ</string>
   <string name="upload_log_alert_failed">अपलोड असफल|कृपया नेटवर्क कनेक्शन चेक करें|</string>
+  <!--Fingerprint Login-->
+  <string name="fingerprint_signin">Sign In User: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
+  <string name="fingerprint_hint">Touch sensor</string>
+  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+  <string name="fingerprint_success">Fingerprint recognized</string>
+  <string name="initializing_dotdot_text">Initializing&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">कोई पासवर्ड नहीं है</string>
   <string name="password_set_message">इस खाते के लिए पासवर्ड बना लें अन्यथा ये उपकरण खो जाने या चोरी हो जाने पर पासवर्ड रिकवर नहीं कर पाएंगे|</string>
@@ -633,7 +641,7 @@
   <string name="affiliate_refer_friends_title">दोस्तों को बताएं</string>
   <string name="affiliate_refer_friends_body">उन यूजर्स से आय पाने के लिए इस लिंक %1$s\n\n को शेयर करें जिन्होंने %2$s को इनस्टॉल और यूज़ किए है| इस एप्प से की गयी कुल गिफ्ट कार्ड खरीददारी का 0.25%% आपको मिलेगा|</string>
   <string name="affiliate_category">आय:प्रसारण आय</string>
-  <string name="affiliate_notes">%s प्रसारण लिंक से कमायें</string>
+  <string name="affiliate_notes">संबद्ध लिंक %s से आय साझाकरण</string>
   <string name="affiliate_link_error">इस समय प्रसारण लिंक उत्पन्न नहीं हो पा रहा है|</string>
   <string name="affiliate_link_share_text">Airbitz वॉलेट डाउनलोड करें और बिटकॉइन के प्रयोग से पैसे बचाएं</string>
   <string name="app_support_requested">समर्थन का अनुरोध</string>
@@ -644,6 +652,7 @@
   <string name="app_support_phone">+ 1-844-928-9744</string>
   <string name="app_support_telegram">https://telegram.airbitz.co</string>
   <string name="app_support_slack">https://slack.airbitz.co</string>
+  <string name="app_support_whatsapp">https://whatsapp.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>

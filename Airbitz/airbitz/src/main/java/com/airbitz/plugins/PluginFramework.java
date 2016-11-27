@@ -133,7 +133,6 @@ public class PluginFramework {
             mPlugins.add(plugin);
             mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
-
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
@@ -825,7 +824,8 @@ public class PluginFramework {
         mWebView.post(new Runnable() {
             @Override
             public void run() {
-                mWebView.loadUrl(url);
+                if (mWebView != null)
+                    mWebView.loadUrl(url);
             }
         });
     }

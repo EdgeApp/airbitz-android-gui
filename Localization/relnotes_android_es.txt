@@ -1,3 +1,20 @@
+v 2.3.3
+
+** Firma de huella digital en dispositivos que lo soporten como el Nexus 5x y 6p **
+
+• Se arreglaron fallos con el PIN de logeo
+• Soporte de Edge Login desde el botón URI en el móvil
+• Agregar foro de WhatsApp a los vinculos de soporte
+
+v 2.3.1
+
+• Arreglar errores en la compra de tarjeta de regalo Fold
+
+v 2.3.0
+
+• Mejoras en la selección del servidor Libbitcoin/Electrum al usar servidores más responsivos y con menor latencia. 
+• Mejoras en los parámetros de Scrypt para una seguridad más fuerte en dispositivos más rápidos
+
 v 2.2.0
 
 Hemos abierto un nuevo camino implementando la primera recuperación de contraseña sin fricción del mundo en la cual usuarios recuperan contraseñas olvidadas con solo 2 preguntas y un email. Nunca se preocupe por olvidar su contraseña otra vez

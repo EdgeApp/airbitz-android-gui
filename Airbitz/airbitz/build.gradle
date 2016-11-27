@@ -13,9 +13,13 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 21
-        versionCode 2016071101
-        versionName "2.1.1"
+        targetSdkVersion 24
+        versionCode 2100000000
+        versionName "99.99.99"
+
+        jackOptions {
+            enabled true
+        }
     }
 
     productFlavors {
@@ -77,6 +81,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build
 }
 
@@ -117,13 +126,16 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.zxing:core:3.0.1'
     compile 'net.hockeyapp.android:HockeySDK:3.0.2'
+    compile 'com.squareup.whorlwind:whorlwind:1.0.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
 
-    prodCompile 'co.airbitz:airbitz-core-java:0.10.+'
-    prodCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'
-    developCompile 'co.airbitz:airbitz-core-java-develop:0.10.+'
-    developCompile 'co.airbitz:airbitz-core-android-develop:0.10.+@aar'
-    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.10.+'
-    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.10.+@aar'
+    prodCompile 'co.airbitz:airbitz-core-java:0.11.+'
+    prodCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
+    developCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'
+    developCompile 'co.airbitz:airbitz-core-android-develop:0.11.+@aar'
+    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.11.+@aar'
 
     rackwalletCompile 'co.airbitz:airbitz-core-java:0.10.+'
 	rackwalletCompile 'co.airbitz:airbitz-core-android:0.10.+@aar'

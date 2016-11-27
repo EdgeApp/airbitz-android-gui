@@ -122,6 +122,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private Switch mSendNameSwitch;
     private Switch mMerchantModeSwitch;
     private Switch mPinReloginSwitch;
+    private Switch mFingerprintSwitch;
     private Switch mNFCSwitch;
     private Switch mBLESwitch;
     private EditText mFirstEditText;
@@ -294,6 +295,20 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             }
         });
 
+        mFingerprintSwitch = (Switch) mView.findViewById(R.id.settings_toggle_fingerprint);
+        mFingerprintSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean alreadySet = mActivity.abcKeychain.touchIDEnabled(mAccount.username());
+                if (!alreadySet && isChecked) {
+                    String loginKey = mAccount.getLoginKey();
+                    mActivity.abcKeychain.enableTouchID(mAccount.username(), loginKey);
+                } else if (alreadySet && !isChecked) {
+                    mActivity.abcKeychain.disableTouchID(mAccount.username());
+                }
+            }
+        });
+
         mNFCSwitch = (Switch) mView.findViewById(R.id.settings_toggle_nfc);
         if(isNFCcapable()) {
             mNFCSwitch.setVisibility(View.VISIBLE);
@@ -423,6 +438,16 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         if (mBLESwitch.getVisibility() == View.VISIBLE) {
             mBLESwitch.setChecked(getBLEPref());
         }
+        if (mActivity.abcKeychain.canDoTouchId()) {
+            mFingerprintSwitch.setVisibility(View.VISIBLE);
+            if (mActivity.abcKeychain.touchIDEnabled(mAccount.username())) {
+                mFingerprintSwitch.setChecked(true);
+            } else {
+                mFingerprintSwitch.setChecked(false);
+            }
+        }
+        else
+            mFingerprintSwitch.setVisibility(View.INVISIBLE);
 
         mMerchantModeSwitch.setChecked(getMerchantModePref());
 

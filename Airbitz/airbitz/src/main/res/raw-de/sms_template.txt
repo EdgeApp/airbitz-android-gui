@@ -1,0 +1,19 @@
+Bitcoin Zahlungsanfrage
+Von: [[abtag FROM]]
+
+Bitte scannen Sie den QR-Code oder klicken Sie auf die Links um zu bezahlen
+
+Klicken um zu bezahlen
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+Adresse: [[abtag ADDRESS]]
+Betrag: [[abtag AMOUNT_BTC]] BTC
+Betrag: [[abtag AMOUNT_BITS]] bits
+
+Gesendet von der [[abtag APP_TITLE]] Mobile Bitcoin-Wallet + Branchenverzeichnis
+
+Download [[abtag APP_TITLE]] für iOS und Android
+[[abtag APP_DOWNLOAD_LINK]]
+

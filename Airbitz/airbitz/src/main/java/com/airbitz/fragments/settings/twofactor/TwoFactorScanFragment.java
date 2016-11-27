@@ -32,7 +32,6 @@
 package com.airbitz.fragments.settings.twofactor;
 
 import android.app.Activity;
-;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;

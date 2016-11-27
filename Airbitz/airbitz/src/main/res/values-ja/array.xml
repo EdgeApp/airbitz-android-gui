@@ -3,154 +3,159 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Air Travel</item>
-    <item>Alcohol &amp; Bars</item>
-    <item>Allowance</item>
-    <item>Amusement</item>
-    <item>Arts</item>
-    <item>ATM Fee</item>
-    <item>Auto &amp; Transport</item>
-    <item>Auto Insurance</item>
-    <item>Auto Payment</item>
-    <item>Baby Supplies</item>
-    <item>Babysitter &amp; Daycare</item>
-    <item>Bank Fee</item>
-    <item>Bills &amp; Utilities</item>
-    <item>Books</item>
-    <item>Books &amp; Supplies</item>
-    <item>Car Wash</item>
-    <item>Cash &amp; ATM</item>
-    <item>Charity</item>
-    <item>Clothing</item>
-    <item>Coffee Shops</item>
-    <item>Credit Card Payment</item>
-    <item>Dentist</item>
-    <item>Deposit to Savings</item>
-    <item>Doctor</item>
-    <item>Education</item>
-    <item>Electronics &amp; Software</item>
-    <item>Entertainment</item>
-    <item>Eyecare</item>
-    <item>Fast Food</item>
-    <item>Fees &amp; Charges</item>
-    <item>Financial</item>
-    <item>Financial Advisor</item>
-    <item>Food &amp; Dining</item>
-    <item>Furnishings</item>
-    <item>Gas &amp; Fuel</item>
-    <item>Gift</item>
-    <item>Gifts &amp; Donations</item>
-    <item>Groceries</item>
-    <item>Gym</item>
-    <item>Hair</item>
-    <item>Health &amp; Fitness</item>
-    <item>HOA Dues</item>
-    <item>Hobbies</item>
-    <item>Home</item>
-    <item>Home Improvement</item>
-    <item>Home Insurance</item>
-    <item>Home Phone</item>
-    <item>Home Services</item>
-    <item>Home Supplies</item>
-    <item>Hotel</item>
-    <item>Interest Exp</item>
-    <item>Internet</item>
-    <item>IRA Contribution</item>
-    <item>Kids</item>
-    <item>Kids Activities</item>
-    <item>Late Fee</item>
-    <item>Laundry</item>
-    <item>Lawn &amp; Garden</item>
-    <item>Life Insurance</item>
-    <item>Misc.</item>
-    <item>Mobile Phone</item>
-    <item>Mortgage &amp; Rent</item>
-    <item>Mortgage Interest</item>
-    <item>Movies &amp; DVDs</item>
-    <item>Music</item>
-    <item>Newspaper &amp; Magazines</item>
-    <item>Not Sure</item>
-    <item>Parking</item>
-    <item>Personal Care</item>
-    <item>Pet Food &amp; Supplies</item>
-    <item>Pet Grooming</item>
-    <item>Pets</item>
-    <item>Pharmacy</item>
-    <item>Property</item>
-    <item>Public Transportation</item>
-    <item>Registration</item>
-    <item>Rental Car &amp; Taxi</item>
-    <item>Restaurants</item>
-    <item>Service &amp; Parts</item>
-    <item>Service Fee</item>
-    <item>Shopping</item>
-    <item>Spa &amp; Massage</item>
-    <item>Sporting Goods</item>
-    <item>Sports</item>
-    <item>Student Loan</item>
-    <item>Tax</item>
-    <item>Television</item>
-    <item>Tolls</item>
-    <item>Toys</item>
-    <item>Trade Commissions</item>
-    <item>Travel</item>
-    <item>Tuition</item>
-    <item>Utilities</item>
-    <item>Vacation</item>
-    <item>Vet</item>
+    <item>空の旅</item>
+    <item>アルコールとアンプ;バー</item>
+    <item>手当</item>
+    <item>アミューズメント</item>
+    <item>芸術</item>
+    <item>自動預払機料金</item>
+    <item>自動車とアンペア;輸送
+</item>
+    <item>自動車保険
+</item>
+    <item>自動支払い</item>
+    <item>ベビー用品</item>
+    <item>ベビーシッターとアンプ;保育</item>
+    <item>
+銀行手数料</item>
+    <item>
+紙幣とアンプ;ユーティリティー</item>
+    <item>本</item>
+    <item>書籍とアンプ; 用品</item>
+    <item>洗車</item>
+    <item>現金とアンプ; ATM</item>
+    <item>慈善</item>
+    <item>衣類</item>
+    <item>コーヒーショップ</item>
+    <item>クレジットカード 支払い</item>
+    <item>歯科医</item>
+    <item>貯蓄への入金</item>
+    <item>医師</item>
+    <item>教育</item>
+    <item>エレクトロニクスとアンプ; ソフトウェア</item>
+    <item>エンターテインメント</item>
+    <item>アイケア</item>
+    <item>ファストフード</item>
+    <item>料金とアンペア; 料金</item>
+    <item>財務</item>
+    <item>財務顧問</item>
+    <item>食品とアンプ; ダイニング</item>
+    <item>家具</item>
+    <item>ガスとアンプ; 燃料</item>
+    <item>贈り物</item>
+    <item>ギフトとアンプ; 寄付</item>
+    <item>食料品</item>
+    <item>ジム</item>
+    <item>ヘア</item>
+    <item>健康とアンプ; フィットネス</item>
+    <item>HOA会費</item>
+    <item>趣味</item>
+    <item>ホーム</item>
+    <item>ホーム改善</item>
+    <item>ホーム保険</item>
+    <item>自宅の電話</item>
+    <item>ホームサービス</item>
+    <item>ホーム用品</item>
+    <item>ホテル</item>
+    <item>利子率</item>
+    <item>インターネ</item>
+    <item>IRA貢献</item>
+    <item>子供たち</item>
+    <item>キッズアクティビティ</item>
+    <item>延滞料</item>
+    <item>ランドリー</item>
+    <item>芝生とアンプ; 庭園
+</item>
+    <item>生命保険</item>
+    <item> その他</item>
+    <item>携帯電話</item>
+    <item>住宅ローンとアンプ; 賃貸</item>
+    <item>住宅ローン利息</item>
+    <item>映画とアンプ; DVD</item>
+    <item>音楽</item>
+    <item>新聞とアンプ; 雑誌</item>
+    <item>わからない</item>
+    <item>パーキング</item>
+    <item>パーソナルケア</item>
+    <item>ペットフードとアンプ; 用品</item>
+    <item>ペットグルーミング</item>
+    <item>ペット</item>
+    <item>薬局</item>
+    <item>プロパティ</item>
+    <item>公共交通機関</item>
+    <item>登録</item>
+    <item>レンタカーとアンプ; タクシー</item>
+    <item>レストラン</item>
+    <item>サービスとアンプ; 部品</item>
+    <item>サービス料金:</item>
+    <item>ショッピング</item>
+    <item>スパとアンペア; マッサージ</item>
+    <item>スポーツ用品</item>
+    <item>スポーツ</item>
+    <item>学生ローン</item>
+    <item>税金</item>
+    <item>テレビ</item>
+    <item>通行料金</item>
+    <item>おもちゃ</item>
+    <item>貿易手数料</item>
+    <item>トラベル</item>
+    <item>授業料</item>
+    <item>ユーティリティ</item>
+    <item>バケーション</item>
+    <item>獣医</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulting Income</item>
-    <item>Div Income</item>
-    <item>Net Salary</item>
-    <item>Other Income</item>
-    <item>Rent</item>
-    <item>Sales</item>
+    <item>コンサルティング収入</item>
+    <item>事業部所得</item>
+    <item>ネット給与</item>
+    <item>その他の収益</item>
+    <item>家賃</item>
+    <item>販売</item>
   </string-array>
   <string-array name="exchange_category_defaults">
-    <item>Buy Bitcoin</item>
-    <item>Sell Bitcoin</item>
+    <item>購入 Bitcoin</item>
+    <item>Bitcoinを売る</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
-    <item>Bitfinex</item>
-    <item>Bitstamp</item>
+    <item>ビットフィネックス</item>
+    <item>ビットスタンプ</item>
     <item>BTC-e</item>
-    <item>BTCChina</item>
+    <item>BTC中国</item>
     <item>Bter</item>
     <item>CAVirtex</item>
-    <item>Coinbase</item>
+    <item>コインベース</item>
     <item>CoinMKT</item>
     <item>Huobi</item>
-    <item>Kraken</item>
-    <item>MintPal</item>
-    <item>OKCoin</item>
-    <item>Vault of Satoshi</item>
+    <item>クラクケン</item>
+    <item>ミントパル</item>
+    <item>OKコイン</item>
+    <item>ボールトの聡</item>
   </string-array>
   <string-array name="transfer_wallet_category_defaults">
-    <item>Airbitz</item>
-    <item>Armory</item>
-    <item>Bitcoin Core</item>
-    <item>Blockchain</item>
+    <item>エアビッツ</item>
+    <item>武器</item>
+    <item>Bitcoin コア</item>
+    <item>ブロックチェーン</item>
     <item>Electrum</item>
-    <item>Multibit</item>
-    <item>Mycelium</item>
-    <item>Dark Wallet</item>
+    <item>マルチビット</item>
+    <item>菌糸体</item>
+    <item>ダークウォレット</item>
   </string-array>
   <string-array name="transaction_categories_list">
-    <item>Expense</item>
-    <item>Income</item>
-    <item>Transfer</item>
-    <item>Exchange</item>
+    <item>経費</item>
+    <item>収入</item>
+    <item>振込</item>
+    <item>交換</item>
   </string-array>
   <string-array name="distance_list">
-    <item>Automatic</item>
-    <item>Kilometers</item>
-    <item>Miles</item>
+    <item>自動</item>
+    <item>キロメートル</item>
+    <item>マイル</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>Low Fee</item>
-    <item>Standard Fee</item>
-    <item>High Fee</item>
+    <item>低い 代</item>
+    <item>標準料金</item>
+    <item>高い 代</item>
   </string-array>
 </resources>

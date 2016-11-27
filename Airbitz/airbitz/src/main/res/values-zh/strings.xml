@@ -260,6 +260,7 @@
   <string name="settings_title_auto_logoff">自动登出时限 ︰</string>
   <string name="settings_title_merchant_mode">商用模式：</string>
   <string name="settings_title_pin_login">PIN 重新登入︰</string>
+  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">蓝牙</string>
   <string name="settings_title_ble_send_only">蓝牙 （只限发送）</string>
@@ -603,6 +604,13 @@
   <string name="upload_log_alert_uploading">正在上传日志...</string>
   <string name="upload_log_alert_succeeded">上传完毕</string>
   <string name="upload_log_alert_failed">上传失败。请检查网络连接。</string>
+  <!--Fingerprint Login-->
+  <string name="fingerprint_signin">Sign In User: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
+  <string name="fingerprint_hint">Touch sensor</string>
+  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+  <string name="fingerprint_success">Fingerprint recognized</string>
+  <string name="initializing_dotdot_text">Initializing&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">没有设置密码</string>
   <string name="password_set_message">请为此帐户创建密码，否则您装置若丢失或被盗，您将无法复原您的帐户。</string>
@@ -633,7 +641,7 @@
   <string name="affiliate_refer_friends_title">介绍给朋友</string>
   <string name="affiliate_refer_friends_body">%1$s\n\n分享此链接，任何用户安装和使用%2$s时，您就能够获利。凡是在此应用程序里购买的礼品卡，您将得到其中的0.25%%。</string>
   <string name="affiliate_category">收入 ︰ 合作伙伴收入</string>
-  <string name="affiliate_notes">从分享合作伙伴链接 %s 所获取的收入</string>
+  <string name="affiliate_notes">从合作伙伴链接 %s 所获取的收入份额</string>
   <string name="affiliate_link_error">目前无法生成合作伙伴的链接。</string>
   <string name="affiliate_link_share_text">下载 Airbitz 钱包并使用比特币以便省钱</string>
   <string name="app_support_requested">已发出支援请求</string>
@@ -644,6 +652,7 @@
   <string name="app_support_phone">1-844-928-9744 +</string>
   <string name="app_support_telegram">https://telegram.airbitz.co</string>
   <string name="app_support_slack">https://slack.airbitz.co</string>
+  <string name="app_support_whatsapp">https://whatsapp.airbitz.co</string>
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>

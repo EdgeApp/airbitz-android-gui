@@ -26,5 +26,6 @@
     <string name="clevercoin_api_label"></string>
     <string name="clevercoin_api_secret"></string>
     <string name="fold_api_key"></string>
+    <string name="bitrefill_api_key"></string>
     <!-- End API keys -->
 </resources>

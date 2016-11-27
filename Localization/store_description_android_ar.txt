@@ -5,6 +5,7 @@ Take control of your funds! With Airbitz, only YOU have access to your funds or 
 With a focus on delivering an amazing user experience, the Airbitz wallet provides the following great functionality:
 
 • Zero-knowledge & zero-access to user funds, keys, or transaction data by Airbitz or 3rd parties
+• Login with fingerprint scanner
 • Integrated purchase of discounted gift cards (20% off Starbucks!)
 • Integrated bitcoin buy / sell from a linked bank account
 • Simple account creation using just a login & password (no printing of PDFs, writing down pass phrases, or adding encryption settings)

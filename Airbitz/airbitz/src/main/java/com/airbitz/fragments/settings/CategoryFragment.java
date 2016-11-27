@@ -31,7 +31,6 @@
 
 package com.airbitz.fragments.settings;
 
-;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
