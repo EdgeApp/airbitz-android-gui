@@ -121,18 +121,17 @@ public class PluginFramework {
 
             Plugin plugin;
 
-//            plugin = new Plugin();
-//            plugin.pluginId = "com.bitrefill.widget";
-//            plugin.sourceFile = "file:///android_asset/bitrefill.html";
-//            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bitrefill_title);
-//            plugin.subtitle = "";
-//            plugin.provider = "Bitrefill";
-//            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/Bitrefill-logo-300x300.png";
-//            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.bitrefill_api_key));
-//
-//            mPlugins.add(plugin);
-//            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
+            plugin = new Plugin();
+            plugin.pluginId = "com.bitrefill.widget";
+            plugin.sourceFile = "file:///android_asset/bitrefill.html";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bitrefill_title);
+            plugin.subtitle = "";
+            plugin.provider = "Bitrefill";
+            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2016/08/Bitrefill-logo-300x300.png";
+            plugin.env.put("API-TOKEN", AirbitzApplication.getContext().getString(R.string.bitrefill_api_key));
 
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
             plugin.pluginId = "com.foldapp";

@@ -5,7 +5,7 @@ Leistungsfähige und einfach zu bedienendes Bitcoin Wallet, die es Nutzern ermö
 Mit dem Schwerpunkt auf einer erstaunlichen Nutzererfahrung bietet die Airbitz-Wallet folgende großartige Funktionalitäten:
 
 • Null Wissen & kein Zugruff auf das Guthaben, Schlüssel oder Transaktionsdaten von Benutzern seitens  Airbitz oder Dritten
-• Login with fingerprint scanner
+• Anmelden per Fingerabdruck-Scanner
 • Integrierter Kauf von herabgesetzten Gutscheinen (20 % Rabatt bei Starbucks!)
 • Integrierter Bitcoin Kauf / Verkauf von einem verknüpften Bankkonto
 • Einfache Kontenerstellung mit nur einer Anmeldung und einem Passwort (kein Drucken von PDFs, Schreiben von Passphrasen oder Hinzufügen von Verschlüsselungseinstellungen)

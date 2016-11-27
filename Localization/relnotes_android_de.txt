@@ -1,19 +1,19 @@
 v 2.3.3
 
-** Fingerprint Login on supported device such as Nexus 5x and 6p **
+** Anmeldung per Fingerabdruck bei unterstützenden Geräten wie dem Nexus 5x und 6p**
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• Behebung von Problemen bei PIN-Anmeldung
+• Unterstützug bei Edge-Anmeldung per URI-Taste auf dem Handy
+• Hinzufügen eines WhatsApp Forums für Unterstützung von Links
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Behebung von Fehlern beim Kauf von Gutscheinen
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Verbesserte Libbitcoin/Electrum Server-Auswahl mittels der Verwendung von Servern die besonders reaktionsschnell sind und kurze Wartezeiten haben. 
+• Verbessete Scrypt-Parameter-Berechnung für eine höhere Sicherheit auf schnelleren Geräten
 
 v 2.2.0
 

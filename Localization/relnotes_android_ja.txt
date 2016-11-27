@@ -1,6 +1,6 @@
 v 2.3.3
 
-** Fingerprint Login on supported device such as Nexus 5x and 6p **
+** Fingerprint Login on supported devices such as Nexus 5x and 6p **
 
 • Fix rare issue with PIN login not working
 • Support Edge Login from URI button on mobile
@@ -17,11 +17,11 @@ v 2.3.0
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+私たちは、世界で最初の摩擦のないパスワード復旧を実装することで、ユーザーが忘れたパスワードをわずか2つの質問と電子メールで回復できるようにすることで、新しい地平を壊。 もう一度パスワードを忘れることを心配しないでください
 
-In addition:
+加えて：
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
+•Bitrefillプラグインの統合によりユーザーは143カ国の600以上のキャリアからモバイルトップアップを購。
 • Archived accounts now take up less resources by not querying the network or sync'ing transaction data
 • Background notifications of incoming funds if app is recently backgrounded
 • Fallback public address for failed BIP70 payment protocol transactions 

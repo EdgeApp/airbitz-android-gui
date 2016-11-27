@@ -5,6 +5,8 @@ mkdir Airbitz/airbitz/src/main/res/raw-pt/
 mkdir Airbitz/airbitz/src/main/res/raw-zh/
 mkdir Airbitz/airbitz/src/main/res/raw-de/
 mkdir Airbitz/airbitz/src/main/res/raw-fr/
+mkdir Airbitz/airbitz/src/main/res/raw-ja/
+mkdir Airbitz/airbitz/src/main/res/raw-ht/
 
 cp ../airbitz-ios-gui/Airbitz/Resources/html/Base.lproj/*  Airbitz/airbitz/src/main/res/raw/
 cp ../airbitz-ios-gui/Airbitz/Resources/html/es.lproj/* Airbitz/airbitz/src/main/res/raw-es/
@@ -13,6 +15,8 @@ cp ../airbitz-ios-gui/Airbitz/Resources/html/pt.lproj/* Airbitz/airbitz/src/main
 cp ../airbitz-ios-gui/Airbitz/Resources/html/zh.lproj/* Airbitz/airbitz/src/main/res/raw-zh/
 cp ../airbitz-ios-gui/Airbitz/Resources/html/de.lproj/* Airbitz/airbitz/src/main/res/raw-de/
 cp ../airbitz-ios-gui/Airbitz/Resources/html/fr.lproj/* Airbitz/airbitz/src/main/res/raw-fr/
+cp ../airbitz-ios-gui/Airbitz/Resources/html/ja.lproj/* Airbitz/airbitz/src/main/res/raw-ja/
+cp ../airbitz-ios-gui/Airbitz/Resources/html/ht.lproj/* Airbitz/airbitz/src/main/res/raw-ht/
 
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/Base.lproj/*  Airbitz/airbitz/src/main/res/raw/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/es.lproj/* Airbitz/airbitz/src/main/res/raw-es/
@@ -21,3 +25,5 @@ cp ../airbitz-ios-gui/Airbitz/Resources/Text/pt.lproj/* Airbitz/airbitz/src/main
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/zh.lproj/* Airbitz/airbitz/src/main/res/raw-zh/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/de.lproj/* Airbitz/airbitz/src/main/res/raw-de/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/fr.lproj/* Airbitz/airbitz/src/main/res/raw-fr/
+cp ../airbitz-ios-gui/Airbitz/Resources/Text/ja.lproj/* Airbitz/airbitz/src/main/res/raw-ja/
+cp ../airbitz-ios-gui/Airbitz/Resources/Text/ht.lproj/* Airbitz/airbitz/src/main/res/raw-ht/

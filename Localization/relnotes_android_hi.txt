@@ -1,6 +1,6 @@
 v 2.3.3
 
-** Fingerprint Login on supported device such as Nexus 5x and 6p **
+** Fingerprint Login on supported devices such as Nexus 5x and 6p **
 
 • Fix rare issue with PIN login not working
 • Support Edge Login from URI button on mobile

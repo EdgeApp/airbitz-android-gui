@@ -261,7 +261,7 @@
   <string name="settings_title_merchant_mode">マーチャントモード</string>
   <string name="settings_title_pin_login">PIN再ンログイ 
 </string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">指紋使用ログイン</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">ブルートゥース</string>
   <string name="settings_title_ble_send_only">ブルートゥース（送信するのみ）</string>
@@ -612,12 +612,12 @@
   <string name="upload_log_alert_succeeded">アップロード完了</string>
   <string name="upload_log_alert_failed">アップロードに失敗しました。 ネットワーク接続を確認してください。</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">ログインユーザー：％1s</string>
+  <string name="fingerprint_confirm_to_continue">続行するには指紋を確認</string>
+  <string name="fingerprint_hint">タッチセンサー</string>
+  <string name="fingerprint_not_recognized">指紋が認識されません。 再試行する。</string>
+  <string name="fingerprint_success">指紋認識</string>
+  <string name="initializing_dotdot_text">初期化中...</string>
   <!-- Password Set -->
   <string name="password_set_title">パスワードは設定されていません</string>
   <string name="password_set_message">このアカウントのパスワードを作成してください。または端末を紛失または盗難した場合にアカウントを復旧することはできません</string>

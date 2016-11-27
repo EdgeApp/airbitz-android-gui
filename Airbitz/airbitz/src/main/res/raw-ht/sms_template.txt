@@ -1,0 +1,19 @@
+Bitcoin Mande Peman
+Depi: [[abtag FROM]]
+
+Tanpri eskanè QR code ou klike sou lyen yo a peye
+
+Klike sou yo Peye
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+Adrès: [[abtag ADDRESS]]
+Kantite: [[abtag AMOUNT_BTC]] BTC
+Kantite: [[abtag AMOUNT_BITS]] bits
+
+Voye soti nan [[abtag APP_TITLE]] Bous Mobile Bitcoin + An Biznis
+
+Telechaje [[itag APP TIT]] pou iOS oswa Android [[abtag APP_DOWNLOAD_LINK]]
+[[abtag APP_DOWNLOAD_LINK]]
+
