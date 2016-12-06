@@ -196,6 +196,7 @@ public abstract class ScanFragment
         mView = inflater.inflate(R.layout.fragment_scan, container, false);
 
         mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
+        mSearchAdapter.setHasContactsPermission(mActivity.hasContactsPermission);
         mBluetoothListView = (ListView) mView.findViewById(R.id.fragment_send_bluetooth_layout);
         mBluetoothListView.setAdapter(mSearchAdapter);
         if (mBeaconSend != null) {

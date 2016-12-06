@@ -2854,11 +2854,12 @@ public class NavigationActivity extends ActionBarActivity
     };
 
     PermissionCallbacks mPermissionCallbacks;
+    public boolean hasContactsPermission = false;
+    public boolean hasCameraPermission = false;
 
-    @OnShowRationale(Manifest.permission.CAMERA)
-    void showRationaleForCamera(final PermissionRequest request) {
+    void showRationale(final PermissionRequest request, String message) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(NavigationActivity.this);
-        builder.title(R.string.permission_needs_access_to_camera)
+        builder.title(message)
                 .cancelable(false)
                 .positiveText(R.string.string_continue)
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -2872,16 +2873,27 @@ public class NavigationActivity extends ActionBarActivity
         builder.show();
     }
 
+    // Permission for CAMERA
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    void showRationaleForCamera(final PermissionRequest request) {
+        String message = String.format(getResources().getString(R.string.permission_needs_access_to_camera),
+                getResources().getString(R.string.app_name));
+        showRationale(request, message);
+    }
+
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void onCameraDenied() {
         // NOTE: Deal with a denied permission, e.g. by showing specific UI
         // or disabling certain functionality
+        hasCameraPermission = false;
         showToast(getResources().getString(R.string.permission_camera_permission_denied), 15000);
         mPermissionCallbacks.onDenied();
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void onCameraNeverAskAgain() {
+        hasCameraPermission = false;
         showToast(getResources().getString(R.string.permission_camera_permission_denied_not_be_asked), 15000);
         mPermissionCallbacks.onDenied();
     }
@@ -2889,12 +2901,51 @@ public class NavigationActivity extends ActionBarActivity
     @NeedsPermission(Manifest.permission.CAMERA)
     void requestCamera() {
         Log.e(TAG, "Camera request succeeded");
+        hasCameraPermission = true;
         mPermissionCallbacks.onAllowed();
     }
 
     public void requestCameraFromFragment(PermissionCallbacks permissionCallbacks) {
         mPermissionCallbacks = permissionCallbacks;
         NavigationActivityPermissionsDispatcher.requestCameraWithCheck(this);
+    }
+
+
+    // Permission for READ_CONTACTS
+
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    void showRationaleForContacts(final PermissionRequest request) {
+        String message = String.format(getResources().getString(R.string.permission_needs_access_to_contacts),
+                getResources().getString(R.string.app_name));
+        showRationale(request, message);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    void onContactsDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasContactsPermission = false;
+        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    void onContactsNeverAskAgain() {
+        hasContactsPermission = false;
+        showToast(getResources().getString(R.string.permission_contacts_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    void requestContacts() {
+        Log.e(TAG, "Camera request succeeded");
+        hasContactsPermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestContactsFromFragment(PermissionCallbacks permissionCallbacks) {
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestContactsWithCheck(this);
     }
 
 

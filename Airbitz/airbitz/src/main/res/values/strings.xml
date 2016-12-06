@@ -808,11 +808,14 @@
     <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
     <string name="successfully_verified_identity">Successfully Verified Identity</string>
     <string name="create_new_text">Create new</string>
-    <string name="or_choose">\"$1$s\" or choose</string>
+    <string name="or_choose">[%1$s] or choose</string>
 
-    <string name="permission_needs_access_to_camera">[$1$s] needs access to your camera to scan QR codes to send people money</string>
+    <string name="permission_needs_access_to_camera">%1$s needs access to your camera to scan QR codes to send people money</string>
     <string name="permission_camera_permission_denied">Camera permission denied. You will not be able to scan QR codes</string>
     <string name="permission_camera_permission_denied_not_be_asked">Camera permission denied. You will not be asked again</string>
+    <string name="permission_needs_access_to_contacts">%1$s needs access to your contacts to help tag transactions with payee information</string>
+    <string name="permission_contacts_permission_denied">Contacts permission denied</string>
+    <string name="permission_contacts_permission_denied_not_be_asked">Camera permission denied. You will not be asked again</string>
 
     <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
     <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>

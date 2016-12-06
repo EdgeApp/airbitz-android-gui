@@ -182,6 +182,9 @@ public class RequestFragment extends WalletBaseFragment implements
     // currency swap variables
     static final int SWAP_DURATION = 200;
 
+    private boolean mHasContactsPermission = false;
+    private boolean mTryToGetContactList = true;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,7 +210,11 @@ public class RequestFragment extends WalletBaseFragment implements
 
     @Override
     public void receivedConnection(String text) {
-        Contact nameInContacts = findMatchingContact(text);
+        Contact nameInContacts = null;
+
+        if (mHasContactsPermission == true)
+            nameInContacts = findMatchingContact(text);
+
         text += "\nConnected";
         if (nameInContacts != null) {
             mActivity.ShowFadingDialog(text, nameInContacts.getThumbnail(), getResources().getInteger(R.integer.alert_hold_time_default), true);
@@ -388,6 +395,24 @@ public class RequestFragment extends WalletBaseFragment implements
         mSMSButton.setEnabled(false);
         mEmailButton.setEnabled(false);
         mCopyButton.setEnabled(false);
+
+
+        if (mTryToGetContactList) {
+            mActivity.requestContactsFromFragment(new NavigationActivity.PermissionCallbacks() {
+
+                @Override
+                public void onDenied() {
+                    mTryToGetContactList = false;
+                    mHasContactsPermission = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                    mHasContactsPermission = true;
+                }
+            });
+        }
+
         return mView;
     }
 
@@ -961,6 +986,9 @@ public class RequestFragment extends WalletBaseFragment implements
 
 
     private Contact findMatchingContact(String displayName) {
+        if (mHasContactsPermission == false)
+            return null;
+
         String id = null;
         Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI,Uri.encode(displayName.trim()));
         Cursor mapContact = mActivity.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}, null, null, null);
