@@ -295,8 +295,25 @@ public abstract class ScanFragment
         return mActivity.getFabTop() - mButtonBar.getHeight();
     }
 
+    boolean mTryToStartCamera = true;
+
     public void startCamera() {
-        mQRCamera.startCamera();
+        if (mTryToStartCamera) {
+            mActivity.requestCameraFromFragment(new NavigationActivity.PermissionCallbacks() {
+
+                @Override
+                public void onDenied() {
+                    mTryToStartCamera = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                    mQRCamera.startCamera();
+                }
+            });
+
+        }
+
     }
 
     public void stopCamera() {
@@ -394,6 +411,7 @@ public abstract class ScanFragment
         stopCamera();
         stopBluetoothSearch();
         hideProcessing();
+        mTryToStartCamera = true;
         if (mBeaconSend != null) {
             mBeaconSend.close();
         }

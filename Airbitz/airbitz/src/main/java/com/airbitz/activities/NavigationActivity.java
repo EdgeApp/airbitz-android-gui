@@ -31,6 +31,7 @@
 
 package com.airbitz.activities;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -62,6 +63,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -95,6 +97,12 @@ import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -157,6 +165,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+@RuntimePermissions
 public class NavigationActivity extends ActionBarActivity
         implements View.OnTouchListener,
         OnAddressRequestListener,
@@ -396,6 +405,13 @@ public class NavigationActivity extends ActionBarActivity
         BuySellOverrides.sync();
 
         abcKeychain = new ABCKeychain(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        NavigationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -821,12 +837,17 @@ public class NavigationActivity extends ActionBarActivity
         return mNavStacks[mNavThreadId].size() == 1;
     }
 
+    public interface PermissionCallbacks {
+        void onDenied();
+        void onAllowed();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11 in Support Package
     }
 
-    private void setupReceivers() {
+    public void setupReceivers() {
         Account account = AirbitzApplication.getAccount();
         if (account != null && account.isLoggedIn()) {
             IntentFilter filter = new IntentFilter();
@@ -2831,4 +2852,50 @@ public class NavigationActivity extends ActionBarActivity
             onOTPResetRequest();
         }
     };
+
+    PermissionCallbacks mPermissionCallbacks;
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    void showRationaleForCamera(final PermissionRequest request) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(NavigationActivity.this);
+        builder.title(R.string.permission_needs_access_to_camera)
+                .cancelable(false)
+                .positiveText(R.string.string_continue)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        request.proceed();
+                        dialog.dismiss();
+                    }
+                });
+        builder.build();
+        builder.show();
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void onCameraDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        showToast(getResources().getString(R.string.permission_camera_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void onCameraNeverAskAgain() {
+        showToast(getResources().getString(R.string.permission_camera_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void requestCamera() {
+        Log.e(TAG, "Camera request succeeded");
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestCameraFromFragment(PermissionCallbacks permissionCallbacks) {
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestCameraWithCheck(this);
+    }
+
+
 }

@@ -105,9 +105,9 @@ dependencies {
     }
     compile 'com.github.teneighty:ShowEdittextPassword:22fa5d4'
     compile 'com.balysv.materialmenu:material-menu-toolbar:1.5.4'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:support-v4:23.2.+'
-    compile 'com.android.support:appcompat-v7:23.2.+'
+    compile 'com.android.support:design:24.2.+'
+    compile 'com.android.support:support-v4:24.2.+'
+    compile 'com.android.support:appcompat-v7:24.2.+'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.google.android.gms:play-services-drive:6.5.87'
     compile 'com.google.android.gms:play-services-location:6.5.87'
@@ -119,6 +119,8 @@ dependencies {
     compile 'com.squareup.whorlwind:whorlwind:1.0.1'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
+    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
     prodCompile 'co.airbitz:airbitz-core-java:0.11.+'
     prodCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
