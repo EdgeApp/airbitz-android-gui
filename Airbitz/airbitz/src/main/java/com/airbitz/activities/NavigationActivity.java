@@ -2925,14 +2925,14 @@ public class NavigationActivity extends ActionBarActivity
         // NOTE: Deal with a denied permission, e.g. by showing specific UI
         // or disabling certain functionality
         hasContactsPermission = false;
-        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
+//        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
         mPermissionCallbacks.onDenied();
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
     void onContactsNeverAskAgain() {
         hasContactsPermission = false;
-        showToast(getResources().getString(R.string.permission_contacts_permission_denied_not_be_asked), 15000);
+//        showToast(getResources().getString(R.string.permission_contacts_permission_denied_not_be_asked), 15000);
         mPermissionCallbacks.onDenied();
     }
 
