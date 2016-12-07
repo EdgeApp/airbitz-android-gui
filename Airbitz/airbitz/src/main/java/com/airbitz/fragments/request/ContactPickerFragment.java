@@ -85,6 +85,7 @@ public class ContactPickerFragment
     private View mView;
     // Callback interface for a selection
     private ContactSelection mContactSelection;
+    private boolean mTryToGetStoragePermission = true;
 
     public void setContactSelectionListener(ContactSelection listener) {
         mContactSelection = listener;
@@ -184,6 +185,20 @@ public class ContactPickerFragment
                 }
             }
         });
+
+        if (mTryToGetStoragePermission) {
+            mActivity.requestStorageFromFragment(new NavigationActivity.PermissionCallbacks() {
+                @Override
+                public void onDenied() {
+                    mTryToGetStoragePermission = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                }
+            });
+        }
+
         return mView;
     }
 

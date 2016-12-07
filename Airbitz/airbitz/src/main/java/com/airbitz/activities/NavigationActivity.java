@@ -2857,6 +2857,7 @@ public class NavigationActivity extends ActionBarActivity
     public boolean hasContactsPermission = false;
     public boolean hasCameraPermission = false;
     public boolean hasLocationPermission = false;
+    public boolean hasStoragePermission = false;
 
     void showRationale(final PermissionRequest request, String message) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(NavigationActivity.this);
@@ -2986,4 +2987,40 @@ public class NavigationActivity extends ActionBarActivity
         NavigationActivityPermissionsDispatcher.requestLocationWithCheck(this);
     }
 
+    // Permission for STORAGE
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        String message = String.format(getResources().getString(R.string.permission_needs_access_to_storage),
+                getResources().getString(R.string.app_name));
+        showRationale(request, message);
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onStorageDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasStoragePermission = false;
+        showToast(getResources().getString(R.string.permission_storage_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onStorageNeverAskAgain() {
+        hasStoragePermission = false;
+//        showToast(getResources().getString(R.string.permission_storage_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void requestStorage() {
+        Log.e(TAG, "Storage request succeeded");
+        hasStoragePermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestStorageFromFragment(PermissionCallbacks permissionCallbacks) {
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestStorageWithCheck(this);
+    }
 }
