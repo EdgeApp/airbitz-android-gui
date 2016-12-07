@@ -815,7 +815,10 @@
     <string name="permission_camera_permission_denied_not_be_asked">Camera permission denied. You will not be asked again</string>
     <string name="permission_needs_access_to_contacts">%1$s needs access to your contacts to help tag transactions with payee information</string>
     <string name="permission_contacts_permission_denied">Contacts permission denied. Please re-enable access in your phone\'s Settings -&gt; Apps</string>
-    <string name="permission_contacts_permission_denied_not_be_asked">Camera permission denied. You will not be asked again</string>
+    <string name="permission_contacts_permission_denied_not_be_asked">Contacts permission denied. You will not be asked again</string>
+    <string name="permission_needs_access_to_location">%1$s needs access to your location to find businesses in your area</string>
+    <string name="permission_location_permission_denied">Location permission denied. Please re-enable access in your phone\'s Settings -&gt; Apps</string>
+    <string name="permission_location_permission_denied_not_be_asked">Location permission denied. You will not be asked again</string>
 
     <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
     <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>

@@ -2856,6 +2856,7 @@ public class NavigationActivity extends ActionBarActivity
     PermissionCallbacks mPermissionCallbacks;
     public boolean hasContactsPermission = false;
     public boolean hasCameraPermission = false;
+    public boolean hasLocationPermission = false;
 
     void showRationale(final PermissionRequest request, String message) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(NavigationActivity.this);
@@ -2894,7 +2895,7 @@ public class NavigationActivity extends ActionBarActivity
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void onCameraNeverAskAgain() {
         hasCameraPermission = false;
-        showToast(getResources().getString(R.string.permission_camera_permission_denied_not_be_asked), 15000);
+//        showToast(getResources().getString(R.string.permission_camera_permission_denied_not_be_asked), 15000);
         mPermissionCallbacks.onDenied();
     }
 
@@ -2925,7 +2926,7 @@ public class NavigationActivity extends ActionBarActivity
         // NOTE: Deal with a denied permission, e.g. by showing specific UI
         // or disabling certain functionality
         hasContactsPermission = false;
-//        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
+        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
         mPermissionCallbacks.onDenied();
     }
 
@@ -2938,7 +2939,7 @@ public class NavigationActivity extends ActionBarActivity
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     void requestContacts() {
-        Log.e(TAG, "Camera request succeeded");
+        Log.e(TAG, "Contacts request succeeded");
         hasContactsPermission = true;
         mPermissionCallbacks.onAllowed();
     }
@@ -2948,5 +2949,41 @@ public class NavigationActivity extends ActionBarActivity
         NavigationActivityPermissionsDispatcher.requestContactsWithCheck(this);
     }
 
+    // Permission for LOCATION
+
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    void showRationaleForLocation(final PermissionRequest request) {
+        String message = String.format(getResources().getString(R.string.permission_needs_access_to_location),
+                getResources().getString(R.string.app_name));
+        showRationale(request, message);
+    }
+
+    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
+    void onLocationDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasLocationPermission = false;
+        showToast(getResources().getString(R.string.permission_location_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
+    void onLocationNeverAskAgain() {
+        hasContactsPermission = false;
+//        showToast(getResources().getString(R.string.permission_location_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    void requestLocation() {
+        Log.e(TAG, "Location request succeeded");
+        hasLocationPermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestLocationFromFragment(PermissionCallbacks permissionCallbacks) {
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestLocationWithCheck(this);
+    }
 
 }
