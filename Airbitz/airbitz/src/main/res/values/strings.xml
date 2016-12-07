@@ -443,7 +443,7 @@
     <!-- Strings for Request QR Code fragment -->
     <string name="request_qr_email_title">%1$s Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
-    <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email.</string>
+    <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email. Ensure this app has permission to access your phone\'s storage.</string>
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_loading_address">Loading bitcoin address…</string>

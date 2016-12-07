@@ -244,6 +244,9 @@ public class ContactPickerFragment
     private List<Contact> getMatchedContacts(String term, boolean emailSearch) {
         List<Contact> contacts = new ArrayList<Contact>();
 
+        if (mActivity.hasContactsPermission == false)
+            return contacts;
+
         long startMillis = System.currentTimeMillis();
 
         ContentResolver contentResolver = mActivity.getContentResolver();
