@@ -244,7 +244,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        launchCamera();
+                        launchCameraWithCheck();
                     }
                     @Override
                     public void onNegative(MaterialDialog dialog) {
@@ -264,6 +264,36 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         intent.setType("*/*");
         mActivity.startActivityForResult(Intent.createChooser(intent, "File Chooser"), PluginFramework.CHOOSE_IMAGE_CODE);
     }
+
+    boolean mTryToStartCamera = true;
+
+    public void launchCameraWithCheck() {
+        if (mTryToStartCamera) {
+            mActivity.requestCameraFromFragment(new NavigationActivity.PermissionCallbacks() {
+
+                @Override
+                public void onDenied() {
+                    mTryToStartCamera = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                    mActivity.requestStorageFromFragment(new NavigationActivity.PermissionCallbacks() {
+                        @Override
+                        public void onDenied() {
+                            mTryToStartCamera = false;
+                        }
+
+                        @Override
+                        public void onAllowed() {
+                            launchCamera();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
 
     private void launchCamera() {
         ContentValues values = new ContentValues();
