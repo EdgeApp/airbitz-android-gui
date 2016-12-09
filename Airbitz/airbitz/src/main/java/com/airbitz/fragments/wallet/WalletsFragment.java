@@ -413,10 +413,6 @@ public class WalletsFragment extends WalletBaseFragment implements
 
     @Override
     public void deleteWallet(final Wallet wallet) {
-        if (wallet.balance() > 0) {
-            mActivity.ShowFadingDialog(getString(R.string.fragment_wallets_delete_has_funds));
-            return;
-        }
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mActivity);
         builder.title(getResources().getString(R.string.fragment_wallets_delete_wallet_confirm_title))
                .titleColorRes(R.color.colorPrimaryDark)

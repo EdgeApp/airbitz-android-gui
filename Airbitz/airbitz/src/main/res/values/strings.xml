@@ -391,7 +391,6 @@
     <string name="fragment_wallets_add_wallet">Add Wallet</string>
     <string name="fragment_wallets_deleting_wallet">Deleting wallet...</string>
     <string name="fragment_wallets_unable_to_delete_wallet">Unable to delete wallet</string>
-    <string name="fragment_wallets_delete_has_funds">Cannot delete wallet as it contains funds. Please transfer out funds first.</string>
     <string name="fragment_wallets_delete_wallet_confirm_title">Delete Wallet?</string>
     <string name="fragment_wallets_delete_wallet_confirm_message">Are you sure you want to delete %1$s?</string>
     <string name="fragment_wallets_delete_wallet_second_confirm_title">Delete Wallet: %1$s?</string>
