@@ -137,7 +137,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
 
     public void startCamera() {
         if (mTryToStartCamera) {
-            mActivity.requestCameraFromFragment(new NavigationActivity.PermissionCallbacks() {
+            mActivity.requestCameraFromFragment(true, new NavigationActivity.PermissionCallbacks() {
 
                 @Override
                 public void onDenied() {

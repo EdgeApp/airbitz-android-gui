@@ -231,6 +231,10 @@
     <string name="fragment_setup_writeitdown_pin_title">PIN</string>
     <string name="fragment_setup_writeitdown_show">Show</string>
     <string name="fragment_setup_writeitdown_hide">Hide</string>
+    <string name="fragment_setup_camera_title">Enable Camera Access</string>
+    <string name="fragment_setup_camera_text">You will next see a popup requesting access to your Camera.\n\n[[abtag APP_TITLE]] needs this to scan QR codes to pay people and merchants.</string>
+    <string name="fragment_setup_contacts_title">Enable Contacts Access</string>
+    <string name="fragment_setup_contacts_text">You will next see a popup requesting access to your Contacts.\n\n[[abtag APP_TITLE]] needs this to send payment requests and to help tag your transactions.</string>
 
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_setup_title">Password Recovery Setup</string>

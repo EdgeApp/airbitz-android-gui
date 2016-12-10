@@ -398,7 +398,7 @@ public class RequestFragment extends WalletBaseFragment implements
 
 
         if (mTryToGetContactList) {
-            mActivity.requestContactsFromFragment(new NavigationActivity.PermissionCallbacks() {
+            mActivity.requestContactsFromFragment(true, new NavigationActivity.PermissionCallbacks() {
 
                 @Override
                 public void onDenied() {

@@ -187,7 +187,7 @@ public class ContactPickerFragment
         });
 
         if (mTryToGetStoragePermission) {
-            mActivity.requestStorageFromFragment(new NavigationActivity.PermissionCallbacks() {
+            mActivity.requestStorageFromFragment(true, new NavigationActivity.PermissionCallbacks() {
                 @Override
                 public void onDenied() {
                     mTryToGetStoragePermission = false;
