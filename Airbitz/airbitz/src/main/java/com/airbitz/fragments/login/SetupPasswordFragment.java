@@ -456,7 +456,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         protected void onPostExecute(String errorMessage) {
             onCancelled();
             if (errorMessage == null) {
-                SetupWriteItDownFragment fragment = new SetupWriteItDownFragment();
+                SetupCameraFragment fragment = new SetupCameraFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(SetupWriteItDownFragment.USERNAME, mUsername);
                 bundle.putString(SetupWriteItDownFragment.PASSWORD, mPasswordString);

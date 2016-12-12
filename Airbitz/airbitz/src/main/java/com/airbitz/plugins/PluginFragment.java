@@ -269,7 +269,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
     public void launchCameraWithCheck() {
         if (mTryToStartCamera) {
-            mActivity.requestCameraFromFragment(new NavigationActivity.PermissionCallbacks() {
+            mActivity.requestCameraFromFragment(true, new NavigationActivity.PermissionCallbacks() {
 
                 @Override
                 public void onDenied() {
@@ -278,7 +278,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
                 @Override
                 public void onAllowed() {
-                    mActivity.requestStorageFromFragment(new NavigationActivity.PermissionCallbacks() {
+                    mActivity.requestStorageFromFragment(true, new NavigationActivity.PermissionCallbacks() {
                         @Override
                         public void onDenied() {
                             mTryToStartCamera = false;

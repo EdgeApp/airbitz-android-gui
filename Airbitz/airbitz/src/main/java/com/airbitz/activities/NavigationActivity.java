@@ -2879,9 +2879,13 @@ public class NavigationActivity extends ActionBarActivity
 
     @OnShowRationale(Manifest.permission.CAMERA)
     void showRationaleForCamera(final PermissionRequest request) {
-        String message = String.format(getResources().getString(R.string.permission_needs_access_to_camera),
-                getResources().getString(R.string.app_name));
-        showRationale(request, message);
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_camera),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
@@ -2907,19 +2911,25 @@ public class NavigationActivity extends ActionBarActivity
         mPermissionCallbacks.onAllowed();
     }
 
-    public void requestCameraFromFragment(PermissionCallbacks permissionCallbacks) {
+    public void requestCameraFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
         mPermissionCallbacks = permissionCallbacks;
         NavigationActivityPermissionsDispatcher.requestCameraWithCheck(this);
     }
 
 
     // Permission for READ_CONTACTS
+    boolean mShowRational = true;
 
     @OnShowRationale(Manifest.permission.READ_CONTACTS)
     void showRationaleForContacts(final PermissionRequest request) {
-        String message = String.format(getResources().getString(R.string.permission_needs_access_to_contacts),
-                getResources().getString(R.string.app_name));
-        showRationale(request, message);
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_contacts),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
@@ -2945,7 +2955,8 @@ public class NavigationActivity extends ActionBarActivity
         mPermissionCallbacks.onAllowed();
     }
 
-    public void requestContactsFromFragment(PermissionCallbacks permissionCallbacks) {
+    public void requestContactsFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
         mPermissionCallbacks = permissionCallbacks;
         NavigationActivityPermissionsDispatcher.requestContactsWithCheck(this);
     }
@@ -2954,9 +2965,13 @@ public class NavigationActivity extends ActionBarActivity
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     void showRationaleForLocation(final PermissionRequest request) {
-        String message = String.format(getResources().getString(R.string.permission_needs_access_to_location),
-                getResources().getString(R.string.app_name));
-        showRationale(request, message);
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_location),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -2982,7 +2997,8 @@ public class NavigationActivity extends ActionBarActivity
         mPermissionCallbacks.onAllowed();
     }
 
-    public void requestLocationFromFragment(PermissionCallbacks permissionCallbacks) {
+    public void requestLocationFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
         mPermissionCallbacks = permissionCallbacks;
         NavigationActivityPermissionsDispatcher.requestLocationWithCheck(this);
     }
@@ -2991,9 +3007,13 @@ public class NavigationActivity extends ActionBarActivity
 
     @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        String message = String.format(getResources().getString(R.string.permission_needs_access_to_storage),
-                getResources().getString(R.string.app_name));
-        showRationale(request, message);
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_storage),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -3019,7 +3039,8 @@ public class NavigationActivity extends ActionBarActivity
         mPermissionCallbacks.onAllowed();
     }
 
-    public void requestStorageFromFragment(PermissionCallbacks permissionCallbacks) {
+    public void requestStorageFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
         mPermissionCallbacks = permissionCallbacks;
         NavigationActivityPermissionsDispatcher.requestStorageWithCheck(this);
     }

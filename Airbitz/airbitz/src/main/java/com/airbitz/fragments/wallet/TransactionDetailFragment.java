@@ -1335,7 +1335,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mTryToGetContactList == false)
             return;
 
-        mActivity.requestContactsFromFragment(new NavigationActivity.PermissionCallbacks() {
+        mActivity.requestContactsFromFragment(true, new NavigationActivity.PermissionCallbacks() {
 
             @Override
             public void onDenied() {

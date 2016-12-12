@@ -43,10 +43,11 @@
 
                 <ImageView
                     android:id="@+id/fragment_setup_writeitdown_edittext"
-                    android:layout_width="@dimen/writeitdown_size"
-                    android:layout_height="@dimen/writeitdown_size"
+                    android:layout_width="@dimen/setup_image_size"
+                    android:layout_height="@dimen/setup_image_size"
                     android:layout_weight="1"
-                    android:background="@drawable/write_down_pencil" />
+                    android:src="@drawable/write_it_down"
+                    android:scaleType="centerInside" />
 
 
                 <RelativeLayout
