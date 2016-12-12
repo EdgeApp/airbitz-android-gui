@@ -467,7 +467,7 @@ public class LandingFragment extends BaseFragment implements
         AccountDump.cleanUp(getActivity());
 
 
-        mActivity.requestLocationFromFragment(new NavigationActivity.PermissionCallbacks() {
+        mActivity.requestLocationFromFragment(true, new NavigationActivity.PermissionCallbacks() {
             @Override
             public void onDenied() {
                 mTryToGetLocationPermission = false;
