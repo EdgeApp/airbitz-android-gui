@@ -182,8 +182,10 @@ public abstract class ScanFragment
 
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             if (SettingFragment.getBLEPref()) {
-                mBeaconSend = new BeaconSend(mActivity);
-                mBeaconSend.setOnPeripheralSelectedListener(this);
+                if (mActivity.hasLocationPermission) {
+                    mBeaconSend = new BeaconSend(mActivity);
+                    mBeaconSend.setOnPeripheralSelectedListener(this);
+                }
             }
         }
     }
@@ -194,26 +196,30 @@ public abstract class ScanFragment
         mCoreApi = AirbitzCore.getApi();
 
         mView = inflater.inflate(R.layout.fragment_scan, container, false);
-
         mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
         mBluetoothListView = (ListView) mView.findViewById(R.id.fragment_send_bluetooth_layout);
-        mBluetoothListView.setAdapter(mSearchAdapter);
-        if (mBeaconSend != null) {
-            mBluetoothListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    BleDevice device = mPeripherals.get(i);
-                    if (!device.hasErrors()) {
-                        mSearchAdapter.selectItem(view);
 
-                        showConnecting(device);
-                        stopBluetoothSearch();
-                        mBeaconSend.connectGatt(device);
-                    } else {
-                        hideProcessing();
+        if (mActivity.hasLocationPermission)
+        {
+            mSearchAdapter.setHasContactsPermission(mActivity.hasContactsPermission);
+            mBluetoothListView.setAdapter(mSearchAdapter);
+            if (mBeaconSend != null) {
+                mBluetoothListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        BleDevice device = mPeripherals.get(i);
+                        if (!device.hasErrors()) {
+                            mSearchAdapter.selectItem(view);
+
+                            showConnecting(device);
+                            stopBluetoothSearch();
+                            mBeaconSend.connectGatt(device);
+                        } else {
+                            hideProcessing();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         mCameraLayout = (RelativeLayout) mView.findViewById(R.id.fragment_send_layout_camera);
@@ -295,8 +301,25 @@ public abstract class ScanFragment
         return mActivity.getFabTop() - mButtonBar.getHeight();
     }
 
+    boolean mTryToStartCamera = true;
+
     public void startCamera() {
-        mQRCamera.startCamera();
+        if (mTryToStartCamera) {
+            mActivity.requestCameraFromFragment(true, new NavigationActivity.PermissionCallbacks() {
+
+                @Override
+                public void onDenied() {
+                    mTryToStartCamera = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                    mQRCamera.startCamera();
+                }
+            });
+
+        }
+
     }
 
     public void stopCamera() {
@@ -394,6 +417,7 @@ public abstract class ScanFragment
         stopCamera();
         stopBluetoothSearch();
         hideProcessing();
+        mTryToStartCamera = true;
         if (mBeaconSend != null) {
             mBeaconSend.close();
         }

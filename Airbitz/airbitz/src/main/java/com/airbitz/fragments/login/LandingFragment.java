@@ -114,6 +114,8 @@ public class LandingFragment extends BaseFragment implements
     private View mPinLayout;
     private View mBlackoutView;
     private ABCKeychain mAbcKeychain;
+    private boolean mTryToGetLocationPermission = true;
+    private boolean mHasLocationPermission = false;
 
 
     private HighlightOnPressImageButton mBackButton;
@@ -463,6 +465,22 @@ public class LandingFragment extends BaseFragment implements
         mView.setOnTouchListener(mActivity);
 
         AccountDump.cleanUp(getActivity());
+
+
+        mActivity.requestLocationFromFragment(true, new NavigationActivity.PermissionCallbacks() {
+            @Override
+            public void onDenied() {
+                mTryToGetLocationPermission = false;
+                mHasLocationPermission = false;
+            }
+
+            @Override
+            public void onAllowed() {
+                mHasLocationPermission = true;
+            }
+        });
+
+
 
         return mView;
     }

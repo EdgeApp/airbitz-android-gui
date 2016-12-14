@@ -817,10 +817,12 @@ public class TransactionDetailFragment extends WalletBaseFragment
             mArrayAutoComplete.addAll(getMatchedNearBusinessList(strTerm));
 
             // go through all the contacts
-            Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, strTerm);
-            for (String s : list.keySet()) {
-                mArrayAutoComplete.add(s);
-                mCombinedPhotos.put(s, list.get(s));
+            if (mActivity.hasContactsPermission) {
+                Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, strTerm);
+                for (String s : list.keySet()) {
+                    mArrayAutoComplete.add(s);
+                    mCombinedPhotos.put(s, list.get(s));
+                }
             }
 
             // check if we have less than the minimum
@@ -845,10 +847,12 @@ public class TransactionDetailFragment extends WalletBaseFragment
             if (mFromRequest) {
                 // this is a receive so use the address book
                 // show all the contacts
-                Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, null);
-                for (String s : list.keySet()) {
-                    mArrayAutoComplete.add(s);
-                    mCombinedPhotos.put(s, list.get(s));
+                if (mActivity.hasContactsPermission) {
+                    Map<String, Uri> list = Common.GetMatchedContactsList(mActivity, null);
+                    for (String s : list.keySet()) {
+                        mArrayAutoComplete.add(s);
+                        mCombinedPhotos.put(s, list.get(s));
+                    }
                 }
 
             } else {
@@ -1324,18 +1328,35 @@ public class TransactionDetailFragment extends WalletBaseFragment
         }
     }
 
+    boolean mTryToGetContactList = true;
+
     public void getContactsList() {
         mContactNames.clear();
-        ContentResolver cr = mActivity.getContentResolver();
-        String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
-        if (cursor!=null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                mContactNames.add(name);
+        if (mTryToGetContactList == false)
+            return;
+
+        mActivity.requestContactsFromFragment(true, new NavigationActivity.PermissionCallbacks() {
+
+            @Override
+            public void onDenied() {
+                mTryToGetContactList = false;
             }
-            cursor.close();
-        }
+
+            @Override
+            public void onAllowed() {
+                ContentResolver cr = mActivity.getContentResolver();
+                String columns[] = {ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ;
+                Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, columns, null, null, null);
+                if (cursor!=null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                        mContactNames.add(name);
+                    }
+                    cursor.close();
+                }
+            }
+        });
+
     }
 
     public List<BusinessSearchResult> getMatchedNearBusinessList(String searchTerm) {
