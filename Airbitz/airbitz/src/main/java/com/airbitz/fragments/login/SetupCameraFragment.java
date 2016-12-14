@@ -149,13 +149,13 @@ public class SetupCameraFragment extends BaseFragment implements NavigationActiv
 
     private void launchSetupContacts() {
 
-//        SetupContactsFragment fragment = new SetupContactsFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString(SetupWriteItDownFragment.USERNAME, mUsername);
-//        bundle.putString(SetupWriteItDownFragment.PASSWORD, mPassword);
-//        bundle.putString(SetupWriteItDownFragment.PIN, mPin);
-//        fragment.setArguments(bundle);
-//        mActivity.pushFragment(fragment);
+        SetupContactsFragment fragment = new SetupContactsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SetupWriteItDownFragment.USERNAME, mUsername);
+        bundle.putString(SetupWriteItDownFragment.PASSWORD, mPassword);
+        bundle.putString(SetupWriteItDownFragment.PIN, mPin);
+        fragment.setArguments(bundle);
+        mActivity.pushFragment(fragment);
     }
 
 
