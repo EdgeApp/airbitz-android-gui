@@ -172,10 +172,14 @@ public class Common {
         }
         return version;
     }
-
     public static String evaluateTextFile(Context ctx, int resId) {
-        String footer = readRawTextFile(ctx, R.raw.info_footer);
         String text = readRawTextFile(ctx, resId);
+        return evaluateTextString(ctx, text);
+    }
+
+    public static String evaluateTextString(Context ctx, String text) {
+
+        String footer = readRawTextFile(ctx, R.raw.info_footer);
         String supportEmail = ctx.getString(R.string.app_support_email);
         String emailSupportTemplate =
             String.format("<a href=\"#\" onclick=\"_help.sendSupportEmail()\">%s</a>", supportEmail);

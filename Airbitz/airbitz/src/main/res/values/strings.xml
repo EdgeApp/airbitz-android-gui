@@ -231,6 +231,10 @@
     <string name="fragment_setup_writeitdown_pin_title">PIN</string>
     <string name="fragment_setup_writeitdown_show">Show</string>
     <string name="fragment_setup_writeitdown_hide">Hide</string>
+    <string name="fragment_setup_camera_title">Enable Camera Access</string>
+    <string name="fragment_setup_camera_text">You will next see a popup requesting access to your Camera.\n\n[[abtag APP_TITLE]] needs this to scan QR codes to pay people and merchants.</string>
+    <string name="fragment_setup_contacts_title">Enable Contacts Access</string>
+    <string name="fragment_setup_contacts_text">You will next see a popup requesting access to your Contacts.\n\n[[abtag APP_TITLE]] needs this to send payment requests and to help tag your transactions.</string>
 
     <!-- Strings for PasswordRecovery -->
     <string name="activity_recovery_setup_title">Password Recovery Setup</string>
@@ -391,7 +395,6 @@
     <string name="fragment_wallets_add_wallet">Add Wallet</string>
     <string name="fragment_wallets_deleting_wallet">Deleting wallet...</string>
     <string name="fragment_wallets_unable_to_delete_wallet">Unable to delete wallet</string>
-    <string name="fragment_wallets_delete_has_funds">Cannot delete wallet as it contains funds. Please transfer out funds first.</string>
     <string name="fragment_wallets_delete_wallet_confirm_title">Delete Wallet?</string>
     <string name="fragment_wallets_delete_wallet_confirm_message">Are you sure you want to delete %1$s?</string>
     <string name="fragment_wallets_delete_wallet_second_confirm_title">Delete Wallet: %1$s?</string>
@@ -443,7 +446,7 @@
     <!-- Strings for Request QR Code fragment -->
     <string name="request_qr_email_title">%1$s Bitcoin Request</string>
     <string name="request_qr_bitmap_error">A QR code could not be attached.</string>
-    <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email.</string>
+    <string name="request_qr_image_store_error">Warning: The QR code cannot be attached to the email. Ensure this app has permission to access your phone\'s storage.</string>
     <string name="request_qr_unknown">Unknown User</string>
     <string name="request_qr_waiting_for_payment">Waiting for Payment…</string>
     <string name="request_qr_loading_address">Loading bitcoin address…</string>
@@ -808,7 +811,20 @@
     <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
     <string name="successfully_verified_identity">Successfully Verified Identity</string>
     <string name="create_new_text">Create new</string>
-    <string name="or_choose">\"$1$s\" or choose</string>
+    <string name="or_choose">[%1$s] or choose</string>
+
+    <string name="permission_needs_access_to_camera">%1$s needs access to your camera to scan QR codes and capture documents</string>
+    <string name="permission_camera_permission_denied">Camera permission denied. You will not be able to scan QR codes. Please re-enable access in your phone\'s Settings -&gt; Applications</string>
+    <string name="permission_camera_permission_denied_not_be_asked">Camera permission denied. You will not be asked again</string>
+    <string name="permission_needs_access_to_contacts">%1$s needs access to your contacts to help tag transactions with payee information</string>
+    <string name="permission_contacts_permission_denied">Contacts permission denied. Please re-enable access in your phone\'s Settings -&gt; Apps</string>
+    <string name="permission_contacts_permission_denied_not_be_asked">Contacts permission denied. You will not be asked again</string>
+    <string name="permission_needs_access_to_location">%1$s needs access to your location to find businesses in your area</string>
+    <string name="permission_location_permission_denied">Location permission denied. Please re-enable access in your phone\'s Settings -&gt; Apps</string>
+    <string name="permission_location_permission_denied_not_be_asked">Location permission denied. You will not be asked again</string>
+    <string name="permission_needs_access_to_storage">%1$s needs access to your device storage to send QR codes for payment requests and to capture documents</string>
+    <string name="permission_storage_permission_denied">Storage permission denied. Please re-enable access in your phone\'s Settings -&gt; Apps</string>
+    <string name="permission_storage_permission_denied_not_be_asked">Storage permission denied. You will not be asked again</string>
 
     <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
     <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>

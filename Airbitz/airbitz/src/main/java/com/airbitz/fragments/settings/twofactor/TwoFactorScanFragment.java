@@ -72,6 +72,7 @@ public class TwoFactorScanFragment extends BaseFragment implements
     boolean mSuccess = false;
     boolean mStoreSecret = false;
     boolean mTestSecret = false;
+    boolean mTryToStartCamera = true;
     String mUsername;
     String mSecret;
 
@@ -130,9 +131,29 @@ public class TwoFactorScanFragment extends BaseFragment implements
         if(mQRCamera == null) {
             mQRCamera = new QRCamera(this, mCameraLayout);
             mQRCamera.setOnScanResultListener(this);
-            mQRCamera.startCamera();
+            startCamera();
         }
     }
+
+    public void startCamera() {
+        if (mTryToStartCamera) {
+            mActivity.requestCameraFromFragment(true, new NavigationActivity.PermissionCallbacks() {
+
+                @Override
+                public void onDenied() {
+                    mTryToStartCamera = false;
+                }
+
+                @Override
+                public void onAllowed() {
+                    mQRCamera.startCamera();
+                }
+            });
+
+        }
+
+    }
+
 
     @Override
     public void onPause() {

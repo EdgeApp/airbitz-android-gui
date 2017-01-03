@@ -31,6 +31,7 @@
 
 package com.airbitz.activities;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -62,6 +63,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -95,6 +97,12 @@ import co.airbitz.core.Transaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 import co.airbitz.core.android.AndroidUtils;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -157,6 +165,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+@RuntimePermissions
 public class NavigationActivity extends ActionBarActivity
         implements View.OnTouchListener,
         OnAddressRequestListener,
@@ -396,6 +405,13 @@ public class NavigationActivity extends ActionBarActivity
         BuySellOverrides.sync();
 
         abcKeychain = new ABCKeychain(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        NavigationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -821,12 +837,17 @@ public class NavigationActivity extends ActionBarActivity
         return mNavStacks[mNavThreadId].size() == 1;
     }
 
+    public interface PermissionCallbacks {
+        void onDenied();
+        void onAllowed();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11 in Support Package
     }
 
-    private void setupReceivers() {
+    public void setupReceivers() {
         Account account = AirbitzApplication.getAccount();
         if (account != null && account.isLoggedIn()) {
             IntentFilter filter = new IntentFilter();
@@ -2831,4 +2852,196 @@ public class NavigationActivity extends ActionBarActivity
             onOTPResetRequest();
         }
     };
+
+    PermissionCallbacks mPermissionCallbacks;
+    public boolean hasContactsPermission = false;
+    public boolean hasCameraPermission = false;
+    public boolean hasLocationPermission = false;
+    public boolean hasStoragePermission = false;
+
+    void showRationale(final PermissionRequest request, String message) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(NavigationActivity.this);
+        builder.title(message)
+                .cancelable(false)
+                .positiveText(R.string.string_continue)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        request.proceed();
+                        dialog.dismiss();
+                    }
+                });
+        builder.build();
+        builder.show();
+    }
+
+    // Permission for CAMERA
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    void showRationaleForCamera(final PermissionRequest request) {
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_camera),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void onCameraDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasCameraPermission = false;
+        showToast(getResources().getString(R.string.permission_camera_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void onCameraNeverAskAgain() {
+        hasCameraPermission = false;
+//        showToast(getResources().getString(R.string.permission_camera_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void requestCamera() {
+        Log.e(TAG, "Camera request succeeded");
+        hasCameraPermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestCameraFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestCameraWithCheck(this);
+    }
+
+
+    // Permission for READ_CONTACTS
+    boolean mShowRational = true;
+
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    void showRationaleForContacts(final PermissionRequest request) {
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_contacts),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    void onContactsDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasContactsPermission = false;
+        showToast(getResources().getString(R.string.permission_contacts_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    void onContactsNeverAskAgain() {
+        hasContactsPermission = false;
+//        showToast(getResources().getString(R.string.permission_contacts_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    void requestContacts() {
+        Log.e(TAG, "Contacts request succeeded");
+        hasContactsPermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestContactsFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestContactsWithCheck(this);
+    }
+
+    // Permission for LOCATION
+
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    void showRationaleForLocation(final PermissionRequest request) {
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_location),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
+    }
+
+    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
+    void onLocationDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasLocationPermission = false;
+        showToast(getResources().getString(R.string.permission_location_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
+    void onLocationNeverAskAgain() {
+        hasContactsPermission = false;
+//        showToast(getResources().getString(R.string.permission_location_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    void requestLocation() {
+        Log.e(TAG, "Location request succeeded");
+        hasLocationPermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestLocationFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestLocationWithCheck(this);
+    }
+
+    // Permission for STORAGE
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        if (mShowRational) {
+            String message = String.format(getResources().getString(R.string.permission_needs_access_to_storage),
+                    getResources().getString(R.string.app_name));
+            showRationale(request, message);
+        } else {
+            request.proceed();
+        }
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onStorageDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        hasStoragePermission = false;
+        showToast(getResources().getString(R.string.permission_storage_permission_denied), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onStorageNeverAskAgain() {
+        hasStoragePermission = false;
+//        showToast(getResources().getString(R.string.permission_storage_permission_denied_not_be_asked), 15000);
+        mPermissionCallbacks.onDenied();
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void requestStorage() {
+        Log.e(TAG, "Storage request succeeded");
+        hasStoragePermission = true;
+        mPermissionCallbacks.onAllowed();
+    }
+
+    public void requestStorageFromFragment(boolean bShowRational, PermissionCallbacks permissionCallbacks) {
+        mShowRational = bShowRational;
+        mPermissionCallbacks = permissionCallbacks;
+        NavigationActivityPermissionsDispatcher.requestStorageWithCheck(this);
+    }
 }

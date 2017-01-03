@@ -56,6 +56,7 @@ import java.util.List;
 public class BluetoothSearchAdapter extends ArrayAdapter {
     private Context mContext;
     private List<BleDevice> mDevices;
+    private boolean mHasContactsPermission = false;
 
     private int[] mRSSIImages = { R.drawable.zero_bars, R.drawable.zero_bars, R.drawable.two_bars,
             R.drawable.three_bars, R.drawable.four_bars, R.drawable.five_bars };
@@ -64,6 +65,10 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
         super(context, R.layout.item_listview_bluetooth_le);
         mContext = context;
         mDevices = devices;
+    }
+
+    public void setHasContactsPermission(boolean hasContactsPermission) {
+        mHasContactsPermission = hasContactsPermission;
     }
 
     @Override
@@ -141,6 +146,9 @@ public class BluetoothSearchAdapter extends ArrayAdapter {
     }
 
     private Contact findMatchingContact(String displayName) {
+        if (mHasContactsPermission == false)
+            return null;
+
         if(displayName.split(" ").length < 2) {
             return null;
         }

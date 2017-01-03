@@ -19,7 +19,6 @@ import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.utils.Common;
-import com.google.android.gms.fitness.data.Subscription;
 import com.squareup.whorlwind.ReadResult;
 import com.squareup.whorlwind.SharedPreferencesStorage;
 import com.squareup.whorlwind.Whorlwind;
