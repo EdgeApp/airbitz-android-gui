@@ -1,3 +1,9 @@
+v.2.4.0
+
+• Protocol Changes to Edge-Login
+• Updated language support including Russian, Hindi, Chinese, French, Portuguese, Spanish, Arabic, Italian, Hatian Creole,       Japanese, and German
+• Added Plugin Liberty-X as another option to buy bitcoin
+
 v 2.3.3
 
 ** Fingerprint Login on supported devices such as Nexus 5x and 6p **
