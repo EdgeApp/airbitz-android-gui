@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.R;
@@ -76,9 +77,9 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
                     public void onClick(DialogInterface dialog, int id) {
                         if(id >= 0 && id < mFileList.size()) {
                             mCurrentDirectory =
-                                mFileList.get(id).getName().equals("..")
-                                ? mCurrentDirectory.getParentFile()
-                                : mFileList.get(id);
+                                    mFileList.get(id).getName().equals("..")
+                                    ? mCurrentDirectory.getParentFile()
+                                    : mFileList.get(id);
 
                             mFileList = getDirectoryListing(mCurrentDirectory);
                             mAdapter.notifyDataSetChanged();
@@ -89,7 +90,8 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
                 } )
                 .setPositiveButton(R.string.string_save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (mCallback != null ) mCallback.onFileSaveLocation(mCurrentDirectory);
+                        if (mCallback != null )
+                            mCallback.onFileSaveLocation(mCurrentDirectory);
                         dialog.dismiss();
                     }
                 })
@@ -101,6 +103,18 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
 
         mAlertDialog = builder.show();
         mAlertDialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(i >= 0 && i < mFileList.size()) {
+            mCurrentDirectory = mFileList.get(i).getName().equals("..") ?
+                mCurrentDirectory.getParentFile() : mFileList.get(i);
+
+            mFileList = getDirectoryListing(mCurrentDirectory);
+            mAdapter.notifyDataSetChanged();
+            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
+        }
     }
 
     private List<File> getDirectoryListing(File directory) {
