@@ -70,37 +70,39 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
         mFileList = getDirectoryListing(directory);
         mAdapter = new DirectoryListingAdapter(context, android.R.layout.simple_list_item_1, mFileList);
 
-        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) )
-                .setTitle( directory.getAbsolutePath() )
-                .setAdapter( mAdapter, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if(id >= 0 && id < mFileList.size()) {
-                            mCurrentDirectory =
-                                mFileList.get(id).getName().equals("..")
-                                ? mCurrentDirectory.getParentFile()
-                                : mFileList.get(id);
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) );
+        builder.setTitle( directory.getAbsolutePath() );
+        builder.setAdapter( mAdapter, null );
 
-                            mFileList = getDirectoryListing(mCurrentDirectory);
-                            mAdapter.notifyDataSetChanged();
-                            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
-                        }
+        builder.setPositiveButton(R.string.string_save, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (mCallback != null )
+                    mCallback.onFileSaveLocation(mCurrentDirectory);
+                dialog.dismiss();
+            }
+        });
 
-                    }
-                } )
-                .setPositiveButton(R.string.string_save, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (mCallback != null ) mCallback.onFileSaveLocation(mCurrentDirectory);
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
+        builder.setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
 
         mAlertDialog = builder.show();
+//        mAlertDialog.getListView().setOnItemClickListener(this);
         mAlertDialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(i >= 0 && i < mFileList.size()) {
+            mCurrentDirectory = mFileList.get(i).getName().equals("..") ?
+                mCurrentDirectory.getParentFile() : mFileList.get(i);
+
+            mFileList = getDirectoryListing(mCurrentDirectory);
+            mAdapter.notifyDataSetChanged();
+            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
+        }
     }
 
     private List<File> getDirectoryListing(File directory) {
@@ -110,7 +112,6 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
         else {
             mFileList.clear();
         }
-
         if(directory.getParent() != null) {
             mFileList.add(new File(".."));
         }
