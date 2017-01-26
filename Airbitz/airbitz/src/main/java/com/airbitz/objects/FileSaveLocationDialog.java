@@ -50,7 +50,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
+public class FileSaveLocationDialog {
     List<File> mFileList;
     File mCurrentDirectory;
     FileSaveLocation mCallback;
@@ -103,18 +103,6 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
 
         mAlertDialog = builder.show();
         mAlertDialog.show();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(i >= 0 && i < mFileList.size()) {
-            mCurrentDirectory = mFileList.get(i).getName().equals("..") ?
-                mCurrentDirectory.getParentFile() : mFileList.get(i);
-
-            mFileList = getDirectoryListing(mCurrentDirectory);
-            mAdapter.notifyDataSetChanged();
-            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
-        }
     }
 
     private List<File> getDirectoryListing(File directory) {
