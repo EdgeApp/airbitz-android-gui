@@ -241,54 +241,70 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mSDCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                String data = null;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
-                        data = mWallet.seed();
-                    } else {
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
-                        return;
-                    }
-                } else if (mExportType == ExportTypes.XPub.ordinal()) {
-                    data = mWallet.xpub();
-                } else {
-                    if (mExportType == ExportTypes.Quickbooks.ordinal()) {
-                        data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                    } else {
-                        data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                    }
-                    if (data == null || data.isEmpty()) {
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(
-                                getString(R.string.export_saving_option_no_transactions_message));
-                        return;
-                    }
-                }
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
 
-                if (data != null && !data.isEmpty()) {
-                    chooseDirectoryAndSave(data);
-                }
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String data = null;
+                        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                            if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
+                                data = mWallet.seed();
+                            } else {
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                                return;
+                            }
+                        } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                            data = mWallet.xpub();
+                        } else {
+                            if (mExportType == ExportTypes.Quickbooks.ordinal()) {
+                                data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                            } else {
+                                data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                            }
+                            if (data == null || data.isEmpty()) {
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(
+                                        getString(R.string.export_saving_option_no_transactions_message));
+                                return;
+                            }
+                        }
+
+                        if (data != null && !data.isEmpty()) {
+                            chooseDirectoryAndSave(data);
+                        }
+                    }
+                });
             }
         });
 
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                String dataOrFile;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
-                        dataOrFile = mWallet.seed();
-                    } else {
-                        dataOrFile = null;
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
+
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String dataOrFile;
+                        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                            if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
+                                dataOrFile = mWallet.seed();
+                            } else {
+                                dataOrFile = null;
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                            }
+                        } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                            dataOrFile = mWallet.xpub();
+                        } else {
+                            dataOrFile = getExportFilePath(wallet, mExportType);
+                        }
+                        exportWithEmail(wallet, dataOrFile);
                     }
-                } else if (mExportType == ExportTypes.XPub.ordinal()) {
-                    dataOrFile = mWallet.xpub();
-                } else {
-                    dataOrFile = getExportFilePath(wallet, mExportType);
-                }
-                exportWithEmail(wallet, dataOrFile);
+                });
             }
         });
 
@@ -301,14 +317,22 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                    String filePath = getExportFilePath(wallet, mExportType);
-                if(filePath != null) {
-                    Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sendIntent.setType("text/csv");
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
-                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
-                }
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
+
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String filePath = getExportFilePath(wallet, mExportType);
+                        if (filePath != null) {
+                            Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sendIntent.setType("text/csv");
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
+                            startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
+                        }
+                    }
+                });
             }
         });
 
@@ -476,7 +500,19 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
         setupUI(mExportType);
         mTodayButton.performClick();
+
+        requestPermission();
         return mView;
+    }
+
+    private void requestPermission() {
+            mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                @Override
+                public void onDenied() {}
+
+                @Override
+                public void onAllowed() {}
+            });
     }
 
     @Override
