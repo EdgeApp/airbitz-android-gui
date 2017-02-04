@@ -258,14 +258,17 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         builder.show();
     }
 
+    boolean mTryToLaunchFileChooser = true;
     private void launchFileChooserWithCheck() {
-        mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
-            @Override
-            public void onDenied() {}
+        if (mTryToStartCamera) {
+            mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                @Override
+                public void onDenied() { mTryToLaunchFileChooser = false; }
 
-            @Override
-            public void onAllowed() { launchFileChooser(); }
-        });
+                @Override
+                public void onAllowed() { launchFileChooser(); }
+            });
+        }
     }
     private void launchFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -301,8 +304,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
     }
-
-
+    
     private void launchCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "photo.jpg");
