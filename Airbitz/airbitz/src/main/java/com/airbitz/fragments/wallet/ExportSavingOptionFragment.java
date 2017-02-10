@@ -139,6 +139,9 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
     private DateFormat mDateFormatter;
 
+//    Required, but only useful if starting multiple activities
+    public static final int REQUEST_CODE = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -749,7 +752,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         intent.putExtra(Intent.EXTRA_TEXT, wallet.name());
 
         try {
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getString(R.string.export_saving_option_no_email_apps));
         }
