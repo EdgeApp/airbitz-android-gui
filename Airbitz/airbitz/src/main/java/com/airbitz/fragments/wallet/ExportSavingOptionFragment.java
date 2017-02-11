@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -714,7 +715,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
             return null;
         } else {
-            return "file://" + Common.createTempFileFromString(filename, data);
+            return Common.createTempFileFromString(filename, data);
         }
     }
 
@@ -745,10 +746,16 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri file = Uri.parse(filepath);
+
+        String provider = getActivity().getPackageName() + ".provider";
+        Uri uri = FileProvider.getUriForFile(
+                getActivity(),
+                provider,
+                new File(filepath));
+
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
-        intent.putExtra(Intent.EXTRA_STREAM, file);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.putExtra(Intent.EXTRA_TEXT, wallet.name());
 
         try {
