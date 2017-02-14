@@ -1,8 +1,13 @@
 v.2.4.0
 
 • Protocol Changes to Edge-Login
-• Updated language support including Russian, Hindi, Chinese, French, Portuguese, Spanish, Arabic, Italian, Hatian Creole,       Japanese, and German
-• Added Plugin Liberty-X as another option to buy bitcoin
+• Updated language support 
+• Added Liberty-X plug-in
+• Fix SD card export
+• Fix photo upload bug for Glidera
+• Support for non-USD CSV/QBO export
+• Large wallet support. Better timeouts
+• Email CSV/QBO export crash fixes
 
 v 2.3.3
 
