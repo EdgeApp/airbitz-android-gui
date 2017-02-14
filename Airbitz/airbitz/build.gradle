@@ -37,6 +37,10 @@ android {
             applicationId 'com.rackwallet.wallet'
         }
 
+        rockitcoin {
+            applicationId 'com.rockitcoin.wallet'
+        }
+
         coinsource {
             applicationId 'com.coinsource.wallet'
         }
@@ -142,7 +146,9 @@ dependencies {
     nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.11.+@aar'
 
     rackwalletCompile 'co.airbitz:airbitz-core-java:0.11.+'
-	rackwalletCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
+    rackwalletCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
+    rockitcoinCompile 'co.airbitz:airbitz-core-java:0.11.+'
+    rockitcoinCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
     coinsourceCompile 'co.airbitz:airbitz-core-java:0.11.+'
 	coinsourceCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
     athenaCompile 'co.airbitz:airbitz-core-java:0.11.+'

@@ -1,33 +1,20 @@
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-de
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-es
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-fr
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-hi
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-ht
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-it
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-ja
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-pt
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-ru
-cp -a Airbitz/airbitz/src/athena/res/values Airbitz/airbitz/src/athena/res/values-zh
+#!/usr/local/bin/node
 
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-de
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-es
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-fr
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-hi
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-ht
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-it
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-ja
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-pt
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-ru
-cp -a Airbitz/airbitz/src/rackwallet/res/values Airbitz/airbitz/src/rackwallet/res/values-zh
+const languages = ['de', 'es', 'fr', 'hi', 'ht', 'it', 'ja', 'pt', 'ru', 'zh']
+const brands = ['athena', 'rackwallet', 'coinsource']
 
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-de
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-es
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-fr
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-hi
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-ht
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-it
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-ja
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-pt
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-ru
-cp -a Airbitz/airbitz/src/coinsource/res/values Airbitz/airbitz/src/coinsource/res/values-zh
+var sys = require('sys')
+var exec = require('child_process').exec;
+function puts(error, stdout, stderr) { sys.puts(stdout) }
+
+for (let l of languages) {
+  for (let b of brands) {
+    var src = 'Airbitz/airbitz/src/' + b + '/res/values'
+    var dst = 'Airbitz/airbitz/src/' + b + '/res/values-' + l
+    var cmd = 'rm -rf ' + dst
+    exec (cmd)
+    cmd = 'cp -a ' + src + ' ' + dst
+    exec(cmd)
+  }
+}
 
