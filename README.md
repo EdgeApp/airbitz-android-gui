@@ -31,8 +31,12 @@ following gradle command.
 
 In order to work with Airbitz servers, Google Maps, or any plugin partners
 ([glidera][glidera], [foldapp][foldapp], [clevercoin][clevercoin]), you'll need
-API keys. They are placed in an xml file called keys.xml in
-`src/prod/res/values` or `src/nettest/res/values` or `src/develop/res/values`.
+API keys. Put your developer API key in the appropriate `keys.xml`
+
+    cp src/prod/res/values/keys.xml.example    src/prod/res/values/keys.xml
+    cp src/develop/res/values/keys.xml.example src/develop/res/values/keys.xml
+    cp src/nettest/res/values/keys.xml.example src/nettest/res/values/keys.xml
+
 
 ### Airbitz APIs
 
@@ -41,7 +45,7 @@ This app is build heavily on [airbitz-core-java][java-core] which leverages
 and possibly using it in your application, please see our [API overview][library].
 
 [plugins]: https://github.com/Airbitz/airbitz-plugins.git
-[glidera]: https://glidera.io 
+[glidera]: https://glidera.io
 [foldapp]: https://foldapp.com
 [clevercoin]: https://corporate.clevercoin.com
 [core]: https://github.com/Airbitz/airbitz-core.git
