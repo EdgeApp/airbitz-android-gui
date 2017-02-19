@@ -1468,7 +1468,6 @@ _bridge = function() {
    * @param {object} wallet - the wallet object
    * @param {string} toAddress - the recipient address
    * @param {number} amountSatoshi - how many satoshis to spend
-   * @param {amountFiat} amountFiat - not required, but the fiat value at the time of the request
    */
   Airbitz.core.createSpendRequest = function(wallet, toAddress, amountSatoshi, options) {
     Airbitz._bridge.createSpendRequest(wallet, toAddress, amountSatoshi, 0, options);
@@ -1481,10 +1480,9 @@ _bridge = function() {
    * @param {number} amountSatoshi - how many satoshis to spend
    * @param {string} toAddress2 - the recipient address
    * @param {number} amountSatoshi2 - how many satoshis to spend
-   * @param {amountFiat} amountFiat - not required, but the fiat value at the time of the request
    */
-  Airbitz.core.createSpendRequest2 = function(wallet, toAddress, amountSatoshi, toAddress2, options) {
-    Airbitz._bridge.createSpendRequest2(wallet, toAddress, amountSatoshi, toAddress2, 0, options);
+  Airbitz.core.createSpendRequest2 = function(wallet, toAddress, amountSatoshi, toAddress2, amountSatoshi2, options) {
+    Airbitz._bridge.createSpendRequest2(wallet, toAddress, amountSatoshi, toAddress2, amountSatoshi2, 0,options);
   };
 
   /**
@@ -1494,8 +1492,8 @@ _bridge = function() {
    * @param {number} amountSatoshi - how many satoshis to spend
    * @param {amountFiat} amountFiat - not required, but the fiat value at the time of the request
    */
-  Airbitz.core.requestSign = function(wallet, toAddress, amountSatoshi, options) {
-    Airbitz._bridge.requestSign(wallet, toAddress, amountSatoshi, 0, options);
+  Airbitz.core.requestSign = function(wallet, toAddress, amountSatoshi, amountFiat, options) {
+    Airbitz._bridge.requestSign(wallet, toAddress, amountSatoshi, amountFiat, options);
   };
 
   /**
@@ -11438,25 +11436,6 @@ try {
   module = angular.module('app', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/error/partials/error.html',
-    '<div class="error-screen text-center row">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <h2>{{ title }}</h2>\n' +
-    '    <h3>{{ message }}</h3>\n' +
-    '    <button class="btn btn-large btn-warning" ng-click="refresh()">Refresh</button>\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/add.bankAccount.html',
     '\n' +
     '<div class="exchange-add-bank-account row">\n' +
@@ -11902,6 +11881,25 @@ module.run(['$templateCache', function($templateCache) {
     '          </div>\n' +
     '      </div>\n' +
     '    </form>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/error/partials/error.html',
+    '<div class="error-screen text-center row">\n' +
+    '  <div class="col-xs-12">\n' +
+    '    <h2>{{ title }}</h2>\n' +
+    '    <h3>{{ message }}</h3>\n' +
+    '    <button class="btn btn-large btn-warning" ng-click="refresh()">Refresh</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '');
