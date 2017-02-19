@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -138,6 +139,9 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
     private int mExportType;
 
     private DateFormat mDateFormatter;
+
+//    Required, but only useful if starting multiple activities
+    public static final int REQUEST_CODE = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,54 +245,70 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mSDCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                String data = null;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
-                        data = mWallet.seed();
-                    } else {
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
-                        return;
-                    }
-                } else if (mExportType == ExportTypes.XPub.ordinal()) {
-                    data = mWallet.xpub();
-                } else {
-                    if (mExportType == ExportTypes.Quickbooks.ordinal()) {
-                        data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                    } else {
-                        data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
-                    }
-                    if (data == null || data.isEmpty()) {
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(
-                                getString(R.string.export_saving_option_no_transactions_message));
-                        return;
-                    }
-                }
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
 
-                if (data != null && !data.isEmpty()) {
-                    chooseDirectoryAndSave(data);
-                }
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String data = null;
+                        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                            if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
+                                data = mWallet.seed();
+                            } else {
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                                return;
+                            }
+                        } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                            data = mWallet.xpub();
+                        } else {
+                            if (mExportType == ExportTypes.Quickbooks.ordinal()) {
+                                data = mWallet.qboExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                            } else {
+                                data = mWallet.csvExport(mFromDate.getTimeInMillis() / 1000, mToDate.getTimeInMillis() / 1000);
+                            }
+                            if (data == null || data.isEmpty()) {
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(
+                                        getString(R.string.export_saving_option_no_transactions_message));
+                                return;
+                            }
+                        }
+
+                        if (data != null && !data.isEmpty()) {
+                            chooseDirectoryAndSave(data);
+                        }
+                    }
+                });
             }
         });
 
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                String dataOrFile;
-                if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
-                    if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
-                        dataOrFile = mWallet.seed();
-                    } else {
-                        dataOrFile = null;
-                        ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
+
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String dataOrFile;
+                        if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
+                            if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
+                                dataOrFile = mWallet.seed();
+                            } else {
+                                dataOrFile = null;
+                                ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
+                            }
+                        } else if (mExportType == ExportTypes.XPub.ordinal()) {
+                            dataOrFile = mWallet.xpub();
+                        } else {
+                            dataOrFile = getExportFilePath(wallet, mExportType);
+                        }
+                        exportWithEmail(wallet, dataOrFile);
                     }
-                } else if (mExportType == ExportTypes.XPub.ordinal()) {
-                    dataOrFile = mWallet.xpub();
-                } else {
-                    dataOrFile = getExportFilePath(wallet, mExportType);
-                }
-                exportWithEmail(wallet, dataOrFile);
+                });
             }
         });
 
@@ -301,14 +321,22 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Wallet wallet = mWallet;
-                    String filePath = getExportFilePath(wallet, mExportType);
-                if(filePath != null) {
-                    Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sendIntent.setType("text/csv");
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
-                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
-                }
+                mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                    @Override
+                    public void onDenied() {}
+
+                    @Override
+                    public void onAllowed() {
+                        Wallet wallet = mWallet;
+                        String filePath = getExportFilePath(wallet, mExportType);
+                        if (filePath != null) {
+                            Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sendIntent.setType("text/csv");
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filePath));
+                            startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.fragment_directory_detail_share)));
+                        }
+                    }
+                });
             }
         });
 
@@ -476,7 +504,19 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
 
         setupUI(mExportType);
         mTodayButton.performClick();
+
+        requestPermission();
         return mView;
+    }
+
+    private void requestPermission() {
+            mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                @Override
+                public void onDenied() {}
+
+                @Override
+                public void onAllowed() {}
+            });
     }
 
     @Override
@@ -675,7 +715,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
             ((NavigationActivity)getActivity()).ShowFadingDialog(getString(R.string.export_saving_option_no_transactions_message));
             return null;
         } else {
-            return "file://" + Common.createTempFileFromString(filename, data);
+            return Common.createTempFileFromString(filename, data);
         }
     }
 
@@ -706,14 +746,20 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri file = Uri.parse(filepath);
+
+        String provider = getActivity().getPackageName() + ".provider";
+        Uri uri = FileProvider.getUriForFile(
+                getActivity(),
+                provider,
+                new File(filepath));
+
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_saving_option_email_subject));
-        intent.putExtra(Intent.EXTRA_STREAM, file);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.putExtra(Intent.EXTRA_TEXT, wallet.name());
 
         try {
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             ((NavigationActivity) getActivity()).ShowOkMessageDialog("", getString(R.string.export_saving_option_no_email_apps));
         }

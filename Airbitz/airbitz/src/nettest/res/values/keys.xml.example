@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <!-- uncomment the section below to use your developer API keys -->
+   <!-- <string name="google_maps_api_key"></string>
+   <string name="airbitz_api_key"></string>
+   <string name="chain_api_key"></string>
+   <string name="hiddenbitz_key"></string>
+   <string name="airbitz_business_directory_key"></string>
+   <string name="hockey_key"></string>
+   <string name="glidera_client_id"></string>
+   <string name="fold_api_key"></string>
+   <string name="bitrefill_api_key"></string> -->
+</resources>
