@@ -215,10 +215,19 @@ public class SendFragment extends ScanFragment {
         }
         Uri uri = Uri.parse(text);
         Log.d(TAG, uri.toString());
-        if (uri != null && ("airbitz-ret".equals(uri.getScheme())
-                    || "bitcoin-ret".equals(uri.getScheme())
-                    || "x-callback-url".equals(uri.getHost()))) {
-            if (uri.getPath().contains("edgelogin")) {
+        if (uri != null && (
+                "airbitz-ret".equals(uri.getScheme()) ||
+                "airbitz".equals(uri.getScheme()) ||
+                "bitcoin-ret".equals(uri.getScheme()) ||
+                "x-callback-url".equals(uri.getHost()) )) {
+            if (uri.getHost().equals("edge")) {
+                String token = uri.getLastPathSegment();
+                showProcessing();
+                mEdgeLoginTask = new EdgeLoginTask();
+                mEdgeLoginTask.execute(token);
+                return;
+
+            } else if (uri.getPath().contains("edgelogin")) {
                 String token = uri.getLastPathSegment();
                 showProcessing();
                 mEdgeLoginTask = new EdgeLoginTask();
