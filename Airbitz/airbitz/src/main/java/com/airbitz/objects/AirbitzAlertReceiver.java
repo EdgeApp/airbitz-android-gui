@@ -93,15 +93,15 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     final private static int REPEAT_NEW_BUSINESS_MILLIS = 1000 * 60 * 60 * 24 * 7; // 1 week intervals
     public static final String NEW_BUSINESS_LAST_TIME = "com.airbit.airbitzalert.NewBusinessTime";
 
-    public static final int ALERT_OTPRESET_CODE = 3;
-    public static final String ALERT_OTPRESET_TYPE = "com.airbitz.airbitalert.OTPResetType";
-    final private static int REPEAT_OTPRESET_MILLIS = 1000 * 60 * 60 * 24;
+    public static final int ALERT_LOGINMESSAGE_CODE = 3;
+    public static final String ALERT_LOGINMESSAGE_TYPE = "com.airbitz.airbitalert.LoginMessage";
+    final private static int REPEAT_LOGINMESSAGE_MILLIS = 1000 * 60 * 60 * 24;
 
     private static int ALERT_TIME_TO_LIVE_MILLIS = 30 * 1000;
 
     NotificationTask mNotificationTask;
     NewBusinessTask mNewBusinessTask;
-    OTPResetCheckTask mOTPResetCheckTask;
+    LoginMessagesCheckTask mLoginMessagesCheckTask;
 
     PowerManager.WakeLock mWakeLock;
     Handler mHandler = new Handler();
@@ -128,9 +128,9 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             mNewBusinessTask = new NewBusinessTask(AirbitzApplication.getContext());
             mNewBusinessTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-        else if(type.equals(ALERT_OTPRESET_TYPE)) {
-            mOTPResetCheckTask = new OTPResetCheckTask(AirbitzApplication.getContext());
-            mOTPResetCheckTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        else if(type.equals(ALERT_LOGINMESSAGE_TYPE)) {
+            mLoginMessagesCheckTask = new LoginMessagesCheckTask(AirbitzApplication.getContext());
+            mLoginMessagesCheckTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -143,8 +143,8 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             if(mNewBusinessTask != null && !mNewBusinessTask.isCancelled()) {
                 mNewBusinessTask.cancel(true);
             }
-            if(mOTPResetCheckTask != null && !mOTPResetCheckTask.isCancelled()) {
-                mOTPResetCheckTask.cancel(true);
+            if(mLoginMessagesCheckTask != null && !mLoginMessagesCheckTask.isCancelled()) {
+                mLoginMessagesCheckTask.cancel(true);
             }            //Release the lock
             if(mWakeLock != null && mWakeLock.isHeld()) {
                 mWakeLock.release();
@@ -155,7 +155,7 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
     public static void SetAllRepeatingAlerts(Context context) {
         SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NOTIFICATION_CODE);
         SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_NEW_BUSINESS_CODE);
-        SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_OTPRESET_CODE);
+        SetRepeatingAlertAlarm(context, AirbitzAlertReceiver.ALERT_LOGINMESSAGE_CODE);
     }
 
     public static void SetRepeatingAlertAlarm(Context context, int code)
@@ -175,17 +175,17 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
             am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_NEW_BUSINESS_MILLIS,
                     REPEAT_NEW_BUSINESS_MILLIS, pi);
         }
-        else if(code==ALERT_OTPRESET_CODE) {
-            intent.putExtra(TYPE, ALERT_OTPRESET_TYPE);
-            pi = PendingIntent.getBroadcast(context, ALERT_OTPRESET_CODE, intent, 0);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_OTPRESET_MILLIS,
-                    REPEAT_OTPRESET_MILLIS, pi);
+        else if(code==ALERT_LOGINMESSAGE_CODE) {
+            intent.putExtra(TYPE, ALERT_LOGINMESSAGE_TYPE);
+            pi = PendingIntent.getBroadcast(context, ALERT_LOGINMESSAGE_CODE, intent, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + REPEAT_LOGINMESSAGE_MILLIS,
+                    REPEAT_LOGINMESSAGE_MILLIS, pi);
         }
     }
 
     public static void CancelNextAlertAlarm(Context context, int code)
     {
-        if(code != ALERT_NOTIFICATION_CODE && code != ALERT_NEW_BUSINESS_CODE && code != ALERT_OTPRESET_CODE) {
+        if(code != ALERT_NOTIFICATION_CODE && code != ALERT_NEW_BUSINESS_CODE && code != ALERT_LOGINMESSAGE_CODE) {
             return;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -376,14 +376,28 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         return df.format(date);
     }
 
-    public class OTPResetCheckTask extends AsyncTask<Void, Void, List<String>> {
+    private void createNotificationIfNeeded(Context context, String username, String type) {
+
+        if (type.equals("otpResetPending")) {
+            AirbitzCore.logi("OTP reset requested for: " + username);
+            String message = String.format(context.getString(R.string.twofactor_reset_message), username);
+            issueOSNotification(context, message, ALERT_LOGINMESSAGE_CODE);
+        }
+        if (type.equals("recovery2Corrupt")) {
+            AirbitzCore.logi("Recovery corrupt for: " + username);
+            String message = String.format(context.getString(R.string.recovery_answers_corrupt), username);
+            issueOSNotification(context, message, ALERT_LOGINMESSAGE_CODE);
+        }
+    }
+
+    public class LoginMessagesCheckTask extends AsyncTask<Void, Void, String> {
         Context mContext;
         AirbitzCore mCoreAPI;
 
-        OTPResetCheckTask(Context context) {
+        LoginMessagesCheckTask(Context context) {
             mContext = context;
             mCoreAPI = NavigationActivity.initiateCore(context);
-            AirbitzCore.logi("OTPResetCheck started");
+            AirbitzCore.logi("LoginMessagesCheck started");
         }
 
         @Override
@@ -391,29 +405,43 @@ public class AirbitzAlertReceiver extends BroadcastReceiver {
         }
 
         @Override
-        protected List<String> doInBackground(Void... params) {
-            List<String> pendings = new ArrayList<String>();
+        protected String doInBackground(Void... params) {
+            String loginMessages;
 
-            List<String> accounts = mCoreAPI.listLocalAccounts();
-            for(String name : accounts) {
-                try {
-                    if (!name.isEmpty() && mCoreAPI.isOtpResetPending(name)) {
-                        pendings.add(name);
-                    }
-                } catch (AirbitzException e) {
-                    AirbitzCore.logi("OTPResetCheckTask error");
-                }
+            try {
+                loginMessages = mCoreAPI.getLoginMessages();
+            } catch (AirbitzException e) {
+                loginMessages = "";
             }
+            return loginMessages;
 
-            return pendings;
         }
 
         @Override
-        protected void onPostExecute(final List<String> pendings) {
-            for(String name : pendings) {
-                AirbitzCore.logi("OTP reset requested for: " + name);
-                String message = String.format(mContext.getString(R.string.twofactor_reset_message), name);
-                issueOSNotification(mContext, message, ALERT_OTPRESET_CODE);
+        protected void onPostExecute(final String loginMessages) {
+            try {
+                JSONArray jsonArray = new JSONArray(loginMessages);
+                jsonArray.length();
+                int length = jsonArray.length();
+                for (int i=0; i < length; i++) {
+                    JSONObject message = jsonArray.getJSONObject(i);
+
+                    String username = message.getString("username");
+                    Boolean otpResetPending = message.getBoolean("otpResetPending");
+                    Boolean recovery2Corrupt = message.getBoolean("recovery2Corrupt");
+
+                    if (username == null || username.length() == 0)
+                        continue;
+
+                    if (otpResetPending == true)
+                        createNotificationIfNeeded(mContext, username, "otpResetPending");
+
+                    if (recovery2Corrupt == true)
+                        createNotificationIfNeeded(mContext, username, "recovery2Corrupt");
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             mHandler.removeCallbacks(murderPendingTasks);
             mHandler.post(murderPendingTasks);
