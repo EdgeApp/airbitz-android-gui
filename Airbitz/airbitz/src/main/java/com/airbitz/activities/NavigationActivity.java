@@ -864,6 +864,7 @@ public class NavigationActivity extends ActionBarActivity
             manager.registerReceiver(mOtpErrorReceiver, new IntentFilter(Constants.OTP_ERROR_ACTION));
             manager.registerReceiver(mOtpSkewReceiver, new IntentFilter(Constants.OTP_SKEW_ACTION));
             manager.registerReceiver(mOtpResetReceiver, new IntentFilter(Constants.OTP_RESET_ACTION));
+            manager.registerReceiver(mRecoveryCorruptReceiver, new IntentFilter(Constants.RECOVERYCORRUPT_ACTION));
         }
     }
 
@@ -880,6 +881,7 @@ public class NavigationActivity extends ActionBarActivity
         manager.unregisterReceiver(mOtpErrorReceiver);
         manager.unregisterReceiver(mOtpSkewReceiver);
         manager.unregisterReceiver(mOtpResetReceiver);
+        manager.unregisterReceiver(mRecoveryCorruptReceiver);
     }
 
     @Override
@@ -2364,6 +2366,25 @@ public class NavigationActivity extends ActionBarActivity
         }
     }
 
+    Dialog mRecoveryCorruptDialog;
+    public void onRecoveryCorrupt() {
+        if (!NavigationActivity.this.isFinishing() && mRecoveryCorruptDialog == null) {
+            String message = String.format(getString(R.string.recovery_answers_corrupt), AirbitzApplication.getUsername());
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(NavigationActivity.this);
+            builder.setMessage(message)
+                    .setTitle(getString(R.string.recovery_answers_corrupt_title))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.string_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            mRecoveryCorruptDialog = builder.create();
+            mRecoveryCorruptDialog.show();
+        }
+    }
+
     boolean mDrawerExchangeUpdated = false;
     // Navigation Drawer (right slideout)
     private void setupDrawer() {
@@ -2850,6 +2871,13 @@ public class NavigationActivity extends ActionBarActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             onOTPResetRequest();
+        }
+    };
+
+    private BroadcastReceiver mRecoveryCorruptReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onRecoveryCorrupt();
         }
     };
 

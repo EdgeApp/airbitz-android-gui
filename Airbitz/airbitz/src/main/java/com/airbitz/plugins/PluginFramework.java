@@ -238,24 +238,23 @@ public class PluginFramework {
             mPluginsGrouped.get(BUYSELL).add(plugin);
 
             plugin = new Plugin();
-            plugin.pluginId = "com.clevercoin";
-            plugin.sourceFile = "file:///android_asset/clevercoin.html";
-            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_clevercoin_title);
+            plugin.pluginId = "com.libertyx.app";
+            plugin.sourceFile = "file:///android_asset/libertyx.html";
+            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_libertyx_title);
             plugin.subtitle = "";
-            plugin.provider = "clevercoin";
-            plugin.country = "EUR";
-            plugin.imageUrl = "";
-            plugin.imageResId = R.drawable.ic_plugin_euro;
-            plugin.enabled = false;
-            plugin.env.put("SANDBOX", String.valueOf(api.isTestNet()));
-            plugin.env.put("REDIRECT_URI", "airbitz://plugin/clevercoin/" + plugin.country + "/");
-            plugin.env.put("CLEVERCOIN_API_KEY", AirbitzApplication.getContext().getString(R.string.clevercoin_api_key));
-            plugin.env.put("CLEVERCOIN_API_LABEL", AirbitzApplication.getContext().getString(R.string.clevercoin_api_label));
-            plugin.env.put("CLEVERCOIN_API_SECRET", AirbitzApplication.getContext().getString(R.string.clevercoin_api_secret));
+            plugin.provider = "LibertyX";
+            plugin.country = "US";
+            plugin.imageUrl = "https://wp2.airbitz.co/go/wp-content/uploads/2017/02/libertyx-icon.png";
+            plugin.imageResId = R.drawable.ic_plugin_usd;
+            plugin.env.put("TESTNET", String.valueOf(api.isTestNet()));
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
-            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_CLEVERCOIN));
+            plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_LIBERTYX));
+            plugin.env.put("LIBERTYX_API_KEY", AirbitzApplication.getContext().getString(R.string.libertyx_api_key));
+            plugin.env.put("LIBERTYX_LABEL", "LibertyX");
+            plugin.env.put("LIBERTYX_CATEGORY", "Exchange:Buy Bitcoin");
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
+
         }
 
         public void setPluginStatus(String bizId, boolean enabled) {
