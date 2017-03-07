@@ -626,7 +626,7 @@
     <string name="twofactor_reset_message">A two factor reset has been requested. Please login as %1$s and approve or cancel the request.</string>
     <string name="twofactor_reset_title">Two Factor Reset Request</string>
 
-    <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery.</string>
+    <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery. For details, please see our blog post at airbitz.co/go</string>
     <string name="recovery_answers_corrupt_title">Recovery Answers Corrupt!</string>
 
     <string name="receiver_alert_title">%1$s Notification</string>
