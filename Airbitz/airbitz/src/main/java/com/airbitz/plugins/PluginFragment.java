@@ -248,7 +248,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                     }
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        launchFileChooser();
+                        launchFileChooserWithCheck();
                     }
                     @Override
                     public void onNeutral(MaterialDialog dialog) {
@@ -258,6 +258,18 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         builder.show();
     }
 
+    boolean mTryToLaunchFileChooser = true;
+    private void launchFileChooserWithCheck() {
+        if (mTryToStartCamera) {
+            mActivity.requestStorageFromFragment(false, new NavigationActivity.PermissionCallbacks() {
+                @Override
+                public void onDenied() { mTryToLaunchFileChooser = false; }
+
+                @Override
+                public void onAllowed() { launchFileChooser(); }
+            });
+        }
+    }
     private void launchFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -266,7 +278,6 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
     }
 
     boolean mTryToStartCamera = true;
-
     public void launchCameraWithCheck() {
         if (mTryToStartCamera) {
             mActivity.requestCameraFromFragment(true, new NavigationActivity.PermissionCallbacks() {
@@ -293,8 +304,7 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
             });
         }
     }
-
-
+    
     private void launchCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "photo.jpg");
@@ -641,7 +651,8 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Bitmap bitmap = resize(PictureCamera.retrievePicture(mImageUri, mContext));
+                Bitmap picture = PictureCamera.retrievePicture(mImageUri, mContext);
+                Bitmap bitmap = resize(picture);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 75, os);
                 return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT | Base64.NO_WRAP);

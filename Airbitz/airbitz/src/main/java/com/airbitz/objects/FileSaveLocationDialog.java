@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.airbitz.R;
@@ -49,7 +50,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
+public class FileSaveLocationDialog {
     List<File> mFileList;
     File mCurrentDirectory;
     FileSaveLocation mCallback;
@@ -70,23 +71,35 @@ public class FileSaveLocationDialog implements AdapterView.OnItemClickListener {
         mFileList = getDirectoryListing(directory);
         mAdapter = new DirectoryListingAdapter(context, android.R.layout.simple_list_item_1, mFileList);
 
-        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) );
-        builder.setTitle( directory.getAbsolutePath() );
-        builder.setAdapter( mAdapter, null );
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder( new ContextThemeWrapper(mContext, R.style.AlertDialogCustom) )
+                .setTitle( directory.getAbsolutePath() )
+                .setAdapter( mAdapter, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if(id >= 0 && id < mFileList.size()) {
+                            mCurrentDirectory =
+                                    mFileList.get(id).getName().equals("..")
+                                    ? mCurrentDirectory.getParentFile()
+                                    : mFileList.get(id);
 
-        builder.setPositiveButton(R.string.string_save, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if (mCallback != null )
-                    mCallback.onFileSaveLocation(mCurrentDirectory);
-                dialog.dismiss();
-            }
-        });
+                            mFileList = getDirectoryListing(mCurrentDirectory);
+                            mAdapter.notifyDataSetChanged();
+                            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
+                        }
 
-        builder.setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
+                    }
+                } )
+                .setPositiveButton(R.string.string_save, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (mCallback != null )
+                            mCallback.onFileSaveLocation(mCurrentDirectory);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
 
         mAlertDialog = builder.show();
 //        mAlertDialog.getListView().setOnItemClickListener(this);

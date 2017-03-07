@@ -234,7 +234,7 @@ public class TransactionListFragment extends WalletBaseFragment
             } else {
                 mListFooterView.findViewById(R.id.bitrefill).setVisibility(View.GONE);
             }
-            if (mActivity.getResources().getBoolean(R.bool.include_shop_transactions)) {
+            if (mActivity.getResources().getBoolean(R.bool.include_fold_txlist)) {
                 setupFooter(R.id.discount_starbucks, R.string.transaction_footer_starbucks_discount, Constants.BIZ_ID_STARBUCKS, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -247,6 +247,11 @@ public class TransactionListFragment extends WalletBaseFragment
                         mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
                     }
                 });
+            } else {
+                mListFooterView.findViewById(R.id.discount_starbucks).setVisibility(View.GONE);
+                mListFooterView.findViewById(R.id.discount_target).setVisibility(View.GONE);
+            }
+            if (mActivity.getResources().getBoolean(R.bool.include_purse_txlist)) {
                 setupFooter(R.id.discount_amazon, R.string.transaction_footer_amazon_discount, Constants.BIZ_ID_AMAZON, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -256,8 +261,6 @@ public class TransactionListFragment extends WalletBaseFragment
                     }
                 });
             } else {
-                mListFooterView.findViewById(R.id.discount_starbucks).setVisibility(View.GONE);
-                mListFooterView.findViewById(R.id.discount_target).setVisibility(View.GONE);
                 mListFooterView.findViewById(R.id.discount_amazon).setVisibility(View.GONE);
             }
         }

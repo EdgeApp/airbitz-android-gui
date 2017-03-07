@@ -62,6 +62,7 @@ public class Constants {
     public static final String INCOMING_BITCOIN_ACTION = "co.airbitz.notifications.incoming_bitcoin";
     public static final String REMOTE_PASSWORD_CHANGE_ACTION = "co.airbitz.notifications.remote_password_change";
     public static final String WALLET_SWEEP_ACTION = "co.airbitz.notifications.wallet_sweep_action";
+    public static final String RECOVERYCORRUPT_ACTION = "com.airbitz.notifications.recoverycorrupt_action";
 
     public static final String OTP_ERROR_ACTION = "com.airbitz.notifications.otp_error_action";
     public static final String OTP_RESET_ACTION = "com.airbitz.notifications.otp_reset_action";
@@ -88,6 +89,7 @@ public class Constants {
     public static final long BIZ_ID_AIRBITZ = 3384;
     public static final long BIZ_ID_AMAZON = 11245;
     public static final long BIZ_ID_CLEVERCOIN = 10106;
+    public static final long BIZ_ID_LIBERTYX = 9547;
     public static final long BIZ_ID_GLIDERA = 11063;
     public static final long BIZ_ID_HOME_DEPOT = 11141;
     public static final long BIZ_ID_PURSE = 5041;

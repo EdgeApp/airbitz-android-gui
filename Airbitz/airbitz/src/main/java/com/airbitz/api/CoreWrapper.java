@@ -39,6 +39,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
 import co.airbitz.core.AirbitzException;
@@ -135,10 +139,35 @@ public class CoreWrapper {
                 });
             }
 
-            public void otpResetPending() {
+            public void loginMessages(String loginMessages) {
                 handler.post(new Runnable() {
                     public void run() {
-                        manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
+                        try {
+                            JSONArray jsonArray = new JSONArray(loginMessages);
+                            jsonArray.length();
+                            int length = jsonArray.length();
+                            for (int i=0; i < length; i++) {
+                                JSONObject message = jsonArray.getJSONObject(i);
+
+                                String username = message.getString("username");
+                                if (username.equals(account.username())) {
+                                    Boolean otpResetPending = message.getBoolean("otpResetPending");
+                                    Boolean recovery2Corrupt = message.getBoolean("recovery2Corrupt");
+
+                                    if (username == null || username.length() == 0)
+                                        continue;
+
+                                    if (otpResetPending == true)
+                                        manager.sendBroadcast(new Intent(Constants.OTP_RESET_ACTION));
+
+                                    if (recovery2Corrupt == true)
+                                        manager.sendBroadcast(new Intent(Constants.RECOVERYCORRUPT_ACTION));
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
