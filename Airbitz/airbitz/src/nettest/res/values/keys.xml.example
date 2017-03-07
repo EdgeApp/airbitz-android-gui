@@ -1,18 +1,22 @@
-ources>
-    <string name="google_maps_api_key">XXXXXXXXXXXX</string>
-    <string name="airbitz_business_directory_key">XXXXXXXXXXXX</string>
-    <string name="hockey_key">XXXXXXXXXXXX</string>
-    <string name="glidera_client_id">XXXXXXXXXXXX</string>
+<?xml version="1.0" encoding="utf-8"?>
 
-    <string name="airbitz_api_key">PUT_YOUR_API_KEY_HERE_FROM_DEVELOPER_AIRBITZ_CO</string>
-    <string name="chain_api_key">XXXXXXXXXXXX</string>
-    <string name="hiddenbitz_key">XXXXXXXXXXXX</string>
+<!-- Copy this file to keys.xml and fill in key information in the first resources block below. Uncomment the <resources> block below. -->
 
-    <string name="clevercoin_api_key">XXXXXXXXXXXX</string>
-    <string name="clevercoin_api_label">XXXXXXXXXXXX</string>
-    <string name="clevercoin_api_secret">XXXXXXXXXXXX</string>
+<!--<resources>-->
+<!--<string name="google_maps_api_key">XXXXXXXXXXXX</string>-->
+<!--<string name="airbitz_business_directory_key">XXXXXXXXXXXX</string>-->
+<!--<string name="hockey_key">XXXXXXXXXXXX</string>-->
+<!--<string name="glidera_client_id">XXXXXXXXXXXX</string>-->
 
-    <string name="fold_api_key">XXXXXXXXXXXX</string>
-    <string name="bitrefill_api_key">XXXXXXXXXXXX</string>
-    <string name="libertyx_api_key">XXXXXXXXXXXX</string>
-</resources>
+<!--<string name="airbitz_api_key">PUT_YOUR_API_KEY_HERE_FROM_DEVELOPER_AIRBITZ_CO</string>-->
+<!--<string name="chain_api_key">XXXXXXXXXXXX</string>-->
+<!--<string name="hiddenbitz_key">XXXXXXXXXXXX</string>-->
+
+<!--<string name="clevercoin_api_key">XXXXXXXXXXXX</string>-->
+<!--<string name="clevercoin_api_label">XXXXXXXXXXXX</string>-->
+<!--<string name="clevercoin_api_secret">XXXXXXXXXXXX</string>-->
+
+<!--<string name="fold_api_key">XXXXXXXXXXXX</string>-->
+<!--<string name="bitrefill_api_key">XXXXXXXXXXXX</string>-->
+<!--<string name="libertyx_api_key">XXXXXXXXXXXX</string>-->
+<!--</resources>-->
