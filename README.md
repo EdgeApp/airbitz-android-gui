@@ -37,6 +37,12 @@ API keys. Put your developer API key in the appropriate `keys.xml`
     cp src/develop/res/values/keys.xml.example src/develop/res/values/keys.xml
     cp src/nettest/res/values/keys.xml.example src/nettest/res/values/keys.xml
 
+The one required API to use the wallet is the `airbitz_api_key` which can be obtained from
+https://developer.airbitz.co
+
+Create an account using the Airbitz mobile app (https://airbitz.co/app) and use it to sign into
+developer.airbitz.co by scanning the BitID barcode. Confirm your email and you'll then see an API
+key in the account page. Use that for `airbitz_api_key`.
 
 ### Airbitz APIs
 
@@ -47,7 +53,6 @@ and possibly using it in your application, please see our [API overview][library
 [plugins]: https://github.com/Airbitz/airbitz-plugins.git
 [glidera]: https://glidera.io
 [foldapp]: https://foldapp.com
-[clevercoin]: https://corporate.clevercoin.com
 [core]: https://github.com/Airbitz/airbitz-core.git
 [java-core]: https://github.com/Airbitz/airbitz-core-java.git
 [library]: https://airbitz.co/developer-api-library/
