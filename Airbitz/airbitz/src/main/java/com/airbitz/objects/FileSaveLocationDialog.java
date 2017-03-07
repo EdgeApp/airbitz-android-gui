@@ -102,20 +102,7 @@ public class FileSaveLocationDialog {
                 });
 
         mAlertDialog = builder.show();
-//        mAlertDialog.getListView().setOnItemClickListener(this);
         mAlertDialog.show();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(i >= 0 && i < mFileList.size()) {
-            mCurrentDirectory = mFileList.get(i).getName().equals("..") ?
-                mCurrentDirectory.getParentFile() : mFileList.get(i);
-
-            mFileList = getDirectoryListing(mCurrentDirectory);
-            mAdapter.notifyDataSetChanged();
-            mAlertDialog.setTitle(mCurrentDirectory.getAbsolutePath());
-        }
     }
 
     private List<File> getDirectoryListing(File directory) {
@@ -125,6 +112,7 @@ public class FileSaveLocationDialog {
         else {
             mFileList.clear();
         }
+
         if(directory.getParent() != null) {
             mFileList.add(new File(".."));
         }

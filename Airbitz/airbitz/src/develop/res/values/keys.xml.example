@@ -2,7 +2,7 @@
 
 <!-- Copy this file to keys.xml and fill in key information in the first resources block below. Uncomment the <resources> block below. -->
 
-<!--<resources>-->
+<resources>
 <!--<string name="google_maps_api_key">XXXXXXXXXXXX</string>-->
 <!--<string name="airbitz_business_directory_key">XXXXXXXXXXXX</string>-->
 <!--<string name="hockey_key">XXXXXXXXXXXX</string>-->
@@ -19,4 +19,5 @@
 <!--<string name="fold_api_key">XXXXXXXXXXXX</string>-->
 <!--<string name="bitrefill_api_key">XXXXXXXXXXXX</string>-->
 <!--<string name="libertyx_api_key">XXXXXXXXXXXX</string>-->
-<!--</resources>-->
+</resources>
+
