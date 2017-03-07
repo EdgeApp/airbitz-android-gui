@@ -122,12 +122,12 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
-    prodCompile 'co.airbitz:airbitz-core-java:0.11.+'
-    prodCompile 'co.airbitz:airbitz-core-android:0.11.+@aar'
-    developCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'
-    developCompile 'co.airbitz:airbitz-core-android-develop:0.11.+@aar'
-    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.11.+'
-    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.11.+@aar'
+    prodCompile 'co.airbitz:airbitz-core-java:0.12.+'
+    prodCompile 'co.airbitz:airbitz-core-android:0.12.+@aar'
+    developCompile 'co.airbitz:airbitz-core-java-develop:0.12.+'
+    developCompile 'co.airbitz:airbitz-core-android-develop:0.12.+@aar'
+    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.12.+'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.12.+@aar'
 
     compile 'co.airbitz:airbitz-bitbeacon-android:0.0.1@aar'
     compile project(':libs:airbitz-directory')
