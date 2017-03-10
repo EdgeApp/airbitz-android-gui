@@ -1,3 +1,4 @@
+crowdin-cli download
 mkdir Airbitz/airbitz/src/main/res/raw/
 mkdir Airbitz/airbitz/src/main/res/raw-es/
 mkdir Airbitz/airbitz/src/main/res/raw-hi/
@@ -27,3 +28,4 @@ cp ../airbitz-ios-gui/Airbitz/Resources/Text/de.lproj/* Airbitz/airbitz/src/main
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/fr.lproj/* Airbitz/airbitz/src/main/res/raw-fr/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/ja.lproj/* Airbitz/airbitz/src/main/res/raw-ja/
 cp ../airbitz-ios-gui/Airbitz/Resources/Text/ht.lproj/* Airbitz/airbitz/src/main/res/raw-ht/
+
