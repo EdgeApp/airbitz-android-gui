@@ -1,0 +1,7 @@
+<resources>
+    <bool name="include_affiliate_link">false</bool>
+    <bool name="include_buysell">false</bool>
+    <bool name="include_shop">true</bool>
+    <bool name="include_directory_categories">false</bool>
+    <string name="lock_directory_category">ATM</string>
+</resources>

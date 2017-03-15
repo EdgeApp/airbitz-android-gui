@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RockitCoin</string>
+    <string name="app_homepage">https://www.rockitcoin.com</string>
+    <string name="app_support_email">support@rockitcoin.com</string>
+    <string name="app_support_phone"></string>
+    <string name="app_support_telegram"></string>
+    <string name="app_support_slack"></string>
+    <string name="app_support_whatsapp"></string>
+    <string name="appstore_link">https://itunes.apple.com/us/app/rack-wallet/id1067132601</string>
+    <string name="playstore_link">https://play.google.com/store/apps/details?id=com.rockitcoin.wallet</string>
+    <string name="logo_white_link">https://airbitz.co/go/wp-content/uploads/2015/12/rack-logo-wht-100w.png</string>
+    <string name="designed_by">Designed by RockitCoin in</string>
+    <string name="company_location">Chicago, IL, USA</string>
+
+    <string name="request_footer">Sent from the RockitCoin Bitcoin Wallet</string>
+    <string name="request_footer_link">https://play.google.com/store/apps/details?id=com.rockitcoin.wallet</string>
+    <string name="request_footer_link_title">Download Rockitcoin for iOS or Android</string>
+    <string name="request_footer_contact">mailto:support@rockitcoin.com?subject=Rockitcoin+Email+Request</string>
+
+    <string name="drawer_import">Import Private Key\n(Rockitcoin Gift Card)</string>
+</resources>

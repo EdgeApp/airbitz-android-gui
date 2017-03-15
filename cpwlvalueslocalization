@@ -1,7 +1,7 @@
 #!/usr/local/bin/node
 
 const languages = ['de', 'es', 'fr', 'hi', 'ht', 'it', 'ja', 'pt', 'ru', 'zh']
-const brands = ['athena', 'rackwallet', 'coinsource']
+const brands = ['athena', 'bitcoindepot', 'coinsource', 'rackwallet']
 
 var sys = require('sys')
 var exec = require('child_process').exec;
