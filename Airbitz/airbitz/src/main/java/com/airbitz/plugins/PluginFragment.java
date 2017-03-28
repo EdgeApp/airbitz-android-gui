@@ -320,12 +320,12 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Uri result = mImageUri;
-        if (PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
-            result = intent == null || resultCode != Activity.RESULT_OK
-                ? null : intent.getData();
+         if (PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
+            result = ((intent == null) || (resultCode != Activity.RESULT_OK))
+                ? null
+                : intent.getData();
         }
-        if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode
-                || PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
+        if (PluginFramework.CAPTURE_IMAGE_CODE == requestCode || PluginFramework.CHOOSE_IMAGE_CODE == requestCode) {
             if (Activity.RESULT_OK == resultCode && null != result) {
                 mImageTask = new ImageEncodeTask(mActivity, result, mFramework);
                 mImageTask.execute();
@@ -335,8 +335,9 @@ public class PluginFragment extends WalletBaseFragment implements NavigationActi
                 mImageUri = null;
             }
         } else if (PluginFramework.INTENT_UPLOAD_CODE == requestCode) {
-            Uri uri = intent == null || resultCode != Activity.RESULT_OK
-                ? null  : intent.getData();
+            Uri uri = ((intent == null) || (resultCode != Activity.RESULT_OK))
+                ? null
+                : intent.getData();
             mFramework.uploadCallback(uri);
         }
     }
