@@ -1,3 +1,14 @@
+v.2.4.0
+
+Cambios de protocolo en nuestro login Edge
+Soporte de idiomas actualizado 
+Plugin LibertyX incluido
+Solucionada la exportación a tarjeta SD
+Solucionado error al subir fotos para Glidera
+Soporte para la exportación CSV/QBO no USD
+Soporte de un gran número de carteras. Mejores tiempos de respuesta
+Solucionado problema al enviar por mail una exportación CSV/QBO
+
 v 2.3.3
 
 ** Firma de huella digital en dispositivos que lo soporten como el Nexus 5x y 6p **

@@ -5,7 +5,7 @@ Pan kontrol lajan ou yo! Avèk Airbitz, sèl ou menm ki ka we lajan ou ak enfoma
 Pandan nou fokis pou bay yon bon eksperyans itilizatè, potfèy Aitbitz la bay bagay sa yo:
 
 Oken konesans & oken aksè a lajan, kle, ou done transaksyon pa Airbitz oubien on twazyèm pati
-• Login with fingerprint scanner
+• Konekte etan wap skane anprent dijital
 achat entegre kat kado a pri redwi (20 % dediksyon sou Starbuks!)
 • Acha / ant Bitcoin entegre depi yon kont labank ki konekte ak kont ou an
 • Kreyasyon yon senp kont jis itilize yon non itilizatè & modpas (pa gen enpresyon pdf, ekri anba pas fraz, oubyen ajoute paramèt chifreman)

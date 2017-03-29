@@ -1,3 +1,28 @@
+v.2.4.0
+
+• Protokoll Änderungen nach Rand Anmeldung
+
+
+• Aktualisierte Sprachunterstützung 
+•Hinzugefügt Liberty-X Plug-in
+
+•Fixieren SD Karte export
+•Fixieren Foto hochladen Fehler zum Glidera
+ 
+
+
+•Unterstützung zum nicht- USD CSV/QBO export
+
+
+ 
+
+
+• Groß Brieftasche Unterstützung.
+
+ Besser Auszeit
+• Email CSV/QBO export Absturz Beheben
+
+
 v 2.3.3
 
 ** Anmeldung per Fingerabdruck bei unterstützenden Geräten wie dem Nexus 5x und 6p**

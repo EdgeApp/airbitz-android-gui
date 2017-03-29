@@ -29,9 +29,9 @@
   <string name="string_refresh">Refrescar</string>
   <string name="string_loading">Cargando...</string>
   <string name="string_no_transactions">Ninguna transacción</string>
-  <string name="string_back_button">El botón de retroceso te volverá a la pantalla anterior</string>
+  <string name="string_back_button">El botón de retroceso te llevará a la pantalla anterior</string>
   <string name="string_help_button">El botón Ayuda muestra la ayuda para esta pantalla</string>
-  <string name="string_add_button">El botón Añadir agrega una nueva carpeta</string>
+  <string name="string_add_button">El botón Añadir agrega una nueva cartera</string>
   <string name="string_payment_received">** Pago recibido **</string>
   <string name="string_exit_app_question">"¿Te gustaría salir %1$s?"</string>
   <string name="string_too_short">demasiado corto</string>
@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Mostrar</string>
   <string name="fragment_setup_writeitdown_hide">Ocultar</string>
+  <string name="fragment_setup_camera_title">Permitir el acceso a la cámara</string>
+  <string name="fragment_setup_camera_text">Verá una ventana emergente solicitando acceso a su cámara. [[abtag APP_TITLE]] necesita su permiso para poder escanear los códigos QR para pagarle a las personas y comerciantes.</string>
+  <string name="fragment_setup_contacts_title">Habilitar acceso a los contactos de la agenda</string>
+  <string name="fragment_setup_contacts_text">Después aparecerá una ventana emergente solicitando acceso a tus contactos.[[abtag APP_TITLE]] necesita este acceso para poder enviar solicitudes de pago y para ayudar a etiquetar tus transacciones.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Configuración de recuperación de contraseña</string>
   <string name="activity_recovery_title">Recuperación de contraseña</string>
@@ -358,7 +362,6 @@
   <string name="fragment_wallets_add_wallet">Añadir cartera</string>
   <string name="fragment_wallets_deleting_wallet">Eliminando cartera...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">No se puede eliminar la cartera</string>
-  <string name="fragment_wallets_delete_has_funds">No puede eliminar la cartera ya que contiene fondos. Por favor, traslada los fondos primero.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">¿Borrar la cartera?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">¿Está seguro que desea eliminar %1$s?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">¿Eliminar la cartera: %1$s?</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s solicitud de Bitcoin</string>
   <string name="request_qr_bitmap_error">No podría fijarse un código QR.</string>
-  <string name="request_qr_image_store_error">ADVERTENCIA: El código QR no puede fijarse en el correo electrónico.</string>
+  <string name="request_qr_image_store_error">Aviso: El código QR no puede ser adjuntado al mail. Asegúrate de que esta app tiene permiso para acceder a la memoria de almacenamiento de tu teléfono.</string>
   <string name="request_qr_unknown">Usuario desconocido</string>
   <string name="request_qr_waiting_for_payment">Esperando por pago&#8230;</string>
   <string name="request_qr_loading_address">Cargando dirección bitcoin&#8230;</string>
@@ -706,6 +709,7 @@ subject=Airbitz+Bitcoin+Email+Request</string>
   <string name="disable_recovery_popup_message">Esta es la cuenta que ya tiene una contraseña de recuperación configurada. Quieres desactivarla?</string>
   <string name="error_disabling_recovery">Error desactivando registro</string>
   <string name="recovery_disabled">Recuperación desactivada</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">Acceso de Edge</string>
   <string name="edge_description">Esta aplicación quiere acceder los siguientes repositorios ligados a tu cuenta de Airbitz. No tendrás acceso a las otras cuentas o carteras.</string>
@@ -725,7 +729,19 @@ subject=Airbitz+Bitcoin+Email+Request</string>
   <string name="identity_token_created_and_saved">Token de identidad a través [%1$s] crear y guardar</string>
   <string name="successfully_verified_identity">Identificación verificada exitosamente</string>
   <string name="create_new_text">Crear nuevo</string>
-  <string name="or_choose">\"$1$s\" o seleccionar</string>
+  <string name="or_choose">[%1$s] o elige</string>
+  <string name="permission_needs_access_to_camera">%1$s necesita acceso a tu cámara para escanear códigos QR y capturar documentos</string>
+  <string name="permission_camera_permission_denied">Permiso de acceso a la cámara denegado. No será posible escanear códigos QR. Por favor vuelve a habilitar el acceso en los ajustes de tu teléfono</string>
+  <string name="permission_camera_permission_denied_not_be_asked">Permiso de acceso a la cámara denegado. No se te volverá a preguntar</string>
+  <string name="permission_needs_access_to_contacts">%1$s necesita acceso a tus contactos para facilitar el etiquetado de transacciones con información del beneficiario del pago</string>
+  <string name="permission_contacts_permission_denied">Acceso a contactos denegado. Por favor vuelve a habilitar el acceso en los ajustes de tu teléfono</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">Acceso a los contactos denegado. No se te volverá a preguntar</string>
+  <string name="permission_needs_access_to_location">%1$s necesita acceso a tu ubicación para encontrar establecimientos en tu área</string>
+  <string name="permission_location_permission_denied">Acceso a la ubicación denegado. Por favor vuelve a habilitar el acceso en los ajustes de tu teléfono</string>
+  <string name="permission_location_permission_denied_not_be_asked">Acceso a la ubicación denegado. No se te volverá a preguntar</string>
+  <string name="permission_needs_access_to_storage">%1$s necesita acceso al almacenamiento de tu teléfono para enviar códigos QR con solicitudes de pago y para capturar documentos</string>
+  <string name="permission_storage_permission_denied">Acceso a almacenamiento denegado. Por favor vuelve a habilitar el acceso en los ajustes de tu teléfono</string>
+  <string name="permission_storage_permission_denied_not_be_asked">Acceso al almacenamiento denegado. No se te volverá a preguntar</string>
   <string name="request_your_identity_token">Solicitar tu token de identidad. Por favor selecciona una a continuación</string>
   <string name="request_your_identity_token_but_none">Solicitar su token de identidad pero usted no tiene ninguno</string>
   <string name="bitid_login_message">%1$s</string>

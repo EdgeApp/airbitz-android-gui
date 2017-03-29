@@ -19,7 +19,7 @@
   <string name="string_delete">删除</string>
   <string name="string_save">保存</string>
   <string name="string_back">返回</string>
-  <string name="string_disable">DISABLE</string>
+  <string name="string_disable">禁用</string>
   <string name="string_next">下一个</string>
   <string name="string_skip">跳过</string>
   <string name="string_total">总数 ︰</string>
@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">显示</string>
   <string name="fragment_setup_writeitdown_hide">隐藏</string>
+  <string name="fragment_setup_camera_title">启用相机功能</string>
+  <string name="fragment_setup_camera_text">接下来，您会看到一个请求访问您的相机的弹出窗口。\n\n[[abtag APP_TITLE]] 需要这个扫描QR码支付人和商人。</string>
+  <string name="fragment_setup_contacts_title">启用联系人访问</string>
+  <string name="fragment_setup_contacts_text">接下来，您会看到一个请求访问您的联系人的弹出窗口。\n\n[[abtag APP_TITLE]] 需要发送付款请求并帮助标记您的交易。</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">密码复原设置程序</string>
   <string name="activity_recovery_title">复原密码</string>
@@ -218,12 +222,12 @@
   <string name="activity_recovery_prompt_title">跳过此步骤</string>
   <string name="activity_recovery_prompt_skip">* * 警告 * * 如果忘记密码，您将无法将它复原!!</string>
   <string name="activity_recovery_first_wallet_name">我的钱包</string>
-  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
-  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
+  <string name="activity_recovery_answer_questions_alert">你必须回答所有问题。 确保您的答案足够长。</string>
+  <string name="activity_recovery_pick_questions_alert">在继续之前，您必须选择所有问题。</string>
   <string name="activity_recovery_question_default">问题</string>
   <string name="item_recovery_spinner_arrow_description">下拉箭头</string>
   <string name="activity_recovery_done_title">帐户复原问题集</string>
-  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
+  <string name="activity_recovery_done_details">您的密码恢复问题和答案现在已设置完毕。\n\n要恢复密码，请点击您刚才向自己发送电子邮件的链接，并回答您的恢复问题。 你的答案必须完全匹配。\n\n**请勿忘记您的用户名和恢复答案**\n\n您的帐户无法在没有他们的情况下恢复！</string>
   <string name="activity_recovery_error_title">密码复原失败</string>
   <string name="activity_recovery_error_incorrect_password">请输入您正确的密码，方可修改您的答案</string>
   <string name="activity_recovery_error_save_failed">帐户复原答案保存失败</string>
@@ -260,7 +264,7 @@
   <string name="settings_title_auto_logoff">自动登出时限 ︰</string>
   <string name="settings_title_merchant_mode">商用模式：</string>
   <string name="settings_title_pin_login">PIN 重新登入︰</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">使用指纹登录</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">蓝牙</string>
   <string name="settings_title_ble_send_only">蓝牙 （只限发送）</string>
@@ -352,13 +356,12 @@
   <string name="fragment_send_confirmation_password_remaining">密码不正确。请稍等 %1$.0f 秒后再尝试...</string>
   <string name="fragment_send_confirmation_dust_alert">数额太小。</string>
   <string name="fragment_send_confirmation_dust_alert_more">请发送至少 %1$s (~%2$s)</string>
-  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
+  <string name="fragment_send_confirmation_error_payment_processor">连接到付款处理器时出错。 直接发送到bitcoin地址\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">钱包</string>
   <string name="fragment_wallets_add_wallet">添加钱包</string>
   <string name="fragment_wallets_deleting_wallet">正在删除钱包...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">无法删除钱包</string>
-  <string name="fragment_wallets_delete_has_funds">无法删除含有资金的钱包。请先把资金转出。</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">删除钱包吗？</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">您是否确定要删除 %1$s？</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">删除钱包 ︰ %1$s？</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s 的比特币请求</string>
   <string name="request_qr_bitmap_error">二维代码无法被附加。</string>
-  <string name="request_qr_image_store_error">警告 ︰ 二维码无法被附加到电子邮件。</string>
+  <string name="request_qr_image_store_error">警告：QR码不能附加到电子邮件。确保此应用程序有权访问您手机的存储空间。</string>
   <string name="request_qr_unknown">未知用户</string>
   <string name="request_qr_waiting_for_payment">正在等待付款...</string>
   <string name="request_qr_loading_address">正在加载比特币地址...</string>
@@ -417,7 +420,7 @@
   <string name="request_qr_ble_invalid_uri">您收到了一个无效的比特币请求。您可再尝试。</string>
   <string name="request_qr_ble_copied">请求已被拷贝到剪贴板中。</string>
   <string name="request_qr_first_usage">把二维码展示给发款人并让他进行扫描以便对您传送付款。</string>
-  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
+  <string name="request_qr_top_message">扫描发送，导入或边缘登录</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">导入钱包</string>
   <string name="import_wallet_timeout_message">导入失败。再试一次。</string>
@@ -605,19 +608,19 @@
   <string name="upload_log_alert_succeeded">上传完毕</string>
   <string name="upload_log_alert_failed">上传失败。请检查网络连接。</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">登录用户：%1s</string>
+  <string name="fingerprint_confirm_to_continue">确认指纹以继续</string>
+  <string name="fingerprint_hint">触摸传感器</string>
+  <string name="fingerprint_not_recognized">无法识别指纹。 再试一次。</string>
+  <string name="fingerprint_success">指纹识别</string>
+  <string name="initializing_dotdot_text">正在初始化...</string>
   <!-- Password Set -->
   <string name="password_set_title">没有设置密码</string>
   <string name="password_set_message">请为此帐户创建密码，否则您装置若丢失或被盗，您将无法复原您的帐户。</string>
   <string name="password_set_skip">跳过</string>
   <!-- PIN Set -->
-  <string name="pin_set_title">No PIN set</string>
-  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
+  <string name="pin_set_title">未设置PIN</string>
+  <string name="pin_set_message">请为此帐户创建一个PIN，以启用快速重新登录</string>
   <!-- Settings -->
   <string name="settings_category_title">类别</string>
   <!-- Logout -->
@@ -663,15 +666,15 @@
   <string name="request_footer_link_title">通过IOS 或 Android 下载 Airbitz</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
-  <string name="plugin_target_discount">(Up to 10% Off)</string>
-  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
-  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
-  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
-  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
+  <string name="plugin_starbucks_discount">(最多20％折扣)</string>
+  <string name="plugin_target_discount">(最多20％折扣)</string>
+  <string name="plugin_wholefoods_discount">(最多10％折扣)</string>
+  <string name="plugin_walmart_discount">(最多20％折扣)</string>
+  <string name="plugin_homedepot_discount">(最多15％折扣)</string>
+  <string name="plugin_glidera_title">买/卖银行帐户 (美国)</string>
   <string name="plugin_clevercoin_title">欧洲 (EUR)</string>
   <string name="plugin_popup_notice">以下的服务并非由%1$s所提供。\n\n若有任何状况及反馈，请联系相关的服务供应商。</string>
-  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
+  <string name="plugin_bitrefill_title">充值预付费移动SIM卡</string>
   <string name="intent_choose_an_email">选择电子邮件客户端 ︰</string>
   <string name="plugin_filechooser_title">上传文件</string>
   <string name="plugin_filechooser_use_camera">使用相机</string>
@@ -685,48 +688,66 @@
   <string name="transaction_footer_starbucks_discount">星巴克高达 20%的折扣</string>
   <string name="transaction_footer_target_discount">塔吉特Target高达 10%的折扣</string>
   <string name="transaction_footer_amazon_discount">亚马逊高达15%-20%的折扣</string>
-  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
+  <string name="transaction_footer_bitrefill">购买手机Top Ups</string>
   <string name="change_mining_fee_title">更改挖掘费</string>
   <string name="change_mining_fee_body">警告 ︰ 低挖掘费可能会导致交易的确认时间遭到延迟</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">储存复原代币</string>
-  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
-  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
-  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="save_recovery_token_popup_message">“要完成帐户恢复设置，您必须保存帐户恢复令牌。除了您的用户名和恢复答案，还需要恢复您的帐户。请在下面输入您的电子邮件，向您发送恢复令牌。</string>
+  <string name="recovery_token_email_subject">%s 恢复令牌“</string>
+  <string name="recovery_token_email_body">请从移动设备上点击以下链接 %1$s 安装以启动帐户恢复用户名
+[%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
   <string name="enter_username_to_recover">请输入账户的用户名称以进行复原</string>
   <string name="recovery_not_setup">未曾设置复原程序或已在其他装置上完成</string>
   <string name="recovery_not_setup2">若已设置好复原程序，您须发送一封附有复原代币链接的电邮给自己。</string>
   <string name="recovery_not_setup3">请搜寻有关邮件，然后点击来自此装置的链接以便启动复原程序</string>
   <string name="recovery_token_invalid">此复原代币的用户名不正确。请用不同的用户名再尝试或使用不同的复原代币链接。</string>
   <string name="logout_before_recovery">请在尝试复原密码之前登出当前的帐户</string>
-  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
+  <string name="recovery_successful">恢复成功\n\n请更改您的密码和PIN码</string>
   <string name="invalid_email">无效的电子邮件</string>
-  <string name="disable_recovery_popup_title">Disable Recovery?</string>
-  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
-  <string name="error_disabling_recovery">Error disabling recovery</string>
-  <string name="recovery_disabled">Recovery Disabled</string>
+  <string name="disable_recovery_popup_title">禁用恢复？</string>
+  <string name="disable_recovery_popup_message">此帐户已设置密码恢复。 您要禁用它吗？</string>
+  <string name="error_disabling_recovery">禁用恢复时出错</string>
+  <string name="recovery_disabled">恢复已禁用</string>
+  <string name="in"></string>
   <!-- SSO -->
-  <string name="edge_login">Edge Login</string>
-  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
-  <string name="bitid_identity">BitID Identity</string>
-  <string name="provide_an_identity_token">Provide an Identity Token</string>
-  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
-  <string name="approving_login_text">Approving Login...</string>
+  <string name="edge_login">边缘登录</string>
+  <string name="edge_description">此应用程序希望访问以下与您的Airbitz帐户关联的存储库。 它将无法访问任何其他帐户或钱包。</string>
+  <string name="bitid_identity">BitID标识</string>
+  <string name="provide_an_identity_token">提供身份令牌</string>
+  <string name="invalid_edge_login_request">边缘登录请求无效</string>
+  <string name="approving_login_text">正在批准登录...</string>
   <string name="error_logging_in">登入时出现错误</string>
   <string name="successfully_logged_in">已成功登入</string>
-  <string name="approve_button_text">Approve</string>
-  <string name="accept_button_text">Accept</string>
-  <string name="login_button_text">LOGIN</string>
+  <string name="approve_button_text">批准</string>
+  <string name="accept_button_text">接受</string>
+  <string name="login_button_text">登录</string>
   <string name="back_button_text">返回</string>
-  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
-  <string name="would_like_to">This site would like to:</string>
-  <string name="request_payment_address">Request a Payment Address</string>
-  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
+  <string name="verify_domain_and_approve">请验证上述网域，然后点按登录即可验证此网站</string>
+  <string name="would_like_to">本网站想：</string>
+  <string name="request_payment_address">请求付款地址</string>
+  <string name="identity_token_created_and_saved">身份令牌 [%1$s] 创建和保存</string>
   <string name="successfully_verified_identity">成功鉴定身份</string>
-  <string name="create_new_text">Create new</string>
-  <string name="or_choose">\"$1$s\" or choose</string>
-  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
-  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="create_new_text">创建新的</string>
+  <string name="or_choose">[%1$s] 或者选择</string>
+  <string name="permission_needs_access_to_camera">%1$s 需要访问您的相机扫描QR码和捕获文档
+ 
+</string>
+  <string name="permission_camera_permission_denied">相机权限被拒绝。您将无法扫描QR码。请在手机的设置中重新启用访问权限 -&gt;应用程序</string>
+  <string name="permission_camera_permission_denied_not_be_asked">相机权限被拒绝。你不会再被问</string>
+  <string name="permission_needs_access_to_contacts">%1$s需要访问您的联系人，以帮助标记交易与收款人信息</string>
+  <string name="permission_contacts_permission_denied">联系人权限被拒绝。请在手机的设置中重新启用访问权限-&gt;应用程序</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">联系人权限被拒绝。你不会再被问</string>
+  <string name="permission_needs_access_to_location">%1$s 需要访问您的位置才能找到您所在地区的商家</string>
+  <string name="permission_location_permission_denied">联系人权限被拒绝。请在手机的设置中重新启用访问权限-&gt;应用程序</string>
+  <string name="permission_location_permission_denied_not_be_asked">位置权限被拒绝。你不会再被问</string>
+  <string name="permission_needs_access_to_storage">%1$s需要访问您的设备存储空间才能发送付款请求的QR码并捕获文档
+
+</string>
+  <string name="permission_storage_permission_denied">联系人权限被拒绝。请在手机的设置中重新启用访问权限-&gt;应用程序</string>
+  <string name="permission_storage_permission_denied_not_be_asked">相机权限被拒绝。你不会再被问</string>
+  <string name="request_your_identity_token">请求您的身份标记。 请在下面选择一个</string>
+  <string name="request_your_identity_token_but_none">请求您的身份令牌，但您没有任何</string>
   <string name="bitid_login_message">%1$s</string>
   <string name="bitid_login_title">BitID 登入</string>
   <string name="bitid_login_success">已成功登入</string>
