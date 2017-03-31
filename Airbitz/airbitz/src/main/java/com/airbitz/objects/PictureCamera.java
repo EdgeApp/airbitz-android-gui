@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.List;
 
 public class PictureCamera implements Camera.PreviewCallback {
@@ -193,16 +196,24 @@ public class PictureCamera implements Camera.PreviewCallback {
     }
 
     public static Bitmap retrievePicture(Uri image, Context context) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(image, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        String columnName = filePathColumn[0];
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        Bitmap decodedFile = BitmapFactory.decodeFile(picturePath);
+        Bitmap decodedFile = null;
+        try {
+            decodedFile = getBitmapFromUri(image, context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return decodedFile;
+    }
+
+    private static Bitmap getBitmapFromUri(Uri uri, Context context) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                context.getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+
+        return image;
     }
 
     private void setupCameraParams() {

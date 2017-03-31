@@ -35,6 +35,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,12 +126,15 @@ public class UploadLogAlert {
 
         @Override
         protected Boolean doInBackground(String... usermsg) {
-            AirbitzCore.logi(usermsg[0]);
             int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
             String versionName = com.airbitz.BuildConfig.VERSION_NAME;
             String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
+            String model = Build.MODEL;
 
-            AirbitzCore.loge("App Version:" + appVersion);
+            AirbitzCore.logi("User Message: " + usermsg[0]);
+            AirbitzCore.loge("App Version: " + appVersion);
+            AirbitzCore.loge("Device Info: " + model);
+
             return mCoreAPI.uploadLogs();
         }
 

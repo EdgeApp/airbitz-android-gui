@@ -10277,6 +10277,7 @@ b;b+=4)K?(A?(G=300032,d=c[0]-1413257819,h=d-150054599<<0,g=d+24177077<<0):(G=704
         success: function(data) {
           $scope.$apply(function() {
             $scope.photo = 'data:image/jpeg;base64,' + data;
+            console.log($scope.photo)
           });
         },
         error: function() { }
