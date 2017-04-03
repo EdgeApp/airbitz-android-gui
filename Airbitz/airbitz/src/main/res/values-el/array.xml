@@ -3,113 +3,113 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Air Travel</item>
-    <item>Alcohol &amp; Bars</item>
-    <item>Allowance</item>
-    <item>Amusement</item>
-    <item>Arts</item>
-    <item>ATM Fee</item>
-    <item>Auto &amp; Transport</item>
-    <item>Auto Insurance</item>
-    <item>Auto Payment</item>
-    <item>Baby Supplies</item>
+    <item>Αεροπορικό ταξίδι</item>
+    <item>Αλκοόλ &amp; Μπαρ</item>
+    <item>Χαρτζιλίκι</item>
+    <item>Ψυχαγωγία</item>
+    <item>Τέχνες</item>
+    <item>Χρεώση ΑΤΜ</item>
+    <item>Αυτοκίνητο &amp; Μεταφορά</item>
+    <item>Ασφάλεια Αυτοκινήτου</item>
+    <item>Αυτόματη Πληρωμή</item>
+    <item>Βρεφικά Είδη</item>
     <item>Babysitter &amp; Daycare</item>
-    <item>Bank Fee</item>
-    <item>Bills &amp; Utilities</item>
-    <item>Books</item>
-    <item>Books &amp; Supplies</item>
-    <item>Car Wash</item>
-    <item>Cash &amp; ATM</item>
-    <item>Charity</item>
-    <item>Clothing</item>
-    <item>Coffee Shops</item>
-    <item>Credit Card Payment</item>
-    <item>Dentist</item>
-    <item>Deposit to Savings</item>
-    <item>Doctor</item>
-    <item>Education</item>
-    <item>Electronics &amp; Software</item>
-    <item>Entertainment</item>
-    <item>Eyecare</item>
+    <item>Τραπεζική Χρέωση</item>
+    <item>Λογαριασμοί</item>
+    <item>Βιβλία</item>
+    <item>Βιβλία &amp; Δανεισμός</item>
+    <item>Πλυντήριο Αυτοκινήτων</item>
+    <item>Μετρητά &amp; ATM</item>
+    <item>Φιλανθρωπικό Έργο</item>
+    <item>Ένδυση</item>
+    <item>Καφετέριες</item>
+    <item>Πληρωμή με πιστωτική κάρτα</item>
+    <item>Οδοντίατρος</item>
+    <item>Αποταμίευση</item>
+    <item>Γιατρός</item>
+    <item>Εκπαίδευση</item>
+    <item>Ηλεκτρονικά είδη &amp; Λογισμικό</item>
+    <item>Διασκέδαση</item>
+    <item>Οφθαλμολογικά</item>
     <item>Fast Food</item>
-    <item>Fees &amp; Charges</item>
-    <item>Financial</item>
-    <item>Financial Advisor</item>
-    <item>Food &amp; Dining</item>
-    <item>Furnishings</item>
-    <item>Gas &amp; Fuel</item>
-    <item>Gift</item>
-    <item>Gifts &amp; Donations</item>
-    <item>Groceries</item>
-    <item>Gym</item>
-    <item>Hair</item>
-    <item>Health &amp; Fitness</item>
-    <item>HOA Dues</item>
-    <item>Hobbies</item>
-    <item>Home</item>
-    <item>Home Improvement</item>
-    <item>Home Insurance</item>
-    <item>Home Phone</item>
-    <item>Home Services</item>
-    <item>Home Supplies</item>
-    <item>Hotel</item>
-    <item>Interest Exp</item>
-    <item>Internet</item>
-    <item>IRA Contribution</item>
-    <item>Kids</item>
-    <item>Kids Activities</item>
-    <item>Late Fee</item>
-    <item>Laundry</item>
-    <item>Lawn &amp; Garden</item>
-    <item>Life Insurance</item>
-    <item>Misc.</item>
-    <item>Mobile Phone</item>
-    <item>Mortgage &amp; Rent</item>
-    <item>Mortgage Interest</item>
-    <item>Movies &amp; DVDs</item>
-    <item>Music</item>
-    <item>Newspaper &amp; Magazines</item>
-    <item>Not Sure</item>
-    <item>Parking</item>
-    <item>Personal Care</item>
-    <item>Pet Food &amp; Supplies</item>
-    <item>Pet Grooming</item>
-    <item>Pets</item>
-    <item>Pharmacy</item>
-    <item>Property</item>
-    <item>Public Transportation</item>
-    <item>Registration</item>
-    <item>Rental Car &amp; Taxi</item>
-    <item>Restaurants</item>
-    <item>Service &amp; Parts</item>
-    <item>Service Fee</item>
-    <item>Shopping</item>
+    <item>Τέλη &amp; Χρεώσεις</item>
+    <item>Χρηματοοικονομικά</item>
+    <item>Χρηματοοικονομικός Σύμβουλος</item>
+    <item>Φαγητό &amp; Δείπνο</item>
+    <item>Επίπλωση</item>
+    <item>Βενζίνη &amp; Καύσιμα</item>
+    <item>Δώρο</item>
+    <item>Δώρα &amp; Δωρεές</item>
+    <item>Είδη σούπερ μάρκετ</item>
+    <item>Γυμναστήριο</item>
+    <item>Κομμωτήριο</item>
+    <item>Υγεία &amp; Ευεξία</item>
+    <item>Κοινόχρηστα</item>
+    <item>Ενδιαφέροντα</item>
+    <item>Σπίτι</item>
+    <item>Βελτίωση κατοικίας</item>
+    <item>Ασφάλεια κατοικίας</item>
+    <item>Τηλέφωνο Οικίας</item>
+    <item>Υπηρεσίες Σπιτιού</item>
+    <item>Προμήθειες Σπιτιού</item>
+    <item>Ξενοδοχείο</item>
+    <item>Έξοδα Τόκων</item>
+    <item>Διαδίκτυο</item>
+    <item>Ταμείο συνταξιοδότησης</item>
+    <item>Παιδιά</item>
+    <item>Παιδικές Δραστηριότητες</item>
+    <item>Χρεώσεις καθυστερήσεων</item>
+    <item>Καθαριστήριο</item>
+    <item>Είδη Κήπου</item>
+    <item>Ασφάλεια Ζωής</item>
+    <item>Διάφορα</item>
+    <item>Κινητό Τηλέφωνο</item>
+    <item>Υποθήκη &amp; Ενοίκιο</item>
+    <item>Τόκος Υποθήκης</item>
+    <item>Ταινίες &amp; DVD</item>
+    <item>Μουσική</item>
+    <item>Εφημερίδες &amp; Περιοδικά</item>
+    <item>Δεν είμαι βέβαιος</item>
+    <item>Πάρκινγκ</item>
+    <item>Προσωπική Φροντίδα</item>
+    <item>Φαγητό Κατοικίδιου &amp; Προμήθειες</item>
+    <item>Καλωπισμός Κατοικιδίου</item>
+    <item>Κατοικίδια</item>
+    <item>Φαρμακείο</item>
+    <item>Ιδιοκτησία</item>
+    <item>Δημόσιες συγκοινωνίες</item>
+    <item>Άλλες εγγραφές</item>
+    <item>Ενοικιαζόμενο αυτοκίνητο &amp; Ταξί</item>
+    <item>Εστιατόρια</item>
+    <item>Service &amp; Ανταλλακτικά</item>
+    <item>Αμοιβές υπηρεσίας</item>
+    <item>Αγορές</item>
     <item>Spa &amp; Massage</item>
-    <item>Sporting Goods</item>
-    <item>Sports</item>
-    <item>Student Loan</item>
-    <item>Tax</item>
-    <item>Television</item>
-    <item>Tolls</item>
-    <item>Toys</item>
-    <item>Trade Commissions</item>
-    <item>Travel</item>
-    <item>Tuition</item>
-    <item>Utilities</item>
-    <item>Vacation</item>
-    <item>Vet</item>
+    <item>Προϊόντα Άθλησης</item>
+    <item>Αθλήματα</item>
+    <item>Φοιτητικό Δάνειο</item>
+    <item>Φόρος</item>
+    <item>Τηλεόραση</item>
+    <item>Διόδια</item>
+    <item>Παιχνίδια</item>
+    <item>Προμήθειες Broker</item>
+    <item>Ταξίδι</item>
+    <item>Δίδακτρα</item>
+    <item>Βοηθητικά</item>
+    <item>Διακοπές</item>
+    <item>Κτηνίατρος</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulting Income</item>
-    <item>Div Income</item>
-    <item>Net Salary</item>
-    <item>Other Income</item>
-    <item>Rent</item>
-    <item>Sales</item>
+    <item>Εισόδημα συμβουλευτικών υπηρεσιών</item>
+    <item>Εισόδημα από μερίσματα</item>
+    <item>Καθαρός μισθός</item>
+    <item>Άλλα εισοδήματα</item>
+    <item>Ενοίκιο</item>
+    <item>Πωλήσεις</item>
   </string-array>
   <string-array name="exchange_category_defaults">
-    <item>Buy Bitcoin</item>
-    <item>Sell Bitcoin</item>
+    <item>Αγορά Bitcoin</item>
+    <item>Πώληση Bitcoin</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
@@ -138,19 +138,19 @@
     <item>Dark Wallet</item>
   </string-array>
   <string-array name="transaction_categories_list">
-    <item>Expense</item>
-    <item>Income</item>
-    <item>Transfer</item>
-    <item>Exchange</item>
+    <item>Έξοδα</item>
+    <item>Εισόδημα</item>
+    <item>Μεταφορά</item>
+    <item>Ανταλλακτήριο</item>
   </string-array>
   <string-array name="distance_list">
-    <item>Automatic</item>
-    <item>Kilometers</item>
-    <item>Miles</item>
+    <item>Αυτόματο</item>
+    <item>Χιλιόμετρα</item>
+    <item>Μίλια</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>Low Fee</item>
-    <item>Standard Fee</item>
-    <item>High Fee</item>
+    <item>Χαμηλή Χρέωση</item>
+    <item>Τυπική Χρέωση</item>
+    <item>Υψηλή Χρέωση</item>
   </string-array>
 </resources>

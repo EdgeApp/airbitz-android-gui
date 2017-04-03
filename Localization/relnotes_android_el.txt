@@ -1,52 +1,52 @@
 v.2.4.0
 
-• Protocol Changes to Edge-Login
-• Updated language support 
-• Added Liberty-X plug-in
-• Fix SD card export
-• Fix photo upload bug for Glidera
-• Support for non-USD CSV/QBO export
-• Large wallet support. Better timeouts
-• Email CSV/QBO export crash fixes
+• Αλλαγές πρωτοκόλλου στην σύνδεση Edge
+• Αναβαθμισμένη γλωσσική υποστήριξη 
+• Υποστήριξη Liberty-X plug-in
+• Διόρθωση εξαγωγής στην κάρτα SD
+• Διόρθωση σφάλματος μεταφόρτωσης φωτογραφίας για την υπηρεσία Glidera
+• Εξαγωγή των συναλλαγών σε μορφή CSV/QBO
+• Υποστήριξη μεγάλου πορτοφολιού. Βελτιωμένα χρονικά όρια
+• Διορθώσεις στην εξαγωγή CSV/QBO μέσω email
 
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** Σύνδεση με δακτυλικό αποτύπωμα για υποστηριζόμενες συσκευές όπως Nexus 5x και 6p **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• Διόρθωση ενός σπάνιου προβλήματος όπου η σύνδεση με το PIN δεν λειτουργεί
+• Υποστήριξη σύνδεσης Edge από κουμπί URI σε κινητά
+• Προσθήκη WhatsApp forum στους συνδέσμους εξυπηρέτησης
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Διόρθωση σφάλματος στην αγορά καρτών δώρων της εφαρμογής Fold
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Βελτιωμένη επιλογή Libbitcoin/Electrum διακομιστή με χρήση εκείνων των διακομιστών που αποκρίνονται γρηγορότερα και έχουν την χαμηλότερη καθυστέρηση. 
+• Βελτιωμένοι υπολογισμοί των παραμέτρων της Scrypt για ενισχυμένη ασφάλεια σε πιο γρήγορες συσκευές
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+Υλοποίηση της πρώτης και πιο εύκολης ανάκτησης κωδικού πρόσβασης, που επιτρέπει στους χρήστες να ανακτούν ξεχασμένους κωδικούς πρόσβασης με 2 ερωτήσεις και ένα email. Δεν χρειάζεται πλέον ανησυχία για ξεχασμένους κωδικούς πρόσβασης.
 
-In addition:
+Επιπρόσθετα:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• Ενσωμάτωση του Bitrefill plugin το οποίο δίνει τη δυνατότητα στους χρήστες να αγοράζουν προπληρωμένο χρόνο ομιλίας κινητής σε περισσότερους από 600 παρόχους σε 143 χώρες
+• Οι αρχειοθετημένοι λογαριασμοί τώρα απαιτούν λιγότερους πόρους καθώς δεν αποστέλουν αιτήματα στο δίκτυο ούτε συγχρονίζουν δεδομένα συναλλαγών
+• Ειδοποιήσεις στο παρασκήνιο όταν υπάρχουν εισερχόμενα χρήματα, εάν η εφαρμογή έχει τεθεί πρόσφατα στο παρασκήνιο
+• Εφεδρικές δημόσιες διευθύνσεις για αποτυχημένες συναλλαγές του πρωτόκολλου πληρωμής BIP70 
+• Βελτιωμένες μεταφράσεις σε πολλές γλώσσες
+• Διόρθωση μη ανταποκρινόμενων αναδυόμενων παραθύρων στο Android N
+• Διόρθωση κατάρρευσης της εφαρμογής εάν ο χρήστης ανακαλέσει τις άδειες λήψης τοποθεσίας
 
 
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+• Προσθήκη εγγραφής σε διακομιστή Libbitcoin/Electrum για βελτιωμένη απόδοση και αυξημένη διάρκεια ζωής της μπαταρίας.
+• Ενεργοποίηση δυναμικού υπολογισμού των χρεώσεων εξόρυξης
+• Προσθήκη ελεγχόμενων από τον χρήστη χρεώσων εξόρυξης (Χαμηλή, Τυπική, Υψηλή ρύθμιση προτεραιότητας)
+• Διόρθωση λανθασμένης ώρας συναλλαγής όταν πραγματοποιείται συναλλαγή ενώ το πορτοφόλι βρίσκεται εκτός σύνδεσης
+• Προσθήκη γλωσσικής υποστήριξης για Κινέζικα, Ινδικά, Ισπανικά, και Πορτογαλικά
+• Προσθήκη υποστήριξης για κατάλληλο εντοπισμό της ημερομηνίας και ώρας
+• Βελτίωση της ακρίβειας εντοπισμού της συναλλαγής όταν υπάρχουν προβλήματα στο δίκτυο
