@@ -1,19 +1,34 @@
+v.2.4.0
+
+• エッジログインへのプロトコル変更
+• 更新された言語サポート 
+• Liberty-Xプラグインを追加
+• 修正する SD カードの輸出
+•修正するフォトバグをアップロードする為に Glidera
+•サポートために非USD CSV/QBO エクスポート
+ 
+
+
+• 大 札入れ サポート。 ベタータイムアウト
+•  電子メイルCSV/QBO 輸出のクラッシュフィックス
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+**サポートされているデバイスでの指紋ログイン
+ネクサス5xと6p **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• PINログインが動作しないまれな問題を修正
+•モバイル上のURIボタンからエッジログインをサポー
+•WhatsAppフォーラムを追加してリンクをサポートする
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+•折り畳まれたギフトカードを購入する際のエラーを修正。
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+•応答時間が最も短くレイテンシの低いサーバを使用することにより、Libbitcoin / Electrumサーバの選択が改善さ。 
+•より速いデバイスでより強力なセキュリティを実現するためのScryptパラメータ計算の改善
 
 v 2.2.0
 
@@ -22,20 +37,20 @@ v 2.2.0
 加えて：
 
 •Bitrefillプラグインの統合によりユーザーは143カ国の600以上のキャリアからモバイルトップアップを購。
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+•アーカイブされたアカウント今すぐ少ないリソースを取るネットワークに照会しないかトランザクションデータを同期させない
+最近アプリがバックグラウンドになっている場合入金された資金のバックグラウンド通知
+•フォールバック公開アドレス失敗したBIP70支払いプロトコルトランザクションの場合 
+•改善された言語翻訳
+Android Nで破損したポップアップダイアログを修正
+•ユーザーが場所の権限を取り消した場合のクラッシュを修正しました。
 
 
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+•パフォーマンスを向上させ、バッテリ寿命を延ばすために、Libbitcoin / Electrumサーバーのアドレスサブスクリプションを追加。
+•動的なマイニング料金計算を有効
+•ユーザーが制御可能な推定鉱業料金を追加する（低、標準、高設定）
+•間違ったトランザクション時間を修正ウォレットがオフラインの間にトランザクションが受信されたとき
+•追加中国語、ヒンディー語、スペイン語、ポルトガル語サポート
+•数値の適切なローカライズのサポートを追加し、時間、日付
+•ネットワーク状態が悪い場合のトランザクション検出の精度を向上させ

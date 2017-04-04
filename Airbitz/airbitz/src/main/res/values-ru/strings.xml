@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Показать</string>
   <string name="fragment_setup_writeitdown_hide">Скрыть</string>
+  <string name="fragment_setup_camera_title">Разрешить доступ к камере</string>
+  <string name="fragment_setup_camera_text">Вы увидите следующий всплывающее окно с запросом на доступ к вашей камере\n\n[[abtag APP_TITLE]]это нужно для сканирования QR-коды, чтобы платить людям и торговцам.</string>
+  <string name="fragment_setup_contacts_title">Включить Контакты Доступ</string>
+  <string name="fragment_setup_contacts_text">Вы увидите следующий всплывающее запроса на доступ к вашим контактам.\n\n[[abtag APP_TITLE]]это нужно для отправки запросов об оплате и помочь пометить ваши транзакции.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Настройка восстановления пароля</string>
   <string name="activity_recovery_title">Восстановление пароля</string>
@@ -260,7 +264,7 @@
   <string name="settings_title_auto_logoff">Автоматический выход по завершении</string>
   <string name="settings_title_merchant_mode">Режим магазина</string>
   <string name="settings_title_pin_login">Вход с использованием PIN</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">Использование отпечатков пальцев Войти</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (только отправление)</string>
@@ -358,7 +362,6 @@
   <string name="fragment_wallets_add_wallet">Добавить кошелёк</string>
   <string name="fragment_wallets_deleting_wallet">Удаление кошелька...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">Не удается удалить кошелек</string>
-  <string name="fragment_wallets_delete_has_funds">Невозможно удалить кошелек со средствами. Пожалуйста, переведите средства сначала.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">Удалить кошелек?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">Вы уверены, что хотите удалить %1$s?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Удалить кошелек: %1$s?</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">Запрос биткойнов %1$s</string>
   <string name="request_qr_bitmap_error">QR-код не может быть прикреплен.</string>
-  <string name="request_qr_image_store_error">Внимание: QR-код не может быть прикреплен к сообщению электронной почты.</string>
+  <string name="request_qr_image_store_error">Предупреждение:QR-код не может быть присоединен к электронной почте.Убедитесь, что это приложение имеет разрешение на доступ к памяти телефона.</string>
   <string name="request_qr_unknown">Неизвестный пользователь</string>
   <string name="request_qr_waiting_for_payment">Ожидание платежа&#8230;</string>
   <string name="request_qr_loading_address">Загрузка биткойн-адреса&#8230;</string>
@@ -605,12 +608,12 @@
   <string name="upload_log_alert_succeeded">Загрузка завершена</string>
   <string name="upload_log_alert_failed">Сбой загрузки. Пожалуйста, проверьте свое сетевое подключение.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">Войти в системупользователь: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Подтвердите отпечатки пальцев, чтобы продолжить</string>
+  <string name="fingerprint_hint">трогатьдатчик</string>
+  <string name="fingerprint_not_recognized">Отпечаток пальца не распознается.</string>
+  <string name="fingerprint_success">снимать отпечатки пальцев признанный</string>
+  <string name="initializing_dotdot_text">Инициализация ...</string>
   <!-- Password Set -->
   <string name="password_set_title">Пароль не установлен</string>
   <string name="password_set_message">Пожалуйста, создайте пароль для этой учетной записи, иначе Вы не сможете получить доступ к ней, если потеряете свое устройство или оно будет украдено</string>
@@ -705,6 +708,7 @@
   <string name="disable_recovery_popup_message">Восстановления пароля для этой учетной записи уже настроен. Хотите отключить его?</string>
   <string name="error_disabling_recovery">Ошибка при отключении восстановления</string>
   <string name="recovery_disabled">Восстановление отключено</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">Учетная запись Edge</string>
   <string name="edge_description">Это приложение хочет получить доступ к следующим хранилищам, связанным с Вашей учетной записью в Airbitz. Оно не получит доступа к другим учетным записям или кошелькам.</string>
@@ -724,7 +728,27 @@
   <string name="identity_token_created_and_saved">Идентификационный токен от [%1$s] создан и сохранен</string>
   <string name="successfully_verified_identity">Идентификация успешно подтверждена</string>
   <string name="create_new_text">Создать новый</string>
-  <string name="or_choose">\"$1$s\" или выберите</string>
+  <string name="or_choose">   [%1$s] или выберите</string>
+  <string name="permission_needs_access_to_camera">%1$s необходим доступ к камере для сканирования QR-кодов и захвата документов
+
+</string>
+  <string name="permission_camera_permission_denied">камера доступ запрещен. Вы не сможете сканировать QR-коды.Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
+  <string name="permission_camera_permission_denied_not_be_asked">камера доступ запрещен.Вы не будете снова спросил</string>
+  <string name="permission_needs_access_to_contacts">%1$s необходим доступ к вашим контактам, чтобы помочь тегов операции с информацией получателя платежа
+ 
+
+</string>
+  <string name="permission_contacts_permission_denied">контакты доступ запрещен. Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">контакты доступ запрещен.Вы не будете снова спросил</string>
+  <string name="permission_needs_access_to_location">%1$s необходим доступ к вашему местоположению, чтобы найти бизнес в вашем регионе
+ 
+
+</string>
+  <string name="permission_location_permission_denied">Место нахождения разрешение отказано.Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
+  <string name="permission_location_permission_denied_not_be_asked">Место нахождения разрешение отказано.Вы не будете снова спросил</string>
+  <string name="permission_needs_access_to_storage">%1$sтребуется доступ к памяти устройства для отправки QR-коды  для платежных требований и захватить документы</string>
+  <string name="permission_storage_permission_denied">Место хранения разрешение отказано.Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
+  <string name="permission_storage_permission_denied_not_be_asked">Место хранения разрешение отказано. Вы не будете снова спросил</string>
   <string name="request_your_identity_token">Запрос идентификационного токена. Выберите один из списка ниже</string>
   <string name="request_your_identity_token_but_none">У Вас был запрошен идентификационный токен, которого Вы не имеете</string>
   <string name="bitid_login_message">%1$s</string>

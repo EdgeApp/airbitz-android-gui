@@ -1,0 +1,19 @@
+Αίτηση Πληρωμής Bitcoin
+Από: [[abtag FROM]]
+
+Παρακαλούμε κάνετε σάρωση τον QR κωδικό ή κάνετε κλικ στους συνδέσμους για να πληρώσετε
+
+Πατήστε για Πληρωμή
+[[abtag REDIRECT_URL]]
+
+[[abtag BITCOIN_URI]]
+
+Διεύθυνση: [[abtag ADDRESS]]
+Ποσό: [[abtag AMOUNT_BTC]] BTC
+Ποσό: [[abtag AMOUNT_BITS]] bits
+
+Αποστολή από το [[abtag APP_TITLE]] Mobile Bitcoin Wallet+ Business Directory
+
+Κάνετε λήψη της εφαρμογής [[abtag APP_TITLE]] για iOS ή Android
+[[abtag APP_DOWNLOAD_LINK]]
+

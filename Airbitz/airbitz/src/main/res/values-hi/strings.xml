@@ -19,7 +19,7 @@
   <string name="string_delete">हटाएं</string>
   <string name="string_save">सहेजें</string>
   <string name="string_back">पीछे</string>
-  <string name="string_disable">DISABLE</string>
+  <string name="string_disable">अक्षम करें</string>
   <string name="string_next">आगे</string>
   <string name="string_skip">छोड़ें</string>
   <string name="string_total">कुल</string>
@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">पिन</string>
   <string name="fragment_setup_writeitdown_show">दिखाएँ</string>
   <string name="fragment_setup_writeitdown_hide">छुपायें</string>
+  <string name="fragment_setup_camera_title">कैमरा केउपयोग को सक्षम करें</string>
+  <string name="fragment_setup_camera_text">आप अगले अपने कैमरे के लिए एक पॉपअप का अनुरोध पहुँच देखेंगे।\n\n[[abtag APP_TITLE]] इस QR कोड को स्कैन करने के लिए लोगों और व्यापारियों का भुगतान करने की जरूरत है।</string>
+  <string name="fragment_setup_contacts_title">संपर्कों का उपयोग सक्षम करें</string>
+  <string name="fragment_setup_contacts_text">आप अगले आपके संपर्क करने के लिए एक पॉपअप का अनुरोध पहुँच देखेंगे।\n\n[[abtag APP_TITLE]] इस की जरूरत है भुगतान अनुरोध भेजने के लिए और मदद करने के लिए अपने लेनदेन को टैग।</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">पासवर्ड रिकवरी सेटअप</string>
   <string name="activity_recovery_title">पासवर्ड रिकवरी</string>
@@ -218,12 +222,12 @@
   <string name="activity_recovery_prompt_title">इस चरण को छोड़ें</string>
   <string name="activity_recovery_prompt_skip">**चेतावनी** अगर आप पासवर्ड भूल गए तो इसे दोबारा प्राप्त नहीं कर पाएंगे!!</string>
   <string name="activity_recovery_first_wallet_name">मेरा वॉलेट</string>
-  <string name="activity_recovery_answer_questions_alert">You must answer all questions.  Make sure your answers are long enough.</string>
-  <string name="activity_recovery_pick_questions_alert">You must choose all questions before proceeding.</string>
+  <string name="activity_recovery_answer_questions_alert">आप सभी सवालों का जवाब देना होगा। सुनिश्चित करें कि आपके जवाब काफी लंबे समय से कर रहे हैं।</string>
+  <string name="activity_recovery_pick_questions_alert">आप आगे बढ़ने से पहले सभी सवालों का चयन करना होगा।</string>
   <string name="activity_recovery_question_default">प्रश्न</string>
   <string name="item_recovery_spinner_arrow_description">ड्रॉपडाउन निशान</string>
   <string name="activity_recovery_done_title">रिकवरी प्रश्नावली</string>
-  <string name="activity_recovery_done_details">Your password recovery questions and answers are now set up.\n\nTo recovery your password, click on the link you just emailed yourself and answer your recovery questions. Your answers must match exactly.\n\n**DO NOT FORGET YOUR USERNAME AND RECOVERY ANSWERS**\n\nYOUR ACCOUNT CANNOT BE RECOVERED WITHOUT THEM!!</string>
+  <string name="activity_recovery_done_details">आपका पासवर्ड वसूली सवाल और जवाब अब स्थापित कर रहे हैं।\n\nवसूली अपना पासवर्ड के लिए, लिंक तुम सिर्फ अपने ईमेल पर क्लिक करें और अपने वसूली सवालों के जवाब। आपका उत्तर बिल्कुल मेल खाना चाहिए\n\n** अपने यूज़रनेम और वसूली जवाब मत भूलना **\n\nअपने खाते उनके बिना बरामद किया जा नहीं सकते हैं!!</string>
   <string name="activity_recovery_error_title">पासवर्ड पुनर्प्राप्ति विफल हो गया है</string>
   <string name="activity_recovery_error_incorrect_password">कृपया अपना सही पासवर्ड दर्ज करें ताकि आपके जवाब बदल सकें</string>
   <string name="activity_recovery_error_save_failed">रिकवरी जवाब संचित करने में विफल</string>
@@ -260,7 +264,7 @@
   <string name="settings_title_auto_logoff">के बाद स्वतः लोग ऑफ</string>
   <string name="settings_title_merchant_mode">व्यापारी मोड</string>
   <string name="settings_title_pin_login">पिन से पुन: लॉग इन</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">उपयोग फिंगरप्रिंट लॉग इन</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">ब्लू टूथ</string>
   <string name="settings_title_ble_send_only">ब्लूटूथ (केवल भेजने के लिए)</string>
@@ -352,13 +356,12 @@
   <string name="fragment_send_confirmation_password_remaining">ग़लत पासवर्ड। कृपया %1$.0f सेकंड की प्रतीक्षा करें और पुन: प्रयास करें...</string>
   <string name="fragment_send_confirmation_dust_alert">मूल्य काफी कम है</string>
   <string name="fragment_send_confirmation_dust_alert_more">कृपया कम से कम %1$s(~%2$s) भेजें</string>
-  <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
+  <string name="fragment_send_confirmation_error_payment_processor">भुगतान प्रोसेसर से कनेक्ट कर त्रुटि। पता Bitcoin को सीधे भेजने\n\n%s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">वालेट्स</string>
   <string name="fragment_wallets_add_wallet">वॉलेट जोड़ें</string>
   <string name="fragment_wallets_deleting_wallet">वालेट नष्ट हो रहा है...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">वॉलेट नष्ट नहीं हो सकता</string>
-  <string name="fragment_wallets_delete_has_funds">वॉलेट में पैसे शेष हैं इसलिए इसे नष्ट नहीं कर सकते| कृपया पहले पैसे निकालें|</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">वॉलेट नष्ट करें</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">क्या आप सचमुच %1$s को नष्ट करना चाहते हैं?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">वॉलेट नष्ट:%1$s?</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s बिटकॉइन अनुरोध</string>
   <string name="request_qr_bitmap_error">एक क्यूआर कोड संलग्न नहीं किया जा सकता।</string>
-  <string name="request_qr_image_store_error">चेतवानी: इस ईमेल के साथ क्यूआर कोड संलग्न नहीं किया जा सकता|</string>
+  <string name="request_qr_image_store_error">चेतावनी: क्यूआर कोड ईमेल के साथ संलग्न नहीं किया जा सकता। इस एप्लिकेशन को सुनिश्चित करने के अपने फ़ोन के भंडारण का उपयोग करने की अनुमति है।</string>
   <string name="request_qr_unknown">अज्ञात उपयोगकर्ता</string>
   <string name="request_qr_waiting_for_payment">भुगतान का इंतजार...</string>
   <string name="request_qr_loading_address">बिटकॉइन पता लोड हो रहा है...</string>
@@ -417,7 +420,7 @@
   <string name="request_qr_ble_invalid_uri">आपको एक अमान्य बिटकॉइन अनुरोध मिला है|आप दोबारा कोशिश कर सकते हैं|</string>
   <string name="request_qr_ble_copied">अनुरोध क्लिपबोर्ड पर कॉपी हो गया है</string>
   <string name="request_qr_first_usage">भेजने वाले को क्यू आर कोड दिखाएँ और भुगतान करने के लिए उन्हें स्कैन करें</string>
-  <string name="request_qr_top_message">Scan to Send, Import, or Edge Login</string>
+  <string name="request_qr_top_message">भेजने के लिए, आयात, या एज लॉग इन स्कैन</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">वॉलेट आयात</string>
   <string name="import_wallet_timeout_message">आयात असफल|दोबारा कोशिश करें|</string>
@@ -550,7 +553,7 @@
   <string name="fragment_twofactor_show_unable_status">2 फैक्टर स्थिति बताने में सक्षम नहीं हैं</string>
   <string name="fragment_twofactor_show_instruction">2-फैक्टर पुष्टिकरण को सक्रिय कर केवल पिछले लोग्डइन से ही लॉग इन करने की अनुमति देकर उपकरण की सुरक्षा बढाएं|2FA सक्रिय करने के बाद नीचे दिए क्यूआर कोड को स्कैन कर और उपकरण जोड़ें|</string>
   <string name="fragment_twofactor_show_reset_requested">अन्य उपकरण से 2FA पुनर्स्थापन का अनुरोध किया गया है|</string>
-  <string name="fragment_twofactor_show_qr_image_text">Show QR Code</string>
+  <string name="fragment_twofactor_show_qr_image_text">दिखाएँ क्यूआर कोड</string>
   <string name="fragment_two_factor_menu_requested">दो फैक्टर पुनर्स्थापन का अनुरोध किया गया है|</string>
   <string name="twofactor_required_title">2 फैक्टर प्रमाणिकता चालू</string>
   <string name="twofactor_required_message">इस खाते से दूसरे उपकरण पर 2 फैक्टर प्रमाणिकता(उन्नत सुरक्षा) सक्रिय कर दी गयी है|कृपया 2 फैक्टर प्रमाणिकता को सक्रिय करें ताकि इस उपकरण से भी पूरी तरह काम ले पायें|</string>
@@ -605,19 +608,19 @@
   <string name="upload_log_alert_succeeded">अपलोड पूरा हुआ</string>
   <string name="upload_log_alert_failed">अपलोड असफल|कृपया नेटवर्क कनेक्शन चेक करें|</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">उपयोगकर्ता में साइन इन करें: %1s</string>
+  <string name="fingerprint_confirm_to_continue">जारी रखने के लिए फिंगरप्रिंट की पुष्टि</string>
+  <string name="fingerprint_hint">टच सेंसर</string>
+  <string name="fingerprint_not_recognized">फिंगरप्रिंट मान्यता प्राप्त नहीं। पुनः प्रयास करें।</string>
+  <string name="fingerprint_success">फिंगरप्रिंट मान्यता प्राप्त</string>
+  <string name="initializing_dotdot_text">शुरुआत में&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">कोई पासवर्ड नहीं है</string>
   <string name="password_set_message">इस खाते के लिए पासवर्ड बना लें अन्यथा ये उपकरण खो जाने या चोरी हो जाने पर पासवर्ड रिकवर नहीं कर पाएंगे|</string>
   <string name="password_set_skip">छोड़ें</string>
   <!-- PIN Set -->
-  <string name="pin_set_title">No PIN set</string>
-  <string name="pin_set_message">Please create a PIN for this account to enable quick re-logins</string>
+  <string name="pin_set_title">कोई पिन सेट</string>
+  <string name="pin_set_message">जल्दी फिर से प्रवेश सक्षम करने के लिए इस खाते के लिए एक पिन बनाने कृपया</string>
   <!-- Settings -->
   <string name="settings_category_title">वर्ग</string>
   <!-- Logout -->
@@ -625,7 +628,7 @@
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">साइन इन करें या साइन अप करें</string>
   <string name="drawer_buy_sell">बिटकॉइन खरीद/बेच</string>
-  <string name="drawer_spend_bitcoin">Spend Bitcoin (Plugins)</string>
+  <string name="drawer_spend_bitcoin">बिताओ Bitcoin (प्लगइन्स)</string>
   <string name="drawer_send">क्यूआर कोड को स्कैन करें</string>
   <string name="drawer_request">अनुरोध</string>
   <string name="drawer_transactions">ट्रांजेक्शन</string>
@@ -663,15 +666,15 @@
   <string name="request_footer_link_title">एयरबिट्ज़ iOS या एंड्राइड के लिए डाउनलोड करें</string>
   <string name="request_footer_contact">मेल करें:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(Up to 20% Off)</string>
-  <string name="plugin_target_discount">(Up to 10% Off)</string>
-  <string name="plugin_wholefoods_discount">(Up to 10% Off)</string>
-  <string name="plugin_walmart_discount">(Up to 10% Off)</string>
-  <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
-  <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
+  <string name="plugin_starbucks_discount">(अप करने के लिए 20% के बाहर)</string>
+  <string name="plugin_target_discount">(10% के बाहर)</string>
+  <string name="plugin_wholefoods_discount">(10% के बाहर)</string>
+  <string name="plugin_walmart_discount">(10% के बाहर)</string>
+  <string name="plugin_homedepot_discount">(अप करने के लिए 15% के बाहर)</string>
+  <string name="plugin_glidera_title">खरीदें / बैंक खाते के साथ बेचें (यूएसए)</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
-  <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
-  <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
+  <string name="plugin_popup_notice">निम्नलिखित सेवाओं द्वारा प्रदान नहीं कर रहे हैं%1$s.\n\nमुद्दों और प्रतिक्रिया के लिए, संबंधित सेवा प्रदाताओं से संपर्क करें।</string>
+  <string name="plugin_bitrefill_title">ऊपर प्रीपेड मोबाइल सिम</string>
   <string name="intent_choose_an_email">एक ई-मेल क्लाइंट का चयन करें:</string>
   <string name="plugin_filechooser_title">फ़ाइल अपलोड करें</string>
   <string name="plugin_filechooser_use_camera">कैमरा इस्तेमाल कीजिये</string>
@@ -685,48 +688,61 @@
   <string name="transaction_footer_starbucks_discount">20% तक की स्टारबक्स छूट</string>
   <string name="transaction_footer_target_discount">10% तक की टारगेट छूट</string>
   <string name="transaction_footer_amazon_discount">15-20% अमेज़न छूट</string>
-  <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
+  <string name="transaction_footer_bitrefill">मोबाइल फ़ोन शीर्ष अप खरीदने</string>
   <string name="change_mining_fee_title">खनन शुल्क बदलें</string>
   <string name="change_mining_fee_body">चेतावनी: कम शुल्क की वजह से लेनदेन की पुष्टि में बहुत देर हो सकती है</string>
   <!--Password Recovery Text-->
-  <string name="save_recovery_token_popup">Save Recovery Token</string>
-  <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>
-  <string name="recovery_token_email_subject">%s Recovery Token\"</string>
-  <string name="recovery_token_email_body">Please click the link below from a mobile device with %1$s installed to initiate account recovery for username [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
-  <string name="enter_username_to_recover">Please enter the username of the account to recover</string>
-  <string name="recovery_not_setup">Recovery was not setup or was done on another device</string>
-  <string name="recovery_not_setup2">If recovery was setup, you should have emailed yourself a recovery token with a link</string>
-  <string name="recovery_not_setup3">Please find the email and click on the link from this device to initiate recovery</string>
-  <string name="recovery_token_invalid">Incorrect username for this recovery token. Please try a different username or use a different recovery token link.</string>
-  <string name="logout_before_recovery">Please logout of current account before attempting password recovery</string>
-  <string name="recovery_successful">Recovery Successful\n\nPlease change your password and PIN</string>
-  <string name="invalid_email">Invalid Email</string>
-  <string name="disable_recovery_popup_title">Disable Recovery?</string>
-  <string name="disable_recovery_popup_message">This account already has password recovery setup. Would you like to disable it?</string>
-  <string name="error_disabling_recovery">Error disabling recovery</string>
-  <string name="recovery_disabled">Recovery Disabled</string>
+  <string name="save_recovery_token_popup">सहेजें वसूली टोकन</string>
+  <string name="save_recovery_token_popup_message">\"यदि आप एक खाता पुनर्प्राप्ति टोकन बचा जाना चाहिए खाता पुनर्प्राप्ति सेटअप को पूरा करने के लिए। यह कृपया अपने आप को वसूली टोकन भेजने के लिए नीचे दिए गए अपने ईमेल दर्ज करें अपने उपयोगकर्ता नाम और वसूली के जवाब के अलावा अपने अकाउंट को ठीक करने के लिए आवश्यक हो जाएगा।।</string>
+  <string name="recovery_token_email_subject">%s वसूली टोकन \"</string>
+  <string name="recovery_token_email_body">के साथ एक मोबाइल डिवाइस से नीचे दिए गए लिंक पर क्लिक करें %1$s उपयोगकर्ता नाम खाता पुनर्प्राप्ति आरंभ करने के लिए स्थापित [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
+  <string name="enter_username_to_recover">ठीक करने के लिए खाते के उपयोगकर्ता नाम दर्ज करें</string>
+  <string name="recovery_not_setup">रिकवरी सेटअप नहीं था या किसी अन्य डिवाइस पर किया गया था</string>
+  <string name="recovery_not_setup2">अगर वसूली सेटअप किया गया है, तो आप अपने आप को एक कड़ी के साथ एक वसूली टोकन ईमेल किया है चाहिए</string>
+  <string name="recovery_not_setup3">ईमेल का पता लगाने और इस डिवाइस वसूली आरंभ करने से लिंक पर क्लिक करें</string>
+  <string name="recovery_token_invalid">इस वसूली टोकन के लिए गलत उपयोगकर्ता नाम। एक अलग उपयोगकर्ता नाम प्रयास करें या एक अलग वसूली टोकन लिंक का उपयोग करें।</string>
+  <string name="logout_before_recovery">पासवर्ड वसूली प्रयास करने से पहले चालू खाते के लॉगआउट करें</string>
+  <string name="recovery_successful">वसूली सफल\n\nकृपया अपने पासवर्ड और पिन बदलने</string>
+  <string name="invalid_email">अवैध ईमेल</string>
+  <string name="disable_recovery_popup_title">वसूली अक्षम करें?</string>
+  <string name="disable_recovery_popup_message">यह खाता पहले से ही पासवर्ड वसूली सेटअप है। आप इसे निष्क्रिय करने के लिए करना चाहते हैं?</string>
+  <string name="error_disabling_recovery">वसूली अक्षम त्रुटि</string>
+  <string name="recovery_disabled">वसूली विक्लांग</string>
+  <string name="in"></string>
   <!-- SSO -->
-  <string name="edge_login">Edge Login</string>
-  <string name="edge_description">This application would like to access the following repositories linked to your Airbitz account. It will not have access to any other accounts or wallets.</string>
-  <string name="bitid_identity">BitID Identity</string>
-  <string name="provide_an_identity_token">Provide an Identity Token</string>
-  <string name="invalid_edge_login_request">Invalid Edge Login Request</string>
-  <string name="approving_login_text">Approving Login...</string>
+  <string name="edge_login">एज लॉग इन</string>
+  <string name="edge_description">यह आवेदन अपने Airbitz खाते से लिंक निम्न खजाने का उपयोग करना चाहते हैं। यह किसी भी अन्य खातों या जेब के लिए उपयोग नहीं किया जाएगा।</string>
+  <string name="bitid_identity">BitID पहचान</string>
+  <string name="provide_an_identity_token">एक पहचान टोकन उपलब्ध कराएं</string>
+  <string name="invalid_edge_login_request">अमान्य एज लॉगिन अनुरोध</string>
+  <string name="approving_login_text">लॉग इन अनुमोदन...</string>
   <string name="error_logging_in">लॉगिंग इन में परेशानी हो रही है</string>
   <string name="successfully_logged_in">लॉग इन सफल</string>
-  <string name="approve_button_text">Approve</string>
-  <string name="accept_button_text">Accept</string>
-  <string name="login_button_text">LOGIN</string>
+  <string name="approve_button_text">मंजूर</string>
+  <string name="accept_button_text">सकारना</string>
+  <string name="login_button_text">लॉग इन करें</string>
   <string name="back_button_text">पीछे</string>
-  <string name="verify_domain_and_approve">Please verify the domain above and tap LOGIN to authenticate with this site</string>
-  <string name="would_like_to">This site would like to:</string>
-  <string name="request_payment_address">Request a Payment Address</string>
-  <string name="identity_token_created_and_saved">Identity token from [%1$s] created and saved</string>
-  <string name="successfully_verified_identity">Successfully Verified Identity</string>
-  <string name="create_new_text">Create new</string>
-  <string name="or_choose">\"$1$s\" or choose</string>
-  <string name="request_your_identity_token">Request your Identity Token. Please select one below</string>
-  <string name="request_your_identity_token_but_none">Request your Identity Token but you don\'t have any</string>
+  <string name="verify_domain_and_approve">ऊपर डोमेन को सत्यापित करने और इस साइट के साथ प्रमाणित करने के लिए लॉग इन करें नल</string>
+  <string name="would_like_to">इस साइट के लिए करना चाहते हैं:</string>
+  <string name="request_payment_address">भुगतान पता अनुरोध</string>
+  <string name="identity_token_created_and_saved">से पहचान टोकन [%1$s] बनाया और बचाया</string>
+  <string name="successfully_verified_identity">सफलतापूर्वक सत्यापित पहचान</string>
+  <string name="create_new_text">नया बनाओ</string>
+  <string name="or_choose">[%1$s] या चुनें</string>
+  <string name="permission_needs_access_to_camera">%1$sक्यूआर कोड और कब्जा दस्तावेजों को स्कैन करने के लिए अपने कैमरे के लिए उपयोग की जरूरत है</string>
+  <string name="permission_camera_permission_denied">कैमरा अनुमति से इनकार किया। आप QR कोड स्कैन करने में सक्षम नहीं होगा।अपने फोन की सेटिंग में पहुँच कृपया पुन: सक्षम -&gt; अनुप्रयोगों</string>
+  <string name="permission_camera_permission_denied_not_be_asked">कैमरा अनुमति से इनकार किया। आप फिर से नहीं कहा जाएगा</string>
+  <string name="permission_needs_access_to_contacts">%1$s अपने संपर्कों के लिए उपयोग की जरूरत है पेयी जानकारी के साथ टैग लेन-देन को मदद करने के लिए</string>
+  <string name="permission_contacts_permission_denied">संपर्क की अनुमति से इनकार किया। अपने फोन की सेटिंग में पहुँच कृपया पुन: सक्षम-&gt; Apps</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">संपर्क की अनुमति से इनकार किया। आप फिर से नहीं कहा जाएगा</string>
+  <string name="permission_needs_access_to_location">%1$s अपने क्षेत्र में कारोबार खोजने के लिए अपने स्थान के लिए उपयोग की जरूरत है</string>
+  <string name="permission_location_permission_denied">स्थान अनुमति से इनकार किया। अपने फोन की सेटिंग में पहुँच कृपया पुन: सक्षम -&gt; Apps</string>
+  <string name="permission_location_permission_denied_not_be_asked">स्थान अनुमति से इनकार किया। आप फिर से नहीं कहा जाएगा</string>
+  <string name="permission_needs_access_to_storage">%1$s भुगतान अनुरोध के लिए क्यूआर कोड भेजने के लिए और दस्तावेजों पर कब्जा करने के लिए अपनी डिवाइस भंडारण करने के लिए उपयोग की जरूरत है</string>
+  <string name="permission_storage_permission_denied">भंडारण की अनुमति से इनकार किया। अपने फोन की सेटिंग में पहुँच कृपया पुन: सक्षम -&gt; Apps</string>
+  <string name="permission_storage_permission_denied_not_be_asked">भंडारण की अनुमति से इनकार किया। आप फिर से नहीं कहा जाएगा</string>
+  <string name="request_your_identity_token">अपनी पहचान टोकन का अनुरोध करें। एक नीचे चयन करें</string>
+  <string name="request_your_identity_token_but_none">अपनी पहचान टोकन का अनुरोध करें, लेकिन आप किसी भी नहीं है</string>
   <string name="bitid_login_message">%1$s</string>
   <string name="bitid_login_title">बिट आईडी लॉग इन</string>
   <string name="bitid_login_success">लॉग इन सफल</string>

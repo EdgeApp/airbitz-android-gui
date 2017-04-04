@@ -1,19 +1,30 @@
+v.2.4.0
+
+• Chanjman protokol la nan koneksyon an
+• Aktyalizasyon sipo lang 
+• Liberty-X plug-in lan te ajoute
+• Koreksyon erè pandan ekspotasyon kat SD a
+• Korije erè telechajman foto pou Glidera
+• Sipote ekspòtasyon ki pa USD CSV/QBO
+• Gran sipo potfèy. Pi bon repo
+• Imèl CSV / QBO fikse aksidan ekspòtasyon
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** Koneksyon avèk anprent dijital nan aparèy tankou Nexus 5x ak 6p **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• Koreksyon problèm ak Koneksyon PIN lan pa mache
+• Sipò avèk Edge Login depi bouton URI sou mobil
+• Ajoute Foròm WhatsApp pou sipòte lyen yo
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Korije erè lè wap fè acha kat kado
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Amelyorasyon nan seleksyon sèvè Libbitcoin/Electrum pandan nap itilize sèvè ki repon pi vit la ak sak pi fèb yo. 
+• Amelyore kalkil paramèt Scrypt pou plis sekirite sou aparèy rapid yo
 
 v 2.2.0
 

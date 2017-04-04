@@ -109,7 +109,7 @@
   <string name="server_error_no_recovery_questions">Nou paka jwenn kesyon rekiperasyon pou itilizatè sa a</string>
   <string name="server_error_not_supported">Operasyon sa a paka fèt.</string>
   <string name="server_error_insufficient_funds">Fon Ensifizan</string>
-  <string name="server_error_synchronizing">Senkronism ak rezo a.</string>
+  <string name="server_error_synchronizing">Senkronizasyon ak rezo a.</string>
   <string name="server_error_non_numeric_pin">PIN lan dwe on valè nimerik.</string>
   <string name="server_error_bad_pin">Envalid PIN</string>
   <string name="server_error_bad_pin_login">Envalid PIN. Souple Ouvri Sesyon.</string>
@@ -210,6 +210,11 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Montre</string>
   <string name="fragment_setup_writeitdown_hide">Kache</string>
+  <string name="fragment_setup_camera_title">Aktive aksè a kamera</string>
+  <string name="fragment_setup_camera_text">Wap wè apresa yon paj kap mandew aksè a kamera ou.
+ \n\n[[abtag APP_TITLE]] bezwen sa a pou skane kod QR pou paye moun yo ak machann.</string>
+  <string name="fragment_setup_contacts_title">Aktive aksè a kontak yo</string>
+  <string name="fragment_setup_contacts_text">Wap wè apresa yon paj kap mandew askè nan kamera.\n\n[[abtag APP_TITLE]] bezwen pou voye demand pèman epi ede mete yon etikèt sou transaksyon ou to.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Aktivite pou rekipere modpas</string>
   <string name="activity_recovery_title">Rekiperasyon modpas</string>
@@ -261,7 +266,7 @@
   <string name="settings_title_auto_logoff">Dekoneksyon otomatik apre</string>
   <string name="settings_title_merchant_mode">Mod Machann</string>
   <string name="settings_title_pin_login">Koneksyon anko ak PIN</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">Itilize koneksyon ak anprent dijital</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (Voye ba Sèlman)</string>
@@ -359,7 +364,6 @@
   <string name="fragment_wallets_add_wallet">Bous Mwen</string>
   <string name="fragment_wallets_deleting_wallet">Sipresyon potfèy...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">Inposib pou efase potfey la</string>
-  <string name="fragment_wallets_delete_has_funds">Imposib pou efase potfey la li genyen anpil fon. Angregistrel avan fon yo.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">Efase Bous?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">Eske ou kwè ou efase %1$s?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Efase potfey: %1$s?</string>
@@ -407,7 +411,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s Demand Bitcoin</string>
   <string name="request_qr_bitmap_error">Yon QR kod paka atache.</string>
-  <string name="request_qr_image_store_error">Atansyon: QR Kod paka atache ak email la.</string>
+  <string name="request_qr_image_store_error">Atansyon: kod QR la paka atache ak imèl la. asirew aplikasyon sa a gen pèmisyon poul antre nan stokaj telefon ou an.</string>
   <string name="request_qr_unknown">Inconnu Itilizatè</string>
   <string name="request_qr_waiting_for_payment">Ap tann pèman&#8230;</string>
   <string name="request_qr_loading_address">Chajman adrès bitcoin&#8230;</string>
@@ -606,12 +610,12 @@
   <string name="upload_log_alert_succeeded">Téléchargement konplè</string>
   <string name="upload_log_alert_failed">Telechagman pat bon. Tanpri verifye koneksyon rezo a.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">Koneksyon itilizatè: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Konfime anprent dijital la pou kontinye</string>
+  <string name="fingerprint_hint">Kaptè taktil</string>
+  <string name="fingerprint_not_recognized">Nou pa rekonèt anprent dijital la. eseye anko.</string>
+  <string name="fingerprint_success">Nou rekonèt anprent dijital la</string>
+  <string name="initializing_dotdot_text">Komansman&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">Pa gen modpas seri</string>
   <string name="password_set_message">Tanpri kreye yon modpas pou kont sa a, ou pap ka rekipere kont ou so aparèy la ta pèdi oubyen volè</string>
@@ -642,7 +646,7 @@
   <string name="affiliate_refer_friends_title">Refere Zanmi Ou</string>
   <string name="affiliate_refer_friends_body">%1$s\n\n patage lyen sa pou kapab resevwa resèt itilizatè ki enstale e itilize yo %2$s. Yo resevwa 0.25%% nan tout acha ou fè ak kat kado ou fè sou aplikasyon sa.</string>
   <string name="affiliate_category">Resèt: resèt afilyasyon</string>
-  <string name="affiliate_notes">Daprè revi lyen afilyasyon an %s</string>
+  <string name="affiliate_notes">Pataj lajan swivan lyen afilyasyon an %s</string>
   <string name="affiliate_link_error">Kapab jenere lyen afilye nan moman sa a.</string>
   <string name="affiliate_link_share_text">Anregistre potfey Airbitz ak ekonomize lajan pou ede bitcoin</string>
   <string name="app_support_requested">Sipò Mande</string>
@@ -706,6 +710,7 @@
   <string name="disable_recovery_popup_message">kont sa a deja gen konfigirasyon rekiperasyon modpas. Èske ou ta renmen enfim li?</string>
   <string name="error_disabling_recovery">Erè enfimite rekiperasyon</string>
   <string name="recovery_disabled">Rekiperasyon Andikape</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">Edge Login</string>
   <string name="edge_description">Aplikasyon sa a ta renmen jwenn aksè nan zarchiv sa yo lye nan kont Airbitz ou yo. Li pa pral gen aksè a nenpòt lòt kont oswa bous.</string>
@@ -725,7 +730,19 @@
   <string name="identity_token_created_and_saved">Token idantite soti nan [%1$s] kreye ak sove</string>
   <string name="successfully_verified_identity">Avèk Siksè Verifye Idantite</string>
   <string name="create_new_text">Kreye nouvo</string>
-  <string name="or_choose">\"$1$s\" oswa chwazi</string>
+  <string name="or_choose">[%1$s] oubyen chwazi</string>
+  <string name="permission_needs_access_to_camera">%1$s bewzen antre nan kamera ou a poul eskane kod QR epi pran dokiman ou yo</string>
+  <string name="permission_camera_permission_denied">Pèmisyon pou kamera a refize. Ou pa kapab eskane kod QR. Tanpri aktive yon lot fwa aksè a nan paramèt telefon ou an &gt; aplikasyon</string>
+  <string name="permission_camera_permission_denied_not_be_asked">Pèmisyon pou kamera refize. Yo pap mandew li anko</string>
+  <string name="permission_needs_access_to_contacts">%1$s bewzen antre nan kontak ou yo pou edew met etikèt sou transaksyon ou yo avèk enfomasyon sou moun kap resevwa lajan an</string>
+  <string name="permission_contacts_permission_denied">Pèmisyon pou antre nan kontak ou a refize. anpri aktive yon lot fwa aksè a nan paramèt telefon ou an &gt; aplikasyon</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">Pèmisyon pou kontak refize. Yo pap mandew li anko</string>
+  <string name="permission_needs_access_to_location">%1$s bezwen wè ki kote ou ye pou chèche antrepriz nan zon ou an</string>
+  <string name="permission_location_permission_denied">Pèmisyon pou lokalizasyon a refize Tanpri aktive yon lot fwa aksè a nan paramèt telefon ou an &gt; aplikasyon</string>
+  <string name="permission_location_permission_denied_not_be_asked">Pèmisyon pou lokalizasyon refize. Yo pap mandew li anko</string>
+  <string name="permission_needs_access_to_storage">%1$s bezwen antre nan stokaj telefon ou an poul voye kod QR deman pèman ki voye yo epi pran dokiman</string>
+  <string name="permission_storage_permission_denied">Pèmisyon pou antre nan stokaj ou a refize. anpri aktive yon lot fwa aksè a nan paramèt telefon ou an &gt; aplikasyon</string>
+  <string name="permission_storage_permission_denied_not_be_asked">Pèmisyon pou stokaj refize. Yo pap mandew li anko</string>
   <string name="request_your_identity_token">Mande jton Idantite ou yo. Tanpri chwazi yon sèl anba a</string>
   <string name="request_your_identity_token_but_none">Mande jton Idantite ou, men ou pa gen okenn</string>
   <string name="bitid_login_message">%1$s</string>

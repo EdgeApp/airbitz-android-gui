@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Afficher</string>
   <string name="fragment_setup_writeitdown_hide">Caché</string>
+  <string name="fragment_setup_camera_title">Activer Accès à la Caméra</string>
+  <string name="fragment_setup_camera_text">Vous verrez ensuite une page demandant l’accès à votre caméra.\n\n [[abtag APP_TITLE]] a besoin de cela pour scanner des codes QR pour payer les gens et les commerçants.</string>
+  <string name="fragment_setup_contacts_title">Activer l\'accès aux contacts</string>
+  <string name="fragment_setup_contacts_text">Vous verrez ensuite une page demandant l’accès à votre caméra.\n\n [[abtag APP_TITLE]] a besoin pour envoyer une demande de paiement et pour aider de mettre une étiquette sur vos transactions.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Installation de récupération de mot de passe</string>
   <string name="activity_recovery_title">Récupération du mot de passe</string>
@@ -260,7 +264,7 @@
   <string name="settings_title_auto_logoff">Déconnexion automatique après</string>
   <string name="settings_title_merchant_mode">Mode marchand</string>
   <string name="settings_title_pin_login">Re-connexion NIP</string>
-  <string name="settings_title_fingerprint_login">Use Fingerprint Login</string>
+  <string name="settings_title_fingerprint_login">Utilise la connexion avec l\'empreinte digitale</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (envoi uniquement)</string>
@@ -358,7 +362,6 @@
   <string name="fragment_wallets_add_wallet">Ajouter Potefeuilles</string>
   <string name="fragment_wallets_deleting_wallet">Suppression du portefeuille...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">Impossible de supprimer le portefeuille</string>
-  <string name="fragment_wallets_delete_has_funds">Impossible de supprimer le portefeuille car il contient des fonds. Transférez d’abord les fonds.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">Supprimer le portefeuille ?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">Êtes-vous sûr de vouloir supprimer %1$s ?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Supprimer le portefeuille : %1$s ?</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s demande de Bitcoin</string>
   <string name="request_qr_bitmap_error">Un code QR ne pouvait pas être attaché.</string>
-  <string name="request_qr_image_store_error">ATTENTION : Le code QR ne peut pas être attaché à l’email.</string>
+  <string name="request_qr_image_store_error">Attention: Le code QR ne peut pas attaché au courriel. Assurez vous que cette application à la permission d’accéder au stockage de votre téléphone.</string>
   <string name="request_qr_unknown">Utilisateur non reconnu</string>
   <string name="request_qr_waiting_for_payment">En attente de paiement&#8230;</string>
   <string name="request_qr_loading_address">Chargement de l\'adresse bitcoin&#8230;</string>
@@ -605,12 +608,12 @@
   <string name="upload_log_alert_succeeded">Chargement terminé</string>
   <string name="upload_log_alert_failed">Téléchargement échoué. S’il vous plaît vérifier la connexion réseau.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
-  <string name="fingerprint_hint">Touch sensor</string>
-  <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
-  <string name="fingerprint_success">Fingerprint recognized</string>
-  <string name="initializing_dotdot_text">Initializing&#8230;</string>
+  <string name="fingerprint_signin">Connexion Utilisateur: %1s</string>
+  <string name="fingerprint_confirm_to_continue">Confirmer l\'empreinte digitale pour continuer</string>
+  <string name="fingerprint_hint">Capteur tactile</string>
+  <string name="fingerprint_not_recognized">Empreinte digitale non reconnue. Essayez encore.</string>
+  <string name="fingerprint_success">Empreinte digitale reconnue</string>
+  <string name="initializing_dotdot_text">Initialisation en cours&#8230;</string>
   <!-- Password Set -->
   <string name="password_set_title">Aucun mot de passe fixé</string>
   <string name="password_set_message">Veuillez créer un mot de passe pour ce compte, ou vous ne serez pas en mesure de récupérer votre compte si votre appareil est perdu ou volé</string>
@@ -705,6 +708,7 @@
   <string name="disable_recovery_popup_message">Ce compte a déjà configuré de récupération de mot de passe. Voulez-vous le désactiver?</string>
   <string name="error_disabling_recovery">Erreur de récupération désactivant</string>
   <string name="recovery_disabled">Récupération Désactivé</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">Edge Connexion</string>
   <string name="edge_description">Cette application souhaite accéder aux référentiels suivants liés à votre compte Airbitz. Il ne sera pas avoir accès à tous les autres comptes ou porte-monnaie.</string>
@@ -724,7 +728,19 @@
   <string name="identity_token_created_and_saved">Token d\'identité [%1$s] créé et enregistré</string>
   <string name="successfully_verified_identity">Identité vérifiée avec succès</string>
   <string name="create_new_text">Créer un nouveau</string>
-  <string name="or_choose">\"$1$s\" ou choisir</string>
+  <string name="or_choose">[%1$s] ou choisir</string>
+  <string name="permission_needs_access_to_camera">%1$s a besoin d’accéder à votre camera pour scanner le code QR et capturer vos documents</string>
+  <string name="permission_camera_permission_denied">La permission à la camera a été refusée. Vous ne pouvez pas scanner le code QR. S\'il vous plait activer à nouveau l’accès dans le paramètre de votre telephone -&gt; Application</string>
+  <string name="permission_camera_permission_denied_not_be_asked">La permission à la camera a été refusée., On vous ne le demandera encore</string>
+  <string name="permission_needs_access_to_contacts">%1$s a besoin d’accéder à vos contacts pour aider à mettre de l\'étiquette sur vos transactions avec l\'information concernant le bénéficiaire</string>
+  <string name="permission_contacts_permission_denied">La permission à vos contacts a été refusée. S\'il vous plait activer à nouveau l’accès dans le paramètre de votre telephone -&gt; Application</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">La permission à vos contacts a été refusée. On vous ne le demandera encore</string>
+  <string name="permission_needs_access_to_location">%1$s a besoin d’accéder à votre localisation pour rechercher les entreprises dans votre lieu</string>
+  <string name="permission_location_permission_denied">La permission à votre localisation a été refusée. S\'il vous plait activer à nouveau l’accès dans le paramètre de votre telephone -&gt; Application</string>
+  <string name="permission_location_permission_denied_not_be_asked">La permission à votre localisation a été refusée. On vous ne le demandera encore</string>
+  <string name="permission_needs_access_to_storage">%1$s besoin d’accéder au stockage de votre téléphone pour envoyer les codes QR des demandes de paiement envoyés et capture les documents</string>
+  <string name="permission_storage_permission_denied">La permission à votre stockage a été refusée. S\'il vous plait activer à nouveau l’accès dans le paramètre de votre telephone -&gt; Application</string>
+  <string name="permission_storage_permission_denied_not_be_asked">La permission à votre localisation a été refusée. On vous ne le demandera encore</string>
   <string name="request_your_identity_token">Demandez votre token d\'identité. S\'il vous plaît sélectionner celui ci-dessous</string>
   <string name="request_your_identity_token_but_none">Demandez votre token d\'identité, mais vous n\'avez pas</string>
   <string name="bitid_login_message">%1$s</string>

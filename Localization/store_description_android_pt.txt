@@ -5,7 +5,7 @@ Assuma o controle das suas reservas! Com Airbitz, só você tem acesso as suas r
 Com um foco em entregar uma experiência incrível ao usuário, a carteira Airbitz fornece as seguintes funcionalidades:
 
 • Zero conhecimento & zero acesso a reservas, chaves, ou dados de transação pela Airbitz ou terceiros
-• Login with fingerprint scanner
+• Login com leitor de impressões digitais
 • Compra integrada de cartões de presente com desconto (20% de desconto no Starbucks!)
 • Compra e venda de bitcoin integrada a uma conta bancária vinculada
 • Simples criação de conta usando apenas login e senha (sem impressão de PDFs, escrever frases de passe, ou adicionar configurações de criptografia)

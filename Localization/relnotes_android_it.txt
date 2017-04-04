@@ -1,41 +1,67 @@
+v.2.4.0
+
+• Protocollo Modifiche a bordo Login
+•Aggiornato Lingua supporto
+
+
+ 
+•Aggiunto Liberty-X collegare
+
+•Fissare  SD carta esportare
+
+
+•Fissare foto caricare insetto per Glidera
+
+• Supporto per non-USD CSV/QBO esportare
+
+• Grande portafoglio supporto.
+
+  Migliorarsi tempo scaduto
+
+• E-mail CSV/QBO esportare schianto correzioni
+
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** Accesso di impronte digitali su dispositivi supportati come Nexus 5x e 6p**
+ 
+Request Context
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+
+Fissare raro problema con il Pin di accesso non funziona
+• Supporto Bordo Accesso dal pulsante URI sul cellulare
+• Aggiungere WhatsApp forum per sostenere i collegamenti
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Errore Fissare Quando l'acquisto di carte regalo Fold
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Migliorata la selezione del server Libbitcoin / Electrum utilizzando i server di latenza più reattivo e più bassi. 
+• Migliorare calcoli dei parametri scrypt per avere più sicurezza sui dispositivi più veloci
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+Abbiamo appena aperto nuove strade implementando primo recupero della password senza attrito del mondo, che consente agli utenti di recuperare le password dimenticate con solo 2 domande e una e-mail. Mai preoccuparsi di dimenticare di nuovo la password
 
-In addition:
+Inoltre:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• Bitrefill integrazione plugin che consente agli utenti di acquistare telefoni ricariche da oltre 600 compagnie in 143 paesi
+• Conti archiviati ora occupano meno risorse in quanto non richiesta inoltrata alla rete o sync'ing dati delle transazioni
+• Notifiche di fondo di fondi in arrivo se app è da poco in sfondo
+• Indirizzo pubblico fallback per le transazioni di pagamento di protocollo BIP70 falliti 
+• Miglioramento traduzioni in altre lingue
+• Fissare rotto le finestre di dialogo pop-up in Android N
+• Fissare Schianto se l'utente revoca delle autorizzazioni di localizzazione
 
 
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+• Aggiungere abbonamento indirizzo del server Libbitcoin / Electrum per molto migliori prestazioni e una maggiore durata della batteria.
+• Attivare il calcolo tassa mineraria dinamica
+• Aggiungere utenti controllabili tasse minerarie stima (bassa, standard, alta impostazioni)
+• Fissare errato tempi di transazione per transazione quando viene ricevuto mentre portafoglio era connesso
+• Aggiungere cinese, hindi, spagnolo, e supporto per la lingua portoghese
+• Aggiungere il supporto per la corretta localizzazione dei numeri, orari e data
+• Migliorare la precisione del rilevamento delle transazioni in scarse condizioni di rete

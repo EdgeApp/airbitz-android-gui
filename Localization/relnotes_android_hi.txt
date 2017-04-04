@@ -1,33 +1,54 @@
+v.2.4.0
+
+•मसविदा बनानापरिवर्तनएज से लॉग इन करने के लिए
+ 
+• अद्यतनभाषासमर्थन
+ 
+•जोड़ा Liberty-X लगाना
+
+• ठीक करSDकार्डनिर्यात
+• ठीक कर तस्वीरअपलोडबगग्लाइडर के लिए
+
+
+• समर्थनके लियेगैर-USD CSV/QBO निर्यात
+• विशालबटुआसमर्थन।
+
+ बेहतरसमय समाप्ति
+• ईमेल CSV/QBO निर्यात दुर्घटनाफिक्स
+ 
+
+
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+इस तरह के नेक्सस 5x और 6p के रूप में समर्थित उपकरणों पर ** फिंगरप्रिंट लॉग **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• पिन लॉगिन काम नहीं कर के साथ दुर्लभ मुद्दे को ठीक करें
+• मोबाइल पर यूआरआई के बटन से समर्थन एज लॉग इन
+• WhatsApp मंच लिंक समर्थन करने के लिए जोड़े
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• फिक्स त्रुटि जब गुना उपहार कार्ड खरीदने
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• सबसे अधिक उत्तरदायी है और सबसे कम विलंबता सर्वर का उपयोग करके Libbitcoin / गिलट सर्वर चयन में सुधार हुआ। 
+• तेजी से उपकरणों पर मजबूत सुरक्षा के लिए Scrypt पैरामीटर गणना में सुधार
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+हम सिर्फ दुनिया का पहला घर्षणहीन पासवर्ड वसूली है जो उपयोगकर्ताओं को सिर्फ 2 सवाल और एक ईमेल के साथ भूल पासवर्ड ठीक करने देता लागू करने से नई जमीन तोड़ दिया। फिर कभी अपना पासवर्ड भूल के बारे में चिंता
 
-In addition:
+इसके साथ - साथ:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+जो उन 143 देशों में 600 से अधिक विमान से मोबाइल टॉप अप खरीदने की सुविधा देता है • Bitrefill प्लगइन एकीकरण
+• संग्रहीत खातों अब नेटवर्क क्वैरी नहीं या लेनदेन डेटा sync'ing से कम संसाधनों ले
+• भेजे गए धन की पृष्ठभूमि सूचनाएं यदि एप्लिकेशन पृष्ठभूमि हाल ही में है
+• निवर्तन सार्वजनिक उद्घोषणा विफल रहा है BIP70 भुगतान प्रोटोकॉल लेनदेन के लिए 
+• बेहतर भाषा में अनुवाद
+• फिक्स टूट एंड्रॉयड एन में पॉपअप संवाद
+• फिक्स दुर्घटना उपयोगकर्ता स्थान अनुमतियों को रद्द करता है, तो
 
 
 v 2.1.0
