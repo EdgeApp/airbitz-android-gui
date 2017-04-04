@@ -1,19 +1,41 @@
+v.2.4.0
+ 
+
+
+
+•протокол Изменения к кромкошлифовальный Вход
+• обновленный язык поддержка
+ 
+• добавленной Liberty-X вставной
+• исправлять SD карта экспорт
+
+•исправлять Фото загружать ошибка для  Glidera
+• Поддержкадляне--USD CSV/QBOэкспорт
+•большойбумажникподдержка. Лучше Тайм-ауты
+•E-мейл CSV/QBOэкспорт авария исправления
+ 
+
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+**Отпечатков пальцев Войти на поддерживаемых устройствах, таких как Nexus 5х и 6р  **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• Фикс редкий вопрос с PIN-логин не работает
+ 
+
+
+Поддержка пограничного Войти с кнопкой URI на мобильном телефоне
+• Добавить WhatsApp форум поддержки ссылки
+
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Исправлена ошибка при покупке вислоухие подарочные карты
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+•Улучшение Libbitcoin / Электрум выбор серверс помощью наиболее отзывчивые и низкой задержкой серверов.а  
+• Улучшение вычисления параметров Scrypt для повышения безопасности на более быстрых устройств
 
 v 2.2.0
 

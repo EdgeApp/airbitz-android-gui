@@ -1,41 +1,52 @@
+v.2.4.0
+
+• يتغير بروتوكول دخولEDGE-
+• دعم اللغة التحديث 
+• واضاف ليبرتي-X المكونات في
+• فيكس تصدير بطاقة SD
+• علة فيكس صورة تحميل المنزلق
+•الدعم USD CSV / تصدير الموسمية
+• تقديم الدعم لمجموعة كبيرة. أفضل الموعد النهائي
+• / الإصلاحات تصدير الموسمية تحطم البريد الإلكتروني CSV
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** بصمة الدخول على الأجهزة المعتمدة مثل نيكزس 5X و6P **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• إصلاح مشكلة نادرة مع الدخول PIN لا يعمل
+• دعم حافة الدخول من زر URI على الهاتف المحمول
+• إضافة ال WhatsApp منتدى لدعم الروابط
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• إصلاح خطأ عند شراء بطاقات الهدايا أضعاف
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• تحسين Libbitcoin / Electrum اختيار الخادم باستخدام خوادم الكمون الأكثر استجابة وأدنى. 
+• تحسين Scrypt الحسابات المعلمة للأمن أقوى على الأجهزة أسرع
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+لقد كسر فقط آفاقا جديدة من خلال تنفيذ أول استعادة كلمة السر الاحتكاك في العالم الذي يتيح للمستخدمين استعادة كلمات السر المنسية مع مجرد 2 الأسئلة والبريد الإلكتروني. لا تقلق أبدا بشأن نسيان كلمة المرور الخاصة بك مرة أخرى
 
-In addition:
+بالإضافة الى:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• Bitrefill التكامل البرنامج المساعد الذي يتيح للمستخدمين شراء العليا المنبثقة المحمولة من أكثر من 600 ناقلة في 143 بلدا
+• حسابات الأرشيف تتخذ الآن موارد أقل من خلال عدم الاستعلام عن الشبكة أو مزامنة 'بيانات المعاملات
+• إخطارات خلفية أموال واردة إذا التطبيق مؤخرا الخلفية
+• مخاطبة الجمهور الإحتياطي للمعاملات بروتوكول دفع BIP70 فشل 
+• تحسين الترجمة
+• إصلاح كسر الحوارات المنبثقة في الروبوت N
+• تحطم فيكس إذا كان المستخدم يلغي أذونات الموقع
 
 
 v 2.1.0
 
-• Add Libbitcoin/Electrum server address subscription for much improved performance and increased battery life.
-• Enable dynamic mining fee calculation
-• Add user controllable estimated mining fees (Low, Standard, High settings)
-• Fix incorrect transaction times for when transaction is received while wallet was offline
-• Add Chinese, Hindi, Spanish, and Portuguese language support
-• Add support for proper localization of numbers, times, and dates
-• Improve accuracy of transaction detection in poor network conditions
+• إضافة Libbitcoin / Electrum عنوان ملقم اشتراك لتحسن كبير في الأداء وزيادة عمر البطارية.
+• تمكين ديناميكية حساب رسوم التعدين
+• إضافة مستخدم التحكم فيها رسوم التعدين يقدر (منخفض، عادي، وإعدادات عالية)
+• فيكس غير صحيح الأوقات الصفقة لحين ورود المعاملة بينما المحفظة كانت متواجد حاليا
+• إضافة الصينية والهندية والإسبانية، ودعم اللغة البرتغالية
+• إضافة دعم لتوطين الصحيح من الأرقام والأوقات والتواريخ
+• تحسين دقة الكشف المعاملة في ظروف الشبكة الفقيرة

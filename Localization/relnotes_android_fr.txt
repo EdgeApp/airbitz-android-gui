@@ -1,19 +1,30 @@
+v.2.4.0
+
+• Modifications de protocole à l'ouverture de session
+• Mise à jour du support linguistique 
+• Ajout du plug-in Liberty-X
+• Corriger l'erreur d'exportation de la carte SD
+• Correction d'un bug de téléchargement de photos pour Glidera
+• Prise en charge des exportations hors CSV / QBO
+• Grand Support de portefeuille. Meilleurs Délais
+• Corrections d'échecs d'exportation CSV / QBO par courrier électronique
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** La connexion avec empreinte digitale est supportée par les appareils comme Nexus 5x et 6p **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• La correction du problème avec la connexion du PIN ne marche pas
+• Support avec Edge login depuis le bouton URI sur mobile
+Ajout De WhatsApp pour supporter les liens
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+Correction d'erreur en faisant l'achat des cartes cadeaux Fold
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Amélioration dans la sélection du serveur Libbitcoin/Electrum en utilisant le serveur qui répond le plus et le plus lent. 
+Amélioration du calcul des paramètres Scrypt pour plus de sécurité sur les appareils rapides
 
 v 2.2.0
 

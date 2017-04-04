@@ -1,26 +1,30 @@
-Powerful and easy to use bitcoin wallet allowing users to easily control their own bitcoin private keys with the familiarity and ease of mobile banking.
+Potente e facile da usare Bitcoin portafoglio consentendo agli utenti di controllare facilmente le proprie chiavi private bitcoin con la familiarità e facilità di mobile bancario.
 
-Take control of your funds! With Airbitz, only YOU have access to your funds or transaction info. Neither Airbitz or any 3rd party can access your money or data. You get the financial privacy and autonomy bitcoin was designed for with the ease of use even grandma could handle.
+Prendi il controllo del tuo patrimonio! Con Airbitz, solo si ha accesso ai suoi fondi o informazioni di transazione. Né Airbitz o qualsiasi 3rd party possono accedere al denaro o dati. È possibile ottenere la privacy finanziaria e l'autonomia Bitcoin è stato progettato per la facilità d'uso anche la nonna in grado di gestire.
 
-With a focus on delivering an amazing user experience, the Airbitz wallet provides the following great functionality:
+Con un focus sulla fornitura un'esperienza utente straordinaria, il portafoglio Airbitz fornisce le seguenti grande funzionalità:
 
-• Zero-knowledge & zero-access to user funds, keys, or transaction data by Airbitz or 3rd parties
-• Login with fingerprint scanner
-• Integrated purchase of discounted gift cards (20% off Starbucks!)
-• Integrated bitcoin buy / sell from a linked bank account
-• Simple account creation using just a login & password (no printing of PDFs, writing down pass phrases, or adding encryption settings)
-• Hierarchical Deterministic wallets with changing addresses per transaction
-• Search transactions by payee, category, or notes
-• Spending limits (require password or PIN to spend above limits you set)
-• Decentralized server architecture. Wallets work even if Airbitz servers are down.
-• Open-source code. Available at https://github.com/Airbitz
+• Conoscenza zero e zero l'accesso ai fondi degli utenti, chiavi, o dati delle transazioni da parte Airbitz o Terzo partito
+• Accesso con scanner di impronte digitali
+• acquisto integrato di carte regalo scontati (20% di sconto Starbucks!)
+• integrato bitcoin acquisto / vendita da un conto bancario collegato
+• Creazione di account semplice utilizzando solo un login e una password (Senza la stampa di file PDF, scrivere frasi Pass, o l'aggiunta di impostazioni di crittografia)
+• Portafogli deterministici gerarchici con mutevoli indirizzi per transazione
+• le operazioni di ricerca da parte del beneficiario, categoria, o note
+• Limiti di spesa (Richiedere password o un PIN a spendere i limiti di cui sopra si imposta)
+• Decentralizzata architettura server. Portafogli funzionano anche se i server Airbitz sono giù.
+• Il codice open-source. Disponibile a https://github.com/Airbitz
+ 
 
-********* Privacy Notice *********
-The Airbitz application requests access to the device contact list, location, and personal information. This information is used on the device to provide an improved user experience in the following ways:
+*********Informativa sulla Privacy*********
+ 
+Request Context
 
-1. Autocomplete contacts from the user's address book after a transaction
-2. Autocomplete contacts from the user's address book to send Email or SMS payment requests
-3. Autocomplete business listings names after a transaction
-4. Geolocate user's device to find nearby businesses
+L'applicazione richiede Airbitz accesso alla lista dispositivo a contatto, la posizione e le informazioni personali. Questa informazione viene utilizzata sul dispositivo una migliore esperienza utente nei seguenti modi:
 
-No personal info or contact list info ever leaves the device without first being encrypted by the user's credentials (username/password). Neither Airbitz nor any 3rd party has knowledge of the information accessed by the application.
+1. Auto contatti completi dalla rubrica dell'utente dopo una transazione
+2. Auto contatti completi dalla rubrica dell'utente di inviare e-mail o SMS richieste di pagamento
+3. Completamento automatico aziende nomi dopo una transazione
+4. Geolocalizza dispositivo dell'utente per trovare attività commerciali nelle vicinanze
+
+Nessuna informazione o elenco di contatti personali informazioni lascia mai il dispositivo senza essere crittografato le credenziali dell'utente (Nome utente/password). Né Airbitz né alcuna terzo partito è a conoscenza delle informazioni accessibili dall'applicazione.

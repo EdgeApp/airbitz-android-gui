@@ -3,154 +3,154 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>Air Travel</item>
-    <item>Alcohol &amp; Bars</item>
-    <item>Allowance</item>
-    <item>Amusement</item>
-    <item>Arts</item>
-    <item>ATM Fee</item>
-    <item>Auto &amp; Transport</item>
-    <item>Auto Insurance</item>
-    <item>Auto Payment</item>
-    <item>Baby Supplies</item>
-    <item>Babysitter &amp; Daycare</item>
-    <item>Bank Fee</item>
-    <item>Bills &amp; Utilities</item>
-    <item>Books</item>
-    <item>Books &amp; Supplies</item>
-    <item>Car Wash</item>
-    <item>Cash &amp; ATM</item>
-    <item>Charity</item>
-    <item>Clothing</item>
-    <item>Coffee Shops</item>
-    <item>Credit Card Payment</item>
-    <item>Dentist</item>
-    <item>Deposit to Savings</item>
-    <item>Doctor</item>
-    <item>Education</item>
-    <item>Electronics &amp; Software</item>
-    <item>Entertainment</item>
-    <item>Eyecare</item>
-    <item>Fast Food</item>
-    <item>Fees &amp; Charges</item>
-    <item>Financial</item>
-    <item>Financial Advisor</item>
-    <item>Food &amp; Dining</item>
-    <item>Furnishings</item>
-    <item>Gas &amp; Fuel</item>
-    <item>Gift</item>
-    <item>Gifts &amp; Donations</item>
-    <item>Groceries</item>
-    <item>Gym</item>
-    <item>Hair</item>
-    <item>Health &amp; Fitness</item>
-    <item>HOA Dues</item>
-    <item>Hobbies</item>
-    <item>Home</item>
-    <item>Home Improvement</item>
-    <item>Home Insurance</item>
-    <item>Home Phone</item>
-    <item>Home Services</item>
-    <item>Home Supplies</item>
-    <item>Hotel</item>
-    <item>Interest Exp</item>
-    <item>Internet</item>
-    <item>IRA Contribution</item>
-    <item>Kids</item>
-    <item>Kids Activities</item>
-    <item>Late Fee</item>
-    <item>Laundry</item>
-    <item>Lawn &amp; Garden</item>
-    <item>Life Insurance</item>
-    <item>Misc.</item>
-    <item>Mobile Phone</item>
-    <item>Mortgage &amp; Rent</item>
-    <item>Mortgage Interest</item>
-    <item>Movies &amp; DVDs</item>
-    <item>Music</item>
-    <item>Newspaper &amp; Magazines</item>
-    <item>Not Sure</item>
-    <item>Parking</item>
-    <item>Personal Care</item>
-    <item>Pet Food &amp; Supplies</item>
-    <item>Pet Grooming</item>
-    <item>Pets</item>
-    <item>Pharmacy</item>
-    <item>Property</item>
-    <item>Public Transportation</item>
-    <item>Registration</item>
-    <item>Rental Car &amp; Taxi</item>
-    <item>Restaurants</item>
-    <item>Service &amp; Parts</item>
-    <item>Service Fee</item>
-    <item>Shopping</item>
-    <item>Spa &amp; Massage</item>
-    <item>Sporting Goods</item>
-    <item>Sports</item>
-    <item>Student Loan</item>
-    <item>Tax</item>
-    <item>Television</item>
-    <item>Tolls</item>
-    <item>Toys</item>
-    <item>Trade Commissions</item>
-    <item>Travel</item>
-    <item>Tuition</item>
-    <item>Utilities</item>
-    <item>Vacation</item>
-    <item>Vet</item>
+    <item>هواء سفر</item>
+    <item>الحانات &amp; الحانات</item>
+    <item>بدل</item>
+    <item>كل ما يسلي</item>
+    <item>فنون</item>
+    <item>رسوم الصراف الآلي</item>
+    <item>السيارات &amp; المواصلات</item>
+    <item>تأمين تلقائي</item>
+    <item>السيارات الدفع</item>
+    <item>لوازم الطفل</item>
+    <item>جليسه اطفال &amp; الرعاية النهارية</item>
+    <item>بنك رسوم</item>
+    <item>فواتير&amp; خدمات</item>
+    <item>كتاب</item>
+    <item>كتب &amp; اللوازم</item>
+    <item>غسيل سيارة</item>
+    <item>السيولة النقدية &amp; ماكينة الصراف الآلي</item>
+    <item>مؤسسة خيرية</item>
+    <item>ملابس</item>
+    <item>محلات القهوة</item>
+    <item>رصيد بطاقة دفع</item>
+    <item>طبيبة الاسنان</item>
+    <item>الودائع إلى الادخار</item>
+    <item>طبيب</item>
+    <item>التعليم</item>
+    <item>إلكترونيات &amp; البرمجيات</item>
+    <item>تسلية</item>
+    <item>العناية بالعين</item>
+    <item>الطعام السريع</item>
+    <item>رسوم&amp; رسوم</item>
+    <item>مالي</item>
+    <item>مالي المستشار</item>
+    <item>طعام &amp; الطعام</item>
+    <item>تأثيث</item>
+    <item>غاز &amp; وقود</item>
+    <item>هدية</item>
+    <item>الهدايا&amp; التبرعات</item>
+    <item>البقالة</item>
+    <item>رياضة بدنية</item>
+    <item>قماش من الصوف</item>
+    <item>الصحة&amp; اللياقه البدنيه</item>
+    <item>القرن الإفريقي استحقاقات</item>
+    <item>الهوايات</item>
+    <item>الرئيسية</item>
+    <item>تحسين المنزل</item>
+    <item>تامين البيت</item>
+    <item>الهاتف المنزلي</item>
+    <item>خدمات منزلية</item>
+    <item>الرئيسية اللوازم</item>
+    <item>الفندق</item>
+    <item>الفائدة إكسب</item>
+    <item>إنترنت</item>
+    <item>IRA إسهام</item>
+    <item>أطفال</item>
+    <item>أنشطة الأطفال</item>
+    <item>متأخر رسوم</item>
+    <item>غسيل ملابس</item>
+    <item>الحديقة &amp; حديقة</item>
+    <item>التأمين على الحياة</item>
+    <item>متفرقات.</item>
+    <item>تليفون محمول</item>
+    <item>رهن &amp; إيجار</item>
+    <item>الفائدة الرهن العقاري</item>
+    <item>أفلام &amp; أقراص الفيديو الرقمية</item>
+    <item>موسيقى</item>
+    <item>جريدة &amp; مجلات</item>
+    <item>غير متأكد</item>
+    <item>موقف سيارات</item>
+    <item>رعاية شخصية</item>
+    <item>طعام الحيوانات الاليفة &amp; اللوازم</item>
+    <item>الحيوانات الأليفة الاستمالة</item>
+    <item>الحيوانات الأليفة</item>
+    <item>صيدلية</item>
+    <item>الملكية</item>
+    <item>النقل العام</item>
+    <item>التسجيل</item>
+    <item>تأجير  سيارة &amp; سيارة اجره</item>
+    <item>المطاعم</item>
+    <item>خدمة &amp; أجزاء</item>
+    <item>رسوم الخدمة</item>
+    <item>التسوق</item>
+    <item>منتجع صحي &amp; تدليك</item>
+    <item>بضائع رياضيه</item>
+    <item>رياضات</item>
+    <item>قرض الطالب</item>
+    <item>قرض الطالب</item>
+    <item>تلفزيون</item>
+    <item>رسوم</item>
+    <item>عروسه لعبه</item>
+    <item>اللجان التجارة</item>
+    <item>سفر</item>
+    <item>رسوم</item>
+    <item>الأدوات المساعدة</item>
+    <item>إجازة</item>
+    <item>بيطري</item>
   </string-array>
   <string-array name="income_category_defaults">
-    <item>Consulting Income</item>
-    <item>Div Income</item>
-    <item>Net Salary</item>
-    <item>Other Income</item>
-    <item>Rent</item>
-    <item>Sales</item>
+    <item>دخل الاستشارات</item>
+    <item>شعبة الدخل</item>
+    <item>صافي الراتب</item>
+    <item>مصدر دخل آخر</item>
+    <item>إيجار</item>
+    <item>مبيعات</item>
   </string-array>
   <string-array name="exchange_category_defaults">
-    <item>Buy Bitcoin</item>
-    <item>Sell Bitcoin</item>
+    <item>شراء بيتكوين</item>
+    <item>بيع بيتكوين</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
     <item>Bitfinex</item>
     <item>Bitstamp</item>
     <item>BTC-e</item>
-    <item>BTCChina</item>
+    <item>BTC الصين</item>
     <item>Bter</item>
     <item>CAVirtex</item>
     <item>Coinbase</item>
     <item>CoinMKT</item>
     <item>Huobi</item>
-    <item>Kraken</item>
+    <item>كراكن</item>
     <item>MintPal</item>
     <item>OKCoin</item>
-    <item>Vault of Satoshi</item>
+    <item>قبو ساتوشي</item>
   </string-array>
   <string-array name="transfer_wallet_category_defaults">
     <item>Airbitz</item>
-    <item>Armory</item>
-    <item>Bitcoin Core</item>
+    <item>ترسانة</item>
+    <item>بيتكوين الأساسية</item>
     <item>Blockchain</item>
-    <item>Electrum</item>
+    <item>إلكتروم</item>
     <item>Multibit</item>
-    <item>Mycelium</item>
-    <item>Dark Wallet</item>
+    <item>أفطورة</item>
+    <item>المحفظة السوداء</item>
   </string-array>
   <string-array name="transaction_categories_list">
-    <item>Expense</item>
-    <item>Income</item>
-    <item>Transfer</item>
-    <item>Exchange</item>
+    <item>مصروف</item>
+    <item>إيراد</item>
+    <item>نقل السلطة</item>
+    <item>تبادل</item>
   </string-array>
   <string-array name="distance_list">
-    <item>Automatic</item>
-    <item>Kilometers</item>
-    <item>Miles</item>
+    <item>أوتوماتيكي</item>
+    <item>كيلومتر</item>
+    <item>اميال</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>Low Fee</item>
-    <item>Standard Fee</item>
-    <item>High Fee</item>
+    <item>رسوم منخفضة</item>
+    <item>الرسوم القياسية</item>
+    <item>رسوم عالية</item>
   </string-array>
 </resources>

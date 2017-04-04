@@ -1,33 +1,61 @@
+v.2.4.0
+
+• Protocolo Alterar para eira Entrar
+ 
+•Atualizada língua apoio
+
+ 
+• Adicionado Liberty-X plugar
+
+•Consertar SD cartão exportar
+•Consertar foto Envio erro para Glidera
+
+
+
+ 
+
+• Apoio para não -USD CSV/QBO   exportar
+
+
+• Ampla carteira apoio
+
+ Melhor tempo esgotado
+
+
+• Correio eletrônico CSV/QBO exportar batida Conserta
+
+ 
+
 v 2.3.3
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+** Fingerprint Login em dispositivos suportados como Nexus 5x e 6p **
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• Corrigir um problema raro com o login do PIN não funcionando
+• Apoiar o início de sessão de navegação a partir do botão URI no telemóvel
+• Adicionar fórum do WhatsApp a links de suporte
 
 v 2.3.1
 
-• Fix error when purchasing Fold gift cards
+• Corrigir o erro ao comprar cartões-presente Fold
 
 v 2.3.0
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+• Seleção de servidor Libbitcoin / Electrum melhorada usando servidores de latência mais responsivos e de menor latência. 
+• Melhorar os cálculos de parâmetro Scrypt para maior segurança em dispositivos mais rápidos
 
 v 2.2.0
 
-We've just broken new ground by implementing the world's first frictionless password recovery which lets users recover forgotten passwords with just 2 questions and an email. Never worry about forgetting your password again
+Acabamos de abrir novos caminhos implementando a primeira recuperação de senha sem atritos do mundo, que permite aos usuários recuperar senhas esquecidas com apenas duas perguntas e um e-mail. Nunca se preocupe em esquecer sua senha novamente
 
-In addition:
+Além:
 
-• Bitrefill plugin integration which lets users buy mobile top ups from over 600 carriers in 143 countries
-• Archived accounts now take up less resources by not querying the network or sync'ing transaction data
-• Background notifications of incoming funds if app is recently backgrounded
-• Fallback public address for failed BIP70 payment protocol transactions 
-• Improved language translations
-• Fix broken popup dialogs in Android N
-• Fix crash if user revokes location permissions
+• Integração de plugins Bitrefill que permite aos usuários comprar ups top móveis de mais de 600 operadoras em 143 países
+• As contas arquivadas ocupam menos recursos ao não consultar a rede ou sincronizar dados de transação
+• Notificações em segundo plano de fundos recebidos se o aplicativo tiver sido recentemente
+• Endereço público de falha para transações de protocolo de pagamento com falha no BIP70 
+• Melhores traduções de idiomas
+• Corrigir caixas de diálogo quebradas no Android N
+• Corrigir falha se o usuário revogar permissões de local
 
 
 v 2.1.0

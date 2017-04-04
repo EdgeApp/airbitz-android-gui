@@ -1,26 +1,26 @@
-Powerful and easy to use bitcoin wallet allowing users to easily control their own bitcoin private keys with the familiarity and ease of mobile banking.
+強力で使いやすいビットコインウォレット使い慣れた簡単なモバイルバンキングを使用して、ユーザーが独自のビットコイン秘密鍵を簡単に制御できるように。
 
-Take control of your funds! With Airbitz, only YOU have access to your funds or transaction info. Neither Airbitz or any 3rd party can access your money or data. You get the financial privacy and autonomy bitcoin was designed for with the ease of use even grandma could handle.
+取るコントロールあなたの資金の！ エアビッツでは、 資金や取引情報にアクセスできるのはあなただけです。 どちらもAirbitzまたは第三者があなたのお金やデータにアクセスすることができます。 あなたは財政的なプライバシーを得て、自律性のビットコインは、おばあちゃんでさえ扱うことができる使いやすさのために設計されています。
 
-With a focus on delivering an amazing user experience, the Airbitz wallet provides the following great functionality:
+優れたユーザーエクスペリエンスを提供することに重点を置いて、Airbitzウォレットは、次の優れた機能を提供します。
 
-• Zero-knowledge & zero-access to user funds, keys, or transaction data by Airbitz or 3rd parties
-• Login with fingerprint scanner
-• Integrated purchase of discounted gift cards (20% off Starbucks!)
-• Integrated bitcoin buy / sell from a linked bank account
-• Simple account creation using just a login & password (no printing of PDFs, writing down pass phrases, or adding encryption settings)
-• Hierarchical Deterministic wallets with changing addresses per transaction
-• Search transactions by payee, category, or notes
-• Spending limits (require password or PIN to spend above limits you set)
-• Decentralized server architecture. Wallets work even if Airbitz servers are down.
-• Open-source code. Available at https://github.com/Airbitz
+•Airbitzまたは第三者によるユーザーの資金、鍵、取引データに対するゼロ知識とゼロアクセス
+•指紋スキャナによるログイン
+•割引ギフトカードの統合購入（スターバックスから20％割引！）
+リンクされた銀行口座からの統合されたビットコインの売買
+•ログインとパスワードだけを使用した簡単なアカウント作成（PDF、パスフレーズを書き留め、 または暗号化設定を追加する）
+•トランザクションごとに変更されたアドレスを持つ階層的決定論的ウォレット
+•受取人、カテゴリ、またはノートによる取引の検索
+• 費やす制限（パスワードが必要ですまたはあなたが設定した制限を超えて使用PIN）
+•分散型サーバーアーキテクチャ。 Airbitzサーバーがダウンしていてもウォレットは機能します。
+•オープンソースコード。 利用可能 http://github.com/Airbitz
 
-********* Privacy Notice *********
-The Airbitz application requests access to the device contact list, location, and personal information. This information is used on the device to provide an improved user experience in the following ways:
+*********プライバシーに関する告知*********
+Airbitzアプリケーションはデバイスの連絡先リストへのアクセスを要求し、ロケーション、 および個人情報。 この情報は、デバイス上で以下の方法でユーザーエクスペリエンスを向上させるために使用されます。
 
-1. Autocomplete contacts from the user's address book after a transaction
-2. Autocomplete contacts from the user's address book to send Email or SMS payment requests
-3. Autocomplete business listings names after a transaction
-4. Geolocate user's device to find nearby businesses
+1. 取引後にユーザーのアドレス帳から連絡先を自動完成
+2. ユーザーのアドレス帳から連絡先を自動完成して、電子メールまたはSMS支払い要求を送信する
+3. トランザクション後のビジネスリスティング名のオートコンプリート
+4. 近くのビジネスを見つけるためにユーザーのデバイスを配置する
 
-No personal info or contact list info ever leaves the device without first being encrypted by the user's credentials (username/password). Neither Airbitz nor any 3rd party has knowledge of the information accessed by the application.
+個人情報や連絡先リストの情報はありません最初にユーザーの資格情報で暗号化されずにデバイスから離れる（ユーザー名パスワード）。 Airbitzも第三者も、アプリケーションがアクセスする情報について知っていません。

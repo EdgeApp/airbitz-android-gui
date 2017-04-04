@@ -113,7 +113,7 @@
   <string name="server_error_bad_pin">PINが無効です</string>
   <string name="server_error_bad_pin_login">PINが無効です。 ログインしてください。</string>
   <string name="server_error_pin_expired">PINの有効期限が切れています。 ログインしてください。</string>
-  <string name="server_error_invalid_pin_wait">失敗したログイン試行が多すぎます。 ％1 $秒後にもう一度お試しください。</string>
+  <string name="server_error_invalid_pin_wait">失敗したログイン試行が多すぎます。 ％1$s 秒後にもう一度お試しください。</string>
   <string name="server_error_other">エラーが発生しました。</string>
   <string name="insufficient_amount">金額が小さすぎる</string>
   <string name="account_needs_password_title">警告：パスワードがありません</string>
@@ -128,7 +128,7 @@
   <string name="fragment_landing_signin_button">サインイン</string>
   <string name="fragment_landing_signup_button">サインアップ</string>
   <string name="fragment_landing_forgot_password">パスワードをお忘れですか</string>
-  <string name="fragment_landing_current_user">現在のユーザー（％1 $ s）</string>
+  <string name="fragment_landing_current_user">現在のユーザー（％1$s）</string>
   <string name="fragment_landing_switch_user">PINログイン終了</string>
   <string name="fragment_landing_forgot_pin">PINを忘れ</string>
   <string name="fragment_landing_enter_pin">PINの入力</string>
@@ -137,7 +137,7 @@
   <string name="fragment_forgot_no_recovery_questions_title">回復に関する質問はありません</string>
   <string name="fragment_forgot_no_recovery_questions_text">このユーザーには復旧に関する質問はありません。</string>
   <string name="fragment_landing_account_delete_title">アカウントを削除</string>
-  <string name="fragment_landing_account_delete_message">この端末でのみ％1 $ sを削除？これにより、このデバイスからの2FAおよびPINアクセスが削除されます。このアカウントで2FAが有効になっている場合、新しいデバイスからこのアカウントに7日間アクセスすることはできません</string>
+  <string name="fragment_landing_account_delete_message">この端末でのみ％1$sを削除？これにより、このデバイスからの2FAおよびPINアクセスが削除されます。このアカウントで2FAが有効になっている場合、新しいデバイスからこのアカウントに7日間アクセスすることはできません</string>
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">サインアップ</string>
   <string name="activity_navigation_signin_failed">サインインに失敗</string>
@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">ショー</string>
   <string name="fragment_setup_writeitdown_hide">隠す</string>
+  <string name="fragment_setup_camera_title">カメラアクセスを有効にする</string>
+  <string name="fragment_setup_camera_text">ポップアップが表示されますカメラへのアクセスをリクエストする\n\n[[abtag APP_TITLE]] QRコードをスキャンして人や商人に支払う必要があります。</string>
+  <string name="fragment_setup_contacts_title">連絡先アクセスを有効にする</string>
+  <string name="fragment_setup_contacts_text">次に、連絡先へのアクセスを要求するポップアップが表示されます。\n\n[[abtag APP_TITLE]] 支払い要求を送信したり、取引にタグを付けるのに必要です。</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">パスワード回復のセットアップ</string>
   <string name="activity_recovery_title">パスワード回復</string>
@@ -298,7 +302,7 @@
   <!-- Strings for Category Fragment -->
   <string name="fragment_category_cancel_title">変更を取り消す</string>
   <string name="fragment_category_cancel_message">変更をキャンセルしてもよろしいですか？</string>
-  <string name="fragment_category_deleted">％1 $ sが削除さ</string>
+  <string name="fragment_category_deleted">％1$sが削除さ</string>
   <string name="fragment_category_add">カテゴリを追加</string>
   <!-- Strings for AutoLogoff Dialog -->
   <string name="dialog_title">自動ログオフ時間を設定する</string>
@@ -309,7 +313,7 @@
   <string name="send_to_title">に：</string>
   <string name="send_scan_text">QRコードをスキャンするか写真を使用</string>
   <string name="send_scan_text_nfc">QRコードをスキャンするかNFCデバイスをタップする</string>
-  <string name="fragment_send_connecting_to_device">％1 $ sに接続中</string>
+  <string name="fragment_send_connecting_to_device">％1$sに接続中</string>
   <string name="fragment_send_incorrect_pin_message">続行するには正しいPINを入力する必要があります</string>
   <string name="fragment_send_incorrect_pin_title">PINが無効です</string>
   <string name="fragment_send_incorrect_password_message">続行するには正しいパスワードを入力する必要があります</string>
@@ -350,20 +354,19 @@
   <string name="fragment_send_confirmation_invalid_bitcoin_address">無効なBitcoinアドレス</string>
   <string name="fragment_send_confirmation_no_pin">PINなし</string>
   <string name="fragment_send_confirmation_please_enter_pin">4桁のPINを入力してください</string>
-  <string name="fragment_send_confirmation_pin_remaining">PINが無効です。 ％1 $ .0f秒待ってからもう一度お試しください...</string>
-  <string name="fragment_send_confirmation_password_remaining">パスワードが間違っています。 ％1 $ .0f秒待ってからもう一度お試しください...</string>
+  <string name="fragment_send_confirmation_pin_remaining">PINが無効です。 ％1$.0f秒待ってからもう一度お試しください...</string>
+  <string name="fragment_send_confirmation_password_remaining">パスワードが間違っています。 ％1$.0f秒待ってからもう一度お試しください...</string>
   <string name="fragment_send_confirmation_dust_alert">金額が小さすぎます。</string>
-  <string name="fragment_send_confirmation_dust_alert_more">少なくとも送信してください  ％1 $ s（〜％2 $ s）</string>
+  <string name="fragment_send_confirmation_dust_alert_more">少なくとも送信してください  ％1$s（〜％2$s）</string>
   <string name="fragment_send_confirmation_error_payment_processor">支払い処理プログラムへの接続中にエラーが発生しました。 ビットコインアドレスに直接送信する\ n \ n％s</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">ウォレット</string>
   <string name="fragment_wallets_add_wallet">ウォレットを追加</string>
   <string name="fragment_wallets_deleting_wallet">ウォレットを削除しています...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">ウォレットを削除できません</string>
-  <string name="fragment_wallets_delete_has_funds">ウォレットには資金が含まれているため、ウォレットを削除できません。 最初に資金を送金してください。</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">ウォレットを削除しますか？</string>
-  <string name="fragment_wallets_delete_wallet_confirm_message">％1 $ sを削除してもよろしいですか？</string>
-  <string name="fragment_wallets_delete_wallet_second_confirm_title">ウォレットを削除：％1 $ s？</string>
+  <string name="fragment_wallets_delete_wallet_confirm_message">％1$sを削除してもよろしいですか？</string>
+  <string name="fragment_wallets_delete_wallet_second_confirm_title">ウォレットを削除：％1$s？</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_message">本気ですか？ このウォレット内資金と将来受け取れる資金にアクセスすることはできません。</string>
   <string name="fragment_wallets_wallet_delete">ウォレットが削除されました</string>
   <string name="fragment_wallets_rename_wallet">ウォレットの名前変更</string>
@@ -374,7 +377,7 @@
   <string name="fragment_wallets_addwallet_currency_textview">通貨：</string>
   <string name="fragment_wallets_addwallet_online_textview">オンライン</string>
   <string name="fragment_wallets_addwallet_offline_textview">オフライン</string>
-  <string name="fragment_wallets_created_wallet">％1 $ sが作成</string>
+  <string name="fragment_wallets_created_wallet">％1$sが作成</string>
   <string name="fragment_wallets_created_wallet_failed">ウォレットの作成に失敗しました</string>
   <string name="fragment_wallets_archive_help">ウォレットをアーカイブするには、ウォレットの右側にある3つのドットをタップそしてホールドし、[アーカイブ]ヘッダーの下にドラッグします</string>
   <!-- Strings for Wallet fragment -->
@@ -393,7 +396,7 @@
   <string name="fragment_transaction_list_double_spend">警告：ダブル費やす</string>
   <!-- Strings for Request fragment -->
   <string name="address_request_title">アドレスリクエスト</string>
-  <string name="address_request_message">％1 $ sはお金を送るためにビットコインアドレスを要求しました。
+  <string name="address_request_message">％1$sはお金を送るためにビットコインアドレスを要求しました。
 お金を受け取るウォレットを選択してください。</string>
   <string name="fragment_request_subtitle">要求</string>
   <string name="fragment_request_copy_title">コピー</string>
@@ -407,16 +410,16 @@
   <string name="request_next">次に</string>
   <string name="request_invalid_amount">無効な金額</string>
   <!-- Strings for Request QR Code fragment -->
-  <string name="request_qr_email_title">％1 $ s Bitcoinリクエスト</string>
+  <string name="request_qr_email_title">％1$s Bitcoinリクエスト</string>
   <string name="request_qr_bitmap_error">QRコードを添付できませんでした。</string>
-  <string name="request_qr_image_store_error">警告：電子メールにQRコードを添付することはできません。</string>
+  <string name="request_qr_image_store_error">警告：電子メールにQRコードを添付することはできません。このアプリに携帯電話のストレージにアクセスする権限があることを確認します。</string>
   <string name="request_qr_unknown">未知のユーザ</string>
   <string name="request_qr_waiting_for_payment">お支払いを待っ...</string>
   <string name="request_qr_loading_address">ビットコインアドレスをロード中...</string>
   <string name="request_qr_title">Bitcoinを要求する</string>
   <string name="request_qr_ble_advertise_start_failed">Bluetooth広告の開始に失敗しました。</string>
   <string name="request_qr_ble_invalid_value">Bluetooth送信者が無効な名前を送信しました。 再試行する。</string>
-  <string name="request_qr_ble_invalid_service">％1 $ sはブルートゥースサービスを宣伝できませんでした。 お使いのデバイスでブルートゥースをチェックしてください。</string>
+  <string name="request_qr_ble_invalid_service">％1$sはブルートゥースサービスを宣伝できませんでした。 お使いのデバイスでブルートゥースをチェックしてください。</string>
   <string name="request_qr_ble_invalid_uri">無効なビットコイン要求を受け取りました。 もう一度やり直すことができます。</string>
   <string name="request_qr_ble_copied">リクエストはクリップボードにコピーされます。</string>
   <string name="request_qr_first_usage">送信者にQRコードを提示して、支払いを送信するようスキャンします</string>
@@ -432,7 +435,7 @@
   <string name="import_wallet_hidden_bits_error_title">エラー</string>
   <string name="import_wallet_hidden_bits_error_message">このアドレスに0のビットコインが残っているためインポートできませんでした</string>
   <string name="import_wallet_private_key_invalid">無効な秘密鍵</string>
-  <string name="import_wallet_busy_text">％1 $ sからウォレットに資金をインポートしています...</string>
+  <string name="import_wallet_busy_text">％1$sからウォレットに資金をインポートしています...</string>
   <string name="import_wallet_private_key_title">秘密鍵：</string>
   <string name="import_wallet_private_key_hint">ビットコインアドレスを入力します（オプション）。</string>
   <!-- Strings for Transaction Details fragment -->
@@ -516,7 +519,7 @@
   <string name="bluetoothlistview_discovery_failed">ブルートゥースサービスの検出に失敗しました。 再試行する。</string>
   <string name="bluetoothlistview_scan_failed">ブルートゥーススキャンに失敗。 再試行する。</string>
   <string name="bluetoothlistview_address_mismatch_title">Bitcoinアドレスの不一致</string>
-  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：％1 $ s、最初にアドバタイズされたアドレスと一致しません：％2 $ s</string>
+  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：％1$s、最初にアドバタイズされたアドレスと一致しません：％2 $ s</string>
   <string name="ble_invalid_request">無効なブルートゥースリクエスト</string>
   <string name="ble_invalid_contact_support">リクルーターにサポートを依頼してください</string>
   <!-- Errors -->
@@ -528,14 +531,14 @@
   <string name="alert_new_business_message">タッチして新しいビジネスを表示する</string>
   <!-- User Review -->
   <string name="user_review_title">%1$s</string>
-  <string name="user_review_message">"どのように％1 $ sを好きですか？"</string>
+  <string name="user_review_message">"どのように％1$sを好きですか？"</string>
   <string name="user_review_not_good">"あまり良"</string>
   <string name="user_review_great">"それは素晴らしい"</string>
   <string name="user_review_no_thanks">"結構です
  "</string>
   <string name="user_review_ok_message">"フィードバックをお送りしますか？"</string>
   <string name="user_review_play_store">"グーグルプレイストアにレビューを書いてみませんか？"</string>
-  <string name="user_review_support_subject">％1 $ sフィードバック</string>
+  <string name="user_review_support_subject">％1$sフィードバック</string>
   <string name="user_review_support_title">メールを選択</string>
   <!-- Two Factor screens -->
   <string name="fragment_twofactor_show_title">2因子</string>
@@ -571,21 +574,21 @@
   <string name="fragment_two_factor_scan_try_again">再試行する</string>
   <string name="fragment_two_factor_scan_no_thanks">結構です</string>
   <string name="fragment_two_factor_warn_title">**警告**</string>
-  <string name="fragment_two_factor_warn_message">端末を紛失した場合や％1 $ sアプリをアンインストールした場合、2FAを無効にしてアカウントにアクセスするまでに7日間かかります。</string>
-  <string name="twofactor_reset_message">2ファクタのリセットが要求されました。 ％1 $ sとしてログインし、リクエストを承認またはキャンセルしてください。</string>
+  <string name="fragment_two_factor_warn_message">端末を紛失した場合や％1$sアプリをアンインストールした場合、2FAを無効にしてアカウントにアクセスするまでに7日間かかります。</string>
+  <string name="twofactor_reset_message">2ファクタのリセットが要求されました。 ％1$sとしてログインし、リクエストを承認またはキャンセルしてください。</string>
   <string name="twofactor_reset_title">2因子リセット要求</string>
-  <string name="receiver_alert_title">％1 $ s通知</string>
+  <string name="receiver_alert_title">％1$s通知</string>
   <!-- Other -->
   <string name="remote_password_change_title">リモートでパスワードが変更されました</string>
   <string name="remote_password_change_message">このアカウントのパスワードは、別のデバイスによって変更されました。 新しい資格情報を使用してログインしてください</string>
   <string name="received_bitcoin_title">受け取ったBitcoin</string>
-  <string name="received_bitcoin_message">％1 $ s（〜％2 $ s）を受け取りました。\ n詳細をタップするとトランザクションが表示されます。</string>
-  <string name="received_bitcoin_fading_message">あなたはBitcoinを受け取った！\ n％1 $ s（〜％2 $ s）\ n</string>
+  <string name="received_bitcoin_message">％1$s（〜％2$s）を受け取りました。\ n詳細をタップするとトランザクションが表示されます。</string>
+  <string name="received_bitcoin_fading_message">あなたはBitcoinを受け取った!\n％1$s（〜％2$s)\ n</string>
   <string name="received_bitcoin_fading_message_teaching">受取人を使用して、カテゴリー、オプションで取引にタグを付けるためのフィールドをメモします</string>
   <string name="received_partial_bitcoin_title">**警告**</string>
   <string name="received_partial_bitcoin_message">受け取った部分支払</string>
-  <string name="bitcoin_remaining">％1 $ s残り...</string>
-  <string name="bitcoin_received">％1 $ sを受信しました</string>
+  <string name="bitcoin_remaining">％1$s残り...</string>
+  <string name="bitcoin_received">％1$sを受信しました</string>
   <string name="received_bitcoin_positive">詳細</string>
   <string name="received_bitcoin_negative">無視する</string>
   <string name="title_cloud_print_dialog_activity">印刷ダイアログアクティビティ</string>
@@ -628,7 +631,7 @@
   <!-- Settings -->
   <string name="settings_category_title">カテゴリ</string>
   <!-- Logout -->
-  <string name="logout_message">％1 $ sがあなたのアカウントを正常に終了するまでお待ちください。遅いネットワークではこれに時間がかかることがあります</string>
+  <string name="logout_message">％1$sがあなたのアカウントを正常に終了するまでお待ちください。遅いネットワークではこれに時間がかかることがあります</string>
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">サインインまたはサインアップ</string>
   <string name="drawer_buy_sell">購入/販売Bitcoin</string>
@@ -646,7 +649,7 @@
   <string name="affiliate_link">アフィリエイトリンク</string>
   <string name="affiliate_link_copied">アフィリエイトリンクをクリップボードにコピーしました</string>
   <string name="affiliate_refer_friends_title">あなたの友人に紹介する</string>
-  <string name="affiliate_refer_friends_body">％1 $ s \ n \ nこのリンクを共有してください。％2 $ sをインストールして使用するユーザーから収益を受け取ることができます。このアプリ内で行われたすべてのギフトカードの購入額の0.25 %%を受け取ることになります。</string>
+  <string name="affiliate_refer_friends_body">％1$s \ n \ nこのリンクを共有してください。％2$sをインストールして使用するユーザーから収益を受け取ることができます。このアプリ内で行われたすべてのギフトカードの購入額の0.25 %%を受け取ることになります。</string>
   <string name="affiliate_category">所得：アフィリエイト収入</string>
   <string name="affiliate_notes">レベニューシェアアフィリエイトリンク％s</string>
   <string name="affiliate_link_error">現時点でアフィリエイトリンクを生成できません。</string>
@@ -679,7 +682,7 @@
   <string name="plugin_homedepot_discount">（最大15％オフ）</string>
   <string name="plugin_glidera_title">銀行口座での購入/販売（米国）</string>
   <string name="plugin_clevercoin_title">ヨーロッパ（EUR）</string>
-  <string name="plugin_popup_notice">以下のサービスは、提供していない％1 $ s。\ n \問題とフィードバックについては、それぞれのサービスプロバイダにお問い合わせください。</string>
+  <string name="plugin_popup_notice">以下のサービスは、提供していない％1$s。\ n \問題とフィードバックについては、それぞれのサービスプロバイダにお問い合わせください。</string>
   <string name="plugin_bitrefill_title">トップアッププリペイドモバイルSIM</string>
   <string name="intent_choose_an_email">メールクライアントを選択する：</string>
   <string name="plugin_filechooser_title">ファイルをアップロードする</string>
@@ -688,7 +691,7 @@
   <string name="password_rule_no_uppercase">少なくとも1つの大文字が必要です</string>
   <string name="password_rule_no_lowercase">少なくとも1つの小文字が必要です</string>
   <string name="password_rule_no_number">少なくとも1つの番号を持つ必要があります</string>
-  <string name="password_rule_too_short">％1 $ s文字以上必要です</string>
+  <string name="password_rule_too_short">％1$s文字以上必要です</string>
   <string name="transaction_footer_buy_bitcoin">購入Bitcoin</string>
   <string name="transaction_footer_import_gift_card">輸入エアビッツギフトカード</string>
   <string name="transaction_footer_starbucks_discount">スターバックスを最大20％オフ</string>
@@ -702,7 +705,7 @@
   <string name="save_recovery_token_popup_message">\"アカウントの回復セットアップを完了するには、アカウント回復トークンを保存する必要があります。これは、ユーザー名と復旧の回答に加えて、アカウントを回復するために必要となります。リカバリトークンを送信するには、下にメールアドレスを入力してください。
 </string>
   <string name="recovery_token_email_subject">％s回復トークン \"</string>
-  <string name="recovery_token_email_body">％1 $ sがインストールされている携帯端末から下記のリンクをクリックしてください、ユーザー名のアカウント回復を開始する[％2 $ s] \ n \ n＆lt; br＆gt;＆lt; br＆gt;％3 $ s</string>
+  <string name="recovery_token_email_body">％1$sがインストールされている携帯端末から下記のリンクをクリックしてください、ユーザー名のアカウント回復を開始する[％2$s] \ n \ n＆lt; br＆gt;＆lt; br＆gt;％3$s</string>
   <string name="enter_username_to_recover">復旧するアカウントのユーザー名を入力してください</string>
   <string name="recovery_not_setup">回復がセットアップされていないか、別のデバイスで実行されました</string>
   <string name="recovery_not_setup2">リカバリが設定されている場合、リンクが付いた回復トークンを自分宛に電子メールで送信したはずです</string>
@@ -715,6 +718,7 @@
   <string name="disable_recovery_popup_message">このアカウントにはすでにパスワード回復の設定があります。 それを無効にしますか？</string>
   <string name="error_disabling_recovery">復旧を無効にするエラー</string>
   <string name="recovery_disabled">回復無効</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">エッジログイン</string>
   <string name="edge_description">このアプリケーションは、あなたのAirbitzアカウントにリンクされている以下のリポジトリにアクセスしたいと考えています。他のアカウントや財布にアクセスすることはできません。</string>
@@ -731,10 +735,25 @@
   <string name="verify_domain_and_approve">上記のドメインを確認し、このサイトで認証するにはLOGINをタップしてください</string>
   <string name="would_like_to">このサイトは次のようにします：</string>
   <string name="request_payment_address">支払い先住所のリクエスト</string>
-  <string name="identity_token_created_and_saved">からのアイデンティティトークン[％1 $ s]作成して保存しました</string>
+  <string name="identity_token_created_and_saved">からのアイデンティティトークン[％1$s] 作成して保存しました</string>
   <string name="successfully_verified_identity">正常に確認されたアイデンティティ</string>
   <string name="create_new_text">作成新しい</string>
-  <string name="or_choose">\"$ 1 $ s\"を選択するか、</string>
+  <string name="or_choose">[%1$s] またはを選択するか</string>
+  <string name="permission_needs_access_to_camera">%1$sQRコードをスキャンするためにカメラにアクセスする必要がありますそして ドキュメントをキャプチャする
+ 
+
+</string>
+  <string name="permission_camera_permission_denied">カメラアクセス拒否。QRコードをスキャンすることはできません。携帯端末の設定でアクセスを再度有効にしてください-&gt; アプリケーション</string>
+  <string name="permission_camera_permission_denied_not_be_asked">カメラアクセス拒否。あなたは再び尋ねられません</string>
+  <string name="permission_needs_access_to_contacts">%1$s あなたの連絡先にアクセスする必要があります受取人情報でトランザクションにタグ付けするのに役立つ</string>
+  <string name="permission_contacts_permission_denied">カメラアクセス拒否。携帯端末の設定でアクセスを再度有効にしてください -&gt;アプリ</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">カメラアクセス拒否。あなたは再び尋ねられません</string>
+  <string name="permission_needs_access_to_location">%1$sあなたの地域のビジネスを見つけるためにあなたの場所にアクセスする必要があります</string>
+  <string name="permission_location_permission_denied">ロケーションパーミッション否定する,携帯端末の設定でアクセスを再度有効にしてください-&gt; アプリ</string>
+  <string name="permission_location_permission_denied_not_be_asked">ロケーション許可否定するあなたは再び尋ねられません</string>
+  <string name="permission_needs_access_to_storage">%1$sQRコードを送信するためにデバイスストレージにアクセスする必要がありますために支払い要求および文書の取り込み</string>
+  <string name="permission_storage_permission_denied">ストレージパーミッション否定する携帯端末の設定でアクセスを再度有効にしてください-&gt; アプリ</string>
+  <string name="permission_storage_permission_denied_not_be_asked">ストレージパーミッション否定するあなたは再び尋ねられません</string>
   <string name="request_your_identity_token">あなたのアイデンティティトークンをリクエストしてください。 下の1つを選択してください</string>
   <string name="request_your_identity_token_but_none">あなたのアイデンティティトークンをリクエストするあなたは何も持っていない</string>
   <string name="bitid_login_message">%1$s</string>

@@ -1,19 +1,50 @@
-v 2.3.3
+2.4.0版本
 
-** Fingerprint Login on supported devices such as Nexus 5x and 6p **
+• 协议更改边缘登录
 
-• Fix rare issue with PIN login not working
-• Support Edge Login from URI button on mobile
-• Add WhatsApp forum to support links
+• 更新语言支持 
+• 添加Liberty-X 插入
+ 
 
-v 2.3.1
+•固定  SD卡出口 
+•固定照片上传 窃听对于 Glidera
+ 
 
-• Fix error when purchasing Fold gift cards
 
-v 2.3.0
+• 支持供没有-USD CSV/QBO 出口
+• 量大钱包支持。 
+ 
 
-• Improved Libbitcoin/Electrum server selection by using most responsive and lowest latency servers. 
-• Improve Scrypt parameter calculations for stronger security on faster devices
+ 更好超时
+• 电子邮件CSV/QBO出口崩溃修复
+
+ 
+
+
+
+2.3.3版本
+
+** 指纹在支持的设备上登录例如Nexus 5x和6p **
+
+• 解决PIN登录无法正常使用的罕见问题
+•支持边缘登录从 URI钮在移动
+
+
+• 添加WhatsApp论坛以支持链接
+ 
+Request Context
+
+
+2.3.1版本
+
+•修复购买折叠礼品卡时出现的错误
+
+
+
+2.3.0版本
+
+•改进的Libbitcoin / Electrum 服务器选择通过使用最响应和最低延迟的服务器。 
+• 改进Scrypt参数计算，以在更快的设备上实现更强的安全性
 
 2.2.0版本
 

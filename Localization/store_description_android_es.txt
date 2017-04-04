@@ -5,7 +5,7 @@ Tome el control de sus fondos. Con Airbitz, solamente USTED tiene acceso a sus f
 Con un enfoque en ofrecer una increíble experiencia de usuario, la cartera de Airbitz proporciona la siguiente gran funcionalidad:
 
 Cero conocimiento y cero acceso a fondos, claves o datos de transacción del usuario por Airbitz o terceros.
-• Login with fingerprint scanner
+• Iniciar sesión con escáner de huellas dactilares
 Compra integrada de tarjetas de regalo con descuento (20% de descuento en Starbucks)
 Compra / Venta de Bitcoin integrada desde una cuenta bancaria enlazada
 Creación de cuenta simple utilizando simplemente un inicio de sesión y contraseña (sin imprimir PDF, escribir frases de paso o añadir ajustes de cifrado)

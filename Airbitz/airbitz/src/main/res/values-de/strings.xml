@@ -209,6 +209,10 @@
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Einblenden</string>
   <string name="fragment_setup_writeitdown_hide">Ausblenden</string>
+  <string name="fragment_setup_camera_title">Kamerazugriff erlauben</string>
+  <string name="fragment_setup_camera_text">Als nächstes sehen Sie ein Popup Um Zugriff auf Ihre Kamera zu erhalten.\n\n[[abtag APP_TITLE]] Benötigt diese, um QR Codes zu scannen, um Leute und Kaufleute zu zahlen.</string>
+  <string name="fragment_setup_contacts_title">Ermöglichen Kontakt Zugriff</string>
+  <string name="fragment_setup_contacts_text">Als nächstes sehen Sie ein Popup anfordern Zugriff auf Ihre Kontakte.\n\n[[abtag APP_TITLE]] Benötigt diese, um Zahlungsanforderungen zu senden und zu helfen, Ihre Geschäfte zu markieren.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Passwort-Wiederherstellungssetup</string>
   <string name="activity_recovery_title">Passwort-Wiederherstellung</string>
@@ -358,7 +362,6 @@
   <string name="fragment_wallets_add_wallet">Wallet hinzufügen</string>
   <string name="fragment_wallets_deleting_wallet">Lösche Wallet...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">Wallet konnte nicht gelöscht werden</string>
-  <string name="fragment_wallets_delete_has_funds">Wallet kann nicht gelöscht werden, da sie Guthaben enthält. Bitte überweisen Sie zuerst das Guthaben.</string>
   <string name="fragment_wallets_delete_wallet_confirm_title">Wallet löschen?</string>
   <string name="fragment_wallets_delete_wallet_confirm_message">Sind Sie sicher, dass Sie %1$s löschen möchten?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">Wallet löschen: %1$s?</string>
@@ -406,7 +409,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s Bitcoin Anfrage</string>
   <string name="request_qr_bitmap_error">Ein QR-Code konnte nicht angehangen werden.</string>
-  <string name="request_qr_image_store_error">Achtung: Der QR-Code kann nicht an die E-Mail angehängt werden.</string>
+  <string name="request_qr_image_store_error">Warnung:Der QR-Code kann nicht an die E-Mail angehängt werden. Stellen Sie sicher, dass diese App die Berechtigung zum Zugriff auf den Speicher des Telefons hat.</string>
   <string name="request_qr_unknown">Unbekannter Benutzer</string>
   <string name="request_qr_waiting_for_payment">Warten auf Zahlung...</string>
   <string name="request_qr_loading_address">Bitcoin-Adresse wird geladen...</string>
@@ -705,6 +708,7 @@
   <string name="disable_recovery_popup_message">Dieses Konto verfügt bereits über ein Kennwort-Wiederherstellungs-Setup. Möchten Sie es deaktivieren?</string>
   <string name="error_disabling_recovery">Fehler beim Deaktivieren der Wiederherstellung</string>
   <string name="recovery_disabled">Wiederherstellung deaktiviert</string>
+  <string name="in"></string>
   <!-- SSO -->
   <string name="edge_login">Edge Anmeldung</string>
   <string name="edge_description">Diese Anwendung möchte auf die folgenden Quellen zugreifen, die mit Ihrem Airbitz-Konto verknüpft sind. Es hat keinen Zugriff auf andere Konten oder Wallets.</string>
@@ -724,7 +728,33 @@
   <string name="identity_token_created_and_saved">Identitäts-Token von [%1$s] erstellt und gesichert</string>
   <string name="successfully_verified_identity">Erfolgreiche Identitätsprüfung</string>
   <string name="create_new_text">Neu erstellen</string>
-  <string name="or_choose">\"$1$s\" oder wählen</string>
+  <string name="or_choose">[%1$s] oder wählen
+
+</string>
+  <string name="permission_needs_access_to_camera">%1$s Benötigt Zugriff auf Ihre Kamera, um QR-Codes zu scannen und Dokumente zu erfassen</string>
+  <string name="permission_camera_permission_denied">Kamera-Berechtigung verweigert. Sie können keine QR-Codes scannen. Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut-&gt; Anwendungen</string>
+  <string name="permission_camera_permission_denied_not_be_asked">Kamera-Berechtigung verweigert. Sie werden nicht noch einmal gefragt
+
+</string>
+  <string name="permission_needs_access_to_contacts">%1$s Benötigt Zugriff auf Ihre Kontakte, um Transaktionen mit Zahlungsempfängerinformationen zu unterstützen
+ 
+
+</string>
+  <string name="permission_contacts_permission_denied">Kontakt-Berechtigung verweigert.Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut -&gt; Apps
+ 
+
+</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">Kontakt-Berechtigung verweigert. Sie werden nicht noch einmal gefragt</string>
+  <string name="permission_needs_access_to_location">%1$sBraucht Zugang zu Ihrem Standort, um Unternehmen in Ihrer Nähe zu finden
+
+</string>
+  <string name="permission_location_permission_denied">Drehort Genehmigung Verweigert. Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut  -&gt; Anwendungen
+</string>
+  <string name="permission_location_permission_denied_not_be_asked">Standortberechtigung verweigert. Sie werden nicht noch einmal gefragt</string>
+  <string name="permission_needs_access_to_storage">%1$sRequires access to your device memory to send QR codes Für Zahlungsanforderungen und zur Erfassung von Dokumenten</string>
+  <string name="permission_storage_permission_denied">Lagerung Genehmigung Verweigert.Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut -&gt; Anwendungen</string>
+  <string name="permission_storage_permission_denied_not_be_asked">Speicherzuweisung verweigert. Sie werden nicht noch einmal gefragt
+ </string>
   <string name="request_your_identity_token">Fordern Sie Ihren Identitäts-Token an. Bitte wählen Sie aus einen der untenstehenden</string>
   <string name="request_your_identity_token_but_none">Fordern Sie Ihr Identitäts-Token an, da Sie keine haben</string>
   <string name="bitid_login_message">%1$s</string>
