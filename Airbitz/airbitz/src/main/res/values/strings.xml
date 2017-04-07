@@ -314,6 +314,11 @@
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
     <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
     <string name="settings_currency_change_note_popup">Note: Default Currency setting is only used for new wallets and to show total balance of account. Create a new wallet to change the fiat currency shown in each transaction.</string>
+    <string name="settings_override_server_title">Override Bitcoin Servers (advanced)</string>
+    <string name="settings_override_server_button">Enable Override</string>
+    <string name="settings_override_server_list">Enter Server List</string>
+    <string name="settings_override_servers_help">Warning, this is an advanced setting and may cause your wallet to malfunction. Please restart the app for settings to take affect.</string>
+
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
