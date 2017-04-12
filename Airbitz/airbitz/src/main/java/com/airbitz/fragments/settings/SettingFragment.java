@@ -120,6 +120,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private Button mChangePINButton;
     private Button mChangeRecoveryButton;
     private Switch mSendNameSwitch;
+    private Switch mOverrideServersSwitch;
     private Switch mMerchantModeSwitch;
     private Switch mPinReloginSwitch;
     private Switch mFingerprintSwitch;
@@ -128,6 +129,8 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
     private EditText mFirstEditText;
     private EditText mLastEditText;
     private EditText mNicknameEditText;
+    private EditText mOverrideServerListText;
+    private Boolean mOverrideServerShowHelp = false;
     private Button mAutoLogoffButton;
     private Button mDebugButton;
     private Button mDefaultCurrencyButton;
@@ -187,6 +190,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mFirstEditText = (EditText) mView.findViewById(R.id.settings_edit_first_name);
         mLastEditText = (EditText) mView.findViewById(R.id.settings_edit_last_name);
         mNicknameEditText = (EditText) mView.findViewById(R.id.settings_edit_nick_name);
+        mOverrideServerListText = (EditText) mView.findViewById(R.id.settings_override_server_list);
         mAutoLogoffButton = (Button) mView.findViewById(R.id.settings_button_auto_logoff);
         mAutoLogoffManager = new AutoLogoffDialogManager(mAutoLogoffButton, getActivity());
         mDefaultCurrencyButton = (Button) mView.findViewById(R.id.settings_button_currency);
@@ -270,6 +274,15 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
                 setUserNameState(isChecked);
+            }
+        });
+
+        mOverrideServersSwitch = (Switch) mView.findViewById(R.id.settings_override_server_button);
+        mOverrideServersSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save the state here
+                setOverrideServerState(isChecked);
             }
         });
 
@@ -420,6 +433,10 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mLastEditText.setText(settings.lastName());
         mNicknameEditText.setText(settings.nickName());
 
+        //Override Servers
+        mOverrideServersSwitch.setChecked(settings.overrideBitcoinServers());
+        String string = settings.overrideServerList();
+        mOverrideServerListText.setText(string);
 
         //Options
         //Autologoff
@@ -491,6 +508,14 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mCoreSettings.lastName(mLastEditText.getText().toString());
         mCoreSettings.nickName(mNicknameEditText.getText().toString());
 
+        //Override Servers
+        mCoreSettings.overrideBitcoinServers(mOverrideServersSwitch.isChecked());
+        if (mOverrideServerListText.getText().toString().equals("")) {
+            mCoreSettings.overrideServerList("stratum://electrum-bu-az-wusa2.airbitz.co:50001");
+        } else {
+            mCoreSettings.overrideServerList(mOverrideServerListText.getText().toString());
+        }
+
         //Options
         //Autologoff
         mCoreSettings.secondsAutoLogout(mAutoLogoffManager.getSeconds());
@@ -548,6 +573,26 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mNicknameEditText.setEnabled(false);
             mNicknameEditText.setTextColor(getResources().getColor(R.color.disabled_color));
             mNicknameEditText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
+        }
+    }
+
+    private void setOverrideServerState(boolean on) {
+
+        if (mOverrideServerShowHelp) {
+            mActivity.ShowFadingDialog(
+                    getString(R.string.settings_override_servers_help),
+                    getResources().getInteger(R.integer.alert_hold_time_help_popups));
+        }
+        mOverrideServerShowHelp = true;
+
+        if (on) {
+            mOverrideServerListText.setEnabled(true);
+            mOverrideServerListText.setTextColor(getResources().getColor(R.color.settings_edit_text_field));
+            mOverrideServerListText.setHintTextColor(getResources().getColor(R.color.enabled_hint_color));
+        } else {
+            mOverrideServerListText.setEnabled(false);
+            mOverrideServerListText.setTextColor(getResources().getColor(R.color.disabled_color));
+            mOverrideServerListText.setHintTextColor(getResources().getColor(R.color.disabled_hint_color));
         }
     }
 

@@ -10277,7 +10277,6 @@ b;b+=4)K?(A?(G=300032,d=c[0]-1413257819,h=d-150054599<<0,g=d+24177077<<0):(G=704
         success: function(data) {
           $scope.$apply(function() {
             $scope.photo = 'data:image/jpeg;base64,' + data;
-            console.log($scope.photo)
           });
         },
         error: function() { }
@@ -11927,6 +11926,37 @@ try {
   module = angular.module('app', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/prices/partials/expires.html',
+    '<div class="live-price-expiration">\n' +
+    '  <span class="expiration-label">Expires</span> <span class="expiration-data">{{ expires }}</span>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/prices/partials/rate.html',
+    '<div class="live-price-rate">\n' +
+    '  <div class="price-rate-data">{{ price }} {{ currency }} </div>\n' +
+    '  <div class="price-rate-label">BTC Rate</div>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/limits/partials/buy.html',
     '<div class="buy-limits">\n' +
     '  <div class="limit-buy-daily">\n' +
@@ -12001,37 +12031,6 @@ module.run(['$templateCache', function($templateCache) {
     '    <span class="limit-label">Monthly</span> <span class="limit-data">{{ limits.monthlySellRemaining | currency:"$" }}</span>\n' +
     '  </div>\n' +
     '</div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/prices/partials/expires.html',
-    '<div class="live-price-expiration">\n' +
-    '  <span class="expiration-label">Expires</span> <span class="expiration-data">{{ expires }}</span>\n' +
-    '</div>\n' +
-    '');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/prices/partials/rate.html',
-    '<div class="live-price-rate">\n' +
-    '  <div class="price-rate-data">{{ price }} {{ currency }} </div>\n' +
-    '  <div class="price-rate-label">BTC Rate</div>\n' +
-    '</div>\n' +
-    '');
 }]);
 })();
 

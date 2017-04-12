@@ -11436,6 +11436,25 @@ try {
   module = angular.module('app', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('app/error/partials/error.html',
+    '<div class="error-screen text-center row">\n' +
+    '  <div class="col-xs-12">\n' +
+    '    <h2>{{ title }}</h2>\n' +
+    '    <h3>{{ message }}</h3>\n' +
+    '    <button class="btn btn-large btn-warning" ng-click="refresh()">Refresh</button>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('app');
+} catch (e) {
+  module = angular.module('app', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('app/exchange/partials/add.bankAccount.html',
     '\n' +
     '<div class="exchange-add-bank-account row">\n' +
@@ -11881,25 +11900,6 @@ module.run(['$templateCache', function($templateCache) {
     '          </div>\n' +
     '      </div>\n' +
     '    </form>\n' +
-    '  </div>\n' +
-    '</div>\n' +
-    '');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('app');
-} catch (e) {
-  module = angular.module('app', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('app/error/partials/error.html',
-    '<div class="error-screen text-center row">\n' +
-    '  <div class="col-xs-12">\n' +
-    '    <h2>{{ title }}</h2>\n' +
-    '    <h3>{{ message }}</h3>\n' +
-    '    <button class="btn btn-large btn-warning" ng-click="refresh()">Refresh</button>\n' +
     '  </div>\n' +
     '</div>\n' +
     '');
