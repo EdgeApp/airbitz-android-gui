@@ -322,6 +322,7 @@
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
+    <string name="fragment_spending_limits_warning">** Warning **\n\nSetting a password spending limit may prevent you from accessing funds if your password is forgotten. Please make sure you have setup password recovery</string>
     <string name="fragment_spending_limits_save">Save</string>
     <string name="fragment_spending_limits_daily_title">Daily Spending Limit</string>
     <string name="fragment_spending_limits_pin_title">Require PIN above amount</string>
