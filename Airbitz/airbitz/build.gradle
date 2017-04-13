@@ -122,8 +122,8 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
-    prodCompile 'co.airbitz:airbitz-core-java:0.13.+'
-    prodCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
+    prodCompile 'co.airbitz:airbitz-core-java:0.12.+'
+    prodCompile 'co.airbitz:airbitz-core-android:0.12.+@aar'
     developCompile 'co.airbitz:airbitz-core-java-develop:0.13.+'
     developCompile 'co.airbitz:airbitz-core-android-develop:0.13.+@aar'
     nettestCompile 'co.airbitz:airbitz-core-java-develop:0.13.+'
