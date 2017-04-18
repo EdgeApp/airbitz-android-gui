@@ -1,3 +1,13 @@
+v 2.4.1
+
+• Bity Integration: Buy/sell bitcoin with Euros 
+• Password throttling
+• Users can now choose bitcoin nodes they want to connect to
+• Pin, Password, and Password Recovery rate limits are all shared
+• Contact information for Glidera support is added
+• Password spending limit removes PIN based password reset
+• Android mutex crash fix
+
 v.2.4.0
 
 • Protocol Changes to Edge-Login
