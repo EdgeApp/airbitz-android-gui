@@ -1,6 +1,6 @@
 v 2.4.1
 
-• Bity Integration: Buy/sell bitcoin with Euros 
+• Bity Integration: Buy/sell bitcoin with Euros and Swiss Francs
 • Password throttling
 • Users can now choose bitcoin nodes they want to connect to
 • Pin, Password, and Password Recovery rate limits are all shared
