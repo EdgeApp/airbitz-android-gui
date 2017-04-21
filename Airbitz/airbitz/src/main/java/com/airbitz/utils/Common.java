@@ -519,7 +519,7 @@ public class Common {
         } else if (e.isAccountDoesNotExist()) {
             return context.getString(R.string.server_error_account_does_not_exists);
         } else if (e.isBadPassword()) {
-            return context.getString(R.string.server_error_bad_password);
+            return context.getString(R.string.server_error_bad_pin_password);
         } else if (e.isWalletAlreadyExists()) {
             return context.getString(R.string.server_error_wallet_exists);
         } else if (e.isInvalidWalletId()) {
@@ -545,7 +545,7 @@ public class Common {
             if (0 < wait) {
                 return context.getString(R.string.server_error_invalid_pin_wait, wait);
             } else {
-                return context.getString(R.string.server_error_bad_pin);
+                return context.getString(R.string.server_error_bad_pin_password);
             }
         } else {
             return context.getString(R.string.server_error_other);

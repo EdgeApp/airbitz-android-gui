@@ -123,6 +123,7 @@ public class RememberPasswordCheck {
             mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
         } else {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
+
             builder.setMessage(mActivity.getString(R.string.password_check_incorrect_password_message))
                     .setTitle(mActivity.getString(R.string.password_check_incorrect_password_title))
                     .setCancelable(false)
@@ -132,13 +133,6 @@ public class RememberPasswordCheck {
                                     showPasswordCheckAlert();
                                 }
                             })
-                    .setNeutralButton(mActivity.getResources().getString(R.string.string_change),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    showPasswordCheckChange();
-                                }
-                            })
                     .setNegativeButton(mActivity.getResources().getString(R.string.string_no),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -146,6 +140,16 @@ public class RememberPasswordCheck {
                                     showPasswordCheckSkip();
                                 }
                             });
+            if (!mAccount.settings().dailySpendLimit()) {
+                builder.setNeutralButton(mActivity.getResources().getString(R.string.string_change),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                showPasswordCheckChange();
+                            }
+                        });
+            }
+
             builder.create().show();
         }
     }
