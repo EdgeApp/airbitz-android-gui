@@ -813,7 +813,7 @@ public class LandingFragment extends BaseFragment implements
                 enableTouchIdIfNeeded(mAccount, mUsername);
             } else if (mFailureException.isBadPassword()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
-                mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin));
+                mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin_password));
                 mPinEditText.requestFocus();
             } else if (mFailureException.isOtpError()) {
                 AirbitzApplication.setOtpError(true);

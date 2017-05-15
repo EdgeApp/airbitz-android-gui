@@ -195,6 +195,10 @@ public class SpendingLimitsFragment extends BaseFragment
         mPINEditText.setText(Utils.formatSatoshi(mAccount, CoreWrapper.getPinSpendLimit(mAccount), false));
         mPINDenominationTextView.setText(CoreWrapper.userBtcSymbol(mAccount));
         adjustTextColors();
+
+        if (!mAccount.settings().dailySpendLimit()) {
+            mActivity.ShowFadingDialog(getString(R.string.fragment_spending_limits_warning), 10000);
+        }
     }
 
 

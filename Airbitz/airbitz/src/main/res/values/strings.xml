@@ -129,7 +129,7 @@
     <string name="server_error_insufficient_funds">Insufficient funds</string>
     <string name="server_error_synchronizing">Synchronizing with the network.</string>
     <string name="server_error_non_numeric_pin">PIN must be a numeric value.</string>
-    <string name="server_error_bad_pin">Invalid PIN</string>
+    <string name="server_error_bad_pin_password">Invalid PIN, Password, or Recovery Answers</string>
     <string name="server_error_bad_pin_login">Invalid PIN. Please log in.</string>
     <string name="server_error_pin_expired">PIN has expired. Please log in.</string>
     <string name="server_error_invalid_pin_wait">Too many failed login attempts. Please try again in %1$s seconds.</string>
@@ -314,9 +314,15 @@
     <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
     <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
     <string name="settings_currency_change_note_popup">Note: Default Currency setting is only used for new wallets and to show total balance of account. Create a new wallet to change the fiat currency shown in each transaction.</string>
+    <string name="settings_override_server_title">Override Bitcoin Servers (advanced)</string>
+    <string name="settings_override_server_button">Enable Override</string>
+    <string name="settings_override_server_list">Enter Server List</string>
+    <string name="settings_override_servers_help">Warning, this is an advanced setting and may cause your wallet to malfunction. Please restart the app for settings to take affect.</string>
+
 
     <!-- Strings for Spending Limits -->
     <string name="fragment_spending_limits_title">Spending Limits</string>
+    <string name="fragment_spending_limits_warning">** Warning **\n\nSetting a password spending limit may prevent you from accessing funds if your password is forgotten. Please make sure you have setup password recovery</string>
     <string name="fragment_spending_limits_save">Save</string>
     <string name="fragment_spending_limits_daily_title">Daily Spending Limit</string>
     <string name="fragment_spending_limits_pin_title">Require PIN above amount</string>
@@ -750,6 +756,7 @@
     <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
     <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
     <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
+    <string name="plugin_bity_title">Buy/Sell with Bank Account (Europe)</string>
     <string name="plugin_libertyx_title">Buy with Cash (USA)</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
     <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
