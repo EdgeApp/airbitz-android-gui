@@ -85,6 +85,7 @@ import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.models.Contact;
 import com.airbitz.objects.MinEditText;
+import com.airbitz.utils.Common;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 
@@ -576,7 +577,8 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 if (mFailureException != null && mFailureException.isOtpError()) {
                     launchTwoFactorMenu();
                 } else {
-                    mActivity.ShowFadingDialog(getString(R.string.activity_recovery_error_wrong_answers_message));
+                    AirbitzCore.loge("signInComplete error");
+                    mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
                 }
             }
         }

@@ -283,6 +283,16 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="SettingsEditTextMultiLine" parent="SettingsItem">
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:textAppearance">@style/SettingsTextAppearance</item>
+
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
     <style name="SettingsRadioItem" parent="SettingsRow">
         <item name="android:button">@null</item>
         <item name="android:checked">true</item>

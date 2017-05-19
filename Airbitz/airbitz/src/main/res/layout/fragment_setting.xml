@@ -108,7 +108,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/settings_general_title"
+                android:id="@+id/settings_options_title"
                 android:text="@string/settings_options_title"
                 style="@style/SettingsTitle" />
 
@@ -223,6 +223,32 @@
                         style="@style/SettingsSplitButton" />
 
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/settings_override_server_title"
+                android:text="@string/settings_override_server_title"
+                style="@style/SettingsTitle" />
+
+            <LinearLayout
+                android:id="@+id/settings_override_server"
+                style="@style/SettingsGroup">
+
+                <Switch
+                    android:id="@+id/settings_override_server_button"
+                    android:text="@string/settings_override_server_button"
+                    style="@style/SettingsSwitch" />
+
+                <com.airbitz.objects.LimitedEditText
+                    android:id="@+id/settings_override_server_list"
+                    android:background="@null"
+                    android:hint="@string/settings_override_server_list"
+                    android:enabled="false"
+                    style="@style/SettingsEditTextMultiLine"
+                    android:layout_height="90dp" />
+
+
 
             </LinearLayout>
 
