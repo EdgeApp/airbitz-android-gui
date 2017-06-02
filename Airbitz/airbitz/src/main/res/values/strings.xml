@@ -162,6 +162,8 @@
     <!-- Strings for Signup and Sign-in -->
     <string name="activity_signup_title">Sign Up</string>
     <string name="activity_navigation_signin_failed">Sign-in failed</string>
+    <string name="activity_navigation_signin_failed_network">An error occurred. Possible network connection issue or incorrect username and password</string>
+    <string name="activity_navigation_signin_failed_pin_network">An error occurred. Please check your network connection. You may also exit PIN login and use your username and password to login offline</string>
     <string name="activity_navigation_signin_failed_unexpected">Sign-in failed unexpectedly</string>
     <string name="activity_signup_failed">Sign Up Failed</string>
     <string name="activity_change_password_failed">Change Password Failed</string>
@@ -422,6 +424,7 @@
     <string name="fragment_wallet_title">Transactions</string>
     <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
     <string name="fragment_wallet_unconfirmed">Pending</string>
+    <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
     <string name="fragment_wallet_confirmed">Confirmed</string>
     <string name="fragment_wallet_confirmations">" confirmations"</string>
     <string name="fragment_wallet_confirmation">" confirmation"</string>
