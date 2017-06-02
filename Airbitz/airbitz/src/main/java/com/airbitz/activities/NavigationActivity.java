@@ -117,7 +117,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.fragments.directory.BusinessDirectoryFragment;
 import com.airbitz.fragments.login.LandingFragment;
-import com.airbitz.fragments.login.SetupUsernameFragment;
+import com.airbitz.fragments.login.SetupCurrencyFragment;
 import com.airbitz.fragments.login.SetupWriteItDownFragment;
 import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.request.AddressRequestFragment;
@@ -228,6 +228,7 @@ public class NavigationActivity extends ActionBarActivity
     private View mFragmentContainer;
     private View mNotificationLayout;
     public LinearLayout mFragmentLayout;
+    public String mDefaultCurrencyCode;
     private LinearLayout mLandingLayout;
     private int mNavThreadId;
     private Fragment[] mNavFragments = {
@@ -312,7 +313,7 @@ public class NavigationActivity extends ActionBarActivity
 
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
-
+        mDefaultCurrencyCode = "";
 
         Resources r = getResources();
         mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
@@ -804,7 +805,7 @@ public class NavigationActivity extends ActionBarActivity
 
         // If fragments want the back key, they can have it
         Fragment fragment = mNavStacks[mNavThreadId].peek();
-        if (fragment instanceof SetupUsernameFragment) {
+        if (fragment instanceof SetupCurrencyFragment) {
             mInSignupMode = false;
         }
         if (fragment instanceof PasswordRecoveryFragment) {
@@ -1478,7 +1479,9 @@ public class NavigationActivity extends ActionBarActivity
         mInSignupMode = true;
         Bundle bundle = new Bundle();
         bundle.putString(SetupWriteItDownFragment.USERNAME, userName);
-        Fragment frag = new SetupUsernameFragment();
+
+//        Fragment frag = new SetupUsernameFragment();
+        Fragment frag = new SetupCurrencyFragment();
         frag.setArguments(bundle);
         pushFragmentNoAnimation(frag, mNavThreadId);
         DisplayLoginOverlay(false, true);
@@ -1949,6 +1952,9 @@ public class NavigationActivity extends ActionBarActivity
             String walletName =
                 getResources().getString(R.string.activity_recovery_first_wallet_name);
             Settings settings = account.settings();
+            if (mDefaultCurrencyCode.length() > 2) {
+                settings.currency(mDefaultCurrencyCode);
+            }
             return account.createWallet(walletName, settings.currency().code);
         }
 

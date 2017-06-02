@@ -510,11 +510,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
 
         //Override Servers
         mCoreSettings.overrideBitcoinServers(mOverrideServersSwitch.isChecked());
-        if (mOverrideServerListText.getText().toString().equals("")) {
-            mCoreSettings.overrideServerList("stratum://electrum-bu-az-wusa2.airbitz.co:50001");
-        } else {
-            mCoreSettings.overrideServerList(mOverrideServerListText.getText().toString());
-        }
+        mCoreSettings.overrideServerList(mOverrideServerListText.getText().toString());
 
         //Options
         //Autologoff

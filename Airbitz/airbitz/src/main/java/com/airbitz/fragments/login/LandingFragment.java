@@ -820,6 +820,10 @@ public class LandingFragment extends BaseFragment implements
                 AirbitzApplication.setOtpResetDate(mFailureException.otpResetDate());
                 AirbitzApplication.setOtpResetToken(mFailureException.otpResetToken());
                 launchTwoFactorMenu();
+            } else if (mFailureException.isCCError() || mFailureException.isSysError()) {
+                mActivity.setFadingDialogListener(LandingFragment.this);
+                mActivity.ShowFadingDialog(getString(R.string.activity_navigation_signin_failed_pin_network));
+                mPinEditText.requestFocus();
             } else {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
@@ -926,6 +930,9 @@ public class LandingFragment extends BaseFragment implements
             AirbitzApplication.setOtpResetDate(error.otpResetDate());
             AirbitzApplication.setOtpResetToken(error.otpResetToken());
             launchTwoFactorMenu();
+        } else if (error.isCCError() || error.isSysError()) {
+            mActivity.setFadingDialogListener(LandingFragment.this);
+            mActivity.ShowFadingDialog(getString(R.string.activity_navigation_signin_failed_network));
         } else {
             AirbitzCore.loge("signInComplete error");
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));

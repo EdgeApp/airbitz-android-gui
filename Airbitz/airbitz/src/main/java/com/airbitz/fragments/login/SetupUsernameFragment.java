@@ -216,7 +216,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
     @Override
     public boolean onBackPress() {
         mActivity.hideSoftKeyboard(getView());
-        mActivity.noSignup();
+        mActivity.popFragment();
         return true;
     }
 
