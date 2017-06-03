@@ -75,6 +75,7 @@ import com.airbitz.objects.FileSaveLocationDialog;
 import com.airbitz.objects.HighlightOnPressButton;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.HighlightOnPressSpinner;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 
 import java.io.File;
@@ -213,6 +214,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                 if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                     if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         data = mWallet.seed();
+                        UserReview.passwordUsed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                         return;
@@ -256,6 +258,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                             if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                                 data = mWallet.seed();
+                                UserReview.passwordUsed();
                             } else {
                                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                                 return;
@@ -297,6 +300,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                         if (mExportType == ExportTypes.PrivateSeed.ordinal()) {
                             if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                                 dataOrFile = mWallet.seed();
+                                UserReview.passwordUsed();
                             } else {
                                 dataOrFile = null;
                                 ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
@@ -347,6 +351,7 @@ public class ExportSavingOptionFragment extends WalletBaseFragment
                     if (mAccount.checkPassword(mPasswordEditText.getText().toString())) {
                         ((NavigationActivity) getActivity()).ShowOkMessageDialog(mWallet.name() + " " + getString(R.string.export_saving_option_private_seed),
                             mWallet.seed());
+                        UserReview.passwordUsed();
                     } else {
                         ((NavigationActivity) getActivity()).ShowFadingDialog(getString(R.string.server_error_bad_password));
                     }

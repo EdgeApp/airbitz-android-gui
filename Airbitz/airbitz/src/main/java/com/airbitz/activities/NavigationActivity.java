@@ -1422,9 +1422,10 @@ public class NavigationActivity extends ActionBarActivity
 
         boolean checkPassword = false;
         boolean hasPin = account.hasPin();
-        // if the user has a password, increment PIN login count
+
+        UserReview.setupPrefs();
         if (account.passwordExists()) {
-            checkPassword = CoreWrapper.incrementPinCount(account);
+            checkPassword = UserReview.needsPasswordCheck;
         }
 
         if (!passwordLogin && !account.passwordExists()) {
@@ -1436,6 +1437,10 @@ public class NavigationActivity extends ActionBarActivity
             showPinSetAlert();
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        if (passwordLogin) {
+            UserReview.passwordUsed();
         }
         updateDrawer(true);
         resetDrawerButtons();

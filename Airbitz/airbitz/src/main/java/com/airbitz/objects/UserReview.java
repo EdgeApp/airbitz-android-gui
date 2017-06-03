@@ -39,6 +39,8 @@ import android.net.Uri;
 import android.view.ContextThemeWrapper;
 
 import co.airbitz.core.Account;
+import co.airbitz.core.AirbitzCore;
+import co.airbitz.core.AirbitzException;
 import co.airbitz.core.Transaction;
 import co.airbitz.core.Wallet;
 
@@ -48,6 +50,7 @@ import com.airbitz.activities.NavigationActivity;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import java.util.Date;
 import java.util.List;
 
 public class UserReview {
@@ -59,11 +62,98 @@ public class UserReview {
     private static String FIRST_LOGIN_TIME = "com.airbitz.userreview.firstlogintime";
     private static String ALREADY_NOTIFIED = "com.airbitz.userreview.alreadynotified";
 
+    private static boolean PASSWORD_REMINDER_DAYS_TO_MINS    = true;
+    private static int DEFAULT_NUM_PASSWORD_USED             = 2;
+    private static int DEFAULT_NUM_PASSWORD_USED_W_RECOVERY  = 4;
+    private static int PASSWORD_DAYS_INCREMENT_POWER         = 2;
+    private static int PASSWORD_COUNT_INCREMENT_POWER        = 2;
+    private static int PASSWORD_DAYS_MAX_VALUE               = 64;
+    private static int PASSWORD_COUNT_MAX_VALUE              = 128;
+    private static int PASSWORD_WRONG_INCREMENT_DAYS         = 2;
+    private static int PASSWORD_WRONG_INCREMENT_COUNT        = 4;
+
+    private static final String  LAST_PASSWORD_LOGIN         = "LAST_PASSWORD_LOGIN";
+    private static final String  PASSWORD_REMINDER_COUNT     = "PASSWORD_REMINDER_COUNT";
+    private static final String  PASSWORD_REMINDER_DAYS      = "PASSWORD_REMINDER_DAYS";
+    private static final String  NUM_NON_PASSWORD_LOGIN      = "NUM_NON_PASSWORD_LOGIN";
+    private static final String  NUM_PASSWORD_USED           = "NUM_PASSWORD_USED";
+    private static final String  PASSWORD_RECOVERY_ASK_COUNT = "PASSWORD_RECOVERY_ASK_COUNT";
+
+    private static int     passwordReminderCount = 0;
+    private static int     passwordReminderDays = 0;
+    private static int     numNonPasswordLogin = 0;
+    private static int     numPasswordUsed = 0;
+    private static int     passwordRecoveryAskCount = 0;
+    private static boolean passwordRecoveryAskedThisStartup = false;
+    private static Date lastPasswordLogin;
+
+    public static boolean   needsPasswordCheck = false;
+    public static boolean   needsPasswordRecoveryPopup = false;
+
     static SharedPreferences mPrefs;
     static SharedPreferences.Editor mEditor;
-    private static void setupPrefs() {
+
+    private static String userKey(String base) {
+        Account account = AirbitzApplication.getAccount();
+        return String.format("%s_%s", account.username(), base);
+    }
+
+    private static void loadSettings() {
+        passwordReminderCount       = mPrefs.getInt(userKey(PASSWORD_REMINDER_COUNT), 0);
+        passwordReminderDays        = mPrefs.getInt(userKey(PASSWORD_REMINDER_DAYS), 0);
+        numNonPasswordLogin         = mPrefs.getInt(userKey(NUM_NON_PASSWORD_LOGIN), 0);
+        numPasswordUsed             = mPrefs.getInt(userKey(NUM_PASSWORD_USED), 0);
+        passwordRecoveryAskCount    = mPrefs.getInt(userKey(PASSWORD_RECOVERY_ASK_COUNT), 0);
+
+        long lastPasswordLoginLong  = mPrefs.getLong(userKey(LAST_PASSWORD_LOGIN), 0L);
+        lastPasswordLogin = new Date(lastPasswordLoginLong);
+
+        // Check for invalid values and add defaults
+        if (passwordReminderDays == 0 || passwordReminderCount == 0)
+        {
+            resetPasswordReminderToDefaults();
+        }
+    }
+
+    public static void resetPasswordReminderToDefaults() {
+        lastPasswordLogin = new Date();
+        AirbitzCore mCoreAPI = AirbitzCore.getApi();
+        Account account = AirbitzApplication.getAccount();
+
+        String token = null;
+        try {
+            token = mCoreAPI.getRecovery2Token(account.username());
+        } catch (AirbitzException e) {
+            token = null;
+        }
+        if (token != null) {
+            // Recovery is setup on this account. Set some more friendly defaults
+            numPasswordUsed = DEFAULT_NUM_PASSWORD_USED_W_RECOVERY;
+            passwordReminderDays = (int) Math.pow(PASSWORD_DAYS_INCREMENT_POWER, numPasswordUsed);
+            passwordReminderCount = (int) Math.pow(PASSWORD_COUNT_INCREMENT_POWER, numPasswordUsed);
+        } else {
+            numPasswordUsed = DEFAULT_NUM_PASSWORD_USED;
+            passwordReminderDays = (int) Math.pow(PASSWORD_DAYS_INCREMENT_POWER, numPasswordUsed);
+            passwordReminderCount = (int) Math.pow(PASSWORD_COUNT_INCREMENT_POWER, numPasswordUsed);
+        }
+    }
+
+    private static void saveSettings() {
+        mEditor.putInt(userKey(PASSWORD_REMINDER_COUNT), passwordReminderCount);
+        mEditor.putInt(userKey(PASSWORD_REMINDER_DAYS), passwordReminderDays);
+        mEditor.putInt(userKey(NUM_NON_PASSWORD_LOGIN), numNonPasswordLogin);
+        mEditor.putInt(userKey(NUM_PASSWORD_USED), numPasswordUsed);
+        mEditor.putInt(userKey(PASSWORD_RECOVERY_ASK_COUNT), passwordRecoveryAskCount);
+
+        mEditor.putLong(userKey(LAST_PASSWORD_LOGIN), lastPasswordLogin.getTime());
+        mEditor.apply();
+    }
+
+    public static void setupPrefs() {
         mPrefs = AirbitzApplication.getContext().getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         mEditor = mPrefs.edit();
+
+        loadSettings();
     }
 
     public static boolean offerUserReview() {
@@ -206,4 +296,89 @@ public class UserReview {
                         });
         builder.create().show();
     }
+
+    public static void passwordUsed()
+    {
+        numNonPasswordLogin = 0;
+        numPasswordUsed++;
+        lastPasswordLogin = new Date();
+        passwordReminderDays  = (int) Math.pow(PASSWORD_DAYS_INCREMENT_POWER, numPasswordUsed);
+        passwordReminderCount = (int) Math.pow(PASSWORD_COUNT_INCREMENT_POWER, numPasswordUsed);
+
+        if (passwordReminderDays > PASSWORD_DAYS_MAX_VALUE)
+            passwordReminderDays = PASSWORD_DAYS_MAX_VALUE;
+
+        if (passwordReminderCount > PASSWORD_DAYS_MAX_VALUE)
+            passwordReminderCount = PASSWORD_COUNT_MAX_VALUE;
+        saveSettings();
+    }
+
+    private static int timeBetween(Date d1, Date d2, int unit){
+        return (int)( (d2.getTime() - d1.getTime()) / (unit));
+    }
+    public static void passwordWrongAndSkipped()
+    {
+        int unit = 1000 * 60 * 60 * 24;
+
+        if (PASSWORD_REMINDER_DAYS_TO_MINS)
+            unit = 1000 * 60;
+
+        int increment = timeBetween(lastPasswordLogin, new Date(), unit);
+        increment += (PASSWORD_WRONG_INCREMENT_DAYS * unit);
+
+        passwordReminderDays = increment / unit;
+        passwordReminderCount = numNonPasswordLogin + PASSWORD_WRONG_INCREMENT_COUNT;
+
+        saveSettings();
+    }
+
+
+    static void incPINorTouchIDLogin () {
+        needsPasswordCheck = false;
+        needsPasswordRecoveryPopup = false;
+
+        numNonPasswordLogin++;
+
+        if (numNonPasswordLogin >= passwordReminderCount) {
+            needsPasswordCheck = true;
+        }
+        int unit = 1000 * 60 * 60 * 24;
+
+        if (PASSWORD_REMINDER_DAYS_TO_MINS)
+            unit = 1000 * 60;
+
+        int days = timeBetween(lastPasswordLogin, new Date(), unit);
+
+        if (days >= passwordReminderDays) {
+            needsPasswordCheck = true;
+        }
+
+        if (!needsPasswordCheck && !passwordRecoveryAskedThisStartup) {
+            String token = null;
+            AirbitzCore mCoreAPI = AirbitzCore.getApi();
+            Account account = AirbitzApplication.getAccount();
+
+            try {
+                token = mCoreAPI.getRecovery2Token(account.username());
+            } catch (AirbitzException e) {
+                token = null;
+            }
+            if (token == null) {
+                // No recovery set. Lets ask user to set it up
+                if (passwordRecoveryAskCount < 3)
+                {
+                    needsPasswordRecoveryPopup = true;
+                }
+            }
+        }
+        saveSettings();
+
+    }
+
+    public static void didAskPasswordRecovery() {
+        passwordRecoveryAskCount++;
+        passwordRecoveryAskedThisStartup = true;
+        saveSettings();
+    }
+
 }

@@ -85,6 +85,7 @@ import com.airbitz.fragments.login.SignUpFragment;
 import com.airbitz.fragments.settings.twofactor.TwoFactorMenuFragment;
 import com.airbitz.models.Contact;
 import com.airbitz.objects.MinEditText;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
@@ -407,10 +408,14 @@ public class PasswordRecoveryFragment extends BaseFragment implements
     private void attemptCommitQuestions() {
         if (mMode == CHANGE_QUESTIONS) {
             String password = mPasswordEditText.getText().toString();
-            if (!mAccount.passwordExists() && !mAccount.checkPassword(password)) {
+            boolean cp = mAccount.checkPassword(password);
+            if (!mAccount.passwordExists() && !cp) {
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.fragment_recovery_mismatch_title),
                         getResources().getString(R.string.fragment_recovery_mismatch_message));
                 return;
+            }
+            if (cp) {
+                UserReview.passwordUsed();
             }
         }
         mSaveQuestionsTask = new SaveQuestionsTask(mQuestions, mAnswers);
@@ -713,7 +718,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
                 if (mType == RECOVERY_TYPE_1) {
                     mSaved = true;
                     mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-                    CoreWrapper.clearRecoveryReminder(mAccount);
+                    UserReview.didAskPasswordRecovery();
                     mActivity.popFragment();
                 } else if (mType == RECOVERY_TYPE_2) {
                     // Launch popup to ask user to email themselves the token
@@ -815,7 +820,7 @@ public class PasswordRecoveryFragment extends BaseFragment implements
         if (requestCode == EMAIL_INTENT_REQUEST_CODE) {
             mSaved = true;
             mActivity.ShowMessageDialogBackPress(getResources().getString(R.string.activity_recovery_done_title), getString(R.string.activity_recovery_done_details));
-            CoreWrapper.clearRecoveryReminder(mAccount);
+            UserReview.didAskPasswordRecovery();
             mActivity.popFragment();
         }
     }

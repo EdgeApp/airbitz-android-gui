@@ -107,6 +107,7 @@ public class RememberPasswordCheck {
 
     private void showPasswordCheckSkip() {
         mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_skip), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
+        UserReview.passwordWrongAndSkipped();
     }
 
     private void showPasswordCheckChange() {
@@ -121,6 +122,7 @@ public class RememberPasswordCheck {
         if (correct) {
 
             mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_great_job), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
+            UserReview.passwordUsed();
         } else {
             AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mActivity);
 
