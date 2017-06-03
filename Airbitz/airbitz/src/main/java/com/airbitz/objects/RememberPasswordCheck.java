@@ -106,7 +106,9 @@ public class RememberPasswordCheck {
     }
 
     private void showPasswordCheckSkip() {
-        mActivity.ShowFadingDialog(mActivity.getResources().getString(R.string.password_check_skip), mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
+        String appname =  mActivity.getString(R.string.app_name);
+        String msg = String.format(mActivity.getResources().getString(R.string.password_check_skip_formatted), appname);
+        mActivity.ShowFadingDialog(msg, mActivity.getResources().getInteger(R.integer.alert_hold_time_default), true);
         UserReview.passwordWrongAndSkipped();
     }
 
