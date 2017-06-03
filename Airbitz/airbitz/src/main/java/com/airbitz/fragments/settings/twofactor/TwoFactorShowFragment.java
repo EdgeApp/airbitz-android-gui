@@ -65,6 +65,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -427,6 +428,8 @@ public class TwoFactorShowFragment extends BaseFragment
                 return;
             }
             if (success) {
+                UserReview.passwordUsed();
+
                 if (mEnabledSwitch.isChecked()) {
                     confirmEnable();
                 } else {
@@ -488,6 +491,7 @@ public class TwoFactorShowFragment extends BaseFragment
         if (mAccount.checkPassword(mPassword.getText().toString())) {
             mConfirmRequestTask = new ConfirmRequestTask();
             mConfirmRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            UserReview.passwordUsed();
         } else {
             mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);
@@ -534,6 +538,7 @@ public class TwoFactorShowFragment extends BaseFragment
         if (mAccount.checkPassword(mPassword.getText().toString())) {
             mCancelRequestTask = new CancelRequestTask();
             mCancelRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            UserReview.passwordUsed();
         } else {
             mActivity.ShowFadingDialog(getString(R.string.activity_signup_incorrect_password));
             mActivity.showModalProgress(false);

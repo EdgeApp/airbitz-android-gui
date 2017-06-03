@@ -60,6 +60,7 @@ import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.HelpFragment;
 import com.airbitz.objects.HighlightOnPressImageButton;
 import com.airbitz.objects.PasswordCheckRunnable;
+import com.airbitz.objects.UserReview;
 
 public class SpendingLimitsFragment extends BaseFragment
     implements PasswordCheckRunnable.OnPasswordCheckListener {
@@ -217,6 +218,7 @@ public class SpendingLimitsFragment extends BaseFragment
             CoreWrapper.setDailySpendLimitSetting(mActivity, mAccount, mDailySwitch.isChecked());
             CoreWrapper.setPinSpendSatoshis(mActivity, mAccount, Utils.btcStringToSatoshi(mAccount, mPINEditText.getText().toString()));
             CoreWrapper.setPinSpendLimitSetting(mActivity, mAccount, mPINSwitch.isChecked());
+            UserReview.passwordUsed();
 
             mActivity.popFragment();
         } else {

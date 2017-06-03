@@ -39,6 +39,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.airbitz.AirbitzApplication;
+import com.airbitz.models.StringBusinessTypeEnum;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +60,7 @@ import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -380,54 +384,6 @@ public class CoreWrapper {
         return val > maxFiat;
     }
 
-    private static final int RECOVERY_REMINDER_COUNT = 2;
-
-    public static void incRecoveryReminder(Account account) {
-        incRecoveryReminder(account, 1);
-    }
-
-    public static void clearRecoveryReminder(Account account) {
-        incRecoveryReminder(account, RECOVERY_REMINDER_COUNT);
-    }
-
-    private static void incRecoveryReminder(Account account, int val) {
-        Settings settings = account.settings();
-        if (settings == null) {
-            return;
-        }
-        int reminderCount = settings.recoveryReminderCount();
-        reminderCount += val;
-        settings.recoveryReminderCount(reminderCount);
-        try {
-            settings.save();
-        } catch (AirbitzException e) {
-            AirbitzCore.logi("incRecoveryReminder error:");
-        }
-    }
-
-    public static boolean needsRecoveryReminder(Account account, Wallet wallet) {
-        Settings settings = account.settings();
-        if (settings != null) {
-            int reminderCount = settings.recoveryReminderCount();
-            if (reminderCount >= RECOVERY_REMINDER_COUNT) {
-                // We reminded them enough
-                return false;
-            }
-
-            if (wallet.balance() < 10000000) {
-                // they do not have enough money to care
-                return false;
-            }
-
-            if (AirbitzCore.getApi().accountHasRecovery(account.username())) {
-                // Recovery questions already set
-                clearRecoveryReminder(account);
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static long getTotalSentToday(Wallet wallet) {
         Calendar beginning = Calendar.getInstance();
         long end = beginning.getTimeInMillis();
@@ -459,30 +415,6 @@ public class CoreWrapper {
             return "";
         }
         return bitcoinDenomination.btcLabel();
-    }
-
-    public static boolean incrementPinCount(Account account) {
-        Settings settings = account.settings();
-        if (settings == null) {
-            return false;
-        }
-        int pinLoginCount = settings.pinLoginCount();
-        pinLoginCount++;
-        settings.pinLoginCount(pinLoginCount);
-        try {
-            settings.save();
-            if (pinLoginCount == 3
-                    || pinLoginCount == 10
-                    || pinLoginCount == 20) {
-                return true;
-            } else if (pinLoginCount % 20 == 0) {
-                return true;
-            }
-        } catch (AirbitzException e) {
-            AirbitzCore.logi("incrementPinCount error:");
-            return false;
-        }
-        return false;
     }
 
     public static String userBtcSymbol(Account account) {
@@ -579,4 +511,6 @@ public class CoreWrapper {
     public boolean isConfirmed(Transaction t) {
         return t.height() >= CONFIRMED_CONFIRMATION_COUNT;
     }
+
+
 }
