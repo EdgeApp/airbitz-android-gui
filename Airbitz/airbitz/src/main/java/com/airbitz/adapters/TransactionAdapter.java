@@ -285,7 +285,15 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
         int bh = mWallet.blockHeight();
         int th = transaction.height();
-        int confirmations = bh == 0 || th == 0 ? 0 : (bh - th) + 1;
+        int confirmations = 0;
+
+        if (bh == 0 || th == 0) {
+            confirmations = 0;
+        } else if (th > 0) {
+            confirmations = bh - th + 1;
+        } else {
+            confirmations = th;
+        }
         viewHolder.dateTextView.setTextColor(mContext.getResources().getColor(R.color.gray_text));
         if (mSearch) {
             viewHolder.dateTextView.setText(transaction.meta().category());
@@ -298,6 +306,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
                     viewHolder.dateTextView.setText(mContext.getString(R.string.fragment_transaction_list_double_spend));
                 } else if (transaction.isReplaceByFee()) {
                     viewHolder.dateTextView.setText(mContext.getString(R.string.fragment_transaction_list_rbf));
+                } else if (confirmations < 0 && mWallet.bAddressesChecked) {
+                    viewHolder.dateTextView.setText(mContext.getString(R.string.fragment_wallet_transaction_dropped));
                 } else {
                     viewHolder.dateTextView.setText(mContext.getString(R.string.fragment_wallet_unconfirmed));
                 }

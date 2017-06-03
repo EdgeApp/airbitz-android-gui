@@ -739,7 +739,7 @@ public class RequestFragment extends WalletBaseFragment implements
         String amountBTC = Utils.formatSatoshi(mAccount, mAmountSatoshi, false, 8);
         String amountBits = Utils.formatSatoshi(mAccount, mAmountSatoshi, false, 2);
 
-        String bitcoinURL = "bitcoin://";
+        String bitcoinURL = "airbitz://";
         String redirectURL = mRequestURI;
 
         if (mRequestURI.contains("bitcoin:")) {
