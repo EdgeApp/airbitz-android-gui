@@ -116,6 +116,7 @@ import com.airbitz.fragments.send.SuccessFragment;
 import com.airbitz.fragments.settings.SettingFragment;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.CurrentLocationManager;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.Common;
 import com.airbitz.utils.RoundedTransformation;
@@ -1471,7 +1472,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return CoreWrapper.needsRecoveryReminder(mAccount, mWallet);
+            return UserReview.needsPasswordRecoveryPopup;
         }
 
         @Override
@@ -1480,9 +1481,8 @@ public class TransactionDetailFragment extends WalletBaseFragment
                 return;
             }
             mReminderTask = null;
-            if (mFromRequest && needsReminder && !mHasReminded) {
-                mHasReminded = true;
-                CoreWrapper.incRecoveryReminder(mAccount);
+            if (needsReminder) {
+                UserReview.didAskPasswordRecovery();
                 ShowReminderDialog(getString(R.string.transaction_details_recovery_reminder_title),
                         getString(R.string.transaction_details_recovery_reminder_message));
             } else {

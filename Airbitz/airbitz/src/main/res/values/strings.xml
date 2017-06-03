@@ -226,7 +226,7 @@
     <string name="fragment_setup_pin_title">Set a 4 Digit PIN</string>
     <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
     <string name="fragment_setup_writeitdown_title">Write it Down!</string>
-    <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>
+    <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
     <string name="fragment_setup_writeitdown_text_warning">Write down and store securely.</string>
     <string name="fragment_setup_writeitdown_username_title">Username</string>
     <string name="fragment_setup_writeitdown_password_title">Password</string>
@@ -494,7 +494,7 @@
     <string name="transaction_details_from">"From: "</string>
     <string name="transaction_details_payee_hint">Enter Payee</string>
     <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
-    <string name="transaction_details_recovery_reminder_message">"You've received Bitcoin! We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
+    <string name="transaction_details_recovery_reminder_message">"We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
     <string name="transaction_details_advanced_txid">"Transaction ID"</string>
     <string name="transaction_details_advanced_total_sent">"Total Sent"</string>
     <string name="transaction_details_advanced_source">"Source"</string>
@@ -661,7 +661,7 @@
     <!-- Remember Password Checks -->
     <string name="password_check_incorrect_password_title">Incorrect Password.</string>
     <string name="password_check_incorrect_password_message">Incorrect Password. Try again?</string>
-    <string name="password_check_skip">Please create a new account and transfer your funds if you forgot your password.</string>
+    <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
     <string name="password_check_remember_title">Remember your password?</string>
     <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or stolen, or if you uninstall the app.\nEnter it below to make sure:</string>
     <string name="password_check_check_my_password">Check MY Password</string>
@@ -680,7 +680,7 @@
     <string name="upload_log_alert_failed">Upload failed. Please check network connection.</string>
 
     <!--Fingerprint Login-->
-    <string name="fingerprint_signin">Sign In User: %1s</string>
+    <string name="fingerprint_signin">Sign In User: %1$s</string>
     <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
     <string name="fingerprint_hint">Touch sensor</string>
     <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
