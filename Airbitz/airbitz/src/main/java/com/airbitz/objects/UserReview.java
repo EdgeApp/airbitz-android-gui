@@ -333,7 +333,7 @@ public class UserReview {
     }
 
 
-    static void incPINorTouchIDLogin () {
+    public static void incPINorTouchIDLogin () {
         needsPasswordCheck = false;
         needsPasswordRecoveryPopup = false;
 
@@ -378,6 +378,7 @@ public class UserReview {
     public static void didAskPasswordRecovery() {
         passwordRecoveryAskCount++;
         passwordRecoveryAskedThisStartup = true;
+        needsPasswordRecoveryPopup = false;
         saveSettings();
     }
 

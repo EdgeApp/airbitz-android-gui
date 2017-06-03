@@ -1424,6 +1424,12 @@ public class NavigationActivity extends ActionBarActivity
         boolean hasPin = account.hasPin();
 
         UserReview.setupPrefs();
+        if (passwordLogin) {
+            UserReview.passwordUsed();
+        } else {
+            UserReview.incPINorTouchIDLogin();
+        }
+
         if (account.passwordExists()) {
             checkPassword = UserReview.needsPasswordCheck;
         }
@@ -1439,9 +1445,6 @@ public class NavigationActivity extends ActionBarActivity
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        if (passwordLogin) {
-            UserReview.passwordUsed();
-        }
         updateDrawer(true);
         resetDrawerButtons();
     }
