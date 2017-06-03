@@ -52,6 +52,7 @@ android {
         athena {
             applicationId 'com.athenabitcoin.wallet'
         }
+
     }
 
     packagingOptions {
@@ -142,23 +143,23 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
-    prodCompile 'co.airbitz:airbitz-core-java:0.13.+'
-    prodCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
-    developCompile 'co.airbitz:airbitz-core-java-develop:0.13.+'
-    developCompile 'co.airbitz:airbitz-core-android-develop:0.13.+@aar'
-    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.13.+'
-    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.13.+@aar'
+    prodCompile 'co.airbitz:airbitz-core-java:0.13.2'
+    prodCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
+    developCompile 'co.airbitz:airbitz-core-java-develop:0.13.2'
+    developCompile 'co.airbitz:airbitz-core-android-develop:0.13.2@aar'
+    nettestCompile 'co.airbitz:airbitz-core-java-develop:0.13.2'
+    nettestCompile 'co.airbitz:airbitz-core-android-testnet:0.13.2@aar'
 
-    rackwalletCompile 'co.airbitz:airbitz-core-java:0.13.+'
-    rackwalletCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
-    rockitcoinCompile 'co.airbitz:airbitz-core-java:0.13.+'
-    rockitcoinCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
-    bitcoindepotCompile 'co.airbitz:airbitz-core-java:0.13.+'
-    bitcoindepotCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
-    coinsourceCompile 'co.airbitz:airbitz-core-java:0.13.+'
-	coinsourceCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
-    athenaCompile 'co.airbitz:airbitz-core-java:0.13.+'
-	athenaCompile 'co.airbitz:airbitz-core-android:0.13.+@aar'
+    rackwalletCompile 'co.airbitz:airbitz-core-java:0.13.2'
+    rackwalletCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
+    rockitcoinCompile 'co.airbitz:airbitz-core-java:0.13.2'
+    rockitcoinCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
+    bitcoindepotCompile 'co.airbitz:airbitz-core-java:0.13.2'
+    bitcoindepotCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
+    coinsourceCompile 'co.airbitz:airbitz-core-java:0.13.2'
+	coinsourceCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
+    athenaCompile 'co.airbitz:airbitz-core-java:0.13.2'
+	athenaCompile 'co.airbitz:airbitz-core-android:0.13.2@aar'
 
     compile 'co.airbitz:airbitz-bitbeacon-android:0.0.1@aar'
     compile project(':libs:airbitz-directory')
