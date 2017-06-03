@@ -246,6 +246,7 @@ public class PluginFramework {
             plugin.country = "EU";
             plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2017/04/Bity-square.png";
             plugin.imageResId = R.drawable.ic_plugin_euro;
+            plugin.env.put("AFFILIATE_CODE", AirbitzApplication.getContext().getString(R.string.bity_affiliate_code));
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
 
