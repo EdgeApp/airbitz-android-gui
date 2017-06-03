@@ -85,6 +85,7 @@ import com.airbitz.fragments.settings.CurrencyFragment;
 import com.airbitz.objects.AudioPlayer;
 import com.airbitz.objects.Calculator;
 import com.airbitz.objects.PasswordCheckRunnable;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -827,10 +828,10 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public void onPasswordCheck(boolean passwordOkay) {
         mActivity.showModalProgress(false);
 
-        if(passwordOkay) {
+        if (passwordOkay) {
             continueChecks();
-        }
-        else {
+            UserReview.passwordUsed();
+        } else {
             mActivity.ShowFadingDialog(getResources().getString(R.string.fragment_send_incorrect_password_title));
             mAuthorizationEdittext.requestFocus();
             resetSlider();
