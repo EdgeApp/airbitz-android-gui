@@ -74,6 +74,7 @@ import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.fragments.BaseFragment;
 import com.airbitz.fragments.settings.PasswordRecoveryFragment;
+import com.airbitz.objects.UserReview;
 import com.airbitz.utils.Common;
 
 import java.util.ArrayList;
@@ -532,6 +533,7 @@ public class SignUpFragment extends BaseFragment implements NavigationActivity.O
                             }
                     );
             mAlertSuccess = builder.show();
+            UserReview.resetPasswordReminderToDefaults();
         }
     }
 
