@@ -40,6 +40,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -74,6 +75,7 @@ import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -193,6 +195,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     private Spend mSpendTarget = null;
     private Spend.FeeLevel mFeeLevel = Spend.FeeLevel.STANDARD;
+    private long mCustomFee = 0;
     private ParsedUri mParsedUri = null;
     private PaymentRequest mPaymentRequest = null;
     private Spend mOverrideSpend = null;
@@ -660,7 +663,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         Spend target = null;
         try {
             target = mWallet.newSpend();
-            target.feeLevel(mFeeLevel);
+            target.feeLevel(mFeeLevel, mCustomFee);
             if (mPaymentRequest != null) {
                 target.addPaymentRequest(mPaymentRequest);
                 if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
@@ -1319,6 +1322,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             return Spend.FeeLevel.LOW;
         case 2:
             return Spend.FeeLevel.HIGH;
+        case 3:
+            return Spend.FeeLevel.CUSTOM;
         default:
             return Spend.FeeLevel.STANDARD;
         }
@@ -1333,15 +1338,55 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         mFeeLevel = indexToFee(which);
-                        mSpendTarget.feeLevel(mFeeLevel);
+                        if (mFeeLevel == Spend.FeeLevel.CUSTOM) {
+                            customFeeAmount();
+                        } else {
+                            mSpendTarget.feeLevel(mFeeLevel, mCustomFee);
+                            if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+                                mMaxButton.performClick();
+                            } else {
+                                updateTextFieldContents(mBtcMode, false);
+                            }
+                        }
+                        return true;
+                    }
+                })
+                .show();
+    }
+
+    private void customFeeAmount() {
+        String hint = mActivity.getString(R.string.change_mining_fee_custom_hint);
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.change_mining_fee_custom_title)
+                .content(R.string.change_mining_fee_body)
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .input(hint, "", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        mCustomFee = Long.parseLong(input.toString());
+                        mCustomFee *= 1000;
+                        mSpendTarget.feeLevel(mFeeLevel, mCustomFee);
                         if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
                             mMaxButton.performClick();
                         } else {
                             updateTextFieldContents(mBtcMode, false);
                         }
-                        return true;
-                    }
-                }).show();
-    }
 
+                        dialog.dismiss();
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 }
