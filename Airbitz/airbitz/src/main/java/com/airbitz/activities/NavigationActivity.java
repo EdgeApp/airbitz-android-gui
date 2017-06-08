@@ -317,7 +317,7 @@ public class NavigationActivity extends ActionBarActivity
         setContentView(R.layout.activity_navigation);
         mDefaultCurrencyCode = "";
 
-        String projectToken = "42380023d73426da3e74bf937a05fc95"; // e.g.: "42380023d73426da3e74bf937a05fc95"
+        String projectToken = AirbitzApplication.getContext().getString(R.string.mixpanel_token); // e.g.: "42380023d73426da3e74bf937a05fc95"
         mixPanel = MixpanelAPI.getInstance(this, projectToken);
 
         Resources r = getResources();
