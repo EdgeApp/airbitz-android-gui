@@ -151,6 +151,7 @@ import net.hockeyapp.android.UpdateManager;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.squareup.whorlwind.SharedPreferencesStorage;
@@ -300,6 +301,7 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mRecoveryMode = false;
 
     public ABCKeychain abcKeychain;
+    public MixpanelAPI mixPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,6 +316,9 @@ public class NavigationActivity extends ActionBarActivity
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
         mDefaultCurrencyCode = "";
+
+        String projectToken = "42380023d73426da3e74bf937a05fc95"; // e.g.: "42380023d73426da3e74bf937a05fc95"
+        mixPanel = MixpanelAPI.getInstance(this, projectToken);
 
         Resources r = getResources();
         mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
@@ -349,18 +354,21 @@ public class NavigationActivity extends ActionBarActivity
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Req");
                 onNavBarSelected(Tabs.REQUEST.ordinal());
             }
         });
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Send");
                 onNavBarSelected(Tabs.SEND.ordinal());
             }
         });
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Transactions");
                 onNavBarSelected(Tabs.WALLET.ordinal());
             }
         });
@@ -417,12 +425,21 @@ public class NavigationActivity extends ActionBarActivity
 
     @Override
     public void onDestroy() {
+        mixPanel.flush();
         super.onDestroy();
         if(!getResources().getBoolean(R.bool.portrait_only)){
             // store the fragment stack in case of an orientation change
             AirbitzApplication.setFragmentStack(mNavStacks);
             AirbitzApplication.setLastNavTab(mNavThreadId);
         }
+    }
+
+    public void mpTrack(String event) {
+        mixPanel.track(event, null);
+    }
+
+    public void mpTime(String event) {
+        mixPanel.timeEvent(event);
     }
 
     public boolean onTouch(View view, MotionEvent event) {
