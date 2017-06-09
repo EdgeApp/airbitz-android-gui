@@ -299,6 +299,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("TXL-Request");
                 mActivity.hideSoftKeyboard(mSendButton);
                 mSendButton.setClickable(false);
                 Bundle bundle = new Bundle();
@@ -312,6 +313,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("TXL-Send");
                 mActivity.hideSoftKeyboard(mSendButton);
                 mRequestButton.setClickable(false);
                 Bundle bundle = new Bundle();

@@ -236,6 +236,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
         }
+        mActivity.mpTrack("TXD-Enter");
 
         mView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view ) {
@@ -309,6 +310,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mActivity.mpTrack("TXD-Category");
                 updateCategoryBackground(position);
             }
 
@@ -333,6 +335,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mPayeeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                mActivity.mpTrack("TXD-Payee");
                 showPayeeSearch(hasFocus);
                 mPayeeEditText.selectAll();
             }
@@ -382,6 +385,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mNoteEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                mActivity.mpTrack("TXD-Notes");
                 showUpperLayout(!hasFocus);
                 showMiddleLayout(!hasFocus);
                 if (!hasFocus) {
@@ -398,6 +402,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mCategoryEdittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                mActivity.mpTrack("TXD-SubCat");
                 showCategoryPopup(hasFocus);
                 if (hasFocus) {
                     if (!mCategoryEdittext.getText().toString().isEmpty()) {
@@ -559,6 +564,7 @@ public class TransactionDetailFragment extends WalletBaseFragment
         mAdvancedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("TXD-Advanced");
                 showAdvancedDetails(true);
             }
         });

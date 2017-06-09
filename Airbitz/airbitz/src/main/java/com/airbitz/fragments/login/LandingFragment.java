@@ -462,9 +462,9 @@ public class LandingFragment extends BaseFragment implements
             mUserNameEditText.setVisibility(View.GONE);
             mPasswordEditText.setVisibility(View.GONE);
 
-            mActivity.mpTrack("SUP-No Users");
+            mActivity.mpTrack("SIN-No Users");
         } else {
-            mActivity.mpTrack("SUP-Has Users");
+            mActivity.mpTrack("SIN-Has Users");
         }
 
         mView.setOnTouchListener(mActivity);

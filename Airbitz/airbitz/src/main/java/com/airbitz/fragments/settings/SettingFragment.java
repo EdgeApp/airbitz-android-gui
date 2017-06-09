@@ -168,6 +168,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             LayoutInflater i = getThemedInflater(inflater, R.style.AppTheme_Blue);
             mView = i.inflate(R.layout.fragment_setting, container, false);
         }
+        mActivity.mpTrack("SET-Enter");
 
         mDistanceItems = Arrays.asList(getResources().getStringArray(R.array.distance_list));
         mAccountTitle = (TextView) mView.findViewById(R.id.settings_account_title);
@@ -179,6 +180,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mDenominationGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                mActivity.mpTrack("SET-Denom");
                 saveDenomination();
             }
         });
@@ -220,6 +222,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mSpendingLimitContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-SpendLimits");
                 Fragment fragment = new SpendingLimitsFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
@@ -229,6 +232,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mTwoFactorContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-2FA");
                 Fragment fragment = new TwoFactorShowFragment();
                 ((NavigationActivity) getActivity()).pushFragment(fragment, NavigationActivity.Tabs.MORE.ordinal());
             }
@@ -237,6 +241,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mChangePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-ChgPasswd");
                 Fragment fragment = new SignUpFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PASSWORD);
@@ -248,6 +253,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mChangePINButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-ChgPIN");
                 Fragment fragment = new SignUpFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(SignUpFragment.MODE, SignUpFragment.CHANGE_PIN);
@@ -259,6 +265,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mChangeRecoveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-RecQuestions");
                 Fragment fragment = new PasswordRecoveryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt(PasswordRecoveryFragment.MODE, PasswordRecoveryFragment.CHANGE_QUESTIONS);
@@ -282,6 +289,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
+                mActivity.mpTrack("SET-OverrideSvr");
                 setOverrideServerState(isChecked);
             }
         });
@@ -291,6 +299,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save the state here
+                mActivity.mpTrack("SET-MerchantMode");
                 saveMerchantModePref(isChecked);
             }
         });
@@ -299,6 +308,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mPinReloginSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mActivity.mpTrack("SET-PinRelogin");
                 boolean alreadySet = mAccount.hasPinLogin();
                 if (!alreadySet && isChecked) {
                     new PinChangeTask(mActivity, mAccount, true).execute();
@@ -313,6 +323,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 boolean alreadySet = mActivity.abcKeychain.touchIDEnabled(mAccount.username());
+                mActivity.mpTrack("SET-TouchID");
                 if (!alreadySet && isChecked) {
                     String loginKey = mAccount.getLoginKey();
                     mActivity.abcKeychain.enableTouchID(mAccount.username(), loginKey);
@@ -345,6 +356,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
             mBLESwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mActivity.mpTrack("SET-BLE");
                     if (isChecked && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                         ShowBLEMessageDialog();
                     }
@@ -356,6 +368,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mAutoLogoffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-AutoLogoff");
                 mAutoLogoffManager.create();
                 mAutoLogoffManager.show();
             }
@@ -368,6 +381,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mDefaultCurrencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-DefCurrency");
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(mCurrencyCode);
                 fragment.setOnCurrencySelectedListener(SettingFragment.this);
@@ -385,6 +399,7 @@ public class SettingFragment extends BaseFragment implements CurrencyFragment.On
         mExchangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SET-ExchangeRate");
                 showExchangeDialog(mExchangeButton, mExchanges);
             }
         });

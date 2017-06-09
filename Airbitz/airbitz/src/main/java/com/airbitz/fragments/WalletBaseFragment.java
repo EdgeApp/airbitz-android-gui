@@ -473,6 +473,7 @@ public class WalletBaseFragment extends BaseFragment
         if (isMenuExpanded()) {
             hideWalletList();
         } else {
+            mActivity.mpTrack("TOP-DropWallets");
             showWalletList();
         }
     }
