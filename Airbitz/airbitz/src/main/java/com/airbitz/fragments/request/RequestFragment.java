@@ -235,6 +235,8 @@ public class RequestFragment extends WalletBaseFragment implements
         mView = inflater.inflate(R.layout.fragment_request, container, false);
         mAmountField = (EditText) mView.findViewById(R.id.request_amount);
         mAmountField.setTypeface(NavigationActivity.latoRegularTypeFace);
+        mActivity.mpTrack("REQ-Enter");
+
         final TextWatcher mAmountChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -340,6 +342,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("REQ-Copy");
                 copyToClipboard();
             }
         });
@@ -347,6 +350,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("REQ-Email");
                 startEmail();
             }
         });
@@ -354,6 +358,7 @@ public class RequestFragment extends WalletBaseFragment implements
         mSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("REQ-SMS");
                 startSMS();
             }
         });
@@ -505,6 +510,7 @@ public class RequestFragment extends WalletBaseFragment implements
             mActivity.pushFragment(
                 new HelpFragment(HelpFragment.REQUEST),
                     NavigationActivity.Tabs.REQUEST.ordinal());
+            mActivity.mpTrack("REQ-Help");
             return true;
         default:
             return super.onOptionsItemSelected(item);

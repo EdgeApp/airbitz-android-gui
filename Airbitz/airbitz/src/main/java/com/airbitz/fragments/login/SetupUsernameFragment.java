@@ -96,6 +96,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
         mView = inflater.inflate(R.layout.fragment_setup_username, container, false);
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        mActivity.mpTrack("SUP-User-Enter");
 
 //        mUserNameRedRingCover = mView.findViewById(R.id.fragment_setup_username_redring);
 //        mUserNameRedRingCover.setVisibility(View.GONE);
@@ -190,6 +191,8 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             return;
         }
         else if(mUserNameEditText.getText().toString().length() < USERNAME_MIN_LENGTH) {
+            mActivity.mpTrack("SUP-User-Invalid");
+
             mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_insufficient_username_title),
                     getResources().getString(R.string.activity_signup_insufficient_username_message));
         }
@@ -264,6 +267,7 @@ public class SetupUsernameFragment extends BaseFragment implements NavigationAct
             if (result) {
                 launchSetupPin();
             } else {
+                mActivity.mpTrack("SUP-User-Unavailable");
                 mActivity.ShowFadingDialog(
                     Common.errorMap(mActivity, mFailureException));
             }

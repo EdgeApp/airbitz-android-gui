@@ -194,6 +194,7 @@ public abstract class ScanFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mClipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         mCoreApi = AirbitzCore.getApi();
+        mActivity.mpTrack("SCN-Enter");
 
         mView = inflater.inflate(R.layout.fragment_scan, container, false);
         mSearchAdapter = new BluetoothSearchAdapter(mActivity, mPeripherals);
@@ -229,6 +230,7 @@ public abstract class ScanFragment
         mFlashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SCN-Flash");
                 mQRCamera.setFlashOn(!mQRCamera.isFlashOn());
             }
         });
@@ -237,6 +239,7 @@ public abstract class ScanFragment
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SCN-Photo");
                 Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(in, QRCamera.RESULT_LOAD_IMAGE);
             }
@@ -246,6 +249,7 @@ public abstract class ScanFragment
         mTransferButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SCN-Transfer");
                 showOtherWallets();
             }
         });
@@ -254,6 +258,7 @@ public abstract class ScanFragment
         mAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("SCN-Address");
                 showAddressDialog();
             }
         });
@@ -333,6 +338,7 @@ public abstract class ScanFragment
 
     @Override
     public void onScanResult(String result) {
+        mActivity.mpTrack("SCN-QR");
         onCameraScanResult(result);
     }
 
@@ -438,6 +444,7 @@ public abstract class ScanFragment
             case android.R.id.home:
                 return hideOtherWallets();
             case R.id.action_help:
+                mActivity.mpTrack("SCN-Help");
                 launchHelp();
                 return true;
             default:

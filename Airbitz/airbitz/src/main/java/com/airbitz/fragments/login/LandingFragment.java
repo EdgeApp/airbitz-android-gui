@@ -181,6 +181,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    mActivity.mpTrack("SIN-userTxt");
                     showAccountsList(true);
                 } else {
                     showAccountsList(false);
@@ -230,6 +231,7 @@ public class LandingFragment extends BaseFragment implements
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    mActivity.mpTrack("SIN-passwdTxt");
                     refreshView(false, true);
                 } else {
                     refreshView(false, false);
@@ -456,10 +458,13 @@ public class LandingFragment extends BaseFragment implements
 
         mAccounts.clear();
         mAccounts.addAll(mCoreAPI.listLocalAccounts());
-        if (mAccounts.isEmpty())
-        {
+        if (mAccounts.isEmpty()) {
             mUserNameEditText.setVisibility(View.GONE);
             mPasswordEditText.setVisibility(View.GONE);
+
+            mActivity.mpTrack("SIN-No Users");
+        } else {
+            mActivity.mpTrack("SIN-Has Users");
         }
 
         mView.setOnTouchListener(mActivity);
@@ -588,11 +593,13 @@ public class LandingFragment extends BaseFragment implements
         mAbcKeychain.autoReloginOrTouchID(mUsername, new ABCKeychain.AutoReloginOrTouchIDCallbacks() {
             @Override
             public void doBeforeLogin() {
+                mActivity.mpTrack("SIN-TouchID");
                 mActivity.showModalProgress(true);
             }
 
             @Override
             public void completionWithLogin(Account account, boolean usedTouchId) {
+                mActivity.mpTrack("SIN-TouchID-good");
                 mActivity.showModalProgress(false);
                 AirbitzApplication.Login(account);
                 signInComplete(account, null);
@@ -600,12 +607,14 @@ public class LandingFragment extends BaseFragment implements
 
             @Override
             public void completionNoLogin() {
+                mActivity.mpTrack("SIN-TouchID-nologin");
                 mActivity.showModalProgress(false);
             }
 
             @Override
             public void error() {
                 mActivity.showModalProgress(false);
+                mActivity.mpTrack("SIN-TouchID-failed");
             }
         });
 
@@ -781,6 +790,7 @@ public class LandingFragment extends BaseFragment implements
         protected void onPreExecute() {
             mActivity.hideSoftKeyboard(mPinEditText);
             mActivity.showModalProgress(true);
+            mActivity.mpTime("SIN-Login-PIN");
         }
 
         @Override
@@ -805,6 +815,7 @@ public class LandingFragment extends BaseFragment implements
             mActivity.showModalProgress(false);
             mPINLoginTask = null;
             mPinEditText.setText("");
+            mActivity.mpTrack("SIN-Login-PIN");
 
             if (success) {
                 AirbitzCore.loge("PINLoginTask onPostExecute success");
@@ -814,17 +825,21 @@ public class LandingFragment extends BaseFragment implements
             } else if (mFailureException.isBadPassword()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.server_error_bad_pin_password));
+                mActivity.mpTrack("SIN-PIN bad passwd");
                 mPinEditText.requestFocus();
             } else if (mFailureException.isOtpError()) {
                 AirbitzApplication.setOtpError(true);
                 AirbitzApplication.setOtpResetDate(mFailureException.otpResetDate());
                 AirbitzApplication.setOtpResetToken(mFailureException.otpResetToken());
+                mActivity.mpTrack("SIN-login-OTP-err");
                 launchTwoFactorMenu();
             } else if (mFailureException.isCCError() || mFailureException.isSysError()) {
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(getString(R.string.activity_navigation_signin_failed_pin_network));
+                mActivity.mpTrack("SIN-login-net-err");
                 mPinEditText.requestFocus();
             } else {
+                mActivity.mpTrack("SIN-PIN error");
                 mActivity.setFadingDialogListener(LandingFragment.this);
                 mActivity.ShowFadingDialog(Common.errorMap(mActivity, mFailureException));
                 mPinFailedCount++;
@@ -879,6 +894,7 @@ public class LandingFragment extends BaseFragment implements
 
         @Override
         protected void onPreExecute() {
+            mActivity.mpTime("SIN-login-Passwd");
             mActivity.showModalProgress(true);
         }
 
@@ -901,6 +917,7 @@ public class LandingFragment extends BaseFragment implements
         @Override
         protected void onPostExecute(final Boolean success) {
             mActivity.showModalProgress(false);
+            mActivity.mpTrack("SIN-login-Passwd");
             mPasswordLoginTask = null;
             signInComplete(mAccount, mFailureException);
         }
@@ -923,17 +940,20 @@ public class LandingFragment extends BaseFragment implements
             mActivity.LoginNow(account, mFirstLogin);
 
             enableTouchIdIfNeeded(account, mUsername);
-
+            mActivity.mpTrack("SIN-login-good");
         } else if (error.isOtpError()) {
+            mActivity.mpTrack("SIN-login-OTP-err");
             AirbitzCore.loge("signInComplete otp error");
             AirbitzApplication.setOtpError(true);
             AirbitzApplication.setOtpResetDate(error.otpResetDate());
             AirbitzApplication.setOtpResetToken(error.otpResetToken());
             launchTwoFactorMenu();
         } else if (error.isCCError() || error.isSysError()) {
+            mActivity.mpTrack("SIN-login-net-err");
             mActivity.setFadingDialogListener(LandingFragment.this);
             mActivity.ShowFadingDialog(getString(R.string.activity_navigation_signin_failed_network));
         } else {
+            mActivity.mpTrack("SIN-login-err");
             AirbitzCore.loge("signInComplete error");
             mActivity.ShowFadingDialog(Common.errorMap(mActivity, error));
         }

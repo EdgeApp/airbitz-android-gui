@@ -114,6 +114,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         mView = inflater.inflate(R.layout.fragment_setup_password, container, false);
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        mActivity.mpTrack("SUP-Passwd-Enter");
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.fragment_setup_titles);
@@ -363,6 +364,8 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
             } else {
                 String title = getResources().getString(R.string.activity_signup_failed);
                 String message = getResources().getString(R.string.activity_signup_passwords_dont_match);
+
+                mActivity.mpTrack("SUP-Passwd-mismatch");
                 mActivity.ShowOkMessageDialog(title, message);
                 return false;
             }
@@ -377,9 +380,11 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                     message += "\n" + fail + ".";
                 }
                 mActivity.ShowOkMessageDialog(title, message);
+                mActivity.mpTrack("SUP-Passwd-fail-rules");
             } else if (!mPasswordConfirmationEditText.getText().toString().equals(mPasswordEditText.getText().toString())) {
                 bNewPasswordFieldsAreValid = false;
                 mActivity.ShowOkMessageDialog(getResources().getString(R.string.activity_signup_failed), getResources().getString(R.string.activity_signup_passwords_dont_match));
+                mActivity.mpTrack("SUP-Passwd-mismatch");
             }
 
         return bNewPasswordFieldsAreValid;
@@ -407,6 +412,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
         if(!pass.toString().isEmpty()) {
             password = new char[pass.length()];
             pass.getChars(0, pass.length(), password, 0);
+            mActivity.mpTrack("SUP-Passwd-create");
+        } else {
+            mActivity.mpTrack("SUP-Passwd-create no passwd");
         }
 
         // Reset errors.
@@ -444,7 +452,9 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                 mPasswordString = String.valueOf(mPassword);
             }
             try {
+                mActivity.mpTime("createAccount time");
                 Account account = mCoreAPI.createAccount(mUsername, mPasswordString, mPin);
+                mActivity.mpTrack("createAccount time");
                 AirbitzApplication.Login(account);
                 return null;
             } catch (AirbitzException e) {
@@ -464,6 +474,7 @@ public class SetupPasswordFragment extends BaseFragment implements NavigationAct
                 fragment.setArguments(bundle);
                 mActivity.pushFragment(fragment);
             } else {
+                mActivity.mpTrack("SUP-Passwd-create fail");
                 mActivity.ShowFadingDialog(errorMessage);
             }
         }

@@ -111,6 +111,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.google.android.gms:play-services-drive:6.5.87'
     compile 'com.google.android.gms:play-services-location:6.5.87'
+    compile "com.mixpanel.android:mixpanel-android:5.+"
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'commons-io:commons-io:2.4'

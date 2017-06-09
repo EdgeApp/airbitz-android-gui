@@ -133,6 +133,7 @@ public class WalletsFragment extends WalletBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallets, container, false);
 
+        mActivity.mpTrack("WAL-Enter");
         mWalletAdapter = new WalletAdapter(mActivity, mLatestWalletList);
         mWalletAdapter.setHeaderButtonListener(this);
         mWalletAdapter.setWalletMenuListener(this);
