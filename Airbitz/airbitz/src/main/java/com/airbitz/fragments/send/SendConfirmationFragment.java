@@ -40,6 +40,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -74,6 +75,7 @@ import co.airbitz.core.UnsentTransaction;
 import co.airbitz.core.Utils;
 import co.airbitz.core.Wallet;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
@@ -193,6 +195,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
 
     private Spend mSpendTarget = null;
     private Spend.FeeLevel mFeeLevel = Spend.FeeLevel.STANDARD;
+    private long mCustomFee = 0;
     private ParsedUri mParsedUri = null;
     private PaymentRequest mPaymentRequest = null;
     private Spend mOverrideSpend = null;
@@ -254,6 +257,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_send_confirmation, container, false);
 
+        mActivity.mpTrack("CNF-Enter");
         mBitcoinTypeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Lato-Regular.ttf");
 
         mConfirmSwipeButton = (ImageButton) mView.findViewById(R.id.button_confirm_swipe);
@@ -349,6 +353,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBitcoinField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("CNF-BTCTxt");
                 AirbitzCore.logi("Bitcoin field clicked");
                 mCalculator.setEditText(mBitcoinField);
                 showCalculator();
@@ -376,6 +381,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mFiatField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("CNF-FiatTxt");
                 mCalculator.setEditText(mFiatField);
                 showCalculator();
             }
@@ -470,6 +476,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mMaxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("CNF-Max");
                 if (mWallet != null && !mMaxLocked) {
                     mMaxLocked = true;
                     if (mMaxAmountTask != null)
@@ -483,6 +490,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mChangeFiatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("CNF-ChgFiat");
                 CurrencyFragment fragment = new CurrencyFragment();
                 fragment.setSelected(mCurrency.code);
                 fragment.setOnCurrencySelectedListener(SendConfirmationFragment.this);
@@ -494,6 +502,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         mBTCDenominationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("CNF-ChgFee");
                 customizeFees();
             }
         });
@@ -553,6 +562,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                 onBackPress();
                 return true;
             case R.id.action_help:
+                mActivity.mpTrack("CNF-Help");
                 mActivity.pushFragment(
                     new HelpFragment(HelpFragment.SEND_CONFIRMATION),
                         NavigationActivity.Tabs.SEND.ordinal());
@@ -660,7 +670,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
         Spend target = null;
         try {
             target = mWallet.newSpend();
-            target.feeLevel(mFeeLevel);
+            target.feeLevel(mFeeLevel, mCustomFee);
             if (mPaymentRequest != null) {
                 target.addPaymentRequest(mPaymentRequest);
                 if (!TextUtils.isEmpty(mPaymentRequest.merchant())) {
@@ -1193,6 +1203,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     }
                 }
             } catch (AirbitzException e) {
+                String errString = String.format("CNF-Error-%d", e.code());
+                mActivity.mpTrack(errString);
                 mError = Common.errorMap(mActivity, e);
             }
             return null;
@@ -1319,6 +1331,8 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             return Spend.FeeLevel.LOW;
         case 2:
             return Spend.FeeLevel.HIGH;
+        case 3:
+            return Spend.FeeLevel.CUSTOM;
         default:
             return Spend.FeeLevel.STANDARD;
         }
@@ -1333,15 +1347,55 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         mFeeLevel = indexToFee(which);
-                        mSpendTarget.feeLevel(mFeeLevel);
+                        if (mFeeLevel == Spend.FeeLevel.CUSTOM) {
+                            customFeeAmount();
+                        } else {
+                            mSpendTarget.feeLevel(mFeeLevel, mCustomFee);
+                            if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
+                                mMaxButton.performClick();
+                            } else {
+                                updateTextFieldContents(mBtcMode, false);
+                            }
+                        }
+                        return true;
+                    }
+                })
+                .show();
+    }
+
+    private void customFeeAmount() {
+        String hint = mActivity.getString(R.string.change_mining_fee_custom_hint);
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.change_mining_fee_custom_title)
+                .content(R.string.change_mining_fee_body)
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .input(hint, "", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        mCustomFee = Long.parseLong(input.toString());
+                        mCustomFee *= 1000;
+                        mSpendTarget.feeLevel(mFeeLevel, mCustomFee);
                         if (mAmountMax > 0 && mAmountToSendSatoshi == mAmountMax) {
                             mMaxButton.performClick();
                         } else {
                             updateTextFieldContents(mBtcMode, false);
                         }
-                        return true;
-                    }
-                }).show();
-    }
 
+                        dialog.dismiss();
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 }

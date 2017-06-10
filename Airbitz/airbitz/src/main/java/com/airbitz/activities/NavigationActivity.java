@@ -151,6 +151,7 @@ import net.hockeyapp.android.UpdateManager;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.squareup.whorlwind.SharedPreferencesStorage;
@@ -300,6 +301,7 @@ public class NavigationActivity extends ActionBarActivity
     private boolean mRecoveryMode = false;
 
     public ABCKeychain abcKeychain;
+    private MixpanelAPI mixPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,6 +316,9 @@ public class NavigationActivity extends ActionBarActivity
         mCoreAPI = initiateCore(this);
         setContentView(R.layout.activity_navigation);
         mDefaultCurrencyCode = "";
+
+        String projectToken = AirbitzApplication.getContext().getString(R.string.mixpanel_token); // e.g.: "42380023d73426da3e74bf937a05fc95"
+        mixPanel = MixpanelAPI.getInstance(this, projectToken);
 
         Resources r = getResources();
         mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
@@ -349,18 +354,21 @@ public class NavigationActivity extends ActionBarActivity
 
         receiveAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Req");
                 onNavBarSelected(Tabs.REQUEST.ordinal());
             }
         });
 
         sendAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Send");
                 onNavBarSelected(Tabs.SEND.ordinal());
             }
         });
 
         txAction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mpTrack("TAB-Transactions");
                 onNavBarSelected(Tabs.WALLET.ordinal());
             }
         });
@@ -417,12 +425,21 @@ public class NavigationActivity extends ActionBarActivity
 
     @Override
     public void onDestroy() {
+        mixPanel.flush();
         super.onDestroy();
         if(!getResources().getBoolean(R.bool.portrait_only)){
             // store the fragment stack in case of an orientation change
             AirbitzApplication.setFragmentStack(mNavStacks);
             AirbitzApplication.setLastNavTab(mNavThreadId);
         }
+    }
+
+    public void mpTrack(String event) {
+        mixPanel.track(event, null);
+    }
+
+    public void mpTime(String event) {
+        mixPanel.timeEvent(event);
     }
 
     public boolean onTouch(View view, MotionEvent event) {
@@ -2412,6 +2429,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Login");
                 mDrawer.closeDrawer(mDrawerView);
                 DisplayLoginOverlay(true);
             }
@@ -2420,6 +2438,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Directory");
                 onNavBarSelected(Tabs.BD.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2429,6 +2448,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Request");
                 onNavBarSelected(Tabs.REQUEST.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2438,6 +2458,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Scan");
                 onNavBarSelected(Tabs.SEND.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2447,6 +2468,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerTxs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Transactions");
                 onNavBarSelected(Tabs.WALLET.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2456,6 +2478,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerWallets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Wallets");
                 onNavBarSelected(Tabs.WALLETS.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2467,6 +2490,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerBuySell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Buy-Sell");
                 CoreCurrency currency = CoreCurrency.defaultCurrency();
                 String overrideUrl = BuySellOverrides.getCurrencyUrlOverrides(currency.code);
                 if (!TextUtils.isEmpty(overrideUrl)) {
@@ -2489,6 +2513,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Plugins");
                 onNavBarSelected(Tabs.SHOP.ordinal());
                 mDrawer.closeDrawer(mDrawerView);
             }
@@ -2508,6 +2533,7 @@ public class NavigationActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view) {
                     if (AirbitzApplication.isLoggedIn()) {
+                        mpTrack("SLD-Affiliate");
                         Affiliates affiliate = new Affiliates(AirbitzApplication.getAccount());
                         mAffiliateTask = new Affiliates.AffiliateTask(NavigationActivity.this, AirbitzApplication.getAccount(), affiliate);
                         mAffiliateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -2522,6 +2548,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Logout");
                 mDrawer.closeDrawer(mDrawerView);
                 Logout();
             }
@@ -2531,6 +2558,7 @@ public class NavigationActivity extends ActionBarActivity
         mDrawerSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mpTrack("SLD-Settings");
                 int tmp = mNavThreadId;
                 resetFragmentThreadToBaseFragment(Tabs.MORE.ordinal());
                 onNavBarSelected(Tabs.MORE.ordinal());
@@ -2547,8 +2575,10 @@ public class NavigationActivity extends ActionBarActivity
             public void onClick(View v) {
                 if (!otherAccounts(AirbitzApplication.getUsername()).isEmpty()) {
                     if (mOtherAccountsListView.getVisibility() != View.VISIBLE) {
+                        mpTrack("SLD-Accts-Show");
                         showOthersList(AirbitzApplication.getUsername(), true);
                     } else {
+                        mpTrack("SLD-Accts-Hide");
                         showOthersList(AirbitzApplication.getUsername(), false);
                     }
                 }
@@ -2669,12 +2699,14 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void openDrawer() {
+        mpTrack("SLD-Show");
         mDrawerAccount.setText(AirbitzApplication.getUsername());
         showOthersList(AirbitzApplication.getUsername(), false);
         mDrawer.openDrawer(mDrawerView);
     }
 
     public void closeDrawer() {
+        mpTrack("SLD-Hide");
         mDrawer.closeDrawer(mDrawerView);
     }
 
