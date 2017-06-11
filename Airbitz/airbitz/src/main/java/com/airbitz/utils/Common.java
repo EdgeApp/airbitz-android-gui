@@ -534,6 +534,8 @@ public class Common {
             return context.getString(R.string.server_error_not_supported);
         } else if (e.isInsufficientFunds()) {
             return context.getString(R.string.server_error_insufficient_funds);
+        } else if (e.isSysError()) {
+            return context.getString(R.string.sys_error_string);
         } else if (e.isSpendDust()) {
             return context.getString(R.string.insufficient_amount);
         } else if (e.isSynchronizing()) {
@@ -548,7 +550,8 @@ public class Common {
                 return context.getString(R.string.server_error_bad_pin_password);
             }
         } else {
-            return context.getString(R.string.server_error_other);
+            String errmsg = String.format(context.getString(R.string.server_error_other_formatted), e.code());
+            return errmsg;
         }
     }
 
