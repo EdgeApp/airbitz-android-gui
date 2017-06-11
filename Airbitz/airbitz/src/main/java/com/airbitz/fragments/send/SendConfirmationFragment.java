@@ -127,6 +127,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
     private TextView mFiatSignTextView;
     private TextView mConversionTextView;
     private Button mMaxButton;
+    private boolean mMaxButtonTapped = false;
     private Button mChangeFiatButton;
     private CoreCurrency mCurrency;
     private CoreCurrency mSendConfirmationCurrencyOverride;
@@ -481,6 +482,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mMaxLocked = true;
                     if (mMaxAmountTask != null)
                         mMaxAmountTask.cancel(true);
+                    mMaxButtonTapped = true;
                     mMaxAmountTask = new MaxAmountTask();
                     mMaxAmountTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
@@ -768,6 +770,11 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
                     mFiatDenominationTextView.setText(mCurrency.code);
                 }
             }
+            if (mMaxButtonTapped) {
+                if (fees + mAmountToSendSatoshi < mWallet.balance()) {
+                    mActivity.ShowFadingDialog(getString(R.string.fragment_send_confirmation_dust_in_wallet));
+                }
+            }
         } else {
             mConversionTextView.setText(Common.errorMap(mActivity, error));
             mConversionTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.btn_help, 0);
@@ -780,6 +787,7 @@ public class SendConfirmationFragment extends WalletBaseFragment implements
             mFiatField.setTextColor(Color.RED);
             mSlideLayout.setVisibility(View.INVISIBLE);
         }
+        mMaxButtonTapped = false;
         mAutoUpdatingTextFields = false;
     }
 
