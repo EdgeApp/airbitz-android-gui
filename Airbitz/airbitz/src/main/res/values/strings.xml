@@ -397,7 +397,7 @@
     <string name="fragment_send_confirmation_dust_alert">Amount is too small.</string>
     <string name="fragment_send_confirmation_dust_alert_more">Please send at least %1$s (~%2$s)</string>
     <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
-
+    <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
     <!-- Strings for Wallets fragment -->
     <string name="fragment_wallets_title">Wallets</string>
     <string name="fragment_wallets_add_wallet">Add Wallet</string>
@@ -785,6 +785,8 @@
 
     <string name="change_mining_fee_title">Change Mining Fee</string>
     <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+    <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
+    <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
 
     <!--Password Recovery Text-->
     <string name="save_recovery_token_popup">Save Recovery Token</string>

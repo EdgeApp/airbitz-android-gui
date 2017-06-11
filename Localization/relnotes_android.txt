@@ -1,3 +1,23 @@
+v 2.4.3
+
+• Select default fiat currency during account creation
+• Stability fixes
+• Set override servers to defaults if enabled and blank
+• Bity UI changes to Sell
+• Glidera contact info added
+• Dropped transactions will now be displayed
+• Improved login error message
+• Improved password reminders
+• Improved password messaging at Terms of Service and during account creation
+• Fixed error messages: Invalid QR Code
+• Git server rotation
+• Custom fees
+
+
+v 2.4.2
+
+Fix SSL certificates preventing new account creation and PIN
+
 v 2.4.1
 
 • Bity Integration: Buy/sell bitcoin with Euros and Swiss Francs

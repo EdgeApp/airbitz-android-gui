@@ -87,6 +87,7 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
         mView = inflater.inflate(R.layout.fragment_setup_pin, container, false);
 
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        mActivity.mpTrack("SUP-PIN-Enter");
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.fragment_setup_titles);
@@ -172,6 +173,8 @@ public class SetupPinFragment extends BaseFragment implements NavigationActivity
         // if they entered a valid mUsername or old mPassword
         if (pinFieldIsValid()) {
             launchSetupPassword();
+        } else {
+            mActivity.mpTrack("SUP-PIN-invalid");
         }
     }
 

@@ -193,6 +193,7 @@ public class SendFragment extends ScanFragment {
             if (parsed.type() != null) {
                 switch (parsed.type()) {
                 case BITID:
+                    mActivity.mpTrack("SCN-Bitid");
                     launchSingleSignonFragment(parsed, null);
                     return;
                 case PAYMENT_PROTO:
@@ -211,6 +212,7 @@ public class SendFragment extends ScanFragment {
                 }
             }
         } catch (AirbitzException e) {
+            mActivity.mpTrack("SCN-Invalid");
             AirbitzCore.loge(e.getMessage());
         }
         Uri uri = Uri.parse(text);
@@ -322,8 +324,10 @@ public class SendFragment extends ScanFragment {
         @Override
         protected void onPostExecute(final Boolean result) {
             if (result) {
+                mActivity.mpTrack("SCN-BIP70-Success");
                 launchSendConfirmation(mParsedUri, mRequest, null);
             } else {
+                mActivity.mpTrack("SCN-BIP70-Invalid");
                 if (mParsedUri.address() != null &&
                         mParsedUri.address().length() > 5) {
                     launchSendConfirmation(mParsedUri, null, null);
@@ -365,7 +369,9 @@ public class SendFragment extends ScanFragment {
         protected void onPostExecute(final Boolean result) {
             if (result) {
                 launchSingleSignonFragment(null, mEdgeInfo);
+                mActivity.mpTrack("SCN-EdgeReq-Success");
             } else {
+                mActivity.mpTrack("SCN-EdgeReq-Invalid");
                 showMessageAndStartCameraDialog(
                         R.string.fragment_send_failure_title,
                         R.string.invalid_edge_login_request);
@@ -415,6 +421,8 @@ public class SendFragment extends ScanFragment {
     protected void importKey(ParsedUri uri) {
         mSweptAddress = uri.address();
         showBusyLayout(mSweptAddress, true);
+        mActivity.mpTrack("SCN-Import");
+
         try {
             mWallet.sweepKey(uri.privateKey());
             if (!TextUtils.isEmpty(mSweptAddress)) {

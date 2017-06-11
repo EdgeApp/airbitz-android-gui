@@ -179,6 +179,7 @@ public class TransactionListFragment extends WalletBaseFragment
 
         mSwipeLayout = (SwipeRefreshLayout) mView.findViewById(R.id.fragment_wallet_swipe_layout);
         mSwipeLayout.setOnRefreshListener(this);
+        mActivity.mpTrack("TXL-Enter");
 
         mTransactionAdapter = new TransactionAdapter(mActivity, mTransactions);
         mTransactionAdapter.setIsBitcoin(mOnBitcoinMode);
@@ -203,6 +204,7 @@ public class TransactionListFragment extends WalletBaseFragment
                     String code = mAccount.settings().currency().code;
                     String overrideUrl = BuySellOverrides.getCurrencyUrlOverrides(code);
                     if (!TextUtils.isEmpty(overrideUrl)) {
+                        mActivity.mpTrack("TXL-Buy-Override");
                         final Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(overrideUrl));
                         startActivity(intent);
@@ -210,10 +212,12 @@ public class TransactionListFragment extends WalletBaseFragment
                             && ("USD".equals(code)
                                 || "CAD".equals(code)
                                 || "EUR".equals(code))) {
+                        mActivity.mpTrack("TXL-Buy-Plugin");
                         mActivity.switchFragmentThread(NavigationActivity.Tabs.BUYSELL.ordinal(), new Bundle());
                     } else {
                         Bundle bundle = new Bundle();
                         bundle.putString(Constants.DIRECTORY_CATEGORY_QUERY, "ATM");
+                        mActivity.mpTrack("TXL-Buy-ATM");
                         mActivity.switchFragmentThread(NavigationActivity.Tabs.BD.ordinal(), bundle);
                     }
                 }
@@ -221,6 +225,7 @@ public class TransactionListFragment extends WalletBaseFragment
             setupFooter(R.id.import_bitcoin, R.string.transaction_footer_import_gift_card, Constants.BIZ_ID_AIRBITZ, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mActivity.mpTrack("TXL-Import");
                     mActivity.switchFragmentThread(NavigationActivity.Tabs.SEND.ordinal(), new Bundle());
                 }
             });
@@ -228,6 +233,7 @@ public class TransactionListFragment extends WalletBaseFragment
                 setupFooter(R.id.bitrefill, R.string.transaction_footer_bitrefill, Constants.BIZ_ID_BITREFILL, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        mActivity.mpTrack("TXL-Bitrefill");
                         mActivity.switchFragmentThread(NavigationActivity.Tabs.SHOP.ordinal(), new Bundle());
                     }
                 });
@@ -257,6 +263,7 @@ public class TransactionListFragment extends WalletBaseFragment
                     public void onClick(View view) {
                         final Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse("http://bit.ly/AirbitzPurse"));
+                        mActivity.mpTrack("TXL-Purse");
                         mActivity.startActivity(intent);
                     }
                 });
@@ -292,6 +299,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("TXL-Request");
                 mActivity.hideSoftKeyboard(mSendButton);
                 mSendButton.setClickable(false);
                 Bundle bundle = new Bundle();
@@ -305,6 +313,7 @@ public class TransactionListFragment extends WalletBaseFragment
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivity.mpTrack("TXL-Send");
                 mActivity.hideSoftKeyboard(mSendButton);
                 mRequestButton.setClickable(false);
                 Bundle bundle = new Bundle();
@@ -407,8 +416,10 @@ public class TransactionListFragment extends WalletBaseFragment
             return true;
         case R.id.action_export:
             ExportFragment.pushFragment(mActivity);
+            mActivity.mpTrack("TXL-Export");
             return true;
         case R.id.action_help:
+            mActivity.mpTrack("TXL-Help");
             mActivity.pushFragment(new HelpFragment(HelpFragment.TRANSACTIONS));
             return true;
         default:
