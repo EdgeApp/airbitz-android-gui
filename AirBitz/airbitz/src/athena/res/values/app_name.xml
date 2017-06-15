@@ -14,7 +14,7 @@
     <string name="company_location">Chicago, Illinois, USA</string>
 
     <string name="request_footer">Sent from the Athena Bitcoin Wallet</string>
-    <string name="request_footer_link">https://play.google.com/store/apps/details?id=com.athenabitcoin.wallet</string>
+    <string name="request_footer_link">http://athenabitcoin.com/app</string>
     <string name="request_footer_link_title">Download Athena for iOS or Android</string>
     <string name="request_footer_contact">mailto:support@athenabitcoin.com?subject=Athena+Bitcoin+Email+Request</string>
 

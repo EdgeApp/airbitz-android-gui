@@ -15,7 +15,7 @@
     <string name="company_location">Atlanta GA USA</string>
 
     <string name="request_footer">Sent from the Bitcoin Depot Wallet</string>
-    <string name="request_footer_link">https://play.google.com/store/apps/details?id=com.bitcoindepot.wallet</string>
+    <string name="request_footer_link">https://www.bitcoindepot.com/app</string>
     <string name="request_footer_link_title">Download the Bitcoin Depot Wallet for iOS or Android</string>
     <string name="request_footer_contact">mailto:support@bitcoindepot.com?subject=Bitcoin+Depot+Email+Request</string>
 
