@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Bitcoin Depot</string>
     <string name="app_homepage">https://www.bitcoindepot.com/</string>
+    <string name="fragment_landing_detail_text">Bitcoin Depot Wallet</string>
     <string name="app_support_email">support@bitcoindepot.com</string>
     <string name="app_support_phone">678-435-9604</string>
     <string name="app_support_telegram"></string>
