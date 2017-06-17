@@ -8,10 +8,10 @@
     <string name="app_support_telegram"></string>
     <string name="app_support_slack"></string>
     <string name="app_support_whatsapp"></string>
-    <string name="appstore_link">https://itunes.apple.com/us/app/bitcoin-depot/id</string>
+    <string name="appstore_link">https://itunes.apple.com/us/app/bitcoin-depot-wallet/id1244405518</string>
     <string name="playstore_link">https://play.google.com/store/apps/details?id=com.bitcoindepot.wallet</string>
     <string name="logo_white_link">https://airbitz.co/go/wp-content/uploads/2017/06/logo-100w.png</string>
-    <string name="designed_by">Designed by Premier Technologies, LLC in</string>
+    <string name="designed_by">Designed by Lux Vending, LLC in</string>
     <string name="company_location">Atlanta GA USA</string>
 
     <string name="request_footer">Sent from the Bitcoin Depot Wallet</string>
