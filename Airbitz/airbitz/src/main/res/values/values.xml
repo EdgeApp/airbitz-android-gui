@@ -9,6 +9,7 @@
 
     <bool name="include_affiliate_link">true</bool>
     <bool name="include_buysell">true</bool>
+    <bool name="include_import_airbitz_card">true</bool>
     <bool name="include_plugins">true</bool>
     <bool name="include_fold_txlist">false</bool>
     <bool name="include_purse_txlist">true</bool>
