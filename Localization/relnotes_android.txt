@@ -1,18 +1,13 @@
 v 2.4.3
 
 • Select default fiat currency during account creation
-• Stability fixes
+• Allow user to set custom mining fees
+• Incorporate fee estimates from 21.co
+• Display dropped transactions
 • Set override servers to defaults if enabled and blank
-• Bity UI changes to Sell
-• Glidera contact info added
-• Dropped transactions will now be displayed
-• Improved login error message
+• Improved error messages
 • Improved password reminders
-• Improved password messaging at Terms of Service and during account creation
-• Fixed error messages: Invalid QR Code
-• Git server rotation
-• Custom fees
-
+• Stability fixes
 
 v 2.4.2
 

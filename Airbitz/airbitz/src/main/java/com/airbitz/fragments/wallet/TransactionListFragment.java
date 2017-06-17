@@ -222,7 +222,15 @@ public class TransactionListFragment extends WalletBaseFragment
                     }
                 }
             });
-            setupFooter(R.id.import_bitcoin, R.string.transaction_footer_import_gift_card, Constants.BIZ_ID_AIRBITZ, new View.OnClickListener() {
+
+            int importStringId = R.string.transaction_footer_import_private_key;
+            long importBizId = 0;
+            if (mActivity.getResources().getBoolean(R.bool.include_import_airbitz_card)) {
+                importStringId = R.string.transaction_footer_import_gift_card;
+                importBizId = Constants.BIZ_ID_AIRBITZ;
+            }
+
+            setupFooter(R.id.import_bitcoin, importStringId, importBizId, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mActivity.mpTrack("TXL-Import");

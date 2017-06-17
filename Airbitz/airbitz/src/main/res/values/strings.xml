@@ -780,6 +780,7 @@
 
     <string name="transaction_footer_buy_bitcoin">Buy Bitcoin</string>
     <string name="transaction_footer_import_gift_card">Import Airbitz Gift Card</string>
+    <string name="transaction_footer_import_private_key">Import Private Key</string>
     <string name="transaction_footer_starbucks_discount">Up to 20% off Starbucks</string>
     <string name="transaction_footer_target_discount">Up to 10% off Target</string>
     <string name="transaction_footer_amazon_discount">15%-20% off Amazon</string>
