@@ -62,7 +62,7 @@ public class UserReview {
     private static String FIRST_LOGIN_TIME = "com.airbitz.userreview.firstlogintime";
     private static String ALREADY_NOTIFIED = "com.airbitz.userreview.alreadynotified";
 
-    private static boolean PASSWORD_REMINDER_DAYS_TO_MINS    = true;
+    private static boolean PASSWORD_REMINDER_DAYS_TO_MINS    = false;
     private static int DEFAULT_NUM_PASSWORD_USED             = 2;
     private static int DEFAULT_NUM_PASSWORD_USED_W_RECOVERY  = 4;
     private static int PASSWORD_DAYS_INCREMENT_POWER         = 2;
