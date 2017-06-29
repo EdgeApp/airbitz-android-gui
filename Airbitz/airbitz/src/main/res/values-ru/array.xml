@@ -18,41 +18,41 @@
     <item>Счета &amp; коммунальные услуги</item>
     <item>Книги</item>
     <item>Книги &amp; сопутствующие товары</item>
-    <item>Мойка машины</item>
+    <item>Автомойка</item>
     <item>Наличные &amp; банкоматы</item>
     <item>Благотворительность</item>
     <item>Одежда</item>
     <item>Кафе</item>
     <item>Платежи по кредитным картам</item>
     <item>Дантист</item>
-    <item>Откладывание сбережений</item>
+    <item>Сберегательный вклад</item>
     <item>Медицина</item>
     <item>Образование</item>
     <item>Электроника &amp; программное обеспечение</item>
     <item>Развлечения</item>
     <item>Офтальмолог</item>
-    <item>Фаст-фуд</item>
+    <item>Фастфуд</item>
     <item>Платежи &amp; расходы</item>
     <item>Финансист</item>
     <item>Финансовый консультант</item>
-    <item>Еда &amp; обеды</item>
+    <item>Рестораны &amp; кафе</item>
     <item>Меблировка</item>
     <item>Бензин &amp; топливо</item>
     <item>Подарки</item>
     <item>Подарки &amp; пожертвования</item>
-    <item>Бакалея</item>
+    <item>Продовольственные товары</item>
     <item>Спортзал</item>
     <item>Парикмахер</item>
     <item>Здоровье &amp; фитнес</item>
-    <item>Взносы в ЖЭК</item>
+    <item>Оплата за жильё</item>
     <item>Хобби</item>
     <item>Дом</item>
-    <item>Дизайн интерьера</item>
-    <item>Домашнее страхование</item>
+    <item>Благоустройство жилья</item>
+    <item>Страхование жилья</item>
     <item>Домашний телефон</item>
     <item>Обслуживание дома</item>
-    <item>Дом и сад</item>
-    <item>Отели</item>
+    <item>Товары для дома</item>
+    <item>Отель</item>
     <item>Расходы на выплату процентов</item>
     <item>Интернет</item>
     <item>Отчисления в пенсионный фонд</item>
@@ -71,15 +71,15 @@
     <item>Газеты &amp; журналы</item>
     <item>Не уверен</item>
     <item>Парковка</item>
-    <item>Личная гигиена</item>
+    <item>Средства личной гигиены</item>
     <item>Корм &amp; товары для домашних животных</item>
     <item>Уход за домашними животными</item>
     <item>Домашние животные</item>
-    <item>Лекарства</item>
+    <item>Аптека</item>
     <item>Собственность</item>
     <item>Общественный транспорт</item>
     <item>Регистрация</item>
-    <item>Аренда машин &amp; такси</item>
+    <item>Аренда машины &amp; такси</item>
     <item>Рестораны</item>
     <item>Сервис &amp; запчасти</item>
     <item>Оплата услуг</item>
@@ -90,7 +90,7 @@
     <item>Студенческий кредит</item>
     <item>Налоги</item>
     <item>Телевидение</item>
-    <item>Таможенные сборы</item>
+    <item>Дорожная пошлина</item>
     <item>Игрушки</item>
     <item>Торговые комиссии</item>
     <item>Путешествия</item>
@@ -108,8 +108,8 @@
     <item>Продажи</item>
   </string-array>
   <string-array name="exchange_category_defaults">
-    <item>Купить биткойны</item>
-    <item>Продать биткойны</item>
+    <item>Купить биткоины</item>
+    <item>Продать биткоины</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
@@ -150,7 +150,8 @@
   </string-array>
   <string-array name="mining_fees">
     <item>Низкая комиссия</item>
-    <item>Средняя комиссия</item>
+    <item>Стандартная комиссия</item>
     <item>Высокая комиссия</item>
+    <item>Ручная комиссия (расширенные настройки)</item>
   </string-array>
 </resources>

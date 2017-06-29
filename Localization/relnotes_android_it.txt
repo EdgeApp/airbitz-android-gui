@@ -1,3 +1,28 @@
+v 2.4.3
+
+• Select default fiat currency during account creation
+• Allow user to set custom mining fees
+• Incorporate fee estimates from 21.co
+• Display dropped transactions
+• Set override servers to defaults if enabled and blank
+• Improved error messages
+• Improved password reminders
+• Stability fixes
+
+v 2.4.2
+
+Fix SSL certificates preventing new account creation and PIN
+
+v 2.4.1
+
+• Bity Integration: Buy/sell bitcoin with Euros and Swiss Francs
+• Password throttling
+• Users can now choose bitcoin nodes they want to connect to
+• Pin, Password, and Password Recovery rate limits are all shared
+• Contact information for Glidera support is added
+• Password spending limit removes PIN based password reset
+• Android mutex crash fix
+
 v.2.4.0
 
 • Protocollo Modifiche a bordo Login

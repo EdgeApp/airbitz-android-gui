@@ -10,8 +10,8 @@
     <item>Artes</item>
     <item>Taxa de Caixa Eletrônico</item>
     <item>Veículos &amp; Transporte</item>
-    <item>Seguro do carro</item>
-    <item>Prestações do carro</item>
+    <item>Seguro de Veículo</item>
+    <item>Prestações do Veículo</item>
     <item>Artigos para bebê</item>
     <item>Babá &amp; creche</item>
     <item>Taxa bancária</item>
@@ -48,9 +48,9 @@
     <item>Hobbies</item>
     <item>Casa</item>
     <item>Reformas da casa</item>
-    <item>Seguro de casa</item>
+    <item>Seguro Residencial</item>
     <item>Telefone fixo</item>
-    <item>Serviços da casa</item>
+    <item>Serviços Residenciais</item>
     <item>Artigos para casa</item>
     <item>Hotel</item>
     <item>Despesa de Juros</item>
@@ -152,5 +152,6 @@
     <item>Taxa baixa</item>
     <item>Taxa padrão</item>
     <item>Taxa alta</item>
+    <item>Custom Fee (advanced)</item>
   </string-array>
 </resources>

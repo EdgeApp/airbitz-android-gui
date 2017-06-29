@@ -152,5 +152,6 @@
     <item>Des frais modiques</item>
     <item>Frais standard</item>
     <item>Frais élevés</item>
+    <item>Custom Fee (advanced)</item>
   </string-array>
 </resources>

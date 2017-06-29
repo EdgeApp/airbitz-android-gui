@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Insuficiencia de fondos</string>
   <string name="server_error_synchronizing">Sincronizando con la red.</string>
   <string name="server_error_non_numeric_pin">PIN debe ser un valor numérico.</string>
-  <string name="server_error_bad_pin">PIN inválido</string>
+  <string name="server_error_bad_pin_password">Pin Inválido, Contraseña o Respuestas de Recuperación</string>
   <string name="server_error_bad_pin_login">PIN inválido. Por favor conéctese.</string>
   <string name="server_error_pin_expired">PIN ha vencido. Por favor conéctese.</string>
   <string name="server_error_invalid_pin_wait">Demasiados intentos de inicio de sesión fallidos. Inténtalo otra vez en %1$s segundos.</string>
   <string name="server_error_other">Ha ocurrido un error.</string>
+  <string name="server_error_other_formatted">Ha ocurrido un error: %d</string>
   <string name="insufficient_amount">Cantidad es demasiado pequeña</string>
+  <string name="sys_error_string">Problemas al acceder a la red. Por favor de comprobar la conexión de red</string>
   <string name="account_needs_password_title">ADVERTENCIA: falta contraseña</string>
   <string name="account_needs_password_message">Cuenta [%1$s] necesita una contraseña. Cuenta no es accesible en un nuevo dispositivo sin una contraseña.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Inicia sesión</string>
   <string name="activity_navigation_signin_failed">Error en inicio</string>
+  <string name="activity_navigation_signin_failed_network">Ocurrió un error. Posible problema de conexión a la red o nombre de usuario y contraseña incorrectos</string>
+  <string name="activity_navigation_signin_failed_pin_network">Ocurrió un error. Por favor de comprobar la conexión de red. También puede salir del inicio de PIN y utilizar su nombre de usuario y contraseña para iniciar sesión sin conexión</string>
   <string name="activity_navigation_signin_failed_unexpected">Error inesperado en inicio</string>
   <string name="activity_signup_failed">Error en registro</string>
   <string name="activity_change_password_failed">No se pudo cambiar la contraseña</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">Establecer un PIN de 4 dígitos</string>
   <string name="fragment_setup_pin_text">Su PIN es un código de 4 dígitos utilizado para hacer rápidas re-inicios de sesión en su cuenta.</string>
   <string name="fragment_setup_writeitdown_title">¡ Escríbelo!</string>
-  <string name="fragment_setup_writeitdown_text">Su nombre de usuario, contraseña y pin son conocidas sólo por usted y nunca transmitidas o almacenadas sin cifrar.</string>
+  <string name="fragment_setup_writeitdown_text">Su nombre de usuario y contraseña son conocidos sólo por usted y no se pueden recuperar si se le olvidan. Usted perderá el acceso a los fondos si su contraseña se pierde.</string>
   <string name="fragment_setup_writeitdown_text_warning">Escriba y almacene de forma segura.</string>
   <string name="fragment_setup_writeitdown_username_title">Nombre de usuario</string>
   <string name="fragment_setup_writeitdown_password_title">Contraseña</string>
@@ -289,8 +293,13 @@
   <string name="settings_ble_turn_on_title">Activar Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth se utiliza para permitir pagos de forma inalámbrica sin necesidad de escanear un código QR. ¿Quieres activarlo ahora?</string>
   <string name="settings_currency_change_note_popup">Nota: Configuración de divisa predeterminada se utiliza para carteras nuevas y para mostrar el saldo total de la cuenta. Crear una nueva carpeta para cambiar la moneda fiat que se muestra en cada transacción.</string>
+  <string name="settings_override_server_title">Anulación de Servidores Bitcoin (avanzado)</string>
+  <string name="settings_override_server_button">Habilitar Anulación</string>
+  <string name="settings_override_server_list">Ingresar Lista de Servidores</string>
+  <string name="settings_override_servers_help">Advertencia, este es un ajuste avanzado y puede hacer que su cartera funcione mal. Por favor de reiniciar la aplicación para que la configuración tenga efecto.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Límites de gastos</string>
+  <string name="fragment_spending_limits_warning">** Advertencia ** \ n \ nDefinir una contraseña de límite de gasto puede impedirle acceder a fondos si se le olvida su contraseña. Por favor, asegúrese de que tiene la configuración recuperación de contraseña</string>
   <string name="fragment_spending_limits_save">Guardar</string>
   <string name="fragment_spending_limits_daily_title">Límite de gasto diario</string>
   <string name="fragment_spending_limits_pin_title">Se requiere PIN por encima de cantidad</string>
@@ -357,6 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">La cantidad es demasiado pequeña.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Por favor, envíe por lo menos %1$s (~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Error al conectarse al procesador del pago. Enviar directamente a la dirección de bitcoin.\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Pequeñas entradas de polvo en la cartera. No todos los fondos pueden ser gastados. Por favor, vea airbitz.co/dust para más detalles.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Carteras</string>
   <string name="fragment_wallets_add_wallet">Añadir cartera</string>
@@ -382,6 +392,7 @@
   <string name="fragment_wallet_title">Transacciones</string>
   <string name="fragment_wallet_export_button_description">Botón exportar una cartera</string>
   <string name="fragment_wallet_unconfirmed">Pendiente</string>
+  <string name="fragment_wallet_transaction_dropped">Transacción Caída</string>
   <string name="fragment_wallet_confirmed">Confirmado</string>
   <string name="fragment_wallet_confirmations">" confirmaciones"</string>
   <string name="fragment_wallet_confirmation">" confirmación"</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"De: "</string>
   <string name="transaction_details_payee_hint">Introduzca Beneficiario</string>
   <string name="transaction_details_recovery_reminder_title">Recuperar el recordatorio de la Contraseña</string>
-  <string name="transaction_details_recovery_reminder_message">"¡Recibió Bitcoin! Recomendamos ENCARECIDAMENTE que configure la Recuperación de Contraseña y las preguntas y respuestas. De lo contrario NO PODRÁ ACCEDER a su cuenta si olvida su contraseña."</string>
+  <string name="transaction_details_recovery_reminder_message">"Recomendamos encarecidamente configurar preguntas y respuestas sobre recuperación de contraseñas. De lo contrario, NO podrá acceder a su cuenta si se le olvida su contraseña."</string>
   <string name="transaction_details_advanced_txid">"Identificador de la transacción"</string>
   <string name="transaction_details_advanced_total_sent">"Total enviado"</string>
   <string name="transaction_details_advanced_source">"Fuente"</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">Si pierde el dispositivo o desinstala la aplicación de %1$s, tomara 7 días para desactivar 2FA y acceder a su cuenta.</string>
   <string name="twofactor_reset_message">Se ha solicitado un restablecimiento de la autenticación de dos factores. Por favor ingrese como %1$s y apruebe o cancele la solicitud.</string>
   <string name="twofactor_reset_title">Solicitud de reinicio de autenticación de dos factores</string>
+  <string name="recovery_answers_corrupt">Las respuestas de recuperación de su cuenta están dañadas. No podrá recuperar su cuenta si se le olvida su contraseña. Inicie sesión como% 1 $ s y vuelva a configurar la recuperación de contraseñas. Para más detalles, vea nuestro blog en airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Respuestas de Recuperación Corruptos!</string>
   <string name="receiver_alert_title">%1$s notificación</string>
   <!-- Other -->
   <string name="remote_password_change_title">Contraseña cambiada remotamente</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Contraseña incorrecta.</string>
   <string name="password_check_incorrect_password_message">Contraseña incorrecta. ¿Vuelve a intentarlo?</string>
-  <string name="password_check_skip">Por favor, crear una nueva cuenta y transfiera sus fondos si usted olvidó su contraseña.</string>
+  <string name="password_check_skip_formatted">Por favor de crear una nueva cuenta y transfiera sus fondos si se le olvidó su contraseña. Su contraseña NO PUEDE SER RECUPERADA por% 1 $ s y perderá el acceso a sus fondos sin su contraseña.</string>
   <string name="password_check_remember_title">¿Recuerda su contraseña?</string>
   <string name="password_check_remember_message">¿Todavía recuerda su contraseña? Necesitará su contraseña si su dispositivo se pierde o es robado, o si desinstala la aplicación.\nIntrodúcela en la parte inferior para asegurarte:</string>
   <string name="password_check_check_my_password">Verificar mi contraseña</string>
@@ -608,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Carga completa</string>
   <string name="upload_log_alert_failed">No se pudo cargar. Por favor comprueba la conexión de red.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Registrando usuario: %1s</string>
+  <string name="fingerprint_signin">Iniciar Sesión Usuario:% 1 $ s</string>
   <string name="fingerprint_confirm_to_continue">Confirmar huella dactilar para continuar</string>
   <string name="fingerprint_hint">Sensor táctil</string>
   <string name="fingerprint_not_recognized">Huella dactilar no reconocida. Inténtelo de nuevo.</string>
@@ -673,6 +686,8 @@ subject=Airbitz+Bitcoin+Email+Request</string>
   <string name="plugin_walmart_discount">(Hasta 10% de descuento)</string>
   <string name="plugin_homedepot_discount">(Hasta 15% de descuento)</string>
   <string name="plugin_glidera_title">Comprar y vender con cuentas bancarias (en EUA)</string>
+  <string name="plugin_bity_title">Comprar/Vender con Cuenta Bancaria (Europa)</string>
+  <string name="plugin_libertyx_title">Comprar con Efectivo (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Los siguientes servicios no son proporcionados por %1$s.\n\n. Para dudas y retroalimentación, por favor contactar a los respectivos proveedores del servicio.</string>
   <string name="plugin_bitrefill_title">Recargar el móvil de prepagos SIM</string>
@@ -692,6 +707,8 @@ subject=Airbitz+Bitcoin+Email+Request</string>
   <string name="transaction_footer_bitrefill">Comparar recargas de Teléfono móvil</string>
   <string name="change_mining_fee_title">Cambiar comisión de minado</string>
   <string name="change_mining_fee_body">Advertencia: Las tarifas bajas pueden causar retrasos en la confirmación de la transacción</string>
+  <string name="change_mining_fee_custom_title">Establecer Tarifa de Minería Personalizada</string>
+  <string name="change_mining_fee_custom_hint">Tarifa personalizada en satoshis / byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Guardar token de recuperación</string>
   <string name="save_recovery_token_popup_message">Para completar la configuración de recuperación de cuenta usted DEBE guardar una ficha de recuperación de cuenta. Esto será requerido para recuperar su cuenta además de su nombre de usuario y preguntas de recuperación. Por favor introduzca su email abajo para enviarse usted mismo la ficha de recuperación.</string>

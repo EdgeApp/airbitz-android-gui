@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Ανεπαρκές χρηματικό υπόλοιπο</string>
   <string name="server_error_synchronizing">Συγχρονισμός με το δίκτυο.</string>
   <string name="server_error_non_numeric_pin">Το PIN πρέπει να αποτελείται από αριθμούς.</string>
-  <string name="server_error_bad_pin">Λανθασμένο PIN</string>
+  <string name="server_error_bad_pin_password">Μη έγκυρο PIN, Κωδικός Πρόσβασης, ή Ερωτήσεις Ανάκτησης</string>
   <string name="server_error_bad_pin_login">Λανθασμένο PIN. Παρακαλώ συνδεθείτε.</string>
   <string name="server_error_pin_expired">Το PIN έχει λήξει. Παρακαλώ συνδεθείτε.</string>
   <string name="server_error_invalid_pin_wait">Πάρα πολλές αποτυχημένες προσπάθειες σύνδεσης. Παρακαλούμε προσπαθήστε ξανά σε %1$s λεπτά.</string>
   <string name="server_error_other">Παρουσιάστηκε σφάλμα.</string>
+  <string name="server_error_other_formatted">Παρουσιάστηκε σφάλμα: %d</string>
   <string name="insufficient_amount">Το ποσό είναι πολύ μικρό</string>
+  <string name="sys_error_string">Πρόβλημα πρόσβασης στο δίκτυο. Παρακαλώ ελέγξτε την σύνδεση σας στο δίκτυο</string>
   <string name="account_needs_password_title">ΠΡΟΣΟΧΗ: λείπει ο κωδικός πρόσβασης</string>
   <string name="account_needs_password_message">Ο λογαριασμός [%1$s] χρειάζεται έναν κωδικό πρόσβασης. Ο λογαριασμός δεν είναι προσβάσιμος σε νέα συσκευή χωρίς κωδικό πρόσβασης.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Εγγραφή</string>
   <string name="activity_navigation_signin_failed">Σύνδεση ανεπιτυχής</string>
+  <string name="activity_navigation_signin_failed_network">Έχει συμβεί κάποιο σφάλμα. Πιθανό πρόβλημα σύνδεσης ή λανθασμένο όνομα χρήστη και κωδικός πρόσβασης</string>
+  <string name="activity_navigation_signin_failed_pin_network">Προέκυψε ένα σφάλμα. Παρακαλούμε ελέγξτε τη σύνδεση σας στο δίκτυο. Μπορείτε επίσης να βγείτε από την σύνδεση σας με το PIN και να χρησιμοποιήσετε το όνομα χρήστη και τον κωδικό πρόσβασης για πρόσβαση εκτός σύνδεσης</string>
   <string name="activity_navigation_signin_failed_unexpected">Απρόσμενη ανεπιτυχής σύνδεση</string>
   <string name="activity_signup_failed">Εγγραφή ανεπιτυχής</string>
   <string name="activity_change_password_failed">Αποτυχία αλλαγής κωδικού πρόσβασης</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">Ορίστε ένα 4-ψήφιο PIN</string>
   <string name="fragment_setup_pin_text">Το PIN σας είναι ένας 4-ψήφιος κωδικός που χρησιμοποιείται για γρήγορη επανασύνδεση στον λογαριασμό σας.</string>
   <string name="fragment_setup_writeitdown_title">Γράψτε τα στοιχεία σε χαρτί!</string>
-  <string name="fragment_setup_writeitdown_text">Το όνομα χρήστη, ο κωδικός πρόσβασης, και το PIN είναι γνωστά μόνο σε εσάς και ποτέ δεν μεταδίδονται ούτε αποθηκεύονται χωρίς κρυπτογράφηση.</string>
+  <string name="fragment_setup_writeitdown_text">Το όνομα χρήστη και ο κωδικός πρόσβασης είναι γνωστά μόνο από εσάς και δεν μπορούν να ανακτηθούν εάν τα ξεχάσετε. Εάν χαθεί ο κωδικός πρόσβασης, θα ΧΑΣΕΤΕ και ΤΗΝ ΠΡΟΣΒΑΣΗ ΣΤΑ ΧΡΗΜΑΤΑ ΣΑΣ.</string>
   <string name="fragment_setup_writeitdown_text_warning">Γράψτε σε ένα κομμάτι χαρτί και αποθηκεύστε με ασφάλεια.</string>
   <string name="fragment_setup_writeitdown_username_title">Όνομα Χρήστη</string>
   <string name="fragment_setup_writeitdown_password_title">Κωδικός Πρόσβασης</string>
@@ -289,8 +293,13 @@
   <string name="settings_ble_turn_on_title">Ενεργοποίηση Bluetooth</string>
   <string name="settings_ble_turn_on_message">Η λειτουργία του Bluetooth χρησιμοποιείται για ασύρματες πληρωμές χωρίς σάρωση κωδικών QR. Θέλετε να ανοίξετε τώρα το Bluetooth;</string>
   <string name="settings_currency_change_note_popup">Σημείωση: Η ρύθμιση για το Προεπιλεγμένο Νόμισμα χρησιμοποιείται μόνο για νέα πορτοφόλια και για να εμφανίζει το συνολικό υπόλοιπο του λογαριασμού. Δημιουργήστε ένα νέο πορτοφόλι για να αλλάξετε το fiat νόμισμα που εμφανίζεται σε κάθε συναλλαγή.</string>
+  <string name="settings_override_server_title">Αντικατάσταση Διακομιστών Bitcoin (για προχωρημένους)</string>
+  <string name="settings_override_server_button">Ενεργοποίηση Αντικατάστασης</string>
+  <string name="settings_override_server_list">Εισαγωγή Λίστας Διακομιστών</string>
+  <string name="settings_override_servers_help">Προσοχή, αυτή είναι μία ρύθμιση για προχωρημένους και μπορεί να προκαλέσει δυσλειτουργία στο πορτοφόλι σας. Παρακαλούμε κάνετε επανεκκίνηση της εφαρμογής για να ενεργοποιηθεί η ρύθμιση.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Όριο Δαπάνης</string>
+  <string name="fragment_spending_limits_warning">** Προσοχή **\n\nΗ εφαρμογή ενός, προστατευμένου με κωδικό, ορίου ξοδέματος μπορεί να εμποδίσει την πρόσαβαση στα χρήματα σας σε περίπτωση που ξεχαστεί ο κωδικός. Παρακαλούμε βεβαιωθείτε ότι έχετε θέσει σε λειτουργία την διαδικασία ανάκτησης του κωδικού</string>
   <string name="fragment_spending_limits_save">Αποθήκευση</string>
   <string name="fragment_spending_limits_daily_title">Ημερήσιο Όριο Δαπάνης</string>
   <string name="fragment_spending_limits_pin_title">Απαιτείται PIN πάνω από ποσό</string>
@@ -357,6 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">Το ποσό είναι πολύ μικρό.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Παρακαλώ στείλτε τουλάχιστον %2$s (~%1$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Σφάλμα σύνδεσης στον διεκπεραιωτή πληρωμής. Στείλετε απευθείας σε διεύθυνση bitcoin\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Μικρές εισροές στο πορτοφόλι (dust inputs). Δεν μπορούν να ξοδευτούν όλα τα χρήματα. Παρακαλώ δείτε στο airbitz.co/dust για πληροφορίες.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Πορτοφόλια</string>
   <string name="fragment_wallets_add_wallet">Προσθήκη Πορτοφολιού</string>
@@ -382,6 +392,7 @@
   <string name="fragment_wallet_title">Συναλλαγές</string>
   <string name="fragment_wallet_export_button_description">Κουμπί για εξαγωγή πορτοφολιού</string>
   <string name="fragment_wallet_unconfirmed">Εκκρεμεί</string>
+  <string name="fragment_wallet_transaction_dropped">Η Συναλλαγή κατέπεσε</string>
   <string name="fragment_wallet_confirmed">Έγινε επιβεβαίωση</string>
   <string name="fragment_wallet_confirmations">" επιβεβαιώσεις"</string>
   <string name="fragment_wallet_confirmation">" επιβεβαίωση"</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"Από: "</string>
   <string name="transaction_details_payee_hint">Εισαγωγή Δικαιούχου πληρωμής</string>
   <string name="transaction_details_recovery_reminder_title">Υπενθύμιση ανάκτησης κωδικού πρόσβασης</string>
-  <string name="transaction_details_recovery_reminder_message">"Έχετε λάβει Bitcoin! Σας συνιστούμε να ΜΗΝ παραλείψετε να ορίσετε ερωτήσεις και απαντήσεις για ανάκτηση του κωδικού πρόσβασης σας. Σε διαφορετική περίπτωση ΔΕΝ θα μπορείτε να έχετε πρόσβαση στον λογαριασμό εάν ξεχάσετε τον κωδικό."</string>
+  <string name="transaction_details_recovery_reminder_message">"Σας συνιστούμε, ΟΠΩΣΔΗΠΟΤΕ, να θέσετε ερωτήσεις και απαντήσεις ανάκτησης του κωδικού πρόσβασης σας. Εάν ξεχάσετε τον κωδικό σας, ΔΕΝ θα μπορείτε να έχετε πρόσβαση στον λογαριασμό σας."</string>
   <string name="transaction_details_advanced_txid">"Αναγνωριστικό (ID) Συναλλαγής"</string>
   <string name="transaction_details_advanced_total_sent">"Σύνολο Αποστολής"</string>
   <string name="transaction_details_advanced_source">"Προέλευση"</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">Εάν χάσετε τη συσκευή σας ή απεγκαταστήσετε την εφαρμογή %1$s, θα χρειαστούν 7 ημέρες για την απενεργοποίηση του ελέγχου ταυτότητας δύο παραγόντων και την απόκτηση πρόσβασης στον λογαριασμό σας.</string>
   <string name="twofactor_reset_message">Έχει γίνει αίτηση για επαναφορά του ελέγχου ταυτότητας δύο παραγόντων. Παρακαλούμε συνδεθείτε ως %1$s και κάνετε έγκριση ή απόρριψη του αιτήματος.</string>
   <string name="twofactor_reset_title">Αίτηση επαναφοράς του ελέγχου ταυτότητας δύο παραγόντων</string>
+  <string name="recovery_answers_corrupt">Οι απαντήσεις ανάκτησης του λογαριασμού είναι άκυρες. Δεν θα μπορείτε να ανακτήσετε τον λογαριασμό σας εάν ξεχάσετε τον κωδικό πρόσβασης σας. Παρακαλούμε συνδεθείτε ως %1$s και προχωρήστε εκ νέου στην διαδικασία ανάκτησης του κωδικού πρόσβασης. Για λεπτομέρειες, παρακαλούμε συμβουλευτείτε την ανάρτηση στο airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Εσφαλμένες Απαντήσεις Ανάκτησης!</string>
   <string name="receiver_alert_title">%1$s Ειδοποίηση</string>
   <!-- Other -->
   <string name="remote_password_change_title">Έγινε απομακρυσμένη αλλαγή Κωδικού Πρόσβασης</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Λανθασμένος Κωδικός Πρόσβασης.</string>
   <string name="password_check_incorrect_password_message">Λανθασμένος κωδικός πρόσβασης. Θέλετε να προσπαθήσετε ξανά;</string>
-  <string name="password_check_skip">Παρακαλούμε δημιουργήστε έναν νέο λογαριασμό και μεταφέρετε τα χρήματα σας εάν ξεχάσετε τον κωδικό πρόσβασης σας.</string>
+  <string name="password_check_skip_formatted">Παρακαλούμε δημιουργήστε έναν νέο λογαριασμό και μεταφέρετε τα χρήματα σας εάν ξεχάσετε τον κωδικό πρόσβασης σας. Ο κωδικός πρόσβασης ΔΕΝ ΜΠΟΡΕΙ ΝΑ ΑΝΑΚΤΗΘΕΙ από την %1$s και θα χάσετε την πρόσβαση στα χρήματα σας χωρίς τον κωδικό πρόσβασης.</string>
   <string name="password_check_remember_title">Απομνημόνευση του κωδικού πρόσβασης;</string>
   <string name="password_check_remember_message">Θυμάστε ακόμα τον κωδικό πρόσβασης σας; Θα χρειαστείτε τον κωδικό πρόσβασης εάν η συσκευής σας κλαπεί ή χαθεί, ή κάνετε απεγκατάσταση της εφαρμογής.\nΕισάγετε παρακάτω τον κωδικό για να βεβαιωθείτε:</string>
   <string name="password_check_check_my_password">Έλεγχος του κωδικού πρόσβασης ΜΟΥ</string>
@@ -608,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Μεταφόρτωση επιτυχής</string>
   <string name="upload_log_alert_failed">Η μεταφόρτωση απέτυχε. Παρακαλούμε ελέγξτε τη σύνδεση στο δίκτυο.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Σύνδεση Χρήστη: %1s</string>
+  <string name="fingerprint_signin">Σύνδεση Χρήστη: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Επιβεβαίωση δακτυλικού αποτυπώματος για συνέχεια</string>
   <string name="fingerprint_hint">Αισθητήρας αφής</string>
   <string name="fingerprint_not_recognized">Το δακτυλικό αποτύπωμα δεν αναγνωρίζεται. Δοκιμάστε ξανά.</string>
@@ -672,6 +685,8 @@
   <string name="plugin_walmart_discount">(Μέχρι και 10% έκπτωση)</string>
   <string name="plugin_homedepot_discount">(Μέχρι και 15% έκπτωση)</string>
   <string name="plugin_glidera_title">Αγορά/Πώληση με Τραπεζικό Λογαριασμό (ΗΠΑ)</string>
+  <string name="plugin_bity_title">Αγορά/Πώληση με Τραπεζικό Λογαριασμό (Ευρώπη)</string>
+  <string name="plugin_libertyx_title">Αγορά με Μετρητά (ΗΠΑ)</string>
   <string name="plugin_clevercoin_title">Ευρώπη (ΕUR)</string>
   <string name="plugin_popup_notice">Οι ακόλουθες υπηρεσίες δεν παρέχονται από την %1$s.\n\nΓια προβλήματα και ενημέρωση, παρακαλούμε επικοινωνήστε με τις αντίστοιχες υπηρεσίες.</string>
   <string name="plugin_bitrefill_title">Αγορά προπληρωμένου χρόνου ομιλίας κινητής</string>
@@ -691,6 +706,8 @@
   <string name="transaction_footer_bitrefill">Αγορά προπληρωμένου χρόνου ομιλίας κινητής</string>
   <string name="change_mining_fee_title">Αλλαγή Χρέωσης Εξόρυξης</string>
   <string name="change_mining_fee_body">Προσοχή: Οι χαμηλές χρεώσης μπορεί να έχουν ως αποτέλεσμα μεγάλες καθυστερήσεις στην επιβεβείωση της συναλλαγής</string>
+  <string name="change_mining_fee_custom_title">Ρύθμιση προσαρμοσμένου τέλους εξόρυξης</string>
+  <string name="change_mining_fee_custom_hint">Προσαρμοσμένο τέλος σε satoshi/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Αποθήκευση διακριτικού ανάκτησης</string>
   <string name="save_recovery_token_popup_message">«Για να ολοκληρωθεί η λειτουργία ανάκτησης του λογαριασμού ΠΡΕΠΕΙ να αποθηκεύσετε ένα διακριτικό ανάκτησης λογαριασμού. Το συγκεκριμένο θα απαιτείται για να ανακτήσετε τον λογαριασμό σας σε συνδυασμό με το όνομα χρήστη σας και τις απαντήσεις ανάκτησης που έχετε θέσει. Παρακαλούμε εισάγετε παρακάτω το email σας για να στείλετε στον εαυτό σας το διακρτικό ανάκτησης.</string>
