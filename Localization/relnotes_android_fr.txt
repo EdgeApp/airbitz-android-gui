@@ -1,3 +1,28 @@
+v 2.4.3
+
+• Select default fiat currency during account creation
+• Allow user to set custom mining fees
+• Incorporate fee estimates from 21.co
+• Display dropped transactions
+• Set override servers to defaults if enabled and blank
+• Improved error messages
+• Improved password reminders
+• Stability fixes
+
+v 2.4.2
+
+Fix SSL certificates preventing new account creation and PIN
+
+v 2.4.1
+
+• Bity Integration: Buy/sell bitcoin with Euros and Swiss Francs
+• Password throttling
+• Users can now choose bitcoin nodes they want to connect to
+• Pin, Password, and Password Recovery rate limits are all shared
+• Contact information for Glidera support is added
+• Password spending limit removes PIN based password reset
+• Android mutex crash fix
+
 v.2.4.0
 
 • Modifications de protocole à l'ouverture de session
@@ -13,7 +38,7 @@ v 2.3.3
 
 ** La connexion avec empreinte digitale est supportée par les appareils comme Nexus 5x et 6p **
 
-• La correction du problème avec la connexion du PIN ne marche pas
+• La correction du problème avec la connexion du PIN qui ne marche pas
 • Support avec Edge login depuis le bouton URI sur mobile
 Ajout De WhatsApp pour supporter les liens
 
@@ -67,7 +92,7 @@ v 2.1.0
 
 • Amélioration de la précision de détection des transactions dans de mauvaises conditions de réseau
 
-Nous avons juste innové en mettant en œuvre la première récupération de mot de non-friction du monde qui permet aux utilisateurs de récupérer les mots de passe avec seulement 2 questions et un e-mail. Ne vous inquiétez jamais oublier votre mot de passe
+Nous venons juste d'innover en mettant en œuvre la première récupération de mot de non-friction du monde qui permet aux utilisateurs de récupérer les mots de passe avec seulement 2 questions et un e-mail. Ne vous inquiétez jamais plus d'oublier votre mot de passe
 
 En outre:
 
@@ -88,4 +113,4 @@ v 2.1.0
 • Correction du temps erroné de transaction lorsque qu'une transaction est reçue alors que le portefeuille est déconnecté
 • Prise en charge linguistique du Chinois, Hindi, Espagnol et Portugais
 • Prise en charge d'un localisation linguistique appropriée pour les numéros, heures et dates
-• Amélioration de la précision de détection des transactions dans de mauvaises conditions de réseau
+• Amélioration de la précision de la détection des transactions dans de mauvaises conditions de réseau

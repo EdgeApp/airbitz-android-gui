@@ -1,3 +1,28 @@
+v 2.4.3
+
+• Seleccionar la moneda fiat predeterminada durante la creación de la cuenta
+• Permite al usuario establecer tarifas de minería personalizadas
+• Incorporar las estimaciones de tarifas desde 21.co
+• Mostrar transacciones caidas
+• Establezca los servidores de anulacion en valores predeterminados, si están habilitados y en blanco
+Mensajes de error mejorados
+• Recordatorios de contraseñas mejorados
+• Correcciones de estabilidad
+
+v 2.4.2
+
+Corregir los certificados SSL que impiden la creación de nuevas cuentas y el PIN
+
+v 2.4.1
+
+• Integración Bity: Comprar / vender bitcoin con Euros y Francos Suizos
+• Aceleración de contraseñas
+• Ahora los usuarios pueden elegir los nodos bitcoin con los que quieren conectarse
+• Los límites de Pin, Contraseña y Recuperación de la Contraseña son todos compartidos
+• Se agrega la información de contacto para el soporte de Glidera
+• El límite de gastos de contraseña elimina el restablecimiento de contraseña basado en PIN
+• Ajuste de fallo de mutex Android
+
 v.2.4.0
 
 Cambios de protocolo en nuestro login Edge
@@ -7,7 +32,8 @@ Solucionada la exportación a tarjeta SD
 Solucionado error al subir fotos para Glidera
 Soporte para la exportación CSV/QBO no USD
 Soporte de un gran número de carteras. Mejores tiempos de respuesta
-Solucionado problema al enviar por mail una exportación CSV/QBO
+Solucionado problema al enviar por correo electrónico
+una exportación CSV/QBO
 
 v 2.3.3
 
@@ -28,15 +54,15 @@ v 2.3.0
 
 v 2.2.0
 
-Hemos abierto un nuevo camino implementando la primera recuperación de contraseña sin fricción del mundo en la cual usuarios recuperan contraseñas olvidadas con solo 2 preguntas y un email. Nunca se preocupe por olvidar su contraseña otra vez
+Hemos abierto un nuevo camino implementando la primera recuperación de contraseña sin fricción del mundo en la cual usuarios recuperan contraseñas olvidadas con solo 2 preguntas y un correo electrónico. Nunca se preocupe por olvidar su contraseña otra vez
 
 Además:
 
 Integración de Bitrefill plugin lo cual permite a usuarios comprar las mejores mobile top ups desde mas de 600 carriers en 143 países
 Las cuentas archivadas ahora consumen menos recursos por no consultar la red o sincronizar datos de transacción
-notificación de antecedentes de fondos entrante de fondo si la app esta recientemente en segundo plano
-recurrir direcciones publicas por falla BIP70 protocolo de pago de transacciones 
-Mejoras en traducción de idiomas
+• Notificaciones en segundo plano de los fondos entrantes si la aplicación fue puesto en segundo plano recientemente
+• Recurrir direcciones publicas por falla BIP70 protocolo de pago de • transacciones 
+• Mejoras en traducción de idiomas
 Fijar los cuadros de diálogos emergente rotos en Android N
 Arreglar fallo si el usuario anula los permisos de localización
 

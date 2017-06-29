@@ -1,4 +1,4 @@
-crowdin-cli download
+crowdin download
 mkdir Airbitz/airbitz/src/main/res/raw/
 mkdir Airbitz/airbitz/src/main/res/raw-es/
 mkdir Airbitz/airbitz/src/main/res/raw-el/

@@ -3,45 +3,45 @@
 <resources>
   <!--Settings-->
   <string-array name="expense_category_defaults">
-    <item>هواء سفر</item>
-    <item>الحانات &amp; الحانات</item>
-    <item>بدل</item>
-    <item>كل ما يسلي</item>
+    <item>السفر الجوي</item>
+    <item>المشروبات الكحولية</item>
+    <item>سماح</item>
+    <item>تسلية</item>
     <item>فنون</item>
     <item>رسوم الصراف الآلي</item>
     <item>السيارات &amp; المواصلات</item>
-    <item>تأمين تلقائي</item>
-    <item>السيارات الدفع</item>
+    <item>التأمين تلقائي</item>
+    <item>الدفع الاوتوماتيكي</item>
     <item>لوازم الطفل</item>
-    <item>جليسه اطفال &amp; الرعاية النهارية</item>
-    <item>بنك رسوم</item>
+    <item>جليسه الأطفال &amp; الرعاية النهارية</item>
+    <item>رسوم البنك</item>
     <item>فواتير&amp; خدمات</item>
-    <item>كتاب</item>
-    <item>كتب &amp; اللوازم</item>
-    <item>غسيل سيارة</item>
-    <item>السيولة النقدية &amp; ماكينة الصراف الآلي</item>
-    <item>مؤسسة خيرية</item>
-    <item>ملابس</item>
+    <item>كتب</item>
+    <item>الكتب &amp; اللوازم</item>
+    <item>غسل السيارة</item>
+    <item>السيولة النقدية &amp;  الصراف الآلي</item>
+    <item>الاعمال الخيرية</item>
+    <item>الملابس</item>
     <item>محلات القهوة</item>
     <item>رصيد بطاقة دفع</item>
-    <item>طبيبة الاسنان</item>
+    <item>طبيب الاسنان</item>
     <item>الودائع إلى الادخار</item>
     <item>طبيب</item>
     <item>التعليم</item>
     <item>إلكترونيات &amp; البرمجيات</item>
     <item>تسلية</item>
     <item>العناية بالعين</item>
-    <item>الطعام السريع</item>
-    <item>رسوم&amp; رسوم</item>
+    <item>الوجبات السريعة</item>
+    <item>رسوم و &amp;amp ,  أسعار</item>
     <item>مالي</item>
-    <item>مالي المستشار</item>
+    <item>المستشار المالي</item>
     <item>طعام &amp; الطعام</item>
     <item>تأثيث</item>
     <item>غاز &amp; وقود</item>
     <item>هدية</item>
     <item>الهدايا&amp; التبرعات</item>
     <item>البقالة</item>
-    <item>رياضة بدنية</item>
+    <item>نادي رياضي </item>
     <item>قماش من الصوف</item>
     <item>الصحة&amp; اللياقه البدنيه</item>
     <item>القرن الإفريقي استحقاقات</item>
@@ -152,5 +152,6 @@
     <item>رسوم منخفضة</item>
     <item>الرسوم القياسية</item>
     <item>رسوم عالية</item>
+    <item>Custom Fee (advanced)</item>
   </string-array>
 </resources>

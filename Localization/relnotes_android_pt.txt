@@ -1,69 +1,77 @@
+v 2.4.3
+
+• Select default fiat currency during account creation
+• Allow user to set custom mining fees
+• Incorporate fee estimates from 21.co
+• Display dropped transactions
+• Set override servers to defaults if enabled and blank
+• Improved error messages
+• Improved password reminders
+• Stability fixes
+
+v 2.4.2
+
+Fix SSL certificates preventing new account creation and PIN
+
+v 2.4.1
+
+• Bity Integration: Buy/sell bitcoin with Euros and Swiss Francs
+• Password throttling
+• Users can now choose bitcoin nodes they want to connect to
+• Pin, Password, and Password Recovery rate limits are all shared
+• Contact information for Glidera support is added
+• Password spending limit removes PIN based password reset
+• Android mutex crash fix
+
 v.2.4.0
 
-• Protocolo Alterar para eira Entrar
- 
-•Atualizada língua apoio
-
- 
-• Adicionado Liberty-X plugar
-
-•Consertar SD cartão exportar
-•Consertar foto Envio erro para Glidera
-
-
-
- 
-
-• Apoio para não -USD CSV/QBO   exportar
-
-
-• Ampla carteira apoio
-
- Melhor tempo esgotado
-
-
-• Correio eletrônico CSV/QBO exportar batida Conserta
-
- 
+• Mudanças no protocolo do Edge-Login
+•Atualização de idiomas suportados 
+• Plugin Liberty-X adicionado
+• Ajuste da função de Exportar para Cartão SD
+• Ajustes no upload de fotos para o Glidera
+• Suporte para exportar arquivos CSV/QBO que não estejam em USD
+• Suporte para carteira grande. Melhores parâmteros de Timeout
+• Correções ao exportar arquivos CSV/QBO via e-mail
 
 v 2.3.3
 
-** Fingerprint Login em dispositivos suportados como Nexus 5x e 6p **
+** Login via impressão digital em dispositivos suportados como Nexus 5x e 6p **
 
-• Corrigir um problema raro com o login do PIN não funcionando
-• Apoiar o início de sessão de navegação a partir do botão URI no telemóvel
-• Adicionar fórum do WhatsApp a links de suporte
+• Corrige um problema eventual com o login via PIN não funcionando
+• Suporte ao Edge-Login via botão URI no celular
+• Adiciona fórum do WhatsApp a links de suporte
 
 v 2.3.1
 
-• Corrigir o erro ao comprar cartões-presente Fold
+• Corrige o erro ao comprar cartões-presente da Fold
 
 v 2.3.0
 
-• Seleção de servidor Libbitcoin / Electrum melhorada usando servidores de latência mais responsivos e de menor latência. 
+• Seleção de servidor Libbitcoin / Electrum melhorada usando servidores de menor latência e mais responsivos. 
 • Melhorar os cálculos de parâmetro Scrypt para maior segurança em dispositivos mais rápidos
 
 v 2.2.0
 
 Acabamos de abrir novos caminhos implementando a primeira recuperação de senha sem atritos do mundo, que permite aos usuários recuperar senhas esquecidas com apenas duas perguntas e um e-mail. Nunca se preocupe em esquecer sua senha novamente
 
-Além:
+Adicionalmente:
 
-• Integração de plugins Bitrefill que permite aos usuários comprar ups top móveis de mais de 600 operadoras em 143 países
+• Integração de plugins Bitrefill, que permitem que usuários comprem créditos de celular de mais de 600 operadoras em 143 países
 • As contas arquivadas ocupam menos recursos ao não consultar a rede ou sincronizar dados de transação
-• Notificações em segundo plano de fundos recebidos se o aplicativo tiver sido recentemente
-• Endereço público de falha para transações de protocolo de pagamento com falha no BIP70 
+• Notificações em segundo plano de valores recebidos se o aplicativo tiver sido recentemente colocado em segundo plano
+• Endereço público de "fallback" para transações sem sucesso no protocolo de pagamento BIP70 
 • Melhores traduções de idiomas
-• Corrigir caixas de diálogo quebradas no Android N
-• Corrigir falha se o usuário revogar permissões de local
+• Corrigie caixas de diálogo corrompidas no Android N
+• Corrige falha se o usuário revogar permissões locais
 
 
 v 2.1.0
 
-• Adicione Libbitcoin/Electrum ao endereço de assinatura do servidor para desempenho muito melhor e vida útil da bateria maior.
-• Permite o cálculo de taxa dinâmica de extração
-• Adicione controle do usuário das taxas estimadas de extração (Configurações Baixa, Padrão, Alta)
-• Conserte transação incorreta para as vezes quando a transação é recebida enquanto carteira estava offline
-• Adicione suporte de idioma Chinês, Hindi, Espanhol e Português
-• Adicione suporte para localização correta de números, datas e horários
-• Melhore a precisão na detecção de transação em más condições de rede
+• Adiciona assinatura de servidor de endereços Libbitcoin/Electrum para melhor desempenho e maior vida útil da bateria.
+• Permite o cálculo de taxa do minerador dinâmica
+• Adiciona controle do usuário sobre as taxas estimadas de mineração (Configurações Baixa, Padrão, Alta)
+• Conserta prazos de transação incorretos para as vezes que a transação é recebida enquanto carteira estava offline
+• Adiciona suporte de idioma Chinês, Hindi, Espanhol e Português
+• Adiciona suporte para localização correta de números, datas e horários
+• Melhora a precisão na detecção de transação em más condições de rede

@@ -152,5 +152,6 @@
     <item>Cargo bajo</item>
     <item>Cargos estándar</item>
     <item>Cargo alto</item>
+    <item>Tarifa Personalizada (avanzado)</item>
   </string-array>
 </resources>

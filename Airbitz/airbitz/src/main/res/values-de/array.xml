@@ -4,7 +4,7 @@
   <!--Settings-->
   <string-array name="expense_category_defaults">
     <item>Flugreise</item>
-    <item>Alkohol &amp; Bars</item>
+    <item>Bars &amp; Kneipen</item>
     <item>Taschengeld</item>
     <item>Vergnügen</item>
     <item>Kunst</item>
@@ -46,10 +46,10 @@
     <item>Gesundheit &amp; Fitness</item>
     <item>HOA Beiträge</item>
     <item>Hobbys</item>
-    <item>Heim</item>
-    <item>Hausverbesserung</item>
+    <item>Zuhause</item>
+    <item>Heimwerken</item>
     <item>Hausversicherung</item>
-    <item>Haustelefon</item>
+    <item>Festnetztelefon</item>
     <item>Home-Services</item>
     <item>Haus- und Gartenwaren</item>
     <item>Hotel</item>
@@ -152,5 +152,6 @@
     <item>Niedrige Gebühr</item>
     <item>Standardgebühr</item>
     <item>Hohe Gebühr</item>
+    <item>Zollfrei (fortgeschritten)</item>
   </string-array>
 </resources>

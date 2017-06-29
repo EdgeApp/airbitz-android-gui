@@ -152,5 +152,6 @@
     <item>Low Fee</item>
     <item>Standard Fee</item>
     <item>High Fee</item>
+    <item>Custom Fee (advanced)</item>
   </string-array>
 </resources>

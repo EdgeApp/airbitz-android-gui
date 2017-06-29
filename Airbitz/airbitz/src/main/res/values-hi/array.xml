@@ -74,7 +74,7 @@
     <item>निजी देखभाल</item>
     <item>पशु आहार और आपूर्तियाँ</item>
     <item>पालतू पशु देखरेख</item>
-    <item>पालतू पशु</item>
+    <item>पालतू जानवर</item>
     <item>दवाखाना</item>
     <item>संपत्ति</item>
     <item>सार्वजनिक परिवहन</item>
@@ -89,7 +89,7 @@
     <item>खेल</item>
     <item>छात्र ऋण</item>
     <item>कर</item>
-    <item>टेलीविजन</item>
+    <item>दूरदर्शन</item>
     <item>टोल</item>
     <item>खिलौने</item>
     <item>ट्रेड कमीशन</item>
@@ -113,22 +113,22 @@
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
-    <item>Bitfinex</item>
-    <item>Bitstamp</item>
+    <item>बितफ़ीनेक्श</item>
+    <item>बीतसटंप</item>
     <item>BTC-e</item>
-    <item>BTCChina</item>
+    <item>BTCछीना</item>
     <item>Bter</item>
     <item>CAVirtex</item>
-    <item>Coinbase</item>
+    <item>कोइंबसे</item>
     <item>CoinMKT</item>
-    <item>Huobi</item>
-    <item>Kraken</item>
+    <item>हुवबी</item>
+    <item>क्रेकन</item>
     <item>MintPal</item>
     <item>OKCoin</item>
-    <item>Vault of Satoshi</item>
+    <item>सातोशी की वॉल्ट</item>
   </string-array>
   <string-array name="transfer_wallet_category_defaults">
-    <item>Airbitz</item>
+    <item>एयरबिट्ज़</item>
     <item>शस्त्रागार</item>
     <item>बिटकॉइन कोर</item>
     <item>ब्लॉकचेन</item>
@@ -140,7 +140,7 @@
   <string-array name="transaction_categories_list">
     <item>खर्च:</item>
     <item>आय:</item>
-    <item>भेजें:</item>
+    <item>बदली</item>
     <item>विनिमय</item>
   </string-array>
   <string-array name="distance_list">
@@ -152,5 +152,6 @@
     <item>कम शुल्क</item>
     <item>मानक शुल्क</item>
     <item>उच्च शुल्क</item>
+    <item>कस्टम शुल्क (उन्नत)</item>
   </string-array>
 </resources>

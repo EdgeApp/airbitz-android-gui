@@ -6,21 +6,21 @@
   <!-- Generic strings -->
   <string name="string_ok">ОК</string>
   <string name="string_yes">Да</string>
-  <string name="string_bundle">Пакет</string>
+  <string name="string_bundle">Набор</string>
   <string name="string_no">Нет</string>
   <string name="string_continue">Продолжить</string>
   <string name="string_change">Изменить</string>
-  <string name="string_cancel">Отмена</string>
+  <string name="string_cancel">ОТМЕНА</string>
   <string name="string_paste">Вставить</string>
   <string name="string_paste_address">Вставить %1$s</string>
   <string name="string_search">Поиск</string>
-  <string name="string_done">Готово</string>
+  <string name="string_done">ГОТОВО</string>
   <string name="string_rename">Переименовать</string>
   <string name="string_delete">Удалить</string>
   <string name="string_save">Сохранить</string>
   <string name="string_back">Назад</string>
   <string name="string_disable">ОТКЛЮЧИТЬ</string>
-  <string name="string_next">Вперед</string>
+  <string name="string_next">Далее</string>
   <string name="string_skip">Пропустить</string>
   <string name="string_total">Итого:</string>
   <string name="string_finish">Закончить</string>
@@ -44,10 +44,10 @@
   <string name="loading_transactions">Загрузка переводов...</string>
   <!-- Nav Bar strings -->
   <string name="nav_bar_directory_text">Каталог</string>
-  <string name="nav_bar_request_text">Полученные</string>
-  <string name="nav_bar_send_text">Отправленные</string>
-  <string name="nav_bar_wallets_text">Кошельки</string>
-  <string name="nav_bar_more_text">Больше</string>
+  <string name="nav_bar_request_text">ПОЛУЧИТЬ</string>
+  <string name="nav_bar_send_text">ОТПРАВИТЬ</string>
+  <string name="nav_bar_wallets_text">КОШЕЛЬКИ</string>
+  <string name="nav_bar_more_text">БОЛЬШЕ</string>
   <!-- Calculator strings -->
   <string name="calculator_back">&lt; Удалить</string>
   <string name="calculator_done">Готово</string>
@@ -86,7 +86,7 @@
   <string name="fragment_business_near_you">Рядом с вами</string>
   <string name="fragment_take_picture">Изображение или файл</string>
   <string name="keep">Сохранить</string>
-  <string name="discard">Не сохранять</string>
+  <string name="discard">Отменить</string>
   <!-- Strings for DirectoryDetail -->
   <string name="fragment_directory_detail_getting_venue_data">Получение данных о местоположении&#8230;</string>
   <string name="fragment_directory_detail_timeout_retrieving_data">Время на получение данных истекло&#8230;</string>
@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Недостаточно средств</string>
   <string name="server_error_synchronizing">Синхронизация с сетью.</string>
   <string name="server_error_non_numeric_pin">PIN должен содержать только цифры.</string>
-  <string name="server_error_bad_pin">Неверный PIN</string>
+  <string name="server_error_bad_pin_password">Неверный PIN, пароль или ответы для восстановления аккаунта</string>
   <string name="server_error_bad_pin_login">Неверный PIN. Пожалуйста, войдите в свою учетную запись.</string>
   <string name="server_error_pin_expired">PIN просрочен. Пожалуйста, войдите в учетную запись.</string>
-  <string name="server_error_invalid_pin_wait">Слишком много попыток входа. Попробуйте ваш через %1$s секунд.</string>
+  <string name="server_error_invalid_pin_wait">Слишком много неудачных попыток входа. Попробуйте снова через %1$s секунд.</string>
   <string name="server_error_other">Произошла ошибка.</string>
+  <string name="server_error_other_formatted">Произошла ошибка: %d</string>
   <string name="insufficient_amount">Сумма слишком мала</string>
+  <string name="sys_error_string">Проблемы с подключением к сети. Проверьте свое соединение.</string>
   <string name="account_needs_password_title">ВНИМАНИЕ: пароль отсутствует</string>
   <string name="account_needs_password_message">Учетная запись [%1$s] требует пароль. Вы не сможете войти в свою учетную запись на другом устройстве без пароля.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Зарегистрироваться</string>
   <string name="activity_navigation_signin_failed">Ошибка входа</string>
+  <string name="activity_navigation_signin_failed_network">Произошла ошибка. Возможно это ошибка подключения к сети, либо неверный логин или пароль.</string>
+  <string name="activity_navigation_signin_failed_pin_network">Произошла ошибка. Проверьте свое подключение к сети. Если вы офлайн, вы также можете выйти из экрана входа через PIN и войти с помощью логина и пароля.</string>
   <string name="activity_navigation_signin_failed_unexpected">Неожиданная ошибка входа</string>
   <string name="activity_signup_failed">Ошибка регистрации</string>
   <string name="activity_change_password_failed">Смена пароля не удалась</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">Задайте 4хзначный PIN</string>
   <string name="fragment_setup_pin_text">Ваш PIN - это четырехзначный код, используемый для быстрого входа в Вашу учетную запись.</string>
   <string name="fragment_setup_writeitdown_title">Запишите это!</string>
-  <string name="fragment_setup_writeitdown_text">Ваши имя пользователя, пароль и PIN-код известны только Вам и никогда не передаются и нигде не хранятся в незашифрованном виде.</string>
+  <string name="fragment_setup_writeitdown_text">Логин и пароль будут известны только вам и не могут быть восстановлены, если вы их забудете. Вы ПОТЕРЯЕТЕ доступ к своим средствам, если забудете пароль.</string>
   <string name="fragment_setup_writeitdown_text_warning">Запишите их и храните в надежном месте.</string>
   <string name="fragment_setup_writeitdown_username_title">Имя пользователя</string>
   <string name="fragment_setup_writeitdown_password_title">Пароль</string>
@@ -210,9 +214,9 @@
   <string name="fragment_setup_writeitdown_show">Показать</string>
   <string name="fragment_setup_writeitdown_hide">Скрыть</string>
   <string name="fragment_setup_camera_title">Разрешить доступ к камере</string>
-  <string name="fragment_setup_camera_text">Вы увидите следующий всплывающее окно с запросом на доступ к вашей камере\n\n[[abtag APP_TITLE]]это нужно для сканирования QR-коды, чтобы платить людям и торговцам.</string>
-  <string name="fragment_setup_contacts_title">Включить Контакты Доступ</string>
-  <string name="fragment_setup_contacts_text">Вы увидите следующий всплывающее запроса на доступ к вашим контактам.\n\n[[abtag APP_TITLE]]это нужно для отправки запросов об оплате и помочь пометить ваши транзакции.</string>
+  <string name="fragment_setup_camera_text">Далее Вы увидите всплывающее окно с запросом на получение доступа к вашей камере.\n\n[[abtag APP_TITLE]] нужен этот доступ для сканирования QR-кодов и осуществления платежей физическим и юридическим лицам.</string>
+  <string name="fragment_setup_contacts_title">Разрешить доступ к списку контактов</string>
+  <string name="fragment_setup_contacts_text">Далее Вы увидите всплывающее окно с запросом на получение доступа к вашим контактом.\n\n[[abtag APP_TITLE]] нужен этот доступ для отправки запросов об оплате и помощи в сортировки ваших переводов.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Настройка восстановления пароля</string>
   <string name="activity_recovery_title">Восстановление пароля</string>
@@ -234,9 +238,9 @@
   <string name="activity_recovery_error_wrong_answers_title">Неверные ответы</string>
   <string name="activity_recovery_error_wrong_answers_message">Вы дали неправильные ответы на вопросы. Пожалуйста, попробуйте снова</string>
   <string name="activity_recovery_warning_dirty_change_title">Неверные ответы</string>
-  <string name="activity_recovery_warning_dirty_change_message">Внимание: Вы хотите выйти из секции восстановления пароля, не установив вопросы и ответы. Продолжить все равно?</string>
+  <string name="activity_recovery_warning_dirty_change_message">Внимание: Вы хотите выйти из секции восстановления пароля, не установив вопросы и ответы. Все равно продолжить?</string>
   <string name="activity_recovery_warning_dirty_forgot_title">Восстановление пароля</string>
-  <string name="activity_recovery_warning_dirty_forgot_message">Внимание: Если Вы выйдете из секции восстановления пароля сейчас, то все несохраненные данные будут утеряны. Продолжить все равно?</string>
+  <string name="activity_recovery_warning_dirty_forgot_message">Внимание: Если Вы выйдете из секции восстановления пароля сейчас, то все несохраненные данные будут утеряны. Все равно продолжить?</string>
   <string name="fragment_recovery_mismatch_title">Пароли не совпадают</string>
   <string name="fragment_recovery_mismatch_message">Пожалуйста, введите верный пароль.</string>
   <string name="fragment_recovery_answer_case_sensitive">Ответы чувствительны к регистру</string>
@@ -246,17 +250,17 @@
   <string name="settings_title">Настройки</string>
   <string name="settings_denomination_title">НОМИНАЛ БИТКОЙНОВ</string>
   <string name="settings_denomination_buttons_bitcoin">Биткойн</string>
-  <string name="settings_denomination_buttons_mbitcoin">мбиткойн = (0,001 биткойн)</string>
-  <string name="settings_denomination_buttons_ubitcoin">бит = (0,000001 биткойн)</string>
-  <string name="settings_account_title">Учетная запись</string>
-  <string name="settings_options_title">Опции</string>
+  <string name="settings_denomination_buttons_mbitcoin">мБиткоин = (0,001 биткоин)</string>
+  <string name="settings_denomination_buttons_ubitcoin">бит = (0,000001 биткоин)</string>
+  <string name="settings_account_title">УЧЕТНАЯ ЗАПИСЬ</string>
+  <string name="settings_options_title">ОПЦИИ</string>
   <string name="settings_button_change_categories">Изменить категории</string>
-  <string name="settings_button_change_spending_limits">Пределы трат</string>
+  <string name="settings_button_change_spending_limits">Лимит средств</string>
   <string name="settings_button_two_factor_authentication">2хфакторная аутентификация (усиленная защита)</string>
   <string name="settings_button_change_password">Сменить пароль</string>
   <string name="settings_button_pin">Сменить PIN</string>
   <string name="settings_button_recovery">Изменить вопросы для восстановления</string>
-  <string name="settings_user_title">Имя</string>
+  <string name="settings_user_title">ИМЯ</string>
   <string name="settings_button_send_user_info">Имя для заполнения запросов на платеж</string>
   <string name="settings_edit_first_name">Имя (необязательно)</string>
   <string name="settings_edit_last_name">Фамилия (необязательно)</string>
@@ -264,7 +268,7 @@
   <string name="settings_title_auto_logoff">Автоматический выход по завершении</string>
   <string name="settings_title_merchant_mode">Режим магазина</string>
   <string name="settings_title_pin_login">Вход с использованием PIN</string>
-  <string name="settings_title_fingerprint_login">Использование отпечатков пальцев Войти</string>
+  <string name="settings_title_fingerprint_login">Используйте отпечаток пальца для Входа</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (только отправление)</string>
@@ -285,15 +289,20 @@
   <string name="settings_minutes">Минута(ы)</string>
   <string name="settings_seconds">Секунда(ы)</string>
   <string name="settings_nfc_turn_on_title">Активировать NFC</string>
-  <string name="settings_nfc_turn_on_message">NFC используется для активации \"оплаты в одно качание\" там, где она поддерживается. Хотите включить его сейчас?</string>
+  <string name="settings_nfc_turn_on_message">NFC используется для активации \"оплаты в одно касание\" там, где она поддерживается. Хотите включить его сейчас?</string>
   <string name="settings_ble_turn_on_title">Активировать Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth используется для бесконтактных платежей без сканирования QR-кодов. Хотите включить его сейчас?</string>
   <string name="settings_currency_change_note_popup">Примечание: Настройка валюты по умолчанию используется только для новых кошельков и отображения полного баланса Вашей учетной записи. Создайте новый кошелек, чтобы изменить отображающуюся в переводах валюту.</string>
+  <string name="settings_override_server_title">Переопределить биткоин серверы (расширенная настройка)</string>
+  <string name="settings_override_server_button">Включить переопределение</string>
+  <string name="settings_override_server_list">Введите список серверов</string>
+  <string name="settings_override_servers_help">Предупреждение, это расширенная настройка и она может привести к сбоям в работе вашего кошелька. Пожалуйста перезапустите приложения для того что бы настройки вступили в силу.</string>
   <!-- Strings for Spending Limits -->
-  <string name="fragment_spending_limits_title">Пределы трат</string>
+  <string name="fragment_spending_limits_title">Лимит средств</string>
+  <string name="fragment_spending_limits_warning">** Предупреждение **\n\nУстановка пароля на лимит средств может помешать получить доступ к вашим средствам если вы забудите Ваш пароль. Пожалуйста убедитесь, что вы установили восстановление пароля</string>
   <string name="fragment_spending_limits_save">Сохранить</string>
-  <string name="fragment_spending_limits_daily_title">Дневной лимит трат</string>
-  <string name="fragment_spending_limits_pin_title">Требуется ввести PIN для трат сверх</string>
+  <string name="fragment_spending_limits_daily_title">Дневной лимит средств</string>
+  <string name="fragment_spending_limits_pin_title">Требуется ввести PIN для траты сверх суммы</string>
   <string name="fragment_spending_limits_denomination">m฿</string>
   <string name="fragment_spending_limits_hint_text">0</string>
   <string name="fragment_spending_limits_incorrect_password">Неверный пароль</string>
@@ -357,6 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">Сумма слишком мала.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Пожалуйста, отправьте не менее %1$s (≈%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Ошибка подключения к платежной системе. Осуществите перевод непосредственно на биткойн-адрес\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Инпуты в кошельке слишком маленькие (\"пыль\"). Невозможно потратить все средства. См. airbitz.co/dust.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Кошельки</string>
   <string name="fragment_wallets_add_wallet">Добавить кошелёк</string>
@@ -368,7 +378,7 @@
   <string name="fragment_wallets_delete_wallet_second_confirm_message">Вы уверены? Вы не сможете получить доступ к средствам в этом кошельке или каким-либо средствам, которые могут быть на него переведены в будущем.</string>
   <string name="fragment_wallets_wallet_delete">Кошелек удален</string>
   <string name="fragment_wallets_rename_wallet">Переименовать кошелек</string>
-  <string name="fragment_wallets_list_wallets_title">Кошельки</string>
+  <string name="fragment_wallets_list_wallets_title">КОШЕЛЬКИ</string>
   <string name="fragment_wallets_list_archive_title">АРХИВ</string>
   <string name="fragment_wallets_balance_text">Общий баланс</string>
   <string name="fragment_wallets_addwallet_name_hint">Введите название своего нового кошелька</string>
@@ -382,16 +392,17 @@
   <string name="fragment_wallet_title">Переводы</string>
   <string name="fragment_wallet_export_button_description">Кнопка для экспорта кошелька</string>
   <string name="fragment_wallet_unconfirmed">Ожидающие</string>
+  <string name="fragment_wallet_transaction_dropped">Транзакция отменена</string>
   <string name="fragment_wallet_confirmed">Подтвержденные</string>
   <string name="fragment_wallet_confirmations">" подтверждения"</string>
   <string name="fragment_wallet_confirmation">" подтверждение"</string>
   <string name="fragment_wallet_request_button">ЗАПРОС</string>
-  <string name="fragment_wallet_send_button">Отправленные</string>
+  <string name="fragment_wallet_send_button">ОТПРАВИТЬ</string>
   <string name="fragment_wallets_wallet_name_required">Имя обязательно</string>
   <string name="fragment_wallets_received_bitcoin">Полученные биткойны</string>
   <string name="fragment_wallets_sent_bitcoin">Отправленные биткойны</string>
-  <string name="fragment_transaction_list_rbf">Внимание: Обнаружена смена комиссии. Возможно двойное начисление</string>
-  <string name="fragment_transaction_list_double_spend">Внимание: Двойное начисление</string>
+  <string name="fragment_transaction_list_rbf">Внимание: Обнаружена смена комиссии. Возможна двойная трата</string>
+  <string name="fragment_transaction_list_double_spend">Внимание: Двойная трата</string>
   <!-- Strings for Request fragment -->
   <string name="address_request_title">Запрос адреса</string>
   <string name="address_request_message">%1$s запрашивает биткойн-адрес для перевода средств. Пожалуйста, выберите кошелек для получения перевода.</string>
@@ -404,7 +415,7 @@
   <string name="request_wallet_title">Кошелек:</string>
   <string name="request_button_import">ИМПОРТ</string>
   <string name="request_amount_hint">Сумма (необязательно)</string>
-  <string name="request_next">Вперед</string>
+  <string name="request_next">Далее</string>
   <string name="request_invalid_amount">Неверная сумма</string>
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">Запрос биткойнов %1$s</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"От: "</string>
   <string name="transaction_details_payee_hint">Введите получателя платежа</string>
   <string name="transaction_details_recovery_reminder_title">Напоминание о восстановлении пароля</string>
-  <string name="transaction_details_recovery_reminder_message">"Вы получили биткойны! Мы настоятельно рекомендуем Вам задать пароль и вопросы с ответами для его восстановления. В противном случае Вы не сможете зайти в свою учетную запись в случае утери пароля."</string>
+  <string name="transaction_details_recovery_reminder_message">"Настоятельно рекомендуем установить вопросы и ответы для восстановления пароля. Вы не сможете получить доступ к своему аккаунту если забудете пароль и не сможете его восстановить."</string>
   <string name="transaction_details_advanced_txid">"Идентификатор перевода"</string>
   <string name="transaction_details_advanced_total_sent">"Всего отправлено"</string>
   <string name="transaction_details_advanced_source">"Источник"</string>
@@ -468,7 +479,7 @@
   <string name="export_quickbooks_title">Quickbooks</string>
   <string name="export_pdf_title">PDF</string>
   <string name="export_print_title">Приватный сид кошелька (дополнительно)</string>
-  <string name="export_xpub">Публичные сиды кошелька (XPub)</string>
+  <string name="export_xpub">Публичный сид кошелька (XPub)</string>
   <!-- Strings for Export Saving fragment -->
   <string name="export_saving_title">Экспорт</string>
   <string name="export_saving_wallet_label">Кошелек:</string>
@@ -509,7 +520,7 @@
   <string name="fragment_debug_clear_watcher_button">Очистить кэш</string>
   <string name="fragment_debug_upload_log_files_button">Загрузить файлы журнала</string>
   <!-- Strings for MapBusinessDirectory fragment -->
-  <string name="fragment_map_directory_unable_create_map">Извините! Не удалось создать какрты, проверьте на наличие обновлений в Google Play</string>
+  <string name="fragment_map_directory_unable_create_map">Извините! Не удалось создать карты, проверьте на наличие обновлений в Google Play</string>
   <!-- Strings for BluetoothListView -->
   <string name="bluetoothlistview_connection_failed">Не удалось соединение по Bluetooth. Пожалуйста, попробуйте снова.</string>
   <string name="bluetoothlistview_discovery_failed">Не удалось обнаружить службу Bluetooth. Пожалуйста, попробуйте снова.</string>
@@ -536,9 +547,9 @@
   <string name="user_review_support_subject">Отзыв %1$s</string>
   <string name="user_review_support_title">Выберите электронную почту</string>
   <!-- Two Factor screens -->
-  <string name="fragment_twofactor_show_title">Два фактора</string>
-  <string name="fragment_twofactor_menu_title">Два фактора</string>
-  <string name="fragment_twofactor_scan_title">Сканировать два фактора</string>
+  <string name="fragment_twofactor_show_title">Двухфакторная аутентификация</string>
+  <string name="fragment_twofactor_menu_title">Двухфакторная аутентификация</string>
+  <string name="fragment_twofactor_scan_title">Сканировать двухфакторную аутентификацию</string>
   <string name="fragment_twofactor_show_enabled">Включено</string>
   <string name="fragment_twofactor_show_disabled">Отключено</string>
   <string name="fragment_twofactor_show_disable_twofa">ОТКЛЮЧИТЬ 2FA</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">Если Вы потеряете свое устройство или удалите приложение %1$s, то потребуется 7 дней на отключение 2FA и доступа к Вашей учетной записи.</string>
   <string name="twofactor_reset_message">Запрошен сброс двухфакторной аутентификации. Пожалуйста, войдите как %1$s и подтвердите или отмените запрос сброса.</string>
   <string name="twofactor_reset_title">Запрос сброса двухфакторной аутентификации</string>
+  <string name="recovery_answers_corrupt">Ваши ответы для восстановления аккаунта повреждены. Вы не сможете восстановить ваш аккаунт если забудете пароль. Пожалуйста зайдите как %1$s и переустановите восстановление пароля. Подробности можно узнать в нашем блоге на airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Ответы для восстановления аккаунта Повреждены!</string>
   <string name="receiver_alert_title">Уведомление %1$s</string>
   <!-- Other -->
   <string name="remote_password_change_title">Пароль изменен удаленно</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Неверный пароль.</string>
   <string name="password_check_incorrect_password_message">Неверный пароль. Попробуете снова?</string>
-  <string name="password_check_skip">Пожалуйста, создайте новую учетную запись и переведите туда Ваши средства, если Вы забыли пароль.</string>
+  <string name="password_check_skip_formatted">Создайте новый аккаунт и переводите туда средства если вы забыли пароль. Пароль НЕЛЬЗЯ ВОССТАНОВИТЬ и вы потеряете доступ к вашим средствам если потеряете пароль.</string>
   <string name="password_check_remember_title">Запомнит Ваш пароль?</string>
   <string name="password_check_remember_message">Вы помните Ваш пароль? Он понадобится Вам, если Выше устройство потеряется или будет украдено, а также, если Вы удалите приложение.\nВведите его ниже для проверки:</string>
   <string name="password_check_check_my_password">Проверить МОЙ пароль</string>
@@ -608,11 +621,11 @@
   <string name="upload_log_alert_succeeded">Загрузка завершена</string>
   <string name="upload_log_alert_failed">Сбой загрузки. Пожалуйста, проверьте свое сетевое подключение.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Войти в системупользователь: %1s</string>
-  <string name="fingerprint_confirm_to_continue">Подтвердите отпечатки пальцев, чтобы продолжить</string>
-  <string name="fingerprint_hint">трогатьдатчик</string>
-  <string name="fingerprint_not_recognized">Отпечаток пальца не распознается.</string>
-  <string name="fingerprint_success">снимать отпечатки пальцев признанный</string>
+  <string name="fingerprint_signin">Войти как пользователь %1$s</string>
+  <string name="fingerprint_confirm_to_continue">Подтвердите отпечаток пальца, чтобы продолжить</string>
+  <string name="fingerprint_hint">Приложите палец к сенсору</string>
+  <string name="fingerprint_not_recognized">Отпечаток пальца не распознан. Попробуйте снова.</string>
+  <string name="fingerprint_success">Отпечаток пальца распознан</string>
   <string name="initializing_dotdot_text">Инициализация ...</string>
   <!-- Password Set -->
   <string name="password_set_title">Пароль не установлен</string>
@@ -646,7 +659,7 @@
   <string name="affiliate_category">Доход по партнерской программе</string>
   <string name="affiliate_notes">Доход с партнерской ссылки %s</string>
   <string name="affiliate_link_error">Не удалось сгенерировать ссылку для партнерской программы.</string>
-  <string name="affiliate_link_share_text">Скачайте кошелек Airbitz и экономьте деньги, используя биткойны</string>
+  <string name="affiliate_link_share_text">Скачайте кошелек Airbitz и экономьте деньги, используя биткоины</string>
   <string name="app_support_requested">Запросить поддержку</string>
   <string name="app_name">Airbitz</string>
   <string name="app_url_prefix">airbitz</string>
@@ -663,7 +676,7 @@
   <string name="company_location">Сан-Диего, Калифорния, США</string>
   <string name="request_footer">Отправлено из мобильного биткойн-кошелька и делового каталога Airbitz</string>
   <string name="request_footer_link">https://airbitz.co/app</string>
-  <string name="request_footer_link_title">Загрузите Airbitz для iOS или Android</string>
+  <string name="request_footer_link_title">Скачайте Airbitz для iOS или Android</string>
   <string name="request_footer_contact">mailto:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
   <!-- Plugin text -->
   <string name="plugin_starbucks_discount">(скидка до 20%)</string>
@@ -672,9 +685,11 @@
   <string name="plugin_walmart_discount">(скидка до 10%)</string>
   <string name="plugin_homedepot_discount">(скидка до 15%)</string>
   <string name="plugin_glidera_title">Купить/продать через банковский счет (США)</string>
+  <string name="plugin_bity_title">Купить/Продать через банковский счёт (Европа)</string>
+  <string name="plugin_libertyx_title">Купить за Наличные (США)</string>
   <string name="plugin_clevercoin_title">Европа (EUR)</string>
-  <string name="plugin_popup_notice">Данная услуга не поддерживается %1$s.\n\nПожалуйста, свяжитесь с уполномоченными представителями предоставляющего услугу сервиса, если у Вас есть вопросы.</string>
-  <string name="plugin_bitrefill_title">Предоплаченные SIM-карты</string>
+  <string name="plugin_popup_notice">Данная услуга не поддерживается %1$s.\n\n Если у вас возникли проблемы или вопросы, пожалуйста, свяжитесь с уполномоченными представителями предоставляющими данную услугу.</string>
+  <string name="plugin_bitrefill_title">Пополнить баланс предоплаченной SIM-карты</string>
   <string name="intent_choose_an_email">Выберите почтовый клиент:</string>
   <string name="plugin_filechooser_title">Загрузить файл</string>
   <string name="plugin_filechooser_use_camera">Использовать камеру</string>
@@ -691,6 +706,8 @@
   <string name="transaction_footer_bitrefill">Купить мобильный телефон с предоплаченным балансом</string>
   <string name="change_mining_fee_title">Изменить комиссию</string>
   <string name="change_mining_fee_body">Внимание: низкая комиссия может привести к длительным задержкам в подтверждениях переводов</string>
+  <string name="change_mining_fee_custom_title">Установить свою комиссию для майнеров вручную</string>
+  <string name="change_mining_fee_custom_hint">Ручная комиссия в сатоши за байт</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Сохранить токен восстановления</string>
   <string name="save_recovery_token_popup_message">Для завершения настройки восстановления пароля Вы ДОЛЖНЫ сохранить токен восстановления. Он потребуется Вам для восстановления контроля над Вашей учетной записью вместе с именем пользователя и ответами на вопросы для восстановления. Пожалуйста, введите адрес Вашей электронной почты для отправки токена восстановления.</string>
@@ -705,7 +722,7 @@
   <string name="recovery_successful">Восстановление прошло успешно\n\nПожалуйста, смените свои пароль и PIN-код</string>
   <string name="invalid_email">Некорректный Email</string>
   <string name="disable_recovery_popup_title">Отключить восстановление?</string>
-  <string name="disable_recovery_popup_message">Восстановления пароля для этой учетной записи уже настроен. Хотите отключить его?</string>
+  <string name="disable_recovery_popup_message">Восстановление пароля для этой учетной записи уже настроено. Хотите отключить его?</string>
   <string name="error_disabling_recovery">Ошибка при отключении восстановления</string>
   <string name="recovery_disabled">Восстановление отключено</string>
   <string name="in"></string>
@@ -720,7 +737,7 @@
   <string name="successfully_logged_in">Вход прошел успешно</string>
   <string name="approve_button_text">Подтвердить</string>
   <string name="accept_button_text">Принять</string>
-  <string name="login_button_text">Вход</string>
+  <string name="login_button_text">ВХОД</string>
   <string name="back_button_text">Назад</string>
   <string name="verify_domain_and_approve">Пожалуйста, проверьте домен вверху и нажмите ВХОД для авторизации на этом сайте</string>
   <string name="would_like_to">Этот сайт желает:</string>
@@ -732,23 +749,17 @@
   <string name="permission_needs_access_to_camera">%1$s необходим доступ к камере для сканирования QR-кодов и захвата документов
 
 </string>
-  <string name="permission_camera_permission_denied">камера доступ запрещен. Вы не сможете сканировать QR-коды.Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
-  <string name="permission_camera_permission_denied_not_be_asked">камера доступ запрещен.Вы не будете снова спросил</string>
-  <string name="permission_needs_access_to_contacts">%1$s необходим доступ к вашим контактам, чтобы помочь тегов операции с информацией получателя платежа
- 
-
-</string>
-  <string name="permission_contacts_permission_denied">контакты доступ запрещен. Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
-  <string name="permission_contacts_permission_denied_not_be_asked">контакты доступ запрещен.Вы не будете снова спросил</string>
-  <string name="permission_needs_access_to_location">%1$s необходим доступ к вашему местоположению, чтобы найти бизнес в вашем регионе
- 
-
-</string>
-  <string name="permission_location_permission_denied">Место нахождения разрешение отказано.Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
-  <string name="permission_location_permission_denied_not_be_asked">Место нахождения разрешение отказано.Вы не будете снова спросил</string>
-  <string name="permission_needs_access_to_storage">%1$sтребуется доступ к памяти устройства для отправки QR-коды  для платежных требований и захватить документы</string>
-  <string name="permission_storage_permission_denied">Место хранения разрешение отказано.Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
-  <string name="permission_storage_permission_denied_not_be_asked">Место хранения разрешение отказано. Вы не будете снова спросил</string>
+  <string name="permission_camera_permission_denied">В разрешении на доступ к камере отказано. Вы не сможете сканировать QR-коды. Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
+  <string name="permission_camera_permission_denied_not_be_asked">В разрешении на доступ к камере отказано. Вас больше не побеспокоят по данному вопросу</string>
+  <string name="permission_needs_access_to_contacts">%1$s необходим доступ к вашим контактам, чтобы помочь связать перевод с информацией о получателе платежа</string>
+  <string name="permission_contacts_permission_denied">В разрешении на доступ к контактам отказано. Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
+  <string name="permission_contacts_permission_denied_not_be_asked">В разрешении на доступ к контактам отказано. Вас больше не побеспокоят по данному вопросу</string>
+  <string name="permission_needs_access_to_location">%1$s необходим доступ к вашему местоположению, чтобы найти организации в вашем районе</string>
+  <string name="permission_location_permission_denied">В разрешении на доступ к местоположению отказано. Пожалуйста, включите доступ в настройках телефона -&gt; Приложения</string>
+  <string name="permission_location_permission_denied_not_be_asked">В разрешении на доступ к местоположению отказано. Вас больше не побеспокоют по данному вопросу</string>
+  <string name="permission_needs_access_to_storage">%1$sтребуется доступ к памяти устройства для отправки QR-коды для платежных требований и захвата документов</string>
+  <string name="permission_storage_permission_denied">В разрешении на доступ к памяти устройства отказано. Пожалуйста, включите доступ в настройках телефона-&gt; Приложения</string>
+  <string name="permission_storage_permission_denied_not_be_asked">В разрешении на доступ к памяти устройства отказано. Вас больше не побеспокоят по данному вопросу</string>
   <string name="request_your_identity_token">Запрос идентификационного токена. Выберите один из списка ниже</string>
   <string name="request_your_identity_token_but_none">У Вас был запрошен идентификационный токен, которого Вы не имеете</string>
   <string name="bitid_login_message">%1$s</string>

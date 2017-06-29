@@ -1,3 +1,28 @@
+v 2.4.3
+
+Wähle vorgegebene fiat Währung während der Erstellung eines Accounts
+Erlaube dem Benutzer Transaktionsgebühren zu erstellen
+Die enthaltene Gebühr beträgt ca ab 21.co
+Die Anzeige hat die Transaktion beendet
+Setze die übergeordneten Server zurück zur Ausgangsposition wenn ermöglicht und unbeschrieben
+Verbesserte Fehlermeldungen
+Verbesserte Passwort Erinnerung
+Stabilitätsverbesserungen
+
+v 2.4.2
+
+Repariere SSL Zertifikate um die Erstellung eines neuen Accounts und PIN zu verhindern
+
+v 2.4.1
+
+Bity Integration: Kaufe/Verkaufe Bitcoins mit Euro oder Schweizer Franken
+Passwort drosseln
+Benutzer können jetzt Bitcoin Knoten auswählen, mit denen sie sich verbinden möchten
+Alle Pin, Passwort und Passwortwiederherstellungs Raten limits sind aufgeteilt
+Kontaktinformationen für Glidera Unterstützung wurden hinzugefügt
+Das Passwort Ausgabelimit hebt die PIN gesteuerte Passwortzurücksetzung auf
+Android Mutex crash Reparatur
+
 v.2.4.0
 
 • Protokoll Änderungen nach Rand Anmeldung
@@ -6,20 +31,10 @@ v.2.4.0
 • Aktualisierte Sprachunterstützung 
 •Hinzugefügt Liberty-X Plug-in
 
-•Fixieren SD Karte export
-•Fixieren Foto hochladen Fehler zum Glidera
- 
-
-
-•Unterstützung zum nicht- USD CSV/QBO export
-
-
- 
-
-
-• Groß Brieftasche Unterstützung.
-
- Besser Auszeit
+•SD Karten export reparieren
+•Repariere Fehler beim Hochladen der Fotos für Gildera
+•Unterstützung für nicht- USD CSV/QBO export
+• Groß - Wallet Unterstützung. Besser Auszeit
 • Email CSV/QBO export Absturz Beheben
 
 
@@ -37,7 +52,7 @@ v 2.3.1
 
 v 2.3.0
 
-• Verbesserte Libbitcoin/Electrum Server-Auswahl mittels der Verwendung von Servern die besonders reaktionsschnell sind und kurze Wartezeiten haben. 
+• Verbesserte Libbitcoin/Electrum Server-Auswahl mittels der Verwendung von Servern, die besonders reaktionsschnell sind und kurze Wartezeiten haben. 
 • Verbessete Scrypt-Parameter-Berechnung für eine höhere Sicherheit auf schnelleren Geräten
 
 v 2.2.0
