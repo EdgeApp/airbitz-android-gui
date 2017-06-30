@@ -118,12 +118,16 @@
   <string name="server_error_insufficient_funds">Fondi insufficienti</string>
   <string name="server_error_synchronizing">Sincronizzazione con la rete.</string>
   <string name="server_error_non_numeric_pin">PIN deve essere un valore numerico.</string>
-  <string name="server_error_bad_pin">PIN non valido</string>
+  <string name="server_error_bad_pin_password">PIN non valido,Parola d\'ordine, o Recupero Risposte
+
+</string>
   <string name="server_error_bad_pin_login">PIN non valido. Accedete, per favore.</string>
   <string name="server_error_pin_expired">PIN è scaduto. Accedete, per favore.</string>
   <string name="server_error_invalid_pin_wait">Troppi tentativi di accesso non riusciti. Riprova tra %1$s secondi.</string>
   <string name="server_error_other">Avvenuto un errore.</string>
+  <string name="server_error_other_formatted">An error has occurred: %d</string>
   <string name="insufficient_amount">Importo troppo piccolo</string>
+  <string name="sys_error_string">Trouble accessing network. Please check network connection</string>
   <string name="account_needs_password_title">ATTENZIONE: manca la password</string>
   <string name="account_needs_password_message">Ccount [%1$s] ha bisogno di una password. Account non è accessibile su un nuovo dispositivo senza una password.</string>
   <!-- Strings related to Landing -->
@@ -149,6 +153,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Registrazione</string>
   <string name="activity_navigation_signin_failed">Accesso non riuscito</string>
+  <string name="activity_navigation_signin_failed_network">An error occurred. Possible network connection issue or incorrect username and password</string>
+  <string name="activity_navigation_signin_failed_pin_network">An error occurred. Please check your network connection. You may also exit PIN login and use your username and password to login offline</string>
   <string name="activity_navigation_signin_failed_unexpected">Accesso non riuscito inaspettatamente</string>
   <string name="activity_signup_failed">Accesso fallito</string>
   <string name="activity_change_password_failed">Cambiamento password non riuscito</string>
@@ -210,7 +216,7 @@
   <string name="fragment_setup_pin_title">Impostare un PIN a 4 cifre</string>
   <string name="fragment_setup_pin_text">Il PIN è un codice a 4 cifre utilizzato per fare rapido ri-login sul tuo conto.</string>
   <string name="fragment_setup_writeitdown_title">Scrivilo giù!</string>
-  <string name="fragment_setup_writeitdown_text">Il nome utente, la password e il pin sono noti solo a voi e mai trasmessi o memorizzati in chiaro.</string>
+  <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
   <string name="fragment_setup_writeitdown_text_warning">Annotare e archiviare in modo sicuro.</string>
   <string name="fragment_setup_writeitdown_username_title">Nome utente</string>
   <string name="fragment_setup_writeitdown_password_title">Password</string>
@@ -299,8 +305,15 @@
   <string name="settings_ble_turn_on_title">Attivare Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth viene utilizzato per consentire i pagamenti in modalità wireless senza la necessità di eseguire la scansione di un codice QR. Vuoi per accenderlo ora?</string>
   <string name="settings_currency_change_note_popup">Nota: L\'impostazione predefinita valuta viene utilizzata solo per i nuovi portafogli e per mostrare numero totale di conto. Creare un nuovo portafoglio di cambiare la moneta a corso forzoso mostrato in ogni transazione.</string>
+  <string name="settings_override_server_title">Sostituire Bitcoin Server (Avanzate)
+</string>
+  <string name="settings_override_server_button">Abilitare Sostituire
+</string>
+  <string name="settings_override_server_list">Inserisci l\'Elenco Server</string>
+  <string name="settings_override_servers_help">Avvertimento, Questa è un\'impostazione avanzata e può causare il malfunzionamento del portafoglio.Riavvia l\'applicazione per le impostazioni per avere effetto.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Limiti di spesa</string>
+  <string name="fragment_spending_limits_warning">**Avvertimento** \n\n Impostare una password Limite di spesa Potrebbe impedirti di accedere ai fondi</string>
   <string name="fragment_spending_limits_save">Salvare</string>
   <string name="fragment_spending_limits_daily_title">Limite di spesa giornaliera</string>
   <string name="fragment_spending_limits_pin_title">Richiedi PIN sopra importo</string>
@@ -368,6 +381,7 @@
   <string name="fragment_send_confirmation_dust_alert">Importo è troppo piccolo.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Si prega di inviare almeno %1$s (~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Errore di connessione al sistema di pagamento. Invia direttamente a Bitcoin indirizzo\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Portafogli</string>
   <string name="fragment_wallets_add_wallet">Aggiungere Portafoglio</string>
@@ -393,6 +407,7 @@
   <string name="fragment_wallet_title">Le transazioni</string>
   <string name="fragment_wallet_export_button_description">Pulsante per esportare un portafoglio</string>
   <string name="fragment_wallet_unconfirmed">In sospeso</string>
+  <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
   <string name="fragment_wallet_confirmed">Confermato</string>
   <string name="fragment_wallet_confirmations">" conferme"</string>
   <string name="fragment_wallet_confirmation">" conferma"</string>
@@ -457,7 +472,7 @@
   <string name="transaction_details_from">"Da parte di: "</string>
   <string name="transaction_details_payee_hint">Inserisci beneficiario</string>
   <string name="transaction_details_recovery_reminder_title">Recuperare la password Reminder</string>
-  <string name="transaction_details_recovery_reminder_message">"Hai ricevuto Bitcoin! Si consiglia vivamente la creazione di domande Password Recovery e risposte. In caso contrario non sarà in grado di accedere al tuo account se la password viene dimenticata."</string>
+  <string name="transaction_details_recovery_reminder_message">"We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
   <string name="transaction_details_advanced_txid">"ID transazione"</string>
   <string name="transaction_details_advanced_total_sent">"Totale Inviato"</string>
   <string name="transaction_details_advanced_source">"Fonte"</string>
@@ -581,6 +596,8 @@
   <string name="fragment_two_factor_warn_message">Se si perde il dispositivo o disinstallare il %1$s app, ci vorranno 7 giorni per disabilitare 2FA e accedere al proprio account.</string>
   <string name="twofactor_reset_message">Un reset a due fattori è stato richiesto. Effettua l\'accesso in %1$s e approvare o annullare la richiesta.</string>
   <string name="twofactor_reset_title">A due fattori richiesta di Ripristino</string>
+  <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery. For details, please see our blog post at airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Recupero Risposte corrotte!</string>
   <string name="receiver_alert_title">%1$s Notifica</string>
   <!-- Other -->
   <string name="remote_password_change_title">Password modificata da remoto</string>
@@ -602,7 +619,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Password non corretta.</string>
   <string name="password_check_incorrect_password_message">Password errata. Riprova?</string>
-  <string name="password_check_skip">Si prega di creare un nuovo account e trasferire i fondi se hai dimenticato la password.</string>
+  <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
   <string name="password_check_remember_title">Ricorda la password?</string>
   <string name="password_check_remember_message">Ti ricordi ancora la password? Sarà necessario la password se il dispositivo viene perso o rubato, O se si disinstalla l\'applicazione.\nImmettere qui sotto per assicurarsi che:</string>
   <string name="password_check_check_my_password">Controllare la mia password</string>
@@ -619,7 +636,7 @@
   <string name="upload_log_alert_succeeded">Carica completa</string>
   <string name="upload_log_alert_failed">Caricamento fallito. Si prega di verificare la connessione di rete.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Accedi Utente: %1s</string>
+  <string name="fingerprint_signin">Sign In User: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Confermare impronte digitali per continuare</string>
   <string name="fingerprint_hint">Sensore tattile</string>
   <string name="fingerprint_not_recognized">Impronte digitali non riconosciuto. Riprova.</string>
@@ -683,6 +700,8 @@
   <string name="plugin_walmart_discount">(Fino al 10% di sconto)</string>
   <string name="plugin_homedepot_discount">(Fino al 15% di sconto)</string>
   <string name="plugin_glidera_title">Acquisto / Vendita con conto bancario (USA)</string>
+  <string name="plugin_bity_title">Compra / vendi con conto bancario (Europa)</string>
+  <string name="plugin_libertyx_title">Acquista con contanti (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">I seguenti servizi non sono forniti da %1$s.\n\nPer problemi e feedback, si prega di contattare i rispettivi fornitori di servizi.</string>
   <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
@@ -702,6 +721,8 @@
   <string name="transaction_footer_bitrefill">Acquista Cellulare Ricariche</string>
   <string name="change_mining_fee_title">Cambio Fee Mining</string>
   <string name="change_mining_fee_body">Attenzione: commissioni basse possono causare lunghi ritardi nella conferma della transazione</string>
+  <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
+  <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Salva token di ripristino</string>
   <string name="save_recovery_token_popup_message">\"Per completare la configurazione dell\'account di ripristino che si deve salvare un token per il recupero. Questo sarà necessario per recuperare il tuo account in aggiunta al vostro nome utente e recupero risposte. Per inviare te stesso il token di recupero Inserisci il tuo indirizzo email qui sotto.</string>

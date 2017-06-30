@@ -8,24 +8,24 @@
     <item>津贴</item>
     <item>娱乐</item>
     <item>艺术</item>
-    <item>自动提款机手续费</item>
-    <item>汽车 &amp; 交通</item>
+    <item>ATM手续费</item>
+    <item>汽车 &amp; 运输</item>
     <item>汽车保险</item>
     <item>自动付款</item>
     <item>婴儿用品</item>
-    <item>保姆 &amp; 托儿所</item>
+    <item>保姆 &amp; 日托</item>
     <item>银行费用</item>
-    <item>账单 &amp; 基础设施费</item>
+    <item>账单 &amp; 其它费用</item>
     <item>书籍</item>
     <item>书籍 &amp; 用品</item>
     <item>洗车</item>
-    <item>现金 &amp; 自动提款机</item>
+    <item>现金 &amp; ATM</item>
     <item>慈善</item>
     <item>服装</item>
     <item>咖啡厅</item>
     <item>信用卡付款</item>
     <item>牙医</item>
-    <item>存款至储蓄户口</item>
+    <item>存款至储蓄账户</item>
     <item>医生</item>
     <item>教育</item>
     <item>电子产品 &amp; 软件</item>
@@ -46,14 +46,14 @@
     <item>保健 &amp; 健身</item>
     <item>物业管理费</item>
     <item>爱好</item>
-    <item>家居</item>
+    <item>首页</item>
     <item>家居装修</item>
     <item>家庭保险</item>
     <item>住家电话</item>
     <item>家居服务</item>
     <item>家居用品</item>
     <item>酒店</item>
-    <item>Exp利息</item>
+    <item>利息费用</item>
     <item>互联网</item>
     <item>个人退休帐户的资金投入</item>
     <item>小孩</item>
@@ -81,7 +81,7 @@
     <item>注册</item>
     <item>租车&amp; 出租车</item>
     <item>餐馆</item>
-    <item>维修服务 &amp; 零件</item>
+    <item>服务 &amp; 配件</item>
     <item>维修服务费</item>
     <item>购物</item>
     <item>水疗 &amp; 按摩</item>
@@ -95,7 +95,7 @@
     <item>交易佣金</item>
     <item>旅行</item>
     <item>学费</item>
-    <item>基础设施费</item>
+    <item>其它费用</item>
     <item>度假</item>
     <item>兽医</item>
   </string-array>
@@ -109,7 +109,7 @@
   </string-array>
   <string-array name="exchange_category_defaults">
     <item>购买比特币</item>
-    <item>售卖比特币</item>
+    <item>卖出比特币</item>
   </string-array>
   <string-array name="transfer_category_defaults">
     <item>Bitcoin.de</item>
@@ -131,7 +131,7 @@
     <item>Airbitz</item>
     <item>Armory</item>
     <item>比特币核心</item>
-    <item>Blockchain</item>
+    <item>区块链</item>
     <item>Electrum</item>
     <item>Multibit</item>
     <item>Mycelium</item>
@@ -149,8 +149,9 @@
     <item>英里</item>
   </string-array>
   <string-array name="mining_fees">
-    <item>低收费</item>
+    <item>低费用</item>
     <item>标准费用</item>
-    <item>高收费</item>
+    <item>高费用</item>
+    <item>自定义网络费用(进阶)</item>
   </string-array>
 </resources>

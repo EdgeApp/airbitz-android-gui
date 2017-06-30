@@ -158,5 +158,6 @@
     <item>Basso Costo</item>
     <item>Tariffa ordinaria</item>
     <item>Alto tassa</item>
+    <item>Custom Fee (advanced)</item>
   </string-array>
 </resources>

@@ -9,20 +9,20 @@
   <string name="string_bundle">पोटली</string>
   <string name="string_no">नहीं</string>
   <string name="string_continue">जारी रखें</string>
-  <string name="string_change">परिवर्तित करें</string>
+  <string name="string_change">बदलें</string>
   <string name="string_cancel">रद्द करें</string>
   <string name="string_paste">पेस्ट करें</string>
   <string name="string_paste_address">%1$s पेस्ट करें</string>
-  <string name="string_search">खोजें</string>
+  <string name="string_search">खोज</string>
   <string name="string_done">समाप्त</string>
   <string name="string_rename">नाम बदलें</string>
   <string name="string_delete">हटाएं</string>
-  <string name="string_save">सहेजें</string>
+  <string name="string_save">सेव करें</string>
   <string name="string_back">पीछे</string>
   <string name="string_disable">अक्षम करें</string>
   <string name="string_next">आगे</string>
   <string name="string_skip">छोड़ें</string>
-  <string name="string_total">कुल</string>
+  <string name="string_total">कुल:</string>
   <string name="string_finish">समाप्त</string>
   <string name="string_help">मदद</string>
   <string name="string_info">सूचना</string>
@@ -33,7 +33,7 @@
   <string name="string_help_button">हेल्प बटन इस स्क्रीन के लिए मदद दिखाता है</string>
   <string name="string_add_button">जोड़ बटन नया वॉलेट जोड़ देता है</string>
   <string name="string_payment_received">**भुगतान प्राप्त हो गया है**</string>
-  <string name="string_exit_app_question">"क्या आप %1$s से बाहर निकलना चाहते हैं?"</string>
+  <string name="string_exit_app_question">"क्या आप बाहर निकलना चाहते हैं?"</string>
   <string name="string_too_short">बहुत छोटा</string>
   <string name="string_show_balance">बकाया दिखाएँ</string>
   <string name="string_agree">सहमत</string>
@@ -41,7 +41,7 @@
   <string name="string_wallet">वॉलेट</string>
   <string name="loading_wallets">वाल्लेट्स लोड हो रहे हैं...\n इस उपकरण से पहली बार लॉगिंग करने पर इस प्रक्रिया में कुछ समय लग सकता है|</string>
   <string name="loading_n_wallets">%2$d वाल्लेट्स का %1$d लोड हो रहा है|\n इस उपकरण से पहली बार लॉगिंग करने पर इस प्रक्रिया में कुछ समय लग सकता है|</string>
-  <string name="loading_transactions">ट्रांजेक्शन लोड हो रही है...</string>
+  <string name="loading_transactions">लेनदेन लोड हो रहा है...</string>
   <!-- Nav Bar strings -->
   <string name="nav_bar_directory_text">डायरेक्टरी</string>
   <string name="nav_bar_request_text">प्राप्त</string>
@@ -60,7 +60,7 @@
   <string name="string_connection_error_server">कनेक्शन त्रुटि: सर्वर तक नहीं पहुँच सकते</string>
   <!-- Strings for Business Directory fragment -->
   <string name="directory_title">डायरेक्टरी</string>
-  <string name="restaurants">रेस्तरां</string>
+  <string name="restaurants">रेस्टोरेंट</string>
   <string name="restaurant_and_food_trucks">रेस्तरां &amp; फ़ूड ट्रक्स</string>
   <string name="gift_cards">गिफ्ट कार्ड्स</string>
   <string name="coffee_and_tea">कॉफ़ी और चाय</string>
@@ -75,22 +75,22 @@
   <string name="city_state_county">शहर, राज्य/केंद्र शासित, या देश</string>
   <string name="your_location">आपका स्थान</string>
   <string name="location">स्थान...</string>
-  <string name="near_you">आप के पास</string>
+  <string name="near_you">आपके पास</string>
   <string name="no_results_found">कोई परिणाम नहीं मिला</string>
   <string name="no_location_found">तत्कालीन स्थान पाने में असमर्थ हैं|कृपया लोकेशन सर्विस चालू करें|</string>
-  <string name="location_enable">सक्रिय</string>
+  <string name="location_enable">सक्षम करें</string>
   <string name="fragment_business_no_results">कोई परिणाम नहीं मिला</string>
   <string name="fragment_business_cannot_retrieve_data">डेटा पुनर्प्राप्त नहीं कर सकते हैं</string>
   <string name="fragment_business_enable_location_services">बेहतर परिणाम के लिए लोकेशन सर्विस सक्षम करें</string>
   <string name="fragment_business_no_categories_retreived">सर्वर से कोई वर्ग पुनर्प्राप्त नहीं हुआ</string>
-  <string name="fragment_business_near_you">आप के पास</string>
+  <string name="fragment_business_near_you">आपके पास</string>
   <string name="fragment_take_picture">तस्वीर या फाइल</string>
   <string name="keep">रखें</string>
-  <string name="discard">छोड़ें</string>
+  <string name="discard">निकाल देना</string>
   <!-- Strings for DirectoryDetail -->
   <string name="fragment_directory_detail_getting_venue_data">स्थान सबंधी डेटा लिया जा रहा है...</string>
   <string name="fragment_directory_detail_timeout_retrieving_data">टाइमआउट सम्बन्धी डेटा पुनः प्राप्त किया जा रहा है...</string>
-  <string name="fragment_directory_detail_directions">दिशाएं</string>
+  <string name="fragment_directory_detail_directions">रास्ता</string>
   <string name="fragment_directory_detail_discount">"छूट "</string>
   <string name="fragment_directory_detail_no_phone">फोन कॉल सम्भालने के लिए कोई गतिविधि स्थापित नहीं की गयी है|</string>
   <string name="fragment_directory_detail_share">"साझा"</string>
@@ -101,21 +101,23 @@
   <!-- Strings for errors from server -->
   <string name="server_error_account_already_exists">यह खाता पहले से मौजूद है।</string>
   <string name="server_error_account_does_not_exists">हम आपका खाता नहीं ढूंढ पाए हैं|कृपया यूजरनाम सुनिश्चित करें|</string>
-  <string name="server_error_bad_password">गलत पासवर्ड</string>
+  <string name="server_error_bad_password">गलत पासवर्ड|</string>
   <string name="server_error_wallet_exists">वॉलेट पहले से मौजूद है।</string>
   <string name="server_error_invalid_wallet">वॉलेट मौजूद नहीं है।</string>
   <string name="server_error_no_connection">सर्वर से जुड़ने में असमर्थ हैं|कृपया दोबारा कोशिश करें|</string>
   <string name="server_error_no_recovery_questions">इस यूजर के लिए कोई रिकवरी प्रशनावली उपलब्ध नहीं हैं</string>
   <string name="server_error_not_supported">यह कार्रवाई समर्थित नहीं है।</string>
-  <string name="server_error_insufficient_funds">अपर्याप्त धनराशि</string>
+  <string name="server_error_insufficient_funds">अपर्याप्त पैसा</string>
   <string name="server_error_synchronizing">नेटवर्क से तालमेल हो रहा है|</string>
   <string name="server_error_non_numeric_pin">पिन कोई संख्या होनी चाहिए।</string>
-  <string name="server_error_bad_pin">अमान्य पिन</string>
+  <string name="server_error_bad_pin_password">अमान्य पिन, पासवर्ड, या वसूली उत्तर</string>
   <string name="server_error_bad_pin_login">अमान्य पिन। कृपया लॉग इन करें।</string>
   <string name="server_error_pin_expired">पिन की अवधि समाप्त हो गई है। कृपया लॉग इन करें।</string>
   <string name="server_error_invalid_pin_wait">लॉग इन के कई प्रयास असफल हो चुके हैं|कृपया %1$s सेकंड बाद दोबारा कोशिश करें|</string>
   <string name="server_error_other">कोई त्रुटि उत्पन्न हो गई है।</string>
+  <string name="server_error_other_formatted">एक त्रुटि हुई:% d</string>
   <string name="insufficient_amount">राशि बहुत कम है</string>
+  <string name="sys_error_string">नेटवर्क तक पहुंचने में समस्या कृपया नेटवर्क कनेक्शन की जांच करें</string>
   <string name="account_needs_password_title">चेतावनी: पासवर्ड नहीं है</string>
   <string name="account_needs_password_message">[%1$s] खाते को पासवर्ड की जरूरत है| बिना पासवर्ड आप ये अकाउंट किसी अन्य उपकरण पर नहीं चला पाएंगे|</string>
   <!-- Strings related to Landing -->
@@ -126,7 +128,7 @@
   <string name="fragment_landing_username_hint">उपयोगकर्ता का नाम</string>
   <string name="fragment_landing_password_hint">पासवर्ड</string>
   <string name="fragment_landing_signin_button">साइन इन</string>
-  <string name="fragment_landing_signup_button">साइन अप</string>
+  <string name="fragment_landing_signup_button">साइन अप करें</string>
   <string name="fragment_landing_forgot_password">पासवर्ड भूल गए</string>
   <string name="fragment_landing_current_user">वर्तमान उपयोगकर्ता (%1$s)</string>
   <string name="fragment_landing_switch_user">पिन लॉग इन से बाहर निकलें</string>
@@ -136,11 +138,13 @@
   <string name="fragment_forgot_no_account_title">रिकवरी का कोई प्रश्न नहीं है</string>
   <string name="fragment_forgot_no_recovery_questions_title">रिकवरी का कोई प्रश्न नहीं है</string>
   <string name="fragment_forgot_no_recovery_questions_text">इस यूजर के पास किसी भी तय पुनर्प्राप्ति प्रश्न नहीं है!</string>
-  <string name="fragment_landing_account_delete_title">खाता नष्ट करें</string>
+  <string name="fragment_landing_account_delete_title">खाता हटाएं</string>
   <string name="fragment_landing_account_delete_message">%1$s को केवल इस उपकरण से हटाएँ? ऐसा करने से इस उपकरण के 2FA और पिन नष्ट हो जाएंगें|अगर इस खाते पर 2FA सक्रिय है तो, आप इस खाते को नये उपकरण पर 7 दिन तक चालू नहीं कर पाएंगे</string>
   <!-- Strings for Signup and Sign-in -->
-  <string name="activity_signup_title">साइन अप</string>
+  <string name="activity_signup_title">साइन अप करें</string>
   <string name="activity_navigation_signin_failed">असफल साइन अप</string>
+  <string name="activity_navigation_signin_failed_network">एक त्रुटि उत्पन्न हो गयी है |कृपया अपना नेटवर्क कनेक्शन और पासवर्ड या यूजरनाम की गलती चेक करें</string>
+  <string name="activity_navigation_signin_failed_pin_network">एक त्रुटि उत्पन्न हो गयी है |कृपया अपना नेटवर्क कनेक्शन चेक करें|आप पिन लॉग इन से बाहर निकलकर ऑफलाइन यूजरनाम और पासवर्ड से लॉग इन कर सकते हैं</string>
   <string name="activity_navigation_signin_failed_unexpected">अचानक साइन इन असफल हो गया</string>
   <string name="activity_signup_failed">असफल साइन अप</string>
   <string name="activity_change_password_failed">पासवर्ड बदलाव असफल</string>
@@ -169,40 +173,40 @@
   <string name="activity_signup_popup_length">कम से कम 10 अक्षर होने चाहिए</string>
   <string name="activity_signup_pin_change_good">पिन सफलतापूर्वक बदल दिया गया है</string>
   <string name="activity_signup_pin_change_bad">पिन नहीं बदला जा सकता।</string>
-  <string name="activity_signup_pin_change_title">पिन बदलें</string>
-  <string name="activity_signup_password_change_title">पासवर्ड बदलें</string>
-  <string name="activity_signup_password_change_good">पासवर्ड सफलतापूर्वक परिवर्तित कर दिया गया है।</string>
+  <string name="activity_signup_pin_change_title">पिन बदलिए</string>
+  <string name="activity_signup_password_change_title">पासवर्ड बदलिए</string>
+  <string name="activity_signup_password_change_good">पासवर्ड सफलतापूर्वक बदल दिया गया है।</string>
   <string name="activity_signup_password_change_bad">पासवर्ड परिवर्तित नहीं किया जा सकता।</string>
   <string name="activity_signup_enter_username">यूजरनाम डालना जरूरी है</string>
   <string name="activity_signup_incorrect_password">गलत पासवर्ड|</string>
   <string name="activity_signup_incorrect_current_password">तत्कालीन पासवर्ड गलत है|</string>
   <string name="activity_signup_password_fails">आपका पासवर्ड...</string>
   <string name="activity_signup_insufficient_password">पासवर्ड पर्याप्त नहीं है|</string>
-  <string name="activity_signup_passwords_dont_match">पासवर्ड मेल नहीं खाता पासवर्ड दोबारा डालें|</string>
-  <string name="activity_signup_insufficient_username_title">साइन अप</string>
+  <string name="activity_signup_passwords_dont_match">पासवर्ड मेल नहीं खाता| पासवर्ड दोबारा डालें</string>
+  <string name="activity_signup_insufficient_username_title">साइन अप करें</string>
   <string name="activity_signup_insufficient_username_message">असफल साइन अप: \n यूजरनाम कम से कम 3 अक्षरों का होना चाहिए।</string>
   <string name="activity_signup_insufficient_pin">पिन में कम से कम 4 अंक होने चाहिए</string>
   <string name="activity_signup_create_wallet_fail">तय वालेट निर्माण असफल</string>
-  <string name="activity_signup_time_to_crack">तोड़ने का समय:</string>
+  <string name="activity_signup_time_to_crack">खोलने का समय:</string>
   <string name="activity_signup_seconds">सेकंड्स</string>
-  <string name="activity_signup_minutes">मिनटें</string>
+  <string name="activity_signup_minutes">मिनट</string>
   <string name="activity_signup_hours">घंटे</string>
   <string name="activity_signup_days">दिन</string>
   <string name="activity_signup_weeks">सप्ताह</string>
   <string name="activity_signup_months">महीने</string>
   <string name="activity_signup_years">साल</string>
   <string name="fragment_setup_titles">साइन अप</string>
-  <string name="fragment_setup_username_label">यूजरनाम चुनें</string>
+  <string name="fragment_setup_username_label">एक उपयोगकर्ता नाम चुनें</string>
   <string name="fragment_setup_username_text">ये आपका असली नाम और आपकी ईमेल नहीं है|\n\n ये इस उपकरण व अन्य उपकरणों पर आपके खाते में लॉग इन करने के लिए यूजरनाम है|\n\nआपका यूजरनाम केवल आपको पता रहेगा और इसे गुप्त तरीके से स्टोर नहीं किया जाएगा|</string>
   <string name="fragment_setup_password_title">पासवर्ड और पिन तय करें</string>
   <string name="fragment_setup_password_text">पासवर्ड आपके खाते को प्रमाणित करने और संवेदनशील सेटिंग्स परिवर्तित करने के लिए इस्तेमाल किया जाता है।</string>
   <string name="fragment_setup_password_nopassword_title">इस खाते का कोई पासवर्ड नहीं है</string>
   <string name="fragment_setup_password_nopassword_message">चेतावनी: बिना पासवर्ड के आप लॉग इन नहीं कर पाएंगे अगर ये उपकरण खो/चोरी हो जाता है या एप्प हटा दी जाती है|</string>
   <string name="fragment_setup_password_nopassword_">चेतावनी: बिना पासवर्ड के आप लॉग इन नहीं कर पाएंगे अगर ये उपकरण खो/चोरी हो जाता है या एप्प हटा दी जाती है|</string>
-  <string name="fragment_setup_pin_title">4 अंकीय पिन तय करें</string>
+  <string name="fragment_setup_pin_title">4 अंक का पिन निर्धारित करें</string>
   <string name="fragment_setup_pin_text">आपका पिन एक 4 अंकीय कोड है जिसे आपके खाते में शीघ्र पुनः लॉगिन करने के लिए इस्तेमाल किया जाता है।</string>
   <string name="fragment_setup_writeitdown_title">लिखें!</string>
-  <string name="fragment_setup_writeitdown_text">आपका यूजरनाम, पासवर्ड और पिन केवल आप जानते हैं और इसे कभी भी गुप्त रूप से भेजा नहीं जाएगा और न ही स्टोर किया जाएगा|</string>
+  <string name="fragment_setup_writeitdown_text">आपका यूज़रनेम और पासवर्ड केवल आपको ही जाना जाता है और अगर भूल गए हैं तो वसूली नहीं जा सकती। यदि आपका पासवर्ड खो जाता है तो आप धन तक पहुंच खो देंगे</string>
   <string name="fragment_setup_writeitdown_text_warning">लिखें और सुरक्षित रूप से संग्रहण करें|</string>
   <string name="fragment_setup_writeitdown_username_title">यूजरनाम</string>
   <string name="fragment_setup_writeitdown_password_title">पासवर्ड</string>
@@ -210,13 +214,15 @@
   <string name="fragment_setup_writeitdown_show">दिखाएँ</string>
   <string name="fragment_setup_writeitdown_hide">छुपायें</string>
   <string name="fragment_setup_camera_title">कैमरा केउपयोग को सक्षम करें</string>
-  <string name="fragment_setup_camera_text">आप अगले अपने कैमरे के लिए एक पॉपअप का अनुरोध पहुँच देखेंगे।\n\n[[abtag APP_TITLE]] इस QR कोड को स्कैन करने के लिए लोगों और व्यापारियों का भुगतान करने की जरूरत है।</string>
+  <string name="fragment_setup_camera_text">इसके बाद आपको अपना कैमरा एक्सेस के लिए अनुरोध करने वाला पॉपअप दिखाई देगा।
+
+लोगों और व्यापारियों को भुगतान करने के लिए [[abtag APP_TITLE]] को QR कोड स्कैन करने की जरुरत होती है।</string>
   <string name="fragment_setup_contacts_title">संपर्कों का उपयोग सक्षम करें</string>
   <string name="fragment_setup_contacts_text">आप अगले आपके संपर्क करने के लिए एक पॉपअप का अनुरोध पहुँच देखेंगे।\n\n[[abtag APP_TITLE]] इस की जरूरत है भुगतान अनुरोध भेजने के लिए और मदद करने के लिए अपने लेनदेन को टैग।</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">पासवर्ड रिकवरी सेटअप</string>
   <string name="activity_recovery_title">पासवर्ड रिकवरी</string>
-  <string name="activity_recovery_skip_button_text">इस चरण छोड़ें</string>
+  <string name="activity_recovery_skip_button_text">इस चरण को छोड़ दें</string>
   <string name="activity_recovery_complete_button">साइन अप पूरा करें</string>
   <string name="activity_recovery_complete_button_change_questions">हो गया</string>
   <string name="activity_recovery_prompt_title">इस चरण को छोड़ें</string>
@@ -265,11 +271,11 @@
   <string name="settings_title_merchant_mode">व्यापारी मोड</string>
   <string name="settings_title_pin_login">पिन से पुन: लॉग इन</string>
   <string name="settings_title_fingerprint_login">उपयोग फिंगरप्रिंट लॉग इन</string>
-  <string name="settings_title_nfc">NFC</string>
+  <string name="settings_title_nfc">एनएफसी</string>
   <string name="settings_title_ble">ब्लू टूथ</string>
   <string name="settings_title_ble_send_only">ब्लूटूथ (केवल भेजने के लिए)</string>
   <string name="settings_title_currency">तय मुद्रा</string>
-  <string name="settings_select_currency">एक मुद्रा का चयन करें</string>
+  <string name="settings_select_currency">मुद्रा चुनें</string>
   <string name="settings_title_distance">तय दूरी</string>
   <string name="settings_exchange_title">तय विनियमन दर</string>
   <string name="settings_exchange_text">तय विनियमन</string>
@@ -278,20 +284,25 @@
   <string name="settings_title_peso">मेक्सिकन पीसो</string>
   <string name="settings_title_yuan">युआन</string>
   <string name="settings_button_logout">लॉग आउट</string>
-  <string name="settings_button_debug">त्रुटि रहित</string>
+  <string name="settings_button_debug">डीबग करें</string>
   <string name="settings_categories_add_new">नया जोड़ें</string>
   <string name="settings_days">दिन</string>
   <string name="settings_hours">घंटे</string>
   <string name="settings_minutes">मिनट (मिनट्स)</string>
   <string name="settings_seconds">सेकंड(सेकंड्स)</string>
-  <string name="settings_nfc_turn_on_title">NFC को सक्रिय करें</string>
+  <string name="settings_nfc_turn_on_title">NFC को अक्टिवटे करें</string>
   <string name="settings_nfc_turn_on_message">NFC सहायक व्यापारियों के लिए टैप-टू-पे सुविधा सक्रिय करने के लिए इस्तेमाल किया जाता है|क्या आप इसे अभी चालू करना चाहेंगे?</string>
-  <string name="settings_ble_turn_on_title">ब्लूटूथ सक्रिय करें</string>
+  <string name="settings_ble_turn_on_title">ब्लूटूथ को अक्टिवटे करें</string>
   <string name="settings_ble_turn_on_message">ब्लूटूथ बिना क्यूआर कोड स्कैन किए वायरलेस भुगतान के लिए काम लिया जाता है|क्या आप इसे अभी चालू करना चाहेंगे?</string>
   <string name="settings_currency_change_note_popup">तय मुद्रा की सेटिंग्स केवल नये वॉलेट के लिए इस्तेमाल किया जाता है और खाते का बकाया प्रदर्शित करने के लिए|फ़िएट मुद्रा को बदलने के लिए नया वॉलेट बनाएं|</string>
+  <string name="settings_override_server_title">ओवरराइड करेंBitcoin सर्वर (उन्नत)</string>
+  <string name="settings_override_server_button">सक्षम करें ओवरराइड करें</string>
+  <string name="settings_override_server_list">सर्वर सूची दर्ज करें</string>
+  <string name="settings_override_servers_help">चेतावनी,यह एक उन्नत सेटिंग है और आपके वॉलेट को खराबी के कारण हो सकता हैकृपया एप्लिकेशन को पुनरारंभ करेंसेटिंग्स को प्रभावित करने के लिए</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">खर्च सीमा</string>
-  <string name="fragment_spending_limits_save">संचित</string>
+  <string name="fragment_spending_limits_warning">** चेतावनी ** \ n \ nपासवर्ड खर्च सीमा निर्धारित करने से आपको धनराशि तक पहुंचने से रोका जा सकता हैअगर आपका पासवर्ड भूल गया है कृपया सुनिश्चित करें कि आपके पास सेटअप पासवर्ड पुनर्प्राप्ति है</string>
+  <string name="fragment_spending_limits_save">सेव</string>
   <string name="fragment_spending_limits_daily_title">दैनिक खर्च सीमा</string>
   <string name="fragment_spending_limits_pin_title">उपरोक्त मूल्य के लिए पिन की आवश्यकता है</string>
   <string name="fragment_spending_limits_denomination">m฿</string>
@@ -301,7 +312,7 @@
   <!-- Strings for Category Fragment -->
   <string name="fragment_category_cancel_title">परिवर्तनों को रद्द करें</string>
   <string name="fragment_category_cancel_message">क्या आप सचमुच किये गए बदलाव रद्द करना चाहते है?</string>
-  <string name="fragment_category_deleted">%1$s नष्ट</string>
+  <string name="fragment_category_deleted">%1$s रद्द</string>
   <string name="fragment_category_add">वर्ग जोड़ें</string>
   <!-- Strings for AutoLogoff Dialog -->
   <string name="dialog_title">स्वतः लॉगऑफ समय तय करें</string>
@@ -357,8 +368,9 @@
   <string name="fragment_send_confirmation_dust_alert">मूल्य काफी कम है</string>
   <string name="fragment_send_confirmation_dust_alert_more">कृपया कम से कम %1$s(~%2$s) भेजें</string>
   <string name="fragment_send_confirmation_error_payment_processor">भुगतान प्रोसेसर से कनेक्ट कर त्रुटि। पता Bitcoin को सीधे भेजने\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">वॉलेट में छोटी धूल की जानकारी। नहीं सभी धन खर्च किया जा सकता है विवरण के लिए airbitz.co/dust देखें</string>
   <!-- Strings for Wallets fragment -->
-  <string name="fragment_wallets_title">वालेट्स</string>
+  <string name="fragment_wallets_title">वॉलेट</string>
   <string name="fragment_wallets_add_wallet">वॉलेट जोड़ें</string>
   <string name="fragment_wallets_deleting_wallet">वालेट नष्ट हो रहा है...</string>
   <string name="fragment_wallets_unable_to_delete_wallet">वॉलेट नष्ट नहीं हो सकता</string>
@@ -366,9 +378,9 @@
   <string name="fragment_wallets_delete_wallet_confirm_message">क्या आप सचमुच %1$s को नष्ट करना चाहते हैं?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_title">वॉलेट नष्ट:%1$s?</string>
   <string name="fragment_wallets_delete_wallet_second_confirm_message">सचमुच? आप आगे से इस वॉलेट में प्राप्त धन को नहीं नहीं पाएंगे|</string>
-  <string name="fragment_wallets_wallet_delete">वॉलेट नष्ट</string>
-  <string name="fragment_wallets_rename_wallet">वॉलेट का नाम दोबारा</string>
-  <string name="fragment_wallets_list_wallets_title">वाल्लेट्स</string>
+  <string name="fragment_wallets_wallet_delete">वॉलेट हट गया</string>
+  <string name="fragment_wallets_rename_wallet">वॉलेट का नाम बदलें</string>
+  <string name="fragment_wallets_list_wallets_title">वॉलेट</string>
   <string name="fragment_wallets_list_archive_title">अभिलेख</string>
   <string name="fragment_wallets_balance_text">कुल बकाया</string>
   <string name="fragment_wallets_addwallet_name_hint">नए वालेट का नाम तय करें</string>
@@ -376,12 +388,13 @@
   <string name="fragment_wallets_addwallet_online_textview">ऑनलाइन</string>
   <string name="fragment_wallets_addwallet_offline_textview">ऑफ़लाइन</string>
   <string name="fragment_wallets_created_wallet">%1$s निर्मित</string>
-  <string name="fragment_wallets_created_wallet_failed">असफल वालेट निर्माण</string>
+  <string name="fragment_wallets_created_wallet_failed">वालेट बनाने में असफल</string>
   <string name="fragment_wallets_archive_help">किसी वॉलेट को संग्रहित करने के लिए, वॉलेट की दांयी तरफ बने 3 बिन्दुओं को टैप कर होल्ड करें और फिर खींच कर [ARCHIVE] हैडर तक ले जाएँ</string>
   <!-- Strings for Wallet fragment -->
   <string name="fragment_wallet_title">ट्रांजेक्शन</string>
   <string name="fragment_wallet_export_button_description">वॉलेट निर्यात करने का बटन</string>
   <string name="fragment_wallet_unconfirmed">शेष</string>
+  <string name="fragment_wallet_transaction_dropped">लेन-देन छोड़ा</string>
   <string name="fragment_wallet_confirmed">पुष्टित</string>
   <string name="fragment_wallet_confirmations">" पुष्टियाँ"</string>
   <string name="fragment_wallet_confirmation">" पुष्टियाँ"</string>
@@ -398,13 +411,13 @@
   <string name="fragment_request_subtitle">अनुरोध</string>
   <string name="fragment_request_copy_title">कॉपी</string>
   <string name="fragment_request_email_title">ईमेल</string>
-  <string name="fragment_request_sms_title">एस एम एस</string>
+  <string name="fragment_request_sms_title">एसएमएस</string>
   <!-- Strings for Request fragment -->
   <string name="request_title">बिटकॉइन अनुरोध</string>
   <string name="request_wallet_title">वॉलेट:</string>
   <string name="request_button_import">आयात</string>
   <string name="request_amount_hint">राशि (वैकल्पिक)</string>
-  <string name="request_next">अगला</string>
+  <string name="request_next">आगे</string>
   <string name="request_invalid_amount">अमान्य राशि</string>
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s बिटकॉइन अनुरोध</string>
@@ -424,12 +437,12 @@
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">वॉलेट आयात</string>
   <string name="import_wallet_timeout_message">आयात असफल|दोबारा कोशिश करें|</string>
-  <string name="import_wallet_hidden_bits_submit">जमा</string>
+  <string name="import_wallet_hidden_bits_submit">सबमिट करें</string>
   <string name="import_wallet_hidden_bits_claimed">माफ़ कीजिये</string>
-  <string name="import_wallet_hidden_bits_not_claimed">मुबारक हो</string>
+  <string name="import_wallet_hidden_bits_not_claimed">बधाई हो!</string>
   <string name="import_wallet_swept_funds_title">गुप्त चाबी</string>
   <string name="import_wallet_swept_funds_message">निजी धन नष्ट हो गया है|</string>
-  <string name="import_wallet_hidden_bits_error_title">त्रुटि</string>
+  <string name="import_wallet_hidden_bits_error_title">एरर!</string>
   <string name="import_wallet_hidden_bits_error_message">आयात असफल हुआ क्योंकि इस पते पर शून्य बिटकॉइन शेष हैं|</string>
   <string name="import_wallet_private_key_invalid">अमान्य निजी चाबी</string>
   <string name="import_wallet_busy_text">%1$s से वॉलेट में धन आयात हो रहा है...</string>
@@ -446,7 +459,7 @@
   <string name="transaction_details_from">"से: "</string>
   <string name="transaction_details_payee_hint">प्राप्तकर्ता दर्ज करें</string>
   <string name="transaction_details_recovery_reminder_title">पासवर्ड रिकवर का रिमाइंडर</string>
-  <string name="transaction_details_recovery_reminder_message">"आपको बिटकॉइन प्राप्त हुए है! हमारा सुझाव है कि आप पासवर्ड की रिकवरी के लिए प्रश्नावली बनाएं | अन्यथा पासवर्ड भूलने पर आप अपने खाते हो नहीं खोल पाएंगे|"</string>
+  <string name="transaction_details_recovery_reminder_message">"हम पासवर्ड वसूली प्रश्न और उत्तर की स्थापना की सिफारिश करते हैं। अन्यथा यदि आप अपना पासवर्ड भूल जाते हैं तो आप अपने खाते तक पहुंच नहीं पाएंगे।"</string>
   <string name="transaction_details_advanced_txid">"ट्राँज़ेक्शन आइडी"</string>
   <string name="transaction_details_advanced_total_sent">"भेजे गए कुल"</string>
   <string name="transaction_details_advanced_source">"स्रोत"</string>
@@ -527,18 +540,18 @@
   <string name="alert_new_business_message">नए कारोबार को देखने के लिए छुएं</string>
   <!-- User Review -->
   <string name="user_review_title">%1$s</string>
-  <string name="user_review_message">"आपको %1$s अच्छा लग रहा है?"</string>
-  <string name="user_review_not_good">"इतना भी अच्छा नहीं"</string>
-  <string name="user_review_great">"ये शानदार है"</string>
-  <string name="user_review_no_thanks">"जी नहीं धन्यवाद"</string>
-  <string name="user_review_ok_message">"क्या आप हमें टिप्पणी देना पसंद करेंगें?"</string>
-  <string name="user_review_play_store">"क्या आप गूगल प्ले स्टोर में एक समीक्षा लिखना चाहते हैं?"</string>
+  <string name="user_review_message">"आपको %@ कैसा लग रहा है?"</string>
+  <string name="user_review_not_good">"बहुत अच्छा नहीं है"</string>
+  <string name="user_review_great">"शाबाश"</string>
+  <string name="user_review_no_thanks">"नहीं, रहने दें"</string>
+  <string name="user_review_ok_message">"क्या आप हमें अपने कुछ प्रतिक्रिया देना चाहेंगे?"</string>
+  <string name="user_review_play_store">"क्या आप ऐप स्टोर में समीक्षा लिखना चाहेंगे?"</string>
   <string name="user_review_support_subject">%1$s राय</string>
   <string name="user_review_support_title">ईमेल चुनें</string>
   <!-- Two Factor screens -->
-  <string name="fragment_twofactor_show_title">2 फैक्टर</string>
-  <string name="fragment_twofactor_menu_title">2 फैक्टर</string>
-  <string name="fragment_twofactor_scan_title">2 फैक्टर स्कैन करें</string>
+  <string name="fragment_twofactor_show_title">दो फैक्टर</string>
+  <string name="fragment_twofactor_menu_title">दो फैक्टर</string>
+  <string name="fragment_twofactor_scan_title">दो फैक्टर स्कैन करें</string>
   <string name="fragment_twofactor_show_enabled">सक्षम</string>
   <string name="fragment_twofactor_show_disabled">निष्क्रिय</string>
   <string name="fragment_twofactor_show_disable_twofa">2FA निष्क्रिय करें</string>
@@ -551,25 +564,31 @@
   <string name="fragment_twofactor_menu_request_message">दो फैक्टर पुष्टिकरण को बंद करने का अनुरोध मिला है|अगर यूजर द्वारा पुष्टित उपकरण से कोई प्रतिक्रिया प्राप्त नहीं होती है तो ये अनुरोध 7 दिन में स्वतः पुनर्स्थापित हो जाएगा|</string>
   <string name="fragment_twofactor_menu_reset_requested">पुनर्स्थापन अनुरोध</string>
   <string name="fragment_twofactor_show_unable_status">2 फैक्टर स्थिति बताने में सक्षम नहीं हैं</string>
-  <string name="fragment_twofactor_show_instruction">2-फैक्टर पुष्टिकरण को सक्रिय कर केवल पिछले लोग्डइन से ही लॉग इन करने की अनुमति देकर उपकरण की सुरक्षा बढाएं|2FA सक्रिय करने के बाद नीचे दिए क्यूआर कोड को स्कैन कर और उपकरण जोड़ें|</string>
+  <string name="fragment_twofactor_show_instruction">केवल पिछले लॉगइन किये गए उपकरणों से लॉगइन करने की अनुमति देकर सुरक्षा बढ़ाने के लिए 2-फैक्टर पुष्टिकरण सक्षम करें। 2FA सक्षम हो जाने के बाद नीचे दिया गया QR कोड स्कैन करके और अधिक उपकरण जोड़ें।</string>
   <string name="fragment_twofactor_show_reset_requested">अन्य उपकरण से 2FA पुनर्स्थापन का अनुरोध किया गया है|</string>
   <string name="fragment_twofactor_show_qr_image_text">दिखाएँ क्यूआर कोड</string>
   <string name="fragment_two_factor_menu_requested">दो फैक्टर पुनर्स्थापन का अनुरोध किया गया है|</string>
-  <string name="twofactor_required_title">2 फैक्टर प्रमाणिकता चालू</string>
+  <string name="twofactor_required_title">दो फैक्टर प्रमाणीकरण प्रारंभ</string>
   <string name="twofactor_required_message">इस खाते से दूसरे उपकरण पर 2 फैक्टर प्रमाणिकता(उन्नत सुरक्षा) सक्रिय कर दी गयी है|कृपया 2 फैक्टर प्रमाणिकता को सक्रिय करें ताकि इस उपकरण से भी पूरी तरह काम ले पायें|</string>
   <string name="twofactor_remind_later">मुझे बाद में याद दिलाएं</string>
-  <string name="twofactor_enable">सक्रिय</string>
-  <string name="twofactor_invalid_title">2 फैक्टर अवैध</string>
+  <string name="twofactor_enable">सक्षम करें</string>
+  <string name="twofactor_invalid_title">दो फैक्टर अमान्य</string>
   <string name="twofactor_invalid_message">इस उपकरण पर 2 फैक्टर प्रमाणिकता अवैध है| या तो अन्य उपकरण से टोकन बदल दिया गया है या आपकी घड़ी रुक गयी है| कृपया आपके सिस्टम की घड़ी से हमारा समय मिलाएं|</string>
   <string name="twofactor_unable_import_token">माफ़ कीजिएगा इस वक़्त हम टोकन आयात करने में असमर्थ हैं|</string>
-  <string name="fragment_two_factor_scan_unable_import_title">टोकन आयात करने में सक्षम नहीं हैं</string>
+  <string name="fragment_two_factor_scan_unable_import_title">टोकन आयात करने में अक्षम</string>
   <string name="fragment_two_factor_scan_unable_import_message">दो फैक्टर पुष्टिकरण टोकन आयात असफल|कृपया सुनिश्चित करे कि आपके पास सही टोकन है!</string>
   <string name="fragment_two_factor_scan_try_again">फिर कोशिश करें</string>
   <string name="fragment_two_factor_scan_no_thanks">जी नहीं धन्यवाद</string>
   <string name="fragment_two_factor_warn_title">**चेतावनी**</string>
-  <string name="fragment_two_factor_warn_message">अगर ये उपकरण खो जाता है या आप %1$s एप्प हटा देते हैं, ऐसे में 2FA निष्क्रिय करने और खाता चालू करने में 7 दिन लगेंगे|</string>
+  <string name="fragment_two_factor_warn_message">दो फैक्टर सक्षम
+
+**चेतावनी**
+
+यदि आपका डिवाइस खो जाता है या यदि आप ऐप हटा देते हैं तो 2FA अक्षम करने में और अपना खाता एक्सेस करने में 7 दिन का समय लगेगा।</string>
   <string name="twofactor_reset_message">2 फैक्टर पुनर्स्थापन का अनुरोध किया गया है|कृपया %1$s से लॉग इन करें और इस अनुरोध की पुष्टि करें या इसे रद्द करें|</string>
   <string name="twofactor_reset_title">2 फैक्टर पुनर्स्थापन अनुरोध</string>
+  <string name="recovery_answers_corrupt">आपके खाता पुनर्प्राप्ति उत्तर भ्रष्ट हैं। यदि आपका पासवर्ड भूल गया है तो आप अपना खाता पुनर्प्राप्त नहीं कर पाएंगे कृपया% @ और फिर से सेटअप पासवर्ड पुनर्प्राप्ति के रूप में लॉगिन करें। विवरण के लिए, कृपया हमारी ब्लॉग पोस्ट airbitz.co/go पर देखें</string>
+  <string name="recovery_answers_corrupt_title">रिकवरी उत्तर भ्रष्ट!</string>
   <string name="receiver_alert_title">%1$s सूचना</string>
   <!-- Other -->
   <string name="remote_password_change_title">पासवर्ड को दूरस्थ रूप से परिवर्तित किया गया है</string>
@@ -591,7 +610,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">गलत पासवर्ड</string>
   <string name="password_check_incorrect_password_message">ग़लत पासवर्ड। दोबारा कोशिश करें?</string>
-  <string name="password_check_skip">अगर आप पासवर्ड भूल गए हैं तो नया खाता बनाये और पैसे ट्रान्सफर कर लें|</string>
+  <string name="password_check_skip_formatted">यदि आप अपना पासवर्ड भूल गए हैं, तो कृपया एक नया खाता बनाएं और अपना धन स्थानांतरित करें। आपका पासवर्ड% 1 $ s से पुनर्प्राप्त नहीं किया जा सकता है और आप अपने पासवर्ड के बिना अपने धन की एक्सेस खो देंगे</string>
   <string name="password_check_remember_title">पासवर्ड याद है?</string>
   <string name="password_check_remember_message">क्या आपको आपका पासवर्ड अभी भी याद् है? आपका उपकरण खो या चोरी हो जाने पर या एप्प हटाने के लिए आपको पासवर्ड की जरूरत होगी |\n निश्चित करने के लिए नीचे लिखे:</string>
   <string name="password_check_check_my_password">मेरे पासवर्ड की जाँच करें</string>
@@ -608,14 +627,14 @@
   <string name="upload_log_alert_succeeded">अपलोड पूरा हुआ</string>
   <string name="upload_log_alert_failed">अपलोड असफल|कृपया नेटवर्क कनेक्शन चेक करें|</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">उपयोगकर्ता में साइन इन करें: %1s</string>
+  <string name="fingerprint_signin">उपयोगकर्ता में साइन इन करें: %1$s</string>
   <string name="fingerprint_confirm_to_continue">जारी रखने के लिए फिंगरप्रिंट की पुष्टि</string>
   <string name="fingerprint_hint">टच सेंसर</string>
   <string name="fingerprint_not_recognized">फिंगरप्रिंट मान्यता प्राप्त नहीं। पुनः प्रयास करें।</string>
   <string name="fingerprint_success">फिंगरप्रिंट मान्यता प्राप्त</string>
   <string name="initializing_dotdot_text">शुरुआत में&#8230;</string>
   <!-- Password Set -->
-  <string name="password_set_title">कोई पासवर्ड नहीं है</string>
+  <string name="password_set_title">कोई पासवर्ड सेट नहीं है</string>
   <string name="password_set_message">इस खाते के लिए पासवर्ड बना लें अन्यथा ये उपकरण खो जाने या चोरी हो जाने पर पासवर्ड रिकवर नहीं कर पाएंगे|</string>
   <string name="password_set_skip">छोड़ें</string>
   <!-- PIN Set -->
@@ -631,14 +650,14 @@
   <string name="drawer_spend_bitcoin">बिताओ Bitcoin (प्लगइन्स)</string>
   <string name="drawer_send">क्यूआर कोड को स्कैन करें</string>
   <string name="drawer_request">अनुरोध</string>
-  <string name="drawer_transactions">ट्रांजेक्शन</string>
-  <string name="drawer_wallets">वालेट्स</string>
+  <string name="drawer_transactions">लेनदेन</string>
+  <string name="drawer_wallets">वॉलेट</string>
   <string name="drawer_logout">लॉग आउट</string>
   <string name="drawer_settings">सेटिंग्स</string>
   <string name="drawer_affiliates">दोस्तों को बताएं \n(बिट कॉइन कमायें)</string>
   <string name="drawer_directory">डायरेक्टरी</string>
-  <string name="string_share">साझा</string>
-  <string name="string_copy">कॉपी</string>
+  <string name="string_share">शेयर करें</string>
+  <string name="string_copy">कॉपी करें</string>
   <string name="affiliate_link">सहयोगी लिंक</string>
   <string name="affiliate_link_copied">सहयोगी लिंक क्लिपबोर्ड पर कॉपी हो गया है</string>
   <string name="affiliate_refer_friends_title">दोस्तों को बताएं</string>
@@ -659,26 +678,28 @@
   <string name="appstore_link">https://itunes.apple.com/us/app/airbitz/id843536046</string>
   <string name="playstore_link">https://play.google.com/store/apps/details?id=com.airbitz</string>
   <string name="logo_white_link">https://airbitz.co/static/img/logo-nav.png</string>
-  <string name="designed_by">एयर बिट्ज़ द्वारा डिजाईन और निर्मित</string>
+  <string name="designed_by">Airbitz द्वारा डिज़ाइन और निर्मित किया गया</string>
   <string name="company_location">सेन डीगो, कैलिफ़ोर्निया, यू एस ए</string>
   <string name="request_footer">एयरबिट्ज़ मोबाइल बिटकॉइन वॉलेट+बिजनेस डायरेक्टरी से भेजा गया है</string>
   <string name="request_footer_link">https://airbitz.co/app</string>
   <string name="request_footer_link_title">एयरबिट्ज़ iOS या एंड्राइड के लिए डाउनलोड करें</string>
-  <string name="request_footer_contact">मेल करें:info@airbitz.co?subject=Airbitz+Bitcoin+Email+Request</string>
+  <string name="request_footer_contact">mailto:info@airbitz.co?subject=एयरबिट्ज़+बिटकॉइन+ईमेल+अनुरोध</string>
   <!-- Plugin text -->
-  <string name="plugin_starbucks_discount">(अप करने के लिए 20% के बाहर)</string>
-  <string name="plugin_target_discount">(10% के बाहर)</string>
-  <string name="plugin_wholefoods_discount">(10% के बाहर)</string>
-  <string name="plugin_walmart_discount">(10% के बाहर)</string>
-  <string name="plugin_homedepot_discount">(अप करने के लिए 15% के बाहर)</string>
+  <string name="plugin_starbucks_discount">(20% तक छूट)</string>
+  <string name="plugin_target_discount">(10% तक छूट)</string>
+  <string name="plugin_wholefoods_discount">(10% तक छूट)</string>
+  <string name="plugin_walmart_discount">(10% तक छूट)</string>
+  <string name="plugin_homedepot_discount">(15% तक छूट)</string>
   <string name="plugin_glidera_title">खरीदें / बैंक खाते के साथ बेचें (यूएसए)</string>
+  <string name="plugin_bity_title">बैंक खाते के साथ खरीदें / बेचें (यूरोप)</string>
+  <string name="plugin_libertyx_title">कैश के साथ खरीदें (यूएसए)</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
   <string name="plugin_popup_notice">निम्नलिखित सेवाओं द्वारा प्रदान नहीं कर रहे हैं%1$s.\n\nमुद्दों और प्रतिक्रिया के लिए, संबंधित सेवा प्रदाताओं से संपर्क करें।</string>
   <string name="plugin_bitrefill_title">ऊपर प्रीपेड मोबाइल सिम</string>
-  <string name="intent_choose_an_email">एक ई-मेल क्लाइंट का चयन करें:</string>
+  <string name="intent_choose_an_email">एक ईमेल क्लाइंट चुनें</string>
   <string name="plugin_filechooser_title">फ़ाइल अपलोड करें</string>
   <string name="plugin_filechooser_use_camera">कैमरा इस्तेमाल कीजिये</string>
-  <string name="plugin_filechooser_use_photo">तस्वीर अल्बम इस्तेमाल कीजिये</string>
+  <string name="plugin_filechooser_use_photo">फोटो एल्बम का प्रयोग करें</string>
   <string name="password_rule_no_uppercase">कम से कम एक उच्च अक्षर होना चाहिए</string>
   <string name="password_rule_no_lowercase">कम से कम एक छोटा अक्षर होना चाहिए</string>
   <string name="password_rule_no_number">कम से कम एक अंक होना चाहिए</string>
@@ -691,6 +712,8 @@
   <string name="transaction_footer_bitrefill">मोबाइल फ़ोन शीर्ष अप खरीदने</string>
   <string name="change_mining_fee_title">खनन शुल्क बदलें</string>
   <string name="change_mining_fee_body">चेतावनी: कम शुल्क की वजह से लेनदेन की पुष्टि में बहुत देर हो सकती है</string>
+  <string name="change_mining_fee_custom_title">सेट कस्टम खनन शुल्क</string>
+  <string name="change_mining_fee_custom_hint">सतोष / बाइट में कस्टम शुल्क</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">सहेजें वसूली टोकन</string>
   <string name="save_recovery_token_popup_message">\"यदि आप एक खाता पुनर्प्राप्ति टोकन बचा जाना चाहिए खाता पुनर्प्राप्ति सेटअप को पूरा करने के लिए। यह कृपया अपने आप को वसूली टोकन भेजने के लिए नीचे दिए गए अपने ईमेल दर्ज करें अपने उपयोगकर्ता नाम और वसूली के जवाब के अलावा अपने अकाउंट को ठीक करने के लिए आवश्यक हो जाएगा।।</string>
@@ -703,7 +726,7 @@
   <string name="recovery_token_invalid">इस वसूली टोकन के लिए गलत उपयोगकर्ता नाम। एक अलग उपयोगकर्ता नाम प्रयास करें या एक अलग वसूली टोकन लिंक का उपयोग करें।</string>
   <string name="logout_before_recovery">पासवर्ड वसूली प्रयास करने से पहले चालू खाते के लॉगआउट करें</string>
   <string name="recovery_successful">वसूली सफल\n\nकृपया अपने पासवर्ड और पिन बदलने</string>
-  <string name="invalid_email">अवैध ईमेल</string>
+  <string name="invalid_email">अमान्य ई-मेल</string>
   <string name="disable_recovery_popup_title">वसूली अक्षम करें?</string>
   <string name="disable_recovery_popup_message">यह खाता पहले से ही पासवर्ड वसूली सेटअप है। आप इसे निष्क्रिय करने के लिए करना चाहते हैं?</string>
   <string name="error_disabling_recovery">वसूली अक्षम त्रुटि</string>
@@ -744,7 +767,7 @@
   <string name="request_your_identity_token">अपनी पहचान टोकन का अनुरोध करें। एक नीचे चयन करें</string>
   <string name="request_your_identity_token_but_none">अपनी पहचान टोकन का अनुरोध करें, लेकिन आप किसी भी नहीं है</string>
   <string name="bitid_login_message">%1$s</string>
-  <string name="bitid_login_title">बिट आईडी लॉग इन</string>
+  <string name="bitid_login_title">BitID लॉगइन</string>
   <string name="bitid_login_success">लॉग इन सफल</string>
   <string name="bitid_login_failure">लॉगिंग इन में परेशानी हो रही है</string>
 </resources>

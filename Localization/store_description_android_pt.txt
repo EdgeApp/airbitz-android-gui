@@ -1,16 +1,16 @@
 Carteira de Bitcoin poderosa e fácil de usar, que permite aos usuários controlar suas próprias chaves privadas de bitcoin, com a familiaridade e tranquilidade de um serviço bancário de celular.
 
-Assuma o controle das suas reservas! Com Airbitz, só você tem acesso as suas reservas ou dados de transação. Nem o Airbitz nem terceiros podem acessar seu dinheiro ou dados. Você recebe a privacidade e autonomia do bitcoin com a facilidade que até sua avó saberia usar.
+Assuma o controle dos seus fundos! Com Airbitz, só você tem acesso aos seus fundos ou dados de transação. A Airbitz ou terceiros não podem acessar seu dinheiro ou dados. Você pode contar com a privacidade e autonomia para as quais o Bitcoin foi criado, com a facilidade de uso que até sua avó poderia utilizar.
 
-Com um foco em entregar uma experiência incrível ao usuário, a carteira Airbitz fornece as seguintes funcionalidades:
+Com foco em entregar uma experiência incrível ao usuário, a carteira Airbitz fornece grandes funcionalidades, como as seguintes:
 
-• Zero conhecimento & zero acesso a reservas, chaves, ou dados de transação pela Airbitz ou terceiros
+• Zero conhecimento & zero acesso a fundos, chaves, ou dados de transação pela Airbitz ou terceiros
 • Login com leitor de impressões digitais
 • Compra integrada de cartões de presente com desconto (20% de desconto no Starbucks!)
 • Compra e venda de bitcoin integrada a uma conta bancária vinculada
-• Simples criação de conta usando apenas login e senha (sem impressão de PDFs, escrever frases de passe, ou adicionar configurações de criptografia)
-• Carteiras determinísticas hierárquicas com mudança de endereço para cada transação
-• Procure transações por emitente, categoria, ou notas
+• Criação de conta simples usando apenas usuário & senha (sem imprimir PDFs, escrever frases de passe, ou adicionar configurações de criptografia)
+• Carteiras determinísticas hierárquicas com endereços que mudam a cada transação
+• Procure transações por beneficiário, categoria, ou notas
 • Limites de gastos (exigir senha ou PIN para gastar acima de limites definidos por você)
 • Arquitetura de servidor descentralizada. As carteiras funcionam mesmo se os servidores Airbitz estiverem fora do ar.
 • Código aberto. Disponível em http://github.com/Airbitz
@@ -18,7 +18,7 @@ Com um foco em entregar uma experiência incrível ao usuário, a carteira Airbi
 ********* Política de Privacidade *********
 O aplicativo Airbitz solicita acessar a lista de contatos do dispositivo, localização e informações pessoais. Esta informação é utilizada no dispositivo para fornecer uma melhor experiência ao usuário das seguintes formas:
 
-1. Completar automaticamente contatos do livro de endereços do usuário depois de uma transação
+1. Auto-completar contratos do livro de endereços do usuário depois de uma transação
 2. Completar automaticamente contatos do livro de endereços do usuário para enviar pedidos de pagamentos por e-mail ou SMS
 3. Completar automaticamente nomes de listagens de negócios depois de uma transação
 4. Localizar geograficamente o dispositivo do usuário para encontrar negócios próximos

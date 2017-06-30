@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Saldo insuficiente</string>
   <string name="server_error_synchronizing">Sincronizando com a rede.</string>
   <string name="server_error_non_numeric_pin">PIN deve ser um valor numérico.</string>
-  <string name="server_error_bad_pin">PIN inválido</string>
+  <string name="server_error_bad_pin_password">PIN inválido, Senha, Ou Recuperação de Respostas</string>
   <string name="server_error_bad_pin_login">PIN inválido. Por favor, faça o login.</string>
   <string name="server_error_pin_expired">O PIN expirou. Por favor, faça o login.</string>
   <string name="server_error_invalid_pin_wait">Muitas tentativas de acesso sem sucesso. Por favor, tente de novo em %1$s segundos.</string>
   <string name="server_error_other">Ocorreu um erro.</string>
+  <string name="server_error_other_formatted">An error has occurred: %d</string>
   <string name="insufficient_amount">Quantia muito pequena</string>
+  <string name="sys_error_string">Trouble accessing network. Please check network connection</string>
   <string name="account_needs_password_title">AVISO: senha ausente</string>
   <string name="account_needs_password_message">A conta [%1$s] precisa de uma senha. A conta não pode ser acessada em um novo dispositivo sem uma senha.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Registrar-se</string>
   <string name="activity_navigation_signin_failed">A entrada falhou</string>
+  <string name="activity_navigation_signin_failed_network">Ocorreu um erro. Provavelmente com a conexão de rede ou o nome de usuário e senha estão incorretos</string>
+  <string name="activity_navigation_signin_failed_pin_network">Ocorreu um erro. Por favor, verifique sua conexão rede. Você também pode sair do login via PIN e usar seu nome de usuário e senha para logar off-line</string>
   <string name="activity_navigation_signin_failed_unexpected">A entrada falhou inesperadamente</string>
   <string name="activity_signup_failed">O registro falhou</string>
   <string name="activity_change_password_failed">A Mudança de Senha Falhou</string>
@@ -202,17 +206,17 @@
   <string name="fragment_setup_pin_title">Defina um PIN de 4 dígitos</string>
   <string name="fragment_setup_pin_text">Seu PIN é um código de 4 dígitos usado para acessar rapidamente sua conta.</string>
   <string name="fragment_setup_writeitdown_title">Anote!</string>
-  <string name="fragment_setup_writeitdown_text">Seu nome de usuário, senha e PIN são conhecidos somente por você e nunca serão transmitidos ou armazenados sem criptografia.</string>
+  <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
   <string name="fragment_setup_writeitdown_text_warning">Anote e guarde em um local seguro.</string>
   <string name="fragment_setup_writeitdown_username_title">Nome de usuário</string>
   <string name="fragment_setup_writeitdown_password_title">Senha</string>
   <string name="fragment_setup_writeitdown_pin_title">PIN</string>
   <string name="fragment_setup_writeitdown_show">Mostrar</string>
   <string name="fragment_setup_writeitdown_hide">Esconder</string>
-  <string name="fragment_setup_camera_title">Permitir o acesso da câmera</string>
-  <string name="fragment_setup_camera_text">Em seguida, você verá um popup solicitando acesso à sua Câmera.\n\n[[abtag APP_TITLE]] Precisa disso para digitalizar códigos QR para pagar pessoas e comerciantes.</string>
-  <string name="fragment_setup_contacts_title">Ativar o acesso a contactos</string>
-  <string name="fragment_setup_contacts_text">Você verá uma janela pop-up solicitando acesso aos seus Contatos.\n\n[[abtag APP_TITLE]] Precisa disso para enviar solicitações de pagamento e para ajudar a marcar suas transações.</string>
+  <string name="fragment_setup_camera_title">Permitir o acesso a câmera</string>
+  <string name="fragment_setup_camera_text">Você verá em seguida uma janela solicitando acesso à sua Câmera.\n\n[[abtag APP_TITLE]] Precisa disso para ler códigos QR e para pagar pessoas e comerciantes.</string>
+  <string name="fragment_setup_contacts_title">Permitir o acesso a lista de contatos</string>
+  <string name="fragment_setup_contacts_text">Você verá uma janela pop-up solicitando acesso aos seus Contatos.\n\n[[abtag APP_TITLE]] Precisa disso para enviar solicitações de pagamento e para ajudar a registrar suas transações.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Configuração de Recuperação de Senha</string>
   <string name="activity_recovery_title">Recuperação de Senha</string>
@@ -227,7 +231,7 @@
   <string name="activity_recovery_question_default">Pergunta</string>
   <string name="item_recovery_spinner_arrow_description">Seta para baixo</string>
   <string name="activity_recovery_done_title">Perguntas de Recuperação Definidas</string>
-  <string name="activity_recovery_done_details">Suas perguntas e respostas de recuperação de senha estão agora configuradas.\n\nPara recuperar sua senha, clique no link que você acabou de enviar por e-mail e responda às suas perguntas de recuperação. Suas respostas devem corresponder exatamente.\n\n** NÃO ESQUEÇA O SEU USUÁRIO E AS RESPOSTAS DE RECUPERAÇÃO**\n\nSUA CONTA NÃO PODE SER RECUPERADA SEM ELES!!</string>
+  <string name="activity_recovery_done_details">Suas perguntas e respostas de recuperação de senha estão agora configuradas.\n\nPara recuperar sua senha, clique no link que você acabou de enviar por e-mail e responda às suas perguntas de recuperação. Suas respostas devem ser exatas.\n\n** NÃO ESQUEÇA O SEU USUÁRIO E AS RESPOSTAS DE RECUPERAÇÃO**\n\nSUA CONTA NÃO PODE SER RECUPERADA SEM ELES!!</string>
   <string name="activity_recovery_error_title">Falha na Recuperação de Senha</string>
   <string name="activity_recovery_error_incorrect_password">Por favor, digite sua senha correta para que suas respostas possam ser alteradas</string>
   <string name="activity_recovery_error_save_failed">Falha ao salvar respostas de recuperação</string>
@@ -239,7 +243,7 @@
   <string name="activity_recovery_warning_dirty_forgot_message">Aviso: Você está prestes a sair da recuperação de senha e todo o progresso será perdido. Sair assim mesmo?</string>
   <string name="fragment_recovery_mismatch_title">Senha Incorreta</string>
   <string name="fragment_recovery_mismatch_message">Por favor, digite a sua senha correta.</string>
-  <string name="fragment_recovery_answer_case_sensitive">As respostas diferenciam maiúsculas de minúsculas</string>
+  <string name="fragment_recovery_answer_case_sensitive">As respostas diferenciam letras maiúsculas de minúsculas</string>
   <!-- Strings for ForgotPassword -->
   <string name="activity_forgot_title">Esqueci a Senha</string>
   <!-- Strings for Settings fragment -->
@@ -264,7 +268,7 @@
   <string name="settings_title_auto_logoff">Logoff automático após</string>
   <string name="settings_title_merchant_mode">Modo Comerciante</string>
   <string name="settings_title_pin_login">PIN Re-login</string>
-  <string name="settings_title_fingerprint_login">Usar logon de impressão digital</string>
+  <string name="settings_title_fingerprint_login">Efetuar login via impressão digital</string>
   <string name="settings_title_nfc">NFC</string>
   <string name="settings_title_ble">Bluetooth</string>
   <string name="settings_title_ble_send_only">Bluetooth (Somente envio)</string>
@@ -289,8 +293,13 @@
   <string name="settings_ble_turn_on_title">Ativar Bluetooth</string>
   <string name="settings_ble_turn_on_message">O Bluetooth é usado para permitir pagamentos sem fio sem a necessidade de se escanear um código QR. Gostaria de habilitá-lo agora?</string>
   <string name="settings_currency_change_note_popup">Nota: A configuração de moeda padrão é usada somente para novas carteiras e para mostrar o saldo total da conta. Crie uma nova carteira para alterar a moeda mostrada em cada transação.</string>
+  <string name="settings_override_server_title">Sobrepor Servidores Bitcoin (Avançado)</string>
+  <string name="settings_override_server_button">Habilitar Sobreposição</string>
+  <string name="settings_override_server_list">Inserir a lista de servidores</string>
+  <string name="settings_override_servers_help">Atenção, Este é um ajuste avançado e pode causar mau funcionamento em sua carteira. Reinicie o aplicativo para que as configurações sejam aplicadas.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Limites de Gasto</string>
+  <string name="fragment_spending_limits_warning">** Aviso ** \n\nA definição de um limite de gastos com senha pode impedir o acesso a fundos se sua senha for esquecida. Verifique se você configurou a recuperação de senha</string>
   <string name="fragment_spending_limits_save">Salvar</string>
   <string name="fragment_spending_limits_daily_title">Limite Diário de Gasto</string>
   <string name="fragment_spending_limits_pin_title">PIN requerido acima da quantia</string>
@@ -330,7 +339,7 @@
   <string name="fragment_send_address">Endereço</string>
   <string name="fragment_send_photos">Fotos</string>
   <string name="fragment_send_flash">Flash</string>
-  <string name="fragment_send_address_dialog_title">Enviar para o Endereço Bitcoin ou para a Chave Privada de Importação</string>
+  <string name="fragment_send_address_dialog_title">Enviar para um Endereço Bitcoin ou Importar uma Chave Privada</string>
   <string name="fragment_import_address_dialog_title">Resgatar Fundos da Chave Privada</string>
   <string name="fragment_send_other_wallet_header_title">Escolha uma carteira para transferir fundos:</string>
   <string name="fragment_send_create_wallet_to_transfer">Criar uma nova carteira para transferir fundos</string>
@@ -356,7 +365,8 @@
   <string name="fragment_send_confirmation_password_remaining">Senha Incorreta. Por favor, aguarde %1$.0f segundos e tente novamente&#8230;</string>
   <string name="fragment_send_confirmation_dust_alert">A quantia é muito pequena.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Por favor, envie pelo menos %1$s (~%2$s)</string>
-  <string name="fragment_send_confirmation_error_payment_processor">Erro ao conectar ao processador de pagamento. Enviar diretamente para o endereço do bitcoin\n\n%s</string>
+  <string name="fragment_send_confirmation_error_payment_processor">Erro ao conectar ao processador de pagamento. Enviar diretamente para o endereço Bitcoin\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Carteiras</string>
   <string name="fragment_wallets_add_wallet">Adicionar Carteira</string>
@@ -382,6 +392,7 @@
   <string name="fragment_wallet_title">Transações</string>
   <string name="fragment_wallet_export_button_description">Botão para exportar uma carteira</string>
   <string name="fragment_wallet_unconfirmed">Pendente</string>
+  <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
   <string name="fragment_wallet_confirmed">Confirmado</string>
   <string name="fragment_wallet_confirmations">" confirmações"</string>
   <string name="fragment_wallet_confirmation">" confirmação"</string>
@@ -409,7 +420,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s Pedido de Bitcoin</string>
   <string name="request_qr_bitmap_error">Um código QR não pôde ser anexado.</string>
-  <string name="request_qr_image_store_error">Atenção:O código QR não pode ser anexado ao e-mail.Make sure this application is allowed to access the phone\'s storage.</string>
+  <string name="request_qr_image_store_error">Atenção: O código QR não pode ser anexado ao e-mail. Certifique-se que o app possui permissão para acessar o armazenamento do celular.</string>
   <string name="request_qr_unknown">Usuário Desconhecido</string>
   <string name="request_qr_waiting_for_payment">Esperando Pagamento&#8230;</string>
   <string name="request_qr_loading_address">Carregando endereço de bitcoin&#8230;</string>
@@ -420,7 +431,7 @@
   <string name="request_qr_ble_invalid_uri">Você recebeu uma solicitação de bitcoin inválida. Você pode tentar novamente.</string>
   <string name="request_qr_ble_copied">Pedido copiado para a área de transferência.</string>
   <string name="request_qr_first_usage">Apresente o código QR para o Remetente para ele escanear e lhe enviar o pagamento</string>
-  <string name="request_qr_top_message">Digitalizar para enviar, importar ou acessar a borda</string>
+  <string name="request_qr_top_message">Escanear para enviar, importar ou Edge Login</string>
   <!-- Strings for Import Wallet fragment -->
   <string name="import_title">Importar Carteira</string>
   <string name="import_wallet_timeout_message">Falha ao importar. Tente novamente.</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"De: "</string>
   <string name="transaction_details_payee_hint">Insira o Beneficiário</string>
   <string name="transaction_details_recovery_reminder_title">Recuperar o Lembrete de Senha</string>
-  <string name="transaction_details_recovery_reminder_message">"Você recebeu Bitcoin! Nós recomendamos FORTEMENTE que você defina perguntas e respostas para Recuperação de Senha. Caso contrário, você NÃO será capaz de acessar sua conta se esquecer a sua senha."</string>
+  <string name="transaction_details_recovery_reminder_message">"Nós recomendamos FORTEMENTE que você defina perguntas e respostas para Recuperação de Senha. Caso contrário, você NÃO será capaz de acessar sua conta se esquecer a sua senha."</string>
   <string name="transaction_details_advanced_txid">"ID da Transação"</string>
   <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
   <string name="transaction_details_advanced_source">"Fonte"</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">Se você perder o seu dispositivo ou desinstalar o aplicativo %1$s, levará 7 dias para desativar o 2FA e acessar sua conta.</string>
   <string name="twofactor_reset_message">Um reset do Duplo Fator foi solicitado. Faça login como %1$s e aprove ou cancele a solicitação.</string>
   <string name="twofactor_reset_title">Restabelecer Autenticação de Dois Fatores</string>
+  <string name="recovery_answers_corrupt">As respostas à recuperação da sua conta estão corrompidas. Você não poderá recuperar sua conta se sua senha for esquecida. Faça o login como %1$s e refaça a recuperação da senha. Para mais detalhes, acesse o blog da Airbitz em airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">As respostas de recuperação de senha estão corrompidas!</string>
   <string name="receiver_alert_title">%1$s Notificação</string>
   <!-- Other -->
   <string name="remote_password_change_title">Senha Alterada Remotamente</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Senha Incorreta.</string>
   <string name="password_check_incorrect_password_message">Senha Incorreta. Tentar novamente?</string>
-  <string name="password_check_skip">Por favor, crie uma nova conta e transfira seus fundos se você esqueceu sua senha.</string>
+  <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
   <string name="password_check_remember_title">Você lembra da sua senha?</string>
   <string name="password_check_remember_message">Ainda se lembra da sua senha? Você vai precisar da sua senha se seu dispositivo for perdido ou roubado, ou se você desinstalar o aplicativo.\nDigite-a abaixo para certificar-se de que ainda se lembra:</string>
   <string name="password_check_check_my_password">Verificar MINHA Senha</string>
@@ -608,10 +621,10 @@
   <string name="upload_log_alert_succeeded">Carregamento completo</string>
   <string name="upload_log_alert_failed">O carregamento falhou. Por favor, verifique a conexão de Internet.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Entrar Utilizador: %1s</string>
+  <string name="fingerprint_signin">Login do Usuário: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Confirmar impressão digital para continuar</string>
   <string name="fingerprint_hint">Sensor de toque</string>
-  <string name="fingerprint_not_recognized">A impressão digital não é reconhecida. Tente novamente.</string>
+  <string name="fingerprint_not_recognized">A impressão digital não foi reconhecida. Tente novamente.</string>
   <string name="fingerprint_success">Impressão digital reconhecida</string>
   <string name="initializing_dotdot_text">Inicializando&#8230;</string>
   <!-- Password Set -->
@@ -628,7 +641,7 @@
   <!-- Navigation Drawer -->
   <string name="drawer_signin_or_signup">Entrar ou Registrar-se</string>
   <string name="drawer_buy_sell">Comprar / Vender Bitcoin</string>
-  <string name="drawer_spend_bitcoin">Passe Bitcoin (Plugins)</string>
+  <string name="drawer_spend_bitcoin">Gaste Bitcoin (Plugins)</string>
   <string name="drawer_send">Escanear Código QR</string>
   <string name="drawer_request">Solicitação</string>
   <string name="drawer_transactions">Transações</string>
@@ -672,9 +685,11 @@
   <string name="plugin_walmart_discount">(Até 10% de desconto)</string>
   <string name="plugin_homedepot_discount">(Até 15% de desconto)</string>
   <string name="plugin_glidera_title">Compra / Venda com Conta Bancária (EUA)</string>
+  <string name="plugin_bity_title">Compra / Venda com Conta Bancária (Europa)</string>
+  <string name="plugin_libertyx_title">Compre com dinheiro (EUA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Os seguintes serviços não são fornecidos por %1$s.\n\nPara questões e comentários, entre em contato com os respectivos provedores de serviços.</string>
-  <string name="plugin_bitrefill_title">Preencher o cartão SIM pré-pago</string>
+  <string name="plugin_bitrefill_title">Recarregar o chip pré-pago do celular</string>
   <string name="intent_choose_an_email">Escolha um cliente de E-mail:</string>
   <string name="plugin_filechooser_title">Carregar Arquivo</string>
   <string name="plugin_filechooser_use_camera">Usar Câmera</string>
@@ -688,19 +703,21 @@
   <string name="transaction_footer_starbucks_discount">Até 20% de desconto no Starbucks</string>
   <string name="transaction_footer_target_discount">Até 10% de desconto na Target</string>
   <string name="transaction_footer_amazon_discount">15-20% de desconto na Amazon</string>
-  <string name="transaction_footer_bitrefill">Comprar Celular Top Ups</string>
+  <string name="transaction_footer_bitrefill">Comprar créditos de celular</string>
   <string name="change_mining_fee_title">Alterar Taxa de Transação</string>
   <string name="change_mining_fee_body">Aviso: Taxas Baixas podem causar longos atrasos na confirmação da transação</string>
+  <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
+  <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Salvar Token de Recuperação</string>
   <string name="save_recovery_token_popup_message">\"Para completar a configuração de recuperação de conta, você DEVE salvar um token de recuperação de conta. Esta será necessária para recuperar sua conta, além de seu nome de usuário e respostas de recuperação. Insira seu e-mail abaixo para enviar-se o token de recuperação.</string>
   <string name="recovery_token_email_subject">%s Token de Recuperação\"</string>
   <string name="recovery_token_email_body">Clique no link abaixo de um dispositivo móvel com %1$s Instalado para iniciar a recuperação da conta para o nome de usuário 
 [%2$s]\n\n&lt;br&gt;&lt;br&gt;%3$s</string>
-  <string name="enter_username_to_recover">Digite o nome de usuário da conta para recuperar</string>
+  <string name="enter_username_to_recover">Digite o nome de usuário da conta para recuperá-la</string>
   <string name="recovery_not_setup">A recuperação não foi configurada ou foi feita em outro dispositivo</string>
-  <string name="recovery_not_setup2">Se a recuperação foi configurada, você deve ter enviado um token de recuperação com um link</string>
-  <string name="recovery_not_setup3">Encontre o e-mail e clique no link deste dispositivo para iniciar a recuperação</string>
+  <string name="recovery_not_setup2">Se a recuperação foi configurada, você recebeu um token de recuperação com um link via e-mail</string>
+  <string name="recovery_not_setup3">Encontre o e-mail e clique no link a partir deste dispositivo para iniciar a recuperação</string>
   <string name="recovery_token_invalid">Nome de usuário incorreto para este token de recuperação. Tente um nome de usuário diferente ou use um link de token de recuperação diferente.</string>
   <string name="logout_before_recovery">Efetue logout da conta atual antes de tentar recuperar a senha</string>
   <string name="recovery_successful">Recuperação bem sucedida\n\nAltere a senha e o PIN</string>
@@ -733,18 +750,16 @@
  
 
 </string>
-  <string name="permission_needs_access_to_camera">%1$s Precisa acessar sua câmera para digitalizar códigos QR e capturar documentos</string>
+  <string name="permission_needs_access_to_camera">%1$s Precisa acessar sua câmera para ler códigos QR e capturar documentos</string>
   <string name="permission_camera_permission_denied">Permissão da câmera negada.Você não será capaz de digitalizar códigos QR.Reative o acesso nas Configurações do seu telefone -&gt; Aplicações</string>
   <string name="permission_camera_permission_denied_not_be_asked">Permissão da câmera negada.Você não será perguntado novamente</string>
   <string name="permission_needs_access_to_contacts">%1$s Precisa acessar seus contatos para ajudar a marcar transações com informações do beneficiário</string>
   <string name="permission_contacts_permission_denied">Permissão de contatos negada.Reative o acesso nas Configurações do seu telefone -&gt; Aplicações</string>
   <string name="permission_contacts_permission_denied_not_be_asked">Permissão de contatos negada.Você não será perguntado novamente</string>
-  <string name="permission_needs_access_to_location">%1$s Precisa acessar sua localização para encontrar empresas na sua área
- 
-</string>
+  <string name="permission_needs_access_to_location">%1$s Precisa acessar sua localização para encontrar empresas na sua área</string>
   <string name="permission_location_permission_denied">Permissão de localização negada.Reative o acesso nas Configurações do seu telefone  -&gt; Aplicações</string>
   <string name="permission_location_permission_denied_not_be_asked">Permissão de localização negada.Você não será perguntado novamente</string>
-  <string name="permission_needs_access_to_storage">%1$sPrecisa acessar o armazenamento do dispositivo para enviar códigos QR Para pedidos de pagamento e para capturar documentos</string>
+  <string name="permission_needs_access_to_storage">%1$sPrecisa acessar o armazenamento do dispositivo para enviar códigos QR para pedidos de pagamento e para capturar documentos</string>
   <string name="permission_storage_permission_denied">Permissão de armazenamento negada.Reative o acesso nas Configurações do seu telefone  -&gt; Aplicações</string>
   <string name="permission_storage_permission_denied_not_be_asked">Permissão de armazenamento negada.Você não será perguntado novamente</string>
   <string name="request_your_identity_token">Solicite seu Token de identidade. Selecione um abaixo</string>

@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">残高不足</string>
   <string name="server_error_synchronizing">ネットワークと同期する。</string>
   <string name="server_error_non_numeric_pin">PINは数値でなければなりません。</string>
-  <string name="server_error_bad_pin">PINが無効です</string>
+  <string name="server_error_bad_pin_password">無効なPIN、パスワード、またはリカバリー回答</string>
   <string name="server_error_bad_pin_login">PINが無効です。 ログインしてください。</string>
   <string name="server_error_pin_expired">PINの有効期限が切れています。 ログインしてください。</string>
   <string name="server_error_invalid_pin_wait">失敗したログイン試行が多すぎます。 ％1$s 秒後にもう一度お試しください。</string>
   <string name="server_error_other">エラーが発生しました。</string>
+  <string name="server_error_other_formatted">エラーが発生しました。%d</string>
   <string name="insufficient_amount">金額が小さすぎる</string>
+  <string name="sys_error_string">ネットワークアクセスに問題。ネットワーク接続を確認して下さい。</string>
   <string name="account_needs_password_title">警告：パスワードがありません</string>
   <string name="account_needs_password_message">アカウント [％1$s] にはパスワードが必要です。 新しいデバイスでパスワードなしでアカウントにアクセスすることはできません。</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">サインアップ</string>
   <string name="activity_navigation_signin_failed">サインインに失敗</string>
+  <string name="activity_navigation_signin_failed_network">エラーが発生しました。ネットワーク接続に問題があるか、ユーザー名とパスワードが違います。</string>
+  <string name="activity_navigation_signin_failed_pin_network">エラーが発生しました。ネットワーク接続を確認して下さい。またはPINログインを終了し、ユーザー名とパスワードを使用してオフラインでログインすることもできます。</string>
   <string name="activity_navigation_signin_failed_unexpected">予期せずサインインに失敗</string>
   <string name="activity_signup_failed">登録は失敗した</string>
   <string name="activity_change_password_failed">パスワードの変更に失敗しました</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">4桁のPINを設定する</string>
   <string name="fragment_setup_pin_text">あなたの暗証番号は、アカウントにすばやく再ログインするために使用される4桁のコードです。</string>
   <string name="fragment_setup_writeitdown_title">それを書き留め！</string>
-  <string name="fragment_setup_writeitdown_text">あなたのユーザーネーム、パスワード、ピンはあなたにしか知られておらず、暗号化されずに送信されたり保存されることはありません。</string>
+  <string name="fragment_setup_writeitdown_text">あなたのユーザー名とパスワードはあなたのみ知っているため、忘れた場合に回復することはできません。パスワードを無くした場合は資金へのアクセスを失うことになります。</string>
   <string name="fragment_setup_writeitdown_text_warning">書き留めて安全に保管してください。</string>
   <string name="fragment_setup_writeitdown_username_title">ユーザー名</string>
   <string name="fragment_setup_writeitdown_password_title">パスワード</string>
@@ -290,8 +294,13 @@
   <string name="settings_ble_turn_on_title">有効にするブルートゥース</string>
   <string name="settings_ble_turn_on_message">ブルートゥース、QRコードをスキャンする必要なく、ワイヤレスで支払いを可能にするために使用されます。今すぐオンにしますか？</string>
   <string name="settings_currency_change_note_popup">注意：  デフォルトの通貨設定は、新しいウォレットにのみ使用され、アカウントの合計残高を表示します。新しいウォレットを作成して、各トランザクションに表示される金額の通貨を変更します。</string>
+  <string name="settings_override_server_title">オーバーライドビットコインサーバー（上級）</string>
+  <string name="settings_override_server_button">エネーブルオーバーライド</string>
+  <string name="settings_override_server_list">サーバリストに入る</string>
+  <string name="settings_override_servers_help">警告、これは高度な設定ですあなたの財布が誤動作する可能性があります。設定を有効にするには、アプリを再起動してください。</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">費やす限界</string>
+  <string name="fragment_spending_limits_warning">** Warning **\n\nパスワードの使用限度を設定すると、パスワードを忘れた場合に資金にアクセスできなくなる可能性があります。パスワードの回復をセットアップしてください</string>
   <string name="fragment_spending_limits_save">セーブ</string>
   <string name="fragment_spending_limits_daily_title">1日の使用限度額</string>
   <string name="fragment_spending_limits_pin_title">PINを要求上記金額</string>
@@ -359,6 +368,7 @@
   <string name="fragment_send_confirmation_dust_alert">金額が小さすぎます。</string>
   <string name="fragment_send_confirmation_dust_alert_more">少なくとも送信してください  ％1$s（〜％2$s）</string>
   <string name="fragment_send_confirmation_error_payment_processor">支払い処理プログラムへの接続中にエラーが発生しました。 ビットコインアドレスに直接送信する\ n \ n％s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">ウォレットに小さいダストインプットが存在。資金の全てを使うことができません。詳細に関しては、airbitz.co/dustをご覧下さい。</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">ウォレット</string>
   <string name="fragment_wallets_add_wallet">ウォレットを追加</string>
@@ -384,6 +394,7 @@
   <string name="fragment_wallet_title">トランザクション</string>
   <string name="fragment_wallet_export_button_description">ボタンウォレットをエクスポートする</string>
   <string name="fragment_wallet_unconfirmed">ペンディング</string>
+  <string name="fragment_wallet_transaction_dropped">取引停止</string>
   <string name="fragment_wallet_confirmed">確認済み</string>
   <string name="fragment_wallet_confirmations">"確認"</string>
   <string name="fragment_wallet_confirmation">"確認"</string>
@@ -449,7 +460,7 @@
   <string name="transaction_details_from">"から："</string>
   <string name="transaction_details_payee_hint">受取人を入力して</string>
   <string name="transaction_details_recovery_reminder_title">パスワードリマインダーを回復する</string>
-  <string name="transaction_details_recovery_reminder_message">"あなたはBitcoinを受け取りました！ パスワード回復の質問と回答を設定することを強くおすすめします。それ以外の場合は、パスワードを忘れてしまった場合、あなたのアカウントにアクセスすることはできません。"</string>
+  <string name="transaction_details_recovery_reminder_message">"パスワード回復用の質問と回答を設定することを強くお勧めします。さもなければ、バスワードを忘れてしまった場合にアカウントへアクセスできなくなります。"</string>
   <string name="transaction_details_advanced_txid">"トランザクションID"</string>
   <string name="transaction_details_advanced_total_sent">"合計送信済み"</string>
   <string name="transaction_details_advanced_source">"ソース"</string>
@@ -519,7 +530,7 @@
   <string name="bluetoothlistview_discovery_failed">ブルートゥースサービスの検出に失敗しました。 再試行する。</string>
   <string name="bluetoothlistview_scan_failed">ブルートゥーススキャンに失敗。 再試行する。</string>
   <string name="bluetoothlistview_address_mismatch_title">Bitcoinアドレスの不一致</string>
-  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：％1$s、最初にアドバタイズされたアドレスと一致しません：％2 $ s</string>
+  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：%1$s、最初にアドバタイズされたアドレスと一致しません：%2$s</string>
   <string name="ble_invalid_request">無効なブルートゥースリクエスト</string>
   <string name="ble_invalid_contact_support">リクルーターにサポートを依頼してください</string>
   <!-- Errors -->
@@ -577,6 +588,8 @@
   <string name="fragment_two_factor_warn_message">端末を紛失した場合や％1$sアプリをアンインストールした場合、2FAを無効にしてアカウントにアクセスするまでに7日間かかります。</string>
   <string name="twofactor_reset_message">2ファクタのリセットが要求されました。 ％1$sとしてログインし、リクエストを承認またはキャンセルしてください。</string>
   <string name="twofactor_reset_title">2因子リセット要求</string>
+  <string name="recovery_answers_corrupt">アカウント復旧の回答が破損しています。パスワードを忘れた場合、アカウントを復旧することができなくなります。%1$sとしてログインしてパスワード復旧を再設定して下さい。詳細に関しては、airbitz.co/go掲載のブログ投稿をご覧下さい。</string>
+  <string name="recovery_answers_corrupt_title">リカバリー回答腐敗！</string>
   <string name="receiver_alert_title">％1$s通知</string>
   <!-- Other -->
   <string name="remote_password_change_title">リモートでパスワードが変更されました</string>
@@ -598,7 +611,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">誤パスワード</string>
   <string name="password_check_incorrect_password_message">誤パスワード。 再試行する？</string>
-  <string name="password_check_skip">パスワードを忘れた場合は、新しいアカウントを作成して資金を振り替えてください。</string>
+  <string name="password_check_skip_formatted">パスワードを忘れた場合、新しいアカウントを作り資金を移して下さい。%1$sによりパスワードを回復することはできず、パスワードなしでは資金へのアクセスを失います。</string>
   <string name="password_check_remember_title">パスワードを記憶</string>
   <string name="password_check_remember_message">あなたはまだあなたのパスワードを覚えていますか？デバイスが紛失または盗難にあった場合パスワードが必要にな。 またはアプリをアンインストールした場合\ n以下を入力して確認してください</string>
   <string name="password_check_check_my_password">マイパスワードを確認</string>
@@ -615,7 +628,7 @@
   <string name="upload_log_alert_succeeded">アップロード完了</string>
   <string name="upload_log_alert_failed">アップロードに失敗しました。 ネットワーク接続を確認してください。</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">ログインユーザー：％1s</string>
+  <string name="fingerprint_signin">ログインユーザー。%1$s</string>
   <string name="fingerprint_confirm_to_continue">続行するには指紋を確認</string>
   <string name="fingerprint_hint">タッチセンサー</string>
   <string name="fingerprint_not_recognized">指紋が認識されません。 再試行する。</string>
@@ -681,6 +694,8 @@
   <string name="plugin_walmart_discount">（最大10％オフ）</string>
   <string name="plugin_homedepot_discount">（最大15％オフ）</string>
   <string name="plugin_glidera_title">銀行口座での購入/販売（米国）</string>
+  <string name="plugin_bity_title">購入/売る〜と銀行アカウント(ヨーロッパ)</string>
+  <string name="plugin_libertyx_title">購入〜と現金(米国)</string>
   <string name="plugin_clevercoin_title">ヨーロッパ（EUR）</string>
   <string name="plugin_popup_notice">以下のサービスは、提供していない％1$s。\ n \問題とフィードバックについては、それぞれのサービスプロバイダにお問い合わせください。</string>
   <string name="plugin_bitrefill_title">トップアッププリペイドモバイルSIM</string>
@@ -700,6 +715,8 @@
   <string name="transaction_footer_bitrefill">購入携帯電話トップアップ</string>
   <string name="change_mining_fee_title">鉱業料金の変更</string>
   <string name="change_mining_fee_body">警告：低額の料金は長い遅延を引き起こす可能性があります  取引の確認</string>
+  <string name="change_mining_fee_custom_title">カスタム鉱業料金を設定</string>
+  <string name="change_mining_fee_custom_hint">カスタム料金はsatoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">回復トークンを保存する</string>
   <string name="save_recovery_token_popup_message">\"アカウントの回復セットアップを完了するには、アカウント回復トークンを保存する必要があります。これは、ユーザー名と復旧の回答に加えて、アカウントを回復するために必要となります。リカバリトークンを送信するには、下にメールアドレスを入力してください。

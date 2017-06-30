@@ -111,12 +111,14 @@
   <string name="server_error_insufficient_funds">Fon Ensifizan</string>
   <string name="server_error_synchronizing">Senkronizasyon ak rezo a.</string>
   <string name="server_error_non_numeric_pin">PIN lan dwe on valè nimerik.</string>
-  <string name="server_error_bad_pin">Envalid PIN</string>
+  <string name="server_error_bad_pin_password">Kòd PIN lan pa bon, modpass oubyen repons rekiperasyon yo</string>
   <string name="server_error_bad_pin_login">Envalid PIN. Souple Ouvri Sesyon.</string>
   <string name="server_error_pin_expired">PIN lan ekspire. Tanpri konekte.</string>
   <string name="server_error_invalid_pin_wait">Twòp tantativ ki echwe. Konekte apresa nan %1$s segonn.</string>
   <string name="server_error_other">Yon erè ki te fèt.</string>
+  <string name="server_error_other_formatted">An error has occurred: %d</string>
   <string name="insufficient_amount">Kantite lajan se twò piti</string>
+  <string name="sys_error_string">Trouble accessing network. Please check network connection</string>
   <string name="account_needs_password_title">AVÈTISMAN: manke modpas</string>
   <string name="account_needs_password_message">Kont [%1$s] bezwen modpas. ou paka antre sou kont lan ak yon nouvo aparèy san modpas.</string>
   <!-- Strings related to Landing -->
@@ -142,6 +144,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Siyen Sou</string>
   <string name="activity_navigation_signin_failed">Koneksyon a echwe</string>
+  <string name="activity_navigation_signin_failed_network">An error occurred. Possible network connection issue or incorrect username and password</string>
+  <string name="activity_navigation_signin_failed_pin_network">An error occurred. Please check your network connection. You may also exit PIN login and use your username and password to login offline</string>
   <string name="activity_navigation_signin_failed_unexpected">Koneksyon a echwe san atann</string>
   <string name="activity_signup_failed">Enkripsyon an echwe</string>
   <string name="activity_change_password_failed">Chanjman modpas echwe</string>
@@ -203,7 +207,7 @@
   <string name="fragment_setup_pin_title">Defini yon còd PIN ki gen 4 chif</string>
   <string name="fragment_setup_pin_text">PIN ou an se yon còd ki gen 4 chif, li itilize pou pèmèt ou antre pi rapid sou kont ou an.</string>
   <string name="fragment_setup_writeitdown_title">Ekri sa a!</string>
-  <string name="fragment_setup_writeitdown_text">Non itilizatè ou, modpas ou ak Pin ou se sèl ou menm ki konnen yo epi yo pa janm bay yo ni anregistre yo ak kod.</string>
+  <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
   <string name="fragment_setup_writeitdown_text_warning">Ekri l epi serel an sekirite.</string>
   <string name="fragment_setup_writeitdown_username_title">Non Itilizatè</string>
   <string name="fragment_setup_writeitdown_password_title">Modpas</string>
@@ -291,8 +295,13 @@
   <string name="settings_ble_turn_on_title">Aktive Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth la itilize pou pèmèt pèman san koneksyon epiw pa bezwen skane cod QR. Eskew vle aktivel kounye a?</string>
   <string name="settings_currency_change_note_popup">Nòt: Paramèt lajan pa defo a itilize selman pou nouvo potfèy epi pou moutre kantite lajan ki gen sou kont lan. Kreye yon nouvo potfèy pou chanje lajan ki afiche nan chak tranzaksyon.</string>
+  <string name="settings_override_server_title">Sèvi ak sèvè Bitcoin yo (avanse)</string>
+  <string name="settings_override_server_button">Enable Override</string>
+  <string name="settings_override_server_list">Antre lis sèvè yo</string>
+  <string name="settings_override_servers_help">Atansyon, se yon paramèt avanse epil ka rann bous ou a mal fonktione. Tanpri redemare aplikasyon an pou paramèt yo ka aplike.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Depans Limit</string>
+  <string name="fragment_spending_limits_warning">**Atansyon**\n\nLèw met paramèt sou limit pataj modpas la sa ka fèw paka wè lajanw si w bliye modpass la. Tanpri asirew ou te aktive rekouvreman modpass la</string>
   <string name="fragment_spending_limits_save">Anregistre</string>
   <string name="fragment_spending_limits_daily_title">Limit depans pa jou</string>
   <string name="fragment_spending_limits_pin_title">Ou dwe met PIN lan anlè lanjan an</string>
@@ -359,6 +368,7 @@
   <string name="fragment_send_confirmation_dust_alert">Kantite lajan se twò piti.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Tanpri voye pou pi piti %1$s(~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Erè koneksyon pou peye. Voye bitcoin dirèkteman nan adres \n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Bous</string>
   <string name="fragment_wallets_add_wallet">Bous Mwen</string>
@@ -384,6 +394,7 @@
   <string name="fragment_wallet_title">Tranzaksyon</string>
   <string name="fragment_wallet_export_button_description">Bouton pou konekte potfey la</string>
   <string name="fragment_wallet_unconfirmed">Annatandan</string>
+  <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
   <string name="fragment_wallet_confirmed">Konfime</string>
   <string name="fragment_wallet_confirmations">" konfimasyon"</string>
   <string name="fragment_wallet_confirmation">" konfimasyon"</string>
@@ -448,7 +459,7 @@
   <string name="transaction_details_from">"De: "</string>
   <string name="transaction_details_payee_hint">Jwenn moun benefisye a</string>
   <string name="transaction_details_recovery_reminder_title">Songe mod pas ou ankò</string>
-  <string name="transaction_details_recovery_reminder_message">"OU jwenn Bitcoin! Nou ba ou konsey sa trè byen jan kesyon yo dwe ye a / repons yo pou rekipere mod pas. Si non, ou pap ka jwnn kont ou si ou blye mod pas ou."</string>
+  <string name="transaction_details_recovery_reminder_message">"We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
   <string name="transaction_details_advanced_txid">"Tranzaksyon ID"</string>
   <string name="transaction_details_advanced_total_sent">"Total te voye"</string>
   <string name="transaction_details_advanced_source">"Sous"</string>
@@ -572,6 +583,8 @@
   <string name="fragment_two_factor_warn_message">Si ou pèdi aparey ou ou byen desenstale %1$s, dwe gen 7 jou pou desaktive 2FA ak aksede sou kont ou.</string>
   <string name="twofactor_reset_message">Re enstalisa syon de faktè te mande. Tanpri konekte ou nan %1$s ak anile demand ou.</string>
   <string name="twofactor_reset_title">Enstale ankò de faktè nan demand lan</string>
+  <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery. For details, please see our blog post at airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Repons pou rekiperasyon yo pa bon!</string>
   <string name="receiver_alert_title">%1$s Remak sa</string>
   <!-- Other -->
   <string name="remote_password_change_title">Mod pas change pandan ou lwen</string>
@@ -593,7 +606,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Enkòrèk Modpas.</string>
   <string name="password_check_incorrect_password_message">Enkòrèk Modpas. Eseye anko?</string>
-  <string name="password_check_skip">Tanpri kreye yon lot kont ak transfè fon ou yo si ou bliye mod pas ou.</string>
+  <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
   <string name="password_check_remember_title">Sonje modpas ou?</string>
   <string name="password_check_remember_message">Ou kapab songe ankò mod pas ou? Ou ap bzwen mod pas ou si aparey ou pèdi ou byen yo vòlè li, ou byen si ou desenstale aplikasyon an, /n antre la pou kapab kwè:</string>
   <string name="password_check_check_my_password">Tcheke Modpas MWEN</string>
@@ -610,7 +623,7 @@
   <string name="upload_log_alert_succeeded">Téléchargement konplè</string>
   <string name="upload_log_alert_failed">Telechagman pat bon. Tanpri verifye koneksyon rezo a.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Koneksyon itilizatè: %1s</string>
+  <string name="fingerprint_signin">Sign In User: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Konfime anprent dijital la pou kontinye</string>
   <string name="fingerprint_hint">Kaptè taktil</string>
   <string name="fingerprint_not_recognized">Nou pa rekonèt anprent dijital la. eseye anko.</string>
@@ -674,6 +687,8 @@
   <string name="plugin_walmart_discount">(Jiska 10% Off)</string>
   <string name="plugin_homedepot_discount">(Jiska 15% Off)</string>
   <string name="plugin_glidera_title">Achte / Vann ak Kont labank (USA)</string>
+  <string name="plugin_bity_title">Achte/Vann avèk kont labank (Ewop)</string>
+  <string name="plugin_libertyx_title">Buy with Cash (USA)</string>
   <string name="plugin_clevercoin_title">Europe (EUR)</string>
   <string name="plugin_popup_notice">Sèvis sa yo gen yon pa yo bay nan %1$s. \n\n Pou pwoblèm ak fidbak, tanpri kontakte bayè sèvis yo respektif.</string>
   <string name="plugin_bitrefill_title">Topup Prépayé SIM Mobil</string>
@@ -693,6 +708,8 @@
   <string name="transaction_footer_bitrefill">Achte Topups pou telefò mobil</string>
   <string name="change_mining_fee_title">Chanje Mining Frè</string>
   <string name="change_mining_fee_body">Avètiw: Frè ki pa gwo kapab genyen yon gwo reta nan konfimasyon transaksyon an</string>
+  <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
+  <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Sove rekiperasyon Token</string>
   <string name="save_recovery_token_popup_message">Pou fini konfimasyon pou rekipere kont ou, ou dwe anregistre yon token rekiperasyon kont lan. Li pran nesesè pou rekipere kont ou ankò nan non itilizatè ak rekiperasyon repons. Tanpri antre mèl ou anba pou voye token rekiperasyon an.</string>

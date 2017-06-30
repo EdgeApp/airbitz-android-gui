@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Insufficient funds</string>
   <string name="server_error_synchronizing">Synchronizing with the network.</string>
   <string name="server_error_non_numeric_pin">PIN must be a numeric value.</string>
-  <string name="server_error_bad_pin">Invalid PIN</string>
+  <string name="server_error_bad_pin_password">Invalid PIN, Password, or Recovery Answers</string>
   <string name="server_error_bad_pin_login">Invalid PIN. Please log in.</string>
   <string name="server_error_pin_expired">PIN has expired. Please log in.</string>
   <string name="server_error_invalid_pin_wait">Too many failed login attempts. Please try again in %1$s seconds.</string>
   <string name="server_error_other">An error has occurred.</string>
+  <string name="server_error_other_formatted">An error has occurred: %d</string>
   <string name="insufficient_amount">Amount too small</string>
+  <string name="sys_error_string">Trouble accessing network. Please check network connection</string>
   <string name="account_needs_password_title">WARNING: missing password</string>
   <string name="account_needs_password_message">Account [%1$s] needs a password. Account is not accessible on a new device without a password.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Sign Up</string>
   <string name="activity_navigation_signin_failed">Sign-in failed</string>
+  <string name="activity_navigation_signin_failed_network">An error occurred. Possible network connection issue or incorrect username and password</string>
+  <string name="activity_navigation_signin_failed_pin_network">An error occurred. Please check your network connection. You may also exit PIN login and use your username and password to login offline</string>
   <string name="activity_navigation_signin_failed_unexpected">Sign-in failed unexpectedly</string>
   <string name="activity_signup_failed">Sign Up Failed</string>
   <string name="activity_change_password_failed">Change Password Failed</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">Set a 4 Digit PIN</string>
   <string name="fragment_setup_pin_text">Your PIN is a 4 digit code used to do quick re-logins into your account.</string>
   <string name="fragment_setup_writeitdown_title">Write it Down!</string>
-  <string name="fragment_setup_writeitdown_text">Your username, password, and pin are known only to you and never transmitted or stored unencrypted.</string>
+  <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
   <string name="fragment_setup_writeitdown_text_warning">Write down and store securely.</string>
   <string name="fragment_setup_writeitdown_username_title">Username</string>
   <string name="fragment_setup_writeitdown_password_title">Password</string>
@@ -289,8 +293,13 @@
   <string name="settings_ble_turn_on_title">Activate Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth is used to allow payments wirelessly without needing to scan a QR code. Would you like to turn it on now?</string>
   <string name="settings_currency_change_note_popup">Note: Default Currency setting is only used for new wallets and to show total balance of account. Create a new wallet to change the fiat currency shown in each transaction.</string>
+  <string name="settings_override_server_title">Override Bitcoin Servers (advanced)</string>
+  <string name="settings_override_server_button">Enable Override</string>
+  <string name="settings_override_server_list">Enter Server List</string>
+  <string name="settings_override_servers_help">Warning, this is an advanced setting and may cause your wallet to malfunction. Please restart the app for settings to take affect.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Spending Limits</string>
+  <string name="fragment_spending_limits_warning">** Warning **\n\nSetting a password spending limit may prevent you from accessing funds if your password is forgotten. Please make sure you have setup password recovery</string>
   <string name="fragment_spending_limits_save">Save</string>
   <string name="fragment_spending_limits_daily_title">Daily Spending Limit</string>
   <string name="fragment_spending_limits_pin_title">Require PIN above amount</string>
@@ -357,6 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">Amount is too small.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Please send at least %1$s (~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Error connecting to payment processor. Send directly to bitcoin address\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Wallets</string>
   <string name="fragment_wallets_add_wallet">Add Wallet</string>
@@ -382,6 +392,7 @@
   <string name="fragment_wallet_title">Transactions</string>
   <string name="fragment_wallet_export_button_description">Button to export a wallet</string>
   <string name="fragment_wallet_unconfirmed">Pending</string>
+  <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
   <string name="fragment_wallet_confirmed">Confirmed</string>
   <string name="fragment_wallet_confirmations">" confirmations"</string>
   <string name="fragment_wallet_confirmation">" confirmation"</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"From: "</string>
   <string name="transaction_details_payee_hint">Enter Payee</string>
   <string name="transaction_details_recovery_reminder_title">Recover Password Reminder</string>
-  <string name="transaction_details_recovery_reminder_message">"You've received Bitcoin! We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
+  <string name="transaction_details_recovery_reminder_message">"We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
   <string name="transaction_details_advanced_txid">"Transaction ID"</string>
   <string name="transaction_details_advanced_total_sent">"Total Sent"</string>
   <string name="transaction_details_advanced_source">"Source"</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">If you lose your device or uninstall the %1$s app, it will take 7 days to disable 2FA and access your account.</string>
   <string name="twofactor_reset_message">A two factor reset has been requested. Please login as %1$s and approve or cancel the request.</string>
   <string name="twofactor_reset_title">Two Factor Reset Request</string>
+  <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery. For details, please see our blog post at airbitz.co/go</string>
+  <string name="recovery_answers_corrupt_title">Recovery Answers Corrupt!</string>
   <string name="receiver_alert_title">%1$s Notification</string>
   <!-- Other -->
   <string name="remote_password_change_title">Password Changed Remotely</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Incorrect Password.</string>
   <string name="password_check_incorrect_password_message">Incorrect Password. Try again?</string>
-  <string name="password_check_skip">Please create a new account and transfer your funds if you forgot your password.</string>
+  <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
   <string name="password_check_remember_title">Remember your password?</string>
   <string name="password_check_remember_message">Do you still remember your password? You will need your password if your device gets lost or stolen, or if you uninstall the app.\nEnter it below to make sure:</string>
   <string name="password_check_check_my_password">Check MY Password</string>
@@ -608,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Upload complete</string>
   <string name="upload_log_alert_failed">Upload failed. Please check network connection.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1s</string>
+  <string name="fingerprint_signin">Sign In User: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Confirm fingerprint to continue</string>
   <string name="fingerprint_hint">Touch sensor</string>
   <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
@@ -672,6 +685,8 @@
   <string name="plugin_walmart_discount">(Up to 10% Off)</string>
   <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
   <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
+  <string name="plugin_bity_title">Buy/Sell with Bank Account (Europe)</string>
+  <string name="plugin_libertyx_title">Buy with Cash (USA)</string>
   <string name="plugin_clevercoin_title">Europe (EUR)</string>
   <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
   <string name="plugin_bitrefill_title">Topup Prepaid Mobile SIM</string>
@@ -691,6 +706,8 @@
   <string name="transaction_footer_bitrefill">Buy Mobile Phone Topups</string>
   <string name="change_mining_fee_title">Change Mining Fee</string>
   <string name="change_mining_fee_body">Warning: Low Fees may cause long delays in transaction confirmation</string>
+  <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
+  <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Save Recovery Token</string>
   <string name="save_recovery_token_popup_message">\"To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.</string>

@@ -6,7 +6,7 @@
   <!-- Generic strings -->
   <string name="string_ok">Ok</string>
   <string name="string_yes">Ja</string>
-  <string name="string_bundle">Bundle</string>
+  <string name="string_bundle">Bündeln</string>
   <string name="string_no">Nein</string>
   <string name="string_continue">Weiter</string>
   <string name="string_change">Ändern</string>
@@ -20,7 +20,7 @@
   <string name="string_save">Speichern</string>
   <string name="string_back">ZURÜCK</string>
   <string name="string_disable">DEAKTIVIEREN</string>
-  <string name="string_next">NÄCHSTE</string>
+  <string name="string_next">WEITER</string>
   <string name="string_skip">ÜBERSPRINGEN</string>
   <string name="string_total">GESAMT:</string>
   <string name="string_finish">FERTIG</string>
@@ -110,12 +110,14 @@
   <string name="server_error_insufficient_funds">Unzureichende Geldmittel</string>
   <string name="server_error_synchronizing">Mit dem Netzwerk synchronisieren.</string>
   <string name="server_error_non_numeric_pin">PIN muss ein numerischer Wert sein.</string>
-  <string name="server_error_bad_pin">PIN ist ungültig</string>
+  <string name="server_error_bad_pin_password">Ungültige PIN, Passwort oder Sicherheitsfragen</string>
   <string name="server_error_bad_pin_login">PIN ist ungültig. Bitte loggen Sie sich ein.</string>
   <string name="server_error_pin_expired">PIN ist abgelaufen. Bitte loggen Sie sich ein.</string>
   <string name="server_error_invalid_pin_wait">Zu viele fehlgeschlagene Login-Versuche. Bitte versuchen Sie es erneut in %1$s Sekunden.</string>
   <string name="server_error_other">Ein Fehler ist aufgetreten.</string>
+  <string name="server_error_other_formatted">Ein Fehler ist aufgetreten</string>
   <string name="insufficient_amount">Betrag zu klein</string>
+  <string name="sys_error_string">Keine Netzwerkverbindung. Bitte überprüfen Sie die Verbindung</string>
   <string name="account_needs_password_title">WARNUNG: fehlendes Passwort</string>
   <string name="account_needs_password_message">Konto [%1$s] benötigt ein Passwort. Ihr Konto ist auf einem neuen Gerät ohne Passwort nicht zugänglich.</string>
   <!-- Strings related to Landing -->
@@ -141,6 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Registrieren</string>
   <string name="activity_navigation_signin_failed">Anmeldung fehlgeschlagen</string>
+  <string name="activity_navigation_signin_failed_network">Es ist ein Fehler aufgetreten. Mögliche Probleme beim Verbinden mit dem Netzwerk, falscher Benutzername &amp; oder falsches Passwort</string>
+  <string name="activity_navigation_signin_failed_pin_network">Es ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Netzwerkverbindung. Sie können auch die PIN-Anmeldung beenden und Ihren Benutzernamen sowie Ihr Passwort für den Offline-Login verwenden</string>
   <string name="activity_navigation_signin_failed_unexpected">Anmelden ist unerwartet fehlgeschlagen</string>
   <string name="activity_signup_failed">Registrierung fehlgeschlagen</string>
   <string name="activity_change_password_failed">Fehler beim Ändern des Kennworts</string>
@@ -202,7 +206,7 @@
   <string name="fragment_setup_pin_title">Legen Sie eine 4-stellige PIN fest</string>
   <string name="fragment_setup_pin_text">Ihre PIN ist ein 4-stelliger Code und wird verwendet, um sich schnell wieder in Ihr Konto einzuloggen.</string>
   <string name="fragment_setup_writeitdown_title">Schreiben Sie es auf!</string>
-  <string name="fragment_setup_writeitdown_text">Ihr Benutzername, Passwort und PIN sind nur Ihnen bekannt und nie übertragen oder unverschlüsselt gespeichert.</string>
+  <string name="fragment_setup_writeitdown_text">Ihr Benutzername und Ihr Passwort kennen ausschließlich Sie und kann nicht wiederhergestellt werden. Sie verlieren den Zugang zu Ihren Konten, wenn Sie Ihr Passwort verlieren.</string>
   <string name="fragment_setup_writeitdown_text_warning">Notieren und sicher aufbewahren.</string>
   <string name="fragment_setup_writeitdown_username_title">Benutzername</string>
   <string name="fragment_setup_writeitdown_password_title">Passwort</string>
@@ -210,9 +214,9 @@
   <string name="fragment_setup_writeitdown_show">Einblenden</string>
   <string name="fragment_setup_writeitdown_hide">Ausblenden</string>
   <string name="fragment_setup_camera_title">Kamerazugriff erlauben</string>
-  <string name="fragment_setup_camera_text">Als nächstes sehen Sie ein Popup Um Zugriff auf Ihre Kamera zu erhalten.\n\n[[abtag APP_TITLE]] Benötigt diese, um QR Codes zu scannen, um Leute und Kaufleute zu zahlen.</string>
-  <string name="fragment_setup_contacts_title">Ermöglichen Kontakt Zugriff</string>
-  <string name="fragment_setup_contacts_text">Als nächstes sehen Sie ein Popup anfordern Zugriff auf Ihre Kontakte.\n\n[[abtag APP_TITLE]] Benötigt diese, um Zahlungsanforderungen zu senden und zu helfen, Ihre Geschäfte zu markieren.</string>
+  <string name="fragment_setup_camera_text">Als nächstes sehen Sie ein Popup, um Zugriff auf Ihre Kamera zu erhalten.\n\n[[abtag APP_TITLE]] Benötigt diese, um QR Codes zu scannen, um Menschen und Verkäufer zu bezahlen.</string>
+  <string name="fragment_setup_contacts_title">Kontakt Zurgiff ermöglichen</string>
+  <string name="fragment_setup_contacts_text">Als nächstes sehen Sie ein Popup, der Zugiff auf Ihre Kontakte fordert.\n\n[[abtag APP_TITLE]] benötigt diese, um Zahlungsanforderungen zu senden und debei zu helfen, Ihre Transaktionen zu markieren.</string>
   <!-- Strings for PasswordRecovery -->
   <string name="activity_recovery_setup_title">Passwort-Wiederherstellungssetup</string>
   <string name="activity_recovery_title">Passwort-Wiederherstellung</string>
@@ -289,8 +293,13 @@
   <string name="settings_ble_turn_on_title">Aktivieren Sie Bluetooth</string>
   <string name="settings_ble_turn_on_message">Bluetooth wird verwendet, um wireless Zahlungen zu ermöglichen, ohne dabei einen QR-Code scannen zu müssen. Möchten Sie es jetzt aktivieren?</string>
   <string name="settings_currency_change_note_popup">Hinweis: Die Standard Währungs Einstellung wird nur für neue Wallets verwendet und um das Gesamtsaldo des Kontos anzuzeigen. Erstellen Sie ein neues Wallet um die Fiat-Währung zu ändern, die bei jeder Transaktion angezeigt wird.</string>
+  <string name="settings_override_server_title">Überschreibe Bitcoin Server (fortgeschritten)</string>
+  <string name="settings_override_server_button">Aktiviere Überschreibung</string>
+  <string name="settings_override_server_list">Server Liste eingeben</string>
+  <string name="settings_override_servers_help">Warnung, dies ist eine fortgeschrittene Einstellung, die in Ihrer wallet zu Fehlfuntionen führen kann. Bitte starte die App neu, um die Einstellungen zu aktivieren.</string>
   <!-- Strings for Spending Limits -->
   <string name="fragment_spending_limits_title">Ausgabelimits</string>
+  <string name="fragment_spending_limits_warning">** Warnung ** \n\n Eine Passwort Ausgabegrenze zu setzen könnte Sie daran hinder auf ihre Founds zuzugreifen, wenn Sie ihr Passwort vergessen haben. Bitte stellen sie sicher, dass Sie Wiederherrstellungsfragen erstellt haben</string>
   <string name="fragment_spending_limits_save">Speichern</string>
   <string name="fragment_spending_limits_daily_title">Tagesbudget</string>
   <string name="fragment_spending_limits_pin_title">Benötigt PIN bei Betrag über</string>
@@ -357,6 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">Betrag zu klein</string>
   <string name="fragment_send_confirmation_dust_alert_more">Bitte senden Sie mindestens %1$s (~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Ein Fehler beim Verbinden mit dem Zahlungsanbieter ist aufgetreten. Senden Sie direkt an die folgende Bitcoin Adresse\n\n%s</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Wallets</string>
   <string name="fragment_wallets_add_wallet">Wallet hinzufügen</string>
@@ -382,6 +392,7 @@
   <string name="fragment_wallet_title">Transaktionen</string>
   <string name="fragment_wallet_export_button_description">Taste zum exportieren einer Wallet</string>
   <string name="fragment_wallet_unconfirmed">Ausstehend</string>
+  <string name="fragment_wallet_transaction_dropped">Transaktion verworfen</string>
   <string name="fragment_wallet_confirmed">Bestätigt</string>
   <string name="fragment_wallet_confirmations">" Bestätigungen"</string>
   <string name="fragment_wallet_confirmation">" Bestätigung"</string>
@@ -409,7 +420,7 @@
   <!-- Strings for Request QR Code fragment -->
   <string name="request_qr_email_title">%1$s Bitcoin Anfrage</string>
   <string name="request_qr_bitmap_error">Ein QR-Code konnte nicht angehangen werden.</string>
-  <string name="request_qr_image_store_error">Warnung:Der QR-Code kann nicht an die E-Mail angehängt werden. Stellen Sie sicher, dass diese App die Berechtigung zum Zugriff auf den Speicher des Telefons hat.</string>
+  <string name="request_qr_image_store_error">Warnung: Der QR-Code kann nicht an die E-Mail angehängt werden. Stellen Sie sicher, dass diese App die Berechtigung zum Zugriff auf den Speicher Ihres Telefons hat.</string>
   <string name="request_qr_unknown">Unbekannter Benutzer</string>
   <string name="request_qr_waiting_for_payment">Warten auf Zahlung...</string>
   <string name="request_qr_loading_address">Bitcoin-Adresse wird geladen...</string>
@@ -446,7 +457,7 @@
   <string name="transaction_details_from">"Von: "</string>
   <string name="transaction_details_payee_hint">Zahlungsempfänger eingeben</string>
   <string name="transaction_details_recovery_reminder_title">Passwort-Erinnerung wiederherstellen</string>
-  <string name="transaction_details_recovery_reminder_message">"Sie haben Bitcoin erhalten! Wir empfehlen DRINGEND die Einrichtung von Passwort-Wiederherstellungsfragen und Antworten. Sonst werden Sie nicht in der Lage sein, auf Ihr Konto zuzugreifen, sollte das Passwort vergessen werden."</string>
+  <string name="transaction_details_recovery_reminder_message">"Wir empfehlen Ihnen DRINGEND die Einrichtung der Passwort-Wiederherstellungsfragen und -Antworten. Sonst werden Sie NICHT in der Lage sein, auf Ihr Konto zuzugreifen, sollte das Passwort vergessen werden."</string>
   <string name="transaction_details_advanced_txid">"Transaktions-ID"</string>
   <string name="transaction_details_advanced_total_sent">"Insgesamt gesendet"</string>
   <string name="transaction_details_advanced_source">"Quelle"</string>
@@ -570,6 +581,8 @@
   <string name="fragment_two_factor_warn_message">Sollten Sie Ihr Gerät verlieren oder die %1$s App deinstallieren, dauert es 7 Tage, um 2FA zu deaktivieren und auf Ihr Konto zugreifen zu können.</string>
   <string name="twofactor_reset_message">Ein Zwei-Faktor-Zurückstellung wurde angefordert. Bitte melden Sie sich als %1$s an und genehmigen oder streichen Sie die Anforderung.</string>
   <string name="twofactor_reset_title">Zwei-Faktor Zurücksetzungs-Anfrage</string>
+  <string name="recovery_answers_corrupt">Ihre Sicherheitsfragen sind falsch. Sie können Ihren Account nicht wieder herstellen, wenn Sie Ihr password vergessen haben. Bitte loggen sie sich als %1$s ein und setzen sie die Sicherheitsfragen zurück</string>
+  <string name="recovery_answers_corrupt_title">Die Antworten auf Ihre Sicherheitfragen sind falsch!</string>
   <string name="receiver_alert_title">%1$s Benachrichtigung</string>
   <!-- Other -->
   <string name="remote_password_change_title">Passwort wurde entfernt</string>
@@ -591,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Falsches Passwort</string>
   <string name="password_check_incorrect_password_message">Falsches Passwort. Wiederholen?</string>
-  <string name="password_check_skip">Sollten Sie Ihr Passwort vergessen haben, erstellen Sie bitte ein neues Benutzerkonto und überweisen Sie ihr Geld darauf.</string>
+  <string name="password_check_skip_formatted">Sollten Sie Ihr Passwort vergessen, erstellen Sie bitte einen neuen Account und übertragen Sie ihre Gelder. Ihr Passwort kann nicht von %1$s zurückgesetzt werden und ohne Ihr Passwort sie verlieren den Zugang zu Ihren Geldern.</string>
   <string name="password_check_remember_title">Passwort gemerkt?</string>
   <string name="password_check_remember_message">Erinnern Sie sich noch an Ihr Passwort? Sie benötigen Ihr Passwort, falls das Gerät verloren gehen sollte oder gestohlen wird oder wenn Sie die App deinstallieren.\nGeben Sie es unten zur Überprüfung ein:</string>
   <string name="password_check_check_my_password">Überprüfe MEIN Passwort</string>
@@ -608,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Upload abgeschlossen</string>
   <string name="upload_log_alert_failed">Upload ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkverbindung.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Melden Sie sich an: %1s</string>
+  <string name="fingerprint_signin">Melden Sie sich an: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Bestätigen Sie den Fingerabdruck um fortzufahren</string>
   <string name="fingerprint_hint">Touchsenor</string>
   <string name="fingerprint_not_recognized">Fingerabdruck nicht erkannt. Bitte versuchen Sie es erneut.</string>
@@ -672,6 +685,8 @@
   <string name="plugin_walmart_discount">(Bis zu 10% Rabatt)</string>
   <string name="plugin_homedepot_discount">(Bis zu 15% Rabatt)</string>
   <string name="plugin_glidera_title">Kaufen/Verkaufen mit Bankkonto (USA)</string>
+  <string name="plugin_bity_title">Kaufen/Verkaufen mit Bankkonto (Europa)</string>
+  <string name="plugin_libertyx_title">Mit Bargeld kaufen (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Die folgenden Leistungen werden nicht von %1$s bereitgestellt. \n\n Bei Problemen und Fragen wenden Sie sich bitte an den entsprechenden Anbieter.</string>
   <string name="plugin_bitrefill_title">Prepaid SIM-Karte aufladen</string>
@@ -691,6 +706,8 @@
   <string name="transaction_footer_bitrefill">Guthaben auf Mobiltelefon laden</string>
   <string name="change_mining_fee_title">Mining-Gebühr ändern</string>
   <string name="change_mining_fee_body">Achtung: Niedrige Gebühren können Verspätungen bei der Transaktionsbestätigung verursachen</string>
+  <string name="change_mining_fee_custom_title">Legen Sie eine Transaktionsgebühr fest</string>
+  <string name="change_mining_fee_custom_hint">Transaktionsgebühr in Satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Wiederherstellungs-Token speichern</string>
   <string name="save_recovery_token_popup_message">\"Um das Setup zur Wiederherstellung Ihres Benutzerkontos abzuschließen MÜSSEN Sie einen Wiederherstellungs-Token speichern. Dieser, ihr Benutzername und ihre Wiederherstellungsfragen werden gebraucht um ihren Account wiederherzustellen. Bitte geben Sie Ihre Email ein, um ein Wiederherstellungs Token zu erhalten.</string>
@@ -732,7 +749,7 @@
 
 </string>
   <string name="permission_needs_access_to_camera">%1$s Benötigt Zugriff auf Ihre Kamera, um QR-Codes zu scannen und Dokumente zu erfassen</string>
-  <string name="permission_camera_permission_denied">Kamera-Berechtigung verweigert. Sie können keine QR-Codes scannen. Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut-&gt; Anwendungen</string>
+  <string name="permission_camera_permission_denied">Kamera-Berechtigung verweigert. Sie können keine QR-Codes scannen. Bitte aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut-&gt; Anwendungen</string>
   <string name="permission_camera_permission_denied_not_be_asked">Kamera-Berechtigung verweigert. Sie werden nicht noch einmal gefragt
 
 </string>
@@ -748,12 +765,11 @@
   <string name="permission_needs_access_to_location">%1$sBraucht Zugang zu Ihrem Standort, um Unternehmen in Ihrer Nähe zu finden
 
 </string>
-  <string name="permission_location_permission_denied">Drehort Genehmigung Verweigert. Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut  -&gt; Anwendungen
-</string>
+  <string name="permission_location_permission_denied">Genehmigung zur Ermittlung Ihres Standorts verweigert. Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut -&gt; Anwendungen</string>
   <string name="permission_location_permission_denied_not_be_asked">Standortberechtigung verweigert. Sie werden nicht noch einmal gefragt</string>
-  <string name="permission_needs_access_to_storage">%1$sRequires access to your device memory to send QR codes Für Zahlungsanforderungen und zur Erfassung von Dokumenten</string>
-  <string name="permission_storage_permission_denied">Lagerung Genehmigung Verweigert.Aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut -&gt; Anwendungen</string>
-  <string name="permission_storage_permission_denied_not_be_asked">Speicherzuweisung verweigert. Sie werden nicht noch einmal gefragt
+  <string name="permission_needs_access_to_storage">%1$sbenötigt Zugang zu Ihrem Gerätespeicher, um QR codes für Zahlungsanforderungen und zur Erfassung von Dokumenten zu senden</string>
+  <string name="permission_storage_permission_denied">Speicherzugriff verweigert. Bitte aktivieren Sie den Zugriff in den Einstellungen Ihres Telefons erneut -&gt; Anwendungen</string>
+  <string name="permission_storage_permission_denied_not_be_asked">Speichernutzung verweigert. Sie werden nicht noch einmal gefragt
  </string>
   <string name="request_your_identity_token">Fordern Sie Ihren Identitäts-Token an. Bitte wählen Sie aus einen der untenstehenden</string>
   <string name="request_your_identity_token_but_none">Fordern Sie Ihr Identitäts-Token an, da Sie keine haben</string>
