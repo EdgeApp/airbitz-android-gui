@@ -621,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Upload abgeschlossen</string>
   <string name="upload_log_alert_failed">Upload ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkverbindung.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Melden Sie sich an: %1s</string>
+  <string name="fingerprint_signin">Melden Sie sich an: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Bestätigen Sie den Fingerabdruck um fortzufahren</string>
   <string name="fingerprint_hint">Touchsenor</string>
   <string name="fingerprint_not_recognized">Fingerabdruck nicht erkannt. Bitte versuchen Sie es erneut.</string>

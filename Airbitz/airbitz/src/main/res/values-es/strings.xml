@@ -604,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Contraseña incorrecta.</string>
   <string name="password_check_incorrect_password_message">Contraseña incorrecta. ¿Vuelve a intentarlo?</string>
-  <string name="password_check_skip_formatted">Por favor de crear una nueva cuenta y transfiera sus fondos si se le olvidó su contraseña. Su contraseña NO PUEDE SER RECUPERADA por% 1 $ s y perderá el acceso a sus fondos sin su contraseña.</string>
+  <string name="password_check_skip_formatted">Por favor de crear una nueva cuenta y transfiera sus fondos si se le olvidó su contraseña. Su contraseña NO PUEDE SER RECUPERADA por %1$s y perderá el acceso a sus fondos sin su contraseña.</string>
   <string name="password_check_remember_title">¿Recuerda su contraseña?</string>
   <string name="password_check_remember_message">¿Todavía recuerda su contraseña? Necesitará su contraseña si su dispositivo se pierde o es robado, o si desinstala la aplicación.\nIntrodúcela en la parte inferior para asegurarte:</string>
   <string name="password_check_check_my_password">Verificar mi contraseña</string>
@@ -621,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Carga completa</string>
   <string name="upload_log_alert_failed">No se pudo cargar. Por favor comprueba la conexión de red.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Iniciar Sesión Usuario:% 1 $ s</string>
+  <string name="fingerprint_signin">Iniciar Sesión Usuario: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Confirmar huella dactilar para continuar</string>
   <string name="fingerprint_hint">Sensor táctil</string>
   <string name="fingerprint_not_recognized">Huella dactilar no reconocida. Inténtelo de nuevo.</string>

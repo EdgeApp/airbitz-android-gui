@@ -143,8 +143,8 @@
   <!-- Strings for Signup and Sign-in -->
   <string name="activity_signup_title">Registrar-se</string>
   <string name="activity_navigation_signin_failed">A entrada falhou</string>
-  <string name="activity_navigation_signin_failed_network">An error occurred. Possible network connection issue or incorrect username and password</string>
-  <string name="activity_navigation_signin_failed_pin_network">An error occurred. Please check your network connection. You may also exit PIN login and use your username and password to login offline</string>
+  <string name="activity_navigation_signin_failed_network">Ocorreu um erro. Provavelmente com a conexão de rede ou o nome de usuário e senha estão incorretos</string>
+  <string name="activity_navigation_signin_failed_pin_network">Ocorreu um erro. Por favor, verifique sua conexão rede. Você também pode sair do login via PIN e usar seu nome de usuário e senha para logar off-line</string>
   <string name="activity_navigation_signin_failed_unexpected">A entrada falhou inesperadamente</string>
   <string name="activity_signup_failed">O registro falhou</string>
   <string name="activity_change_password_failed">A Mudança de Senha Falhou</string>
@@ -457,7 +457,7 @@
   <string name="transaction_details_from">"De: "</string>
   <string name="transaction_details_payee_hint">Insira o Beneficiário</string>
   <string name="transaction_details_recovery_reminder_title">Recuperar o Lembrete de Senha</string>
-  <string name="transaction_details_recovery_reminder_message">"We STRONGLY recommend setting up Password Recovery questions and answers. Otherwise you will NOT be able to access your account if your password is forgotten."</string>
+  <string name="transaction_details_recovery_reminder_message">"Nós recomendamos FORTEMENTE que você defina perguntas e respostas para Recuperação de Senha. Caso contrário, você NÃO será capaz de acessar sua conta se esquecer a sua senha."</string>
   <string name="transaction_details_advanced_txid">"ID da Transação"</string>
   <string name="transaction_details_advanced_total_sent">"Total Enviado"</string>
   <string name="transaction_details_advanced_source">"Fonte"</string>
@@ -581,7 +581,7 @@
   <string name="fragment_two_factor_warn_message">Se você perder o seu dispositivo ou desinstalar o aplicativo %1$s, levará 7 dias para desativar o 2FA e acessar sua conta.</string>
   <string name="twofactor_reset_message">Um reset do Duplo Fator foi solicitado. Faça login como %1$s e aprove ou cancele a solicitação.</string>
   <string name="twofactor_reset_title">Restabelecer Autenticação de Dois Fatores</string>
-  <string name="recovery_answers_corrupt">Your account recovery answers are corrupt. You will not be able to recover your account if your password is forgotten. Please login as %1$s and re-setup password recovery. For details, please see our blog post at airbitz.co/go</string>
+  <string name="recovery_answers_corrupt">As respostas à recuperação da sua conta estão corrompidas. Você não poderá recuperar sua conta se sua senha for esquecida. Faça o login como %1$s e refaça a recuperação da senha. Para mais detalhes, acesse o blog da Airbitz em airbitz.co/go</string>
   <string name="recovery_answers_corrupt_title">As respostas de recuperação de senha estão corrompidas!</string>
   <string name="receiver_alert_title">%1$s Notificação</string>
   <!-- Other -->
@@ -621,7 +621,7 @@
   <string name="upload_log_alert_succeeded">Carregamento completo</string>
   <string name="upload_log_alert_failed">O carregamento falhou. Por favor, verifique a conexão de Internet.</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">Sign In User: %1$s</string>
+  <string name="fingerprint_signin">Login do Usuário: %1$s</string>
   <string name="fingerprint_confirm_to_continue">Confirmar impressão digital para continuar</string>
   <string name="fingerprint_hint">Sensor de toque</string>
   <string name="fingerprint_not_recognized">A impressão digital não foi reconhecida. Tente novamente.</string>

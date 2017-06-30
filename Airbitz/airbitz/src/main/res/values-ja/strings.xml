@@ -530,7 +530,7 @@
   <string name="bluetoothlistview_discovery_failed">ブルートゥースサービスの検出に失敗しました。 再試行する。</string>
   <string name="bluetoothlistview_scan_failed">ブルートゥーススキャンに失敗。 再試行する。</string>
   <string name="bluetoothlistview_address_mismatch_title">Bitcoinアドレスの不一致</string>
-  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：％1$s、最初にアドバタイズされたアドレスと一致しません：％2 $ s</string>
+  <string name="bluetoothlistview_address_mismatch_message">あなたが接続したデバイスのビットコインアドレス：%1$s、最初にアドバタイズされたアドレスと一致しません：%2$s</string>
   <string name="ble_invalid_request">無効なブルートゥースリクエスト</string>
   <string name="ble_invalid_contact_support">リクルーターにサポートを依頼してください</string>
   <!-- Errors -->
