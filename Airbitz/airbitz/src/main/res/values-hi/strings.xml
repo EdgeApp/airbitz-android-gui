@@ -627,7 +627,7 @@
   <string name="upload_log_alert_succeeded">अपलोड पूरा हुआ</string>
   <string name="upload_log_alert_failed">अपलोड असफल|कृपया नेटवर्क कनेक्शन चेक करें|</string>
   <!--Fingerprint Login-->
-  <string name="fingerprint_signin">उपयोगकर्ता में साइन इन करें: %1s</string>
+  <string name="fingerprint_signin">उपयोगकर्ता में साइन इन करें: %1$s</string>
   <string name="fingerprint_confirm_to_continue">जारी रखने के लिए फिंगरप्रिंट की पुष्टि</string>
   <string name="fingerprint_hint">टच सेंसर</string>
   <string name="fingerprint_not_recognized">फिंगरप्रिंट मान्यता प्राप्त नहीं। पुनः प्रयास करें।</string>
