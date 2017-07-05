@@ -115,9 +115,9 @@
   <string name="server_error_pin_expired">O PIN expirou. Por favor, faça o login.</string>
   <string name="server_error_invalid_pin_wait">Muitas tentativas de acesso sem sucesso. Por favor, tente de novo em %1$s segundos.</string>
   <string name="server_error_other">Ocorreu um erro.</string>
-  <string name="server_error_other_formatted">An error has occurred: %d</string>
+  <string name="server_error_other_formatted">Ocorreu um erro: %d</string>
   <string name="insufficient_amount">Quantia muito pequena</string>
-  <string name="sys_error_string">Trouble accessing network. Please check network connection</string>
+  <string name="sys_error_string">Problemas na conexão de rede. Favor verificar conexão</string>
   <string name="account_needs_password_title">AVISO: senha ausente</string>
   <string name="account_needs_password_message">A conta [%1$s] precisa de uma senha. A conta não pode ser acessada em um novo dispositivo sem uma senha.</string>
   <!-- Strings related to Landing -->
@@ -206,7 +206,7 @@
   <string name="fragment_setup_pin_title">Defina um PIN de 4 dígitos</string>
   <string name="fragment_setup_pin_text">Seu PIN é um código de 4 dígitos usado para acessar rapidamente sua conta.</string>
   <string name="fragment_setup_writeitdown_title">Anote!</string>
-  <string name="fragment_setup_writeitdown_text">Your username and password are known only to you and cannot be recovered if forgotten. You WILL lose access to funds if your password is lost.</string>
+  <string name="fragment_setup_writeitdown_text">Seu nome de usuário e senha são conhecidos somente por você e não podem ser recuperados em caso de esquecimento. Você perderá acesso aos fundos caso perca sua senha.</string>
   <string name="fragment_setup_writeitdown_text_warning">Anote e guarde em um local seguro.</string>
   <string name="fragment_setup_writeitdown_username_title">Nome de usuário</string>
   <string name="fragment_setup_writeitdown_password_title">Senha</string>
@@ -366,7 +366,7 @@
   <string name="fragment_send_confirmation_dust_alert">A quantia é muito pequena.</string>
   <string name="fragment_send_confirmation_dust_alert_more">Por favor, envie pelo menos %1$s (~%2$s)</string>
   <string name="fragment_send_confirmation_error_payment_processor">Erro ao conectar ao processador de pagamento. Enviar diretamente para o endereço Bitcoin\n\n%s</string>
-  <string name="fragment_send_confirmation_dust_in_wallet">Small dust inputs in wallet. Not all funds can be spent. Please see airbitz.co/dust for details.</string>
+  <string name="fragment_send_confirmation_dust_in_wallet">Resquícios de valores na carteira. Nem todos os fundos podem ser gastos. Favor verificar airbitz.co/dust para mais informações.</string>
   <!-- Strings for Wallets fragment -->
   <string name="fragment_wallets_title">Carteiras</string>
   <string name="fragment_wallets_add_wallet">Adicionar Carteira</string>
@@ -392,7 +392,7 @@
   <string name="fragment_wallet_title">Transações</string>
   <string name="fragment_wallet_export_button_description">Botão para exportar uma carteira</string>
   <string name="fragment_wallet_unconfirmed">Pendente</string>
-  <string name="fragment_wallet_transaction_dropped">Transaction Dropped</string>
+  <string name="fragment_wallet_transaction_dropped">Transação Expirada</string>
   <string name="fragment_wallet_confirmed">Confirmado</string>
   <string name="fragment_wallet_confirmations">" confirmações"</string>
   <string name="fragment_wallet_confirmation">" confirmação"</string>
@@ -604,7 +604,7 @@
   <!-- Remember Password Checks -->
   <string name="password_check_incorrect_password_title">Senha Incorreta.</string>
   <string name="password_check_incorrect_password_message">Senha Incorreta. Tentar novamente?</string>
-  <string name="password_check_skip_formatted">Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.</string>
+  <string name="password_check_skip_formatted">Favor criar uma nova conta e transferir seus fundos caso tenha esquecido sua senha. Sua senha não poderá ser recuperada por %1$s e você perderá acesso aos seus fundos.</string>
   <string name="password_check_remember_title">Você lembra da sua senha?</string>
   <string name="password_check_remember_message">Ainda se lembra da sua senha? Você vai precisar da sua senha se seu dispositivo for perdido ou roubado, ou se você desinstalar o aplicativo.\nDigite-a abaixo para certificar-se de que ainda se lembra:</string>
   <string name="password_check_check_my_password">Verificar MINHA Senha</string>
@@ -706,8 +706,8 @@
   <string name="transaction_footer_bitrefill">Comprar créditos de celular</string>
   <string name="change_mining_fee_title">Alterar Taxa de Transação</string>
   <string name="change_mining_fee_body">Aviso: Taxas Baixas podem causar longos atrasos na confirmação da transação</string>
-  <string name="change_mining_fee_custom_title">Set Custom Mining Fee</string>
-  <string name="change_mining_fee_custom_hint">Custom fee in satoshis/byte</string>
+  <string name="change_mining_fee_custom_title">Personalizar Taxa de Transação</string>
+  <string name="change_mining_fee_custom_hint">Taxa personalizada em satoshis/byte</string>
   <!--Password Recovery Text-->
   <string name="save_recovery_token_popup">Salvar Token de Recuperação</string>
   <string name="save_recovery_token_popup_message">\"Para completar a configuração de recuperação de conta, você DEVE salvar um token de recuperação de conta. Esta será necessária para recuperar sua conta, além de seu nome de usuário e respostas de recuperação. Insira seu e-mail abaixo para enviar-se o token de recuperação.</string>
