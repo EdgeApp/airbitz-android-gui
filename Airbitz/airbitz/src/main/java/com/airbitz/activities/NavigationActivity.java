@@ -506,7 +506,14 @@ public class NavigationActivity extends ActionBarActivity
 
     public static AirbitzCore initiateCore(Context context) {
         String airbitzApiKey = AirbitzApplication.getContext().getString(R.string.airbitz_api_key);
-        String hiddenbitzKey = AirbitzApplication.getContext().getString(R.string.hiddenbitz_key);
+        Context ctx = AirbitzApplication.getContext();
+        if (ctx == null) {
+            throw new AssertionError("ctx == null");
+        }
+        String hiddenbitzKey = ctx.getString(R.string.hiddenbitz_key);
+        if (hiddenbitzKey == null) {
+            throw new AssertionError("hiddenbitzKey == null");
+        }
         return AndroidUtils.init(context, airbitzApiKey, "account:repo:co.airbitz.wallet", hiddenbitzKey);
     }
 

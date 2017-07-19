@@ -80,6 +80,9 @@ public class AirbitzApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        if (mContext != null) {
+            throw new AssertionError("onCreate: mContext == null");
+        }
 
         Picasso.Builder builder = new Picasso.Builder(mContext);
         builder.addRequestHandler(new AirbitzRequestHandler(mContext));
@@ -197,6 +200,10 @@ public class AirbitzApplication extends Application {
     }
 
     public static Context getContext() {
+        if (mContext != null) {
+            throw new AssertionError("getContext: mContext == null");
+        }
+
         return mContext;
     }
 
