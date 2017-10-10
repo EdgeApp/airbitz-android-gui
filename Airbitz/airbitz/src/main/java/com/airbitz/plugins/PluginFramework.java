@@ -134,6 +134,18 @@ public class PluginFramework {
             mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
+            plugin.pluginId = "ZW.WageCan.AirbitzPlugIn";
+            plugin.sourceFile = "file:///android_asset/wagecan.html";
+            plugin.name = "Load WageCan Card";
+            plugin.subtitle = "";
+            plugin.provider = "WageCan";
+            plugin.imageUrl = "https://wagecan.com/Images/airbitz/wagecan-airbitz-list-icon.png";
+            plugin.env.put("CATEGORY", "Exchange:ATMs");
+
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
+
+            plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
