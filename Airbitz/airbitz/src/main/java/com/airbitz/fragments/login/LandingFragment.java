@@ -266,6 +266,12 @@ public class LandingFragment extends BaseFragment implements
             }
         });
 
+        if (R.bool.auto_upload_logs == 1) {
+            AirbitzCore.logi("Auto-uploading logs from Landing screen");
+            UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
+            uploadLogAlert.showUploadLogAlert();
+        }
+
         mRightArrow = (ImageView) mView.findViewById(R.id.fragment_landing_arrowright_imageview);
         mLandingSubtextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
 
