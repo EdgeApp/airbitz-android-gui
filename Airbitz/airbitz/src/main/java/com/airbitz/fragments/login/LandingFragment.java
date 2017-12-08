@@ -160,6 +160,15 @@ public class LandingFragment extends BaseFragment implements
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
         mAbcKeychain = mActivity.abcKeychain;
+
+        if (getResources().getBoolean(R.bool.auto_upload_logs)) {
+            boolean success = mCoreAPI.uploadLogs();
+            if (success) {
+                AirbitzCore.logi("Logs auto-uploaded");
+            } else {
+                AirbitzCore.logi("Error auto-uploading logs");
+            }
+        }
     }
 
     View mView;
@@ -265,12 +274,6 @@ public class LandingFragment extends BaseFragment implements
 
             }
         });
-
-        if (R.bool.auto_upload_logs == 1) {
-            AirbitzCore.logi("Auto-uploading logs from Landing screen");
-            UploadLogAlert uploadLogAlert = new UploadLogAlert(mActivity);
-            uploadLogAlert.showUploadLogAlert();
-        }
 
         mRightArrow = (ImageView) mView.findViewById(R.id.fragment_landing_arrowright_imageview);
         mLandingSubtextView = (TextView) mView.findViewById(R.id.fragment_landing_detail_textview);
