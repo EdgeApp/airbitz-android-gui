@@ -7,6 +7,7 @@
     <integer name="wallet_max_name_length">50</integer>
     <integer name="config_shortAnimTime">200</integer>
 
+    <bool name="auto_upload_logs">false</bool>
     <bool name="include_affiliate_link">true</bool>
     <bool name="include_buysell">true</bool>
     <bool name="include_import_airbitz_card">true</bool>

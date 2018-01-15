@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -160,6 +161,26 @@ public class LandingFragment extends BaseFragment implements
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
         mAbcKeychain = mActivity.abcKeychain;
+
+        if (getResources().getBoolean(R.bool.auto_upload_logs)) {
+            int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
+            String versionName = com.airbitz.BuildConfig.VERSION_NAME;
+            String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
+            String model = Build.MODEL;
+            String os = Build.VERSION.RELEASE;
+
+            AirbitzCore.loge("OS Version: Android " + os);
+            AirbitzCore.loge("Platform: " + model);
+            AirbitzCore.loge("App Version: " + appVersion);
+
+            Boolean success = mCoreAPI.uploadLogs();
+
+            if (success) {
+                AirbitzCore.logi("Logs auto-uploaded");
+            } else {
+                AirbitzCore.logi("Error auto-uploading logs");
+            }
+        }
     }
 
     View mView;
