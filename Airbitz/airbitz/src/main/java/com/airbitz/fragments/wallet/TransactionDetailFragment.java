@@ -945,9 +945,9 @@ public class TransactionDetailFragment extends WalletBaseFragment
 
             String finalBaseUrl;
             if (AirbitzCore.getApi().isTestNet()) {
-                finalBaseUrl = "https://testnet.blockexplorer.com";
+                finalBaseUrl = "https://test-insight.bitpay.com";
             } else { // LIVE
-                finalBaseUrl = "https://blockexplorer.com";
+                finalBaseUrl = "https://insight.bitpay.com";
             }
 
             long inSum = 0;
