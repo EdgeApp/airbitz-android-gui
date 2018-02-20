@@ -33,6 +33,7 @@ package com.airbitz.fragments.settings.twofactor;
 
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -54,6 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import co.airbitz.core.Account;
 import co.airbitz.core.AirbitzCore;
@@ -78,6 +80,7 @@ public class TwoFactorShowFragment extends BaseFragment
 
     private Button mImportButton, mApproveButton, mCancelButton;
     private ImageView mQRView;
+    private Button mQRCodeTextButton;
     private RelativeLayout mQRViewLayout;
     private EditText mPassword;
     private Switch mEnabledSwitch;
@@ -147,6 +150,8 @@ public class TwoFactorShowFragment extends BaseFragment
         mQRViewLayout = (RelativeLayout) mView.findViewById(R.id.fragment_twofactor_show_qr_layout);
         mQRView = (ImageView) mView.findViewById(R.id.fragment_twofactor_show_qr_image);
 
+        mQRCodeTextButton = (Button) mView.findViewById(R.id.fragment_twofactor_show_qr_text_button);
+
         mEnabledSwitch = (Switch) mView.findViewById(R.id.fragment_twofactor_show_toggle_enabled);
         mEnabledSwitch.setOnCheckedChangeListener(mStateListener);
 
@@ -159,16 +164,38 @@ public class TwoFactorShowFragment extends BaseFragment
                 if (mShowQRTextView.getVisibility() == View.VISIBLE) {
                     mShowQRTextView.setVisibility(View.INVISIBLE);
                     mQRView.setVisibility(View.VISIBLE);
+                    mQRCodeTextButton.setVisibility(View.VISIBLE);
+                    mQRCodeTextButton.setEnabled(true);
                 } else {
                     mShowQRTextView.setVisibility(View.VISIBLE);
                     mQRView.setVisibility(View.INVISIBLE);
+                    mQRCodeTextButton.setVisibility(View.INVISIBLE);
+                    mQRCodeTextButton.setEnabled(false);
                 }
             }
         });
 
         mShowQRTextView.setVisibility(View.VISIBLE);
         mQRView.setVisibility(View.INVISIBLE);
+        mQRCodeTextButton.setVisibility(View.INVISIBLE);
+        mQRCodeTextButton.setEnabled(false);
+        mQRCodeTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int sdk = android.os.Build.VERSION.SDK_INT;
+                if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    android.text.ClipboardManager clipboard = (android.text.ClipboardManager) AirbitzApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    clipboard.setText(mAccount.otpSecret());
+                } else {
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) AirbitzApplication.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("2FA Secret", mAccount.otpSecret());
+                    clipboard.setPrimaryClip(clip);
+                }
 
+                Context context = AirbitzApplication.getContext();
+                Toast.makeText(context, R.string.fragment_twofactor_show_qr_code_text, Toast.LENGTH_LONG).show();
+            }
+        });
 
         return mView;
     }
@@ -337,6 +364,7 @@ public class TwoFactorShowFragment extends BaseFragment
             if(bitmap != null) {
                 bitmap = Common.AddWhiteBorder(bitmap);
                 mQRView.setImageBitmap(bitmap);
+                mQRCodeTextButton.setText(secret);
                 animateQrCode(true);
             }
             else {
