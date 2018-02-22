@@ -196,52 +196,57 @@ public class ABCKeychain {
     }
 
     public void getKeychainString (String key, String promptString, GetKeychainString callbacks) {
-
-        mSubscription = mWhorlwind.read(key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    switch (result.readState) {
-                        case NEEDS_AUTH:
-                            // An encrypted value was found, prompt for fingerprint to decrypt.
-                            // The fingerprint reader is active.
-                            showFingerPrintDialog(promptString, callbacks);
-                            break;
-                        case UNRECOVERABLE_ERROR:
-                        case AUTHORIZATION_ERROR:
-                        case RECOVERABLE_ERROR:
-                            // Show an error message. One may be provided in result.message.
-                            // Unless the state is UNRECOVERABLE_ERROR, the fingerprint reader is still
-                            // active and this stream will continue to emit result updates.
-                            fingerprintDialogError("Error reading finger");
-                            break;
-                        case READY:
-                            if (result.value != null) {
-                                // Value was found and has been decrypted.
-                                fingerprintDialogAuthenticated(result.value.utf8(), callbacks);
-                            } else {
-                                // No value was found. Fall back to password or fail silently, depending on
-                                // your use case.
-                                fingerprintDialogError("No fingerprint login key");
-                                if (mFingerprintDialog != null) {
-                                    mFingerprintDialog.dismiss();
-                                    mFingerprintDialog = null;
+        try {
+            mSubscription = mWhorlwind.read(key)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> {
+                        switch (result.readState) {
+                            case NEEDS_AUTH:
+                                // An encrypted value was found, prompt for fingerprint to decrypt.
+                                // The fingerprint reader is active.
+                                showFingerPrintDialog(promptString, callbacks);
+                                break;
+                            case UNRECOVERABLE_ERROR:
+                            case AUTHORIZATION_ERROR:
+                            case RECOVERABLE_ERROR:
+                                // Show an error message. One may be provided in result.message.
+                                // Unless the state is UNRECOVERABLE_ERROR, the fingerprint reader is still
+                                // active and this stream will continue to emit result updates.
+                                fingerprintDialogError("Error reading finger");
+                                break;
+                            case READY:
+                                if (result.value != null) {
+                                    // Value was found and has been decrypted.
+                                    fingerprintDialogAuthenticated(result.value.utf8(), callbacks);
+                                } else {
+                                    // No value was found. Fall back to password or fail silently, depending on
+                                    // your use case.
+                                    fingerprintDialogError("No fingerprint login key");
+                                    if (mFingerprintDialog != null) {
+                                        mFingerprintDialog.dismiss();
+                                        mFingerprintDialog = null;
+                                    }
+                                    callbacks.onError();
                                 }
-                                callbacks.onError();
-                            }
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mSubscription = null;
-                                }
-                            }, 100);
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mSubscription = null;
+                                    }
+                                }, 100);
 
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Unknown state: " + result.readState);
-                    }
-                });
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unknown state: " + result.readState);
+                        }
+                    }, throwable -> {
+                        Log.e("ERROR", "getKeyChainString:subscribe threw onError", throwable);
+                    });
+        } catch (Exception e) {
+            Log.e("ERROR", "getKeyChainString:subscribe threw error");
+        }
     }
 
     public String createKeyWithUsername(String username, String key) {
