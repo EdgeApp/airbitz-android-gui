@@ -40,7 +40,9 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -117,6 +119,7 @@ public class LandingFragment extends BaseFragment implements
     private ABCKeychain mAbcKeychain;
     private boolean mTryToGetLocationPermission = true;
     private boolean mHasLocationPermission = false;
+    private boolean mEdgePopupViewed = false;
 
 
     private HighlightOnPressImageButton mBackButton;
@@ -327,7 +330,13 @@ public class LandingFragment extends BaseFragment implements
 //                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
                     if (mActivity.networkIsAvailable()) {
-                        mActivity.startSignUp(mUserNameEditText.getText().toString());
+                        if (Build.VERSION.SDK_INT >= 23 && mCoreAPI.listLocalAccounts().isEmpty() && !mEdgePopupViewed) {
+                            mEdgePopupViewed = true;
+
+                            launchEdgePopup();
+                        } else {
+                            mActivity.startSignUp(mUserNameEditText.getText().toString());
+                        }
                     } else {
                         mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
                     }
@@ -775,6 +784,35 @@ public class LandingFragment extends BaseFragment implements
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void launchEdgePopup() {
+
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.activity_signup_edgepopup_title)
+                .content(R.string.activity_signup_edgepopup_body)
+                .positiveText(R.string.activity_signup_edgepopup_button)
+                .negativeText(R.string.string_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        try {
+                            intent.setData(Uri.parse("market://details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        }
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

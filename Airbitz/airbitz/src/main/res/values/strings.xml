@@ -217,6 +217,10 @@
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
 
+    <string name="activity_signup_edgepopup_title">Airbitz is now Edge!</string>
+    <string name="activity_signup_edgepopup_body">Give our new multicurrency wallet a try and get support for Bitcoin, Bitcoin Cash, Ethereum, Litecoin, Dash, and all ERC20 tokens. Download Edge Wallet today!</string>
+    <string name="activity_signup_edgepopup_button">Go to Play Store</string>
+
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>
     <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
