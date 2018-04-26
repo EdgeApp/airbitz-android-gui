@@ -68,6 +68,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
@@ -799,6 +800,7 @@ public class LandingFragment extends BaseFragment implements
 
         new MaterialDialog.Builder(mActivity)
                 .title(R.string.activity_signup_edgepopup_title)
+                .titleGravity(GravityEnum.CENTER)
                 .content(R.string.activity_signup_edgepopup_body)
                 .positiveText(R.string.activity_signup_edgepopup_button)
                 .negativeText(R.string.string_cancel)
