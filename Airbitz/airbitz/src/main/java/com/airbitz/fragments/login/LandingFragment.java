@@ -71,6 +71,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
+import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.AccountsAdapter;
@@ -331,7 +332,10 @@ public class LandingFragment extends BaseFragment implements
 //                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
                     if (mActivity.networkIsAvailable()) {
-                        if (Build.VERSION.SDK_INT >= 23 && mCoreAPI.listLocalAccounts().isEmpty() && !mEdgePopupViewed) {
+                        if (Build.VERSION.SDK_INT >= 23
+                                && mCoreAPI.listLocalAccounts().isEmpty()
+                                && !mEdgePopupViewed
+                                && (BuildConfig.FLAVOR == "develop" || BuildConfig.FLAVOR == "nettest" || BuildConfig.FLAVOR == "prod")) {
                             mEdgePopupViewed = true;
 
                             launchEdgePopup();
