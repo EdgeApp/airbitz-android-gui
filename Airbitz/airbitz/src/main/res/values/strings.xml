@@ -220,6 +220,8 @@
     <string name="activity_signup_edgepopup_title">Airbitz is now Edge!</string>
     <string name="activity_signup_edgepopup_body">Give our new multicurrency wallet a try and get support for Bitcoin, Bitcoin Cash, Ethereum, Litecoin, Dash, and all ERC20 tokens. Download Edge Wallet today!</string>
     <string name="activity_signup_edgepopup_button">Go to Play Store</string>
+    <string name="activity_login_edgepopup_negative_button">No Thanks</string>
+    <string name="activity_login_edgepopup_neutral_button">Remind Me Later</string>
 
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>

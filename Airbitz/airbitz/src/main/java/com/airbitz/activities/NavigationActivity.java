@@ -104,6 +104,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -1458,12 +1460,80 @@ public class NavigationActivity extends ActionBarActivity
             mPasswordCheck.showPasswordCheckAlert();
         } else if (!hasPin) {
             showPinSetAlert();
+        } else if (shouldShowEdgePopup()) {
+            showEdgePopup();
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         updateDrawer(true);
         resetDrawerButtons();
+    }
+
+    public boolean shouldShowEdgePopup() {
+        Account account = AirbitzApplication.getAccount();
+        List<Wallet> wallets = account.wallets();
+
+        if (wallets.size() > 3) { return false; }
+
+        long transactionCount = 0;
+        for (Wallet wallet : wallets) {
+            transactionCount += wallet.transactions().size();
+        }
+
+        if (transactionCount > 100) { return false; }
+
+        SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+        boolean popupShown = prefs.getBoolean("EdgePopupShown", false);
+
+        if (popupShown) { return false; }
+
+        return true;
+    }
+
+    public void showEdgePopup() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.activity_signup_edgepopup_title)
+                .titleGravity(GravityEnum.CENTER)
+                .content(R.string.activity_signup_edgepopup_body)
+                .positiveText(R.string.activity_signup_edgepopup_button)
+                .negativeText(R.string.activity_login_edgepopup_negative_button)
+                .neutralText(R.string.activity_login_edgepopup_neutral_button)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        try {
+                            intent.setData(Uri.parse("market://details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        }
+
+                        setEdgePopupShownPreference();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        setEdgePopupShownPreference();
+                    }
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void setEdgePopupShownPreference() {
+        SharedPreferences.Editor editor = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean("EdgePopupShown", true);
+        editor.apply();
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
