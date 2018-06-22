@@ -301,6 +301,9 @@ public class NavigationActivity extends ActionBarActivity
 
     private boolean mInSignupMode = false;
     private boolean mRecoveryMode = false;
+    private boolean mReviewPopupAttempted = false;
+    private boolean mEdgePopupAttempted = false;
+    private boolean mSomePopupShown = false;
 
     public ABCKeychain abcKeychain;
     private MixpanelAPI mixPanel;
@@ -1453,15 +1456,20 @@ public class NavigationActivity extends ActionBarActivity
             checkPassword = UserReview.needsPasswordCheck;
         }
 
+        mSomePopupShown = false;
+        mReviewPopupAttempted = false;
+        mEdgePopupAttempted = false;
+
         if (!passwordLogin && !account.passwordExists()) {
             showPasswordSetAlert();
+            mSomePopupShown = true;
         } else if (!passwordLogin && checkPassword) {
             mPasswordCheck = new RememberPasswordCheck(this);
             mPasswordCheck.showPasswordCheckAlert();
+            mSomePopupShown = true;
         } else if (!hasPin) {
             showPinSetAlert();
-        } else if (shouldShowEdgePopup()) {
-            showEdgePopup();
+            mSomePopupShown = true;
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -1474,14 +1482,16 @@ public class NavigationActivity extends ActionBarActivity
         Account account = AirbitzApplication.getAccount();
         List<Wallet> wallets = account.wallets();
 
+        if (wallets == null) { return false; }
+
         if (wallets.size() > 3) { return false; }
 
         long transactionCount = 0;
         for (Wallet wallet : wallets) {
             transactionCount += wallet.transactions().size();
-        }
 
-        if (transactionCount > 100) { return false; }
+            if (transactionCount > 100) { return false; }
+        }
 
         SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
         boolean popupShown = prefs.getBoolean("EdgePopupShown", false);
@@ -1549,6 +1559,15 @@ public class NavigationActivity extends ActionBarActivity
         protected void onPostExecute(final Boolean offerReview) {
             if(offerReview) {
                 UserReview.ShowUserReviewDialog(NavigationActivity.this);
+                mSomePopupShown = true;
+            } else {
+                mReviewPopupAttempted = true;
+
+                if (mEdgePopupAttempted) {
+                    if (shouldShowEdgePopup()) {
+                        showEdgePopup();
+                    }
+                }
             }
         }
     }
@@ -2917,6 +2936,11 @@ public class NavigationActivity extends ActionBarActivity
                 if (total > 0) {
                     if (total == complete) {
                         showMessage(context.getString(R.string.loading_transactions));
+
+                        if (!mSomePopupShown && mReviewPopupAttempted && shouldShowEdgePopup()) {
+                            showEdgePopup();
+                        }
+                        mEdgePopupAttempted = true;
                     } else {
                         showMessage(context.getString(R.string.loading_n_wallets, complete + 1, total));
                     }
