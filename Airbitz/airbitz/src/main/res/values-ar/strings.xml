@@ -686,7 +686,6 @@
   <string name="plugin_walmart_discount">(ما يصل إلى 10٪ من)</string>
   <string name="plugin_homedepot_discount">(ما يصل الى 15٪ من)</string>
   <string name="plugin_glidera_title">شراء / بيع مع حساب البنك (الولايات المتحدة الأمريكية)</string>
-  <string name="plugin_bity_title">شراء / بيع مع حساب مصرفي (أوروبا)</string>
   <string name="plugin_libertyx_title">شراء مع كاش (الولايات المتحدة الأمريكية)</string>
   <string name="plugin_clevercoin_title">أوروبا (EUR)</string>
   <string name="plugin_popup_notice">لا يتم توفير الخدمات التالية %1$s.\n\nلقضايا وردود الفعل، يرجى الاتصال مقدمي الخدمات المعنية.</string>

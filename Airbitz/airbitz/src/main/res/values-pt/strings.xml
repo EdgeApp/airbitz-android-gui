@@ -685,7 +685,6 @@
   <string name="plugin_walmart_discount">(Até 10% de desconto)</string>
   <string name="plugin_homedepot_discount">(Até 15% de desconto)</string>
   <string name="plugin_glidera_title">Compra / Venda com Conta Bancária (EUA)</string>
-  <string name="plugin_bity_title">Compra / Venda com Conta Bancária (Europa)</string>
   <string name="plugin_libertyx_title">Compre com dinheiro (EUA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Os seguintes serviços não são fornecidos por %1$s.\n\nPara questões e comentários, entre em contato com os respectivos provedores de serviços.</string>

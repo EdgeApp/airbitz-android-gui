@@ -691,7 +691,6 @@
   <string name="plugin_walmart_discount">(10% तक छूट)</string>
   <string name="plugin_homedepot_discount">(15% तक छूट)</string>
   <string name="plugin_glidera_title">खरीदें / बैंक खाते के साथ बेचें (यूएसए)</string>
-  <string name="plugin_bity_title">बैंक खाते के साथ खरीदें / बेचें (यूरोप)</string>
   <string name="plugin_libertyx_title">कैश के साथ खरीदें (यूएसए)</string>
   <string name="plugin_clevercoin_title">यूरोप (EUR)</string>
   <string name="plugin_popup_notice">निम्नलिखित सेवाओं द्वारा प्रदान नहीं कर रहे हैं%1$s.\n\nमुद्दों और प्रतिक्रिया के लिए, संबंधित सेवा प्रदाताओं से संपर्क करें।</string>

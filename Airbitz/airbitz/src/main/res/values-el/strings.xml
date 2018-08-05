@@ -685,7 +685,6 @@
   <string name="plugin_walmart_discount">(Μέχρι και 10% έκπτωση)</string>
   <string name="plugin_homedepot_discount">(Μέχρι και 15% έκπτωση)</string>
   <string name="plugin_glidera_title">Αγορά/Πώληση με Τραπεζικό Λογαριασμό (ΗΠΑ)</string>
-  <string name="plugin_bity_title">Αγορά/Πώληση με Τραπεζικό Λογαριασμό (Ευρώπη)</string>
   <string name="plugin_libertyx_title">Αγορά με Μετρητά (ΗΠΑ)</string>
   <string name="plugin_clevercoin_title">Ευρώπη (ΕUR)</string>
   <string name="plugin_popup_notice">Οι ακόλουθες υπηρεσίες δεν παρέχονται από την %1$s.\n\nΓια προβλήματα και ενημέρωση, παρακαλούμε επικοινωνήστε με τις αντίστοιχες υπηρεσίες.</string>

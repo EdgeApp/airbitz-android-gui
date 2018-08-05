@@ -700,7 +700,6 @@
   <string name="plugin_walmart_discount">(Fino al 10% di sconto)</string>
   <string name="plugin_homedepot_discount">(Fino al 15% di sconto)</string>
   <string name="plugin_glidera_title">Acquisto / Vendita con conto bancario (USA)</string>
-  <string name="plugin_bity_title">Compra / vendi con conto bancario (Europa)</string>
   <string name="plugin_libertyx_title">Acquista con contanti (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">I seguenti servizi non sono forniti da %1$s.\n\nPer problemi e feedback, si prega di contattare i rispettivi fornitori di servizi.</string>

@@ -250,19 +250,6 @@ public class PluginFramework {
             mPluginsGrouped.get(BUYSELL).add(plugin);
 
             plugin = new Plugin();
-            plugin.pluginId = "com.bity.app";
-            plugin.sourceFile = "file:///android_asset/bity.html";
-            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bity_title);
-            plugin.subtitle = "";
-            plugin.provider = "Bity";
-            plugin.country = "EU";
-            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2017/04/Bity-square.png";
-            plugin.imageResId = R.drawable.ic_plugin_euro;
-            plugin.env.put("AFFILIATE_CODE", AirbitzApplication.getContext().getString(R.string.bity_affiliate_code));
-            mPlugins.add(plugin);
-            mPluginsGrouped.get(BUYSELL).add(plugin);
-
-            plugin = new Plugin();
             plugin.pluginId = "com.libertyx.app";
             plugin.sourceFile = "file:///android_asset/libertyx.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_libertyx_title);

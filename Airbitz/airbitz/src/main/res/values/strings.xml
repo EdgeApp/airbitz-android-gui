@@ -768,7 +768,6 @@
     <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
     <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
     <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
-    <string name="plugin_bity_title">Buy/Sell with Bank Account (Europe)</string>
     <string name="plugin_libertyx_title">Buy with Cash (USA)</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
     <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>

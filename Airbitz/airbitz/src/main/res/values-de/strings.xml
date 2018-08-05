@@ -685,7 +685,6 @@
   <string name="plugin_walmart_discount">(Bis zu 10% Rabatt)</string>
   <string name="plugin_homedepot_discount">(Bis zu 15% Rabatt)</string>
   <string name="plugin_glidera_title">Kaufen/Verkaufen mit Bankkonto (USA)</string>
-  <string name="plugin_bity_title">Kaufen/Verkaufen mit Bankkonto (Europa)</string>
   <string name="plugin_libertyx_title">Mit Bargeld kaufen (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Die folgenden Leistungen werden nicht von %1$s bereitgestellt. \n\n Bei Problemen und Fragen wenden Sie sich bitte an den entsprechenden Anbieter.</string>
