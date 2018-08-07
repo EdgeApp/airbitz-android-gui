@@ -134,6 +134,18 @@ public class PluginFramework {
             mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
 
             plugin = new Plugin();
+            plugin.pluginId = "ZW.WageCan.AirbitzPlugIn";
+            plugin.sourceFile = "file:///android_asset/wagecan.html";
+            plugin.name = "Load WageCan Card";
+            plugin.subtitle = "";
+            plugin.provider = "WageCan";
+            plugin.imageUrl = "https://wagecan.com/Images/airbitz/wagecan-airbitz-list-icon.png";
+            plugin.env.put("CATEGORY", "Exchange:ATMs");
+
+            mPlugins.add(plugin);
+            mPluginsGrouped.get(GENERAL_PLUGINS).add(plugin);
+
+            plugin = new Plugin();
             plugin.pluginId = "com.foldapp";
             plugin.sourceFile = "file:///android_asset/foldapp.html";
             plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_starbucks_title);
@@ -234,19 +246,6 @@ public class PluginFramework {
             plugin.env.put("REDIRECT_URI", "airbitz://plugin/glidera/" + plugin.country + "/");
             plugin.env.put("AIRBITZ_STATS_KEY", AirbitzApplication.getContext().getString(R.string.airbitz_business_directory_key));
             plugin.env.put("BIZID", String.valueOf(Constants.BIZ_ID_GLIDERA));
-            mPlugins.add(plugin);
-            mPluginsGrouped.get(BUYSELL).add(plugin);
-
-            plugin = new Plugin();
-            plugin.pluginId = "com.bity.app";
-            plugin.sourceFile = "file:///android_asset/bity.html";
-            plugin.name = AirbitzApplication.getContext().getString(R.string.plugin_bity_title);
-            plugin.subtitle = "";
-            plugin.provider = "Bity";
-            plugin.country = "EU";
-            plugin.imageUrl = "https://airbitz.co/go/wp-content/uploads/2017/04/Bity-square.png";
-            plugin.imageResId = R.drawable.ic_plugin_euro;
-            plugin.env.put("AFFILIATE_CODE", AirbitzApplication.getContext().getString(R.string.bity_affiliate_code));
             mPlugins.add(plugin);
             mPluginsGrouped.get(BUYSELL).add(plugin);
 

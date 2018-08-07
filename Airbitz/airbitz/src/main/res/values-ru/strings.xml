@@ -685,7 +685,6 @@
   <string name="plugin_walmart_discount">(скидка до 10%)</string>
   <string name="plugin_homedepot_discount">(скидка до 15%)</string>
   <string name="plugin_glidera_title">Купить/продать через банковский счет (США)</string>
-  <string name="plugin_bity_title">Купить/Продать через банковский счёт (Европа)</string>
   <string name="plugin_libertyx_title">Купить за Наличные (США)</string>
   <string name="plugin_clevercoin_title">Европа (EUR)</string>
   <string name="plugin_popup_notice">Данная услуга не поддерживается %1$s.\n\n Если у вас возникли проблемы или вопросы, пожалуйста, свяжитесь с уполномоченными представителями предоставляющими данную услугу.</string>

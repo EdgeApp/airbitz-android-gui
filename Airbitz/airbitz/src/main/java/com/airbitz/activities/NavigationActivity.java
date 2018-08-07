@@ -104,6 +104,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.airbitz.AirbitzApplication;
 import com.airbitz.R;
 import com.airbitz.adapters.AccountsAdapter;
@@ -299,9 +301,12 @@ public class NavigationActivity extends ActionBarActivity
 
     private boolean mInSignupMode = false;
     private boolean mRecoveryMode = false;
+    private boolean mReviewPopupAttempted = false;
+    private boolean mEdgePopupAttempted = false;
+    private boolean mSomePopupShown = false;
 
     public ABCKeychain abcKeychain;
-    private MixpanelAPI mixPanel;
+    //private MixpanelAPI mixPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -317,8 +322,8 @@ public class NavigationActivity extends ActionBarActivity
         setContentView(R.layout.activity_navigation);
         mDefaultCurrencyCode = "";
 
-        String projectToken = AirbitzApplication.getContext().getString(R.string.mixpanel_token); // e.g.: "42380023d73426da3e74bf937a05fc95"
-        mixPanel = MixpanelAPI.getInstance(this, projectToken);
+        //String projectToken = AirbitzApplication.getContext().getString(R.string.mixpanel_token); // e.g.: "42380023d73426da3e74bf937a05fc95"
+        //mixPanel = MixpanelAPI.getInstance(this, projectToken);
 
         Resources r = getResources();
         mMenuPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
@@ -425,7 +430,7 @@ public class NavigationActivity extends ActionBarActivity
 
     @Override
     public void onDestroy() {
-        mixPanel.flush();
+        //mixPanel.flush();
         super.onDestroy();
         if(!getResources().getBoolean(R.bool.portrait_only)){
             // store the fragment stack in case of an orientation change
@@ -435,11 +440,11 @@ public class NavigationActivity extends ActionBarActivity
     }
 
     public void mpTrack(String event) {
-        mixPanel.track(event, null);
+        //mixPanel.track(event, null);
     }
 
     public void mpTime(String event) {
-        mixPanel.timeEvent(event);
+        //mixPanel.timeEvent(event);
     }
 
     public boolean onTouch(View view, MotionEvent event) {
@@ -1451,19 +1456,107 @@ public class NavigationActivity extends ActionBarActivity
             checkPassword = UserReview.needsPasswordCheck;
         }
 
+        mSomePopupShown = false;
+        mReviewPopupAttempted = false;
+        mEdgePopupAttempted = false;
+
         if (!passwordLogin && !account.passwordExists()) {
             showPasswordSetAlert();
+            mSomePopupShown = true;
         } else if (!passwordLogin && checkPassword) {
             mPasswordCheck = new RememberPasswordCheck(this);
             mPasswordCheck.showPasswordCheckAlert();
+            mSomePopupShown = true;
         } else if (!hasPin) {
             showPinSetAlert();
+            mSomePopupShown = true;
         } else {
             new UserReviewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         updateDrawer(true);
         resetDrawerButtons();
+    }
+
+    public boolean shouldShowEdgePopup() {
+        if (getResources().getString(R.string.app_name) == "Airbitz" ||
+                getResources().getString(R.string.app_name) == "Airbitz Develop") {
+            Account account = AirbitzApplication.getAccount();
+            List<Wallet> wallets = account.wallets();
+
+            if (wallets == null) {
+                return false;
+            }
+
+            if (wallets.size() > 3) {
+                return false;
+            }
+
+            long transactionCount = 0;
+            for (Wallet wallet : wallets) {
+                transactionCount += wallet.transactions().size();
+
+                if (transactionCount > 100) {
+                    return false;
+                }
+            }
+
+            SharedPreferences prefs = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE);
+            boolean popupShown = prefs.getBoolean("EdgePopupShown", false);
+
+            if (popupShown) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void showEdgePopup() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.activity_signup_edgepopup_title)
+                .titleGravity(GravityEnum.CENTER)
+                .content(R.string.activity_signup_edgepopup_body)
+                .positiveText(R.string.activity_signup_edgepopup_button)
+                .negativeText(R.string.activity_login_edgepopup_negative_button)
+                .neutralText(R.string.activity_login_edgepopup_neutral_button)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        try {
+                            intent.setData(Uri.parse("market://details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        }
+
+                        setEdgePopupShownPreference();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        setEdgePopupShownPreference();
+                    }
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void setEdgePopupShownPreference() {
+        SharedPreferences.Editor editor = getSharedPreferences(AirbitzApplication.PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean("EdgePopupShown", true);
+        editor.apply();
     }
 
     public class UserReviewTask extends AsyncTask<Void, Void, Boolean> {
@@ -1479,6 +1572,15 @@ public class NavigationActivity extends ActionBarActivity
         protected void onPostExecute(final Boolean offerReview) {
             if(offerReview) {
                 UserReview.ShowUserReviewDialog(NavigationActivity.this);
+                mSomePopupShown = true;
+            } else {
+                mReviewPopupAttempted = true;
+
+                if (mEdgePopupAttempted) {
+                    if (shouldShowEdgePopup()) {
+                        showEdgePopup();
+                    }
+                }
             }
         }
     }
@@ -2847,6 +2949,11 @@ public class NavigationActivity extends ActionBarActivity
                 if (total > 0) {
                     if (total == complete) {
                         showMessage(context.getString(R.string.loading_transactions));
+
+                        if (!mSomePopupShown && mReviewPopupAttempted && shouldShowEdgePopup()) {
+                            showEdgePopup();
+                        }
+                        mEdgePopupAttempted = true;
                     } else {
                         showMessage(context.getString(R.string.loading_n_wallets, complete + 1, total));
                     }

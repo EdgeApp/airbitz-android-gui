@@ -694,7 +694,6 @@
   <string name="plugin_walmart_discount">（最大10％オフ）</string>
   <string name="plugin_homedepot_discount">（最大15％オフ）</string>
   <string name="plugin_glidera_title">銀行口座での購入/販売（米国）</string>
-  <string name="plugin_bity_title">購入/売る〜と銀行アカウント(ヨーロッパ)</string>
   <string name="plugin_libertyx_title">購入〜と現金(米国)</string>
   <string name="plugin_clevercoin_title">ヨーロッパ（EUR）</string>
   <string name="plugin_popup_notice">以下のサービスは、提供していない％1$s。\ n \問題とフィードバックについては、それぞれのサービスプロバイダにお問い合わせください。</string>

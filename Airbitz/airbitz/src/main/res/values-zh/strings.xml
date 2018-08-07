@@ -685,7 +685,6 @@
   <string name="plugin_walmart_discount">(高达10％折扣)</string>
   <string name="plugin_homedepot_discount">(高达15％折扣)</string>
   <string name="plugin_glidera_title">通过银行账户买/卖(美国)</string>
-  <string name="plugin_bity_title">通过银行账户买/卖(欧洲)</string>
   <string name="plugin_libertyx_title">通过现金买/卖(美国)</string>
   <string name="plugin_clevercoin_title">欧元 (EUR)</string>
   <string name="plugin_popup_notice">以下的服务并非由%1$s所提供。\n\n若有任何状况及反馈，请联系相关的服务供应商。</string>

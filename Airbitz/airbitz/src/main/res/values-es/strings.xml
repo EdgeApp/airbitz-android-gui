@@ -686,7 +686,6 @@ subject=Airbitz+Bitcoin+Email+Request</string>
   <string name="plugin_walmart_discount">(Hasta 10% de descuento)</string>
   <string name="plugin_homedepot_discount">(Hasta 15% de descuento)</string>
   <string name="plugin_glidera_title">Comprar y vender con cuentas bancarias (en EUA)</string>
-  <string name="plugin_bity_title">Comprar/Vender con Cuenta Bancaria (Europa)</string>
   <string name="plugin_libertyx_title">Comprar con Efectivo (USA)</string>
   <string name="plugin_clevercoin_title">Europa (EUR)</string>
   <string name="plugin_popup_notice">Los siguientes servicios no son proporcionados por %1$s.\n\n. Para dudas y retroalimentación, por favor contactar a los respectivos proveedores del servicio.</string>

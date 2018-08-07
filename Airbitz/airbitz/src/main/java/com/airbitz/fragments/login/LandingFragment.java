@@ -37,11 +37,15 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -65,8 +69,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.airbitz.AirbitzApplication;
+import com.airbitz.BuildConfig;
 import com.airbitz.R;
 import com.airbitz.activities.NavigationActivity;
 import com.airbitz.adapters.AccountsAdapter;
@@ -116,6 +122,7 @@ public class LandingFragment extends BaseFragment implements
     private ABCKeychain mAbcKeychain;
     private boolean mTryToGetLocationPermission = true;
     private boolean mHasLocationPermission = false;
+    private boolean mEdgePopupViewed = false;
 
 
     private HighlightOnPressImageButton mBackButton;
@@ -160,6 +167,26 @@ public class LandingFragment extends BaseFragment implements
         mUsername = prefs.getString(AirbitzApplication.LOGIN_NAME, "");
         mPositionNavBar = false;
         mAbcKeychain = mActivity.abcKeychain;
+
+        if (getResources().getBoolean(R.bool.auto_upload_logs)) {
+            int versionCode = com.airbitz.BuildConfig.VERSION_CODE;
+            String versionName = com.airbitz.BuildConfig.VERSION_NAME;
+            String appVersion = versionName + " (" + Integer.toString(versionCode) + ")";
+            String model = Build.MODEL;
+            String os = Build.VERSION.RELEASE;
+
+            AirbitzCore.loge("OS Version: Android " + os);
+            AirbitzCore.loge("Platform: " + model);
+            AirbitzCore.loge("App Version: " + appVersion);
+
+            Boolean success = mCoreAPI.uploadLogs();
+
+            if (success) {
+                AirbitzCore.logi("Logs auto-uploaded");
+            } else {
+                AirbitzCore.logi("Error auto-uploading logs");
+            }
+        }
     }
 
     View mView;
@@ -306,7 +333,17 @@ public class LandingFragment extends BaseFragment implements
 //                    mHandler.postDelayed(delayedShowPasswordKeyboard, 100);
                 } else {
                     if (mActivity.networkIsAvailable()) {
-                        mActivity.startSignUp(mUserNameEditText.getText().toString());
+                        if (Build.VERSION.SDK_INT >= 23
+                                && mCoreAPI.listLocalAccounts().isEmpty()
+                                && !mEdgePopupViewed
+                                && (getResources().getString(R.string.app_name) == "Airbitz" ||
+                                    getResources().getString(R.string.app_name) == "Airbitz Develop")) {
+                            mEdgePopupViewed = true;
+
+                            launchEdgePopup();
+                        } else {
+                            mActivity.startSignUp(mUserNameEditText.getText().toString());
+                        }
                     } else {
                         mActivity.ShowFadingDialog(getActivity().getString(R.string.string_no_connection_message));
                     }
@@ -754,6 +791,36 @@ public class LandingFragment extends BaseFragment implements
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         // TODO
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void launchEdgePopup() {
+
+        new MaterialDialog.Builder(mActivity)
+                .title(R.string.activity_signup_edgepopup_title)
+                .titleGravity(GravityEnum.CENTER)
+                .content(R.string.activity_signup_edgepopup_body)
+                .positiveText(R.string.activity_signup_edgepopup_button)
+                .negativeText(R.string.string_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        try {
+                            intent.setData(Uri.parse("market://details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=co.edgesecure.app"));
+                            startActivity(intent);
+                        }
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

@@ -56,6 +56,16 @@
             />
 
         <Button
+            android:id="@+id/fragment_twofactor_show_qr_text_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_centerHorizontal="true"
+            android:background="@color/clear_color"
+            android:text="Secret"
+            android:textSize="17sp" />
+
+        <Button
             android:id="@+id/fragment_twofactor_button_import"
             android:layout_below="@id/fragment_twofactor_show_toggle_enabled"
             android:layout_width="95dp"
@@ -71,38 +81,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/fragment_twofactor_button_import">
+            android:layout_below="@id/fragment_twofactor_button_import"
+            android:id="@+id/relativeLayout">
 
             <RelativeLayout
                 android:id="@+id/fragment_twofactor_show_qr_layout"
                 android:layout_width="166dp"
                 android:layout_height="166dp"
-                android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_edge_white_bg" >
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_edge_white_bg">
 
                 <ImageView
                     android:id="@+id/fragment_twofactor_show_qr_image"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true" />
 
                 <TextView
                     android:id="@+id/fragment_twofactor_show_qr_image_textview"
-                    android:text="@string/fragment_twofactor_show_qr_image_text"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
+                    android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:textSize="20dp"
+                    android:text="@string/fragment_twofactor_show_qr_image_text"
                     android:textColor="@color/dark_text_link"
-                    android:layout_centerInParent="true"/>
+                    android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/fragment_twofactor_show_qr_image_button"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
-                    android:background="@color/clear_color"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true"
+                    android:background="@color/clear_color" />
 
             </RelativeLayout>
 
@@ -151,5 +162,6 @@
 
             </LinearLayout>
         </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>

@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.airbitz.R;
@@ -67,8 +68,10 @@ public class AccountDump {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.setType("application/zip");
 
-        Uri uri = Uri.fromFile(file);
+
+        Uri uri = FileProvider.getUriForFile(activity.getApplicationContext(), activity.getApplicationContext().getPackageName() + ".provider", file);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Airbitz Login Package");
         activity.startActivity(Intent.createChooser(intent, "Share?"));
     }
 

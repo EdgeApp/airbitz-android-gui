@@ -217,6 +217,12 @@
     <string name="activity_signup_months">months</string>
     <string name="activity_signup_years">years</string>
 
+    <string name="activity_signup_edgepopup_title">Airbitz is now Edge!</string>
+    <string name="activity_signup_edgepopup_body">Give our new multicurrency wallet a try and get support for Bitcoin, Bitcoin Cash, Ethereum, Litecoin, Dash, and all ERC20 tokens. Download Edge Wallet today!</string>
+    <string name="activity_signup_edgepopup_button">Go to Play Store</string>
+    <string name="activity_login_edgepopup_negative_button">No Thanks</string>
+    <string name="activity_login_edgepopup_neutral_button">Remind Me Later</string>
+
     <string name="fragment_setup_titles">Sign Up</string>
     <string name="fragment_setup_username_label">Choose a Username</string>
     <string name="fragment_setup_username_text">This is not your email or real name.\n\nThis is the username to login into your account on this and other devices.\n\nYour username and password are known only to you and never stored unencrypted.</string>
@@ -617,6 +623,7 @@
     <string name="fragment_twofactor_show_instruction">Enable 2-Factor Authentication to increase security by only allowing logins from previously logged in devices. Add more devices by scanning the QR code below after 2FA is enabled</string>
     <string name="fragment_twofactor_show_reset_requested">2FA Reset Requested by another device.</string>
     <string name="fragment_twofactor_show_qr_image_text">Show QR Code</string>
+    <string name="fragment_twofactor_show_qr_code_text">Code copied to clipboard</string>
     <string name="fragment_two_factor_menu_requested">Two factor reset has been requested.</string>
     <string name="twofactor_required_title">Two Factor Authentication On</string>
     <string name="twofactor_required_message">Two Factor Authentication (enchanced security) has been enabled from a different device for this account. Please enable 2 Factor Authentication for full access from this device.</string>
@@ -761,7 +768,6 @@
     <string name="plugin_homedepot_title" translatable="false">Home Depot</string>
     <string name="plugin_homedepot_discount">(Up to 15% Off)</string>
     <string name="plugin_glidera_title">Buy/Sell with Bank Account (USA)</string>
-    <string name="plugin_bity_title">Buy/Sell with Bank Account (Europe)</string>
     <string name="plugin_libertyx_title">Buy with Cash (USA)</string>
     <string name="plugin_clevercoin_title">Europe (EUR)</string>
     <string name="plugin_popup_notice">The following services are not provided by %1$s.\n\nFor issues and feedback, please contact the respective service providers.</string>
